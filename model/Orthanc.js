@@ -1,5 +1,6 @@
 const request = require('request');
 const fs=require('fs');
+let QueryAnswer=require('./QueryAnswer');
 
 /**
  * Orthanc object to communications with orthanc server
@@ -28,7 +29,7 @@ class Orthanc {
      * @param {*} data 
      */
     createOptions(method, url, data="none"){
-        let serverString=this.getOrthancAdressString()+'/'+url;
+        let serverString=this.getOrthancAdressString()+url;
 
         let options=null;
         //SK Delete encore a tester
@@ -54,7 +55,7 @@ class Orthanc {
                     'Content-Type': 'application/json',
                     'Content-Length': data.length
                 },
-                form : data
+                body : data
             };
         }
 
@@ -63,7 +64,7 @@ class Orthanc {
 
     getSystem(returnCallBack){
         let currentOrthanc=this;
-        request.get(this.createOptions('GET','system'), function(error, response, body){
+        request.get(this.createOptions('GET','/system'), function(error, response, body){
             returnCallBack(currentOrthanc.answerParser(body));
         });
     }
@@ -81,7 +82,7 @@ class Orthanc {
     putPeer(name, aet, ip, port, type, returnCallBack){
         let data=[aet, ip, port, type]
         let currentOrthanc=this;
-        request.put(this.createOptions('PUT','modalities/'+name, JSON.stringify(data)), function(error, response, body){
+        request.put(this.createOptions('PUT','/modalities/'+name, JSON.stringify(data)), function(error, response, body){
             returnCallBack(currentOrthanc.answerParser(body));
         });
     }
@@ -112,7 +113,7 @@ class Orthanc {
 
     buildDicomQuery(level="Study", patientName="*", patientID="*", studyDate="*", modality="*", studyDescription="*", accessionNb="*"){
         
-        let query={
+        this.preparedQuery={
             Level: level,
             Query : {
                 PatientName : patientName,
@@ -121,23 +122,61 @@ class Orthanc {
                 ModalitiesInStudy : modality,
                 StudyDescription : studyDescription,
                 AccessionNumber : accessionNb
-
             }
 
         }
-
-        this.preparedQuery=JSON.stringify(query);
-        console.log(this.preparedQuery);
-        console.log(query);
+        
 
     }
 
+    /**
+     * Make Query on AET an return response path location
+     * @param {String} aet 
+     * @param {function(answer)} returnCallBack 
+     */
     makeDicomQuery(aet, returnCallBack){
         let currentOrthanc=this;
-        request.post(this.createOptions('POST','modalities/'+aet+"/query/", this.preparedQuery), function(error, response, body){
-            console.log(body);
-            returnCallBack(currentOrthanc.answerParser(body));
+        request.post(this.createOptions('POST','/modalities/'+aet+"/query", JSON.stringify(this.preparedQuery)), function(error, response, body){
+            let answer=currentOrthanc.answerParser(body);
+            currentOrthanc.getAnswerDetails(answer.Path, function(answerObjects){
+                returnCallBack(answerObjects);
+            });
+            
         });
+    }
+
+    getAnswerDetails(answerPath, returnCallBack){
+        let currentOrthanc=this;
+        request.get(this.createOptions('GET',answerPath+"/answers?expand"), function(error, response, body){
+            let answersList=currentOrthanc.answerParser(body);
+            let answersObjects=[];
+            let answerNumber=0;
+            answersList.forEach(element => {
+                
+                let queryLevel=element['0008,0052']['Value'];
+                let accessionNb=element['0008,0050']['Value'];
+                let studyDate=element['0008,0020']['Value'];
+                let origineAET=element['0008,0054']['Value'];
+                let studyDescription=element['0008,1030']['Value'];
+                let patientName=element['0010,0010']['Value'];
+                let patientID=element['0010,0020']['Value'];
+                let studyUID=element['0020,000d']['Value'];
+                let queryAnswserObject=new QueryAnswer(answerPath, answerNumber, queryLevel,origineAET,patientName,patientID,accessionNb,studyDescription,studyUID,studyDate);
+                answersObjects.push(queryAnswserObject);
+                answerNumber++;
+                
+            });
+
+            returnCallBack(answersObjects);
+        })
+    }
+
+    makeRetrieve(queryAnswerObject, aet){
+
+        request.post(this.createOptions('POST',queryAnswerObject.answerPath+'/answers/'+queryAnswerObject.answerNumber+'/retrieve', aet), function(error, response, body){
+            console.log(body);
+        })
+
     }
 
     
