@@ -7,10 +7,10 @@ const fs=require('fs');
 class Orthanc {
 
     constructor(){
-        this.address='http://localhost';
+        this.address='http://10.210.18.185';
         this.port='8042';
-        this.username='GaelO';
-        this.password='GaelO';
+        this.username='salim';
+        this.password='salim';
         
     }
 
@@ -108,6 +108,36 @@ class Orthanc {
             console.error(error);
         }
         return parsedAnwser;
+    }
+
+    buildDicomQuery(level="Study", patientName="*", patientID="*", studyDate="*", modality="*", studyDescription="*", accessionNb="*"){
+        
+        let query={
+            Level: level,
+            Query : {
+                PatientName : patientName,
+                PatientID : patientID,
+                StudyDate : studyDate,
+                ModalitiesInStudy : modality,
+                StudyDescription : studyDescription,
+                AccessionNumber : accessionNb
+
+            }
+
+        }
+
+        this.preparedQuery=JSON.stringify(query);
+        console.log(this.preparedQuery);
+        console.log(query);
+
+    }
+
+    makeDicomQuery(aet, returnCallBack){
+        let currentOrthanc=this;
+        request.post(this.createOptions('POST','modalities/'+aet+"/query/", this.preparedQuery), function(error, response, body){
+            console.log(body);
+            returnCallBack(currentOrthanc.answerParser(body));
+        });
     }
 
     
