@@ -14,9 +14,15 @@ var getResults = function(req, res){
     });
     
 
-    orthancInstance.putPeer("pacs","AwServer","localhost",8042,"Generic", function(answer){
+    orthancInstance.putPeer("pacs2","gfdgfdgd","localhost",8042,"Generic", function(answer){
         console.log(answer);
-    })
+    });
+
+    orthancInstance.buildDicomQuery("Study", "*", "*", "20191015");
+    orthancInstance.makeDicomQuery("Xeleris31", function(answer){
+        console.log(answer)
+    });
+
 
 
 }

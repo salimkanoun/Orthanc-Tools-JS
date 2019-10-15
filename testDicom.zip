@@ -1,0 +1,9 @@
+{
+   "HttpError" : "Not Found",
+   "HttpStatus" : 404,
+   "Message" : "Unknown resource",
+   "Method" : "POST",
+   "OrthancError" : "Unknown resource",
+   "OrthancStatus" : 17,
+   "Uri" : "/tools/create-archive"
+}
