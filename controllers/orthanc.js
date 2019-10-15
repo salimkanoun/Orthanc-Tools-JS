@@ -8,8 +8,8 @@ var getResults = function(req, res){
         res.render('index',{title :orthancSystem.DicomPort});
     });
 
-    
-    orthancInstance.getArchiveDicom(['c7972902-3aa31e0c-ca7b2c78-4aa358d7-8e3f85a0'], function(answer){
+    /*
+    orthancInstance.getArchiveDicom(['48a035b8-ad777410-26b3221a-8d706d47-4347feef'], function(answer){
         console.log(answer);
     });
     
@@ -17,7 +17,7 @@ var getResults = function(req, res){
     orthancInstance.putPeer("pacs2","gfdgfdgd","localhost",8042,"Generic", function(answer){
         console.log(answer);
     });
-
+*/
     orthancInstance.buildDicomQuery("Study", "*", "*", "20191015");
     orthancInstance.makeDicomQuery("Xeleris31", function(answer){
         console.log(answer)
