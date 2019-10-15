@@ -20,7 +20,7 @@ var getResults = function(req, res){
 */
     orthancInstance.buildDicomQuery("Study", "*", "*", "20191015");
     orthancInstance.makeDicomQuery("Xeleris31", function(answer){
-        console.log(answer)
+        orthancInstance.makeRetrieve(answer[0], 'KANOUNIX');
     });
 
 
