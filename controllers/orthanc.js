@@ -1,4 +1,5 @@
 var Orthanc =require('../model/Orthanc');
+let OrthancPatient=require('../model/OrthancPatient');
 
 var orthancInstance=new Orthanc();
 
@@ -19,6 +20,10 @@ var getResults = function(req, res){
     });
     */
 
+   let orthancPatientInstance=new OrthancPatient('082d8674-46f8e91e-5ac7d0ea-07a35046-667ce983', orthancInstance);
+   orthancPatientInstance.fillDetails();
+
+   /*
     orthancInstance.buildDicomQuery("Study", "*", "*", "20191015");
     orthancInstance.makeDicomQuery("Xeleris31", function(answer){
         orthancInstance.makeRetrieve(answer[0], 'KANOUNIX', function(answer){
@@ -26,11 +31,13 @@ var getResults = function(req, res){
 
             orthancInstance.findInOrthanc('study', '*', '*', answer.accessionNb, '*','*','*', function(answer){
                 console.log(answer[0].ID)
+
                 orthancInstance.exportArchiveDicom([answer[0].ID]);
+
             });
         });
     });
-
+    */
 
 
 }

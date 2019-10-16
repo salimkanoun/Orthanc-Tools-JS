@@ -8,10 +8,11 @@ let QueryAnswer=require('./QueryAnswer');
 class Orthanc {
 
     constructor(){
-        this.address='http://10.210.18.185';
-        this.port='8042';
-        this.username='salim';
-        this.password='salim';
+        let configContent=JSON.parse(fs.readFileSync('./_config/config.json', "utf8"));
+        this.address=configContent.Address;
+        this.port=configContent.Port;
+        this.username=configContent.Username;
+        this.password=configContent.Password;
         
     }
 
@@ -209,11 +210,27 @@ class Orthanc {
 
         request.post(this.createOptions('POST', '/tools/find', JSON.stringify(queryParameter)),function(error, response, body){
             let answer=currentOrthanc.answerParser(body);
+
             returnCallBack(answer);
 
         })
 
     }
+
+    getOrthancDetails(level, orthancID, returnCallBack){
+        let currentOrthanc=this;
+        request.get(this.createOptions('GET', '/'+level+'/'+orthancID), function(error, response, body){
+            let answer=currentOrthanc.answerParser(body);
+            returnCallBack(answer);
+        });
+
+    }
+
+    //Todo
+    /**
+     * Structure de données Patient / Study / Serie
+     * Anonymisation
+     */
 
     
 }
