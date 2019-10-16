@@ -93,7 +93,7 @@ class Orthanc {
      * @param {function(answer)} returnCallBack 
      */
     //SK Path a gerer
-    getArchiveDicom(orthancIds, returnCallBack){
+    exportArchiveDicom(orthancIds, returnCallBack){
         request.post(this.createOptions('POST','/tools/create-archive', JSON.stringify(orthancIds))).pipe(fs.createWriteStream('testDicom.zip'));
     }
 
@@ -171,10 +171,46 @@ class Orthanc {
         })
     }
 
-    makeRetrieve(queryAnswerObject, aet){
-
+    makeRetrieve(queryAnswerObject, aet, returnCallBack){
+        let currentOrthanc=this;
         request.post(this.createOptions('POST',queryAnswerObject.answerPath+'/answers/'+queryAnswerObject.answerNumber+'/retrieve', aet), function(error, response, body){
-            console.log(body);
+            let answer=currentOrthanc.answerParser(body);
+            let answerObject={
+                accessionNb : answer.Query[0]['0008,0050'],
+                level : answer.Query[0]['0008,0052'],
+                patientID : answer.Query[0]['0010,0020'],
+                studyUID : answer.Query[0]['0020,000d']
+
+            }
+
+            returnCallBack(answerObject);
+        })
+
+    }
+
+    findInOrthanc(level='studies', patientName='*', patientID='*', accessionNb='*', date='*', studyDescription='*', modality='*', returnCallBack){
+
+        let currentOrthanc=this;
+        let queryDetails={};
+
+        if(date !='*') queryDetails.StudyDate=date;
+        if(studyDescription!='*') queryDetails.StudyDescription=studyDescription;
+        if(modality!='*') queryDetails.ModalitiesInStudy=modality;
+        if(patientName!='*') queryDetails.PatientName=patientName;
+        if(patientID!='*') queryDetails.PatientID=patientID;
+        if(accessionNb !='*') queryDetails.AccessionNumber=accessionNb;
+
+        let queryParameter={
+            Level : level,
+            CaseSensitive : false,
+            Expand : true,
+            Query : queryDetails
+        }
+
+        request.post(this.createOptions('POST', '/tools/find', JSON.stringify(queryParameter)),function(error, response, body){
+            let answer=currentOrthanc.answerParser(body);
+            returnCallBack(answer);
+
         })
 
     }
