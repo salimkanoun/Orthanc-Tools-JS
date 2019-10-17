@@ -21,7 +21,6 @@ class OrthancStudy{
             for(let element in answer){
                 orthancStudyInstance[element]=answer[element];
             };
-            console.log(orthancStudyInstance);
             orthancStudyInstance.getSeries();
             returnCallBack();
         })

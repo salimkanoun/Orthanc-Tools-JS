@@ -38,10 +38,10 @@ class OrthancPatient{
         this.Studies.forEach(element => {
             studiesObjects.push(new OrthancStudy(element, orthancPatientInstance.orthancInstance)); 
         });
-
-        console.log(studiesObjects);
         this.studiesObjects=studiesObjects;
     }
 
+
+    
 }
 module.exports = OrthancPatient;

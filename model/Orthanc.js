@@ -1,6 +1,8 @@
 const request = require('request');
 const fs=require('fs');
 let QueryAnswer=require('./QueryAnswer');
+let OrthancPatient=require('./OrthancPatient');
+
 
 /**
  * Orthanc object to communications with orthanc server
@@ -224,6 +226,29 @@ class Orthanc {
         });
 
     }
+
+    getPatientWithAllDetails(patientOrthancID, returnCallBack){
+        let orthancInstance=this;
+        let orthancPatientInstance=new OrthancPatient(patientOrthancID, orthancInstance);
+        orthancPatientInstance.fillDetails(function(){
+            orthancPatientInstance.studiesObjects.forEach(study => {
+                study.fillDetails(function(){
+                    study.seriesObjectArray.forEach(serie => {
+                        serie.fillDetails(function(){
+                        });
+                    });
+
+                })
+                
+            });
+            //Return when all parsing finished
+            //SK RETOUR TROP TOT ICI PEUT ETRE LA PROMISE
+            returnCallBack(orthancPatientInstance);
+        });
+    
+ 
+    };
+ 
 
     //Todo
     /**
