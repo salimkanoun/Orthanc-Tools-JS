@@ -13,12 +13,13 @@ class OrthancSerie{
      * @param {function()} returnCallBack 
      */
     fillDetails(returnCallBack){
-        let orthancPatientInstance=this;
+        let orthancSerieInstance=this;
         this.orthancInstance.getOrthancDetails('series', this.seriesOrthancID, function(answer){
             //Add anserwers element in this OrthancPatient Object
             for(let element in answer){
-                orthancPatientInstance[element]=answer[element];
+                orthancSerieInstance[element]=answer[element];
             };
+            //console.log(orthancSerieInstance);
             returnCallBack();
         });
 
