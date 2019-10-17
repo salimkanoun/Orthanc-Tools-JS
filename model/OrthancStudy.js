@@ -1,5 +1,8 @@
 let OrthancSeries=require('./OrthancSeries');
 
+/**
+ * Stores a study level Orthanc ressource
+ */
 class OrthancStudy{
 
     constructor(studyOrthancID, orthancInstance){
@@ -7,6 +10,10 @@ class OrthancStudy{
         this.orthancInstance=orthancInstance;
     }
 
+    /**
+     * Fill data from /study API
+     * @param {function()} returnCallBack 
+     */
     fillDetails(returnCallBack){
         let orthancStudyInstance=this;
         this.orthancInstance.getOrthancDetails('studies', this.studyOrthancID, function(answer){
@@ -22,14 +29,15 @@ class OrthancStudy{
         
     }
 
+    /**
+     * Store references of child Series object
+     */
     getSeries(){
         let orthancStudyInstance=this;
         let seriesObjectArray=[];
         this.Series.forEach(serie => {
             seriesObjectArray.push(new OrthancSeries(serie, orthancStudyInstance.orthancInstance)); 
         });
-
-        console.log(seriesObjectArray);
         this.seriesObjectArray=seriesObjectArray;
     }
 

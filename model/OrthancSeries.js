@@ -1,3 +1,6 @@
+/**
+ * Stores a serie level Orthanc ressource
+ */
 class OrthancSerie{
 
     constructor(seriesOrthancID, orthancInstance){
@@ -5,6 +8,10 @@ class OrthancSerie{
         this.orthancInstance=orthancInstance;
     }
 
+    /**
+     * Fill data from /serie API
+     * @param {function()} returnCallBack 
+     */
     fillDetails(returnCallBack){
         let orthancPatientInstance=this;
         this.orthancInstance.getOrthancDetails('series', this.seriesOrthancID, function(answer){
@@ -12,7 +19,6 @@ class OrthancSerie{
             for(let element in answer){
                 orthancPatientInstance[element]=answer[element];
             };
-            console.log(orthancPatientInstance);
             returnCallBack();
         });
 

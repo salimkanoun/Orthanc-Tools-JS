@@ -1,5 +1,8 @@
 let OrthancStudy=require('./OrthancStudy');
 
+/**
+ * Stores a patient level Orthanc ressource
+ */
 class OrthancPatient{
 
     constructor(patientOrthancID, orthancInstance){
@@ -7,6 +10,10 @@ class OrthancPatient{
         this.orthancInstance=orthancInstance;
     }
 
+     /**
+     * Fill data from /patient API
+     * @param {function()} returnCallBack 
+     */
     fillDetails(returnCallBack){
         let orthancPatientInstance=this;
         this.orthancInstance.getOrthancDetails('patients', this.patientOrthancID, function(answer){
@@ -22,7 +29,9 @@ class OrthancPatient{
         
     }
 
-    //SK To Continue
+    /**
+     * Store references of child Study object
+     */
     getStudies(){
         let orthancPatientInstance=this;
         let studiesObjects=[];
