@@ -1,6 +1,8 @@
 const request = require('request');
 const fs=require('fs');
 let QueryAnswer=require('./QueryAnswer');
+let OrthancPatient=require('./OrthancPatient');
+
 
 /**
  * Orthanc object to communications with orthanc server
@@ -8,10 +10,11 @@ let QueryAnswer=require('./QueryAnswer');
 class Orthanc {
 
     constructor(){
-        this.address='http://10.210.18.185';
-        this.port='8042';
-        this.username='salim';
-        this.password='salim';
+        let configContent=JSON.parse(fs.readFileSync('./_config/config.json', "utf8"));
+        this.address=configContent.Address;
+        this.port=configContent.Port;
+        this.username=configContent.Username;
+        this.password=configContent.Password;
         
     }
 
@@ -93,7 +96,7 @@ class Orthanc {
      * @param {function(answer)} returnCallBack 
      */
     //SK Path a gerer
-    getArchiveDicom(orthancIds, returnCallBack){
+    exportArchiveDicom(orthancIds, returnCallBack){
         request.post(this.createOptions('POST','/tools/create-archive', JSON.stringify(orthancIds))).pipe(fs.createWriteStream('testDicom.zip'));
     }
 
@@ -126,7 +129,6 @@ class Orthanc {
 
         }
         
-
     }
 
     /**
@@ -171,13 +173,88 @@ class Orthanc {
         })
     }
 
-    makeRetrieve(queryAnswerObject, aet){
-
+    makeRetrieve(queryAnswerObject, aet, returnCallBack){
+        let currentOrthanc=this;
         request.post(this.createOptions('POST',queryAnswerObject.answerPath+'/answers/'+queryAnswerObject.answerNumber+'/retrieve', aet), function(error, response, body){
-            console.log(body);
+            let answer=currentOrthanc.answerParser(body);
+            let answerObject={
+                accessionNb : answer.Query[0]['0008,0050'],
+                level : answer.Query[0]['0008,0052'],
+                patientID : answer.Query[0]['0010,0020'],
+                studyUID : answer.Query[0]['0020,000d']
+
+            }
+
+            returnCallBack(answerObject);
         })
 
     }
+
+    findInOrthanc(level='studies', patientName='*', patientID='*', accessionNb='*', date='*', studyDescription='*', modality='*', returnCallBack){
+
+        let currentOrthanc=this;
+        let queryDetails={};
+
+        if(date !='*') queryDetails.StudyDate=date;
+        if(studyDescription!='*') queryDetails.StudyDescription=studyDescription;
+        if(modality!='*') queryDetails.ModalitiesInStudy=modality;
+        if(patientName!='*') queryDetails.PatientName=patientName;
+        if(patientID!='*') queryDetails.PatientID=patientID;
+        if(accessionNb !='*') queryDetails.AccessionNumber=accessionNb;
+
+        let queryParameter={
+            Level : level,
+            CaseSensitive : false,
+            Expand : true,
+            Query : queryDetails
+        }
+
+        request.post(this.createOptions('POST', '/tools/find', JSON.stringify(queryParameter)),function(error, response, body){
+            let answer=currentOrthanc.answerParser(body);
+
+            returnCallBack(answer);
+
+        })
+
+    }
+
+    getOrthancDetails(level, orthancID, returnCallBack){
+        let currentOrthanc=this;
+        request.get(this.createOptions('GET', '/'+level+'/'+orthancID), function(error, response, body){
+            let answer=currentOrthanc.answerParser(body);
+            returnCallBack(answer);
+        });
+
+    }
+
+    getPatientWithAllDetails(patientOrthancID, returnCallBack){
+        let orthancInstance=this;
+        let orthancPatientInstance=new OrthancPatient(patientOrthancID, orthancInstance);
+        orthancPatientInstance.fillDetails(function(){
+            orthancPatientInstance.studiesObjects.forEach(study => {
+                study.fillDetails(function(){
+                    study.seriesObjectArray.forEach(serie => {
+                        serie.fillDetails(function(){
+                        });
+                    });
+
+                })
+                
+            });
+            //Return when all parsing finished
+            //SK RETOUR TROP TOT ICI PEUT ETRE LA PROMISE
+            returnCallBack(orthancPatientInstance);
+        });
+    
+ 
+    };
+ 
+
+    //Todo
+    /**
+     * Structure de données Patient / Study / Serie
+     * Anonymisation
+     */
 
     
 }
