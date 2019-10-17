@@ -21,7 +21,20 @@ var getResults = function(req, res){
     */
 
    let orthancPatientInstance=new OrthancPatient('082d8674-46f8e91e-5ac7d0ea-07a35046-667ce983', orthancInstance);
-   orthancPatientInstance.fillDetails();
+   orthancPatientInstance.fillDetails(function(){
+    orthancPatientInstance.studiesObjects.forEach(study => {
+        study.fillDetails(function(){
+            console.log(study);
+            study.seriesObjectArray.forEach(serie => {
+                serie.fillDetails(function(){
+                    console.log(serie);
+                });
+            });
+        })
+        
+    });
+
+   });
 
    /*
     orthancInstance.buildDicomQuery("Study", "*", "*", "20191015");

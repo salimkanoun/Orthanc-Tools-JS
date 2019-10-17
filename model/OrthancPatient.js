@@ -1,3 +1,5 @@
+let OrthancStudy=require('./OrthancStudy');
+
 class OrthancPatient{
 
     constructor(patientOrthancID, orthancInstance){
@@ -5,14 +7,16 @@ class OrthancPatient{
         this.orthancInstance=orthancInstance;
     }
 
-    fillDetails(){
+    fillDetails(returnCallBack){
         let orthancPatientInstance=this;
         this.orthancInstance.getOrthancDetails('patients', this.patientOrthancID, function(answer){
             //Add anserwers element in this OrthancPatient Object
             for(let element in answer){
                 orthancPatientInstance[element]=answer[element];
             };
-            console.log(orthancPatientInstance);
+
+            orthancPatientInstance.getStudies();
+            returnCallBack();
         })
 
         
@@ -21,11 +25,13 @@ class OrthancPatient{
     //SK To Continue
     getStudies(){
         let orthancPatientInstance=this;
-        
-        this.getStudies.array.forEach(element => {
-            
-            
+        let studiesObjects=[];
+        this.Studies.forEach(element => {
+            studiesObjects.push(new OrthancStudy(element, orthancPatientInstance.orthancInstance)); 
         });
+
+        console.log(studiesObjects);
+        this.studiesObjects=studiesObjects;
     }
 
 }

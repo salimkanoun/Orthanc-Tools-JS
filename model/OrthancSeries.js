@@ -5,7 +5,7 @@ class OrthancSerie{
         this.orthancInstance=orthancInstance;
     }
 
-    fillDetails(){
+    fillDetails(returnCallBack){
         let orthancPatientInstance=this;
         this.orthancInstance.getOrthancDetails('series', this.seriesOrthancID, function(answer){
             //Add anserwers element in this OrthancPatient Object
@@ -13,10 +13,23 @@ class OrthancSerie{
                 orthancPatientInstance[element]=answer[element];
             };
             console.log(orthancPatientInstance);
-        })
+            returnCallBack();
+        });
 
         
     }
 
+    /*
+    To DO ?
+    getInstances(){
+        let orthancSeriesInstance=this;
+        let instancesObjectArray=[];
+        this.Series.forEach(element => {
+            instancesObjectArray.push(); 
+        });
+
+        console.log(instancesObjectArray);
+    }
+    */
 }
 module.exports = OrthancSerie;
