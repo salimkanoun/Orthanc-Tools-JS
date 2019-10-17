@@ -20,6 +20,11 @@ var getResults = function(req, res){
     });
     */
 
+    let orthancPatientInstance = new OrthancPatient('ecf24f91-9955a86f-e3e529ba-1a7aad33-54e9d9d3', orthancInstance);
+
+    orthancPatientInstance.fillDetails().then(function(answer){
+        console.log(answer);
+    });
     orthancInstance.getPatientWithAllDetails('ecf24f91-9955a86f-e3e529ba-1a7aad33-54e9d9d3', function(orthancPatientInstance){
         console.log(orthancPatientInstance);
     })

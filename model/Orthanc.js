@@ -218,12 +218,20 @@ class Orthanc {
 
     }
 
-    getOrthancDetails(level, orthancID, returnCallBack){
+    getOrthancDetails(level, orthancID){
         let currentOrthanc=this;
-        request.get(this.createOptions('GET', '/'+level+'/'+orthancID), function(error, response, body){
-            let answer=currentOrthanc.answerParser(body);
-            returnCallBack(answer);
+
+        let promise=new Promise( function(resolve, reject) {
+
+            request.get(currentOrthanc.createOptions('GET', '/'+level+'/'+orthancID), function(error, response, body){
+                let answer=currentOrthanc.answerParser(body);
+                resolve(answer);
+            });
+
         });
+
+        return promise;
+       
 
     }
 

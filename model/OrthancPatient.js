@@ -14,17 +14,16 @@ class OrthancPatient{
      * Fill data from /patient API
      * @param {function()} returnCallBack 
      */
-    fillDetails(returnCallBack){
+    fillDetails(){
         let orthancPatientInstance=this;
-        this.orthancInstance.getOrthancDetails('patients', this.patientOrthancID, function(answer){
-            //Add anserwers element in this OrthancPatient Object
+        return this.orthancInstance.getOrthancDetails('patients', this.patientOrthancID).then(function(answer){
+
             for(let element in answer){
                 orthancPatientInstance[element]=answer[element];
             };
-
             orthancPatientInstance.getStudies();
-            returnCallBack();
-        })
+            return orthancPatientInstance;
+        });
 
         
     }
