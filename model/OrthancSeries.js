@@ -12,18 +12,16 @@ class OrthancSerie{
      * Fill data from /serie API
      * @param {function()} returnCallBack 
      */
-    fillDetails(returnCallBack){
+
+    fillDetails(){
         let orthancSerieInstance=this;
-        this.orthancInstance.getOrthancDetails('series', this.seriesOrthancID, function(answer){
-            //Add anserwers element in this OrthancPatient Object
+        return this.orthancInstance.getOrthancDetails('series', this.seriesOrthancID).then(function(answer){
             for(let element in answer){
                 orthancSerieInstance[element]=answer[element];
             };
-            //console.log(orthancSerieInstance);
-            returnCallBack();
+            return orthancSerieInstance;
         });
 
-        
     }
 
     /*

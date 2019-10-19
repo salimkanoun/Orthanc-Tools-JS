@@ -20,14 +20,21 @@ var getResults = function(req, res){
     });
     */
 
-    let orthancPatientInstance = new OrthancPatient('ecf24f91-9955a86f-e3e529ba-1a7aad33-54e9d9d3', orthancInstance);
+    let orthancPatientInstance = new OrthancPatient('119e9833-fa2a6a26-a7bf262c-c2e4ef43-34ec7d79', orthancInstance);
 
     orthancPatientInstance.fillDetails().then(function(answer){
-        console.log(answer);
+        orthancPatientInstance.fillStudiesDetails().then(function(answer){
+            console.log(answer)
+        });
     });
+
+    console.log('apres await');
+    console.log(orthancPatientInstance);
+    /*
     orthancInstance.getPatientWithAllDetails('ecf24f91-9955a86f-e3e529ba-1a7aad33-54e9d9d3', function(orthancPatientInstance){
         console.log(orthancPatientInstance);
     })
+    */
    /*
     orthancInstance.buildDicomQuery("Study", "*", "*", "20191015");
     orthancInstance.makeDicomQuery("Xeleris31", function(answer){

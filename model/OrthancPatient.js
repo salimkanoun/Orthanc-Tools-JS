@@ -31,13 +31,8 @@ class OrthancPatient{
     fillStudiesDetails(){
         let orthancInstance= this.orthancInstance;
         let getStudiesPromises=[];
-        this.studiesObjects.forEach(serie=>{
-            getStudiesPromises.push(new Promise(function(resolve, reject){
-                orthancInstance.getOrthancDetails('studies', orthancInstance.patientOrthancID).then(function(answer){
-                    console.log(answer);
-                });
-
-            }));
+        this.studiesObjects.forEach(studyObject=>{
+            getStudiesPromises.push(studyObject.fillDetails());
         });
         return Promise.all(getStudiesPromises);
     }

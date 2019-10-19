@@ -1,6 +1,6 @@
 {
-    "Address" : "http://******",
+    "Address" : "http://localhost",
     "Port" : 8042,
-    "Username" :"****",
-    "Password": "*****"
+    "Username" :"GaelO",
+    "Password": "GaelO"
 }

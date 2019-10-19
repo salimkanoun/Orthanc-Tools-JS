@@ -31,12 +31,7 @@ class OrthancStudy{
         let orthancInstance= this.orthancInstance;
         let getSeriesPromises=[];
         this.seriesObjectArray.forEach(serie=>{
-            getSeriesPromises.push(new Promise(function(resolve, reject){
-                orthancInstance.getOrthancDetails('series', orthancInstance.studyOrthancID).then(function(answer){
-                    console.log(answer);
-                });
-
-            }));
+            getSeriesPromises.push(serie.fillDetails());
         });
         return Promise.all(getSeriesPromises)
     }
