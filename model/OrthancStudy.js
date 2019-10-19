@@ -14,18 +14,31 @@ class OrthancStudy{
      * Fill data from /study API
      * @param {function()} returnCallBack 
      */
-    fillDetails(returnCallBack){
+    fillDetails(){
         let orthancStudyInstance=this;
-        this.orthancInstance.getOrthancDetails('studies', this.studyOrthancID, function(answer){
-            //Add anserwers element in this OrthancPatient Object
+        return this.orthancInstance.getOrthancDetails('studies', this.studyOrthancID).then(function(answer){
+
             for(let element in answer){
                 orthancStudyInstance[element]=answer[element];
             };
             orthancStudyInstance.getSeries();
-            returnCallBack();
-        })
+            return orthancStudyInstance;
+        });
 
-        
+    }
+
+    fillSeriesDetails(){
+        let orthancInstance= this.orthancInstance;
+        let getSeriesPromises=[];
+        this.seriesObjectArray.forEach(serie=>{
+            getSeriesPromises.push(new Promise(function(resolve, reject){
+                orthancInstance.getOrthancDetails('series', orthancInstance.studyOrthancID).then(function(answer){
+                    console.log(answer);
+                });
+
+            }));
+        });
+        return Promise.all(getSeriesPromises)
     }
 
     /**
