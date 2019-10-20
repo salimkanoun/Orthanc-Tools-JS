@@ -13,8 +13,7 @@ class Orthanc {
         this.address=configContent.Address;
         this.port=configContent.Port;
         this.username=configContent.Username;
-        this.password=configContent.Password;
-        
+        this.password=configContent.Password; 
     }
 
     /**
@@ -27,8 +26,8 @@ class Orthanc {
     /**
      * Generate option object for Request
      * @param {POST, GET, PUT} method 
-     * @param {*} url 
-     * @param {*} data 
+     * @param {string} url 
+     * @param {string} data in JSON
      */
     createOptions(method, url, data="none"){
         let serverString=this.getOrthancAdressString()+url;
@@ -64,6 +63,9 @@ class Orthanc {
         return options;
     }
 
+    /**
+     * Return /System API data
+     */
     getSystem(){
         let currentOrthanc=this;
         let promise=new Promise( (resolve, reject)=>{
@@ -74,6 +76,9 @@ class Orthanc {
         return promise; 
     }
 
+    /**
+     * Return available AETs in Orthanc
+     */
     getAvailableAet(){
         let currentOrthanc=this;
         let promise=new Promise((resolve, reject)=>{
@@ -82,7 +87,6 @@ class Orthanc {
             });
         });
         return promise;
-        
     }
 
     /**
@@ -92,16 +96,18 @@ class Orthanc {
      * @param {string} ip 
      * @param {number} port 
      * @param {string} type 
-     * @param {function returnCallBack(answer) {   
-     }} returnCallBack 
      */
-    putPeer(name, aet, ip, port, type, returnCallBack){
+    putPeer(name, aet, ip, port, type){
         let data=[aet, ip, port, type]
         let currentOrthanc=this;
-        request.put(this.createOptions('PUT','/modalities/'+name, JSON.stringify(data)), function(error, response, body){
-            console.log(body);
-            returnCallBack(currentOrthanc.answerParser(body));
+        let promise=new Promise((resolve, reject)=>{
+            request.put(currentOrthanc.createOptions('PUT','/modalities/'+name, JSON.stringify(data)), function(error, response, body){
+                resolve(console.log('Aet Declared'));
+            });
         });
+
+        return promise;
+
     }
 
     /**
@@ -231,12 +237,15 @@ class Orthanc {
         })
 
     }
-
+    
+    /**
+     * Return details of the patients, studies, series GET API
+     * @param {string} level 
+     * @param {string} orthancID 
+     */
     getOrthancDetails(level, orthancID){
         let currentOrthanc=this;
-
         let promise=new Promise( function(resolve, reject) {
-
             request.get(currentOrthanc.createOptions('GET', '/'+level+'/'+orthancID), function(error, response, body){
                 let answer=currentOrthanc.answerParser(body);
                 resolve(answer);
@@ -245,8 +254,6 @@ class Orthanc {
         });
 
         return promise;
-       
-
     }
  
 
