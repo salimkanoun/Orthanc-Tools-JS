@@ -4,24 +4,28 @@ let OrthancPatient=require('../model/OrthancPatient');
 var orthancInstance=new Orthanc();
 
 var getResults = function(req, res){
-    orthancInstance.getSystem(function (orthancSystem){
-        console.log(orthancSystem);
-        res.render('index',{title :orthancSystem.DicomPort});
-    });
 
+    getAets=async function(){
+        var aets=await orthancInstance.getAvailableAet();
+        var systemInfo=await orthancInstance.getSystem();
+        console.log(aets);
+        res.render('index', {title : 'Image Fetcher', availableAets : aets});
+    }
+
+    getAets();
     /*
     orthancInstance.exportArchiveDicom(['48a035b8-ad777410-26b3221a-8d706d47-4347feef'], function(answer){
         console.log(answer);
     });
     
-
+    */
     orthancInstance.putPeer("pacs2","gfdgfdgd","localhost",8042,"Generic", function(answer){
         console.log(answer);
     });
-    */
+    
 
     let orthancPatientInstance = new OrthancPatient('119e9833-fa2a6a26-a7bf262c-c2e4ef43-34ec7d79', orthancInstance);
-
+    /*
     async function showDetails(){
         await orthancPatientInstance.fillAllChildsDetails();
         console.log(orthancPatientInstance);
@@ -35,7 +39,7 @@ var getResults = function(req, res){
     } 
 
     showDetails();
-
+    */
 
     /*
     orthancInstance.getPatientWithAllDetails('ecf24f91-9955a86f-e3e529ba-1a7aad33-54e9d9d3', function(orthancPatientInstance){

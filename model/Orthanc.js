@@ -64,11 +64,25 @@ class Orthanc {
         return options;
     }
 
-    getSystem(returnCallBack){
+    getSystem(){
         let currentOrthanc=this;
-        request.get(this.createOptions('GET','/system'), function(error, response, body){
-            returnCallBack(currentOrthanc.answerParser(body));
+        let promise=new Promise( (resolve, reject)=>{
+            request.get(this.createOptions('GET','/system'), function(error, response, body){
+                resolve(currentOrthanc.answerParser(body));
+            });
         });
+        return promise; 
+    }
+
+    getAvailableAet(){
+        let currentOrthanc=this;
+        let promise=new Promise((resolve, reject)=>{
+            request.get(this.createOptions('GET','/modalities'), function(error, response, body){
+                resolve(currentOrthanc.answerParser(body));
+            });
+        });
+        return promise;
+        
     }
 
     /**
@@ -85,6 +99,7 @@ class Orthanc {
         let data=[aet, ip, port, type]
         let currentOrthanc=this;
         request.put(this.createOptions('PUT','/modalities/'+name, JSON.stringify(data)), function(error, response, body){
+            console.log(body);
             returnCallBack(currentOrthanc.answerParser(body));
         });
     }

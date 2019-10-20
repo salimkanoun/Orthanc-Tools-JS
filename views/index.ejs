@@ -3,9 +3,41 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <%- include ../includes/librairies.ejs %>
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <h1 class="text-center"><%= title %></h1>
+    <div>
+      <div class=form-group">
+        <label for="patientName">Patient Name</label>
+        <input type="text" name="patientName" id="patientName" class="form-control" placeholder="last name" aria-describedby="helpId">
+        <small id="helpId" class="text-muted">Help text</small>
+      </div>
+      <div class=form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" name="firstName" id="firstName" class="form-control" placeholder="first name" aria-describedby="helpId">
+        <small id="helpId" class="text-muted">Help text</small>
+      </div>
+      <div class=form-group">
+        <% availableAets.forEach(aetName => { 
+          %> <input type="button" class="btn btn-info" value="<%= aetName%>"> 
+        <%  
+        }); %> 
+      </div>
+    </div>
+    <div>
+      <table class="table">
+        <tr>
+          <td>Name</td>
+          <td>ID</td>
+          <td>Date From</td>
+          <td>Date To</td>
+          <td>Study Description</td>
+          <td>Accession Number</td>
+          <td>Modality</td>
+
+        </tr>
+      </table>
+    </div>
   </body>
 </html>
