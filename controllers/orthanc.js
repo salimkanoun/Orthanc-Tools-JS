@@ -22,23 +22,8 @@ var getResults = function(req, res){
 
     let orthancPatientInstance = new OrthancPatient('119e9833-fa2a6a26-a7bf262c-c2e4ef43-34ec7d79', orthancInstance);
 
-    let getAllDetails=async function(){
-
-        await orthancPatientInstance.fillDetails();
-
-        await orthancPatientInstance.fillStudiesDetails();
-    
-        let allSeriesPromises=[];
-        orthancPatientInstance.studiesObjects.forEach(study => {
-            //console.log(study);
-            allSeriesPromises.push(study.fillSeriesDetails());
-        });
-        await Promise.all(allSeriesPromises);
-
-    };
-   
     async function showDetails(){
-        await getAllDetails();
+        await orthancPatientInstance.fillAllChildsDetails();
         console.log(orthancPatientInstance);
         orthancPatientInstance.studiesObjects.forEach(study => {
             console.log(study);

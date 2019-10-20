@@ -47,5 +47,13 @@ class OrthancStudy{
         this.seriesObjectArray=seriesObjectArray;
     }
 
+    async fillAllChildsDetails(){
+
+        await this.fillDetails();
+
+        await this.fillSeriesDetails();
+
+    };
+
 }
 module.exports = OrthancStudy;

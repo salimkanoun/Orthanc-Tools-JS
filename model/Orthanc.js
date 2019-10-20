@@ -1,7 +1,6 @@
 const request = require('request');
 const fs=require('fs');
 let QueryAnswer=require('./QueryAnswer');
-let OrthancPatient=require('./OrthancPatient');
 
 
 /**
@@ -234,63 +233,10 @@ class Orthanc {
        
 
     }
-
-    getPatientWithAllDetails(patientOrthancID, returnCallBack){
-        let orthancInstance=this;
-
-
-        let orthancPatientInstance=new OrthancPatient(patientOrthancID, orthancInstance);
-
-        let promise=new Promise(function(resolve, reject) {
-
-            orthancPatientInstance.fillDetails(function(){
-                orthancPatientInstance.studiesObjects.forEach(study => {
-                    study.fillDetails(function(){
-                        study.seriesObjectArray.forEach(serie => {
-                            serie.fillDetails(function(){
-                            });
-                        });
-    
-                    })
-                    
-                });
-                //Return when all parsing finished
-                //SK RETOUR TROP TOT ICI PEUT ETRE LA PROMISE
-            }) 
-            
-            resolve(orthancPatientInstance);
-          });
-
-
-        let recursiveFill=function() { 
-            orthancPatientInstance.fillDetails(function(){
-            orthancPatientInstance.studiesObjects.forEach(study => {
-                study.fillDetails(function(){
-                    study.seriesObjectArray.forEach(serie => {
-                        serie.fillDetails(function(){
-                        });
-                    });
-
-                })
-                
-            });
-            //Return when all parsing finished
-            //SK RETOUR TROP TOT ICI PEUT ETRE LA PROMISE
-            }) 
-        };
-
-        promise.then(function(value){
-            console.log(value);
-        })
-    
-        
- 
-    };
  
 
     //Todo
     /**
-     * Structure de données Patient / Study / Serie
      * Anonymisation
      */
 

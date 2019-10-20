@@ -36,6 +36,20 @@ class OrthancPatient{
         return Promise.all(getStudiesPromises);
     }
 
+    async fillAllChildsDetails(){
+
+        await this.fillDetails();
+
+        await this.fillStudiesDetails();
+    
+        let allSeriesPromises=[];
+        this.studiesObjects.forEach(study => {
+            allSeriesPromises.push(study.fillSeriesDetails());
+        });
+        await Promise.all(allSeriesPromises);
+
+    };
+
     /**
      * Store references of child Study object
      */
