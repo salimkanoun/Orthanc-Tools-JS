@@ -1,7 +1,6 @@
 const request = require('request');
 const fs=require('fs');
 let QueryAnswer=require('./QueryAnswer');
-let OrthancPatient=require('./OrthancPatient');
 
 
 /**
@@ -218,41 +217,26 @@ class Orthanc {
 
     }
 
-    getOrthancDetails(level, orthancID, returnCallBack){
+    getOrthancDetails(level, orthancID){
         let currentOrthanc=this;
-        request.get(this.createOptions('GET', '/'+level+'/'+orthancID), function(error, response, body){
-            let answer=currentOrthanc.answerParser(body);
-            returnCallBack(answer);
+
+        let promise=new Promise( function(resolve, reject) {
+
+            request.get(currentOrthanc.createOptions('GET', '/'+level+'/'+orthancID), function(error, response, body){
+                let answer=currentOrthanc.answerParser(body);
+                resolve(answer);
+            });
+
         });
+
+        return promise;
+       
 
     }
-
-    getPatientWithAllDetails(patientOrthancID, returnCallBack){
-        let orthancInstance=this;
-        let orthancPatientInstance=new OrthancPatient(patientOrthancID, orthancInstance);
-        orthancPatientInstance.fillDetails(function(){
-            orthancPatientInstance.studiesObjects.forEach(study => {
-                study.fillDetails(function(){
-                    study.seriesObjectArray.forEach(serie => {
-                        serie.fillDetails(function(){
-                        });
-                    });
-
-                })
-                
-            });
-            //Return when all parsing finished
-            //SK RETOUR TROP TOT ICI PEUT ETRE LA PROMISE
-            returnCallBack(orthancPatientInstance);
-        });
-    
- 
-    };
  
 
     //Todo
     /**
-     * Structure de données Patient / Study / Serie
      * Anonymisation
      */
 
