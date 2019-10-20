@@ -29,7 +29,6 @@ class OrthancPatient{
     }
 
     fillStudiesDetails(){
-        let orthancInstance= this.orthancInstance;
         let getStudiesPromises=[];
         this.studiesObjects.forEach(studyObject=>{
             getStudiesPromises.push(studyObject.fillDetails());

@@ -28,7 +28,6 @@ class OrthancStudy{
     }
 
     fillSeriesDetails(){
-        let orthancInstance= this.orthancInstance;
         let getSeriesPromises=[];
         this.seriesObjectArray.forEach(serie=>{
             getSeriesPromises.push(serie.fillDetails());
