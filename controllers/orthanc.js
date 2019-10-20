@@ -34,13 +34,22 @@ var getResults = function(req, res){
             allSeriesPromises.push(study.fillSeriesDetails());
         });
         await Promise.all(allSeriesPromises);
-        console.log('apres await');
-        console.log(orthancPatientInstance);
 
     };
    
-    getAllDetails();
-  
+    async function showDetails(){
+        await getAllDetails();
+        console.log(orthancPatientInstance);
+        orthancPatientInstance.studiesObjects.forEach(study => {
+            console.log(study);
+            study.Series.forEach(serie=>{
+                console.log(serie);
+            });
+        });
+
+    } 
+
+    showDetails();
 
 
     /*
