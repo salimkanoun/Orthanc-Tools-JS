@@ -119,7 +119,7 @@ class Orthanc {
     exportArchiveDicom(orthancIds, filename){
         let promise=new Promise((resolve, reject)=>{
             let inputStream =request.post(this.createOptions('POST','/tools/create-archive', JSON.stringify(orthancIds)));
-            inputStream.pipe(fs.createWriteStream('./output/'+filename+'.zip'));
+            inputStream.pipe(fs.createWriteStream('./export_dicom/'+filename+'.zip'));
     
             inputStream.on('end', () => {
                 resolve(console.log('done'));
