@@ -76,6 +76,7 @@
             <td>Study Description</td>
             <td>Modality</td>
             <td>AET</td>
+            <td>Delete</td>
           </tr>
         </thead>
         <tbody>
@@ -84,8 +85,10 @@
       </table>
     </div>
   </body>
+
   <script type="text/javascript">
     $("#modality").chosen();
+    $("#requestTable").DataTable();
     $(".queryAET").on('click', function(){
       let nameString=$("#patientName").val()+$("#firstName").val();
       let patientID=$("#patientID").val();
@@ -94,6 +97,8 @@
       let dateTo=$("#dateTo").val().split('-').join('');
       let studyDescription=$("#studyDescription").val();
       let modalities=$("#modality").val().join('/');
+      let deleteButton='<input type="button" class="btn btn-danger removeRow" value="remove">';
+      let aet=$(this).val();
 
       if(patientID==''){
         patientID='*'
@@ -119,18 +124,23 @@
         modalities='*'
       }
 
-      $("#requestTable tr:last")
-        .after('<tr><td>'+nameString+'</td>'+
-          '<td>'+patientID+'</td>'+
-          '<td>'+accessionNumber+'</td>'+
-          '<td>'+dateFrom+'</td>'+
-          '<td>'+dateTo+'</td>'+
-          '<td>'+studyDescription+'</td>'+
-          '<td>'+modalities+'</td>'+
-          '<td>'+$(this).val()+'</td>');
-          
-        
+      var table = $('#requestTable').DataTable();
+ 
+      var rowNode = table
+          .row.add( [ nameString , patientID , accessionNumber , dateFrom, dateTo, studyDescription, modalities, aet, deleteButton ] )
+          .draw()
+          .node();
 
-    })
+    });
+
+    $("#requestTable").on('click', '.removeRow', function() {
+        console.log('clicktable');
+        var table = $('#requestTable').DataTable();
+        var row = table.row( $(this).parents('tr') );
+        var rowNode = row.node();
+        row.remove()
+        table.draw();
+    });
+
   </script>
 </html>
