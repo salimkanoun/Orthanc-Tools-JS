@@ -2,16 +2,19 @@ var Orthanc =require('../model/Orthanc');
 let OrthancPatient=require('../model/OrthancPatient');
 
 var orthancInstance=new Orthanc();
-
+   
 var getResults = async function(req, res){
-
+    //orthancInstance.makeAnon('studies', '871a6d1f-faa16eeb-9daeae3e-7c78b393-e925978c', 'Default', 'access', 'id', 'name', 'desc');
+ 
     let aets=await orthancInstance.getAvailableAet();
     console.log(aets);
     let systemInfo=await orthancInstance.getSystem();
     console.log(systemInfo);
-    await orthancInstance.putPeer("pacs3","gfdgfdgd","localhost",8042,"Generic");
+    await orthancInstance.putAet("pacs3","gfdgfdgd","localhost",8042,"Generic");
     console.log(aets);
     res.render('index', {title : 'Image Fetcher', availableAets : aets });
+
+    //orthancInstance.deleteFromOrhtanc('studies', 'd0dd07ba-8cc16fb7-84633638-327a8f93-4190a2d6');
 
     //orthancInstance.exportArchiveDicom(['119e9833-fa2a6a26-a7bf262c-c2e4ef43-34ec7d79'], 'exportDicom');
     
