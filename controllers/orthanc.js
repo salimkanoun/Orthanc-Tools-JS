@@ -5,19 +5,17 @@ var orthancInstance=new Orthanc();
 
 var getResults = async function(req, res){
 
-    var aets=await orthancInstance.getAvailableAet();
-    var systemInfo=await orthancInstance.getSystem();
+    let aets=await orthancInstance.getAvailableAet();
+    console.log(aets);
+    let systemInfo=await orthancInstance.getSystem();
+    console.log(systemInfo);
     await orthancInstance.putPeer("pacs3","gfdgfdgd","localhost",8042,"Generic");
     console.log(aets);
-    res.render('index', {title : 'Image Fetcher', availableAets : aets});
-    
+    res.render('index', {title : 'Image Fetcher', availableAets : aets });
 
-
+    //orthancInstance.exportArchiveDicom(['119e9833-fa2a6a26-a7bf262c-c2e4ef43-34ec7d79'], 'exportDicom');
     
-    orthancInstance.exportArchiveDicom(['119e9833-fa2a6a26-a7bf262c-c2e4ef43-34ec7d79'], 'exportDicom');
-    
-
-    let orthancPatientInstance = new OrthancPatient('119e9833-fa2a6a26-a7bf262c-c2e4ef43-34ec7d79', orthancInstance);
+    //let orthancPatientInstance = new OrthancPatient('119e9833-fa2a6a26-a7bf262c-c2e4ef43-34ec7d79', orthancInstance);
     /*
     async function showDetails(){
         await orthancPatientInstance.fillAllChildsDetails();
