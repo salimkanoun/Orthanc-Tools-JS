@@ -83,6 +83,7 @@
           
       </tbody>
       </table>
+      <input type="button" value="Query List" class="btn btn-info">
     </div>
   </body>
 
@@ -134,11 +135,10 @@
     });
 
     $("#requestTable").on('click', '.removeRow', function() {
-        console.log('clicktable');
         var table = $('#requestTable').DataTable();
         var row = table.row( $(this).parents('tr') );
         var rowNode = row.node();
-        row.remove()
+        row.remove();
         table.draw();
     });
 
