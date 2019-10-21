@@ -3,6 +3,10 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+.jumbotron{
+  background-color: grey !important;
+}
+
 a {
   color: #00B7FF;
 }

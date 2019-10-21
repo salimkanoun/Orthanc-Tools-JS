@@ -5,7 +5,7 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <% include ../includes/librairies.ejs %>
   </head>
-  <body>
+  <body class="jumbotron">
     <h1 class="text-center"><%= title %></h1>
     <div>
       <div class="form-group">
@@ -34,7 +34,7 @@
         <small id="helpId" class="text-muted">Help text</small>
       </div>
       <div class="form-group">
-        <label for="dateTo">Date From</label>
+        <label for="dateTo">Date To</label>
         <input type="date" name="dateTo" id="dateTo" class="form-control" placeholder="Date To" aria-describedby="helpId">
         <small id="helpId" class="text-muted">Help text</small>
       </div>
@@ -56,32 +56,81 @@
         <small id="helpId" class="text-muted">Help text</small>
       </div>
       <div class="form-group text-center">
+        <h3>Query AET</h3>
         <% availableAets.forEach(aetName => { 
-          %> <input type="button" class="btn btn-info" value="<%= aetName%>"> 
+          %> <input type="button" class="btn btn-info queryAET" value="<%= aetName%>"> 
         <%  
         }); %> 
       </div>
     </div>
-    <div class="form-group text-center">
-      <input type="button" class="btn btn-primary" value="Query">
-    </div>
     </div>
     <div>
-      <table class="table">
-        <tr>
-          <td>Name</td>
-          <td>ID</td>
-          <td>Date From</td>
-          <td>Date To</td>
-          <td>Study Description</td>
-          <td>Accession Number</td>
-          <td>Modality</td>
-
-        </tr>
+      <table class="table" id="requestTable">
+        <thead>
+            <tr>
+            <td>Name</td>
+            <td>ID</td>
+            <td>Accession Number</td>
+            <td>Date From</td>
+            <td>Date To</td>
+            <td>Study Description</td>
+            <td>Modality</td>
+            <td>AET</td>
+          </tr>
+        </thead>
+        <tbody>
+          
+      </tbody>
       </table>
     </div>
   </body>
-  <script>
-    $("#modality").chosen();  
+  <script type="text/javascript">
+    $("#modality").chosen();
+    $(".queryAET").on('click', function(){
+      let nameString=$("#patientName").val()+$("#firstName").val();
+      let patientID=$("#patientID").val();
+      let accessionNumber=$("#accessionNumber").val();
+      let dateFrom=$("#dateFrom").val().split('-').join('');
+      let dateTo=$("#dateTo").val().split('-').join('');
+      let studyDescription=$("#studyDescription").val();
+      let modalities=$("#modality").val().join('/');
+
+      if(patientID==''){
+        patientID='*'
+      }
+
+      if(accessionNumber==''){
+        accessionNumber='*'
+      }
+
+      if(dateFrom==''){
+        dateFrom='*'
+      }
+
+      if(dateTo==''){
+        dateTo='*'
+      }
+
+      if(studyDescription==''){
+        studyDescription='*'
+      }
+
+      if(modalities==''){
+        modalities='*'
+      }
+
+      $("#requestTable tr:last")
+        .after('<tr><td>'+nameString+'</td>'+
+          '<td>'+patientID+'</td>'+
+          '<td>'+accessionNumber+'</td>'+
+          '<td>'+dateFrom+'</td>'+
+          '<td>'+dateTo+'</td>'+
+          '<td>'+studyDescription+'</td>'+
+          '<td>'+modalities+'</td>'+
+          '<td>'+$(this).val()+'</td>');
+          
+        
+
+    })
   </script>
 </html>
