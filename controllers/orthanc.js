@@ -14,6 +14,8 @@ var getResults = async function(req, res){
     console.log(aets);
     res.render('index', {title : 'Image Fetcher', availableAets : aets });
 
+    //orthancInstance.deleteFromOrhtanc('studies', 'd0dd07ba-8cc16fb7-84633638-327a8f93-4190a2d6');
+
     //orthancInstance.exportArchiveDicom(['119e9833-fa2a6a26-a7bf262c-c2e4ef43-34ec7d79'], 'exportDicom');
     
     //let orthancPatientInstance = new OrthancPatient('119e9833-fa2a6a26-a7bf262c-c2e4ef43-34ec7d79', orthancInstance);

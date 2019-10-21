@@ -10,6 +10,7 @@ let TagAnon=require('./TagAnon');
 class Orthanc {
 
     constructor(){
+        console.log('construit');
         let configContent=JSON.parse(fs.readFileSync('./_config/config.json', "utf8"));
         this.address=configContent.Address;
         this.port=configContent.Port;
@@ -81,6 +82,7 @@ class Orthanc {
      */
     getAvailableAet(){
         let currentOrthanc=this;
+        console.log('ici get AET');
         let promise=new Promise((resolve, reject)=>{
             request.get(currentOrthanc.createOptions('GET','/modalities'), function(error, response, body){
                 console.log(body);
