@@ -3,22 +3,60 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <%- include ../includes/librairies.ejs %>
+    <% include ../includes/librairies.ejs %>
   </head>
   <body>
     <h1 class="text-center"><%= title %></h1>
     <div>
-      <div class=form-group">
+      <div class="form-group">
         <label for="patientName">Patient Name</label>
         <input type="text" name="patientName" id="patientName" class="form-control" placeholder="last name" aria-describedby="helpId">
         <small id="helpId" class="text-muted">Help text</small>
       </div>
-      <div class=form-group">
+      <div class="form-group">
         <label for="firstName">First Name</label>
         <input type="text" name="firstName" id="firstName" class="form-control" placeholder="first name" aria-describedby="helpId">
         <small id="helpId" class="text-muted">Help text</small>
       </div>
-      <div class=form-group">
+      <div class="form-group">
+        <label for="patientID">Patient ID</label>
+        <input type="text" name="patientID" id="patientID" class="form-control" placeholder="Patient ID" aria-describedby="helpId">
+        <small id="helpId" class="text-muted">Help text</small>
+      </div>
+      <div class="form-group">
+        <label for="accessionNumber">Accession Number</label>
+        <input type="text" name="accessionNumber" id="accessionNumber" class="form-control" placeholder="Accession Number" aria-describedby="helpId">
+        <small id="helpId" class="text-muted">Help text</small>
+      </div>
+      <div class="form-group">
+        <label for="dateFrom">Date From</label>
+        <input type="date" name="dateFrom" id="dateFrom" class="form-control" placeholder="Date From" aria-describedby="helpId">
+        <small id="helpId" class="text-muted">Help text</small>
+      </div>
+      <div class="form-group">
+        <label for="dateTo">Date From</label>
+        <input type="date" name="dateTo" id="dateTo" class="form-control" placeholder="Date To" aria-describedby="helpId">
+        <small id="helpId" class="text-muted">Help text</small>
+      </div>
+      <div class="form-group">
+        <label for="studyDescription">Study Description</label>
+        <input type="text" name="studyDescription" id="studyDescription" class="form-control" placeholder="Study Description" aria-describedby="helpId">
+        <small id="helpId" class="text-muted">Help text</small>
+      </div>
+      <div class="form-group">
+        <label for="modality">Modality</label>
+        <select name="modality" id="modality">
+          <option value="*">Any</option>
+          <option value="CT">CT</option>
+          <option value="PT">PT</option>
+          <option value="NM">NM</option>
+          <option value="MR">MR</option>
+          <option value="US">US</option>
+          <option value="MG">MG</option>
+        </select>
+        <small id="helpId" class="text-muted">Help text</small>
+      </div>
+      <div class="form-group">
         <% availableAets.forEach(aetName => { 
           %> <input type="button" class="btn btn-info" value="<%= aetName%>"> 
         <%  
@@ -40,4 +78,5 @@
       </table>
     </div>
   </body>
+
 </html>

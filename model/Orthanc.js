@@ -83,6 +83,9 @@ class Orthanc {
         let currentOrthanc=this;
         let promise=new Promise((resolve, reject)=>{
             request.get(this.createOptions('GET','/modalities'), function(error, response, body){
+                console.log(body);
+                console.log(response);
+                console.log(error);
                 resolve(currentOrthanc.answerParser(body));
             });
         });
