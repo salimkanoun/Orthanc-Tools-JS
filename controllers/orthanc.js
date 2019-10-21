@@ -6,12 +6,12 @@ var orthancInstance=new Orthanc();
 var getResults = async function(req, res){
 
     let aets=await orthancInstance.getAvailableAet();
-    console.logs(aets);
+    console.log(aets);
     let systemInfo=await orthancInstance.getSystem();
-    console.logs(systemInfo);
+    console.log(systemInfo);
     await orthancInstance.putPeer("pacs3","gfdgfdgd","localhost",8042,"Generic");
     console.log(aets);
-    res.render('index', {title : 'Image Fetcher', availableAets : ["dfd"] });
+    res.render('index', {title : 'Image Fetcher', availableAets : aets });
 
     //orthancInstance.exportArchiveDicom(['119e9833-fa2a6a26-a7bf262c-c2e4ef43-34ec7d79'], 'exportDicom');
     

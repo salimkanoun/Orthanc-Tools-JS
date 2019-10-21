@@ -45,8 +45,7 @@
       </div>
       <div class="form-group">
         <label for="modality">Modality</label>
-        <select name="modality" id="modality">
-          <option value="*">Any</option>
+        <select class="form-control" name="modality" id="modality" multiple>
           <option value="CT">CT</option>
           <option value="PT">PT</option>
           <option value="NM">NM</option>
@@ -56,12 +55,16 @@
         </select>
         <small id="helpId" class="text-muted">Help text</small>
       </div>
-      <div class="form-group">
+      <div class="form-group text-center">
         <% availableAets.forEach(aetName => { 
           %> <input type="button" class="btn btn-info" value="<%= aetName%>"> 
         <%  
         }); %> 
       </div>
+    </div>
+    <div class="form-group text-center">
+      <input type="button" class="btn btn-primary" value="Query">
+    </div>
     </div>
     <div>
       <table class="table">
@@ -78,5 +81,7 @@
       </table>
     </div>
   </body>
-
+  <script>
+    $("#modality").chosen();  
+  </script>
 </html>
