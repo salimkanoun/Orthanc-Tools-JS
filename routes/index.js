@@ -3,15 +3,16 @@ var router = express.Router();
 var Orthanc=require('../model/Orthanc');
 
 
-var orthancController=require('../controllers/orthanc');
+var indexController=require('../controllers/orthanc');
+var queryController=require('../controllers/queryAction');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  new Orthanc();
-  res.render('index', { title: 'Express' });
 });
 
 //Route request to controllers
-router.get('/orthanc', orthancController.getResults);
+router.get('/orthanc', indexController.getResults);
+
+router.all('/query', queryController.getResults);
 
 module.exports = router;

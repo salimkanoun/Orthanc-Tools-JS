@@ -140,7 +140,15 @@
         var rowNode = row.node();
         row.remove();
         table.draw();
+        $.ajax({
+          url: 'query',
+          type : 'POST',
+          data : { patientName :nameString, test : 'ici'}
+
+        })
     });
+
+
 
   </script>
 </html>
