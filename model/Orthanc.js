@@ -419,7 +419,8 @@ class Orthanc {
 
     //Todo
     /**
-     * Anonymisation
+     * Database NeDB
+     * https://github.com/louischatriot/nedb/
      */
 
     
