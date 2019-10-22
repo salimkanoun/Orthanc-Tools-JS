@@ -150,7 +150,7 @@ class Orthanc {
     }
 
     buildDicomQuery(level="Study", patientName="*", patientID="*", studyDate="*", modality="*", studyDescription="*", accessionNb="*"){
-        
+        if(studyDate='*-*') studyDate='*';
         this.preparedQuery={
             Level: level,
             Query : {
@@ -163,7 +163,7 @@ class Orthanc {
             }
 
         }
-        
+        console.log(this.preparedQuery);
     }
 
     /**
@@ -180,14 +180,14 @@ class Orthanc {
                 
             });
         }).then(function(answer){            
-            let answerDetails= currentOrthanc.getAnswerDetails(answer.Path);
+            let answerDetails= currentOrthanc.getAnswerDetails(answer.Path ,aet);
             return answerDetails;
         });
 
         return promise;
     }
 
-    getAnswerDetails(answerPath){
+    getAnswerDetails(answerPath, aet){
         let currentOrthanc=this;
         let promise=new Promise((resolve, reject)=>{
 
@@ -195,12 +195,13 @@ class Orthanc {
                 let answersList=currentOrthanc.answerParser(body);
                 let answersObjects=[];
                 let answerNumber=0;
+                
                 answersList.forEach(element => {
                     
                     let queryLevel=element['0008,0052']['Value'];
                     let accessionNb=element['0008,0050']['Value'];
                     let studyDate=element['0008,0020']['Value'];
-                    let origineAET=element['0008,0054']['Value'];
+                    let origineAET=aet;
                     let studyDescription=element['0008,1030']['Value'];
                     let patientName=element['0010,0010']['Value'];
                     let patientID=element['0010,0020']['Value'];

@@ -83,7 +83,7 @@
           
       </tbody>
       </table>
-      <input type="button" value="Query List" class="btn btn-info">
+      <input type="button" id="queryList" value="Query List" class="btn btn-info">
     </div>
   </body>
 
@@ -100,29 +100,13 @@
       let modalities=$("#modality").val().join('/');
       let deleteButton='<input type="button" class="btn btn-danger removeRow" value="remove">';
       let aet=$(this).val();
-
-      if(patientID==''){
-        patientID='*'
-      }
-
-      if(accessionNumber==''){
-        accessionNumber='*'
-      }
-
+      
       if(dateFrom==''){
         dateFrom='*'
       }
 
       if(dateTo==''){
         dateTo='*'
-      }
-
-      if(studyDescription==''){
-        studyDescription='*'
-      }
-
-      if(modalities==''){
-        modalities='*'
       }
 
       var table = $('#requestTable').DataTable();
@@ -140,14 +124,31 @@
         var rowNode = row.node();
         row.remove();
         table.draw();
+        
+    });
+
+    $("#queryList").on('click', function() {
+      let table = $('#requestTable').DataTable();
+      table.rows().eq(0).each( function ( index ) {
+        var row = table.row( index );
+        var data = row.data();
+        console.log(data);
+
         $.ajax({
           url: 'query',
           type : 'POST',
-          data : { patientName :nameString, test : 'ici'}
+          dataType: 'json',
+          data : { patientName : data[0], patientID : data[1], accessionNumber : data[2], date : data[3]+'-'+data[4],
+                  studyDescription : data[5], modality : data[6], aet : data[7]},
+          success : function(data){
+            console.log(data);
+          }
 
         })
-    });
+      } );
 
+      
+    });
 
 
   </script>

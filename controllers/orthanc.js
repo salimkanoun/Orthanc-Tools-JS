@@ -5,7 +5,6 @@ var orthancInstance=new Orthanc();
    
 var getResults = async function(req, res){
     
- 
     let aets=await orthancInstance.getAvailableAet();
     console.log(aets);
     let systemInfo=await orthancInstance.getSystem();
