@@ -10,7 +10,7 @@ var getResults = async function(req, res){
     console.log(aets);
     let systemInfo=await orthancInstance.getSystem();
     console.log(systemInfo);
-    await orthancInstance.putAet("pacs3","gfdgfdgd","localhost",8042,"Generic");
+    await orthancInstance.putAet("OrthancSelf","Orthanc","localhost",4242,"Generic");
     console.log(aets);
     res.render('index', {title : 'Image Fetcher', availableAets : aets });
 
