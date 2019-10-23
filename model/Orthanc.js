@@ -176,18 +176,19 @@ class Orthanc {
                 
             });
         }).then(function(answer){            
-            let answerDetails= currentOrthanc.getAnswerDetails(answer.Path ,aet);
+            console.log(answer);
+            let answerDetails= currentOrthanc.getAnswerDetails(answer.ID ,aet);
             return answerDetails;
         });
 
         return promise;
     }
 
-    getAnswerDetails(answerPath, aet){
+    getAnswerDetails(answerId, aet){
         let currentOrthanc=this;
         let promise=new Promise((resolve, reject)=>{
 
-            request.get(currentOrthanc.createOptions('GET',answerPath+"/answers?expand"), function(error, response, body){
+            request.get(currentOrthanc.createOptions('GET',"/queries/"+answerId+"/answers?expand"), function(error, response, body){
                 let answersList=currentOrthanc.answerParser(body);
                 let answersObjects=[];
                 let answerNumber=0;
@@ -202,7 +203,7 @@ class Orthanc {
                     let patientName=element['0010,0010']['Value'];
                     let patientID=element['0010,0020']['Value'];
                     let studyUID=element['0020,000d']['Value'];
-                    let queryAnswserObject=new QueryAnswer(answerPath, answerNumber, queryLevel,origineAET,patientName,patientID,accessionNb,studyDescription,studyUID,studyDate);
+                    let queryAnswserObject=new QueryAnswer(answerId, answerNumber, queryLevel,origineAET,patientName,patientID,accessionNb,studyDescription,studyUID,studyDate);
                     answersObjects.push(queryAnswserObject);
                     answerNumber++;
                     
@@ -223,14 +224,14 @@ class Orthanc {
      * @param {QueryAnswer} queryAnswerObject 
      * @param {string} aet 
      */
-    makeRetrieve(answerPath, answerNumber, aet){
+    makeRetrieve(queryID, answerNumber, aet){
         let currentOrthanc=this;
         let postData={
             Synchronous : false,
             TargetAet : aet
         }
         let promise = new Promise((resolve, reject)=>{
-            request.post(currentOrthanc.createOptions('POST','/queries/'+answerPath+'/answers/'+answerNumber+'/retrieve', JSON.stringify(postData)), function(error, response, body){
+            request.post(currentOrthanc.createOptions('POST','/queries/'+queryID+'/answers/'+answerNumber+'/retrieve', JSON.stringify(postData)), function(error, response, body){
                 
                 let answer=currentOrthanc.answerParser(body);
                 resolve(answer.ID);

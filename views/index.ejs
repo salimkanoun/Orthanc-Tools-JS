@@ -90,15 +90,17 @@
     <table class="table" id="resultTable">
       <thead>
         <tr>
-        <td>Answer Path</td>
+        <td>Answer Id</td>
+        <td>Answer Number</td>
         <td>Patient Name</td>
         <td>Patient ID</td>
         <td>Accession Number</td>
         <td>Acquistion Date</td>
         <td>Study Description</td>
-        <td>Modality</td>
         <td>Source AET</td>
         <td>StudyInstanceUID</td>
+        <td>Retrieve</td>
+        <td>JobID</td>
         </tr>
       </thead>
       <tbody>
@@ -154,6 +156,7 @@
       table.rows().eq(0).each( function ( index ) {
         let row = table.row( index );
         let data = row.data();
+        let buttonRetrieveString='<input class="retriveButton btn btn-primary" type="button" value="Retrieve">';
 
         $.ajax({
           url: 'query',
@@ -163,8 +166,8 @@
                   studyDescription : data[5], modality : data[6], aet : data[7]},
           success : function(data){
             data.forEach(element=>{
-              tableResult.row.add( [element.answerPath+'/'+element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
-                                  '', element.originAET, element.studyInstanceUID] )
+              tableResult.row.add( [element.answerId , element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
+                                  element.originAET, element.studyInstanceUID, buttonRetrieveString, ''] )
             
             })
             tableResult.draw();
@@ -175,6 +178,25 @@
 
       
     });
+
+    $("#resultTable").on('click', '.retriveButton', function(){
+      let tableResult = $('#resultTable').DataTable();
+      let rowIndex=tableResult.row( $(this).parents('tr') ).index();
+      var data = tableResult.row( $(this).parents('tr') ).data();
+
+      $.ajax({
+          url: 'retrieve',
+          type : 'POST',
+          dataType: 'json',
+          data : { queryID : data[0], answerNumber : data[1], aet : data[7]},
+          success : function(data){
+            tableResult.cell(rowIndex,10).data(data);
+            tableResult.draw();
+          }
+
+        })
+      console.log(data)
+    })
 
 
   </script>
