@@ -67,7 +67,7 @@
     <div>
       <table class="table" id="requestTable">
         <thead>
-            <tr>
+          <tr>
             <td>Name</td>
             <td>ID</td>
             <td>Accession Number</td>
@@ -81,15 +81,36 @@
         </thead>
         <tbody>
           
-      </tbody>
+        </tbody>
       </table>
       <input type="button" id="queryList" value="Query List" class="btn btn-info">
+    </div>
+
+    <div>
+    <table class="table" id="resultTable">
+      <thead>
+        <tr>
+        <td>Answer Path</td>
+        <td>Patient Name</td>
+        <td>Patient ID</td>
+        <td>Accession Number</td>
+        <td>Acquistion Date</td>
+        <td>Study Description</td>
+        <td>Modality</td>
+        <td>Source AET</td>
+        <td>StudyInstanceUID</td>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
     </div>
   </body>
 
   <script type="text/javascript">
     $("#modality").chosen();
     $("#requestTable").DataTable();
+    $("#resultTable").DataTable();
     $(".queryAET").on('click', function(){
       let nameString=$("#patientName").val()+$("#firstName").val();
       let patientID=$("#patientID").val();
@@ -129,9 +150,10 @@
 
     $("#queryList").on('click', function() {
       let table = $('#requestTable').DataTable();
+      let tableResult = $('#resultTable').DataTable();
       table.rows().eq(0).each( function ( index ) {
-        var row = table.row( index );
-        var data = row.data();
+        let row = table.row( index );
+        let data = row.data();
         console.log(data);
 
         $.ajax({
@@ -141,7 +163,13 @@
           data : { patientName : data[0], patientID : data[1], accessionNumber : data[2], date : data[3]+'-'+data[4],
                   studyDescription : data[5], modality : data[6], aet : data[7]},
           success : function(data){
+            data.forEach(element=>{
+              tableResult.row.add( [element.answerPath+'/'+element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
+                                  '', element.originAET, element.studyInstanceUID] )
+            
+            })
             console.log(data);
+            tableResult.draw();
           }
 
         })
