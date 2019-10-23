@@ -82,12 +82,8 @@ class Orthanc {
      */
     getAvailableAet(){
         let currentOrthanc=this;
-        console.log('ici get AET');
         let promise=new Promise((resolve, reject)=>{
             request.get(currentOrthanc.createOptions('GET','/modalities'), function(error, response, body){
-                console.log(body);
-                console.log(response);
-                console.log(error);
                 resolve(currentOrthanc.answerParser(body));
             });
         });
@@ -223,25 +219,50 @@ class Orthanc {
 
     /**
      * retrieve a qurey answer to an AET
+     * return the JobID of the retrieve call
      * @param {QueryAnswer} queryAnswerObject 
      * @param {string} aet 
      */
-    makeRetrieve(queryAnswerObject, aet){
+    makeRetrieve(answerPath, answerNumber, aet){
         let currentOrthanc=this;
+        let postData={
+            Synchronous : false,
+            TargetAet : aet
+        }
         let promise = new Promise((resolve, reject)=>{
-            request.post(currentOrthanc.createOptions('POST',queryAnswerObject.answerPath+'/answers/'+queryAnswerObject.answerNumber+'/retrieve', aet), function(error, response, body){
+            request.post(currentOrthanc.createOptions('POST','/queries/'+answerPath+'/answers/'+answerNumber+'/retrieve', JSON.stringify(postData)), function(error, response, body){
+                
                 let answer=currentOrthanc.answerParser(body);
-                let answerObject={
-                    accessionNb : answer.Query[0]['0008,0050'],
-                    level : answer.Query[0]['0008,0052'],
-                    patientID : answer.Query[0]['0010,0020'],
-                    studyUID : answer.Query[0]['0020,000d']
-    
-                }
-                resolve(answerObject);
+                resolve(answer.ID);
             });
 
         });
+        return promise;
+    }
+
+    getJobData(jobUid){
+        let currentOrthanc=this;
+        let promise = new Promise((resolve, reject)=>{
+            request.get(currentOrthanc.createOptions('GET', '/jobs/'+jobUid), function(error, response, body){
+                console.log(body);
+                let answer = currentOrthanc.answerParser(body);
+                let queryDetails=answer.Content.Query;
+                let remoteAET=queryDetails.RemoteAet;
+                let answerObject=[];
+                queryDetails.forEach(queryData=>{
+                    let retrieveDetails={
+                        accessionNb : queryData['0008,0050'],
+                        level : queryData['0008,0052'],
+                        patientID : queryData['0010,0020'],
+                        studyUID : queryData['0020,000d'],
+                        remoteAet : remoteAET
+                    }
+                    answerObject.push(retrieveDetails);
+                })
+                
+                resolve(answer);
+            });
+        })
         return promise;
     }
 

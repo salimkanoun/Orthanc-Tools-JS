@@ -154,7 +154,6 @@
       table.rows().eq(0).each( function ( index ) {
         let row = table.row( index );
         let data = row.data();
-        console.log(data);
 
         $.ajax({
           url: 'query',
@@ -168,7 +167,6 @@
                                   '', element.originAET, element.studyInstanceUID] )
             
             })
-            console.log(data);
             tableResult.draw();
           }
 
