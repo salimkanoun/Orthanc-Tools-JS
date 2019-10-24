@@ -113,7 +113,19 @@
   <script type="text/javascript">
     $("#modality").chosen();
     $("#requestTable").DataTable();
-    $("#resultTable").DataTable();
+    $("#resultTable").DataTable({"columnDefs": [
+            {
+                "targets": [ 0 ],
+                "visible": false
+            },            {
+                "targets": [ 1 ],
+                "visible": false
+            },
+            {
+                "targets": [ 10 ],
+                "visible": false
+            }
+        ]});
     $(".queryAET").on('click', function(){
       let nameString=$("#patientName").val()+$("#firstName").val();
       let patientID=$("#patientID").val();
@@ -184,6 +196,7 @@
       let tableResult = $('#resultTable').DataTable();
       let rowIndex=tableResult.row( $(this).parents('tr') ).index();
       var data = tableResult.row( $(this).parents('tr') ).data();
+      $(this).removeClass('btn-primary').addClass('btn-success').attr("disabled","disabled");
 
       $.ajax({
           url: 'retrieve',
