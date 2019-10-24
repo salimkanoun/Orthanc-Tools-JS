@@ -112,11 +112,10 @@ class Orthanc {
     }
 
     /**
-     * Save ZIP Archive to destination
-     * @param {[string]} orthancIds 
-     * @param {function(answer)} returnCallBack 
+     * Export an orthanc ressource to Export folder in hierachical ZIP
+     * @param {*} orthancIds 
+     * @param {*} filename 
      */
-    //SK Path a gerer
     exportArchiveDicom(orthancIds, filename){
         let currentOrthanc=this;
         let promise=new Promise((resolve, reject)=>{
@@ -124,7 +123,7 @@ class Orthanc {
             inputStream.pipe(fs.createWriteStream('./export_dicom/'+filename+'.zip'));
     
             inputStream.on('end', () => {
-                resolve(console.log('done'));
+                resolve(true);
             });
 
         });
@@ -286,7 +285,7 @@ class Orthanc {
      * @param {string} studyDescription 
      * @param {string} modality 
      */
-    findInOrthanc(level='studies', patientName='*', patientID='*', accessionNb='*', date='*', studyDescription='*', modality='*'){
+    findInOrthanc(level='Study', patientName='*', patientID='*', accessionNb='*', date='*', studyDescription='*', modality='*'){
 
         let currentOrthanc=this;
         let queryDetails={};
@@ -315,6 +314,30 @@ class Orthanc {
 
         return promise; 
 
+    }
+
+    findInOrthancByUid(studyUID){
+        let currentOrthanc=this;
+
+        let queryDetails={};
+
+        queryDetails.StudyInstanceUID=studyUID;
+
+        let queryParameter={
+            Level : 'Study',
+            Query : queryDetails
+        }
+
+        let promise=new Promise((resolve, reject)=>{
+            request.post(currentOrthanc.createOptions('POST', '/tools/find', JSON.stringify(queryParameter)),function(error, response, body){
+                let answer=currentOrthanc.answerParser(body);
+                resolve(answer);
+    
+            })
+
+        });
+
+        return promise; 
     }
 
     /**
