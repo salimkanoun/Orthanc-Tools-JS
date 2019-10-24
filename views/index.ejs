@@ -67,7 +67,7 @@
     <div>
       <table class="table" id="requestTable">
         <thead>
-            <tr>
+          <tr>
             <td>Name</td>
             <td>ID</td>
             <td>Accession Number</td>
@@ -81,15 +81,39 @@
         </thead>
         <tbody>
           
-      </tbody>
+        </tbody>
       </table>
       <input type="button" id="queryList" value="Query List" class="btn btn-info">
+    </div>
+
+    <div>
+    <table class="table" id="resultTable">
+      <thead>
+        <tr>
+        <td>Answer Id</td>
+        <td>Answer Number</td>
+        <td>Patient Name</td>
+        <td>Patient ID</td>
+        <td>Accession Number</td>
+        <td>Acquistion Date</td>
+        <td>Study Description</td>
+        <td>Source AET</td>
+        <td>StudyInstanceUID</td>
+        <td>Retrieve</td>
+        <td>JobID</td>
+        <td>Progress</td>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
     </div>
   </body>
 
   <script type="text/javascript">
     $("#modality").chosen();
     $("#requestTable").DataTable();
+    $("#resultTable").DataTable();
     $(".queryAET").on('click', function(){
       let nameString=$("#patientName").val()+$("#firstName").val();
       let patientID=$("#patientID").val();
@@ -129,10 +153,11 @@
 
     $("#queryList").on('click', function() {
       let table = $('#requestTable').DataTable();
+      let tableResult = $('#resultTable').DataTable();
       table.rows().eq(0).each( function ( index ) {
-        var row = table.row( index );
-        var data = row.data();
-        console.log(data);
+        let row = table.row( index );
+        let data = row.data();
+        let buttonRetrieveString='<input class="retriveButton btn btn-primary" type="button" value="Retrieve">';
 
         $.ajax({
           url: 'query',
@@ -141,7 +166,12 @@
           data : { patientName : data[0], patientID : data[1], accessionNumber : data[2], date : data[3]+'-'+data[4],
                   studyDescription : data[5], modality : data[6], aet : data[7]},
           success : function(data){
-            console.log(data);
+            data.forEach(element=>{
+              tableResult.row.add( [element.answerId , element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
+                                  element.originAET, element.studyInstanceUID, buttonRetrieveString, '', 'N/A'] )
+            
+            })
+            tableResult.draw();
           }
 
         })
@@ -149,6 +179,91 @@
 
       
     });
+
+    $("#resultTable").on('click', '.retriveButton', function(){
+      let tableResult = $('#resultTable').DataTable();
+      let rowIndex=tableResult.row( $(this).parents('tr') ).index();
+      var data = tableResult.row( $(this).parents('tr') ).data();
+
+      $.ajax({
+          url: 'retrieve',
+          type : 'POST',
+          dataType: 'json',
+          data : { queryID : data[0], answerNumber : data[1]},
+          success : function(data){
+            tableResult.cell(rowIndex,10).data(data);
+            tableResult.cell(rowIndex,11).data(0);
+            tableResult.draw('page');
+            checkProgress();
+          }
+
+        })
+
+
+    })
+
+    let progressListenerList=[];
+    function checkProgress(){
+      let tableResults = $('#resultTable').DataTable();
+      let rows= tableResults.rows();
+      rows.every(function(){
+        let rowData=this.data();
+        console.log(rowData[10]);
+        if(rowData[10] != "" && !progressListenerList.includes(this.index()) ){
+          console.log('add watcher');
+          progressListenerList.push(this.index());
+          addProgressWatcher(this);
+        }
+      })
+    }
+
+    function addProgressWatcher(row){
+      console.log("ici watcher");
+      console.log(row);
+      let tableResults = $('#resultTable').DataTable();
+      let ajaxCall=function(callback) {
+        $.ajax({
+          url: 'job_details',
+          type : 'POST',
+          dataType: 'json',
+          data : { jobUid : row.data()[10]},
+          success : function(data){
+            tableResults.cell(row.index(),11).data(data.Progress);
+            callback(data.Progress);
+          }
+        });
+
+      }
+        
+
+      let watcher=setInterval( async function(){
+          await jobMonitoringPromise(tableResults, row);
+          if(row.data()[11]==100){
+            console.log('clearInterval');
+            clearInterval(watcher);
+          }
+      } , 3000 );
+      
+
+    }
+
+    function jobMonitoringPromise(tableResults, row){
+      let promise = new Promise((resolve, reject)=>{
+        $.ajax({
+          url: 'job_details',
+          type : 'POST',
+          dataType: 'json',
+          data : { jobUid : row.data()[10]},
+          success : function(data){
+            tableResults.cell(row.index(),11).data(data.Progress);
+            resolve(data.Progress);
+          }
+        });
+
+      });
+
+      return promise;
+    }
 
 
   </script>

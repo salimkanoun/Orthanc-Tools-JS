@@ -1,7 +1,7 @@
 class QueryAnswer{
 
-    constructor(answerPath, answerNumber, level, originAET, patientName, patientID, accessionNumber, studyDescription, studyInstanceUID, studyDate){
-        this.answerPath=answerPath;
+    constructor(answerId, answerNumber, level, originAET, patientName, patientID, accessionNumber, studyDescription, studyInstanceUID, studyDate){
+        this.answerId=answerId;
         this.answerNumber=answerNumber;
         this.level=level;
         this.originAET=originAET;
