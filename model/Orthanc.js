@@ -189,25 +189,32 @@ class Orthanc {
         let promise=new Promise((resolve, reject)=>{
 
             request.get(currentOrthanc.createOptions('GET',"/queries/"+answerId+"/answers?expand"), function(error, response, body){
-                let answersList=currentOrthanc.answerParser(body);
                 let answersObjects=[];
-                let answerNumber=0;
+                try{
+                    let answersList=currentOrthanc.answerParser(body);
+                    
+                    let answerNumber=0;
+                    
+                    answersList.forEach(element => {
+                        
+                        let queryLevel=element['0008,0052']['Value'];
+                        let accessionNb=element['0008,0050']['Value'];
+                        let studyDate=element['0008,0020']['Value'];
+                        let origineAET=aet;
+                        let studyDescription=element['0008,1030']['Value'];
+                        let patientName=element['0010,0010']['Value'];
+                        let patientID=element['0010,0020']['Value'];
+                        let studyUID=element['0020,000d']['Value'];
+                        let queryAnswserObject=new QueryAnswer(answerId, answerNumber, queryLevel,origineAET,patientName,patientID,accessionNb,studyDescription,studyUID,studyDate);
+                        answersObjects.push(queryAnswserObject);
+                        answerNumber++;
+                        
+                    });
+
+                }catch(exception){
+
+                }
                 
-                answersList.forEach(element => {
-                    
-                    let queryLevel=element['0008,0052']['Value'];
-                    let accessionNb=element['0008,0050']['Value'];
-                    let studyDate=element['0008,0020']['Value'];
-                    let origineAET=aet;
-                    let studyDescription=element['0008,1030']['Value'];
-                    let patientName=element['0010,0010']['Value'];
-                    let patientID=element['0010,0020']['Value'];
-                    let studyUID=element['0020,000d']['Value'];
-                    let queryAnswserObject=new QueryAnswer(answerId, answerNumber, queryLevel,origineAET,patientName,patientID,accessionNb,studyDescription,studyUID,studyDate);
-                    answersObjects.push(queryAnswserObject);
-                    answerNumber++;
-                    
-                });
     
                 resolve(answersObjects);
             });
@@ -250,16 +257,18 @@ class Orthanc {
                 let queryDetails=answer.Content.Query;
                 let remoteAET=queryDetails.RemoteAet;
                 let answerObject=[];
-                queryDetails.forEach(queryData=>{
-                    let retrieveDetails={
-                        accessionNb : queryData['0008,0050'],
-                        level : queryData['0008,0052'],
-                        patientID : queryData['0010,0020'],
-                        studyUID : queryData['0020,000d'],
-                        remoteAet : remoteAET
-                    }
-                    answerObject.push(retrieveDetails);
-                })
+                try{
+                    queryDetails.forEach(queryData=>{
+                        let retrieveDetails={
+                            accessionNb : queryData['0008,0050'],
+                            level : queryData['0008,0052'],
+                            patientID : queryData['0010,0020'],
+                            studyUID : queryData['0020,000d'],
+                            remoteAet : remoteAET
+                        }
+                        answerObject.push(retrieveDetails);
+                    })
+                }catch(exception){};
                 
                 resolve(answer);
             });

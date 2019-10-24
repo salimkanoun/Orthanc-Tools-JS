@@ -6,7 +6,7 @@ var getResults = async function(req, res){
 
     console.log(body);
     let jobID= await orthancInstance.makeRetrieve(body.queryID, body.answerNumber, body.aet);
-    //sk to do
+    
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(jobID));
 };

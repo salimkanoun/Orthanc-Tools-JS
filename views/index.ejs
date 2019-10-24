@@ -192,7 +192,7 @@
           data : { queryID : data[0], answerNumber : data[1], aet : data[7]},
           success : function(data){
             tableResult.cell(rowIndex,10).data(data);
-            tableResult.draw();
+            tableResult.draw('page');
             checkProgress();
           }
 
@@ -219,7 +219,7 @@
     function addProgressWatcher(row){
       console.log("ici watcher");
       console.log(row);
-
+      let tableResults = $('#resultTable').DataTable();
       let ajaxCall=function(callback) {
         $.ajax({
           url: 'job_details',
@@ -229,19 +229,17 @@
           success : function(data){
             callback(data.Progress);
           }
-
         });
 
       }
-      /*
+      
       do{
-        let progress=0;
         setTimeout(ajaxCall(function(data){
-          progress=data;
           console.log(data);
+          tableResults.cell(row.index(),11).data(data);
         }), 3000);
-      }while(progress<100);
-      */
+      }while(row.data()[11]<100);
+      
 
     }
 
