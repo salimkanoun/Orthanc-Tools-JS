@@ -102,6 +102,7 @@
         <td>Retrieve</td>
         <td>JobID</td>
         <td>Progress</td>
+        <td>Export</td>
         </tr>
       </thead>
       <tbody>
@@ -180,7 +181,7 @@
           success : function(data){
             data.forEach(element=>{
               tableResult.row.add( [element.answerId , element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
-                                  element.originAET, element.studyInstanceUID, buttonRetrieveString, '', 'N/A'] )
+                                  element.originAET, element.studyInstanceUID, buttonRetrieveString, '', 'N/A', 'N/A'] )
             
             })
             tableResult.draw();
@@ -253,6 +254,8 @@
           await jobMonitoringPromise(tableResults, row);
           if(row.data()[11]==100){
             console.log('clearInterval');
+            tableResults.cell(row.index(),12).data('<button type="button" class="btn btn-primary exportDicom" value="Export Dicom">');
+            tableResult.draw('page');
             clearInterval(watcher);
           }
       } , 3000 );
