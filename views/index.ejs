@@ -254,8 +254,8 @@
           await jobMonitoringPromise(tableResults, row);
           if(row.data()[11]==100){
             console.log('clearInterval');
-            tableResults.cell(row.index(),12).data('<button type="button" class="btn btn-primary exportDicom" value="Export Dicom">');
-            tableResult.draw('page');
+            tableResults.cell(row.index(),12).data('<input type="button" class="btn btn-primary exportDicom" value="Export Dicom">');
+            tableResults.draw('page');
             clearInterval(watcher);
           }
       } , 3000 );
@@ -280,6 +280,23 @@
 
       return promise;
     }
+
+    $("#resultTable").on('click', '.exportDicom', function() {
+      let tableResults = $('#resultTable').DataTable();
+      let row=tableResults.row( $(this).parents('tr') );
+      console.log('export');
+      $.ajax({
+          url: 'export_dicom',
+          type : 'POST',
+          dataType: 'json',
+          data : { studyUID : row.data()[9]},
+          success : function(data){
+            console.log(data);
+            tableResults.cell(row.index(),12).data('Exported '+data.fileName);
+          }
+        });
+
+    })
 
 
   </script>
