@@ -5,10 +5,10 @@ var getResults = async function(req, res){
     var orthancInstance=new Orthanc();
 
     console.log(body);
-    orthancInstance.getJobData(body.jobUid, body.answserId, body.aet);
-    //sk to do
+    let jobData= await orthancInstance.getJobData(body.jobUid);
+    
     res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify(queryAnswer));
+    res.end(JSON.stringify(jobData));
 };
 
 module.exports={getResults};

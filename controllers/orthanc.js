@@ -9,12 +9,7 @@ var getResults = async function(req, res){
     console.log(aets);
     let systemInfo=await orthancInstance.getSystem();
     console.log(systemInfo);
-
-    await orthancInstance.putAet("OrthancSelf","Orthanc","localhost",4242,"Generic");
-    console.log(aets);
-    let jobIDRetrive= await orthancInstance.makeRetrieve('c6bfd8a2-245c-4633-a6dc-ddde3352aa50', 1, 'KANOUNIX' );
-    console.log(jobIDRetrive);
-    await orthancInstance.getJobData(jobIDRetrive);
+    
     res.render('index', {title : 'Image Fetcher', availableAets : aets });
 
     //orthancInstance.makeAnon('studies', '871a6d1f-faa16eeb-9daeae3e-7c78b393-e925978c', 'Default', 'access', 'id', 'name', 'desc');

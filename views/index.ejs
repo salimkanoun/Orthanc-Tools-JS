@@ -101,6 +101,7 @@
         <td>StudyInstanceUID</td>
         <td>Retrieve</td>
         <td>JobID</td>
+        <td>Progress</td>
         </tr>
       </thead>
       <tbody>
@@ -167,7 +168,7 @@
           success : function(data){
             data.forEach(element=>{
               tableResult.row.add( [element.answerId , element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
-                                  element.originAET, element.studyInstanceUID, buttonRetrieveString, ''] )
+                                  element.originAET, element.studyInstanceUID, buttonRetrieveString, '', 'N/A'] )
             
             })
             tableResult.draw();
@@ -192,11 +193,57 @@
           success : function(data){
             tableResult.cell(rowIndex,10).data(data);
             tableResult.draw();
+            checkProgress();
           }
 
         })
-      console.log(data)
+
+
     })
+
+    let progressListenerList=[];
+    function checkProgress(){
+      let tableResults = $('#resultTable').DataTable();
+      let rows= tableResults.rows();
+      rows.every(function(){
+        let rowData=this.data();
+        console.log(rowData[10]);
+        if(rowData[10] != "" && !progressListenerList.includes(this.index()) ){
+          console.log('add watcher');
+          progressListenerList.push(this.index());
+          addProgressWatcher(this);
+        }
+      })
+    }
+
+    function addProgressWatcher(row){
+      console.log("ici watcher");
+      console.log(row);
+
+      let ajaxCall=function(callback) {
+        $.ajax({
+          url: 'job_details',
+          type : 'POST',
+          dataType: 'json',
+          data : { jobUid : row.data()[10]},
+          success : function(data){
+            callback(data.Progress);
+          }
+
+        });
+
+      }
+      /*
+      do{
+        let progress=0;
+        setTimeout(ajaxCall(function(data){
+          progress=data;
+          console.log(data);
+        }), 3000);
+      }while(progress<100);
+      */
+
+    }
 
 
   </script>
