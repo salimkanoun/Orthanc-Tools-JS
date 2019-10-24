@@ -6,10 +6,12 @@ var getResults = async function(req, res){
 
     console.log(body);
     var date = new Date();
-    let orthancID=await orthancInstance.findInOrthanc('Study', body.studyUID);
+    console.log(body.studyUID);
+    let orthancID=await orthancInstance.findInOrthancByUid(body.studyUID);
     console.log(orthancID);
+    
+    await orthancInstance.exportArchiveDicom(orthancID, 'export'+date.getTime());
     let data={};
-    await orthancInstance.exportArchiveDicom(body.orthancIds, 'export'+date.getTime());
     data['fileName']='export'+date.getTime()+'.zip';
     
     res.setHeader('Content-Type', 'application/json');

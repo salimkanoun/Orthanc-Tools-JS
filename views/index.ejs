@@ -6,8 +6,22 @@
     <% include ../includes/librairies.ejs %>
   </head>
   <body class="jumbotron">
-    <h1 class="text-center"><%= title %></h1>
-    <div>
+    <h1 class="text-center mb-5"><%= title %></h1>
+    <div id="navBar" class="mb-5">
+      <ul class="nav nav-pills nav-fill">
+        <li class="nav-item">
+          <a class="nav-link active">Add Query</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">Query List</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">Result answers</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="mainDiv" id="addQueryDiv">
       <div class="form-group">
         <label for="patientName">Patient Name</label>
         <input type="text" name="patientName" id="patientName" class="form-control" placeholder="last name" aria-describedby="helpId">
@@ -63,9 +77,8 @@
         }); %> 
       </div>
     </div>
-    </div>
-    <div>
-      <table class="table" id="requestTable">
+    <div class="mainDiv" id="queryListDiv" style="overflow:x">
+      <table class="table table-striped" id="requestTable" style="text-align:center; width:100%">
         <thead>
           <tr>
             <td>Name</td>
@@ -86,35 +99,81 @@
       <input type="button" id="queryList" value="Query List" class="btn btn-info">
     </div>
 
-    <div>
-    <table class="table" id="resultTable">
-      <thead>
-        <tr>
-        <td>Answer Id</td>
-        <td>Answer Number</td>
-        <td>Patient Name</td>
-        <td>Patient ID</td>
-        <td>Accession Number</td>
-        <td>Acquistion Date</td>
-        <td>Study Description</td>
-        <td>Source AET</td>
-        <td>StudyInstanceUID</td>
-        <td>Retrieve</td>
-        <td>JobID</td>
-        <td>Progress</td>
-        <td>Export</td>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
+    <div class="mainDiv" id="resultQueryDiv" style="overflow:x">
+      <table class="table table-striped" id="resultTable" style="text-align:center; width:100%">
+        <thead>
+          <tr>
+          <td>Answer Id</td>
+          <td>Answer Number</td>
+          <td>Patient Name</td>
+          <td>Patient ID</td>
+          <td>Accession Number</td>
+          <td>Acquistion Date</td>
+          <td>Study Description</td>
+          <td>Source AET</td>
+          <td>StudyInstanceUID</td>
+          <td>Retrieve</td>
+          <td>JobID</td>
+          <td>Progress</td>
+          <td>Export</td>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
     </div>
   </body>
 
   <script type="text/javascript">
+    $("#navBar").on('click', '.nav-link', function(){
+      $(".nav-link").removeClass('active')
+      $(this).addClass('active')
+      let item=$(this).text();
+      $(".mainDiv").hide();
+
+      if(item=='Add Query'){
+        $("#addQueryDiv").show();
+      }else if(item=='Query List'){
+        $("#queryListDiv").show();
+      }else if(item=='Result answers'){
+        $("#resultQueryDiv").show();
+      }
+
+    })
+
     $("#modality").chosen();
-    $("#requestTable").DataTable();
-    $("#resultTable").DataTable({"columnDefs": [
+    $("#requestTable").DataTable({
+        "sDom": 'Blrtip',
+        buttons: [{
+          extend: 'collection',
+          text: 'Export',
+          buttons: [
+            'copy',
+            'excel',
+            'csv',
+            'pdf',
+            'print'
+          ]
+        }],
+        "bSortCellsTop": true,
+        "scrollX": true
+    });
+    
+    $("#resultTable").DataTable({"sDom": 'Blrtip',
+        buttons: [{
+          extend: 'collection',
+          text: 'Export',
+          buttons: [
+            'copy',
+            'excel',
+            'csv',
+            'pdf',
+            'print'
+          ]
+        }],
+        "bSortCellsTop": true,
+        "scrollX": true,
+        "columnDefs": [
             {
                 "targets": [ 0 ],
                 "visible": false
@@ -289,7 +348,7 @@
           url: 'export_dicom',
           type : 'POST',
           dataType: 'json',
-          data : { studyUID : row.data()[9]},
+          data : { studyUID : row.data()[8]},
           success : function(data){
             console.log(data);
             tableResults.cell(row.index(),12).data('Exported '+data.fileName);
