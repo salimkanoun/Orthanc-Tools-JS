@@ -21,7 +21,7 @@
       </ul>
     </div>
 
-    <div class="mainDiv" id="addQueryDiv">
+    <div class="mainDiv" id="addQueryDiv" style="display: block">
       <div class="form-group">
         <label for="patientName">Patient Name</label>
         <input type="text" name="patientName" id="patientName" class="form-control" placeholder="last name" aria-describedby="helpId">
@@ -77,7 +77,7 @@
         }); %> 
       </div>
     </div>
-    <div class="mainDiv" id="queryListDiv" style="overflow:x">
+    <div class="mainDiv" id="queryListDiv" style="overflow:x ; display: none;">
       <table class="table table-striped" id="requestTable" style="text-align:center; width:100%">
         <thead>
           <tr>
@@ -99,7 +99,7 @@
       <input type="button" id="queryList" value="Query List" class="btn btn-info">
     </div>
 
-    <div class="mainDiv" id="resultQueryDiv" style="overflow:x">
+    <div class="mainDiv" id="resultQueryDiv" style="overflow:x ; display: none">
       <table class="table table-striped" id="resultTable" style="text-align:center; width:100%">
         <thead>
           <tr>
@@ -125,25 +125,34 @@
   </body>
 
   <script type="text/javascript">
+
     $("#navBar").on('click', '.nav-link', function(){
       $(".nav-link").removeClass('active')
       $(this).addClass('active')
       let item=$(this).text();
-      $(".mainDiv").hide();
+      $(".mainDiv").css('display','none');
 
       if(item=='Add Query'){
-        $("#addQueryDiv").show();
+        $("#addQueryDiv").css('display','block');
       }else if(item=='Query List'){
-        $("#queryListDiv").show();
+        $("#queryListDiv").css('display','block');
       }else if(item=='Result answers'){
-        $("#resultQueryDiv").show();
+        $("#resultQueryDiv").css('display','block');
       }
-
+      drawTables();
     })
 
+    function drawTables(){
+      let requestTable = $('#requestTable').DataTable().draw();
+      let resultTable = $('#resultTable').DataTable().draw();
+
+    }
     $("#modality").chosen();
     $("#requestTable").DataTable({
         "sDom": 'Blrtip',
+        "select": {
+                style: 'os'
+        },
         buttons: [{
           extend: 'collection',
           text: 'Export',
@@ -159,11 +168,23 @@
         "scrollX": true
     });
     
-    $("#resultTable").DataTable({"sDom": 'Blrtip',
+    let resultTable=$("#resultTable").DataTable({"sDom": 'Blrtip',
+        "select": {
+                style: 'os'
+        },
         buttons: [{
           extend: 'collection',
           text: 'Export',
           buttons: [
+            {
+              text: 'Remove',
+              action: function () {
+                  var rows = resultTable.rows('.selected');
+                  rows.remove();
+                  drawTables();
+              }
+     					    
+            },
             'copy',
             'excel',
             'csv',
@@ -219,13 +240,13 @@
         var row = table.row( $(this).parents('tr') );
         var rowNode = row.node();
         row.remove();
-        table.draw();
+        drawTables();
         
     });
 
     $("#queryList").on('click', function() {
       let table = $('#requestTable').DataTable();
-      let tableResult = $('#resultTable').DataTable();
+      let tableResults = $('#resultTable').DataTable();
       table.rows().eq(0).each( function ( index ) {
         let row = table.row( index );
         let data = row.data();
@@ -239,11 +260,11 @@
                   studyDescription : data[5], modality : data[6], aet : data[7]},
           success : function(data){
             data.forEach(element=>{
-              tableResult.row.add( [element.answerId , element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
+              tableResults.row.add( [element.answerId , element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
                                   element.originAET, element.studyInstanceUID, buttonRetrieveString, '', 'N/A', 'N/A'] )
             
             })
-            tableResult.draw();
+            drawTables();
           }
 
         })
@@ -343,7 +364,6 @@
     $("#resultTable").on('click', '.exportDicom', function() {
       let tableResults = $('#resultTable').DataTable();
       let row=tableResults.row( $(this).parents('tr') );
-      console.log('export');
       $.ajax({
           url: 'export_dicom',
           type : 'POST',
