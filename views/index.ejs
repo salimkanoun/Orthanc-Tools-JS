@@ -21,10 +21,10 @@
       </ul>
     </div>
 
-    <div class="mainDiv" id="addQueryDiv">
+    <div class="mainDiv" id="addQueryDiv" style="display: block">
       <div class="form-group">
-        <label for="patientName">Patient Name</label>
-        <input type="text" name="patientName" id="patientName" class="form-control" placeholder="last name" aria-describedby="helpId">
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName" id="lastName" class="form-control" placeholder="last name" aria-describedby="helpId">
         <small id="helpId" class="text-muted">Help text</small>
       </div>
       <div class="form-group">
@@ -69,15 +69,20 @@
         </select>
         <small id="helpId" class="text-muted">Help text</small>
       </div>
-      <div class="form-group text-center">
-        <h3>Query AET</h3>
+      <div class="text-center form-group">
+        <h1>Query AET</h1>
         <% availableAets.forEach(aetName => { 
-          %> <input type="button" class="btn btn-info queryAET" value="<%= aetName%>"> 
+          %> <input type="button" class="btn btn-info btn-block queryAET" value="<%= aetName%>"> 
         <%  
         }); %> 
       </div>
     </div>
-    <div class="mainDiv" id="queryListDiv" style="overflow:x">
+    <div class="mainDiv" id="queryListDiv" style="overflow:x ; display: none;">
+      <div>
+        <input type="file" id="files" multiple="">
+        <input type="button" class="btn btn-primary" id="parseBtn" value="Parse">
+      </div>
+
       <table class="table table-striped" id="requestTable" style="text-align:center; width:100%">
         <thead>
           <tr>
@@ -99,7 +104,7 @@
       <input type="button" id="queryList" value="Query List" class="btn btn-info">
     </div>
 
-    <div class="mainDiv" id="resultQueryDiv" style="overflow:x">
+    <div class="mainDiv" id="resultQueryDiv" style="overflow:x ; display: none">
       <table class="table table-striped" id="resultTable" style="text-align:center; width:100%">
         <thead>
           <tr>
@@ -125,31 +130,39 @@
   </body>
 
   <script type="text/javascript">
+
     $("#navBar").on('click', '.nav-link', function(){
       $(".nav-link").removeClass('active')
       $(this).addClass('active')
       let item=$(this).text();
-      $(".mainDiv").hide();
+      $(".mainDiv").css('display','none');
 
       if(item=='Add Query'){
-        $("#addQueryDiv").show();
+        $("#addQueryDiv").css('display','block');
       }else if(item=='Query List'){
-        $("#queryListDiv").show();
+        $("#queryListDiv").css('display','block');
       }else if(item=='Result answers'){
-        $("#resultQueryDiv").show();
+        $("#resultQueryDiv").css('display','block');
       }
-
+      drawTables();
     })
 
+    function drawTables(){
+      let requestTable = $('#requestTable').DataTable().draw();
+      let resultTable = $('#resultTable').DataTable().draw();
+
+    }
     $("#modality").chosen();
     $("#requestTable").DataTable({
         "sDom": 'Blrtip',
+        "select": {
+                style: 'os'
+        },
         buttons: [{
           extend: 'collection',
           text: 'Export',
           buttons: [
             'copy',
-            'excel',
             'csv',
             'pdf',
             'print'
@@ -158,14 +171,30 @@
         "bSortCellsTop": true,
         "scrollX": true
     });
+
+    function getDeleteButton(){
+      let deleteButton='<input type="button" class="btn btn-danger removeRow" value="remove">';
+      return deleteButton;
+    }
     
-    $("#resultTable").DataTable({"sDom": 'Blrtip',
+    let resultTable=$("#resultTable").DataTable({"sDom": 'Blrtip',
+        "select": {
+                style: 'os'
+        },
         buttons: [{
           extend: 'collection',
           text: 'Export',
           buttons: [
+            {
+              text: 'Remove',
+              action: function () {
+                  var rows = resultTable.rows('.selected');
+                  rows.remove();
+                  drawTables();
+              }
+     					    
+            },
             'copy',
-            'excel',
             'csv',
             'pdf',
             'print'
@@ -186,15 +215,16 @@
                 "visible": false
             }
         ]});
+
+
     $(".queryAET").on('click', function(){
-      let nameString=$("#patientName").val()+$("#firstName").val();
+      let nameString=$("#lastName").val()+$("#firstName").val();
       let patientID=$("#patientID").val();
       let accessionNumber=$("#accessionNumber").val();
       let dateFrom=$("#dateFrom").val().split('-').join('');
       let dateTo=$("#dateTo").val().split('-').join('');
       let studyDescription=$("#studyDescription").val();
       let modalities=$("#modality").val().join('/');
-      let deleteButton='<input type="button" class="btn btn-danger removeRow" value="remove">';
       let aet=$(this).val();
       
       if(dateFrom==''){
@@ -208,7 +238,7 @@
       var table = $('#requestTable').DataTable();
  
       var rowNode = table
-          .row.add( [ nameString , patientID , accessionNumber , dateFrom, dateTo, studyDescription, modalities, aet, deleteButton ] )
+          .row.add( [ nameString , patientID , accessionNumber , dateFrom, dateTo, studyDescription, modalities, aet, getDeleteButton() ] )
           .draw()
           .node();
 
@@ -219,13 +249,13 @@
         var row = table.row( $(this).parents('tr') );
         var rowNode = row.node();
         row.remove();
-        table.draw();
+        drawTables();
         
     });
 
     $("#queryList").on('click', function() {
       let table = $('#requestTable').DataTable();
-      let tableResult = $('#resultTable').DataTable();
+      let tableResults = $('#resultTable').DataTable();
       table.rows().eq(0).each( function ( index ) {
         let row = table.row( index );
         let data = row.data();
@@ -239,11 +269,11 @@
                   studyDescription : data[5], modality : data[6], aet : data[7]},
           success : function(data){
             data.forEach(element=>{
-              tableResult.row.add( [element.answerId , element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
+              tableResults.row.add( [element.answerId , element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
                                   element.originAET, element.studyInstanceUID, buttonRetrieveString, '', 'N/A', 'N/A'] )
             
             })
-            tableResult.draw();
+            drawTables();
           }
 
         })
@@ -343,7 +373,6 @@
     $("#resultTable").on('click', '.exportDicom', function() {
       let tableResults = $('#resultTable').DataTable();
       let row=tableResults.row( $(this).parents('tr') );
-      console.log('export');
       $.ajax({
           url: 'export_dicom',
           type : 'POST',
@@ -355,7 +384,49 @@
           }
         });
 
+    });
+
+    let parseCsv=function () {
+      $('input[type=file]').parse({
+      config: {
+        complete: completeFn// base config to use for each file
+      },
+      before: function(file, inputElem)
+      {
+        console.log(file);
+        // executed before parsing each file begins;
+        // what you return here controls the flow
+      },
+      error: function(err, file, inputElem, reason)
+      {
+        // executed if an error occurs while loading the file,
+        // or if before callback aborted for some reason
+      },
+      complete: function(result, file)
+      {
+        console.log('done');
+        // executed after all files are complete
+      }
+      })
+    };
+
+    $("#parseBtn").on('click', function(){
+      parseCsv();
     })
+
+    function completeFn(result, file){
+      let tableRequest = $('#requestTable').DataTable();
+      let i=1;
+      let csvData=result.data;
+      for( i=1; i<csvData.length ; i++){
+        tableRequest.row.add( [csvData[i][0] , csvData[i][1], csvData[i][2], csvData[i][3], csvData[i][4], csvData[i][5], csvData[i][6], 
+                                csvData[i][7], getDeleteButton() ] )
+ 
+        console.log(result.data[i]);
+      }
+      drawTables();
+      
+    }
 
 
   </script>
