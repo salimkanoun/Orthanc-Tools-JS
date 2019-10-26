@@ -10,7 +10,6 @@ let TagAnon=require('./TagAnon');
 class Orthanc {
 
     constructor(){
-        console.log('construit');
         let configContent=JSON.parse(fs.readFileSync('./_config/config.json', "utf8"));
         this.address=configContent.Address;
         this.port=configContent.Port;
@@ -27,7 +26,7 @@ class Orthanc {
 
     /**
      * Generate option object for Request
-     * @param {POST, GET, PUT} method 
+     * @param {string} method 
      * @param {string} url 
      * @param {string} data in JSON
      */
@@ -113,8 +112,8 @@ class Orthanc {
 
     /**
      * Export an orthanc ressource to Export folder in hierachical ZIP
-     * @param {*} orthancIds 
-     * @param {*} filename 
+     * @param {array} orthancIds 
+     * @param {string} filename 
      */
     exportArchiveDicom(orthancIds, filename){
         let currentOrthanc=this;
@@ -132,7 +131,7 @@ class Orthanc {
 
     /**
      * Parse recieved answer
-     * @param {} answer 
+     * @param {string} answer 
      */
     answerParser(answer){
         let parsedAnwser=null;
@@ -144,6 +143,16 @@ class Orthanc {
         return parsedAnwser;
     }
 
+    /**
+     * Prepare JSON query for DICOM query request in Orthanc
+     * @param {string} level 
+     * @param {string} patientName 
+     * @param {string} patientID 
+     * @param {string} studyDate 
+     * @param {string} modality 
+     * @param {string} studyDescription 
+     * @param {string} accessionNb 
+     */
     buildDicomQuery(level="Study", patientName="*", patientID="*", studyDate="*", modality="*", studyDescription="*", accessionNb="*"){
         if(studyDate='*-*') studyDate='*';
         this.preparedQuery={
@@ -158,7 +167,6 @@ class Orthanc {
             }
 
         }
-        console.log(this.preparedQuery);
     }
 
     /**
@@ -172,10 +180,8 @@ class Orthanc {
             request.post(currentOrthanc.createOptions('POST','/modalities/'+aet+"/query", JSON.stringify(currentOrthanc.preparedQuery)), function(error, response, body){
                 let answer=currentOrthanc.answerParser(body);
                 resolve(answer);
-                
             });
         }).then(function(answer){            
-            console.log(answer);
             let answerDetails= currentOrthanc.getAnswerDetails(answer.ID ,aet);
             return answerDetails;
         });
@@ -213,9 +219,9 @@ class Orthanc {
                 }catch(exception){
 
                 }
-                
-    
+
                 resolve(answersObjects);
+
             });
 
         });
@@ -238,7 +244,6 @@ class Orthanc {
         }
         let promise = new Promise((resolve, reject)=>{
             request.post(currentOrthanc.createOptions('POST','/queries/'+queryID+'/answers/'+answerNumber+'/retrieve', JSON.stringify(postData)), function(error, response, body){
-                
                 let answer=currentOrthanc.answerParser(body);
                 resolve(answer.ID);
             });
@@ -270,6 +275,7 @@ class Orthanc {
                 }catch(exception){};
                 
                 resolve(answer);
+
             });
         })
         return promise;
@@ -316,6 +322,10 @@ class Orthanc {
 
     }
 
+    /**
+     * Find Orthanc study ID by dicom StudyInstanceUID
+     * @param {string} studyUID 
+     */
     findInOrthancByUid(studyUID){
         let currentOrthanc=this;
 
@@ -358,6 +368,11 @@ class Orthanc {
         return promise;
     }
 
+    /**
+     * Delete a ressource in Orthanc
+     * @param {string} level 
+     * @param {string} orthancID 
+     */
     deleteFromOrhtanc(level, orthancID){
         let currentOrthanc=this;
         let promise = new Promise((resolve, reject)=>{
@@ -368,6 +383,14 @@ class Orthanc {
         return promise;
     }
 
+    /**
+     * Prepare Anon Query in Orthanc
+     * @param {string} profile 
+     * @param {string} newAccessionNumber 
+     * @param {string} newPatientID 
+     * @param {string} newPatientName 
+     * @param {string} newStudyDescription 
+     */
     buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription){
 
         let tagObjectArray=[];

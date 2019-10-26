@@ -23,8 +23,8 @@
 
     <div class="mainDiv" id="addQueryDiv" style="display: block">
       <div class="form-group">
-        <label for="patientName">Patient Name</label>
-        <input type="text" name="patientName" id="patientName" class="form-control" placeholder="last name" aria-describedby="helpId">
+        <label for="lastName">Last Name</label>
+        <input type="text" name="lastName" id="lastName" class="form-control" placeholder="last name" aria-describedby="helpId">
         <small id="helpId" class="text-muted">Help text</small>
       </div>
       <div class="form-group">
@@ -218,7 +218,7 @@
 
 
     $(".queryAET").on('click', function(){
-      let nameString=$("#patientName").val()+$("#firstName").val();
+      let nameString=$("#lastName").val()+$("#firstName").val();
       let patientID=$("#patientID").val();
       let accessionNumber=$("#accessionNumber").val();
       let dateFrom=$("#dateFrom").val().split('-').join('');
@@ -419,7 +419,6 @@
       let i=1;
       let csvData=result.data;
       for( i=1; i<csvData.length ; i++){
-
         tableRequest.row.add( [csvData[i][0] , csvData[i][1], csvData[i][2], csvData[i][3], csvData[i][4], csvData[i][5], csvData[i][6], 
                                 csvData[i][7], getDeleteButton() ] )
  
