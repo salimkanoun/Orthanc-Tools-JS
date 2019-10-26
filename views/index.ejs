@@ -78,6 +78,11 @@
       </div>
     </div>
     <div class="mainDiv" id="queryListDiv" style="overflow:x ; display: none;">
+      <div>
+        <input type="file" id="files" multiple="">
+        <input type="button" class="btn btn-primary" id="parseBtn" value="Parse">
+      </div>
+
       <table class="table table-striped" id="requestTable" style="text-align:center; width:100%">
         <thead>
           <tr>
@@ -158,7 +163,6 @@
           text: 'Export',
           buttons: [
             'copy',
-            'excel',
             'csv',
             'pdf',
             'print'
@@ -167,6 +171,11 @@
         "bSortCellsTop": true,
         "scrollX": true
     });
+
+    function getDeleteButton(){
+      let deleteButton='<input type="button" class="btn btn-danger removeRow" value="remove">';
+      return deleteButton;
+    }
     
     let resultTable=$("#resultTable").DataTable({"sDom": 'Blrtip',
         "select": {
@@ -186,7 +195,6 @@
      					    
             },
             'copy',
-            'excel',
             'csv',
             'pdf',
             'print'
@@ -207,6 +215,8 @@
                 "visible": false
             }
         ]});
+
+
     $(".queryAET").on('click', function(){
       let nameString=$("#patientName").val()+$("#firstName").val();
       let patientID=$("#patientID").val();
@@ -215,7 +225,6 @@
       let dateTo=$("#dateTo").val().split('-').join('');
       let studyDescription=$("#studyDescription").val();
       let modalities=$("#modality").val().join('/');
-      let deleteButton='<input type="button" class="btn btn-danger removeRow" value="remove">';
       let aet=$(this).val();
       
       if(dateFrom==''){
@@ -229,7 +238,7 @@
       var table = $('#requestTable').DataTable();
  
       var rowNode = table
-          .row.add( [ nameString , patientID , accessionNumber , dateFrom, dateTo, studyDescription, modalities, aet, deleteButton ] )
+          .row.add( [ nameString , patientID , accessionNumber , dateFrom, dateTo, studyDescription, modalities, aet, getDeleteButton() ] )
           .draw()
           .node();
 
@@ -375,7 +384,50 @@
           }
         });
 
+    });
+
+    let parseCsv=function () {
+      $('input[type=file]').parse({
+      config: {
+        complete: completeFn// base config to use for each file
+      },
+      before: function(file, inputElem)
+      {
+        console.log(file);
+        // executed before parsing each file begins;
+        // what you return here controls the flow
+      },
+      error: function(err, file, inputElem, reason)
+      {
+        // executed if an error occurs while loading the file,
+        // or if before callback aborted for some reason
+      },
+      complete: function(result, file)
+      {
+        console.log('done');
+        // executed after all files are complete
+      }
+      })
+    };
+
+    $("#parseBtn").on('click', function(){
+      parseCsv();
     })
+
+    function completeFn(result, file){
+      let tableRequest = $('#requestTable').DataTable();
+      let i=1;
+      let csvData=result.data;
+      for( i=1; i<csvData.length ; i++){
+
+        tableRequest.row.add( [csvData[i][0] , csvData[i][1], csvData[i][2], csvData[i][3], csvData[i][4], csvData[i][5], csvData[i][6], 
+                                csvData[i][7], getDeleteButton() ] )
+ 
+        console.log(result.data[i]);
+      }
+      drawTables();
+      
+    }
 
 
   </script>
