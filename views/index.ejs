@@ -115,6 +115,7 @@
           <td>Accession Number</td>
           <td>Acquistion Date</td>
           <td>Study Description</td>
+          <td>Modalities In Study</td>
           <td>Source AET</td>
           <td>StudyInstanceUID</td>
           <td>Retrieve</td>
@@ -194,10 +195,43 @@
               }
      					    
             },
-            'copy',
-            'csv',
-            'pdf',
-            'print'
+            {              
+              extend: 'copyHtml5',
+              exportOptions: {
+                    columns: [ 2,3,4,5,6,7,8 ]
+                }
+            },
+            {              
+              text: 'csv',
+              action : function(){
+                var rowsData = resultTable.rows().data();
+                csvData={
+                  fields : ['Name','ID','Accession Number','Date From','Date To','Study Description','Modality','AET'],
+                  data : []
+                }
+
+                rowsData.each((rowData, index)=>{
+                  csvData.data.push([rowData[2], rowData[3], rowData[4] , rowData[5], rowData[5], rowData[6], rowData[7],rowData[8] ])
+                });
+
+                let csvString=Papa.unparse(csvData);
+                download('export_result.csv', csvString);
+                
+              }
+
+            },
+            {
+              extend: 'pdfHtml5',
+              exportOptions: {
+                    columns: [ 2,3,4,5,6,7,8 ]
+                }
+            },
+            {
+              extend: 'print',
+              exportOptions: {
+                    columns: [ 2,3,4,5,6,7,8 ]
+                }
+            }
           ]
         }],
         "bSortCellsTop": true,
@@ -244,6 +278,19 @@
 
     });
 
+    function download(filename, text) {
+      var element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+      element.setAttribute('download', filename);
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
+    }
+
     $("#requestTable").on('click', '.removeRow', function() {
         var table = $('#requestTable').DataTable();
         var row = table.row( $(this).parents('tr') );
@@ -270,7 +317,7 @@
           success : function(data){
             data.forEach(element=>{
               tableResults.row.add( [element.answerId , element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
-                                  element.originAET, element.studyInstanceUID, buttonRetrieveString, '', 'N/A', 'N/A'] )
+                                  element.modalitiesInStudy,element.originAET, element.studyInstanceUID, buttonRetrieveString, '', 'N/A', 'N/A'] )
             
             })
             drawTables();

@@ -197,7 +197,7 @@ class Orthanc {
                 let answersObjects=[];
                 try{
                     let answersList=currentOrthanc.answerParser(body);
-                    
+                    console.log(answersList);
                     let answerNumber=0;
                     
                     answersList.forEach(element => {
@@ -210,7 +210,8 @@ class Orthanc {
                         let patientName=element['0010,0010']['Value'];
                         let patientID=element['0010,0020']['Value'];
                         let studyUID=element['0020,000d']['Value'];
-                        let queryAnswserObject=new QueryAnswer(answerId, answerNumber, queryLevel,origineAET,patientName,patientID,accessionNb,studyDescription,studyUID,studyDate);
+                        let ModalitiesInStudy=element['0008,0061']['Value']
+                        let queryAnswserObject=new QueryAnswer(answerId, answerNumber, queryLevel,origineAET,patientName,patientID,accessionNb,ModalitiesInStudy,studyDescription,studyUID,studyDate);
                         answersObjects.push(queryAnswserObject);
                         answerNumber++;
                         
