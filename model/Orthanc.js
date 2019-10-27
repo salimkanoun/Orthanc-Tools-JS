@@ -197,7 +197,6 @@ class Orthanc {
                 let answersObjects=[];
                 try{
                     let answersList=currentOrthanc.answerParser(body);
-                    console.log(answersList);
                     let answerNumber=0;
                     
                     answersList.forEach(element => {
