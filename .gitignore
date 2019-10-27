@@ -1,2 +1,5 @@
 node_modules
 _config/config.json
+myapp-linux
+myapp-macos
+myapp-win.exe
