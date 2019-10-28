@@ -2,6 +2,7 @@
   "name": "myapp",
   "version": "0.0.0",
   "private": true,
+  "bin" : "app.js",
   "scripts": {
     "start": "node ./bin/www"
   },
@@ -14,5 +15,8 @@
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "request": "^2.88.0"
+  },
+  "pkg": {
+    "assets": ["public/**/*", "includes/**/*", "views/**/*"]
   }
 }
