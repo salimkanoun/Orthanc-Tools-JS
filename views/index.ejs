@@ -70,9 +70,9 @@
         <small id="helpId" class="text-muted">Help text</small>
       </div>
       <div class="text-center form-group">
-        <h1>Query AET</h1>
+        <h2>Query AET</h2>
         <% availableAets.forEach(aetName => { 
-          %> <input type="button" class="btn btn-info btn-block queryAET" value="<%= aetName%>"> 
+          %> <input type="button" class="btn btn-info btn-large queryAET" value="<%= aetName%>"> 
         <%  
         }); %> 
       </div>
@@ -94,7 +94,6 @@
             <td>Study Description</td>
             <td>Modality</td>
             <td>AET</td>
-            <td>Delete</td>
           </tr>
         </thead>
         <tbody>
@@ -149,17 +148,27 @@
     })
 
     function drawTables(){
-      let requestTable = $('#requestTable').DataTable().draw();
-      let resultTable = $('#resultTable').DataTable().draw();
-
+      requestTable = $('#requestTable').DataTable().draw();
+      resultTable = $('#resultTable').DataTable().draw();
     }
+
     $("#modality").chosen();
-    $("#requestTable").DataTable({
+
+    let requestTable = $("#requestTable").DataTable({
         "sDom": 'Blrtip',
         "select": {
-                style: 'os'
+          style: 'os'
         },
-        buttons: [{
+        buttons: [
+          {
+          text: 'Remove',
+          action: function () {
+              var rows = requestTable.rows('.selected');
+              rows.remove();
+              drawTables();
+            }
+          },
+          {
           extend: 'collection',
           text: 'Export',
           buttons: [
@@ -172,20 +181,12 @@
         "bSortCellsTop": true,
         "scrollX": true
     });
-
-    function getDeleteButton(){
-      let deleteButton='<input type="button" class="btn btn-danger removeRow" value="remove">';
-      return deleteButton;
-    }
     
     let resultTable=$("#resultTable").DataTable({"sDom": 'Blrtip',
         "select": {
                 style: 'os'
         },
-        buttons: [{
-          extend: 'collection',
-          text: 'Export',
-          buttons: [
+        buttons: [
             {
               text: 'Remove',
               action: function () {
@@ -195,61 +196,58 @@
               }
      					    
             },
-            {              
-              extend: 'copyHtml5',
-              exportOptions: {
-                    columns: [ 2,3,4,5,6,7,8 ]
-                }
-            },
-            {              
-              text: 'csv',
-              action : function(){
-                var rowsData = resultTable.rows().data();
-                csvData={
-                  fields : ['Name','ID','Accession Number','Date From','Date To','Study Description','Modality','AET'],
-                  data : []
-                }
-
-                rowsData.each((rowData, index)=>{
-                  csvData.data.push([rowData[2], rowData[3], rowData[4] , rowData[5], rowData[5], rowData[6], rowData[7],rowData[8] ])
-                });
-
-                let csvString=Papa.unparse(csvData);
-                download('export_result.csv', csvString);
-                
-              }
-
-            },
             {
-              extend: 'pdfHtml5',
-              exportOptions: {
-                    columns: [ 2,3,4,5,6,7,8 ]
+            extend: 'collection',
+            text: 'Export',
+            buttons:[
+                {              
+                extend: 'copyHtml5',
+                exportOptions: {
+                      columns: [ 2,3,4,5,6,7,8 ]
+                  }
+                },
+                {               
+                text: 'csv',
+                action : function(){
+                  var rowsData = resultTable.rows().data();
+                  csvData={
+                    fields : ['Name','ID','Accession Number','Date From','Date To','Study Description','Modality','AET'],
+                    data : []
+                  }
+
+                  rowsData.each((rowData, index)=>{
+                    csvData.data.push([rowData[2], rowData[3], rowData[4] , rowData[5], rowData[5], rowData[6], rowData[7],rowData[8] ])
+                  });
+
+                  let csvString=Papa.unparse(csvData);
+                  download('export_result.csv', csvString);
+                  
+                  }
+
+                },
+                {
+                extend: 'pdfHtml5',
+                exportOptions: {
+                      columns: [ 2,3,4,5,6,7,8 ]
+                  }
+                },
+                {
+                extend: 'print',
+                exportOptions: {
+                      columns: [ 2,3,4,5,6,7,8 ]
+                  }
                 }
-            },
-            {
-              extend: 'print',
-              exportOptions: {
-                    columns: [ 2,3,4,5,6,7,8 ]
-                }
+            ]
             }
-          ]
-        }],
+        ],
         "bSortCellsTop": true,
         "scrollX": true,
         "columnDefs": [
             {
-                "targets": [ 0 ],
-                "visible": false
-            },            {
-                "targets": [ 1 ],
-                "visible": false
-            },
-            {
-                "targets": [ 10 ],
+                "targets": [ 0,1,9 ],
                 "visible": false
             }
         ]});
-
 
     $(".queryAET").on('click', function(){
       let nameString=$("#lastName").val()+$("#firstName").val();
@@ -268,11 +266,8 @@
       if(dateTo==''){
         dateTo='*'
       }
-
-      var table = $('#requestTable').DataTable();
  
-      var rowNode = table
-          .row.add( [ nameString , patientID , accessionNumber , dateFrom, dateTo, studyDescription, modalities, aet, getDeleteButton() ] )
+      requestTable.row.add( [ nameString , patientID , accessionNumber , dateFrom, dateTo, studyDescription, modalities, aet ] )
           .draw()
           .node();
 
@@ -282,29 +277,15 @@
       var element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
       element.setAttribute('download', filename);
-
       element.style.display = 'none';
       document.body.appendChild(element);
-
       element.click();
-
       document.body.removeChild(element);
     }
 
-    $("#requestTable").on('click', '.removeRow', function() {
-        var table = $('#requestTable').DataTable();
-        var row = table.row( $(this).parents('tr') );
-        var rowNode = row.node();
-        row.remove();
-        drawTables();
-        
-    });
-
     $("#queryList").on('click', function() {
-      let table = $('#requestTable').DataTable();
-      let tableResults = $('#resultTable').DataTable();
-      table.rows().eq(0).each( function ( index ) {
-        let row = table.row( index );
+      requestTable.rows().eq(0).each( function ( index ) {
+        let row = requestTable.row( index );
         let data = row.data();
         let buttonRetrieveString='<input class="retriveButton btn btn-primary" type="button" value="Retrieve">';
 
@@ -316,23 +297,22 @@
                   studyDescription : data[5], modality : data[6], aet : data[7]},
           success : function(data){
             data.forEach(element=>{
-              tableResults.row.add( [element.answerId , element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
+              resultTable.row.add( [element.answerId , element.answerNumber, element.patientName, element.patientID, element.accessionNumber, element.studyDate, element.studyDescription, 
                                   element.modalitiesInStudy,element.originAET, element.studyInstanceUID, buttonRetrieveString, '', 'N/A', 'N/A'] )
             
             })
-            drawTables();
+            
           }
-
         })
-      } );
+      });
 
+      drawTables();
       
     });
 
     $("#resultTable").on('click', '.retriveButton', function(){
-      let tableResult = $('#resultTable').DataTable();
-      let rowIndex=tableResult.row( $(this).parents('tr') ).index();
-      var data = tableResult.row( $(this).parents('tr') ).data();
+      let rowIndex=resultTable.row( $(this).parents('tr') ).index();
+      var data = resultTable.row( $(this).parents('tr') ).data();
       $(this).removeClass('btn-primary').addClass('btn-success').attr("disabled","disabled");
 
       $.ajax({
@@ -341,44 +321,42 @@
           dataType: 'json',
           data : { queryID : data[0], answerNumber : data[1]},
           success : function(data){
-            tableResult.cell(rowIndex,10).data(data);
-            tableResult.cell(rowIndex,11).data(0);
-            tableResult.draw('page');
+            resultTable.cell(rowIndex,11).data(data);
+            resultTable.cell(rowIndex,12).data(0);
+            resultTable.draw('page');
             checkProgress();
           }
-
-        })
-
+      })
 
     })
 
     let progressListenerList=[];
     function checkProgress(){
-      let tableResults = $('#resultTable').DataTable();
-      let rows= tableResults.rows();
+      let rows= resultTable.rows();
       rows.every(function(){
         let rowData=this.data();
         console.log(rowData[10]);
-        if(rowData[10] != "" && !progressListenerList.includes(this.index()) ){
+        if(rowData[11] != "" && !progressListenerList.includes(this.index()) ){
           console.log('add watcher');
           progressListenerList.push(this.index());
-          addProgressWatcher(this);
+          addProgressWatcher(rowData, this.index());
         }
       })
     }
 
-    function addProgressWatcher(row){
-      console.log("ici watcher");
-      console.log(row);
-      let tableResults = $('#resultTable').DataTable();
+    function addProgressWatcher(rowData, rowIndex){
+
+      console.log(rowData +'gfgd'+rowIndex);
+      
       let ajaxCall=function(callback) {
+        console.log(rowData);
         $.ajax({
           url: 'job_details',
           type : 'POST',
           dataType: 'json',
-          data : { jobUid : row.data()[10]},
+          data : { jobUid : rowData[11]},
           success : function(data){
-            tableResults.cell(row.index(),11).data(data.Progress);
+            resultTable.cell(rowIndex,12).data(data.Progress);
             callback(data.Progress);
           }
         });
@@ -387,11 +365,11 @@
         
 
       let watcher=setInterval( async function(){
-          await jobMonitoringPromise(tableResults, row);
-          if(row.data()[11]==100){
+          await jobMonitoringPromise(rowData, rowIndex);
+          if(rowData[12]==100){
             console.log('clearInterval');
-            tableResults.cell(row.index(),12).data('<input type="button" class="btn btn-primary exportDicom" value="Export Dicom">');
-            tableResults.draw('page');
+            resultTable.cell(rowIndex,13).data('<input type="button" class="btn btn-primary exportDicom" value="Export Dicom">');
+            resultTable.draw('page');
             clearInterval(watcher);
           }
       } , 3000 );
@@ -399,15 +377,15 @@
 
     }
 
-    function jobMonitoringPromise(tableResults, row){
+    function jobMonitoringPromise(rowData, rowIndex){
       let promise = new Promise((resolve, reject)=>{
         $.ajax({
           url: 'job_details',
           type : 'POST',
           dataType: 'json',
-          data : { jobUid : row.data()[10]},
+          data : { jobUid : rowData[11]},
           success : function(data){
-            tableResults.cell(row.index(),11).data(data.Progress);
+            resultTable.cell(rowIndex,12).data(data.Progress);
             resolve(data.Progress);
           }
         });
@@ -418,16 +396,18 @@
     }
 
     $("#resultTable").on('click', '.exportDicom', function() {
-      let tableResults = $('#resultTable').DataTable();
-      let row=tableResults.row( $(this).parents('tr') );
+      let row=resultTable.row( $(this).parents('tr') );
       $.ajax({
           url: 'export_dicom',
           type : 'POST',
           dataType: 'json',
           data : { studyUID : row.data()[8]},
+          beforeSend : function(jqXHR, settings ){
+            resultTable.cell(row.index(),13).data('Exporting');
+          },
           success : function(data){
             console.log(data);
-            tableResults.cell(row.index(),12).data('Exported '+data.fileName);
+            resultTable.cell(row.index(),13).data('Exported '+data.fileName);
           }
         });
 
@@ -462,14 +442,11 @@
     })
 
     function completeFn(result, file){
-      let tableRequest = $('#requestTable').DataTable();
       let i=1;
       let csvData=result.data;
       for( i=1; i<csvData.length ; i++){
-        tableRequest.row.add( [csvData[i][0] , csvData[i][1], csvData[i][2], csvData[i][3], csvData[i][4], csvData[i][5], csvData[i][6], 
-                                csvData[i][7], getDeleteButton() ] )
- 
-        console.log(result.data[i]);
+        requestTable.row.add( [csvData[i][0] , csvData[i][1], csvData[i][2], csvData[i][3], csvData[i][4], csvData[i][5], csvData[i][6], 
+                                csvData[i][7] ] )
       }
       drawTables();
       

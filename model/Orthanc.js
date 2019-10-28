@@ -179,6 +179,7 @@ class Orthanc {
         let promise=new Promise((resolve, reject)=>{
             request.post(currentOrthanc.createOptions('POST','/modalities/'+aet+"/query", JSON.stringify(currentOrthanc.preparedQuery)), function(error, response, body){
                 let answer=currentOrthanc.answerParser(body);
+                console.log(answer);
                 resolve(answer);
             });
         }).then(function(answer){            
@@ -200,26 +201,53 @@ class Orthanc {
                     let answerNumber=0;
                     
                     answersList.forEach(element => {
-                        
                         let queryLevel=element['0008,0052']['Value'];
-                        let accessionNb=element['0008,0050']['Value'];
-                        let studyDate=element['0008,0020']['Value'];
+                        
+                        let accessionNb='*';
+                        if(element.hasOwnProperty('0008,0050')){
+                            accessionNb=element['0008,0050']['Value'];
+                        }
+
+                        let studyDate='*';
+                        if(element.hasOwnProperty('0008,0020')){
+                            studyDate=element['0008,0020']['Value'];
+                        }
+
+                        let studyDescription='*';
+                        if(element.hasOwnProperty('0008,1030')){
+                            studyDescription=element['0008,1030']['Value'];
+                        }
+
+                        let patientName='*';
+                        if(element.hasOwnProperty('0010,0010')){
+                            patientName=element['0010,0010']['Value'];
+                        }
+
+                        let patientID='*';
+                        if(element.hasOwnProperty('0010,0020')){
+                            patientID=element['0010,0020']['Value'];
+                        }
+
+                        let studyUID='*';
+                        if(element.hasOwnProperty('0020,000d')){
+                            studyUID=element['0020,000d']['Value'];
+                        }
+                        
+                        let modalitiesInStudy='*'
+                        //Modalities in studies not always present
+                        if(element.hasOwnProperty('0008,0061')){
+                            modalitiesInStudy=element['0008,0061']['Value'];
+                        }
                         let origineAET=aet;
-                        let studyDescription=element['0008,1030']['Value'];
-                        let patientName=element['0010,0010']['Value'];
-                        let patientID=element['0010,0020']['Value'];
-                        let studyUID=element['0020,000d']['Value'];
-                        let ModalitiesInStudy=element['0008,0061']['Value']
-                        let queryAnswserObject=new QueryAnswer(answerId, answerNumber, queryLevel,origineAET,patientName,patientID,accessionNb,ModalitiesInStudy,studyDescription,studyUID,studyDate);
+                        let queryAnswserObject=new QueryAnswer(answerId, answerNumber, queryLevel,origineAET,patientName,patientID,accessionNb,modalitiesInStudy,studyDescription,studyUID,studyDate);
                         answersObjects.push(queryAnswserObject);
                         answerNumber++;
                         
                     });
 
                 }catch(exception){
-
+                    console.log('error'+exception);
                 }
-
                 resolve(answersObjects);
 
             });
