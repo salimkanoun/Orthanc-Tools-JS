@@ -95,6 +95,16 @@
             <td>Modality</td>
             <td>AET</td>
           </tr>
+          <tr id="requestSearch">
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+          </tr>
         </thead>
         <tbody>
           
@@ -121,6 +131,22 @@
           <td>JobID</td>
           <td>Progress</td>
           <td>Export</td>
+          </tr>
+          <tr id="resultSearch">
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
+            <th><input type="text" placeholder="Search" class="column_search"/></th>
           </tr>
         </thead>
         <tbody>
@@ -153,6 +179,18 @@
     }
 
     $("#modality").chosen();
+
+    $('#requestSearch').on('keyup', ".column_search", function() {
+			requestTable.column($(this).parent().index()+':visible')
+				.search(this.value)
+				.draw();
+		});
+
+    $('#resultSearch').on('keyup', ".column_search", function() {
+			resultTable.column($(this).parent().index()+':visible')
+				.search(this.value)
+				.draw();
+		});
 
     let requestTable = $("#requestTable").DataTable({
         "sDom": 'Blrtip',
