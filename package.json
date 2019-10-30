@@ -2,7 +2,7 @@
   "name": "myapp",
   "version": "0.0.0",
   "private": true,
-  "bin" : "app.js",
+  "bin": "app.js",
   "scripts": {
     "start": "node ./bin/www"
   },
@@ -14,9 +14,14 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "sqlite3": "^4.1.0"
   },
   "pkg": {
-    "assets": ["public/**/*", "includes/**/*", "views/**/*"]
+    "assets": [
+      "public/**/*",
+      "includes/**/*",
+      "views/**/*"
+    ]
   }
 }
