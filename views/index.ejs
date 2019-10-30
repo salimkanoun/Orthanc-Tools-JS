@@ -1,86 +1,95 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <% include ../includes/librairies.ejs %>
   </head>
-  <body class="jumbotron">
+
+  <body class="bg-light">
     <h1 class="text-center mb-5"><%= title %></h1>
+    
     <div id="navBar" class="mb-5">
       <ul class="nav nav-pills nav-fill">
         <li class="nav-item">
           <a class="nav-link active">Add Query</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link">Query List</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link">Result answers</a>
         </li>
       </ul>
     </div>
-
+    
     <div class="mainDiv" id="addQueryDiv" style="display: block">
-      <div class="form-group">
-        <label for="lastName">Last Name</label>
-        <input type="text" name="lastName" id="lastName" class="form-control" placeholder="last name" aria-describedby="helpId">
-        <small id="helpId" class="text-muted">Help text</small>
+      
+      <div class="jumbotron">
+          <h2 class="card-title">Manual Input</h2>
+          <div class="row">
+            <div class="col-sm">
+              <label for="lastName">Last Name</label>
+              <input type="text" name="lastName" id="lastName" class="form-control" placeholder="last name" aria-describedby="helpId">
+            </div>
+            <div class="col-sm">
+              <label for="firstName">First Name</label>
+              <input type="text" name="firstName" id="firstName" class="form-control" placeholder="first name" aria-describedby="helpId">
+            </div>
+            <div class="col-sm">
+              <label for="patientID">Patient ID</label>
+              <input type="text" name="patientID" id="patientID" class="form-control" placeholder="Patient ID" aria-describedby="helpId">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm">
+                <label for="accessionNumber">Accession Number</label>
+                <input type="text" name="accessionNumber" id="accessionNumber" class="form-control" placeholder="Accession Number" aria-describedby="helpId">
+            </div>
+            <div class="col-sm">
+                <label for="studyDescription">Study Description</label>
+                <input type="text" name="studyDescription" id="studyDescription" class="form-control" placeholder="Study Description" aria-describedby="helpId">
+            </div>
+            <div class="col-sm">
+              <label for="modality">Modality</label>
+              <select class="form-control" name="modality" id="modality" multiple>
+                <option value="CT">CT</option>
+                <option value="PT">PT</option>
+                <option value="NM">NM</option>
+                <option value="MR">MR</option>
+                <option value="US">US</option>
+                <option value="MG">MG</option>
+              </select>
+            </div>
+
+        </div>
+        <div class="row">
+          <div class="col-sm">
+              <label for="dateFrom">Date From</label>
+              <input type="date" name="dateFrom" id="dateFrom" class="form-control" placeholder="Date From" aria-describedby="helpId">
+            </div>
+            <div class="col-sm">
+              <label for="dateTo">Date To</label>
+              <input type="date" name="dateTo" id="dateTo" class="form-control" placeholder="Date To" aria-describedby="helpId">
+            </div>
+        </div>
+        
+        <div class="row text-center mt-5">
+              <% availableAets.forEach(aetName => { 
+                %> <div class="col-sm">
+                  <input type="button" class="btn btn-info btn-large queryAET" value="<%= aetName%>">
+                </div> 
+              <%  
+              }); %> 
+        </div>
       </div>
-      <div class="form-group">
-        <label for="firstName">First Name</label>
-        <input type="text" name="firstName" id="firstName" class="form-control" placeholder="first name" aria-describedby="helpId">
-        <small id="helpId" class="text-muted">Help text</small>
-      </div>
-      <div class="form-group">
-        <label for="patientID">Patient ID</label>
-        <input type="text" name="patientID" id="patientID" class="form-control" placeholder="Patient ID" aria-describedby="helpId">
-        <small id="helpId" class="text-muted">Help text</small>
-      </div>
-      <div class="form-group">
-        <label for="accessionNumber">Accession Number</label>
-        <input type="text" name="accessionNumber" id="accessionNumber" class="form-control" placeholder="Accession Number" aria-describedby="helpId">
-        <small id="helpId" class="text-muted">Help text</small>
-      </div>
-      <div class="form-group">
-        <label for="dateFrom">Date From</label>
-        <input type="date" name="dateFrom" id="dateFrom" class="form-control" placeholder="Date From" aria-describedby="helpId">
-        <small id="helpId" class="text-muted">Help text</small>
-      </div>
-      <div class="form-group">
-        <label for="dateTo">Date To</label>
-        <input type="date" name="dateTo" id="dateTo" class="form-control" placeholder="Date To" aria-describedby="helpId">
-        <small id="helpId" class="text-muted">Help text</small>
-      </div>
-      <div class="form-group">
-        <label for="studyDescription">Study Description</label>
-        <input type="text" name="studyDescription" id="studyDescription" class="form-control" placeholder="Study Description" aria-describedby="helpId">
-        <small id="helpId" class="text-muted">Help text</small>
-      </div>
-      <div class="form-group">
-        <label for="modality">Modality</label>
-        <select class="form-control" name="modality" id="modality" multiple>
-          <option value="CT">CT</option>
-          <option value="PT">PT</option>
-          <option value="NM">NM</option>
-          <option value="MR">MR</option>
-          <option value="US">US</option>
-          <option value="MG">MG</option>
-        </select>
-        <small id="helpId" class="text-muted">Help text</small>
-      </div>
-      <div class="text-center form-group">
-        <h2>Query AET</h2>
-        <% availableAets.forEach(aetName => { 
-          %> <input type="button" class="btn btn-info btn-large queryAET" value="<%= aetName%>"> 
-        <%  
-        }); %> 
-      </div>
-    </div>
-    <div class="mainDiv" id="queryListDiv" style="overflow:x ; display: none;">
+
       <div>
-        <input type="file" id="files" multiple="">
-        <input type="button" class="btn btn-primary" id="parseBtn" value="Parse">
+        <div class="jumbotron">
+          <h2 class="card-title">CSV</h2>
+          <div class="row">
+            <input type="file" id="files" multiple="">
+            <input type="button" class="btn btn-primary" id="parseBtn" value="Parse">
+          </div>
+        </div>
       </div>
 
       <table class="table table-striped" id="requestTable" style="text-align:center; width:100%">
@@ -113,7 +122,11 @@
       <input type="button" id="queryList" value="Query List" class="btn btn-info">
     </div>
 
-    <div class="mainDiv" id="resultQueryDiv" style="overflow:x ; display: none">
+
+
+
+    <div class="mainDiv jumbotron" id="resultQueryDiv" style="overflow:x ; display: none">
+      <h2 class="mb-5">Results</h2>
       <table class="table table-striped" id="resultTable" style="text-align:center; width:100%">
         <thead>
           <tr>
@@ -165,8 +178,6 @@
 
       if(item=='Add Query'){
         $("#addQueryDiv").css('display','block');
-      }else if(item=='Query List'){
-        $("#queryListDiv").css('display','block');
       }else if(item=='Result answers'){
         $("#resultQueryDiv").css('display','block');
       }
