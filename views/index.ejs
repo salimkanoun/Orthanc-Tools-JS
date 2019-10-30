@@ -91,39 +91,37 @@
           </div>
         </div>
       </div>
-
-      <table class="table table-striped" id="requestTable" style="text-align:center; width:100%">
-        <thead>
-          <tr>
-            <td>Name</td>
-            <td>ID</td>
-            <td>Accession Number</td>
-            <td>Date From</td>
-            <td>Date To</td>
-            <td>Study Description</td>
-            <td>Modality</td>
-            <td>AET</td>
-          </tr>
-          <tr id="requestSearch">
-            <th><input type="text" placeholder="Search" class="column_search"/></th>
-            <th><input type="text" placeholder="Search" class="column_search"/></th>
-            <th><input type="text" placeholder="Search" class="column_search"/></th>
-            <th><input type="text" placeholder="Search" class="column_search"/></th>
-            <th><input type="text" placeholder="Search" class="column_search"/></th>
-            <th><input type="text" placeholder="Search" class="column_search"/></th>
-            <th><input type="text" placeholder="Search" class="column_search"/></th>
-            <th><input type="text" placeholder="Search" class="column_search"/></th>
-          </tr>
-        </thead>
-        <tbody>
-          
-        </tbody>
-      </table>
-      <input type="button" id="queryList" value="Query List" class="btn btn-info">
+      <div class="jumbotron">
+        <table class="table table-striped" id="requestTable" style="text-align:center; width:100%">
+          <thead>
+            <tr>
+              <td>Name</td>
+              <td>ID</td>
+              <td>Accession Number</td>
+              <td>Date From</td>
+              <td>Date To</td>
+              <td>Study Description</td>
+              <td>Modality</td>
+              <td>AET</td>
+            </tr>
+            <tr id="requestSearch">
+              <th><input type="text" placeholder="Search" class="column_search"/></th>
+              <th><input type="text" placeholder="Search" class="column_search"/></th>
+              <th><input type="text" placeholder="Search" class="column_search"/></th>
+              <th><input type="text" placeholder="Search" class="column_search"/></th>
+              <th><input type="text" placeholder="Search" class="column_search"/></th>
+              <th><input type="text" placeholder="Search" class="column_search"/></th>
+              <th><input type="text" placeholder="Search" class="column_search"/></th>
+              <th><input type="text" placeholder="Search" class="column_search"/></th>
+            </tr>
+          </thead>
+          <tbody>
+            
+          </tbody>
+        </table>
+        <input type="button" id="queryList" value="Query List" class="btn btn-info">
+      </div>
     </div>
-
-
-
 
     <div class="mainDiv jumbotron" id="resultQueryDiv" style="overflow:x ; display: none">
       <h2 class="mb-5">Results</h2>
@@ -231,7 +229,8 @@
         "scrollX": true
     });
     
-    let resultTable=$("#resultTable").DataTable({"sDom": 'Blrtip',
+    let resultTable=$("#resultTable").DataTable({
+        "sDom": 'Blrtip',
         "select": {
                 style: 'os'
         },
@@ -394,8 +393,6 @@
     }
 
     function addProgressWatcher(rowData, rowIndex){
-
-      console.log(rowData +'gfgd'+rowIndex);
       
       let ajaxCall=function(callback) {
         console.log(rowData);
@@ -450,7 +447,7 @@
           url: 'export_dicom',
           type : 'POST',
           dataType: 'json',
-          data : { studyUID : row.data()[8]},
+          data : { studyUID : row.data()[9]},
           beforeSend : function(jqXHR, settings ){
             resultTable.cell(row.index(),13).data('Exporting');
           },
