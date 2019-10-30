@@ -10,7 +10,7 @@ var getResults = async function(req, res){
     let orthancID=await orthancInstance.findInOrthancByUid(body.studyUID);
     console.log(orthancID);
     
-    await orthancInstance.exportArchiveDicom(orthancID, 'export'+date.getTime());
+    await orthancInstance.exportArchiveDicom(orthancID, 'export' + date.getTime());
     let data={};
     data['fileName']='export'+date.getTime()+'.zip';
     

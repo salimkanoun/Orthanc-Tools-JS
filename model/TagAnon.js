@@ -1,7 +1,5 @@
 class TagAnon{
 
-    
-
     constructor(tag, choice, newValue=''){
         this.tagNumber=tag;
         this.choice=choice;
