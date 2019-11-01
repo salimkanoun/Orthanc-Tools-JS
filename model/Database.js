@@ -3,18 +3,31 @@ var sqlite3 = require('sqlite3').verbose();
 class Database{
 
     constructor(){
-        let db = new sqlite3.Database('./database/imagefetcher.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
-            if (err) {
-                console.error(+err.message);
-            }else{
-                console.log('Connected to the image fetcher database.');
-            }
+    }
 
-          });
+    connectTable(){
 
-          this.db=db;
-          this.isDatabaseEmpty();
+        let curentDatabaseObject=this;
 
+        let promise = new Promise((resolve, reject)=>{
+
+            let db = new sqlite3.Database('./database/imagefetcher.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+                if (err) {
+                    console.error(+err.message);
+                }else{
+                    console.log('Connected to the image fetcher database.');
+                }
+    
+              });
+    
+            curentDatabaseObject.db=db;
+
+            resolve(console.log('Connected'));
+            
+        });
+
+        return promise;
+       
 
     }
 
