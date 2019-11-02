@@ -5,37 +5,57 @@ class Database{
     constructor(){
     }
 
-    connectTable(){
+    async connectTable(){
 
         let curentDatabaseObject=this;
 
+        let db;
+
         let promise = new Promise((resolve, reject)=>{
 
-            let db = new sqlite3.Database('./database/imagefetcher.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+            db = new sqlite3.Database('./database/imagefetcher.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
                 if (err) {
                     console.error(+err.message);
                 }else{
                     console.log('Connected to the image fetcher database.');
                 }
-    
-              });
-    
-            curentDatabaseObject.db=db;
+                
+                resolve(console.log('Connected'));
 
-            resolve(console.log('Connected'));
+              });
+
             
+            
+        }).then(()=>{
+            curentDatabaseObject.db=db;
+            curentDatabaseObject.isDatabaseEmpty();
         });
 
+        
         return promise;
        
 
     }
 
-    createUserTable(){
-        this.db.run('CREATE TABLE users(username text, password text)');
+    async createUserTable(){
+        let curentDatabaseObject=this;
+        let promise = new Promise((resolve, reject)=>{
+
+            curentDatabaseObject.db.run('CREATE TABLE users(username text, password text)', function(error){
+                if(error){
+                    reject(console.log('Failed to add user'))
+                }else{
+                    resolve(console.log('user add'));
+                }
+            });
+
+        }).catch((reason)=>{console.log('promise failed'+reason)});
+
+        return promise;
+        
     }
 
-    isDatabaseEmpty(){
+    async isDatabaseEmpty(){
         let datbaseObject=this;
         let promise= new Promise( (resolve, reject)=>{
 
@@ -46,7 +66,7 @@ class Database{
 
         }). then((isEmpty)=>{
             if(isEmpty){
-                this.createUserTable();
+                datbaseObject.createUserTable();
             }
         }).catch((reason)=>{
             console.log(reason);

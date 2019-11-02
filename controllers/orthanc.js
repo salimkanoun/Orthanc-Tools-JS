@@ -1,5 +1,4 @@
 var Orthanc =require('../model/Orthanc');
-let OrthancPatient=require('../model/OrthancPatient');
 
 var orthancInstance=new Orthanc();
    
