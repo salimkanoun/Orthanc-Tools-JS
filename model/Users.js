@@ -14,8 +14,13 @@ class Users{
         let currentUser=this;
         let promise = new Promise((resolve, reject)=>{
             currentUser.database.get(getStmt, [currentUser.username], function(err, row) {
-                currentUser.password=row.password;
-                currentUser.admin=row.admin;
+                console.log(err);
+                console.log(row);
+                if(row!==undefined){
+                    currentUser.password=row.password;
+                    currentUser.admin=row.admin;
+                }
+                
                 resolve(console.log(currentUser.password));
             });
 
