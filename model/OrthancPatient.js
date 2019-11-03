@@ -23,7 +23,7 @@ class OrthancPatient{
             };
             orthancPatientInstance.getStudies();
             return orthancPatientInstance;
-        });
+        }).catch((error)=>{console.log('Error getting patient details '+ error)});
 
         
     }
@@ -39,13 +39,13 @@ class OrthancPatient{
     async fillAllChildsDetails(){
 
         await this.fillDetails();
-
         await this.fillStudiesDetails();
     
         let allSeriesPromises=[];
         this.studiesObjects.forEach(study => {
             allSeriesPromises.push(study.fillSeriesDetails());
         });
+        
         await Promise.all(allSeriesPromises);
 
     };

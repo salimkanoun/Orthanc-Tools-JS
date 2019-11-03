@@ -24,16 +24,12 @@ class Database{
 
               });
 
-            
-            
         }).then(()=>{
             curentDatabaseObject.db=db;
             curentDatabaseObject.isDatabaseEmpty();
-        });
+        }).catch((error)=>{console.log('Error Connect Table ')+error});
 
-        
         return promise;
-       
 
     }
 
@@ -41,7 +37,7 @@ class Database{
         let curentDatabaseObject=this;
         let promise = new Promise((resolve, reject)=>{
 
-            curentDatabaseObject.db.run('CREATE TABLE users(username text, password text)', function(error){
+            curentDatabaseObject.db.run('CREATE TABLE users(username text, password text, admin integer)', function(error){
                 if(error){
                     reject(console.log('Failed to add user'))
                 }else{
@@ -49,7 +45,7 @@ class Database{
                 }
             });
 
-        }).catch((reason)=>{console.log('promise failed'+reason)});
+        }).catch((reason)=>{console.log('Create user table failed '+reason)});
 
         return promise;
         

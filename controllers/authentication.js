@@ -13,7 +13,7 @@ var getResults = async function(req, res){
         await databaseObject.connectTable();
         
         let userObject=new Users(databaseObject.getDatabase(), body.username);
-        await Users.createUser(databaseObject.getDatabase(), 'salim', 'salim');
+        await Users.createUser(databaseObject.getDatabase(), 'salim', 'salim', 0);
         await userObject.getDetails();
         let checkPassword= await userObject.checkPassword(body.password);
         console.log(checkPassword);

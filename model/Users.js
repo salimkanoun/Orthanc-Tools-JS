@@ -5,19 +5,17 @@ class Users{
     static saltRounds=10;
 
     constructor(databaseObject, username){
-        
         this.database=databaseObject;
         this.username=username;
-
     }
 
     getDetails(){
-        var getStmt = `SELECT password FROM users WHERE username=(?)`;
+        var getStmt = `SELECT password, admin FROM users WHERE username=(?)`;
         let currentUser=this;
         let promise = new Promise((resolve, reject)=>{
             currentUser.database.get(getStmt, [currentUser.username], function(err, row) {
                 currentUser.password=row.password;
-                console.log(currentUser.password);
+                currentUser.admin=row.admin;
                 resolve(console.log(currentUser.password));
             });
 
@@ -34,11 +32,11 @@ class Users{
         return check;
     }
 
-    static async createUser(databaseObject, username, password){
+    static async createUser(databaseObject, username, password, isAdmin){
 
         let promise = bcrypt.hash(password, Users.saltRounds).then(function(hash) {
             console.log(hash);
-            databaseObject.run(`INSERT INTO users(username, password) VALUES(?, ?)`, [username, hash], function(err) {
+            databaseObject.run(`INSERT INTO users(username, password, admin) VALUES(?, ?, ?)`, [username, hash, isAdmin], function(err) {
                 if(err){
                     console.log(err);
                 }else{
@@ -46,17 +44,12 @@ class Users{
                 }
             })
         }).catch(function(error){
-            console.log('user create Failed'+ error);
+            console.log('user create Failed '+ error);
         });
 
         return promise;
-
        
     }
-
-    
-
-    
 
 }
 

@@ -20,7 +20,7 @@ class OrthancSerie{
                 orthancSerieInstance[element]=answer[element];
             };
             return orthancSerieInstance;
-        });
+        }).catch((error)=>{console.log('Error getting series details ' + error)});
 
     }
 
