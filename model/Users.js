@@ -21,8 +21,8 @@ class Users{
                 resolve(console.log(currentUser.password));
             });
 
-        }).catch( ()=>{
-            console.log('User Retrieve failed');
+        }).catch( (error)=>{
+            console.log('User Retrieve failed '+error);
         });
 
         return promise;
@@ -30,11 +30,11 @@ class Users{
     }
 
     async checkPassword(plainPassword){
-        let check =await bcrypt.compare(plainPassword, this.password).catch(()=>{console.log('compare failed')});
+        let check =await bcrypt.compare(plainPassword, this.password).catch(()=>{return false});
         return check;
     }
 
-    static createUser(databaseObject, username, password){
+    static async createUser(databaseObject, username, password){
 
         let promise = bcrypt.hash(password, Users.saltRounds).then(function(hash) {
             console.log(hash);
@@ -45,8 +45,8 @@ class Users{
                     console.log('Done');
                 }
             })
-        }).catch(function(){
-            console.log('user create Failed');
+        }).catch(function(error){
+            console.log('user create Failed'+ error);
         });
 
         return promise;

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Authentication</title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <% include ../includes/librairies.ejs %>
+    </head>
+    <body class="jumbotron">
+        <noscript>
+            <div class="alert alert-danger" id="errorJS"> Warning : Your Navigator do not support Javascript, mendatory for this website</div>
+        </noscript>
+    
+        <div class="alert alert-danger" id="error" style="display: none;"></div>
+        <div id="login" class="block">
+            <div class="block-title">Authentication</div>
+            <div class="block-content">
+                <form id="login-form">
+                    <fieldset>
+                        <label>Username*</label>
+                        <input class="form-control" type="text" id="username" placeholder="username" name="username" required>
+                    </fieldset>
+    
+                    <fieldset>
+                        <label>Password*</label>
+                        <input class="form-control" type="password" id="mdp" placeholder="password" name="password" required>
+                    </fieldset>
+    
+                    <fieldset class="text-right">
+                        <button name="connexion" id="connexionBtn" type="button" class="btn btn-dark"> Connect </button> <br>
+                    </fieldset>
+    
+                </form>
+            </div>
+        </div>
+    </body>
+    <script>
+
+        $("#connexionBtn").on('click', function(){
+            $.ajax({
+                url: '/',
+                type : 'POST',
+                dataType: 'json',
+                data : $("#login-form").serialize(),
+                success : function(data){
+                    console.log(data);
+                    if(data){
+                        location.href = "/orthanc";
+                    }else{
+                        $("#error").text('Authentication Failed');
+                        $("#error").show();
+                    }
+                    
+                }
+            })
+        })
+    
+    </script>
+</html>

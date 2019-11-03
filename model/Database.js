@@ -76,6 +76,10 @@ class Database{
 
     }
 
+    getDatabase(){
+        return this.db;
+    }
+
 
 }
 

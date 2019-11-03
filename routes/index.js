@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var indexController=require('../controllers/index');
+var authenticationController=require('../controllers/authentication');
 var orthancController=require('../controllers/orthanc');
 var queryController=require('../controllers/queryAction');
 var jobDetailsController=require('../controllers/jobDetails');
@@ -10,7 +11,7 @@ var exportController=require('../controllers/exportDicom');
 
 
 //Route request to controllers
-router.all('/', indexController.getResults);
+router.all('/', authenticationController.getResults);
 
 router.all('/orthanc', orthancController.getResults);
 
