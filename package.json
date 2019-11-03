@@ -2,11 +2,12 @@
   "name": "myapp",
   "version": "0.0.0",
   "private": true,
-  "bin" : "app.js",
+  "bin": "app.js",
   "scripts": {
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
@@ -14,9 +15,14 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "sqlite3": "^4.1.0"
   },
   "pkg": {
-    "assets": ["public/**/*", "includes/**/*", "views/**/*"]
+    "assets": [
+      "public/**/*",
+      "includes/**/*",
+      "views/**/*"
+    ]
   }
 }

@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var indexController=require('../controllers/orthanc');
+var authenticationController=require('../controllers/authentication');
+var autoQueryController=require('../controllers/autoQuery');
 var queryController=require('../controllers/queryAction');
 var jobDetailsController=require('../controllers/jobDetails');
 var retrieveController=require('../controllers/retrieveDicom');
@@ -9,7 +10,9 @@ var exportController=require('../controllers/exportDicom');
 
 
 //Route request to controllers
-router.all('/', indexController.getResults);
+router.all('/', authenticationController.getResults);
+
+router.all('/autoQuery', autoQueryController.getResults);
 
 router.all('/query', queryController.getResults);
 

@@ -164,6 +164,10 @@
         </tbody>
       </table>
     </div>
+
+    <div>
+      <% orthancInfo %>
+    </div>
   </body>
 
   <script type="text/javascript">
@@ -495,8 +499,36 @@
                                 csvData[i][7] ] )
       }
       drawTables();
-      
     }
+
+    /*
+    https://jsfiddle.net/rathore_gee/5vdb7t0L/
+    $(document).contextmenu({
+      delegate: ".dataTable td",
+      menu: [
+        {title: "Edit", cmd: "edit", uiIcon: "ui-icon-volume-off ui-icon-filter"}
+      ],
+      select: function(event, ui) {
+        var celltext = ui.target.text();
+        var colvindex = ui.target.parent().children().index(ui.target);
+        var colindex = $('table thead tr th:eq('+colvindex+')').data('column-index');
+        switch(ui.cmd){
+          case "edit":
+                    table
+              .column( colindex )
+              .search( '^' + celltext + '$', true )
+              .draw();
+            break;
+        }
+      },
+      beforeOpen: function(event, ui) {
+        var $menu = ui.menu,
+          $target = ui.target,
+          extraData = ui.extraData;
+        ui.menu.zIndex(9999);
+      }
+    });
+    */
 
 
   </script>

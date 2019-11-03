@@ -72,7 +72,7 @@ class Orthanc {
             request.get(currentOrthanc.createOptions('GET','/system'), function(error, response, body){
                 resolve(currentOrthanc.answerParser(body));
             });
-        });
+        }).catch((error)=>{console.log('Error Get System ' + error)});
         return promise; 
     }
 
@@ -85,7 +85,7 @@ class Orthanc {
             request.get(currentOrthanc.createOptions('GET','/modalities'), function(error, response, body){
                 resolve(currentOrthanc.answerParser(body));
             });
-        });
+        }).catch((error)=>{'Error get Aets ' + error});
         return promise;
     }
 
@@ -104,7 +104,7 @@ class Orthanc {
             request.put(currentOrthanc.createOptions('PUT','/modalities/'+name, JSON.stringify(data)), function(error, response, body){
                 resolve(console.log('Aet Declared'));
             });
-        });
+        }).catch((error)=>{console.log('Error put AET ' + error)});
 
         return promise;
 
@@ -125,7 +125,7 @@ class Orthanc {
                 resolve(true);
             });
 
-        });
+        }).catch((error)=> { console.log('Error Create Archive ' + error) });
         return promise;
     }
 
@@ -185,7 +185,7 @@ class Orthanc {
         }).then(function(answer){            
             let answerDetails= currentOrthanc.getAnswerDetails(answer.ID ,aet);
             return answerDetails;
-        });
+        }).catch((error)=>{ console.log('Error Make Query ' + error)});
 
         return promise;
     }
@@ -252,7 +252,7 @@ class Orthanc {
 
             });
 
-        });
+        }).catch((error)=>{ console.log('Error get answers Details ' + error)});
 
         return promise;
 
@@ -276,7 +276,7 @@ class Orthanc {
                 resolve(answer.ID);
             });
 
-        });
+        }).catch((error)=>{ console.log('Error make retrieve ' + error)});
         return promise;
     }
 
@@ -305,7 +305,7 @@ class Orthanc {
                 resolve(answer);
 
             });
-        })
+        }).catch((error)=>{ console.log('Error get job Details ' + error)});
         return promise;
     }
 
@@ -344,7 +344,7 @@ class Orthanc {
     
             })
 
-        });
+        }).catch((error)=>{ console.log('Error find in Orthanc ' + error)});
 
         return promise; 
 
@@ -373,7 +373,7 @@ class Orthanc {
     
             })
 
-        });
+        }).catch((error)=>{ console.log('Error find In Orthanc ' + error)});
 
         return promise; 
     }
@@ -391,7 +391,7 @@ class Orthanc {
                 resolve(answer);
             });
 
-        });
+        }).catch((error)=>{ console.log('Error get Orthanc level details ' + error)});
 
         return promise;
     }
@@ -406,7 +406,7 @@ class Orthanc {
         let promise = new Promise((resolve, reject)=>{
             request.delete(currentOrthanc.createOptions('DELETE', '/'+level+'/'+orthancID, function(error, response, body){
             }))
-        });
+        }).catch((error)=>{ console.log('Error delete from Orthanc ' + error)});
 
         return promise;
     }
@@ -519,16 +519,8 @@ class Orthanc {
             request.post(currentOrthanc.createOptions('POST', '/'+level+'/'+orthancID+'/anonymize', currentOrthanc.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription)), function(error, response, body){
                 console.log(body)
             })
-        })
+        }).catch((error)=>{ console.log('Error make anon ' + error)});
     }
- 
-
-    //Todo
-    /**
-     * Database NeDB
-     * https://github.com/louischatriot/nedb/
-     */
-
     
 }
 

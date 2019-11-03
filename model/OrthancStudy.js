@@ -23,7 +23,7 @@ class OrthancStudy{
             };
             orthancStudyInstance.getSeries();
             return orthancStudyInstance;
-        });
+        }).catch((error)=>{console.log('Error geting study details '+ error)});
 
     }
 
@@ -50,7 +50,6 @@ class OrthancStudy{
     async fillAllChildsDetails(){
 
         await this.fillDetails();
-
         await this.fillSeriesDetails();
 
     };
