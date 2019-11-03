@@ -14,8 +14,9 @@
     "eslint": "^6.5.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
-    "morgan": "~1.9.1",
+    "morgan": "^1.9.1",
     "request": "^2.88.0",
+    "rotating-file-stream": "^1.4.6",
     "sqlite3": "^4.1.0"
   },
   "pkg": {

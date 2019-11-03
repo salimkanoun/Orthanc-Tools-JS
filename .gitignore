@@ -4,3 +4,4 @@ myapp-linux
 myapp-macos
 myapp-win.exe
 database
+log/access.log
