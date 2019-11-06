@@ -19,6 +19,10 @@
     "rotating-file-stream": "^1.4.6",
     "sqlite3": "^4.1.0"
   },
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=6.0.0"
+  },
   "pkg": {
     "assets": [
       "public/**/*",
