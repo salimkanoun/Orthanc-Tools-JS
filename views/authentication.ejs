@@ -5,13 +5,13 @@
         <link rel='stylesheet' href='/stylesheets/style.css' />
         <% include ../includes/librairies.ejs %>
     </head>
-    <body class="jumbotron">
+    <body class="block block-400">
         <noscript>
             <div class="alert alert-danger" id="errorJS"> Warning : Your Navigator do not support Javascript, mendatory for this website</div>
         </noscript>
     
         <div class="alert alert-danger" id="error" style="display: none;"></div>
-        <div id="login" class="block">
+        <div id="login">
             <div class="block-title">Authentication</div>
             <div class="block-content">
                 <form id="login-form">
@@ -52,7 +52,13 @@
                     
                 }
             })
-        })
+        });
+
+        $(document).bind('keypress', function(e) {
+				if (e.keyCode == 13) {
+					$('#connexionBtn').trigger('click');
+				}
+		});
     
     </script>
 </html>

@@ -1,9 +1,11 @@
 var createError = require('http-errors');
 var express = require('express');
+var morgan = require('morgan');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const request = require('request');
+var fs = require('fs');
+var rfs = require('rotating-file-stream');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -20,6 +22,13 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+//SK AJOUTER VARIABLE DE SESSION UTILISATEUR DANS LOGS
+// SEE https://github.com/expressjs/morgan
+var accessLogStream = rfs('access.log', {
+  interval: '1d', // rotate daily
+  path: path.join(__dirname, 'log')
+})
+app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
