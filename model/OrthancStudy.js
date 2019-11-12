@@ -1,58 +1,52 @@
-let OrthancSeries=require('./OrthancSeries');
+const OrthancSeries = require('./OrthancSeries')
 
 /**
  * Stores a study level Orthanc ressource
  */
-class OrthancStudy{
+class OrthancStudy {
+  constructor (studyOrthancID, orthancInstance) {
+    this.studyOrthancID = studyOrthancID
+    this.orthancInstance = orthancInstance
+  }
 
-    constructor(studyOrthancID, orthancInstance){
-        this.studyOrthancID=studyOrthancID;
-        this.orthancInstance=orthancInstance;
-    }
-
-    /**
+  /**
      * Fill data from /study API
-     * @param {function()} returnCallBack 
+     * @param {function()} returnCallBack
      */
-    fillDetails(){
-        let orthancStudyInstance=this;
-        return this.orthancInstance.getOrthancDetails('studies', this.studyOrthancID).then(function(answer){
+  fillDetails () {
+    const orthancStudyInstance = this
+    return this.orthancInstance.getOrthancDetails('studies', this.studyOrthancID).then(function (answer) {
+      for (const element in answer) {
+        orthancStudyInstance[element] = answer[element]
+      };
+      orthancStudyInstance.getSeries()
+      return orthancStudyInstance
+    }).catch((error) => { console.log('Error geting study details ' + error) })
+  }
 
-            for(let element in answer){
-                orthancStudyInstance[element]=answer[element];
-            };
-            orthancStudyInstance.getSeries();
-            return orthancStudyInstance;
-        }).catch((error)=>{console.log('Error geting study details '+ error)});
+  fillSeriesDetails () {
+    const getSeriesPromises = []
+    this.seriesObjectArray.forEach(serie => {
+      getSeriesPromises.push(serie.fillDetails())
+    })
+    return Promise.all(getSeriesPromises)
+  }
 
-    }
-
-    fillSeriesDetails(){
-        let getSeriesPromises=[];
-        this.seriesObjectArray.forEach(serie=>{
-            getSeriesPromises.push(serie.fillDetails());
-        });
-        return Promise.all(getSeriesPromises)
-    }
-
-    /**
+  /**
      * Store references of child Series object
      */
-    getSeries(){
-        let orthancStudyInstance=this;
-        let seriesObjectArray=[];
-        this.Series.forEach(serie => {
-            seriesObjectArray.push(new OrthancSeries(serie, orthancStudyInstance.orthancInstance)); 
-        });
-        this.seriesObjectArray=seriesObjectArray;
-    }
+  getSeries () {
+    const orthancStudyInstance = this
+    const seriesObjectArray = []
+    this.Series.forEach(serie => {
+      seriesObjectArray.push(new OrthancSeries(serie, orthancStudyInstance.orthancInstance))
+    })
+    this.seriesObjectArray = seriesObjectArray
+  }
 
-    async fillAllChildsDetails(){
-
-        await this.fillDetails();
-        await this.fillSeriesDetails();
-
-    };
-
+  async fillAllChildsDetails () {
+    await this.fillDetails()
+    await this.fillSeriesDetails()
+  };
 }
-module.exports = OrthancStudy;
+module.exports = OrthancStudy
