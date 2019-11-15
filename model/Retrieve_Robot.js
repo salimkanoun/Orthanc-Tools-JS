@@ -5,13 +5,13 @@ class Retrieve_Robot{
     constructor (orthancObject, retrieveList, aetDestination) {
         this.orthancObject = orthancObject
         this.retrieveList = retrieveList
-        this.aetDestination=aetDestination
+        this.aetDestination = aetDestination
     }
 
     scheduleRetrieve (){
         let robot=this;
         schedule.scheduleJob('00 22 * * *', function(){
-            Console.log('Scheduled Retrieve Started')
+            console.log('Scheduled Retrieve Started')
             robot.doRetrieve();
         })
     }
@@ -19,7 +19,12 @@ class Retrieve_Robot{
     async doRetrieve (){
         let robot=this;
         let studyInstancUIDRetrieve=[];
-        for (const studyData of studyInstancUIDRetrieve) {
+        console.log(robot.retrieveList);
+        for (let i=0 ; i<robot.retrieveList.length ; i++) {
+            
+            let studyData=robot.retrieveList[i];
+            console.log(studyData)
+            
             robot.orthancObject.buildDicomQuery('Study', studyData['patientName'], studyData['patientID'], studyData['studyDate']+'-'+studyData['studyDate'],
                 studyData['modality'], studyData['studyDescription'], studyData['accessionNb'])
             let answerDetails=await robot.orthancObject.makeDicomQuery(studyData['aet'])
@@ -31,7 +36,7 @@ class Retrieve_Robot{
             
 
             }
-
+            
         }
 
         this.exportZips(studyInstancUIDRetrieve);
@@ -40,13 +45,16 @@ class Retrieve_Robot{
 
     async exportZips(studyInstancUIDArray){
         let retrieveRobot=this;
-        for( studyInstanceUID in studyInstancUIDArray){
-            let orthancResults= await retrieveRobot.orthancObject.findInOrthancByUid(studyInstanceUID)
-            console.log(orthancResults)
+        let orthancStudyID=[]
+        for(let i=0; i<studyInstancUIDArray.length ; i++){
+            let orthancResults= await retrieveRobot.orthancObject.findInOrthancByUid(studyInstancUIDArray[i])
+            orthancStudyID.push(orthancResults[0])
         }
+
+        this.orthancObject.exportArchiveDicom(orthancStudyID, 'resultRobot')
         
 
     }
 }
 
-export default Retrieve_Robot
+module.exports = Retrieve_Robot

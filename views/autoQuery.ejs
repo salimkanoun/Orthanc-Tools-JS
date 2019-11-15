@@ -474,22 +474,25 @@
         console.log(rowData);
 
         let retrieveData={
-          patientName: rowData[2],
-          patientID: rowData[3],
-          studyDate: rowData[5],
-          modality: rowData[7],
-          studyDescription: rowData[6],
-          accessionNb: rowData[4]
+          "patientName": rowData[2],
+          "patientID": rowData[3],
+          "studyDate": rowData[5],
+          "modality": rowData[7],
+          "studyDescription": rowData[6],
+          "accessionNb": rowData[4],
+          "aet" : rowData[8]
         }
 
         retrieveArray.push(retrieveData)
 
       })
+      console.log(retrieveArray)
       $.ajax({
           url: 'create_robot',
           type : 'POST',
           dataType: 'json',
-          data : { studyArray : retrieveArray},
+          contentType: "application/json",
+          data : JSON.stringify({ studyArray : retrieveArray}),
           success : function(data){
             console.log(data);
           }
