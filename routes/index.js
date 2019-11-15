@@ -7,6 +7,7 @@ var queryController = require('../controllers/queryAction')
 var jobDetailsController = require('../controllers/jobDetails')
 var retrieveController = require('../controllers/retrieveDicom')
 var exportController = require('../controllers/exportDicom')
+var robotController = require('../controllers/createRobot')
 
 // Route request to controllers
 router.all('/', authenticationController.getResults)
@@ -20,5 +21,7 @@ router.all('/job_details', jobDetailsController.getResults)
 router.all('/retrieve', retrieveController.getResults)
 
 router.all('/export_dicom', exportController.getResults)
+
+router.all('/create_robot', robotController.getResults)
 
 module.exports = router

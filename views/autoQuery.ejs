@@ -163,6 +163,7 @@
         <tbody>
         </tbody>
       </table>
+      <input type="button" id="retrieveAll" value="retrieve All" class="btn btn-primary">
     </div>
 
     <div>
@@ -462,6 +463,39 @@
         });
 
     });
+
+    $("#retrieveAll").on('click', function(){
+
+      let rows= resultTable.rows();
+      let retrieveArray=[]
+      rows.every(function(){
+        let rowData=this.data();
+
+        console.log(rowData);
+
+        let retrieveData={
+          patientName: rowData[2],
+          patientID: rowData[3],
+          studyDate: rowData[5],
+          modality: rowData[7],
+          studyDescription: rowData[6],
+          accessionNb: rowData[4]
+        }
+
+        retrieveArray.push(retrieveData)
+
+      })
+      $.ajax({
+          url: 'create_robot',
+          type : 'POST',
+          dataType: 'json',
+          data : { studyArray : retrieveArray},
+          success : function(data){
+            console.log(data);
+          }
+        });
+
+    })
 
     let parseCsv=function () {
       $('input[type=file]').parse({
