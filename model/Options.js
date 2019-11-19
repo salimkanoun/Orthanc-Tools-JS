@@ -5,7 +5,6 @@ class Options {
     }
     
     async getOptions(){
-        
         let currentOptions=this
         let promise = new Promise((resolve, reject)=>{
             let getStmt = `SELECT * FROM options`
@@ -34,12 +33,13 @@ class Options {
         let currentOptions=this;
         let promise = new Promise((resolve, reject)=>{
 
-            currentOptions.databaseObject.run(`INSERT INTO options(hour, min) VALUES(?, ?)`, [hour, min], function(err) {
+            currentOptions.databaseObject.run(`UPDATE options SET hour=? min=?`, [hour, min], function(err) {
                 if(err){
                     console.log(err);
                 }else{
                     console.log('Done');
                 }
+                resolve(console.log('done'));
             })
 
         }).catch(function(error){
@@ -47,7 +47,6 @@ class Options {
         });
 
         return promise;
-  
     }
 }
 

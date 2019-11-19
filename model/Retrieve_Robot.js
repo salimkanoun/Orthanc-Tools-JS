@@ -8,9 +8,9 @@ class Retrieve_Robot{
         this.aetDestination = aetDestination
     }
 
-    scheduleRetrieve (){
+    scheduleRetrieve (hour, min){
         let robot=this;
-        schedule.scheduleJob('00 22 * * *', function(){
+        schedule.scheduleJob(min+hour+' * * *', function(){
             console.log('Scheduled Retrieve Started')
             robot.doRetrieve();
         })
