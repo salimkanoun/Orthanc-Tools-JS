@@ -8,11 +8,10 @@ const TagAnon = require('./TagAnon')
  */
 class Orthanc {
   constructor () {
-    const configContent = JSON.parse(fs.readFileSync('./data/_config/config.json', 'utf8'))
-    this.address = configContent.Address
-    this.port = configContent.Port
-    this.username = configContent.Username
-    this.password = configContent.Password
+    this.address = process.env.ORTHANC_HOST
+    this.port = process.env.ORTHANC_PORT
+    this.username = process.env.ORTHANC_USERNAME
+    this.password = process.env.ORTHANC_PASS
   }
 
   /**

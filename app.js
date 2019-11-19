@@ -9,7 +9,11 @@ var rfs = require('rotating-file-stream')
 var indexRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
 
+require('dotenv').load();
+
 var app = express()
+
+console.log(process.env)
 
 // view engine setup
 app.use(express.static(path.join(__dirname, 'public')))
