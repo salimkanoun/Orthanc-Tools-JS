@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>Options</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <% include ../includes/librairies.ejs %>
+    </head>
+
+    <body>
+        <div id='optionForm'>
+            <div class="row">
+                <input type='number' id="scheduleHour" class="form-control" value="22">
+                <input type='number' id="scheduleMin" class="form-control" value="00">
+            </div>
+            <input type='button' class='btn btn-primary' id="optionBtn" value='send'>
+
+        </div>
+    </body>
+
+    <script>
+        $('#optionBtn').on('click', function(){
+            let hourChoice=$('#scheduleHour').val()
+            let minChoice=$('#scheduleMin').val()
+            $.ajax({
+                url: 'options',
+                type : 'POST',
+                dataType: 'json',
+                data : { hour : hourChoice, minutes : minChoice},
+                success : function(data){
+                    console.log(data)
+                }
+            })
+        })
+    </script>
+</html>

@@ -8,11 +8,10 @@ const TagAnon = require('./TagAnon')
  */
 class Orthanc {
   constructor () {
-    const configContent = JSON.parse(fs.readFileSync('./_config/config.json', 'utf8'))
-    this.address = configContent.Address
-    this.port = configContent.Port
-    this.username = configContent.Username
-    this.password = configContent.Password
+    this.address = process.env.ORTHANC_HOST
+    this.port = process.env.ORTHANC_PORT
+    this.username = process.env.ORTHANC_USERNAME
+    this.password = process.env.ORTHANC_PASS
   }
 
   /**
@@ -115,7 +114,7 @@ class Orthanc {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
       const inputStream = request.post(currentOrthanc.createOptions('POST', '/tools/create-archive', JSON.stringify(orthancIds)))
-      inputStream.pipe(fs.createWriteStream('./export_dicom/' + filename + '.zip'))
+      inputStream.pipe(fs.createWriteStream('./data/export_dicom/' + filename + '.zip'))
 
       inputStream.on('end', () => {
         resolve(true)
@@ -253,10 +252,10 @@ class Orthanc {
      * @param {QueryAnswer} queryAnswerObject
      * @param {string} aet
      */
-  makeRetrieve (queryID, answerNumber, aet) {
+  makeRetrieve (queryID, answerNumber, aet, synchronous=false) {
     const currentOrthanc = this
     const postData = {
-      Synchronous: false,
+      Synchronous: synchronous,
       TargetAet: aet
     }
     const promise = new Promise((resolve, reject) => {
@@ -267,6 +266,7 @@ class Orthanc {
     }).catch((error) => { console.log('Error make retrieve ' + error) })
     return promise
   }
+  
 
   getJobData (jobUid) {
     const currentOrthanc = this

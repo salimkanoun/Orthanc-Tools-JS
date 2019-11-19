@@ -1,13 +1,15 @@
-var sqlite3 = require('sqlite3').verbose()
+const sqlite3 = require('sqlite3').verbose()
+const InstallDatabase= require('./Install_Database')
 
 class Database {
+
   async connectTable () {
     const curentDatabaseObject = this
 
     let db
 
     const promise = new Promise((resolve, reject) => {
-      db = new sqlite3.Database('./database/imagefetcher.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+      db = new sqlite3.Database('./data/database/imagefetcher.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
         if (err) {
           console.error(+err.message)
         } else {
@@ -24,21 +26,7 @@ class Database {
     return promise
   }
 
-  async createUserTable () {
-    const curentDatabaseObject = this
-    const promise = new Promise((resolve, reject) => {
-      curentDatabaseObject.db.run('CREATE TABLE users(username text, password text, admin integer)', function (error) {
-        if (error) {
-          reject(console.log('Failed to add user'))
-        } else {
-          resolve(console.log('user add'))
-        }
-      })
-    }).catch((reason) => { console.log('Create user table failed ' + reason) })
-
-    return promise
-  }
-
+  
   async isDatabaseEmpty () {
     const datbaseObject = this
     const promise = new Promise((resolve, reject) => {
@@ -48,7 +36,8 @@ class Database {
       })
     }).then((isEmpty) => {
       if (isEmpty) {
-        datbaseObject.createUserTable()
+        InstallDatabase.createUserTable(datbaseObject.db)
+        InstallDatabase.createOptionTable(datbaseObject.db)
       }
     }).catch((reason) => {
       console.log(reason)
@@ -57,9 +46,12 @@ class Database {
     return promise
   }
 
-  getDatabase () {
-    return this.db
+  static async getDatabase () {
+    let database = new Database()
+    await database.connectTable()
+    return database.db
   }
+
 }
 
 module.exports = Database

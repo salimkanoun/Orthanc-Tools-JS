@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 var createError = require('http-errors')
 var express = require('express')
 var morgan = require('morgan')
@@ -25,7 +27,7 @@ app.use(cookieParser())
 // SEE https://github.com/expressjs/morgan
 var accessLogStream = rfs('access.log', {
   interval: '1d', // rotate daily
-  path: path.join(__dirname, 'log')
+  path: path.join(__dirname, '/data/log')
 })
 app.use(morgan('combined', { stream: accessLogStream }))
 
@@ -34,8 +36,16 @@ app.use('/users', usersRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
+  console.log('error 404 salim')
   next(createError(404))
 })
+
+app.use((err, req, res, next) => {
+  // handle error
+  console.error(err);
+});
+
+
 
 // error handler
 app.use(function (err, req, res, next) {
