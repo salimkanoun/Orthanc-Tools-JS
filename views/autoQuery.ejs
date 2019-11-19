@@ -28,25 +28,25 @@
           <div class="row">
             <div class="col-sm">
               <label for="lastName">Last Name</label>
-              <input type="text" name="lastName" id="lastName" class="form-control" placeholder="last name" aria-describedby="helpId">
+              <input type="text" name="lastName" id="lastName" class="form-control" placeholder="last name">
             </div>
             <div class="col-sm">
               <label for="firstName">First Name</label>
-              <input type="text" name="firstName" id="firstName" class="form-control" placeholder="first name" aria-describedby="helpId">
+              <input type="text" name="firstName" id="firstName" class="form-control" placeholder="first name">
             </div>
             <div class="col-sm">
               <label for="patientID">Patient ID</label>
-              <input type="text" name="patientID" id="patientID" class="form-control" placeholder="Patient ID" aria-describedby="helpId">
+              <input type="text" name="patientID" id="patientID" class="form-control" placeholder="Patient ID">
             </div>
         </div>
         <div class="row">
             <div class="col-sm">
                 <label for="accessionNumber">Accession Number</label>
-                <input type="text" name="accessionNumber" id="accessionNumber" class="form-control" placeholder="Accession Number" aria-describedby="helpId">
+                <input type="text" name="accessionNumber" id="accessionNumber" class="form-control" placeholder="Accession Number">
             </div>
             <div class="col-sm">
                 <label for="studyDescription">Study Description</label>
-                <input type="text" name="studyDescription" id="studyDescription" class="form-control" placeholder="Study Description" aria-describedby="helpId">
+                <input type="text" name="studyDescription" id="studyDescription" class="form-control" placeholder="Study Description">
             </div>
             <div class="col-sm">
               <label for="modality">Modality</label>
@@ -64,11 +64,11 @@
         <div class="row">
           <div class="col-sm">
               <label for="dateFrom">Date From</label>
-              <input type="date" name="dateFrom" id="dateFrom" class="form-control" placeholder="Date From" aria-describedby="helpId">
+              <input type="date" name="dateFrom" id="dateFrom" class="form-control" placeholder="Date From">
             </div>
             <div class="col-sm">
               <label for="dateTo">Date To</label>
-              <input type="date" name="dateTo" id="dateTo" class="form-control" placeholder="Date To" aria-describedby="helpId">
+              <input type="date" name="dateTo" id="dateTo" class="form-control" placeholder="Date To">
             </div>
         </div>
         
@@ -466,7 +466,7 @@
 
     $("#retrieveAll").on('click', function(){
 
-      let rows= resultTable.rows();
+      let rows= resultTable.rows('.selected');
       let retrieveArray=[]
       rows.every(function(){
         let rowData=this.data();

@@ -34,8 +34,16 @@ app.use('/users', usersRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
+  console.log('error 404 salim')
   next(createError(404))
 })
+
+app.use((err, req, res, next) => {
+  // handle error
+  console.error(err);
+});
+
+
 
 // error handler
 app.use(function (err, req, res, next) {
