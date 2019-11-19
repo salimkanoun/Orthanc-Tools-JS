@@ -8,7 +8,7 @@ const TagAnon = require('./TagAnon')
  */
 class Orthanc {
   constructor () {
-    const configContent = JSON.parse(fs.readFileSync('./_config/config.json', 'utf8'))
+    const configContent = JSON.parse(fs.readFileSync('./data/_config/config.json', 'utf8'))
     this.address = configContent.Address
     this.port = configContent.Port
     this.username = configContent.Username
@@ -115,7 +115,7 @@ class Orthanc {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
       const inputStream = request.post(currentOrthanc.createOptions('POST', '/tools/create-archive', JSON.stringify(orthancIds)))
-      inputStream.pipe(fs.createWriteStream('./export_dicom/' + filename + '.zip'))
+      inputStream.pipe(fs.createWriteStream('./data/export_dicom/' + filename + '.zip'))
 
       inputStream.on('end', () => {
         resolve(true)

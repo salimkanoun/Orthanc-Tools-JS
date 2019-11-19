@@ -25,7 +25,7 @@ app.use(cookieParser())
 // SEE https://github.com/expressjs/morgan
 var accessLogStream = rfs('access.log', {
   interval: '1d', // rotate daily
-  path: path.join(__dirname, 'log')
+  path: path.join(__dirname, '/data/log')
 })
 app.use(morgan('combined', { stream: accessLogStream }))
 

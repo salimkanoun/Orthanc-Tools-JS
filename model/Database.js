@@ -9,7 +9,7 @@ class Database {
     let db
 
     const promise = new Promise((resolve, reject) => {
-      db = new sqlite3.Database('./database/imagefetcher.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+      db = new sqlite3.Database('./data/database/imagefetcher.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
         if (err) {
           console.error(+err.message)
         } else {
