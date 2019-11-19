@@ -252,7 +252,7 @@ class Orthanc {
      * @param {QueryAnswer} queryAnswerObject
      * @param {string} aet
      */
-  makeRetrieve (queryID, answerNumber, aet, synchronous=false) {
+  makeRetrieve (queryID, answerNumber, aet, synchronous = false) {
     const currentOrthanc = this
     const postData = {
       Synchronous: synchronous,
@@ -266,7 +266,6 @@ class Orthanc {
     }).catch((error) => { console.log('Error make retrieve ' + error) })
     return promise
   }
-  
 
   getJobData (jobUid) {
     const currentOrthanc = this

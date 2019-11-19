@@ -1,8 +1,8 @@
 var express = require('express')
 var router = express.Router()
 
-//Handle controller errors
-require('express-async-errors');
+// Handle controller errors
+require('express-async-errors')
 
 var authenticationController = require('../controllers/authentication')
 var autoQueryController = require('../controllers/autoQuery')
