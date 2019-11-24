@@ -11,7 +11,6 @@ class Options {
             currentOptions.databaseObject.get(getStmt,[], function(err, row) {
                 console.log(err)
                 console.log(row)
-                console.log(row)
                 if(row!==undefined){
                     currentOptions.hour=row.hour;
                     currentOptions.min=row.min;

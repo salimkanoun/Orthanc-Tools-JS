@@ -29,7 +29,15 @@ async function createOptionTable(databaseObject){
           resolve(console.log('option Table add'))
         }
       })
-    }).catch((reason) => { console.log('Create Options table failed ' + reason) })
+    }).then( ()=>{
+      databaseObject.run(`INSERT INTO options(hour, min) VALUES(?, ?)`, [22, 00], function(err) {
+        if(err){
+            console.log(err);
+        }else{
+            console.log('Done');
+        }
+      })
+      }).catch((reason) => { console.log('Create Options table failed ' + reason) })
 
     return promise
 

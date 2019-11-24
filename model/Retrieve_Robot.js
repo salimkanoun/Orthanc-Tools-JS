@@ -10,7 +10,8 @@ class Retrieve_Robot{
 
     scheduleRetrieve (hour, min){
         let robot=this;
-        schedule.scheduleJob(min+hour+' * * *', function(){
+        console.log('Scheduled '+hour+' '+min)
+        schedule.scheduleJob(min+' '+hour+' * * *', function(){
             console.log('Scheduled Retrieve Started')
             robot.doRetrieve();
         })
