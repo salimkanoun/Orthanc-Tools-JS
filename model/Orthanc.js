@@ -79,6 +79,7 @@ class Orthanc {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
       request.get(currentOrthanc.createOptions('GET', '/modalities'), function (error, response, body) {
+        console.log(body)
         resolve(currentOrthanc.answerParser(body))
       })
     }).catch((error) => { 'Error get Aets ' + error })
@@ -128,7 +129,7 @@ class Orthanc {
      * @param {string} answer
      */
   answerParser (answer) {
-    let parsedAnwser = null
+    let parsedAnwser = []
     try {
       parsedAnwser = JSON.parse(answer)
     } catch (error) {
