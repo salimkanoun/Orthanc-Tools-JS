@@ -8,10 +8,9 @@ class Options {
         let currentOptions=this
         let promise = new Promise((resolve, reject)=>{
             let getStmt = `SELECT * FROM options`
-            currentOptions.databaseObject.get(getStmt, function(err, row) {
-                
-                console.log(err);
-                console.log(row);
+            currentOptions.databaseObject.get(getStmt,[], function(err, row) {
+                console.log(err)
+                console.log(row)
                 console.log(row)
                 if(row!==undefined){
                     currentOptions.hour=row.hour;
@@ -33,7 +32,7 @@ class Options {
         let currentOptions=this;
         let promise = new Promise((resolve, reject)=>{
 
-            currentOptions.databaseObject.run(`UPDATE options SET hour=? min=?`, [hour, min], function(err) {
+            currentOptions.databaseObject.run(`UPDATE options SET hour=?, min=?`, [hour, min], function(err) {
                 if(err){
                     console.log(err);
                 }else{

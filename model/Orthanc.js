@@ -12,6 +12,10 @@ class Orthanc {
     this.port = process.env.ORTHANC_PORT
     this.username = process.env.ORTHANC_USERNAME
     this.password = process.env.ORTHANC_PASS
+    console.log(this.address)
+    console.log(this.port)
+    console.log(this.username)
+    console.log(this.password)
   }
 
   /**
@@ -133,7 +137,7 @@ class Orthanc {
     try {
       parsedAnwser = JSON.parse(answer)
     } catch (error) {
-      console.error(error)
+      console.error("Parsing Response Error answer : "+answer+" Thrown Error : "+error)
     }
     return parsedAnwser
   }

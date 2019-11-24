@@ -4,15 +4,17 @@ let Options = require('../model/Options')
 var getResults = async function (req, res) {
   const body = req.body
   console.log(body)
+  let database=await Database.getDatabase()
+  let option=new Options(database)
+
   if('hour' in body){
-    let database=await Database.getDatabase()
-    let option=new Options(database)
     await option.setScheduleTime(body.hour, body.minutes)
     res.setHeader('Content-Type', 'application/json')
     res.end(JSON.stringify("Done"))
 
   }else{
-    res.render('options')
+    await option.getOptions();
+    res.render('options', {hour:option.hour, min:option.min})
   }
 
 }
