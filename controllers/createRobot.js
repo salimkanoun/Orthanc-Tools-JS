@@ -1,4 +1,5 @@
 var getResults = async function (req, res) {
+    //SK ICI ROBOT NECESSITE D ETRE UNIQUE POUR TOUT L APPLI
     let Retrieve_Robot = require('../model/Retrieve_Robot')
     let Orthanc = require('../model/Orthanc')
     let Options = require('../model/Options')

@@ -11,10 +11,20 @@ class Retrieve_Robot{
     scheduleRetrieve (hour, min){
         let robot=this;
         console.log('Scheduled '+hour+' '+min)
-        schedule.scheduleJob(min+' '+hour+' * * *', function(){
+        console.log(this.scheduledJob)
+        if(this.scheduledJob !== undefined){
+            console.log('Cancelled previous job')
+            this.scheduledJob.cancel()
+        }
+
+        let scheduledJob=schedule.scheduleJob(min+' '+hour+' * * *', function(){
             console.log('Scheduled Retrieve Started')
             robot.doRetrieve();
         })
+
+        this.scheduledJob=scheduledJob
+
+        console.log(scheduledJob)
     }
 
     async doRetrieve (){
