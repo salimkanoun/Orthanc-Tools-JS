@@ -7,7 +7,7 @@ var getResults = async function (req, res) {
   if ('username' in body) {
     console.log(body.username)
     console.log(body.password)
-    let database=await Database.getDatabase();
+    const database = await Database.getDatabase()
     const userObject = new Users(database, body.username)
     await Users.createUser(database, 'salim', 'salim', 0)
     await userObject.getDetails()

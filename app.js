@@ -42,10 +42,8 @@ app.use(function (req, res, next) {
 
 app.use((err, req, res, next) => {
   // handle error
-  console.error(err);
-});
-
-
+  console.error(err)
+})
 
 // error handler
 app.use(function (err, req, res, next) {

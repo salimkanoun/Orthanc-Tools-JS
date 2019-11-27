@@ -1,8 +1,7 @@
 const sqlite3 = require('sqlite3').verbose()
-const InstallDatabase= require('./Install_Database')
+const InstallDatabase = require('./Install_Database')
 
 class Database {
-
   async connectTable () {
     const curentDatabaseObject = this
 
@@ -26,7 +25,6 @@ class Database {
     return promise
   }
 
-  
   async isDatabaseEmpty () {
     const datbaseObject = this
     const promise = new Promise((resolve, reject) => {
@@ -47,11 +45,10 @@ class Database {
   }
 
   static async getDatabase () {
-    let database = new Database()
+    const database = new Database()
     await database.connectTable()
     return database.db
   }
-
 }
 
 module.exports = Database
