@@ -2,9 +2,15 @@ let schedule = require('node-schedule');
 
 class Retrieve_Robot{
 
-    constructor (orthancObject, retrieveList, aetDestination) {
+    constructor (orthancObject) {
         this.orthancObject = orthancObject
+    }
+
+    setRetrieveList(retrieveList){
         this.retrieveList = retrieveList
+    }
+
+    setDestination(aetDestination){
         this.aetDestination = aetDestination
     }
 
