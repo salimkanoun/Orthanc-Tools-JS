@@ -25,7 +25,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-app.use(session({secret: 'ImageFetcher'}));
+app.use(session({ secret: 'ImageFetcher' }))
 
 // SK AJOUTER VARIABLE DE SESSION UTILISATEUR DANS LOGS
 // SEE https://github.com/expressjs/morgan
@@ -33,9 +33,9 @@ var accessLogStream = rfs('access.log', {
   interval: '1d', // rotate daily
   path: path.join(__dirname, '/data/log')
 })
-logger.token('username', function(req, res) {
-	return req.session.username;
-});
+logger.token('username', function (req, res) {
+  return req.session.username
+})
 app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username"', { stream: accessLogStream }))
 
 app.use('/', indexRouter)
