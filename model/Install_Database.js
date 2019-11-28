@@ -1,22 +1,20 @@
-async function installDatabase(databaseObject){
-
-    await createUserTable(databaseObject);
-    await createOptionTable(databaseObject);
-    
+async function installDatabase (databaseObject) {
+  await createUserTable(databaseObject)
+  await createOptionTable(databaseObject)
 }
 
 async function createUserTable (databaseObject) {
-    const promise = new Promise((resolve, reject) => {
-        databaseObject.run('CREATE TABLE users(username text, password text, admin integer)', function (error) {
-        if (error) {
-          reject(console.log('Failed to add user'))
-        } else {
-          resolve(console.log('user add'))
-        }
-      })
-    }).catch((reason) => { console.log('Create user table failed ' + reason) })
+  const promise = new Promise((resolve, reject) => {
+    databaseObject.run('CREATE TABLE users(username text, password text, admin integer)', function (error) {
+      if (error) {
+        reject(console.log('Failed to add user'))
+      } else {
+        resolve(console.log('user add'))
+      }
+    })
+  }).catch((reason) => { console.log('Create user table failed ' + reason) })
 
-    return promise
+  return promise
 }
 
 async function createOptionTable(databaseObject){
@@ -29,10 +27,18 @@ async function createOptionTable(databaseObject){
           resolve(console.log('option Table add'))
         }
       })
-    }).catch((reason) => { console.log('Create Options table failed ' + reason) })
+    }).then( ()=>{
+      databaseObject.run(`INSERT INTO options(hour, min) VALUES(?, ?)`, [22, 00], function(err) {
+        if(err){
+            console.log(err);
+        }else{
+            console.log('Done');
+        }
+      })
+      }).catch((reason) => { console.log('Create Options table failed ' + reason) })
 
     return promise
 
   }
 
-  module.exports = {installDatabase, createUserTable, createOptionTable}
+module.exports = { installDatabase, createUserTable, createOptionTable }
