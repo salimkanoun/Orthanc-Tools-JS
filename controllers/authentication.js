@@ -12,6 +12,9 @@ var getResults = async function (req, res) {
     await Users.createUser(database, 'salim', 'salim', 0)
     await userObject.getDetails()
     const checkPassword = await userObject.checkPassword(body.password)
+    if(checkPassword){
+      req.session.username = body.username;
+    }
     console.log(checkPassword)
     res.setHeader('Content-Type', 'application/json')
     res.end(JSON.stringify(checkPassword))
