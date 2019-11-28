@@ -153,11 +153,11 @@ class Orthanc {
      * @param {string} accessionNb
      */
   buildDicomQuery (level = 'Study', patientName = '*', patientID = '*', studyDate = '*', modality = '*', studyDescription = '*', accessionNb = '*') {
-    if (patientName == '*^*') patientName = '*'
+    if (patientName === '*^*') patientName = '*'
     // Remove * character as until date X should be written -dateX and not *-dateX
     studyDate = studyDate.replace(/[*]/g, '')
 
-    if (studyDate == '-') studyDate = '*'
+    if (studyDate === '-') studyDate = '*'
 
     console.log(studyDate)
 
@@ -321,12 +321,12 @@ class Orthanc {
     const currentOrthanc = this
     const queryDetails = {}
 
-    if (date != '*') queryDetails.StudyDate = date
-    if (studyDescription != '*') queryDetails.StudyDescription = studyDescription
-    if (modality != '*') queryDetails.ModalitiesInStudy = modality
-    if (patientName != '*') queryDetails.PatientName = patientName
-    if (patientID != '*') queryDetails.PatientID = patientID
-    if (accessionNb != '*') queryDetails.AccessionNumber = accessionNb
+    if (date !== '*') queryDetails.StudyDate = date
+    if (studyDescription !== '*') queryDetails.StudyDescription = studyDescription
+    if (modality !== '*') queryDetails.ModalitiesInStudy = modality
+    if (patientName !== '*') queryDetails.PatientName = patientName
+    if (patientID !== '*') queryDetails.PatientID = patientID
+    if (accessionNb !== '*') queryDetails.AccessionNumber = accessionNb
 
     const queryParameter = {
       Level: level,
@@ -415,14 +415,14 @@ class Orthanc {
     let date
     let body
 
-    if (profile == 'Default') {
+    if (profile === 'Default') {
       date = TagAnon.keep
       body = TagAnon.keep
 
       tagObjectArray.push(new TagAnon('0010,0030', TagAnon.replace, '19000101')) // BirthDay
       tagObjectArray.push(new TagAnon('0008,1030', TagAnon.replace, newStudyDescription)) // studyDescription
       tagObjectArray.push(new TagAnon('0008,103E', TagAnon.keep)) // series Description
-    } else if (profile == 'Full') {
+    } else if (profile === 'Full') {
       date = TagAnon.clear
       body = TagAnon.clear
 
@@ -488,9 +488,9 @@ class Orthanc {
     tagObjectArray.forEach(tag => {
       const tagNb = tag.tagNumber
       const tagNewValue = tag.newValue
-      if (tag.choice == TagAnon.keep) {
+      if (tag.choice === TagAnon.keep) {
         anonParameters.Keep.push(tagNb)
-      } else if (tag.choice == TagAnon.replace) {
+      } else if (tag.choice === TagAnon.replace) {
         anonParameters.Replace[tagNb] = tagNewValue
       }
     })
@@ -507,6 +507,8 @@ class Orthanc {
         console.log(body)
       })
     }).catch((error) => { console.log('Error make anon ' + error) })
+
+    return promise
   }
 }
 

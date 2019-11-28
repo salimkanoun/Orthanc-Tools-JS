@@ -7,7 +7,7 @@ var path = require('path')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 var rfs = require('rotating-file-stream')
-const session = require('express-session')
+var session = require('express-session')
 
 var indexRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
@@ -27,8 +27,6 @@ app.use(cookieParser())
 
 app.use(session({ secret: 'ImageFetcher' }))
 
-// SK AJOUTER VARIABLE DE SESSION UTILISATEUR DANS LOGS
-// SEE https://github.com/expressjs/morgan
 var accessLogStream = rfs('access.log', {
   interval: '1d', // rotate daily
   path: path.join(__dirname, '/data/log')
