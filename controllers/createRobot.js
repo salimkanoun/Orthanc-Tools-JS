@@ -1,5 +1,6 @@
 var getResults = async function (req, res) {
-  const Retrieve_Robot = require('../model/Retrieve_Robot')
+  // SK ICI ROBOT NECESSITE D ETRE UNIQUE POUR TOUT L APPLI
+  const Robot_Singleton = require('../model/Robot_Singleton')
   const Orthanc = require('../model/Orthanc')
   const Options = require('../model/Options')
   const Database = require('../model/Database')
@@ -10,8 +11,11 @@ var getResults = async function (req, res) {
   const body = req.body
   const orthanc = new Orthanc()
   const orthancSystem = await orthanc.getSystem()
-  const retriveRobot = new Retrieve_Robot(orthanc, body.studyArray, orthancSystem.DicomAet)
-  retriveRobot.scheduleRetrieve(optionsParameters.hour, optionsParameters.min)
+  const robotSingleton = new Robot_Singleton(orthanc)
+  retrieveRobot = robotSingleton.getRobot()
+  retrieveRobot.setRetrieveList(body.studyArray)
+  retrieveRobot.setDestination(orthancSystem.DicomAet)
+  retrieveRobot.scheduleRetrieve(optionsParameters.hour, optionsParameters.min)
 
   res.setHeader('Content-Type', 'application/json')
   res.end(JSON.stringify('Done'))

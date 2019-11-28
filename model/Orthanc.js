@@ -12,6 +12,10 @@ class Orthanc {
     this.port = process.env.ORTHANC_PORT
     this.username = process.env.ORTHANC_USERNAME
     this.password = process.env.ORTHANC_PASS
+    console.log(this.address)
+    console.log(this.port)
+    console.log(this.username)
+    console.log(this.password)
   }
 
   /**
@@ -79,6 +83,7 @@ class Orthanc {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
       request.get(currentOrthanc.createOptions('GET', '/modalities'), function (error, response, body) {
+        console.log(body)
         resolve(currentOrthanc.answerParser(body))
       })
     }).catch((error) => { 'Error get Aets ' + error })
@@ -128,11 +133,11 @@ class Orthanc {
      * @param {string} answer
      */
   answerParser (answer) {
-    let parsedAnwser = null
+    let parsedAnwser = []
     try {
       parsedAnwser = JSON.parse(answer)
     } catch (error) {
-      console.error(error)
+      console.error('Parsing Response Error answer : ' + answer + ' Thrown Error : ' + error)
     }
     return parsedAnwser
   }
@@ -148,7 +153,15 @@ class Orthanc {
      * @param {string} accessionNb
      */
   buildDicomQuery (level = 'Study', patientName = '*', patientID = '*', studyDate = '*', modality = '*', studyDescription = '*', accessionNb = '*') {
-    if (studyDate = '*-*') studyDate = '*'
+
+    if (patientName == '*^*') patientName = '*'
+    //Remove * character as until date X should be written -dateX and not *-dateX
+    studyDate=studyDate.replace(/[*]/g, '');
+
+    if (studyDate == '-') studyDate = '*'
+
+    console.log(studyDate)
+
     this.preparedQuery = {
       Level: level,
       Query: {
@@ -161,6 +174,7 @@ class Orthanc {
       }
 
     }
+
   }
 
   /**

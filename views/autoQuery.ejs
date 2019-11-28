@@ -303,7 +303,7 @@
         ]});
 
     $(".queryAET").on('click', function(){
-      let nameString=$("#lastName").val()+$("#firstName").val();
+      let nameString=$("#lastName").val()+'^'+$("#firstName").val();
       let patientID=$("#patientID").val();
       let accessionNumber=$("#accessionNumber").val();
       let dateFrom=$("#dateFrom").val().split('-').join('');
@@ -312,13 +312,14 @@
       let modalities=$("#modality").val().join('/');
       let aet=$(this).val();
       
-      if(dateFrom==''){
-        dateFrom='*'
-      }
-
-      if(dateTo==''){
-        dateTo='*'
-      }
+      if(dateFrom=='') dateFrom='*'
+      if(dateTo=='') dateTo='*'
+      if(patientID=='') patientID='*'
+      if(nameString=='^') nameString='*'
+      if(patientID=='') patientID='*'
+      if(accessionNumber=='') accessionNumber='*'
+      if(studyDescription=='') studyDescription='*'
+      if(modalities=='') modalities='*'
  
       requestTable.row.add( [ nameString , patientID , accessionNumber , dateFrom, dateTo, studyDescription, modalities, aet ] )
           .draw()

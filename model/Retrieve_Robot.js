@@ -1,18 +1,35 @@
 const schedule = require('node-schedule')
 
 class Retrieve_Robot {
-  constructor (orthancObject, retrieveList, aetDestination) {
+  constructor (orthancObject) {
     this.orthancObject = orthancObject
+  }
+
+  setRetrieveList (retrieveList) {
     this.retrieveList = retrieveList
+  }
+
+  setDestination (aetDestination) {
     this.aetDestination = aetDestination
   }
 
   scheduleRetrieve (hour, min) {
     const robot = this
-    schedule.scheduleJob(min + hour + ' * * *', function () {
+    console.log('Scheduled ' + hour + ' ' + min)
+    console.log(this.scheduledJob)
+    if (this.scheduledJob !== undefined) {
+      console.log('Cancelled previous job')
+      this.scheduledJob.cancel()
+    }
+
+    const scheduledJob = schedule.scheduleJob(min + ' ' + hour + ' * * *', function () {
       console.log('Scheduled Retrieve Started')
       robot.doRetrieve()
     })
+
+    this.scheduledJob = scheduledJob
+
+    console.log(scheduledJob)
   }
 
   async doRetrieve () {

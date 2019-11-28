@@ -7,9 +7,8 @@ class Options {
     const currentOptions = this
     const promise = new Promise((resolve, reject) => {
       const getStmt = 'SELECT * FROM options'
-      currentOptions.databaseObject.get(getStmt, function (err, row) {
+      currentOptions.databaseObject.get(getStmt, [], function (err, row) {
         console.log(err)
-        console.log(row)
         console.log(row)
         if (row !== undefined) {
           currentOptions.hour = row.hour
@@ -28,7 +27,7 @@ class Options {
   setScheduleTime (hour, min) {
     const currentOptions = this
     const promise = new Promise((resolve, reject) => {
-      currentOptions.databaseObject.run('UPDATE options SET hour=? min=?', [hour, min], function (err) {
+      currentOptions.databaseObject.run('UPDATE options SET hour=?, min=?', [hour, min], function (err) {
         if (err) {
           console.log(err)
         } else {
