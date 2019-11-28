@@ -153,7 +153,15 @@ class Orthanc {
      * @param {string} accessionNb
      */
   buildDicomQuery (level = 'Study', patientName = '*', patientID = '*', studyDate = '*', modality = '*', studyDescription = '*', accessionNb = '*') {
-    if (studyDate = '*-*') studyDate = '*'
+
+    if (patientName == '*^*') patientName = '*'
+    //Remove * character as until date X should be written -dateX and not *-dateX
+    studyDate=studyDate.replace(/[*]/g, '');
+
+    if (studyDate == '-') studyDate = '*'
+
+    console.log(studyDate)
+
     this.preparedQuery = {
       Level: level,
       Query: {
@@ -166,6 +174,7 @@ class Orthanc {
       }
 
     }
+
   }
 
   /**
