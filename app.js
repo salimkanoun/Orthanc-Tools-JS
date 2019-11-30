@@ -25,7 +25,20 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-app.use(session({ secret: 'ImageFetcher' }))
+app.use(session({
+  secret: 'ImageFetcher',
+  resave: true,
+  saveUninitialized: true }))
+
+var unless = function(path, middleware) {
+  return function(req, res, next) {
+      if (path === req.path) {
+          return next();
+      } else {
+          return middleware(req, res, next);
+      }
+  };
+};
 
 var accessLogStream = rfs('access.log', {
   interval: '1d', // rotate daily
@@ -34,7 +47,10 @@ var accessLogStream = rfs('access.log', {
 logger.token('username', function (req, res) {
   return req.session.username
 })
-app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username"', { stream: accessLogStream }))
+logger.token('post', function (req, res) {
+  return JSON.stringify(req.body)
+})
+app.use(unless('/', morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ":post";', { stream: accessLogStream })))
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
