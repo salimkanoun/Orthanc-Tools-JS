@@ -1,7 +1,24 @@
 import React, { Component } from 'react';
 
 class FormInput extends Component {
+
+  componentDidUpdate(){
+    console.log('updated')
+    console.log(this.props.aets)
+  }
+
+  getAets (){
+    let aets= fetch('/aets');
+    this.setState((state) =>{
+      state.aets = aets
+    }
+     
+    )
+    console.log('ici fetch')
+  }
+
   render(){
+    this.getAets ()
     return (
       <div class="jumbotron">
           <h2 class="card-title">Manual Input</h2>
@@ -53,6 +70,11 @@ class FormInput extends Component {
         </div>
         
         <div class="row text-center mt-5">
+          {
+            //console.log(this.state.aets)
+
+          }
+
   {/*             <% availableAets.forEach(aetName => { 
                 %> <div class="col-sm">
                   <input type="button" class="btn btn-info btn-large queryAET" value="<%= aetName%>">

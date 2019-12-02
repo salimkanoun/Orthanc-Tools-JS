@@ -12,6 +12,7 @@ var retrieveController = require('../controllers/retrieveDicom')
 var exportController = require('../controllers/exportDicom')
 var robotController = require('../controllers/createRobot')
 var optionsController = require('../controllers/options')
+var aetsController = require('../controllers/aets')
 
 const authUser = require('./auth_middelware')
 
@@ -31,5 +32,7 @@ router.all('/export_dicom', authUser, exportController.getResults)
 router.all('/create_robot', authUser, robotController.getResults)
 
 router.all('/options', authUser, optionsController.getResults)
+
+router.all('/aets', aetsController.getResults)
 
 module.exports = router

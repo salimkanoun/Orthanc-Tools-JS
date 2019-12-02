@@ -1,17 +1,20 @@
-import React, {fragment} from 'react';
+import React, {Fragment} from 'react';
 import './style.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import FormInput from './components/form_input'
 import CsvLoader from './components/csv_loader'
 
-function App() {
+function App () {
   return (
-    <fragment>
-      <FormInput></FormInput>
+    
+    <Fragment>
+      <FormInput ></FormInput>
       <CsvLoader></CsvLoader>
-    </fragment>
+    </Fragment>
 
   );
+
+  
 }
 
 export default App;
