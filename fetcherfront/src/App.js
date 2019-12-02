@@ -1,15 +1,15 @@
 import React, {Fragment} from 'react';
 import './style.css';
 import 'bootstrap/dist/css/bootstrap.css';
-import FormInput from './components/form_input'
-import CsvLoader from './components/csv_loader'
+
+
+import NavBar from './components/nav_bar'
 
 function App () {
   return (
     
     <Fragment>
-      <FormInput ></FormInput>
-      <CsvLoader></CsvLoader>
+      <NavBar></NavBar>
     </Fragment>
 
   );

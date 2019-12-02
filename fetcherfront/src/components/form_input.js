@@ -1,24 +1,35 @@
 import React, { Component } from 'react';
+import AetButton from './aet_button'
 
 class FormInput extends Component {
-
-  componentDidUpdate(){
-    console.log('updated')
-    console.log(this.props.aets)
+  
+  constructor(props){
+    super(props)
+    this.state = {
+      aets : []
+    }
+    
   }
 
-  getAets (){
-    let aets= fetch('/aets');
-    this.setState((state) =>{
-      state.aets = aets
-    }
-     
-    )
-    console.log('ici fetch')
+  async componentDidMount() {
+    await this.getAets ()
+  }
+
+  async getAets () {
+    let aets= await fetch('/aets');
+    this.setState( {
+      aets : [aets]
+    } )
   }
 
   render(){
-    this.getAets ()
+    
+    let aetButtons=null
+    if( ! this.state.aets.length){
+      aetButtons=this.buildAetButtons()
+    }else{
+      aetButtons=null
+    }
     return (
       <div class="jumbotron">
           <h2 class="card-title">Manual Input</h2>
@@ -70,21 +81,17 @@ class FormInput extends Component {
         </div>
         
         <div class="row text-center mt-5">
-          {
-            //console.log(this.state.aets)
-
-          }
-
-  {/*             <% availableAets.forEach(aetName => { 
-                %> <div class="col-sm">
-                  <input type="button" class="btn btn-info btn-large queryAET" value="<%= aetName%>">
-                </div> 
-              <%  
-              }); %>  */}
+          { aetButtons }
         </div>
       </div>
     )
   };
+
+  buildAetButtons(){
+    return( this.state.aets.map((item, key) =>
+    <AetButton aetName={item} />
+    ))
+  }
 }
 
 export default FormInput;
