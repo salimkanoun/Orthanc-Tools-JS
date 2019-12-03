@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import AetButton from './aet_button'
+import ChosenSelect from './chosen_select'
 
 class FormInput extends Component {
   
@@ -58,14 +59,7 @@ class FormInput extends Component {
             </div>
             <div class="col-sm">
               <label for="modality">Modality</label>
-              <select class="form-control" name="modality" id="modality" multiple>
-                <option value="CT">CT</option>
-                <option value="PT">PT</option>
-                <option value="NM">NM</option>
-                <option value="MR">MR</option>
-                <option value="US">US</option>
-                <option value="MG">MG</option>
-              </select>
+              <ChosenSelect />
             </div>
 
         </div>

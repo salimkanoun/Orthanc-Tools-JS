@@ -9,7 +9,8 @@
     "react-bootstrap-table-next": "^3.3.2",
     "react-dom": "^16.12.0",
     "react-helmet": "^5.2.1",
-    "react-scripts": "3.2.0"
+    "react-scripts": "3.2.0",
+    "react-select": "^3.0.8"
   },
   "scripts": {
     "start": "react-scripts start",
