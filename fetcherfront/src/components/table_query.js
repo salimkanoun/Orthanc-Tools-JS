@@ -5,8 +5,10 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 class TableQuery extends Component {
 
-
     columns = [{
+        dataField: 'number',
+        hidden: true
+      },{
         dataField: 'name',
         text: 'Patient Name',
         sort: true
@@ -39,7 +41,9 @@ class TableQuery extends Component {
     rows=[]
 
     addRow(name, id, dateFrom, dateTo, studyDescription, modality, aet){
+      let rowNumber = this.rows.length
         this.rows.push({
+            number : rowNumber,
             name : name,
             id : id,
             dateFrom : dateFrom,
@@ -51,8 +55,6 @@ class TableQuery extends Component {
     }
       
     render(){
-        this.addRow('A','b', 'c', 5, 6 ,7)
-        this.addRow('A','b', 'c', 5, 6 ,7)
         return(
             <div className="jumbotron" style={this.props.style}>
                 <BootstrapTable keyField='id' data={ this.rows } columns={ this.columns } />
