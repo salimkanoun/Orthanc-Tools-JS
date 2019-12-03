@@ -44,6 +44,21 @@ a {
 	font-family: SourceSansProBold;
 }
 
+.link-button {
+	background-color: transparent;
+	border: none;
+	cursor: pointer;
+	text-decoration: none;
+	display: inline;
+	margin: 0;
+	padding: 0;
+  }
+  
+  .link-button:hover,
+  .link-button:focus {
+  text-decoration: none;
+  }
+
 
 .w-100 { max-width: 100px; }
 .w-200 { max-width: 200px; }

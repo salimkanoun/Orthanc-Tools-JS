@@ -4,7 +4,7 @@ class CsvLoader extends Component {
 
     render () {
         return(
-        <div>
+        <div style={this.props.style}>
             <div class="jumbotron">
                 <h2 class="card-title">CSV</h2>
                 <div class="row">

@@ -31,7 +31,7 @@ class FormInput extends Component {
       aetButtons=null
     }
     return (
-      <div class="jumbotron">
+      <div class="jumbotron" style={this.props.style}>
           <h2 class="card-title">Manual Input</h2>
           <div class="row">
             <div class="col-sm">
