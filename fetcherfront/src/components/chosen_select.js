@@ -13,7 +13,7 @@ class ChosenSelect extends Component {
       ]
       
     render = () => (
-        <Select isMulti options={this.options} />
+        <Select isMulti options={this.options}  onChange={this.props.modalities(this.state)}/>
     )
 }
 
