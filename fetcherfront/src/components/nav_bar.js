@@ -3,24 +3,13 @@ import FormInput from './form_input'
 import CsvLoader from './csv_loader'
 import TableQuery from './table_query'
 
+import { connect } from 'react-redux'
+import * as actions from '../actions'
+
 class NavBar extends Component {
 
-
-    constructor(props){
-        super(props)
-        this.state={
-            activeDiv : 'Query'
-        }
-    }
-
-
     activate(divName){
-        this.setState(
-            {
-            activeDiv : divName
-            }
-        )
-
+        this.props.setTab(divName)
     }
 
     render(){
@@ -29,23 +18,33 @@ class NavBar extends Component {
                 <div id="navBar" class="mb-5">
                     <ul class="nav nav-pills nav-fill">
                     <li class="nav-item">
-                        <button className={this.state.activeDiv ==='Query' ? "col nav-link active link-button" :  " col nav-link link-button"} onClick={()=>this.activate('Query')} >Add Query</button>
+                        <button className={this.props.currentMainTab ==='Query' ? "col nav-link active link-button" :  " col nav-link link-button"} onClick={()=>this.activate('Query')} >Add Query</button>
                     </li>
                     <li class="nav-item">
-                        <button className={this.state.activeDiv ==='Results' ? "col nav-link active link-button" :  "col nav-link link-button"} onClick={()=>this.activate('Results')} >Result answers</button>
+                        <button className={this.props.currentMainTab ==='Results' ? "col nav-link active link-button" :  "col nav-link link-button"} onClick={()=>this.activate('Results')} >Result answers</button>
                     </li>
                     </ul>
                 </div>
 
-                <FormInput style={this.state.activeDiv ==='Query' ? {} : { display: 'none' }} /> 
-                <CsvLoader style={this.state.activeDiv ==='Query' ? {} : { display: 'none' }} />
-                <TableQuery style={this.state.activeDiv ==='Query' ? {} : { display: 'none' }} />
+                <FormInput style={this.props.currentMainTab ==='Query' ? {} : { display: 'none' }} /> 
+                <CsvLoader style={this.props.currentMainTab ==='Query' ? {} : { display: 'none' }} />
+                <TableQuery style={this.props.currentMainTab ==='Query' ? {} : { display: 'none' }} />
             </Fragment>
       )
     }
 
+
+
 }
 
-export default NavBar
+
+const mapStateToProps = ( state )=>{
+    console.log(state)
+    return {
+        currentMainTab: state.NavBar.currentMainTab
+    }
+}
+
+export default connect(mapStateToProps, actions)(NavBar)
 
 
