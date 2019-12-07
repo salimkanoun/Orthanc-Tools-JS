@@ -11,8 +11,9 @@ export default function formInputReducer(state=initialState, action){
                 aets: action.payload
             }
         case SET_FORM_DATA : 
-            return{
-                [action.payload.name] : action.payload.data
+
+            return{ ...state,
+                [action.payload.name] : action.payload.value
             }
         
         default :

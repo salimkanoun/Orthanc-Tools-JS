@@ -3,7 +3,7 @@ import AetButton from './aet_button'
 import ChosenSelect from './chosen_select'
 
 import { connect } from 'react-redux'
-import * as actions from '../actions'
+import * as actions from '../actions/FormInput'
 
 class FormInput extends Component {
   
@@ -16,6 +16,7 @@ class FormInput extends Component {
     const target = event.target;
     const name = target.name;
     const value = target.type === 'checkbox' ? target.checked : target.value;
+    console.log(this.props)
 
     this.props.setFormData(name, value)
     //this.setState({[name]: value});
@@ -111,7 +112,6 @@ class FormInput extends Component {
 }
 
 const mapStateToProps = ( state )=>{
-  console.log(state)
   return {
     aets: state.FormInput.aets
   }
