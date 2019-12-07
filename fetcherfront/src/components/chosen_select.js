@@ -1,21 +1,41 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
 
+import { connect } from 'react-redux'
+import * as actions from '../actions/FormInput'
+
 class ChosenSelect extends Component {
 
-    options = [
-        { value: 'CT', label: 'CT' },
-        { value: 'PT', label: 'PT' },
-        { value: 'NM', label: 'NM' },
-        { value: 'MR', label: 'MR' },
-        { value: 'US', label: 'US' },
-        { value: 'MG', label: 'MG' }
-      ]
-      
+  modalities= [
+    { value: 'CT', label: 'CT' },
+    { value: 'PT', label: 'PT' },
+    { value: 'NM', label: 'NM' },
+    { value: 'MR', label: 'MR' },
+    { value: 'US', label: 'US' },
+    { value: 'MG', label: 'MG' }
+  ]
+
+  constructor(props){
+    super(props)
+    this.modalitiesListener = this.modalitiesListener.bind(this);
+  }
+    
+    modalitiesListener(data){
+        console.log(data)
+        this.props.addModalities(data)
+
+    }
+
     render = () => (
-        <Select isMulti options={this.options}  onChange={this.props.modalities(this.state)}/>
+        <Select isMulti options={this.modalities}  onChange={this.modalitiesListener}/>
     )
 }
 
+const mapStateToProps = ( state )=>{
+    return {
+      modalities: state.FormInput.modalities
+    }
+  }
 
-export default ChosenSelect
+
+export default connect(mapStateToProps, actions)(ChosenSelect);

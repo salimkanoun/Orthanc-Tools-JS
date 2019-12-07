@@ -16,12 +16,8 @@ class FormInput extends Component {
     const target = event.target;
     const name = target.name;
     const value = target.type === 'checkbox' ? target.checked : target.value;
-    console.log(this.props)
-
     this.props.setFormData(name, value)
-    //this.setState({[name]: value});
   }
-
 
   async componentDidMount() {
     let response= await fetch('/aets')
@@ -32,16 +28,7 @@ class FormInput extends Component {
     this.props.setAets(aets)
   }
 
-  modalitiesChoice(state){
-    console.log('modalities updated')
-    console.log(state)
-    this.setState({
-      modalities:state
-    })
-  }
-
   render(){
-    
     let aetButtons=null
     if( this.props.aets.length){
       aetButtons=this.buildAetButtons()
@@ -74,7 +61,7 @@ class FormInput extends Component {
             </div>
             <div class="col-sm">
               <label for="modality">Modality</label>
-              <ChosenSelect modalities={()=>this.modalitiesChoice.bind(this)} />
+              <ChosenSelect />
             </div>
 
         </div>
