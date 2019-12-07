@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import AetButton from './aet_button'
 import ChosenSelect from './chosen_select'
 
+import { connect } from 'react-redux'
+import * as actions from '../actions'
+
 class FormInput extends Component {
   
   constructor(props){
     super(props)
-    this.state = {
-      aets : []
-    }
     this.handleChange = this.handleChange.bind(this);
   }
   
@@ -16,23 +16,19 @@ class FormInput extends Component {
     const target = event.target;
     const name = target.name;
     const value = target.type === 'checkbox' ? target.checked : target.value;
-    this.setState({[name]: value});
-  }
-  async componentWillMount() {
-    await this.getAets ()
+
+    this.props.setFormData(name, value)
+    //this.setState({[name]: value});
   }
 
-  async getAets () {
+
+  async componentDidMount() {
     let response= await fetch('/aets')
     let aets=[]
-    console.log(response)
     if(response.ok){
       aets = await response.json()
     }
-    console.log(aets)
-    this.setState( {
-      aets : aets
-    } )
+    this.props.setAets(aets)
   }
 
   modalitiesChoice(state){
@@ -46,7 +42,7 @@ class FormInput extends Component {
   render(){
     
     let aetButtons=null
-    if( this.state.aets.length){
+    if( this.props.aets.length){
       aetButtons=this.buildAetButtons()
     }
     return (
@@ -55,25 +51,25 @@ class FormInput extends Component {
           <div class="row">
             <div class="col-sm">
               <label for="lastName">Last Name</label>
-              <input type="text" name="lastName" id="lastName" class="form-control" placeholder="last name" value={this.state.value} onChange={this.handleChange} />
+              <input type="text" name="lastName" id="lastName" class="form-control" placeholder="last name" value={this.props.value} onChange={this.handleChange} />
             </div>
             <div class="col-sm">
               <label for="firstName">First Name</label>
-              <input type="text" name="firstName" id="firstName" class="form-control" placeholder="first name" value={this.state.value} onChange={this.handleChange}/>
+              <input type="text" name="firstName" id="firstName" class="form-control" placeholder="first name" value={this.props.value} onChange={this.handleChange}/>
             </div>
             <div class="col-sm">
               <label for="patientID">Patient ID</label>
-              <input type="text" name="patientID" id="patientID" class="form-control" placeholder="Patient ID" value={this.state.value} onChange={this.handleChange}/>
+              <input type="text" name="patientID" id="patientID" class="form-control" placeholder="Patient ID" value={this.props.value} onChange={this.handleChange}/>
             </div>
         </div>
         <div class="row">
             <div class="col-sm">
                 <label for="accessionNumber">Accession Number</label>
-                <input type="text" name="accessionNumber" id="accessionNumber" class="form-control" placeholder="Accession Number" value={this.state.value} onChange={this.handleChange}/>
+                <input type="text" name="accessionNumber" id="accessionNumber" class="form-control" placeholder="Accession Number" value={this.props.value} onChange={this.handleChange}/>
             </div>
             <div class="col-sm">
                 <label for="studyDescription">Study Description</label>
-                <input type="text" name="studyDescription" id="studyDescription" class="form-control" placeholder="Study Description" value={this.state.value} onChange={this.handleChange}/>
+                <input type="text" name="studyDescription" id="studyDescription" class="form-control" placeholder="Study Description" value={this.props.value} onChange={this.handleChange}/>
             </div>
             <div class="col-sm">
               <label for="modality">Modality</label>
@@ -84,11 +80,11 @@ class FormInput extends Component {
         <div class="row">
           <div class="col-sm">
               <label for="dateFrom">Date From</label>
-              <input type="date" name="dateFrom" id="dateFrom" class="form-control" placeholder="Date From" value={this.state.value} onChange={this.handleChange}/>
+              <input type="date" name="dateFrom" id="dateFrom" class="form-control" placeholder="Date From" value={this.props.value} onChange={this.handleChange}/>
             </div>
             <div class="col-sm">
               <label for="dateTo">Date To</label>
-              <input type="date" name="dateTo" id="dateTo" class="form-control" placeholder="Date To" value={this.state.value} onChange={this.handleChange}/>
+              <input type="date" name="dateTo" id="dateTo" class="form-control" placeholder="Date To" value={this.props.value} onChange={this.handleChange}/>
             </div>
         </div>
         
@@ -107,11 +103,17 @@ class FormInput extends Component {
 
   buildAetButtons(){
     console.log('create buttons')
-    console.log(this.state.aets)
-    return( this.state.aets.map((item, key) =>
+    console.log(this.props.aets)
+    return( this.props.aets.map((item, key) =>
       <AetButton key={key} aetName={item} clickListner={()=>this.addQueryToList(item)} />
     ))
   }
 }
 
-export default FormInput;
+const mapStateToProps = ( state )=>{
+  return {
+    aets: state.FormInput.aets
+  }
+}
+
+export default connect(mapStateToProps, actions)(FormInput);
