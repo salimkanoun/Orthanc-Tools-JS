@@ -1,6 +1,6 @@
 import {ADD_AET, SET_FORM_DATA} from './actions-types'
 
-export function setAets(aet){
+function setAets(aet){
     return {
         type : ADD_AET,
         payload : aet
@@ -8,9 +8,11 @@ export function setAets(aet){
 
 }
 
-export function setFormData(name, value){
+function setFormData(name, value){
     return {
         type : SET_FORM_DATA,
         payload : {name : name, value : value}
     }
 }
+
+export {setAets, setFormData}
