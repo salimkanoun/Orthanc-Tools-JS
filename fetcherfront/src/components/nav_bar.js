@@ -32,14 +32,11 @@ class NavBar extends Component {
             </Fragment>
       )
     }
-
-
-
+    
 }
 
 
 const mapStateToProps = ( state )=>{
-    console.log(state)
     return {
         currentMainTab: state.NavBar.currentMainTab
     }
