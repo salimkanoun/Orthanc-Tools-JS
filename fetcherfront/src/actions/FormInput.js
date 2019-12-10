@@ -1,4 +1,4 @@
-import {ADD_AET, SET_FORM_DATA, ADD_MODALITIES} from './actions-types'
+import {ADD_AET, SET_FORM_DATA, ADD_MODALITIES, ADD_QUERY_TO_LIST} from './actions-types'
 
 
 export function setAets(aet){
@@ -22,5 +22,12 @@ export function addModalities(modalities){
     return {
         type : ADD_MODALITIES,
         payload : modalities
+    }
+}
+
+export function addQueryToList(query){
+    return {
+        type : ADD_QUERY_TO_LIST,
+        payload : query
     }
 }

@@ -20,7 +20,7 @@ export default function formInputReducer(state=initialState, action){
             let modalities = action.payload.map(a => a.value);
             return { ...state,
                 modalities : modalities
-            }
+            }  
         default :
             return state
     }

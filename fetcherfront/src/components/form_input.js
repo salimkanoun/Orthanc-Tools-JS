@@ -10,6 +10,7 @@ class FormInput extends Component {
   constructor(props){
     super(props)
     this.handleChange = this.handleChange.bind(this);
+    this.addQueryToList = this.addQueryToList.bind(this)
   }
   
   handleChange(event) {
@@ -30,7 +31,7 @@ class FormInput extends Component {
 
   render(){
     let aetButtons=null
-    if( this.props.aets.length){
+    if( this.props.form.aets.length){
       aetButtons=this.buildAetButtons()
     }
     return (
@@ -84,15 +85,42 @@ class FormInput extends Component {
   };
 
   addQueryToList(aet){
-    console.log(this.state)
-    console.log(aet)
+    let currentProps=this.props.form
+
+    let modalityString=currentProps.modalities.join('/')
+
+    let nameString='';
+
+    if( currentProps.lastName!=='' && currentProps.firstName!=='' ){
+      if(currentProps.lastName===''){
+        nameString='*^'+currentProps.firstName
+      }else if(currentProps.firstName===''){
+        nameString=currentProps.lastName+'^*'
+      }else{
+        nameString=currentProps.lastName+'^'+currentProps.firstName
+      }
+
+    }
+
+    let query = {
+      name : nameString,
+      id : currentProps.id,
+      accessionNumber : currentProps.accessionNumber,
+      dateFrom : currentProps.dateFrom,
+      dateTo : currentProps.dateTo,
+      studyDescription : currentProps.studyDescription,
+      modalities: modalityString,
+      aet : aet
+    }
+    
+    this.props.addQueryToList(query)
 
   }
 
   buildAetButtons(){
     console.log('create buttons')
     console.log(this.props.aets)
-    return( this.props.aets.map((item, key) =>
+    return( this.props.form.aets.map((item, key) =>
       <AetButton key={key} aetName={item} clickListner={()=>this.addQueryToList(item)} />
     ))
   }
@@ -100,7 +128,7 @@ class FormInput extends Component {
 
 const mapStateToProps = ( state )=>{
   return {
-    aets: state.FormInput.aets
+    form : state.FormInput
   }
 }
 

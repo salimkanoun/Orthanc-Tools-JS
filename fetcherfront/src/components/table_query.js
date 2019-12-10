@@ -2,8 +2,16 @@ import React, { Component } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
+import { connect } from 'react-redux'
+import * as actions from '../actions/TableQuery'
+
 
 class TableQuery extends Component {
+
+  constructor(props){
+    super(props)
+
+  }
 
     columns = [{
         dataField: 'number',
@@ -38,30 +46,21 @@ class TableQuery extends Component {
         sort: true
       }];
       
-    rows=[]
-
-    addRow(name, id, dateFrom, dateTo, studyDescription, modality, aet){
-      let rowNumber = this.rows.length
-        this.rows.push({
-            number : rowNumber,
-            name : name,
-            id : id,
-            dateFrom : dateFrom,
-            dateTo : dateTo,
-            studyDescription : studyDescription,
-            modality : modality,
-            aet : aet
-        })
-    }
-      
     render(){
+      console.log(this.props)
         return(
             <div className="jumbotron" style={this.props.style}>
-                <BootstrapTable keyField='id' data={ this.rows } columns={ this.columns } />
+                <BootstrapTable keyField='id' data={ this.props.queries.queries } columns={ this.columns } />
             </div>
         )
     }
 
 }
 
-export default TableQuery
+const mapStateToProps = ( state )=>{
+  return {
+    queries : state.QueryList
+  }
+}
+
+export default connect(mapStateToProps, actions)(TableQuery);
