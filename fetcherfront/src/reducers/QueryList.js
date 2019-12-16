@@ -7,7 +7,10 @@ const initialState={
 export default function queryListReducer(state=initialState, action){
     switch(action.type){
         case ADD_QUERY_TO_LIST :
-            state.queries.push(action.payload)
+            state.queries.push({
+                key : state.queries.length,
+                ...action.payload
+            })
             return {
                 ...state
         }

@@ -91,16 +91,16 @@ class FormInput extends Component {
 
     let nameString='';
 
-    if( currentProps.lastName!=='' && currentProps.firstName!=='' ){
-      if(currentProps.lastName===''){
-        nameString='*^'+currentProps.firstName
-      }else if(currentProps.firstName===''){
-        nameString=currentProps.lastName+'^*'
-      }else{
-        nameString=currentProps.lastName+'^'+currentProps.firstName
-      }
 
+    if(currentProps.lastName==='' && currentProps.firstName!==''){
+      nameString='*^'+currentProps.firstName
+    }else if(currentProps.lastName!=='' && currentProps.firstName===''){
+      nameString=currentProps.lastName+'^*'
+    }else if(currentProps.lastName!=='' && currentProps.firstName!==''){
+      nameString=currentProps.lastName+'^'+currentProps.firstName
     }
+
+    
 
     let query = {
       name : nameString,
