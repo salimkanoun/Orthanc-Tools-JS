@@ -3,6 +3,6 @@ module.exports = function (req, res, next) {
     next()
   } else {
     console.log('No session')
-    res.end()
+    res.status(403).end();
   }
 }

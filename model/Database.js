@@ -20,7 +20,7 @@ class Database {
     }).then(() => {
       curentDatabaseObject.db = db
       curentDatabaseObject.isDatabaseEmpty()
-    }).catch((error) => { console.log('Error Connect Table ') + error })
+    }).catch((error) => { console.log('Error Connect Table ' + error) })
 
     return promise
   }
@@ -30,7 +30,7 @@ class Database {
     const promise = new Promise((resolve, reject) => {
       datbaseObject.db.all('SELECT name FROM sqlite_master;', (err, row) => {
         console.log(row)
-        resolve(row.length == 0)
+        resolve(row.length === 0)
       })
     }).then((isEmpty) => {
       if (isEmpty) {

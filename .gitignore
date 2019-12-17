@@ -4,5 +4,5 @@ myapp-linux
 myapp-macos
 myapp-win.exe
 data/database/imagefetcher.db
-data/log/access.log
+!data/log/README
 .env

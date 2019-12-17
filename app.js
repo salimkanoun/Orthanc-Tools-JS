@@ -7,7 +7,7 @@ var path = require('path')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 var rfs = require('rotating-file-stream')
-const session = require('express-session')
+var session = require('express-session')
 
 var indexRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
@@ -25,10 +25,21 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-app.use(session({ secret: 'ImageFetcher' }))
+app.use(session({
+  secret: 'ImageFetcher',
+  resave: true,
+  saveUninitialized: true }))
 
-// SK AJOUTER VARIABLE DE SESSION UTILISATEUR DANS LOGS
-// SEE https://github.com/expressjs/morgan
+var unless = function(path, middleware) {
+  return function(req, res, next) {
+      if (path === req.path) {
+          return next();
+      } else {
+          return middleware(req, res, next);
+      }
+  };
+};
+
 var accessLogStream = rfs('access.log', {
   interval: '1d', // rotate daily
   path: path.join(__dirname, '/data/log')
@@ -36,7 +47,10 @@ var accessLogStream = rfs('access.log', {
 logger.token('username', function (req, res) {
   return req.session.username
 })
-app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username"', { stream: accessLogStream }))
+logger.token('post', function (req, res) {
+  return JSON.stringify(req.body)
+})
+app.use(unless('/', morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ":post";', { stream: accessLogStream })))
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
@@ -58,7 +72,7 @@ app.use(function (err, req, res, next) {
   res.render('error')
 })
 
-app.listen(3000, function () {
+app.listen(4000, function () {
   console.log('Example app listening on port 3000!')
 })
 
