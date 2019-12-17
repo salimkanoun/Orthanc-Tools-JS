@@ -1,4 +1,4 @@
-import {ADD_QUERY_TO_LIST} from '../actions/actions-types'
+import {ADD_QUERY_TO_LIST, REMOVE_QUERY} from '../actions/actions-types'
 
 const initialState={
     queries: []
@@ -14,6 +14,13 @@ export default function queryListReducer(state=initialState, action){
             return {
                 ...state
         }
+        case REMOVE_QUERY : 
+            let removedLines = action.payload;
+            removedLines.sort(function(a, b){return b-a});
+            removedLines.forEach(element => {
+                state.queries.splice(element, 1)
+            });
+            return state
         default :
             return state
     }

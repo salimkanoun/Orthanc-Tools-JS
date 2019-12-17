@@ -31,3 +31,4 @@ export function addQueryToList(query){
         payload : query
     }
 }
+

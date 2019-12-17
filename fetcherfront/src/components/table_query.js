@@ -15,6 +15,14 @@ class TableQuery extends Component {
 
   constructor(props){
     super(props)
+    this.removeRow = this.removeRow.bind(this)
+  }
+
+  removeRow(){
+    console.log(this.node.selectionContext)
+    let selectedRow=this.node.selectionContext.selected
+    this.props.removeQuery(selectedRow)
+    this.node.selectionContext.selected=[]
 
   }
 
@@ -67,6 +75,8 @@ class TableQuery extends Component {
       sort: true,
       filter: textFilter()
     }];
+
+    
       
     render(){
 
@@ -84,8 +94,8 @@ class TableQuery extends Component {
               <div className="jumbotron" >
                 <div>
                   <ExportCSVButton { ...props.csvProps } className="btn btn-primary">Export CSV</ExportCSVButton>
-                  <input type="button" class="btn btn-danger" value="Delete"/>
-                  <BootstrapTable { ...props.baseProps } filter={ filterFactory() } selectRow={ this.selectRow } pagination={ paginationFactory() } />
+                  <input type="button" class="btn btn-danger" value="Delete" onClick={this.removeRow}/>
+                  <BootstrapTable ref={ n => this.node = n } { ...props.baseProps } filter={ filterFactory() } selectRow={ this.selectRow } pagination={ paginationFactory() } />
                 </div>
                 <div className="text-center">
                   <input type="button" className="btn btn-primary" value="Query"/>

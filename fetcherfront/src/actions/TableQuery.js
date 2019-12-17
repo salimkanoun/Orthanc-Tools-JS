@@ -1,10 +1,10 @@
 import {REMOVE_QUERY} from './actions-types'
 
 
-export function removeQuery(id){
+export function removeQuery(lineNumber){
     return {
         type : REMOVE_QUERY,
-        payload : id
+        payload : lineNumber
     }
 
 }
