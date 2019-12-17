@@ -7,8 +7,10 @@ const initialState={
 export default function queryListReducer(state=initialState, action){
     switch(action.type){
         case ADD_QUERY_TO_LIST :
+            let maxKey=Math.max.apply(Math, state.queries.map(function(query) { return query.key; }))
+            maxKey=Math.max(0,maxKey)
             state.queries.push({
-                key : state.queries.length,
+                key : (maxKey+1),
                 ...action.payload
             })
             return {
@@ -16,11 +18,12 @@ export default function queryListReducer(state=initialState, action){
         }
         case REMOVE_QUERY : 
             let removedLines = action.payload;
-            removedLines.sort(function(a, b){return b-a});
-            removedLines.forEach(element => {
-                state.queries.splice(element, 1)
+            let newQueries = state.queries.filter(function( query ) {
+                return ! removedLines.includes(query.key);
             });
-            return state
+            return { ...state,
+                    queries : newQueries,
+                   }
         default :
             return state
     }

@@ -19,9 +19,8 @@ class TableQuery extends Component {
   }
 
   removeRow(){
-    console.log(this.node.selectionContext)
-    let selectedRow=this.node.selectionContext.selected
-    this.props.removeQuery(selectedRow)
+    let selectedKeyRow=this.node.selectionContext.selected
+    this.props.removeQuery(selectedKeyRow)
     this.node.selectionContext.selected=[]
 
   }
