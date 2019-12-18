@@ -15,7 +15,7 @@ export default function queryListReducer(state=initialState, action){
             })
             return {
                 ...state
-        }
+            }
         case REMOVE_QUERY : 
             let removedLines = action.payload;
             let newQueries = state.queries.filter(function( query ) {

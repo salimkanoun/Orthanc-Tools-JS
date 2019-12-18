@@ -117,9 +117,13 @@ class TableQuery extends Component {
       let answeredResults = await this.makeAjaxQuery(query)
       console.log(answeredResults)
       answerArray.push(...answeredResults)
+      //SK ICI AJOUTER A LA TABLE RESULTATS
+      this.props.addResult(answeredResults)
     }
 
-    //SK ICI AJOUTER A LA TABLE RESULTATS
+    
+
+    
 
   }
 

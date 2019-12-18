@@ -20,7 +20,7 @@ class TableResult extends Component {
 
     removeRow() {
         let selectedKeyRow = this.node.selectionContext.selected
-        this.props.removeQuery(selectedKeyRow)
+        this.props.removeResult(selectedKeyRow)
         this.node.selectionContext.selected = []
 
     }
