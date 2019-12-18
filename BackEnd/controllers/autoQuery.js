@@ -3,7 +3,7 @@ var Orthanc = require('../model/Orthanc')
 var orthancInstance = new Orthanc()
 
 var getResults = async function (req, res) {
-  await orthancInstance.putAet('self', 'KANOUNIX', 'localhost', 4242, 'Generic')
+  await orthancInstance.putAet('self', 'ORTHANC', 'localhost', 4242)
   const aets = await orthancInstance.getAvailableAet()
   const orthancSystem = await orthancInstance.getSystem()
 

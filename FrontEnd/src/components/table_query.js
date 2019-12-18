@@ -125,25 +125,40 @@ class TableQuery extends Component {
 
   async makeAjaxQuery(queryParams) {
 
+    let dateString='*';
+    if(queryParams.dateFrom !== '' && queryParams.dateTo !==''){
+      dateString=queryParams.dateFrom + '-' + queryParams.dateTo
+    }else if(queryParams.dateFrom === '' && queryParams.dateTo !==''){
+      dateString='*-' + queryParams.dateTo
+    }else if(queryParams.dateFrom !== '' && queryParams.dateTo ===''){
+      dateString=queryParams.dateFrom+'-*'
+    }
 
     let queryPost = {
       patientName: queryParams.patientName,
       patientID: queryParams.patientId,
       accessionNumber: queryParams.accessionNumber,
-      date: queryParams.dateFrom + '-' + queryParams.dateTo,
+      date: dateString,
       studyDescription: queryParams.studyDescription,
       modality: queryParams.modalities,
       aet: queryParams.aet
     }
+    let postString=JSON.stringify(queryPost)
+    console.log(queryPost)
 
     let response = await fetch("/query",
       {
         method: "POST",
-        body: queryPost
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: postString
       })
 
     let queryAnswers = []
     if (response.ok) {
+      console.log('request 200')
       queryAnswers = await response.json()
     }
 

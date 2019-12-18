@@ -99,7 +99,16 @@ class Orthanc {
      * @param {string} type
      */
   putAet (name, aet, ip, port, type) {
-    const data = [aet, ip, port, type]
+    let data=[]
+    console.log(type)
+    if(type===undefined){
+      data = [aet, ip, port]
+    }else{
+      data = [aet, ip, port, type]
+    }
+    
+    console.log(data)
+    console.log(name)
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
       request.put(currentOrthanc.createOptions('PUT', '/modalities/' + name, JSON.stringify(data)), function (error, response, body) {
