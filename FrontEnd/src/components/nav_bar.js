@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import FormInput from './form_input'
 import CsvLoader from './csv_loader'
 import TableQuery from './table_query'
+import TableResult from './table_results'
 
 import { connect } from 'react-redux'
 import * as actions from '../actions'
@@ -29,6 +30,8 @@ class NavBar extends Component {
                 <FormInput style={this.props.currentMainTab ==='Query' ? {} : { display: 'none' }} /> 
                 <CsvLoader style={this.props.currentMainTab ==='Query' ? {} : { display: 'none' }} />
                 <TableQuery style={this.props.currentMainTab ==='Query' ? {} : { display: 'none' }} />
+
+                <TableResult style={this.props.currentMainTab ==='Results' ? {} : { display: 'none' }} />
             </Fragment>
       )
     }

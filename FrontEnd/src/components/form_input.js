@@ -118,8 +118,6 @@ class FormInput extends Component {
   }
 
   buildAetButtons(){
-    console.log('create buttons')
-    console.log(this.props.aets)
     return( this.props.form.aets.map((item, key) =>
       <AetButton key={key} aetName={item} clickListner={()=>this.addQueryToList(item)} />
     ))
