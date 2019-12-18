@@ -35,49 +35,49 @@ class FormInput extends Component {
       aetButtons=this.buildAetButtons()
     }
     return (
-      <div class="jumbotron" style={this.props.style}>
-          <h2 class="card-title">Manual Input</h2>
-          <div class="row">
-            <div class="col-sm">
-              <label for="lastName">Last Name</label>
-              <input type="text" name="lastName" id="lastName" class="form-control" placeholder="last name" value={this.props.value} onChange={this.handleChange} />
+      <div className="jumbotron" style={this.props.style}>
+          <h2 className="card-title">Manual Input</h2>
+          <div className="row">
+            <div className="col-sm">
+              <label htmlFor="lastName">Last Name</label>
+              <input type="text" name="lastName" id="lastName" className="form-control" placeholder="last name" value={this.props.value} onChange={this.handleChange} />
             </div>
-            <div class="col-sm">
-              <label for="firstName">First Name</label>
-              <input type="text" name="firstName" id="firstName" class="form-control" placeholder="first name" value={this.props.value} onChange={this.handleChange}/>
+            <div className="col-sm">
+              <label htmlFor="firstName">First Name</label>
+              <input type="text" name="firstName" id="firstName" className="form-control" placeholder="first name" value={this.props.value} onChange={this.handleChange}/>
             </div>
-            <div class="col-sm">
-              <label for="patientID">Patient ID</label>
-              <input type="text" name="patientID" id="patientID" class="form-control" placeholder="Patient ID" value={this.props.value} onChange={this.handleChange}/>
+            <div className="col-sm">
+              <label htmlFor="patientID">Patient ID</label>
+              <input type="text" name="patientId" id="patientId" className="form-control" placeholder="Patient ID" value={this.props.value} onChange={this.handleChange}/>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm">
-                <label for="accessionNumber">Accession Number</label>
-                <input type="text" name="accessionNumber" id="accessionNumber" class="form-control" placeholder="Accession Number" value={this.props.value} onChange={this.handleChange}/>
+        <div className="row">
+            <div className="col-sm">
+                <label htmlFor="accessionNumber">Accession Number</label>
+                <input type="text" name="accessionNumber" id="accessionNumber" className="form-control" placeholder="Accession Number" value={this.props.value} onChange={this.handleChange}/>
             </div>
-            <div class="col-sm">
-                <label for="studyDescription">Study Description</label>
-                <input type="text" name="studyDescription" id="studyDescription" class="form-control" placeholder="Study Description" value={this.props.value} onChange={this.handleChange}/>
+            <div className="col-sm">
+                <label htmlFor="studyDescription">Study Description</label>
+                <input type="text" name="studyDescription" id="studyDescription" className="form-control" placeholder="Study Description" value={this.props.value} onChange={this.handleChange}/>
             </div>
-            <div class="col-sm">
-              <label for="modality">Modality</label>
+            <div className="col-sm">
+              <label htmlFor="modality">Modality</label>
               <ChosenSelect />
             </div>
 
         </div>
-        <div class="row">
-          <div class="col-sm">
-              <label for="dateFrom">Date From</label>
-              <input type="date" name="dateFrom" id="dateFrom" class="form-control" placeholder="Date From" value={this.props.value} onChange={this.handleChange}/>
+        <div className="row">
+          <div className="col-sm">
+              <label htmlFor="dateFrom">Date From</label>
+              <input type="date" name="dateFrom" id="dateFrom" className="form-control" placeholder="Date From" value={this.props.value} onChange={this.handleChange}/>
             </div>
-            <div class="col-sm">
-              <label for="dateTo">Date To</label>
-              <input type="date" name="dateTo" id="dateTo" class="form-control" placeholder="Date To" value={this.props.value} onChange={this.handleChange}/>
+            <div className="col-sm">
+              <label htmlFor="dateTo">Date To</label>
+              <input type="date" name="dateTo" id="dateTo" className="form-control" placeholder="Date To" value={this.props.value} onChange={this.handleChange}/>
             </div>
         </div>
         
-        <div class="row text-center mt-5">
+        <div className="row text-center mt-5">
           { aetButtons }
         </div>
       </div>
@@ -103,8 +103,8 @@ class FormInput extends Component {
     
 
     let query = {
-      name : nameString,
-      id : currentProps.id,
+      patientName : nameString,
+      patientId : currentProps.patientId,
       accessionNumber : currentProps.accessionNumber,
       dateFrom : currentProps.dateFrom,
       dateTo : currentProps.dateTo,

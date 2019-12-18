@@ -15,12 +15,12 @@ class NavBar extends Component {
     render(){
         return(
             <Fragment>
-                <div id="navBar" class="mb-5">
-                    <ul class="nav nav-pills nav-fill">
-                    <li class="nav-item">
+                <div id="navBar" className="mb-5">
+                    <ul className="nav nav-pills nav-fill">
+                    <li className="nav-item">
                         <button className={this.props.currentMainTab ==='Query' ? "col nav-link active link-button" :  " col nav-link link-button"} onClick={()=>this.activate('Query')} >Add Query</button>
                     </li>
-                    <li class="nav-item">
+                    <li className="nav-item">
                         <button className={this.props.currentMainTab ==='Results' ? "col nav-link active link-button" :  "col nav-link link-button"} onClick={()=>this.activate('Results')} >Result answers</button>
                     </li>
                     </ul>

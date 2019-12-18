@@ -5,11 +5,11 @@ class CsvLoader extends Component {
     render () {
         return(
             <div style={this.props.style}>
-                <div class="jumbotron">
-                    <h2 class="card-title">CSV</h2>
-                    <div class="row">
+                <div className="jumbotron">
+                    <h2 className="card-title">CSV</h2>
+                    <div className="row">
                         <input type="file" id="files" multiple=""/>
-                        <input type="button" class="btn btn-primary" id="parseBtn" value="Parse"/>
+                        <input type="button" className="btn btn-primary" id="parseBtn" value="Parse"/>
                     </div>
                 </div>
             </div>

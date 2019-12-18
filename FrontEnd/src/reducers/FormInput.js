@@ -3,8 +3,11 @@ import {ADD_AET, SET_FORM_DATA, ADD_MODALITIES} from '../actions/actions-types'
 const initialState={
     lastName : '',
     firstName : '',
+    patientId: '',
     accessionNumber : '',
     studyDescription : '',
+    dateFrom : '',
+    dateTo : '',
     aets : [],
     modalities : []
 }

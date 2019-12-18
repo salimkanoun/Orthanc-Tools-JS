@@ -16,6 +16,7 @@ class TableQuery extends Component {
   constructor(props){
     super(props)
     this.removeRow = this.removeRow.bind(this)
+    this.query = this.query.bind(this)
   }
 
   removeRow(){
@@ -34,12 +35,12 @@ class TableQuery extends Component {
       dataField: 'number',
       hidden: true
     },{
-      dataField: 'name',
+      dataField: 'patientName',
       text: 'Patient Name',
       sort: true,
       filter: textFilter()
     }, {
-      dataField: 'id',
+      dataField: 'patientId',
       text: 'Patient ID',
       sort: true,
       filter: textFilter()
@@ -90,14 +91,14 @@ class TableQuery extends Component {
           >{
             props => (
               <React.Fragment>
-              <div className="jumbotron" >
+              <div className="jumbotron" style={this.props.style}>
                 <div>
                   <ExportCSVButton { ...props.csvProps } className="btn btn-primary">Export CSV</ExportCSVButton>
-                  <input type="button" class="btn btn-danger" value="Delete" onClick={this.removeRow}/>
+                  <input type="button" className="btn btn-danger" value="Delete" onClick={this.removeRow}/>
                   <BootstrapTable ref={ n => this.node = n } { ...props.baseProps } filter={ filterFactory() } selectRow={ this.selectRow } pagination={ paginationFactory() } />
                 </div>
                 <div className="text-center">
-                  <input type="button" className="btn btn-primary" value="Query"/>
+                  <input type="button" className="btn btn-primary" value="Query" onClick={ this.query }/>
                 </div>
               </div>
               
@@ -108,7 +109,18 @@ class TableQuery extends Component {
         )
     }
 
+  query(){
+    console.log(this.node.props.data)
+    let data=this.node.props.data
+    data.forEach(query => {
+      console.log(query)
+    });
+
+  }
+
 }
+
+
 
 const mapStateToProps = ( state )=>{
   return {
