@@ -19,7 +19,7 @@ export default function retrieveListReducer(state=initialState, action){
                     queries : newResults,
                 }
         case ADD_RESULT_TO_LIST:
-            let maxKey=Math.max.apply(Math, state.queries.map(function(query) { return query.key; }))
+            let maxKey=Math.max.apply(Math, state.results.map(function(query) { return query.key; }))
             maxKey=Math.max(0,maxKey)
             state.results.push({
                 key : (maxKey+1),

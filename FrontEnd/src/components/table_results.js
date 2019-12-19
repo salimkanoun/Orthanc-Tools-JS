@@ -10,6 +10,8 @@ import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 import { connect } from 'react-redux'
 import * as actions from '../actions/TableResult'
 
+import RetrieveButton from './retrieve_button'
+
 
 class TableResult extends Component {
 
@@ -45,7 +47,7 @@ class TableResult extends Component {
         sort: true,
         filter: textFilter()
     }, {
-        dataField: 'patientId',
+        dataField: 'patientID',
         text: 'Patient ID',
         sort: true,
         filter: textFilter()
@@ -55,7 +57,7 @@ class TableResult extends Component {
         sort: true,
         filter: textFilter()
     }, {
-        dataField: 'acquisitionDate',
+        dataField: 'studyDate',
         text: 'Acquistion Date',
         sort: true,
         filter: dateFilter()
@@ -70,7 +72,7 @@ class TableResult extends Component {
         sort: true,
         filter: textFilter()
     }, {
-        dataField: 'sourceAet',
+        dataField: 'originAET',
         text: 'AET',
         sort: true,
         filter: textFilter()
@@ -79,7 +81,8 @@ class TableResult extends Component {
         hidden: true
     }, {
         dataField: 'retrive',
-        text: 'Retrieve'
+        text: 'Retrieve',
+        formatter : this.retrieveButton
     }, {
         dataField: 'jobId',
         hidden: true
@@ -108,7 +111,8 @@ class TableResult extends Component {
                                 <div>
                                     <ExportCSVButton {...props.csvProps} className="btn btn-primary">Export CSV</ExportCSVButton>
                                     <input type="button" className="btn btn-danger" value="Delete" onClick={this.removeRow} />
-                                    <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} />
+                                    <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} >
+                                    </BootstrapTable>
                                 </div>
                             </div>
 
@@ -117,6 +121,12 @@ class TableResult extends Component {
                 }
             </ToolkitProvider>
         )
+    }
+
+    retrieveButton(cell, row, rowIndex, formatExtraData){
+        //Add Retrieve button for each result with row data in props
+        return <RetrieveButton rowData={row} />
+
     }
 
 }

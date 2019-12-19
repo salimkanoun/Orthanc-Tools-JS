@@ -9,6 +9,7 @@ import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
 import { connect } from 'react-redux'
 import * as actions from '../actions/TableQuery'
+import * as resultActions from '../actions/TableResult'
 
 
 class TableQuery extends Component {
@@ -94,7 +95,7 @@ class TableQuery extends Component {
                 <div>
                   <ExportCSVButton {...props.csvProps} className="btn btn-primary">Export CSV</ExportCSVButton>
                   <input type="button" className="btn btn-danger" value="Delete" onClick={this.removeRow} />
-                  <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} />
+                  <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} />
                 </div>
                 <div className="text-center">
                   <input type="button" className="btn btn-primary" value="Query" onClick={this.query} />
@@ -112,13 +113,15 @@ class TableQuery extends Component {
     console.log(this.node.props.data)
     let data = this.node.props.data
 
-    let answerArray = []
     for (const query of data) {
       let answeredResults = await this.makeAjaxQuery(query)
       console.log(answeredResults)
-      answerArray.push(...answeredResults)
       //SK ICI AJOUTER A LA TABLE RESULTATS
-      this.props.addResult(answeredResults)
+      console.log(this.props)
+      answeredResults.forEach((answer)=>{
+        this.props.addResult(answer)
+      })
+      
     }
 
     
@@ -177,8 +180,14 @@ class TableQuery extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    queries: state.QueryList
+    queries: state.QueryList,
+    results : state.resultList
   }
 }
 
-export default connect(mapStateToProps, actions)(TableQuery);
+const mapActionsToProps = {
+  ...actions,
+  ...resultActions,
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(TableQuery);
