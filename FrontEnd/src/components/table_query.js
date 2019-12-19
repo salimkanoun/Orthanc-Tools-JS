@@ -4,6 +4,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import cellEditFactory from 'react-bootstrap-table2-editor'
 
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
@@ -28,9 +29,12 @@ class TableQuery extends Component {
   }
 
   selectRow = {
-    mode: 'checkbox',
-    clickToSelect: true
+    mode: 'checkbox'
   };
+
+  cellEdit = cellEditFactory({
+    mode: 'click'
+  });
 
   columns = [{
     dataField: 'number',
@@ -94,8 +98,8 @@ class TableQuery extends Component {
               <div className="jumbotron" style={this.props.style}>
                 <div>
                   <ExportCSVButton {...props.csvProps} className="btn btn-primary">Export CSV</ExportCSVButton>
-                  <input type="button" className="btn btn-danger" value="Delete" onClick={this.removeRow} />
-                  <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} />
+                  <input type="button" className="btn btn-danger" value="Delete" onClick={ this.removeRow } />
+                  <BootstrapTable ref={n => this.node = n} {...props.baseProps}  striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={ this.cellEdit } />
                 </div>
                 <div className="text-center">
                   <input type="button" className="btn btn-primary" value="Query" onClick={this.query} />
