@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux'
-import NavBar from './NavBar'
+import Query from './Query'
 import FormInput from './FormInput'
 import QueryList from './QueryList'
 import ResultList from './ResultList'
 
 export default combineReducers({
-  NavBar,
+  Query,
   FormInput,
   QueryList,
   ResultList

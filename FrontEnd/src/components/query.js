@@ -7,7 +7,7 @@ import TableResult from './table_results'
 import { connect } from 'react-redux'
 import * as actions from '../actions'
 
-class NavBar extends Component {
+class Query extends Component {
 
     activate(divName){
         this.props.setTab(divName)
@@ -41,10 +41,10 @@ class NavBar extends Component {
 
 const mapStateToProps = ( state )=>{
     return {
-        currentMainTab: state.NavBar.currentMainTab
+        currentMainTab: state.Query.currentMainTab
     }
 }
 
-export default connect(mapStateToProps, actions)(NavBar)
+export default connect(mapStateToProps, actions)(Query)
 
 

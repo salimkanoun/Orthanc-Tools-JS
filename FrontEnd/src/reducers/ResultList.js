@@ -16,13 +16,14 @@ export default function retrieveListReducer(state=initialState, action){
                 return ! removedLines.includes(results.key);
             });
             return { ...state,
-                    queries : newResults,
+                    results : newResults,
                 }
         case ADD_RESULT_TO_LIST:
             let maxKey=Math.max.apply(Math, state.results.map(function(query) { return query.key; }))
             maxKey=Math.max(0,maxKey)
             state.results.push({
                 key : (maxKey+1),
+                isRetrieved : false,
                 ...action.payload
             })
             return {
@@ -36,7 +37,7 @@ export default function retrieveListReducer(state=initialState, action){
                     break
                 }
             }
-            return{
+            return {
                 ...state
             }
         default :
