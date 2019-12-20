@@ -1,4 +1,4 @@
-import {RETRIEVE, REMOVE_RESULT, ADD_RESULT_TO_LIST} from '../actions/actions-types'
+import {RETRIEVE, REMOVE_RESULT, ADD_RESULT_TO_LIST, SET_RETRIVE_STATUS_STUDY} from '../actions/actions-types'
 
 const initialState={
     results: []
@@ -26,6 +26,17 @@ export default function retrieveListReducer(state=initialState, action){
                 ...action.payload
             })
             return {
+                ...state
+            }
+        case SET_RETRIVE_STATUS_STUDY:
+            console.log(action.payload)
+            for(let i in state.results){
+                if(state.results[i].key===action.payload.key) {
+                    state.results[i]['isRetrieved']=action.payload.isRetrieved
+                    break
+                }
+            }
+            return{
                 ...state
             }
         default :

@@ -1,4 +1,4 @@
-import {RETRIEVE, REMOVE_RESULT, ADD_RESULT_TO_LIST} from './actions-types'
+import {RETRIEVE, REMOVE_RESULT, ADD_RESULT_TO_LIST, SET_RETRIVE_STATUS_STUDY} from './actions-types'
 
 
 export function retrive(data){
@@ -20,5 +20,12 @@ export function addResult(resultData){
     return {
         type : ADD_RESULT_TO_LIST,
         payload : resultData
+    }
+}
+
+export function setRetrieveStatus(key, isRetrieved){
+    return {
+        type: SET_RETRIVE_STATUS_STUDY,
+        payload: {key, isRetrieved}
     }
 }

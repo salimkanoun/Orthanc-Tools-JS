@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
+import * as actions from '../actions/TableResult'
 
 class RetrieveButton extends Component {
 
@@ -76,7 +78,10 @@ class RetrieveButton extends Component {
             currentComponent.setState({
                 status: currentStatus
             })
-            if (currentStatus !== 'Running') clearInterval(intervalChcker)
+            if (currentStatus !== 'Running') {
+                clearInterval(intervalChcker)
+                if(currentStatus ==='Success') currentComponent.props.setRetrieveStatus(currentComponent.props.rowData.key, true)
+            }
         }
 
         intervalChcker = setInterval(getJobData, 2000)
@@ -85,4 +90,11 @@ class RetrieveButton extends Component {
 
 }
 
-export default RetrieveButton
+const mapStateToProps = (state) => {
+    return {
+      results : state.resultList
+    }
+  }
+  
+  
+export default connect(mapStateToProps, actions)(RetrieveButton);

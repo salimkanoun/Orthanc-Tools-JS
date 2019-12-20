@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import * as actions from '../actions/TableResult'
 
 import RetrieveButton from './retrieve_button'
+import ExportButton from './export_button'
 
 
 class TableResult extends Component {
@@ -88,7 +89,8 @@ class TableResult extends Component {
         hidden: true
     }, {
         dataField: 'export',
-        text: 'Export'
+        text: 'Export',
+        formatter : this.exportButton
     }];
 
 
@@ -128,6 +130,12 @@ class TableResult extends Component {
         return <RetrieveButton rowData={row} />
 
     }
+
+    exportButton(cell, row, rowIndex, formatExtraData){
+        return <ExportButton rowData={row} />
+    }
+
+
 
 }
 
