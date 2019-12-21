@@ -1,13 +1,7 @@
-import {ADD_AET, SET_FORM_DATA, ADD_MODALITIES, ADD_QUERY_TO_LIST} from './actions-types'
+import {SET_FORM_DATA, ADD_MODALITIES, ADD_QUERY_TO_LIST} from './actions-types'
 
 
-export function setAets(aet){
-    return {
-        type : ADD_AET,
-        payload : aet
-    }
 
-}
 
 export function setFormData(name, value){
     return {

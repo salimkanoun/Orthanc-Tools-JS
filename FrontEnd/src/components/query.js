@@ -13,6 +13,16 @@ class Query extends Component {
         this.props.setTab(divName)
     }
 
+
+    async componentDidMount() {
+        let response= await fetch('/aets')
+        let aets=[]
+        if(response.ok){
+        aets = await response.json()
+        }
+        this.props.setAets(aets)
+    }
+
     render(){
         return(
             <Fragment>

@@ -9,15 +9,24 @@ const initialState={
     dateFrom : '',
     dateTo : '',
     aets : [],
+    aetsObject : [],
     modalities : []
 }
 
 export default function formInputReducer(state=initialState, action){
     switch(action.type){
         case ADD_AET :
+            let aetsObject=[]
+            action.payload.forEach((aet)=>{
+                aetsObject.push({
+                    value : aet,
+                    label : aet
+                })
+            }) 
             return{
                 ...state,
-                aets: action.payload
+                aets: action.payload,
+                aetsObject : aetsObject
             }
         case SET_FORM_DATA :
             return{ ...state,

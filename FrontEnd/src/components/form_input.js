@@ -20,15 +20,6 @@ class FormInput extends Component {
     this.props.setFormData(name, value)
   }
 
-  async componentDidMount() {
-    let response= await fetch('/aets')
-    let aets=[]
-    if(response.ok){
-      aets = await response.json()
-    }
-    this.props.setAets(aets)
-  }
-
   render(){
     let aetButtons=null
     if( this.props.form.aets.length){

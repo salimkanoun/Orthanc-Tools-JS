@@ -4,7 +4,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import cellEditFactory from 'react-bootstrap-table2-editor'
+import cellEditFactory, { Type } from 'react-bootstrap-table2-editor'
 
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
@@ -19,6 +19,8 @@ class TableQuery extends Component {
     super(props)
     this.removeRow = this.removeRow.bind(this)
     this.query = this.query.bind(this)
+    this.aetsObject = []
+
   }
 
   removeRow() {
@@ -29,12 +31,12 @@ class TableQuery extends Component {
   }
 
   selectRow = {
-    mode : 'checkbox'
+    mode: 'checkbox'
   };
 
   cellEdit = cellEditFactory({
-    mode : 'click',
-    blurToSave : true
+    mode: 'click',
+    blurToSave: true
   });
 
   columns = [{
@@ -80,10 +82,14 @@ class TableQuery extends Component {
     dataField: 'aet',
     text: 'AET',
     sort: true,
+    editor: {
+      type: Type.SELECT,
+      options: this.props.aetsObject
+    },
     filter: textFilter()
   }];
 
-
+  //SK A VOIR GET ET SET OPTIONS
 
   render() {
 
@@ -100,9 +106,9 @@ class TableQuery extends Component {
               <div className="jumbotron" style={this.props.style}>
                 <div>
                   <ExportCSVButton {...props.csvProps} className="btn btn-primary">Export CSV</ExportCSVButton>
-                  <input type="button" className="btn btn-success" value="Add" onClick={ this.props.addRow } />
-                  <input type="button" className="btn btn-danger" value="Delete" onClick={ this.removeRow } />
-                  <BootstrapTable ref={n => this.node = n} {...props.baseProps}  striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={ this.cellEdit } />
+                  <input type="button" className="btn btn-success" value="Add" onClick={this.props.addRow} />
+                  <input type="button" className="btn btn-danger" value="Delete" onClick={this.removeRow} />
+                  <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} />
                 </div>
                 <div className="text-center">
                   <input type="button" className="btn btn-primary" value="Query" onClick={this.query} />
@@ -122,27 +128,27 @@ class TableQuery extends Component {
 
     for (const query of data) {
       let answeredResults = await this.makeAjaxQuery(query)
-      answeredResults.forEach((answer)=>{
+      answeredResults.forEach((answer) => {
         this.props.addResult(answer)
       })
-      
+
     }
 
-    
 
-    
+
+
 
   }
 
   async makeAjaxQuery(queryParams) {
 
-    let dateString='*';
-    if(queryParams.dateFrom !== '' && queryParams.dateTo !==''){
-      dateString=queryParams.dateFrom + '-' + queryParams.dateTo
-    }else if(queryParams.dateFrom === '' && queryParams.dateTo !==''){
-      dateString='*-' + queryParams.dateTo
-    }else if(queryParams.dateFrom !== '' && queryParams.dateTo ===''){
-      dateString=queryParams.dateFrom+'-*'
+    let dateString = '*';
+    if (queryParams.dateFrom !== '' && queryParams.dateTo !== '') {
+      dateString = queryParams.dateFrom + '-' + queryParams.dateTo
+    } else if (queryParams.dateFrom === '' && queryParams.dateTo !== '') {
+      dateString = '*-' + queryParams.dateTo
+    } else if (queryParams.dateFrom !== '' && queryParams.dateTo === '') {
+      dateString = queryParams.dateFrom + '-*'
     }
 
     let queryPost = {
@@ -154,7 +160,7 @@ class TableQuery extends Component {
       modality: queryParams.modalities,
       aet: queryParams.aet
     }
-    let postString=JSON.stringify(queryPost)
+    let postString = JSON.stringify(queryPost)
     console.log(queryPost)
 
     let response = await fetch("/query",
@@ -184,8 +190,9 @@ class TableQuery extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    aets: state.FormInput.aetsObject,
     queries: state.QueryList,
-    results : state.resultList
+    results: state.resultList
   }
 }
 
