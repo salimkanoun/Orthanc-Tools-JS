@@ -35,13 +35,16 @@ class TableResult extends Component {
 
     columns = [{
         dataField: 'number',
-        hidden: true
+        hidden: true,
+        csvExport: false
     }, {
         dataField: 'answerId',
-        hidden: true
+        hidden: true,
+        csvExport: false
     }, {
         dataField: 'answerNumber',
-        hidden: true
+        hidden: true,
+        csvExport: false
     }, {
         dataField: 'patientName',
         text: 'Patient Name',
@@ -79,18 +82,22 @@ class TableResult extends Component {
         filter: textFilter()
     }, {
         dataField: 'studyInstanceUid',
-        hidden: true
+        hidden: true,
+        csvExport: false
     }, {
         dataField: 'retrive',
         text: 'Retrieve',
-        formatter : this.retrieveButton
+        formatter : this.retrieveButton,
+        csvExport: false
     }, {
         dataField: 'jobId',
-        hidden: true
+        hidden: true,
+        csvExport: false
     }, {
         dataField: 'export',
         text: 'Export',
-        formatter : this.exportButton
+        formatter : this.exportButton,
+        csvExport: false
     }];
 
 
@@ -103,7 +110,7 @@ class TableResult extends Component {
                 keyField="key"
                 data={this.props.results.results}
                 columns={this.columns}
-                exportCSV={{ onlyExportSelection: true, exportAll: true }}
+                exportCSV={{ onlyExportSelection: false, exportAll: true }}
             >{
                     props => (
                         <React.Fragment>
