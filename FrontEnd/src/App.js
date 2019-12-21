@@ -10,29 +10,32 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Helmet from "react-helmet";
 
 import Query from './components/query'
+import Authentication from './components/Authentication'
 
 function App() {
   return (
     <Fragment>
       <Helmet>
       <meta charSet="utf-8" />
-      <title>Auto-Retrieve</title>
+      <title>Orthanc Tools</title>
       </Helmet>
       <Router>
-        <div>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
+        <div className="navbar navbar-expand-lg navbar-light bg-light mb-5">
+          <ul className="navbar-nav mr-auto">
+            <li className="nav-item">
+              <Link className="nav-link" to="/">Authentication</Link>
             </li>
-            <li>
-              <Link to="/query">Query</Link>
+            <li className="nav-item">
+              <Link className="nav-link" to="/query">Query</Link>
             </li>
           </ul>
 
           <hr />
-
+        </div>
+        <div>
           <Switch>
             <Route exact path="/">
+              <Authentication />
             </Route>
             <Route path="/query">
               <Query />

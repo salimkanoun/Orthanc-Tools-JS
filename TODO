@@ -2,7 +2,6 @@ Front :
 - Check que filtre date marche
 - Reserver le formulaire au query manuel avec table dynamique ou meme table que results ?
 - Query level series
-- formulaire d'authentification
 - Anonymisation vers table d'Anonymisation ?
 - Raport de query / retrieve
 - Settings centralisé ou non ? : 

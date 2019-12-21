@@ -86,7 +86,7 @@ class TableQuery extends Component {
     sort: true,
     editor: {
       type: Type.SELECT,
-      getOptions: (setOptions, { row, column }) =>{
+      getOptions: (setOptions, { row, column }) => {
         return this.props.aets
       }
     },
@@ -137,11 +137,6 @@ class TableQuery extends Component {
       })
 
     }
-
-
-
-
-
   }
 
   async makeAjaxQuery(queryParams) {
@@ -167,7 +162,9 @@ class TableQuery extends Component {
     let postString = JSON.stringify(queryPost)
     console.log(queryPost)
 
-    let response = await fetch("/query",
+
+
+    let queryAnswers = await fetch("/query",
       {
         method: "POST",
         headers: {
@@ -175,13 +172,10 @@ class TableQuery extends Component {
           'Content-Type': 'application/json'
         },
         body: postString
+      }).then((answer)=>{
+        return(answer.json())
       })
 
-    let queryAnswers = []
-    if (response.ok) {
-      console.log('request 200')
-      queryAnswers = await response.json()
-    }
 
     return queryAnswers
 

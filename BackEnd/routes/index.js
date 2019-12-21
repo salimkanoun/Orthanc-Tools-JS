@@ -17,7 +17,7 @@ var aetsController = require('../controllers/aets')
 const authUser = require('./auth_middelware')
 
 // Route request to controllers
-router.all('/', authenticationController.getResults)
+router.all('/authentication', authenticationController.getResults)
 
 router.all('/autoQuery', authUser, autoQueryController.getResults)
 

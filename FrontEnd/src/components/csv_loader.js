@@ -53,7 +53,7 @@ class CsvLoader extends Component {
     render() {
         return (
             <form onSubmit={this.parseCSV}>
-                    <input type="file" id="files" class="m-2" multiple={false} ref={this.fileInput} accept='.csv'  />
+                    <input type="file" id="files" className="m-2" multiple={false} ref={this.fileInput} accept='.csv'  />
                     <input type="submit" className="btn btn-primary" id="parseBtn" value="Parse CSV" />
             </form>
         )
