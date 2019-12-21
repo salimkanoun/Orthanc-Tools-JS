@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import FormInput from './form_input'
-import CsvLoader from './csv_loader'
+
 import TableQuery from './table_query'
 import TableResult from './table_results'
 
@@ -15,12 +15,19 @@ class Query extends Component {
 
 
     async componentDidMount() {
+        let aets= await Query.getAets();
+        this.props.setAets(aets)
+    }
+
+    static async getAets(){
         let response= await fetch('/aets')
         let aets=[]
         if(response.ok){
         aets = await response.json()
         }
-        this.props.setAets(aets)
+
+        return aets
+
     }
 
     render(){
@@ -38,9 +45,7 @@ class Query extends Component {
                 </div>
 
                 <FormInput style={this.props.currentMainTab ==='Query' ? {} : { display: 'none' }} /> 
-                <CsvLoader style={this.props.currentMainTab ==='Query' ? {} : { display: 'none' }} />
                 <TableQuery style={this.props.currentMainTab ==='Query' ? {} : { display: 'none' }} />
-
                 <TableResult style={this.props.currentMainTab ==='Results' ? {} : { display: 'none' }} />
             </Fragment>
       )

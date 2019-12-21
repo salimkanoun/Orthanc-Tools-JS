@@ -12,6 +12,8 @@ import { connect } from 'react-redux'
 import * as actions from '../actions/TableQuery'
 import * as resultActions from '../actions/TableResult'
 
+import CsvLoader from './csv_loader'
+
 
 class TableQuery extends Component {
 
@@ -84,15 +86,15 @@ class TableQuery extends Component {
     sort: true,
     editor: {
       type: Type.SELECT,
-      options: this.props.aetsObject
+      getOptions: (setOptions, { row, column }) =>{
+        return this.props.aets
+      }
     },
     filter: textFilter()
   }];
 
-  //SK A VOIR GET ET SET OPTIONS
-
   render() {
-
+    console.log(this.props.aets)
     const { ExportCSVButton } = CSVExport
     return (
       <ToolkitProvider
@@ -104,10 +106,12 @@ class TableQuery extends Component {
           props => (
             <React.Fragment>
               <div className="jumbotron" style={this.props.style}>
+                <h2 className="card-title">Auto Query</h2>
                 <div>
-                  <ExportCSVButton {...props.csvProps} className="btn btn-primary">Export CSV</ExportCSVButton>
-                  <input type="button" className="btn btn-success" value="Add" onClick={this.props.addRow} />
-                  <input type="button" className="btn btn-danger" value="Delete" onClick={this.removeRow} />
+                  <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
+                  <input type="button" className="btn btn-success m-2" value="Add" onClick={this.props.addRow} />
+                  <input type="button" className="btn btn-danger m-2" value="Delete" onClick={this.removeRow} />
+                  <CsvLoader />
                   <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} />
                 </div>
                 <div className="text-center">

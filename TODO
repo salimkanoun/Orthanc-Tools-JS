@@ -1,6 +1,5 @@
 Front : 
 - Check que filtre date marche
-- Ajout List deroulante dans table query ? (pour modif des query manuelle)
 - Reserver le formulaire au query manuel avec table dynamique ou meme table que results ?
 - Query level series
 - formulaire d'authentification

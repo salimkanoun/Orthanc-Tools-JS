@@ -52,15 +52,10 @@ class CsvLoader extends Component {
 
     render() {
         return (
-            <div style={this.props.style}>
-                <form className="jumbotron" onSubmit={this.parseCSV}>
-                    <h2 className="card-title">CSV</h2>
-                    <div className="row">
-                        <input type="file" id="files" multiple="" ref={this.fileInput} accept='.csv'  />
-                        <input type="submit" className="btn btn-primary" id="parseBtn" value="Parse" />
-                    </div>
-                </form>
-            </div>
+            <form onSubmit={this.parseCSV}>
+                    <input type="file" id="files" class="m-2" multiple={false} ref={this.fileInput} accept='.csv'  />
+                    <input type="submit" className="btn btn-primary" id="parseBtn" value="Parse CSV" />
+            </form>
         )
     }
 }

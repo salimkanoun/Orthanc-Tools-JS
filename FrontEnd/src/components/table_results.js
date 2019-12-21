@@ -25,7 +25,6 @@ class TableResult extends Component {
         let selectedKeyRow = this.node.selectionContext.selected
         this.props.removeResult(selectedKeyRow)
         this.node.selectionContext.selected = []
-
     }
 
     selectRow = {
@@ -87,7 +86,7 @@ class TableResult extends Component {
     }, {
         dataField: 'retrive',
         text: 'Retrieve',
-        formatter : this.retrieveButton,
+        formatter: this.retrieveButton,
         csvExport: false
     }, {
         dataField: 'jobId',
@@ -96,7 +95,7 @@ class TableResult extends Component {
     }, {
         dataField: 'export',
         text: 'Export',
-        formatter : this.exportButton,
+        formatter: this.exportButton,
         csvExport: false
     }];
 
@@ -114,17 +113,15 @@ class TableResult extends Component {
             >{
                     props => (
                         <React.Fragment>
-                            
                             <div className="jumbotron" style={this.props.style}>
-                            <h1>Results : </h1>
+                                <h2 class="card-title">Results : </h2>
                                 <div>
-                                    <ExportCSVButton {...props.csvProps} className="btn btn-primary">Export CSV</ExportCSVButton>
-                                    <input type="button" className="btn btn-danger" value="Delete" onClick={this.removeRow} />
+                                    <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
+                                    <input type="button" className="btn btn-danger m-2" value="Delete" onClick={this.removeRow} />
                                     <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} >
                                     </BootstrapTable>
                                 </div>
                             </div>
-
                         </React.Fragment>
                     )
                 }
@@ -132,13 +129,13 @@ class TableResult extends Component {
         )
     }
 
-    retrieveButton(cell, row, rowIndex, formatExtraData){
+    retrieveButton(cell, row, rowIndex, formatExtraData) {
         //Add Retrieve button for each result with row data in props
         return <RetrieveButton rowData={row} />
 
     }
 
-    exportButton(cell, row, rowIndex, formatExtraData){
+    exportButton(cell, row, rowIndex, formatExtraData) {
         return <ExportButton rowData={row} />
     }
 
