@@ -62,7 +62,7 @@ class TableResult extends Component {
         filter: textFilter()
     }, {
         dataField: 'studyDate',
-        text: 'Acquistion Date',
+        text: 'Acquisition Date',
         sort: true,
         filter: dateFilter()
     }, {

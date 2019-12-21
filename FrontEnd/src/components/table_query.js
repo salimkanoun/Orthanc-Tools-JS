@@ -29,16 +29,18 @@ class TableQuery extends Component {
   }
 
   selectRow = {
-    mode: 'checkbox'
+    mode : 'checkbox'
   };
 
   cellEdit = cellEditFactory({
-    mode: 'click'
+    mode : 'click',
+    blurToSave : true
   });
 
   columns = [{
     dataField: 'number',
-    hidden: true
+    hidden: true,
+    csvExport: false
   }, {
     dataField: 'patientName',
     text: 'Patient Name',
@@ -98,6 +100,7 @@ class TableQuery extends Component {
               <div className="jumbotron" style={this.props.style}>
                 <div>
                   <ExportCSVButton {...props.csvProps} className="btn btn-primary">Export CSV</ExportCSVButton>
+                  <input type="button" className="btn btn-success" value="Add" onClick={ this.props.addRow } />
                   <input type="button" className="btn btn-danger" value="Delete" onClick={ this.removeRow } />
                   <BootstrapTable ref={n => this.node = n} {...props.baseProps}  striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={ this.cellEdit } />
                 </div>

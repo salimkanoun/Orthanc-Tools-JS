@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import Papa from 'papaparse'
 
+import { connect } from 'react-redux'
+import * as actions from '../actions/FormInput'
+
 class CsvLoader extends Component {
 
     constructor(props) {
         super(props)
         this.parseCSV = this.parseCSV.bind(this)
         this.fileInput = React.createRef();
+        this.completeFn= this.completeFn.bind(this)
     }
 
 
@@ -21,16 +25,29 @@ class CsvLoader extends Component {
         Papa.parse(file,{
                 header: true,
                 complete: currentObject.completeFn// base config to use for each file
-            })
+        })
     };
 
     completeFn(result, file) {
-        console.log('resultats CSV')
-        console.log(result)
+        let currentObject=this
         let csvData = result.data;
-        for (let i = 1; i < csvData.length; i++) {
-            console.log(csvData)
-        }
+        csvData.forEach((query)=>{
+
+            let queryForList = {
+                patientName : query['Patient Name'],
+                patientId : query['Patient ID'],
+                accessionNumber : query['Accession Number'],
+                dateFrom : query['Acquisition Date'],
+                dateTo : query['Acquisition Date'],
+                studyDescription : query['Study Description'],
+                modalities: query['Modalities'],
+                aet : query['AET']
+              }
+              
+            currentObject.props.addQueryToList(queryForList)
+
+        })
+
     }
 
     render() {
@@ -48,6 +65,12 @@ class CsvLoader extends Component {
     }
 }
 
-export default CsvLoader;
+const mapStateToProps = ( state )=>{
+    return {
+      form : state.FormInput
+    }
+  }
+  
+export default connect(mapStateToProps, actions)(CsvLoader);
 
 
