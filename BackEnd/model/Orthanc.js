@@ -99,14 +99,14 @@ class Orthanc {
      * @param {string} type
      */
   putAet (name, aet, ip, port, type) {
-    let data=[]
+    let data = []
     console.log(type)
-    if(type===undefined){
+    if (type === undefined) {
       data = [aet, ip, port]
-    }else{
+    } else {
       data = [aet, ip, port, type]
     }
-    
+
     console.log(data)
     console.log(name)
     const currentOrthanc = this

@@ -28,17 +28,18 @@ app.use(cookieParser())
 app.use(session({
   secret: 'ImageFetcher',
   resave: true,
-  saveUninitialized: true }))
+  saveUninitialized: true
+}))
 
-var unless = function(path, middleware) {
-  return function(req, res, next) {
-      if (path === req.path) {
-          return next();
-      } else {
-          return middleware(req, res, next);
-      }
-  };
-};
+var unless = function (path, middleware) {
+  return function (req, res, next) {
+    if (path === req.path) {
+      return next()
+    } else {
+      return middleware(req, res, next)
+    }
+  }
+}
 
 var accessLogStream = rfs('access.log', {
   interval: '1d', // rotate daily

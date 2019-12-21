@@ -1,7 +1,7 @@
 var Orthanc = require('../model/Orthanc')
 
 var getResults = async function (req, res) {
-  let body = req.body
+  const body = req.body
   var orthancInstance = new Orthanc()
   console.log(body)
   orthancInstance.buildDicomQuery('Study', body.patientName, body.patientID, body.date, body.modality,
