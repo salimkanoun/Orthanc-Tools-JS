@@ -29,9 +29,11 @@ export default class Options extends Component {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
+        
         this.setState({
             [name]: value
         })
+
     }
 
 
@@ -60,10 +62,10 @@ export default class Options extends Component {
                 <div>
                     <h2 className="card-title">Retrieve Schedule Time</h2>
                     <label htmlFor="hour">Hour : </label>
-                    <input type='number' name="hour" className="row form-control" onChange={this.handleChange} value={this.state.hour} />
+                    <input type='number' name="hour" min={0} max={23} className="row form-control" onChange={this.handleChange} value={this.state.hour} />
                     <label htmlFor="min">Minutes : </label>
-                    <input type='number' name="min" className="row form-control" onChange={this.handleChange} value={this.state.min} />
-                    <input type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
+                    <input type='number' name="min" min={0} max={59} className="row form-control" onChange={this.handleChange} value={this.state.min} />
+                    <input type='buttton' className='row btn btn-primary' onClick={this.handleClick} value='send' />
                 </div>
 
             </div>
