@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import {
   BrowserRouter as Router,
   Switch,
@@ -11,6 +11,7 @@ import Helmet from 'react-helmet'
 
 import Query from './components/query'
 import Authentication from './components/Authentication'
+import Options from './components/Options'
 
 function App () {
   return (
@@ -28,6 +29,9 @@ function App () {
             <li className='nav-item'>
               <Link className='nav-link' to='/query'>Query</Link>
             </li>
+            <li className='nav-item'>
+              <Link className='nav-link' to='/options'>Options</Link>
+            </li>
           </ul>
 
           <hr />
@@ -39,6 +43,9 @@ function App () {
             </Route>
             <Route path='/query'>
               <Query />
+            </Route>
+            <Route path='/options'>
+              <Options />
             </Route>
           </Switch>
         </div>

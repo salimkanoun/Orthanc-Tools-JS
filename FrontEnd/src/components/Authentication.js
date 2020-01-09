@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 
 export default class Authentication extends Component {
@@ -6,6 +6,7 @@ export default class Authentication extends Component {
     super(props)
     this.handleClick = this.handleClick.bind(this)
     this.handleChange = this.handleChange.bind(this)
+    this.handleKeyDown = this.handleKeyDown.bind(this)
     this.state = {
       username: '',
       password: '',
@@ -48,8 +49,14 @@ export default class Authentication extends Component {
     })
   }
 
+  handleKeyDown(event){
+    if (event.key === 'Enter') {
+        this.handleClick()
+    }
+
+}
+
   render () {
-    console.log(this.state)
     if (this.state.authenthified) {
       return <Redirect to='/query' />
     }
@@ -59,7 +66,7 @@ export default class Authentication extends Component {
         <div className='jumbotron ' id='login'>
           <div className='block-title block block-400'>Authentication</div>
           <div className='block-content block block-400'>
-            <form id='login-form'>
+            <form id='login-form' onKeyPress={this.handleKeyDown}>
               <fieldset>
                 <label>Username*</label>
                 <input className='form-control' type='text' placeholder='username' name='username' value={this.state.username.value} onChange={this.handleChange} required />
