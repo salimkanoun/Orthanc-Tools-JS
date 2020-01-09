@@ -1,19 +1,19 @@
 Front : 
+- Ajout du Robot ?
+- Un robot par utilisateur ? ou par projet ?
+- Interface pour suivi de la progression du robot ? avec rapport de Query Retrieve ? et téléchargement des résultats?
 - Check que filtre date marche
-- Reserver le formulaire au query manuel avec table dynamique ou meme table que results ?
 - Query level series
+- Reserver le formulaire au query manuel avec table dynamique ou meme table que results ?
 - Anonymisation vers table d'Anonymisation ?
-- Raport de query / retrieve
-- Settings centralisé ou non ? : 
-    - Telechargement vers client ou vers serveur
-    - Heure de AutoQuery
+- Settings AutoQuery : 
     - Filtre sur le niveau Series
 - Declaration des AET ? avec stockage dans la base de données ?
-- Visu des retrieve action robot ? 1 / utilisateur ? validation d'un admin ?
 
 
 Back : 
 - Fetch details series des studies
 - PassportJS pour stateless
 - ORM ?
+- Nettoyer les API pour etre conforme a la nommenclature Rest
 - Supprimer les vues

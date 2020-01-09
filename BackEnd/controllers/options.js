@@ -2,19 +2,24 @@ const Database = require('../model/Database')
 const Options = require('../model/Options')
 
 var getResults = async function (req, res) {
-  const body = req.body
-  console.log(body)
+
   const database = await Database.getDatabase()
   const option = new Options(database)
 
-  if ('hour' in body) {
-    await option.setScheduleTime(body.hour, body.minutes)
+  if( req.method === 'PUT' ){
+    await option.setScheduleTime(req.body.hour, req.body.min)
     res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify('Done'))
-  } else {
+    res.end(JSON.stringify(true))
+
+  }else if( req.method === 'GET' ){
+
     await option.getOptions()
-    res.render('options', { hour: option.hour, min: option.min })
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify({ hour: option.hour, min: option.min }))
+
   }
+  
+
 }
 
 module.exports = { getResults }

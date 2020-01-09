@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import FormInput from './form_input'
 
 import TableQuery from './table_query'
@@ -18,12 +18,7 @@ class Query extends Component {
   }
 
   static async getAets () {
-    const response = await fetch('/aets')
-    let aets = []
-    if (response.ok) {
-      aets = await response.json()
-    }
-
+    let aets = await fetch('/aets').then((answer)=>{ return answer.json() })
     return aets
   }
 
