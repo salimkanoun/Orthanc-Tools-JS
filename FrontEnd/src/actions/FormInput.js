@@ -8,8 +8,6 @@ export function setFormData (name, value) {
 }
 
 export function addModalities (modalities) {
-  console.log('aa')
-  console.log(modalities)
   return {
     type: ADD_MODALITIES,
     payload: modalities

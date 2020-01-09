@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Papa from 'papaparse'
+import moment from 'moment'
 
 import { connect } from 'react-redux'
 import * as actions from '../actions/FormInput'
@@ -31,14 +32,15 @@ class CsvLoader extends Component {
     completeFn(result, file) {
         let currentObject=this
         let csvData = result.data;
-        csvData.forEach((query)=>{
 
+        csvData.forEach((query)=>{
+            let acquisitionDate = moment(query['Acquisition Date'], 'YYYYMMDD').format("YYYY-MM-DD");
             let queryForList = {
                 patientName : query['Patient Name'],
                 patientId : query['Patient ID'],
                 accessionNumber : query['Accession Number'],
-                dateFrom : query['Acquisition Date'],
-                dateTo : query['Acquisition Date'],
+                dateFrom : acquisitionDate,
+                dateTo : acquisitionDate,
                 studyDescription : query['Study Description'],
                 modalities: query['Modalities'],
                 aet : query['AET']

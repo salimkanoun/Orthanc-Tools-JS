@@ -27,9 +27,18 @@ class TableResult extends Component {
         this.node.selectionContext.selected = []
     }
 
+    onSelectAll = (isSelected) => {
+        if (isSelected) {
+           return this.props.results.results.map(object => object.key);
+         } else {
+           return [];
+         }
+    }
+
     selectRow = {
         mode: 'checkbox',
-        clickToSelect: true
+        clickToSelect: true,
+        onSelectAll: this.onSelectAll
     };
 
     columns = [{

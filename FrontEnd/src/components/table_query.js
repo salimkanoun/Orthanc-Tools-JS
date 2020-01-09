@@ -32,8 +32,18 @@ class TableQuery extends Component {
 
   }
 
+  onSelectAll = (isSelected) => {
+    if (isSelected) {
+       return this.props.queries.queries.map(object => object.key);
+     } else {
+       return [];
+     }
+  }
+
+
   selectRow = {
-    mode: 'checkbox'
+    mode: 'checkbox',
+    onSelectAll: this.onSelectAll
   };
 
   cellEdit = cellEditFactory({
@@ -64,12 +74,18 @@ class TableQuery extends Component {
     dataField: 'dateFrom',
     text: 'Date From',
     sort: true,
-    filter: dateFilter()
+    filter: dateFilter(),
+    editor: {
+      type: Type.DATE
+    }
   }, {
     dataField: 'dateTo',
     text: 'Date To',
     sort: true,
-    filter: dateFilter()
+    filter: dateFilter(),
+    editor: {
+      type: Type.DATE
+    }
   }, {
     dataField: 'studyDescription',
     text: 'Study Description',
@@ -94,7 +110,6 @@ class TableQuery extends Component {
   }];
 
   render() {
-    console.log(this.props.aets)
     const { ExportCSVButton } = CSVExport
     return (
       <ToolkitProvider
@@ -142,6 +157,8 @@ class TableQuery extends Component {
   async makeAjaxQuery(queryParams) {
 
     let dateString = '*';
+    queryParams.dateFrom=queryParams.dateFrom.split('-').join('')
+    queryParams.dateTo=queryParams.dateTo.split('-').join('')
     if (queryParams.dateFrom !== '' && queryParams.dateTo !== '') {
       dateString = queryParams.dateFrom + '-' + queryParams.dateTo
     } else if (queryParams.dateFrom === '' && queryParams.dateTo !== '') {
