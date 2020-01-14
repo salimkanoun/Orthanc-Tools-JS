@@ -1,9 +1,12 @@
 Front : 
-- Spliter firstName, LastName dans toutes les tables query / results ?
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire l'action
+- Modality Type en Select => Via custom editor https://github.com/react-bootstrap-table/react-bootstrap-table2/tree/master/packages/react-bootstrap-table2-editor
+
 - Ajout du Robot + interface suivi (bare de progression)
 - Un robot par utilisateur avec un nom de projet (servira de base de nom a l'anon)
 - rapport de Query Retrieve ? et téléchargement des résultats?
+
+- Spliter firstName, LastName dans toutes les tables query / results ?
 - Query level series avec expendable rows on click (declanche retrieve des series)
 - Anonymisation vers table d'Anonymisation ?
 - Settings AutoQuery : 

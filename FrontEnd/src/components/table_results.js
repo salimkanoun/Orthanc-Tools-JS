@@ -19,6 +19,7 @@ class TableResult extends Component {
     constructor(props) {
         super(props)
         this.removeRow = this.removeRow.bind(this)
+        this.emptyTable=this.emptyTable.bind(this)
     }
 
     removeRow() {
@@ -27,18 +28,14 @@ class TableResult extends Component {
         this.node.selectionContext.selected = []
     }
 
-    onSelectAll = (isSelected) => {
-        if (isSelected) {
-           return this.props.results.results.map(object => object.key);
-         } else {
-           return [];
-         }
+    emptyTable () {
+        this.props.emptyResultsTable()
+
     }
 
     selectRow = {
         mode: 'checkbox',
-        clickToSelect: true,
-        onSelectAll: this.onSelectAll
+        clickToSelect: true
     };
 
     columns = [{
@@ -125,7 +122,8 @@ class TableResult extends Component {
                             <div className="jumbotron" style={this.props.style}>
                                 <div>
                                     <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
-                                    <input type="button" className="btn btn-danger m-2" value="Delete" onClick={this.removeRow} />
+                                    <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
+                                    <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                                     <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} >
                                     </BootstrapTable>
                                 </div>
