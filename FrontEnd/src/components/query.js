@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import FormInput from './form_input'
 
 import TableQuery from './table_query'
 import TableResult from './table_results'
@@ -28,7 +27,7 @@ class Query extends Component {
         <div id='navBar' className='mb-5'>
           <ul className='nav nav-pills nav-fill'>
             <li className='nav-item'>
-              <button className={this.props.currentMainTab === 'Query' ? 'col nav-link active link-button' : ' col nav-link link-button'} onClick={() => this.activate('Query')}>Add Query</button>
+              <button className={this.props.currentMainTab === 'Query' ? 'col nav-link active link-button' : ' col nav-link link-button'} onClick={() => this.activate('Query')}>Auto Query</button>
             </li>
             <li className='nav-item'>
               <button className={this.props.currentMainTab === 'Results' ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => this.activate('Results')}>Result answers</button>

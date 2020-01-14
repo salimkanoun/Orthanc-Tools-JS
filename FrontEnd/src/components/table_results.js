@@ -123,7 +123,6 @@ class TableResult extends Component {
                     props => (
                         <React.Fragment>
                             <div className="jumbotron" style={this.props.style}>
-                                <h2 className="card-title">Results : </h2>
                                 <div>
                                     <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
                                     <input type="button" className="btn btn-danger m-2" value="Delete" onClick={this.removeRow} />

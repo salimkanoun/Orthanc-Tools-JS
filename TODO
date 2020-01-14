@@ -1,7 +1,6 @@
 Front : 
-- Enlever le formulaire manuel et le laisser pour les query unique avec un duplicat de la table results
 - Spliter firstName, LastName dans toutes les tables query / results ?
-- Sous colonne modificatrice pour l'ensemble de la colonne quand table Query
+- Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire l'action
 - Ajout du Robot + interface suivi (bare de progression)
 - Un robot par utilisateur avec un nom de projet (servira de base de nom a l'anon)
 - rapport de Query Retrieve ? et téléchargement des résultats?
@@ -11,8 +10,8 @@ Front :
     - Filtre sur le niveau Series => Contains et equal sur modality et series description
 - Declaration des AET ? avec stockage dans la base de données ?
 
-
 + tard  : historique des query dans BDD pour relancer une ancienne requete
+- Manual Querya avec le formulaire manuel avec un duplicat de la table results
 
 Back : 
 - Fetch details series des studies

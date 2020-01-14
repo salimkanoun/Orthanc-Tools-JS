@@ -23,7 +23,6 @@ class TableQuery extends Component {
     super(props)
     this.removeRow = this.removeRow.bind(this)
     this.query = this.query.bind(this)
-    this.columnFormatter=this.columnFormatter.bind(this)
     this.aetsObject = []
 
   }
@@ -48,16 +47,17 @@ class TableQuery extends Component {
 
   }
 
-  columnFormatter(column, colIndex, { sortElement, filterElement }) {
-    console.log(this)
+  customHeader(column, colIndex, { sortElement, filterElement }) {
     return (
-      <div>
+      <div style={ { display: 'flex', flexDirection: 'column' } }>
         { column.text }
         { filterElement }
-        <ColumnEditor onChange={console.log('ici2')}/>
+        <ColumnEditor columnNumber={column.dataField} />
+
       </div>
     );
   }
+  
 
 
   selectRow = {
@@ -80,19 +80,19 @@ class TableQuery extends Component {
     text: 'Patient Name',
     sort: true,
     filter: textFilter(),
-    headerFormatter: this.columnFormatter
+    headerFormatter: this.customHeader
   }, {
     dataField: 'patientId',
     text: 'Patient ID',
     sort: true,
     filter: textFilter(),
-    headerFormatter: this.columnFormatter
+    headerFormatter: this.customHeader
   }, {
     dataField: 'accessionNumber',
     text: 'Accession Number',
     sort: true,
     filter: textFilter(),
-    headerFormatter: this.columnFormatter
+    headerFormatter: this.customHeader
   }, {
     dataField: 'dateFrom',
     text: 'Date From',
@@ -101,7 +101,7 @@ class TableQuery extends Component {
     editor: {
       type: Type.DATE
     },
-    headerFormatter: this.columnFormatter
+    headerFormatter: this.customHeader
   }, {
     dataField: 'dateTo',
     text: 'Date To',
@@ -110,19 +110,19 @@ class TableQuery extends Component {
     editor: {
       type: Type.DATE
     },
-    headerFormatter: this.columnFormatter
+    headerFormatter: this.customHeader
   }, {
     dataField: 'studyDescription',
     text: 'Study Description',
     sort: true,
     filter: textFilter(),
-    headerFormatter: this.columnFormatter
+    headerFormatter: this.customHeader
   }, {
     dataField: 'modalities',
     text: 'Modality',
     sort: true,
     filter: textFilter(),
-    headerFormatter: this.columnFormatter
+    headerFormatter: this.customHeader
   }, {
     dataField: 'aet',
     text: 'AET',
@@ -134,7 +134,7 @@ class TableQuery extends Component {
       }
     },
     filter: textFilter(),
-    headerFormatter: this.columnFormatter
+    headerFormatter: this.customHeader
   }];
 
   render() {
@@ -149,13 +149,13 @@ class TableQuery extends Component {
           props => (
             <React.Fragment>
               <div className="jumbotron" style={this.props.style}>
-                <h2 className="card-title">Auto Query</h2>
                 <div>
                   <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
                   <input type="button" className="btn btn-success m-2" value="Add" onClick={this.props.addRow} />
                   <input type="button" className="btn btn-danger m-2" value="Delete" onClick={this.removeRow} />
                   <CsvLoader />
-                  <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} />
+                  <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} >
+                  </BootstrapTable>
                 </div>
                 <div className="text-center">
                   <input type="button" className="btn btn-primary" value="Query" onClick={this.query} />
