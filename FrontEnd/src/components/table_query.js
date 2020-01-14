@@ -8,6 +8,8 @@ import cellEditFactory, { Type } from 'react-bootstrap-table2-editor'
 
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
+import ColumnEditor from './column_editor'
+
 import { connect } from 'react-redux'
 import * as actions from '../actions/TableQuery'
 import * as resultActions from '../actions/TableResult'
@@ -21,6 +23,7 @@ class TableQuery extends Component {
     super(props)
     this.removeRow = this.removeRow.bind(this)
     this.query = this.query.bind(this)
+    this.columnFormatter=this.columnFormatter.bind(this)
     this.aetsObject = []
 
   }
@@ -40,6 +43,22 @@ class TableQuery extends Component {
      }
   }
 
+  modifyColumn(event){
+    console.log(event)
+
+  }
+
+  columnFormatter(column, colIndex, { sortElement, filterElement }) {
+    console.log(this)
+    return (
+      <div>
+        { column.text }
+        { filterElement }
+        <ColumnEditor onChange={console.log('ici2')}/>
+      </div>
+    );
+  }
+
 
   selectRow = {
     mode: 'checkbox',
@@ -48,7 +67,8 @@ class TableQuery extends Component {
 
   cellEdit = cellEditFactory({
     mode: 'click',
-    blurToSave: true
+    blurToSave: true,
+    autoSelectText : true
   });
 
   columns = [{
@@ -59,17 +79,20 @@ class TableQuery extends Component {
     dataField: 'patientName',
     text: 'Patient Name',
     sort: true,
-    filter: textFilter()
+    filter: textFilter(),
+    headerFormatter: this.columnFormatter
   }, {
     dataField: 'patientId',
     text: 'Patient ID',
     sort: true,
-    filter: textFilter()
+    filter: textFilter(),
+    headerFormatter: this.columnFormatter
   }, {
     dataField: 'accessionNumber',
     text: 'Accession Number',
     sort: true,
-    filter: textFilter()
+    filter: textFilter(),
+    headerFormatter: this.columnFormatter
   }, {
     dataField: 'dateFrom',
     text: 'Date From',
@@ -77,7 +100,8 @@ class TableQuery extends Component {
     filter: dateFilter(),
     editor: {
       type: Type.DATE
-    }
+    },
+    headerFormatter: this.columnFormatter
   }, {
     dataField: 'dateTo',
     text: 'Date To',
@@ -85,17 +109,20 @@ class TableQuery extends Component {
     filter: dateFilter(),
     editor: {
       type: Type.DATE
-    }
+    },
+    headerFormatter: this.columnFormatter
   }, {
     dataField: 'studyDescription',
     text: 'Study Description',
     sort: true,
-    filter: textFilter()
+    filter: textFilter(),
+    headerFormatter: this.columnFormatter
   }, {
     dataField: 'modalities',
     text: 'Modality',
     sort: true,
-    filter: textFilter()
+    filter: textFilter(),
+    headerFormatter: this.columnFormatter
   }, {
     dataField: 'aet',
     text: 'AET',
@@ -106,7 +133,8 @@ class TableQuery extends Component {
         return this.props.aets
       }
     },
-    filter: textFilter()
+    filter: textFilter(),
+    headerFormatter: this.columnFormatter
   }];
 
   render() {

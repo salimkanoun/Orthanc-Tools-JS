@@ -35,8 +35,6 @@ class Query extends Component {
             </li>
           </ul>
         </div>
-
-        <FormInput style={this.props.currentMainTab === 'Query' ? {} : { display: 'none' }} />
         <TableQuery style={this.props.currentMainTab === 'Query' ? {} : { display: 'none' }} />
         <TableResult style={this.props.currentMainTab === 'Results' ? {} : { display: 'none' }} />
       </>
