@@ -12,6 +12,7 @@ import * as actions from '../actions/TableResult'
 
 import RetrieveButton from './retrieve_button'
 import ExportButton from './export_button'
+import CreateRobot from './create_robot'
 
 
 class TableResult extends Component {
@@ -127,6 +128,7 @@ class TableResult extends Component {
                                     <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} >
                                     </BootstrapTable>
                                 </div>
+                                <CreateRobot></CreateRobot>
                             </div>
                         </React.Fragment>
                     )

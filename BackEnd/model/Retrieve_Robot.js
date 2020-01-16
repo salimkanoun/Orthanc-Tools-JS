@@ -9,6 +9,14 @@ class Retrieve_Robot {
     this.retrieveList = retrieveList
   }
 
+  getRetrieveList(){
+    return {
+      retrieveList : this.retrieveList,
+      scheduledJob : this.scheduledJob
+    }
+
+  }
+
   setDestination (aetDestination) {
     this.aetDestination = aetDestination
   }
