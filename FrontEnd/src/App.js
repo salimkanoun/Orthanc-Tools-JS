@@ -11,7 +11,8 @@ import Helmet from 'react-helmet'
 
 import Query from './components/query'
 import Authentication from './components/Authentication'
-import Options from './components/Options'
+import AdminPanel from './components/admin_panel'
+
 
 function App () {
   return (
@@ -45,7 +46,7 @@ function App () {
               <Query />
             </Route>
             <Route path='/options'>
-              <Options />
+              <AdminPanel />
             </Route>
           </Switch>
         </div>

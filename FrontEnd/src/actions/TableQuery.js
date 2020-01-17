@@ -1,4 +1,4 @@
-import { REMOVE_QUERY, ADD_EMPTY_QUERY } from './actions-types'
+import { REMOVE_QUERY, ADD_EMPTY_QUERY, EMPTY_QUERY } from './actions-types'
 
 export function removeQuery (lineNumber) {
   return {
@@ -10,5 +10,11 @@ export function removeQuery (lineNumber) {
 export function addRow () {
   return {
     type: ADD_EMPTY_QUERY
+  }
+}
+
+export function emptyQueryTable(){
+  return {
+    type: EMPTY_QUERY
   }
 }

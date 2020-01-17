@@ -1,15 +1,21 @@
 Front : 
-- Ajout du Robot ?
-- Un robot par utilisateur ? ou par projet ?
-- Interface pour suivi de la progression du robot ? avec rapport de Query Retrieve ? et téléchargement des résultats?
-- Check que filtre date marche
-- Query level series
-- Reserver le formulaire au query manuel avec table dynamique ou meme table que results ?
+- Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire l'action
+- Modality Type en Select => Via custom editor https://github.com/react-bootstrap-table/react-bootstrap-table2/tree/master/packages/react-bootstrap-table2-editor
+- Faire que le select all select tout les non filtre de toutes les pages ?
+
+- Ajout du Robot + interface suivi (bare de progression)
+- Un robot par utilisateur avec un nom de projet (servira de base de nom a l'anon)
+- rapport de Query Retrieve ? et téléchargement des résultats?
+
+- Spliter firstName, LastName dans toutes les tables query / results ?
+- Query level series avec expendable rows on click (declanche retrieve des series)
 - Anonymisation vers table d'Anonymisation ?
 - Settings AutoQuery : 
-    - Filtre sur le niveau Series
+    - Filtre sur le niveau Series => Contains et equal sur modality et series description
 - Declaration des AET ? avec stockage dans la base de données ?
 
++ tard  : historique des query dans BDD pour relancer une ancienne requete
+- Manual Querya avec le formulaire manuel avec un duplicat de la table results
 
 Back : 
 - Fetch details series des studies

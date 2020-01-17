@@ -8,6 +8,8 @@ import cellEditFactory, { Type } from 'react-bootstrap-table2-editor'
 
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
+import ColumnEditor from './column_editor'
+
 import { connect } from 'react-redux'
 import * as actions from '../actions/TableQuery'
 import * as resultActions from '../actions/TableResult'
@@ -21,6 +23,7 @@ class TableQuery extends Component {
     super(props)
     this.removeRow = this.removeRow.bind(this)
     this.query = this.query.bind(this)
+    this.emptyTable = this.emptyTable.bind(this)
     this.aetsObject = []
 
   }
@@ -32,23 +35,31 @@ class TableQuery extends Component {
 
   }
 
-  onSelectAll = (isSelected) => {
-    if (isSelected) {
-       return this.props.queries.queries.map(object => object.key);
-     } else {
-       return [];
-     }
+  emptyTable(){
+    this.props.emptyQueryTable()
   }
+
+  customHeader(column, colIndex, { sortElement, filterElement }) {
+    return (
+      <div style={ { display: 'flex', flexDirection: 'column' } }>
+        { column.text }
+        { filterElement }
+        <ColumnEditor columnNumber={column.dataField} />
+
+      </div>
+    );
+  }
+  
 
 
   selectRow = {
-    mode: 'checkbox',
-    onSelectAll: this.onSelectAll
+    mode: 'checkbox'
   };
 
   cellEdit = cellEditFactory({
     mode: 'click',
-    blurToSave: true
+    blurToSave: true,
+    autoSelectText : true
   });
 
   columns = [{
@@ -59,17 +70,20 @@ class TableQuery extends Component {
     dataField: 'patientName',
     text: 'Patient Name',
     sort: true,
-    filter: textFilter()
+    filter: textFilter(),
+    headerFormatter: this.customHeader
   }, {
     dataField: 'patientId',
     text: 'Patient ID',
     sort: true,
-    filter: textFilter()
+    filter: textFilter(),
+    headerFormatter: this.customHeader
   }, {
     dataField: 'accessionNumber',
     text: 'Accession Number',
     sort: true,
-    filter: textFilter()
+    filter: textFilter(),
+    headerFormatter: this.customHeader
   }, {
     dataField: 'dateFrom',
     text: 'Date From',
@@ -77,7 +91,8 @@ class TableQuery extends Component {
     filter: dateFilter(),
     editor: {
       type: Type.DATE
-    }
+    },
+    headerFormatter: this.customHeader
   }, {
     dataField: 'dateTo',
     text: 'Date To',
@@ -85,17 +100,20 @@ class TableQuery extends Component {
     filter: dateFilter(),
     editor: {
       type: Type.DATE
-    }
+    },
+    headerFormatter: this.customHeader
   }, {
     dataField: 'studyDescription',
     text: 'Study Description',
     sort: true,
-    filter: textFilter()
+    filter: textFilter(),
+    headerFormatter: this.customHeader
   }, {
     dataField: 'modalities',
     text: 'Modality',
     sort: true,
-    filter: textFilter()
+    filter: textFilter(),
+    headerFormatter: this.customHeader
   }, {
     dataField: 'aet',
     text: 'AET',
@@ -106,7 +124,8 @@ class TableQuery extends Component {
         return this.props.aets
       }
     },
-    filter: textFilter()
+    filter: textFilter(),
+    headerFormatter: this.customHeader
   }];
 
   render() {
@@ -121,16 +140,17 @@ class TableQuery extends Component {
           props => (
             <React.Fragment>
               <div className="jumbotron" style={this.props.style}>
-                <h2 className="card-title">Auto Query</h2>
                 <div>
                   <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
                   <input type="button" className="btn btn-success m-2" value="Add" onClick={this.props.addRow} />
-                  <input type="button" className="btn btn-danger m-2" value="Delete" onClick={this.removeRow} />
+                  <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
+                  <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                   <CsvLoader />
-                  <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} />
+                  <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} >
+                  </BootstrapTable>
                 </div>
                 <div className="text-center">
-                  <input type="button" className="btn btn-primary" value="Query" onClick={this.query} />
+                  <input type="button" className="btn btn-primary" value="Query" onClick={this.query}  />
                 </div>
               </div>
 

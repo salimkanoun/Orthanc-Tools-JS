@@ -1,4 +1,4 @@
-import { ADD_QUERY_TO_LIST, REMOVE_QUERY, ADD_EMPTY_QUERY } from '../actions/actions-types'
+import { ADD_QUERY_TO_LIST, REMOVE_QUERY, ADD_EMPTY_QUERY, EMPTY_QUERY } from '../actions/actions-types'
 
 const initialState = {
   queries: []
@@ -43,6 +43,12 @@ export default function queryListReducer (state = initialState, action) {
         ...state,
         queries: newQueries
       }
+    case EMPTY_QUERY : 
+      return {
+        ...state,
+        queries: []
+      }
+      
     default :
       return state
   }

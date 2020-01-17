@@ -6,18 +6,39 @@ var getResults = async function (req, res) {
   const databaseObject = await Database.getDatabase()
   const optionObject = new Options(databaseObject)
   const optionsParameters = await optionObject.getOptions()
-  console.log('options param' + optionsParameters)
-  const body = req.body
+
   const orthanc = new Orthanc()
   const orthancSystem = await orthanc.getSystem()
   const robotSingleton = new Robot_Singleton(orthanc)
   const retrieveRobot = robotSingleton.getRobot()
-  retrieveRobot.setRetrieveList(body.studyArray)
-  retrieveRobot.setDestination(orthancSystem.DicomAet)
-  retrieveRobot.scheduleRetrieve(optionsParameters.hour, optionsParameters.min)
 
-  res.setHeader('Content-Type', 'application/json')
-  res.end(JSON.stringify('Done'))
+  if( req.method === 'GET' ){
+
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify({
+      QueriesNumber : retrieveRobot.getRetrieveListSize(),
+      ProjectName : retrieveRobot.getProjectName(),
+      ScheduleTime : retrieveRobot.getScheduleTime()
+    }))
+
+
+  }else if(req.method === 'POST'){
+
+    const body = req.body
+    retrieveRobot.setRetrieveList(body.projectName, body.studyArray)
+    retrieveRobot.setDestination(orthancSystem.DicomAet)
+    retrieveRobot.scheduleRetrieve(optionsParameters.hour, optionsParameters.min)
+
+    res.setHeader('Content-Type', 'application/json')
+    res.end(JSON.stringify('Done'))
+
+
+  }
+
+ 
+
+
+
 }
 
 module.exports = { getResults }

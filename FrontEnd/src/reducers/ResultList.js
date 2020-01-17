@@ -1,4 +1,4 @@
-import { RETRIEVE, REMOVE_RESULT, ADD_RESULT_TO_LIST, SET_RETRIVE_STATUS_STUDY } from '../actions/actions-types'
+import { RETRIEVE, REMOVE_RESULT, ADD_RESULT_TO_LIST, SET_RETRIVE_STATUS_STUDY, EMPTY_RESULTS } from '../actions/actions-types'
 
 const initialState = {
   results: []
@@ -40,6 +40,11 @@ export default function retrieveListReducer (state = initialState, action) {
       }
       return {
         ...state
+      }
+    case EMPTY_RESULTS : 
+      return {
+        ...state,
+        results: []
       }
     default :
       return state

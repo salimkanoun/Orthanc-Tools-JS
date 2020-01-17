@@ -67,7 +67,6 @@ export default class Options extends Component {
                     <input type='number' name="min" min={0} max={59} className="row form-control" onChange={this.handleChange} value={this.state.min} />
                     <input type='buttton' className='row btn btn-primary' onClick={this.handleClick} value='send' />
                 </div>
-
             </div>
         )
     }

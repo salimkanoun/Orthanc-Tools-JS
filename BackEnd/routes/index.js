@@ -29,7 +29,7 @@ router.all('/retrieve', authUser, retrieveController.getResults)
 
 router.all('/export_dicom', authUser, exportController.getResults)
 
-router.all('/create_robot', authUser, robotController.getResults)
+router.all('/robot', authUser, robotController.getResults)
 
 router.all('/options', authUser, optionsController.getResults)
 
