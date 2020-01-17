@@ -15,13 +15,17 @@ var getResults = async function (req, res) {
   if( req.method === 'GET' ){
 
     res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify(retrieveRobot.getRetrieveList()))
+    res.end(JSON.stringify({
+      QueriesNumber : retrieveRobot.getRetrieveListSize(),
+      ProjectName : retrieveRobot.getProjectName(),
+      ScheduleTime : retrieveRobot.getScheduleTime()
+    }))
 
 
   }else if(req.method === 'POST'){
 
     const body = req.body
-    retrieveRobot.setRetrieveList(body.studyArray)
+    retrieveRobot.setRetrieveList(body.projectName, body.studyArray)
     retrieveRobot.setDestination(orthancSystem.DicomAet)
     retrieveRobot.scheduleRetrieve(optionsParameters.hour, optionsParameters.min)
 

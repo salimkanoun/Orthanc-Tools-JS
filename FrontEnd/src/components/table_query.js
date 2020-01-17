@@ -150,7 +150,7 @@ class TableQuery extends Component {
                   </BootstrapTable>
                 </div>
                 <div className="text-center">
-                  <input type="button" className="btn btn-primary" value="Query" onClick={this.query} />
+                  <input type="button" className="btn btn-primary" value="Query" onClick={this.query}  />
                 </div>
               </div>
 

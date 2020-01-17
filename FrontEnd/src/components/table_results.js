@@ -128,7 +128,7 @@ class TableResult extends Component {
                                     <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} >
                                     </BootstrapTable>
                                 </div>
-                                <CreateRobot></CreateRobot>
+                                <CreateRobot resultArray={this.props.results.results}></CreateRobot>
                             </div>
                         </React.Fragment>
                     )
