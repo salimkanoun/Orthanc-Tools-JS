@@ -15,6 +15,7 @@ import * as actions from '../actions/TableQuery'
 import * as resultActions from '../actions/TableResult'
 
 import CsvLoader from './csv_loader'
+import SelectModalities from './SelectModalities';
 
 
 class TableQuery extends Component {
@@ -24,15 +25,18 @@ class TableQuery extends Component {
     this.removeRow = this.removeRow.bind(this)
     this.query = this.query.bind(this)
     this.emptyTable = this.emptyTable.bind(this)
+    this.deselectAll= this.deselectAll.bind(this)
     this.aetsObject = []
 
+  }
+
+  deselectAll(){
+    this.node.selectionContext.selected = []
   }
 
   removeRow() {
     let selectedKeyRow = this.node.selectionContext.selected
     this.props.removeQuery(selectedKeyRow)
-    this.node.selectionContext.selected = []
-
   }
 
   emptyTable(){
@@ -44,7 +48,7 @@ class TableQuery extends Component {
       <div style={ { display: 'flex', flexDirection: 'column' } }>
         { column.text }
         { filterElement }
-        <ColumnEditor columnNumber={column.dataField} />
+        <ColumnEditor columnName={column.dataField} />
 
       </div>
     );
@@ -113,7 +117,10 @@ class TableQuery extends Component {
     text: 'Modality',
     sort: true,
     filter: textFilter(),
-    headerFormatter: this.customHeader
+    headerFormatter: this.customHeader,
+    editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => (
+      <SelectModalities { ...editorProps } value={ value } />
+    )
   }, {
     dataField: 'aet',
     text: 'AET',

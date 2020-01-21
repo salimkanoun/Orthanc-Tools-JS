@@ -21,6 +21,7 @@ class TableResult extends Component {
         super(props)
         this.removeRow = this.removeRow.bind(this)
         this.emptyTable=this.emptyTable.bind(this)
+        //this.onSelectAll=this.onSelectAll.bind(this)
     }
 
     removeRow() {
@@ -31,12 +32,22 @@ class TableResult extends Component {
 
     emptyTable () {
         this.props.emptyResultsTable()
-
     }
+
+    /*
+    onSelectAll = (isSelected) => {
+        if (isSelected) {            
+           return this.node.table.props.data.map(row => row.key);
+         } else {
+           return [];
+         }
+      }
+      */
 
     selectRow = {
         mode: 'checkbox',
         clickToSelect: true
+        //,onSelectAll: this.onSelectAll
     };
 
     columns = [{

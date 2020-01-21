@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import * as actions from '../actions/TableResult'
+import * as actions from '../actions/TableQuery'
 
 class ColumnEditor extends Component {
+
   constructor (props) {
     super(props)
     this.editAllRow=this.editAllRow.bind(this)
   }
 
   editAllRow(event){
-    event.preventDefault()
-    console.log(this.props.columnNumber)
+    const target = event.target
+    const value = target.type === 'checkbox' ? target.checked : target.value
+    this.props.editColumnQuery(this.props.columnName, value);
     console.log(this.props.queries)
 
   }
