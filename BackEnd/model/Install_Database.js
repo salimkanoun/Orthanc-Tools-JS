@@ -17,28 +17,26 @@ async function createUserTable (databaseObject) {
   return promise
 }
 
-async function createOptionTable(databaseObject){
+async function createOptionTable (databaseObject) {
+  const promise = new Promise((resolve, reject) => {
+    databaseObject.run('CREATE TABLE options(hour integer, min integer)', function (error) {
+      if (error) {
+        reject(console.log('Failed to add Options Table'))
+      } else {
+        resolve(console.log('option Table add'))
+      }
+    })
+  }).then(() => {
+    databaseObject.run('INSERT INTO options(hour, min) VALUES(?, ?)', [22, 0], function (err) {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log('Done')
+      }
+    })
+  }).catch((reason) => { console.log('Create Options table failed ' + reason) })
 
-    const promise = new Promise((resolve, reject) => {
-        databaseObject.run('CREATE TABLE options(hour integer, min integer)', function (error) {
-        if (error) {
-          reject(console.log('Failed to add Options Table'))
-        } else {
-          resolve(console.log('option Table add'))
-        }
-      })
-    }).then( ()=>{
-      databaseObject.run(`INSERT INTO options(hour, min) VALUES(?, ?)`, [22, 00], function(err) {
-        if(err){
-            console.log(err);
-        }else{
-            console.log('Done');
-        }
-      })
-      }).catch((reason) => { console.log('Create Options table failed ' + reason) })
-
-    return promise
-
-  }
+  return promise
+}
 
 module.exports = { installDatabase, createUserTable, createOptionTable }

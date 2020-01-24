@@ -86,7 +86,7 @@ class Orthanc {
         console.log(body)
         resolve(currentOrthanc.answerParser(body))
       })
-    }).catch((error) => { 'Error get Aets ' + error })
+    }).catch((error) => { console.log('Error get Aets ' + error) })
     return promise
   }
 

@@ -16,6 +16,9 @@ class SelectModalities extends Component {
       super(props)
       this.saveListener = this.saveListener.bind(this)
       this.changeListener= this.changeListener.bind(this);
+      this.state = {
+        selectedModalities : []
+      }
     }
 
     changeListener(value){

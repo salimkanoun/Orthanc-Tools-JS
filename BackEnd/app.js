@@ -53,14 +53,13 @@ logger.token('post', function (req, res) {
 
 app.use(unless('/', morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ":post";', { stream: accessLogStream })))
 
-//Serve compiled React front end
+// Serve compiled React front end
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+  res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
 
 app.use('/api', apisRouter)
 app.use('/users', usersRouter)
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

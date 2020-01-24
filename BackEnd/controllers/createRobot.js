@@ -1,5 +1,5 @@
 var getResults = async function (req, res) {
-  const Robot_Singleton = require('../model/Robot_Singleton')
+  const RobotSingleton = require('../model/Robot_Singleton')
   const Orthanc = require('../model/Orthanc')
   const Options = require('../model/Options')
   const Database = require('../model/Database')
@@ -9,21 +9,17 @@ var getResults = async function (req, res) {
 
   const orthanc = new Orthanc()
   const orthancSystem = await orthanc.getSystem()
-  const robotSingleton = new Robot_Singleton(orthanc)
+  const robotSingleton = new RobotSingleton(orthanc)
   const retrieveRobot = robotSingleton.getRobot()
 
-  if( req.method === 'GET' ){
-
+  if (req.method === 'GET') {
     res.setHeader('Content-Type', 'application/json')
     res.end(JSON.stringify({
-      QueriesNumber : retrieveRobot.getRetrieveListSize(),
-      ProjectName : retrieveRobot.getProjectName(),
-      ScheduleTime : retrieveRobot.getScheduleTime()
+      QueriesNumber: retrieveRobot.getRetrieveListSize(),
+      ProjectName: retrieveRobot.getProjectName(),
+      ScheduleTime: retrieveRobot.getScheduleTime()
     }))
-
-
-  }else if(req.method === 'POST'){
-
+  } else if (req.method === 'POST') {
     const body = req.body
     retrieveRobot.setRetrieveList(body.projectName, body.studyArray)
     retrieveRobot.setDestination(orthancSystem.DicomAet)
@@ -31,14 +27,7 @@ var getResults = async function (req, res) {
 
     res.setHeader('Content-Type', 'application/json')
     res.end(JSON.stringify('Done'))
-
-
   }
-
- 
-
-
-
 }
 
 module.exports = { getResults }

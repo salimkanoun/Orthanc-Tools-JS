@@ -1,10 +1,10 @@
 const schedule = require('node-schedule')
 
-class Retrieve_Robot {
+class RetrieveRobot {
   constructor (orthancObject) {
     this.orthancObject = orthancObject
-    this.retrieveList=[]
-    this.projectName="None"
+    this.retrieveList = []
+    this.projectName = 'None'
   }
 
   setRetrieveList (projectName, retrieveList) {
@@ -12,11 +12,11 @@ class Retrieve_Robot {
     this.retrieveList = retrieveList
   }
 
-  getRetrieveListSize(){
+  getRetrieveListSize () {
     return this.retrieveList.length
   }
 
-  getProjectName(){
+  getProjectName () {
     return this.projectName
   }
 
@@ -24,12 +24,12 @@ class Retrieve_Robot {
     this.aetDestination = aetDestination
   }
 
-  getScheduleTime(){
+  getScheduleTime () {
     return this.scheduleTime
   }
 
   scheduleRetrieve (hour, min) {
-    this.scheduleTime=hour+':'+min
+    this.scheduleTime = hour + ':' + min
     const robot = this
     console.log('Scheduled ' + hour + ' ' + min)
     console.log(this.scheduledJob)
@@ -82,4 +82,4 @@ class Retrieve_Robot {
   }
 }
 
-module.exports = Retrieve_Robot
+module.exports = RetrieveRobot
