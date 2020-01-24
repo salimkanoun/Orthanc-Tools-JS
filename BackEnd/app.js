@@ -14,9 +14,9 @@ var usersRouter = require('./routes/users')
 
 var app = express()
 
-// view engine setup
+// static routes
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'build')))
 
 app.use(logger('dev'))
 app.use(express.json())
@@ -43,18 +43,18 @@ var accessLogStream = rfs('access.log', {
   interval: '1d', // rotate daily
   path: path.join(__dirname, '/data/log')
 })
+
 logger.token('username', function (req, res) {
   return req.session.username
 })
 logger.token('post', function (req, res) {
   return JSON.stringify(req.body)
 })
+
 app.use(unless('/', morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ":post";', { stream: accessLogStream })))
 
-
-
 //Serve compiled React front end
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
@@ -76,7 +76,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500)
-  res.render('error')
+  res.end()
 })
 
 app.listen(4000, function () {
