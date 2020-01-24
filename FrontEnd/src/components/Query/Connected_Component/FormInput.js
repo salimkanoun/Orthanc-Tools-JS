@@ -3,7 +3,7 @@ import AetButton from './aet_button'
 import ChosenSelect from './chosen_select'
 
 import { connect } from 'react-redux'
-import * as actions from '../actions/FormInput'
+import * as actions from '../../../actions/FormInput'
 
 class FormInput extends Component {
   constructor (props) {

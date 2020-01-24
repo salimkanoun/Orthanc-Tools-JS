@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Options from './Options'
-import RobotStatus from './Query/Component/RobotStatus'
+import RobotStatus from './RobotStatus'
 
 export default class AdminPanel extends Component {
 

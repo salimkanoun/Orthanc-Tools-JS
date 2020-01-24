@@ -38,7 +38,7 @@ export default class CreateRobot extends Component {
         })
 
 
-        let createAnswer = await fetch("/robot",
+        let createAnswer = await fetch("/api/robot",
         {
         method: "POST",
         headers: {

@@ -210,7 +210,7 @@ class TableQuery extends Component {
 
 
 
-    let queryAnswers = await fetch("/query",
+    let queryAnswers = await fetch("/api/query",
       {
         method: "POST",
         headers: {

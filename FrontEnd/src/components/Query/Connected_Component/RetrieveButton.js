@@ -40,7 +40,7 @@ class RetrieveButton extends Component {
       answerNumber: rowData.answerNumber
     }
 
-    const jobUid = await fetch('/retrieve',
+    const jobUid = await fetch('/api/retrieve',
       {
         method: 'POST',
         headers: {

@@ -11,7 +11,7 @@ import Helmet from 'react-helmet'
 
 import Query from './components/Query/Connected_Component/Query'
 import Authentication from './components/Authentication'
-import AdminPanel from './components/AdminPanel'
+import AdminPanel from './components/Admin/AdminPanel'
 
 
 function App () {
