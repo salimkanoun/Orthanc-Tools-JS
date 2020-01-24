@@ -58,7 +58,7 @@ class RetrieveButton extends Component {
     let intervalChcker
 
     const getJobData = async function () {
-      const jobData = await fetch('/job_details', {
+      const jobData = await fetch('/api/job_details', {
         method: 'POST',
         headers: {
           Accept: 'application/json',

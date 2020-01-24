@@ -21,7 +21,7 @@ export default class Authentication extends Component {
       password: this.state.password
     })
 
-    const accessCheck = await fetch('/api/uthentication',
+    const accessCheck = await fetch('/api/authentication',
       {
         method: 'POST',
         headers: {

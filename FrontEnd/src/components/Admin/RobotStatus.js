@@ -32,7 +32,7 @@ export default class RobotStatus extends Component {
 
     refreshHandler(){
 
-        fetch("/robot", {
+        fetch("/api/robot", {
         method: "GET",
         headers: {
             'Accept': 'application/json',

@@ -17,7 +17,7 @@ export default class Options extends Component {
      */
     async componentDidMount() {
 
-        let response = await fetch('/options').then((answer) => { return answer.json() })
+        let response = await fetch('/api/options').then((answer) => { return answer.json() })
         this.setState({
             hour: response.hour,
             min: response.min
@@ -40,7 +40,7 @@ export default class Options extends Component {
     async handleClick() {
         let putString = JSON.stringify({ hour: this.state.hour, min: this.state.min })
 
-        let putAnswer = await fetch("/options",
+        let putAnswer = await fetch("/api/options",
             {
                 method: "PUT",
                 headers: {

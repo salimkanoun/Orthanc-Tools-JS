@@ -17,7 +17,7 @@ class ExportButton extends Component {
 
   async doExport () {
     const currentComponent = this
-    const exportAnswer = await fetch('/apis/export_dicom', {
+    const exportAnswer = await fetch('/api/export_dicom', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
