@@ -2,8 +2,6 @@ const bcrypt = require('bcrypt');
 
 class Users{
 
-    static saltRounds=10;
-
     constructor(databaseObject, username){
         this.database=databaseObject;
         this.username=username;
@@ -39,7 +37,10 @@ class Users{
 
     static async createUser(databaseObject, username, password, isAdmin){
 
-        let promise = bcrypt.hash(password, Users.saltRounds).then(function(hash) {
+
+        let saltRounds=10;
+
+        let promise = bcrypt.hash(password, saltRounds).then(function(hash) {
             console.log(hash);
             databaseObject.run(`INSERT INTO users(username, password, admin) VALUES(?, ?, ?)`, [username, hash, isAdmin], function(err) {
                 if(err){
