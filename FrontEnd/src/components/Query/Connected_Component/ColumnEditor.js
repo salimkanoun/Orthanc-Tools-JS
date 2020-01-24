@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import * as actions from '../actions/TableQuery'
+import * as actions from '../../../actions/TableQuery'
 
 class ColumnEditor extends Component {
 
@@ -13,8 +13,7 @@ class ColumnEditor extends Component {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
     this.props.editColumnQuery(this.props.columnName, value);
-    console.log(this.props.queries)
-
+    
   }
 
   render () {

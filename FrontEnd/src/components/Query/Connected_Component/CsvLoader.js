@@ -3,7 +3,7 @@ import Papa from 'papaparse'
 import moment from 'moment'
 
 import { connect } from 'react-redux'
-import * as actions from '../actions/FormInput'
+import * as actions from '../../../actions/FormInput'
 
 class CsvLoader extends Component {
 

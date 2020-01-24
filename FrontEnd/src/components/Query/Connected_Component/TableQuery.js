@@ -8,14 +8,14 @@ import cellEditFactory, { Type } from 'react-bootstrap-table2-editor'
 
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
-import ColumnEditor from './column_editor'
+import ColumnEditor from './ColumnEditor'
 
 import { connect } from 'react-redux'
-import * as actions from '../actions/TableQuery'
-import * as resultActions from '../actions/TableResult'
+import * as actions from '../../../actions/TableQuery'
+import * as resultActions from '../../../actions/TableResult'
 
-import CsvLoader from './csv_loader'
-import SelectModalities from './SelectModalities';
+import CsvLoader from './CsvLoader'
+import SelectModalities from '../Component/SelectModalities';
 
 
 class TableQuery extends Component {
@@ -153,8 +153,10 @@ class TableQuery extends Component {
                   <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
                   <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                   <CsvLoader />
+                  <div className="mt-5">
                   <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} >
                   </BootstrapTable>
+                  </div>
                 </div>
                 <div className="text-center">
                   <input type="button" className="btn btn-primary" value="Query" onClick={this.query}  />

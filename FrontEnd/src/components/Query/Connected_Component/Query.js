@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 
-import TableQuery from './table_query'
-import TableResult from './table_results'
+import TableQuery from './TableQuery'
+import TableResult from './TableResult'
 
 import { connect } from 'react-redux'
-import * as actions from '../actions'
+import * as actions from '../../../actions'
 
 class Query extends Component {
   activate (divName) {
