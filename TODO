@@ -1,7 +1,6 @@
 Front : 
-- Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire l'action
-- Modality Type en Select => Via custom editor https://github.com/react-bootstrap-table/react-bootstrap-table2/tree/master/packages/react-bootstrap-table2-editor
-- Faire que le select all select tout les non filtre de toutes les pages ?
+- Faire que le select all select tout les non filtre de toutes les pages ? => difficulté....
+- Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
 
 - Ajout du Robot + interface suivi (bare de progression)
 - Un robot par utilisateur avec un nom de projet (servira de base de nom a l'anon)

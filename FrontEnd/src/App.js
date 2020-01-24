@@ -9,9 +9,9 @@ import './style.css'
 import 'bootstrap/dist/css/bootstrap.css'
 import Helmet from 'react-helmet'
 
-import Query from './components/query'
+import Query from './components/Query/Connected_Component/Query'
 import Authentication from './components/Authentication'
-import AdminPanel from './components/admin_panel'
+import AdminPanel from './components/Admin/AdminPanel'
 
 
 function App () {

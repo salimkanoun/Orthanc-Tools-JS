@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import * as actions from '../actions/TableResult'
+import * as actions from '../../../actions/TableResult'
 
 class RetrieveButton extends Component {
   constructor (props) {
@@ -40,7 +40,7 @@ class RetrieveButton extends Component {
       answerNumber: rowData.answerNumber
     }
 
-    const jobUid = await fetch('/retrieve',
+    const jobUid = await fetch('/api/retrieve',
       {
         method: 'POST',
         headers: {
@@ -58,7 +58,7 @@ class RetrieveButton extends Component {
     let intervalChcker
 
     const getJobData = async function () {
-      const jobData = await fetch('/job_details', {
+      const jobData = await fetch('/api/job_details', {
         method: 'POST',
         headers: {
           Accept: 'application/json',

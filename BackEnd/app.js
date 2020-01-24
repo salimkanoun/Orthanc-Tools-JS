@@ -9,16 +9,14 @@ var logger = require('morgan')
 var rfs = require('rotating-file-stream')
 var session = require('express-session')
 
-var indexRouter = require('./routes/index')
+var apisRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
 
 var app = express()
 
 // view engine setup
 app.use(express.static(path.join(__dirname, 'public')))
-app.set('views', path.join(__dirname, 'views'))
-app.engine('ejs', require('ejs').renderFile)
-app.set('view engine', 'ejs')
+app.use(express.static(path.join(__dirname, 'build')));
 
 app.use(logger('dev'))
 app.use(express.json())
@@ -53,8 +51,16 @@ logger.token('post', function (req, res) {
 })
 app.use(unless('/', morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ":post";', { stream: accessLogStream })))
 
-app.use('/', indexRouter)
+
+
+//Serve compiled React front end
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+app.use('/api', apisRouter)
 app.use('/users', usersRouter)
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

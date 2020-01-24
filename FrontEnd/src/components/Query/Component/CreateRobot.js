@@ -38,7 +38,7 @@ export default class CreateRobot extends Component {
         })
 
 
-        let createAnswer = await fetch("/robot",
+        let createAnswer = await fetch("/api/robot",
         {
         method: "POST",
         headers: {
@@ -70,10 +70,12 @@ export default class CreateRobot extends Component {
 
     render() {
         return (
-            <div className="row">
+            <div className="container">
+                <div className="row float-right">
                 Project Name : 
-                <input type="text" className="form-control col" name="projectName" value={this.state.value} onChange={this.handleChange} />
-                <input type="button" className="btn btn-success col" onClick={this.createRobot} value="Create Robot"/>
+                    <input type="text" className="" name="projectName" value={this.state.value} onChange={this.handleChange} />
+                    <input type="button" className="btn btn-success" onClick={this.createRobot} value="Create Robot"/>
+                </div>
             </div>
         )
     }

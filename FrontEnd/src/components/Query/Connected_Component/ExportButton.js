@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import * as actions from '../actions/TableResult'
+import * as actions from '../../../actions/TableResult'
 
 class ExportButton extends Component {
   constructor (props) {
@@ -17,7 +17,7 @@ class ExportButton extends Component {
 
   async doExport () {
     const currentComponent = this
-    const exportAnswer = await fetch('/export_dicom', {
+    const exportAnswer = await fetch('/api/export_dicom', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

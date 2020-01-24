@@ -6,3 +6,4 @@ myapp-win.exe
 data/database/imagefetcher.db
 !data/log/README
 .env
+/build

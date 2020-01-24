@@ -8,13 +8,14 @@ import cellEditFactory, { Type } from 'react-bootstrap-table2-editor'
 
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
-import ColumnEditor from './column_editor'
+import ColumnEditor from './ColumnEditor'
 
 import { connect } from 'react-redux'
-import * as actions from '../actions/TableQuery'
-import * as resultActions from '../actions/TableResult'
+import * as actions from '../../../actions/TableQuery'
+import * as resultActions from '../../../actions/TableResult'
 
-import CsvLoader from './csv_loader'
+import CsvLoader from './CsvLoader'
+import SelectModalities from '../Component/SelectModalities';
 
 
 class TableQuery extends Component {
@@ -24,15 +25,18 @@ class TableQuery extends Component {
     this.removeRow = this.removeRow.bind(this)
     this.query = this.query.bind(this)
     this.emptyTable = this.emptyTable.bind(this)
+    this.deselectAll= this.deselectAll.bind(this)
     this.aetsObject = []
 
+  }
+
+  deselectAll(){
+    this.node.selectionContext.selected = []
   }
 
   removeRow() {
     let selectedKeyRow = this.node.selectionContext.selected
     this.props.removeQuery(selectedKeyRow)
-    this.node.selectionContext.selected = []
-
   }
 
   emptyTable(){
@@ -44,7 +48,7 @@ class TableQuery extends Component {
       <div style={ { display: 'flex', flexDirection: 'column' } }>
         { column.text }
         { filterElement }
-        <ColumnEditor columnNumber={column.dataField} />
+        <ColumnEditor columnName={column.dataField} />
 
       </div>
     );
@@ -113,7 +117,10 @@ class TableQuery extends Component {
     text: 'Modality',
     sort: true,
     filter: textFilter(),
-    headerFormatter: this.customHeader
+    headerFormatter: this.customHeader,
+    editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => (
+      <SelectModalities { ...editorProps } value={ value } />
+    )
   }, {
     dataField: 'aet',
     text: 'AET',
@@ -146,8 +153,10 @@ class TableQuery extends Component {
                   <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
                   <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                   <CsvLoader />
+                  <div className="mt-5">
                   <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} >
                   </BootstrapTable>
+                  </div>
                 </div>
                 <div className="text-center">
                   <input type="button" className="btn btn-primary" value="Query" onClick={this.query}  />
@@ -201,7 +210,7 @@ class TableQuery extends Component {
 
 
 
-    let queryAnswers = await fetch("/query",
+    let queryAnswers = await fetch("/api/query",
       {
         method: "POST",
         headers: {
