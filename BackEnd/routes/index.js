@@ -10,7 +10,7 @@ var queryController = require('../controllers/queryAction')
 var jobDetailsController = require('../controllers/jobDetails')
 var retrieveController = require('../controllers/retrieveDicom')
 var exportController = require('../controllers/exportDicom')
-var robotController = require('../controllers/createRobot')
+var robotController = require('../controllers/Robot')
 var optionsController = require('../controllers/options')
 var aetsController = require('../controllers/aets')
 
