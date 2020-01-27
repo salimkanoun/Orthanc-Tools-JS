@@ -19,8 +19,6 @@ const authUser = require('./auth_middelware')
 // Route request to controllers
 router.all('/authentication', authenticationController.getResults)
 
-router.all('/autoQuery', authUser, autoQueryController.getResults)
-
 router.all('/query', authUser, queryController.getResults)
 
 router.all('/job_details', authUser, jobDetailsController.getResults)
