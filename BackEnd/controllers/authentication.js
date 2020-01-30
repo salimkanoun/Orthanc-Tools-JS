@@ -1,6 +1,9 @@
 var Users = require('../model/Users')
 var Database = require('../model/Database')
 
+//Sequelize DB 
+const db = require('../database/models');
+
 var getResults = async function (req, res) {
   const body = req.body
   console.log(body)
@@ -8,6 +11,10 @@ var getResults = async function (req, res) {
     console.log(body.username)
     console.log(body.password)
     const database = await Database.getDatabase()
+    let user = await db.User.findOne({ where: { username: body.username } })
+    if(body.password === user.password){
+      console.log('SeQueLize Sucess')
+    }
     const userObject = new Users(database, body.username)
     await Users.createUser(database, 'salim', 'salim', 0)
     await userObject.getDetails()

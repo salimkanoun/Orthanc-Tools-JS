@@ -24,6 +24,8 @@
     "redux-thunk": "^2.3.0",
     "request": "^2.88.0",
     "rotating-file-stream": "^1.4.6",
+    "sequelize": "^5.21.3",
+    "sequelize-cli": "^5.5.1",
     "sqlite3": "^4.1.1"
   },
   "engines": {
@@ -42,6 +44,7 @@
     ]
   },
   "devDependencies": {
+    "nodemon": "^2.0.2",
     "standard": "^14.3.1"
   }
 }
