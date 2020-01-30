@@ -35,6 +35,15 @@ class Robot_Job {
         return retrivedOrthancId
     }
 
+    toJSON(){
+        return {
+            username : this.username,
+            projectName: this.projectName,
+            retrieveList : this.retrieveList
+
+        }
+    }
+
 
 }
 

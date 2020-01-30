@@ -4,11 +4,11 @@ const Options = require('./Options')
 const Database = require('./Database')
 
 class Retrieve_Robot {
+
   constructor (orthancObject) {
     this.orthancObject = orthancObject
     this.robotJobs = []
     this.aetDestination = orthancObject.getSystem().DicomAet
-
 
   }
 
@@ -25,15 +25,10 @@ class Retrieve_Robot {
   /**
    * Add RobotJob
    * @param {String} username 
-   * @param {String} projectName 
-   * @param {Array} retrieveList 
-   * @param {int} hour 
-   * @param {int} min 
+   * @param {Robot_Job} robotJob 
    */
-  addRobotJob(username, projectName){
-    let robotJob=new Robot_Job(username, projectName)
-    this.robotJobs[username] = robotJob
-
+  addRobotJob(robotJob){
+    this.robotJobs[robotJob.username] = robotJob
   }
 
   /**
@@ -44,8 +39,25 @@ class Retrieve_Robot {
     this.aetDestination = aetDestination
   }
 
-  getRobotData () {
-    return this.robotJobs.length
+  /**
+   * SK ICI RECUPERATION DES DATA DU ROBOT POUR USERNAME OU GLOBAL
+   * @param {String} username 
+   */
+  getRobotData (username) {
+    let robotJob=this.robotJobs[username]
+    return robotJob.toJSON()
+  }
+
+  getAllRobotData(){
+    let responseArray=[]
+    let currentRobot=this;
+    Object.keys(this.robotJobs).forEach(function(username, index) {
+      let dataJob=JSON.stringify(currentRobot.getRobotData(username))
+      responseArray.push(JSON.parse(dataJob))
+    });
+
+    return responseArray
+
   }
 
   async scheduleRetrieve ( ) {

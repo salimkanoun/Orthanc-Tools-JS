@@ -1,16 +1,16 @@
 var express = require('express')
 var router = express.Router()
 
+let {getRobotDetails, createRobot} = require('../controllers/Robot');
+
 // Handle controller errors
 require('express-async-errors')
 
 var authenticationController = require('../controllers/authentication')
-var autoQueryController = require('../controllers/autoQuery')
 var queryController = require('../controllers/queryAction')
 var jobDetailsController = require('../controllers/jobDetails')
 var retrieveController = require('../controllers/retrieveDicom')
 var exportController = require('../controllers/exportDicom')
-var robotController = require('../controllers/Robot')
 var optionsController = require('../controllers/options')
 var aetsController = require('../controllers/aets')
 
@@ -27,7 +27,11 @@ router.all('/retrieve', authUser, retrieveController.getResults)
 
 router.all('/export_dicom', authUser, exportController.getResults)
 
-router.all('/robot', authUser, robotController.getResults)
+router.post('/robot', authUser, createRobot)
+
+router.get('/robot/:username', authUser, getRobotDetails)
+
+router.get('/robot', authUser, getRobotDetails)
 
 router.all('/options', authUser, optionsController.getResults)
 

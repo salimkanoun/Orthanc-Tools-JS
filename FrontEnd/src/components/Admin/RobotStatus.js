@@ -22,8 +22,8 @@ export default class RobotStatus extends Component {
         dataField: 'name',
         text : 'Name'
     }, {
-        dataField: 'schedule',
-        text : 'Schedule Time'
+        dataField: 'username',
+        text : 'Username'
     }, {
         dataField: 'queriesNb',
         text : 'Number of Queries'
@@ -43,12 +43,18 @@ export default class RobotStatus extends Component {
            .then( (answerData) => {
 
                 let state=this.state
-                state.rows =  [{
-                    key : Math.random(),
-                    name : answerData.ProjectName,
-                    queriesNb : answerData.QueriesNumber,
-                    schedule : answerData.ScheduleTime
-                }]
+
+                state.rows = []
+
+                answerData.forEach(robotJob => {
+                    state.rows.push({
+                        key : Math.random(),
+                        name : robotJob.projectName,
+                        username : robotJob.username,
+                        queriesNb : robotJob.retrieveList.length
+                    })
+                    
+                });
 
                 this.setState({
                     ...this.state
