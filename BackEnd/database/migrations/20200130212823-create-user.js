@@ -9,7 +9,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       username: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique : true
       },
       password: {
         type: Sequelize.STRING
@@ -25,7 +26,8 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
+    
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('Users');

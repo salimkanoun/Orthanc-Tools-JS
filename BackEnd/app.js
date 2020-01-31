@@ -12,6 +12,9 @@ var session = require('express-session')
 var apisRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
 
+//Sequelize DB 
+const db = require('./database/models');
+
 var app = express()
 
 // static routes
@@ -78,8 +81,13 @@ app.use(function (err, req, res, next) {
   res.end()
 })
 
-app.listen(4000, function () {
-  console.log('Example app listening on port 3000!')
+db.sequelize.sync().then(()=>{
+
+  app.listen(4000, function () {
+    console.log('Example app listening on port 4000!')
+  })
+
 })
+
 
 module.exports = app
