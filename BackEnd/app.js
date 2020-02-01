@@ -81,12 +81,8 @@ app.use(function (err, req, res, next) {
   res.end()
 })
 
-db.sequelize.sync().then(()=>{
-
-  app.listen(4000, function () {
-    console.log('Example app listening on port 4000!')
-  })
-
+app.listen(4000, function () {
+  console.log('Example app listening on port 4000!')
 })
 
 

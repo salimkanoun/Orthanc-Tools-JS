@@ -1,53 +1,29 @@
 const bcrypt = require('bcrypt');
+const db = require('../database/models');
 
 class Users{
 
-    constructor(databaseObject, username){
-        this.database=databaseObject;
-        this.username=username;
-    }
-
-    getDetails(){
-        var getStmt = `SELECT password, admin FROM users WHERE username=(?)`;
-        let currentUser=this;
-        let promise = new Promise((resolve, reject)=>{
-            currentUser.database.get(getStmt, [currentUser.username], function(err, row) {
-                console.log(err);
-                console.log(row);
-                if(row!==undefined){
-                    currentUser.password=row.password;
-                    currentUser.admin=row.admin;
-                }
-                
-                resolve(console.log(currentUser.password));
-            });
-
-        }).catch( (error)=>{
-            console.log('User Retrieve failed '+error);
-        });
-
-        return promise;
-        
+    constructor(username){
+        this.username = username
     }
 
     async checkPassword(plainPassword){
-        let check =await bcrypt.compare(plainPassword, this.password).catch(()=>{return false});
+        let user = await db.User.findOne({ where: { username: this.username } })
+        console.log(user)
+        let check =await bcrypt.compare(plainPassword, user.password).catch(()=>{return false});
         return check;
     }
 
-    static async createUser(databaseObject, username, password, isAdmin){
-
+    static async createUser(username, password, isAdmin){
 
         let saltRounds=10;
 
         let promise = bcrypt.hash(password, saltRounds).then(function(hash) {
             console.log(hash);
-            databaseObject.run(`INSERT INTO users(username, password, admin) VALUES(?, ?, ?)`, [username, hash, isAdmin], function(err) {
-                if(err){
-                    console.log(err);
-                }else{
-                    console.log('Done');
-                }
+            db.User.create({
+                username : username,
+                password : hash,
+                admin : isAdmin
             })
         }).catch(function(error){
             console.log('user create Failed '+ error);

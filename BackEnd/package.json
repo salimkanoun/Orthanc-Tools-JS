@@ -4,7 +4,7 @@
   "private": true,
   "bin": "app.js",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node app.js"
   },
   "dependencies": {
     "bcrypt": "^3.0.7",
