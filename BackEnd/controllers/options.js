@@ -1,9 +1,7 @@
-const Database = require('../model/Database')
 const Options = require('../model/Options')
 
 var getResults = async function (req, res) {
-  const database = await Database.getDatabase()
-  const option = new Options(database)
+  const option = new Options()
 
   if (req.method === 'PUT') {
     
