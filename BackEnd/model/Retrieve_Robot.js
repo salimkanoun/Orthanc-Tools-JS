@@ -1,7 +1,6 @@
 const schedule = require('node-schedule')
 const Robot_Job = require('./Robot_Job')
 const Options = require('./Options')
-const Database = require('./Database')
 
 class Retrieve_Robot {
 
@@ -13,8 +12,7 @@ class Retrieve_Robot {
   }
 
   async getScheduleTimeFromOptions(){
-    const databaseObject = await Database.getDatabase()
-    const optionObject = new Options(databaseObject)
+    const optionObject = new Options()
     const optionsParameters = await optionObject.getOptions()
     return{
       hour : optionsParameters.hour, 

@@ -1,13 +1,14 @@
-const Option = require('../database/models/option')
+const db = require('../database/models')
 class Options {
 
   async getOptions () {
-    let option = await Option.findOne(({ where: { id: 1 } }))
+    let option = await db.Option.findOne(({ where: { id: 1 } }))
+    console.log(option)
     return ({ hour: option.hour, min: option.min })
   }
 
   async setScheduleTime (hour, min) {
-    let option = await Option.findOne(({ where: { id: 1 } }))
+    let option = await db.Option.findOne(({ where: { id: 1 } }))
     option.hour = hour
     option.min = min
     await option.save()

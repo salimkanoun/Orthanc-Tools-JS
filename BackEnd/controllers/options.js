@@ -6,14 +6,12 @@ var getResults = async function (req, res) {
   if (req.method === 'PUT') {
     
     await option.setScheduleTime(req.body.hour, req.body.min)
-    res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify(true))
-
+    res.json(true)
+    
   } else if (req.method === 'GET') {
 
-    await option.getOptions()
-    res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify({ hour: option.hour, min: option.min }))
+    let optionsValues= await option.getOptions()
+    res.json(optionsValues)
 
   }
 
