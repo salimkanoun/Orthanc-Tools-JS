@@ -4,12 +4,13 @@ var orthancInstance = new Orthanc()
 
 var getResults = async function (req, res) {
   if (req.method === 'GET') {
-    await orthancInstance.putAet('self', 'ORTHANC', 'localhost', 4242)
     const aets = await orthancInstance.getAvailableAet()
-    res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify(aets))
+    res.json(aets)
   } else if (req.method === 'POST') {
-
+    const body = req.body
+    //SK FRONT A FAIRE
+    await orthancInstance.putAet(body.name, body.aetName, body.ip, body.port)
+    res.json(true)
   }
 }
 

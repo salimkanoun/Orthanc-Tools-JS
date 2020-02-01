@@ -17,15 +17,15 @@ var aetsController = require('../controllers/aets')
 const authUser = require('./auth_middelware')
 
 // Route request to controllers
-router.all('/authentication', authenticationController.getResults)
+router.post('/authentication', authenticationController.getResults)
 
-router.all('/query', authUser, queryController.getResults)
+router.post('/query', authUser, queryController.getResults)
 
-router.all('/job_details', authUser, jobDetailsController.getResults)
+router.post('/job_details', authUser, jobDetailsController.getResults)
 
-router.all('/retrieve', authUser, retrieveController.getResults)
+router.post('/retrieve', authUser, retrieveController.getResults)
 
-router.all('/export_dicom', authUser, exportController.getResults)
+router.post('/export_dicom', authUser, exportController.getResults)
 
 router.post('/robot', authUser, createRobot)
 
