@@ -9,7 +9,6 @@ class Users{
 
     async checkPassword(plainPassword){
         let user = await db.User.findOne({ where: { username: this.username } })
-        console.log(user)
         let check =await bcrypt.compare(plainPassword, user.password).catch(()=>{return false});
         return check;
     }
@@ -19,7 +18,6 @@ class Users{
         let saltRounds=10;
 
         let promise = bcrypt.hash(password, saltRounds).then(function(hash) {
-            console.log(hash);
             db.User.create({
                 username : username,
                 password : hash,

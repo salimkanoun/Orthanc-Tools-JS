@@ -3,7 +3,6 @@ class Options {
 
   async getOptions () {
     let option = await db.Option.findOne(({ where: { id: 1 } }))
-    console.log(option)
     return ({ hour: option.hour, min: option.min })
   }
 
