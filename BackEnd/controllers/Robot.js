@@ -29,10 +29,13 @@ let createRobot = async function (req, res) {
   let robotJob=new Robot_Job(req.session.username, body.projectName);
 
   body.studyArray.forEach((retrieveQuery) => {
-    robotJob.addRetrieveItem('study', retrieveQuery.patientName, retrieveQuery.patientID, retrieveQuery.studyDate, retrieveQuery.modality, retrieveQuery.studyDescription, retrieveQuery.accessionNb)
+    robotJob.addRetrieveItem('study', retrieveQuery.patientName, retrieveQuery.patientID, retrieveQuery.studyDate, retrieveQuery.modality, retrieveQuery.studyDescription, retrieveQuery.accessionNb, retrieveQuery.aet)
   })
   
   retrieveRobot.addRobotJob(robotJob)
+  let orthancSystem = await orthanc.getSystem()
+  console.log(orthancSystem)
+  retrieveRobot.setDestination(orthancSystem['DicomAet'])
   retrieveRobot.scheduleRetrieve()
 
   res.json('Done')

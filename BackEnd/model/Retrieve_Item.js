@@ -1,6 +1,6 @@
 class Retrieve_Item{
 
-    constructor(level, patientName, patientId, studyDate, modality, studyDescription, accessionNb){
+    constructor(level, patientName, patientId, studyDate, modality, studyDescription, accessionNb, aet){
         this.level = level
         this.patientName = patientName
         this.patientId = patientId
@@ -8,6 +8,7 @@ class Retrieve_Item{
         this.modality = modality
         this.studyDescription = studyDescription
         this.accessionNb = accessionNb
+        this.aet=aet
     }
 
     setRetrievedOrthancId(orthancId){
@@ -22,7 +23,8 @@ class Retrieve_Item{
             studyDate : this.studyDate,
             modality : this.modality,
             studyDescription : this.studyDescription,
-            accessionNb : this.accessionNb
+            accessionNb : this.accessionNb,
+            aet : this.aet
         }
     }
     

@@ -7,8 +7,6 @@ class Retrieve_Robot {
   constructor (orthancObject) {
     this.orthancObject = orthancObject
     this.robotJobs = []
-    this.aetDestination = orthancObject.getSystem().DicomAet
-
   }
 
   async getScheduleTimeFromOptions(){

@@ -9,8 +9,8 @@ class Robot_Job {
         
     }
 
-    addRetrieveItem(level, patientName, patientID, studyDate, modality, studyDescription, accessionNb){
-        let retrieveItem=new Retrieve_Item(level, patientName, patientID, studyDate, modality, studyDescription, accessionNb)
+    addRetrieveItem(level, patientName, patientID, studyDate, modality, studyDescription, accessionNb, aet){
+        let retrieveItem=new Retrieve_Item(level, patientName, patientID, studyDate, modality, studyDescription, accessionNb, aet)
         this.retrieveList.push(retrieveItem)
     }
 
