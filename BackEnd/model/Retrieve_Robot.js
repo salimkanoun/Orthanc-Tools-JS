@@ -111,7 +111,7 @@ class Retrieve_Robot {
 
     //If wanted do Anonymization
 
-    this.exportDicom()
+    await this.exportDicom()
     
   }
 
@@ -123,9 +123,11 @@ class Retrieve_Robot {
   async exportDicom(){
 
     const retrieveRobot = this
+    console.log(this.retrieveRobot)
+    let usersRobots = Object.keys(this.robotJobs)
 
-    for (let i = 0; i < this.robotJobs.length; i++) {
-        let job = this.robotJobs[i]
+    for (let i = 0; i < this.usersRobots.length; i++) {
+        let job = this.robotJobs[usersRobots[i]]
         let retrievedOrthancId= job.getRetrievedOrthancId()
         await retrieveRobot.orthancObject.exportArchiveDicom(retrievedOrthancId, job.username+'_'+job.projectName)
 

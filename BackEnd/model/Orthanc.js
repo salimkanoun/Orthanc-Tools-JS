@@ -295,7 +295,7 @@ class Orthanc {
     const promise = new Promise((resolve, reject) => {
       request.post(currentOrthanc.createOptions('POST', '/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', JSON.stringify(postData)), function (error, response, body) {
         const answer = currentOrthanc.answerParser(body)
-        resolve(answer.ID)
+        resolve(answer)
       })
     }).catch((error) => { console.log('Error make retrieve ' + error) })
     return promise
