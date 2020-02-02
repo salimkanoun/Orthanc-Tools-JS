@@ -295,6 +295,9 @@ class Orthanc {
     const promise = new Promise((resolve, reject) => {
       request.post(currentOrthanc.createOptions('POST', '/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', JSON.stringify(postData)), function (error, response, body) {
         const answer = currentOrthanc.answerParser(body)
+        console.log('Result Retrieve')
+        console.log(answer)
+        console.log('Post result Retrieve')
         resolve(answer)
       })
     }).catch((error) => { console.log('Error make retrieve ' + error) })
@@ -371,20 +374,23 @@ class Orthanc {
      * @param {string} studyUID
      */
   findInOrthancByUid (studyUID) {
-    const currentOrthanc = this
+    let currentOrthanc = this
 
-    const queryDetails = {}
-
-    queryDetails.StudyInstanceUID = studyUID
-
-    const queryParameter = {
+    let queryParameter = {
       Level: 'Study',
-      Query: queryDetails
+      Query: {
+        StudyInstanceUID : studyUID
+      }
     }
 
     const promise = new Promise((resolve, reject) => {
       request.post(currentOrthanc.createOptions('POST', '/tools/find', JSON.stringify(queryParameter)), function (error, response, body) {
         const answer = currentOrthanc.answerParser(body)
+
+        console.log('start orthancID')
+        console.log('seached '+ studyUID)
+        console.log(answer)
+        console.log('stop orthancID')
         resolve(answer)
       })
     }).catch((error) => { console.log('Error find In Orthanc ' + error) })

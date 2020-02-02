@@ -15,6 +15,10 @@ class Retrieve_Item{
         this.retrievedOrthancId=orthancId
     }
 
+    getRetrievedOrthancId(){
+        return this.retrievedOrthancId
+    }
+
     toJSON(){
         return {
             level : this.level,

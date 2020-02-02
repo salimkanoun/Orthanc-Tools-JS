@@ -101,7 +101,7 @@ class Retrieve_Robot {
         for (let answer of answerDetails) {
           let retrieveAnswer = await robot.orthancObject.makeRetrieve(answer.answerId, answer.answerNumber, robot.aetDestination, true)
           console.log(retrieveAnswer)
-          let orthancResults = await robot.orthancObject.findInOrthancByUid(retrieveAnswer.studyInstanceUID)
+          let orthancResults = await robot.orthancObject.findInOrthancByUid(retrieveAnswer['Query'][0]['0020,000d'])
           job.getRetriveItem(i).setRetrievedOrthancId(orthancResults[0])
 
         }
@@ -128,8 +128,9 @@ class Retrieve_Robot {
 
     for (let i = 0; i < usersRobots.length; i++) {
         let job = this.robotJobs[usersRobots[i]]
-        let retrievedOrthancId= job.getRetrievedOrthancId()
-        await retrieveRobot.orthancObject.exportArchiveDicom(retrievedOrthancId, job.username+'_'+job.projectName)
+        let retrievedOrthancIds= job.getRetrievedOrthancId()
+        console.log(retrievedOrthancIds)
+        await retrieveRobot.orthancObject.exportArchiveDicom(retrievedOrthancIds, job.username+'_'+job.projectName)
 
     }
 
