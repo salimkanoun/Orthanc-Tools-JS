@@ -123,10 +123,10 @@ class Retrieve_Robot {
   async exportDicom(){
 
     const retrieveRobot = this
-    console.log(this.retrieveRobot)
+    console.log(this.robotJobs)
     let usersRobots = Object.keys(this.robotJobs)
 
-    for (let i = 0; i < this.usersRobots.length; i++) {
+    for (let i = 0; i < usersRobots.length; i++) {
         let job = this.robotJobs[usersRobots[i]]
         let retrievedOrthancId= job.getRetrievedOrthancId()
         await retrieveRobot.orthancObject.exportArchiveDicom(retrievedOrthancId, job.username+'_'+job.projectName)
