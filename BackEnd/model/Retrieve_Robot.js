@@ -1,44 +1,73 @@
 const schedule = require('node-schedule')
+const Robot_Job = require('./Robot_Job')
+const Options = require('./Options')
 
 class Retrieve_Robot {
   constructor (orthancObject) {
     this.orthancObject = orthancObject
-    this.retrieveList=[]
-    this.projectName="None"
+    this.robotJobs = []
   }
 
-  setRetrieveList (projectName, retrieveList) {
-    this.projectName = projectName
-    this.retrieveList = retrieveList
+  async getScheduleTimeFromOptions () {
+    const optionObject = new Options()
+    const optionsParameters = await optionObject.getOptions()
+    return {
+      hour: optionsParameters.hour,
+      min: optionsParameters.min
+    }
   }
 
-  getRetrieveListSize(){
-    return this.retrieveList.length
+  /**
+   * Add RobotJob
+   * @param {String} username
+   * @param {Robot_Job} robotJob
+   */
+  addRobotJob (robotJob) {
+    this.robotJobs[robotJob.username] = robotJob
   }
 
-  getProjectName(){
-    return this.projectName
-  }
-
+  /**
+   * Destination of retrieval for this retrive robot
+   * @param {String} aetDestination
+   */
   setDestination (aetDestination) {
     this.aetDestination = aetDestination
   }
 
-  getScheduleTime(){
-    return this.scheduleTime
+  /**
+   * SK ICI RECUPERATION DES DATA DU ROBOT POUR USERNAME OU GLOBAL
+   * @param {String} username
+   */
+  getRobotData (username) {
+    const robotJob = this.robotJobs[username]
+    return robotJob.toJSON()
   }
 
-  scheduleRetrieve (hour, min) {
-    this.scheduleTime=hour+':'+min
+  getAllRobotData () {
+    const responseArray = []
+    const currentRobot = this
+    Object.keys(this.robotJobs).forEach(function (username, index) {
+      const dataJob = JSON.stringify(currentRobot.getRobotData(username))
+      responseArray.push(JSON.parse(dataJob))
+    })
+
+    return responseArray
+  }
+
+  async scheduleRetrieve () {
     const robot = this
-    console.log('Scheduled ' + hour + ' ' + min)
+
     console.log(this.scheduledJob)
+
     if (this.scheduledJob !== undefined) {
       console.log('Cancelled previous job')
       this.scheduledJob.cancel()
     }
 
-    const scheduledJob = schedule.scheduleJob(min + ' ' + hour + ' * * *', function () {
+    // SK N'est pas au bon endroit, ne sera pas mis a jour si modification de l'heure apres decalaration du robot
+    this.scheduleTime = await this.getScheduleTimeFromOptions()
+
+    const scheduledJob = schedule.scheduleJob(this.scheduleTime.min + ' ' + this.scheduleTime.hour + ' * * *', function () {
       console.log('Scheduled Retrieve Started')
       robot.doRetrieve()
     })
@@ -50,35 +79,51 @@ class Retrieve_Robot {
 
   async doRetrieve () {
     const robot = this
-    const studyInstancUIDRetrieve = []
-    console.log(robot.retrieveList)
-    for (let i = 0; i < robot.retrieveList.length; i++) {
-      const studyData = robot.retrieveList[i]
-      console.log(studyData)
+    console.log(this.robotJobs)
+    const usersRobots = Object.keys(this.robotJobs)
 
-      robot.orthancObject.buildDicomQuery('Study', studyData.patientName, studyData.patientID, studyData.studyDate + '-' + studyData.studyDate,
-        studyData.modality, studyData.studyDescription, studyData.accessionNb)
-      const answerDetails = await robot.orthancObject.makeDicomQuery(studyData.aet)
+    for (let i = 0; i < usersRobots.length; i++) {
+      const job = this.robotJobs[usersRobots[i]]
 
-      for (const answer of answerDetails) {
-        const retrieveAnswer = await robot.orthancObject.makeRetrieve(answer.answerId, answer.answerNumber, robot.aetDestination, true)
-        console.log(retrieveAnswer)
-        studyInstancUIDRetrieve.push(answer.studyInstanceUID)
+      for (let i = 0; i < job.retrieveList.length; i++) {
+        const studyData = job.retrieveList[i]
+        console.log(studyData)
+
+        robot.orthancObject.buildDicomQuery('Study', studyData.patientName, studyData.patientId, studyData.studyDate + '-' + studyData.studyDate,
+          studyData.modality, studyData.studyDescription, studyData.accessionNb)
+
+        const answerDetails = await robot.orthancObject.makeDicomQuery(studyData.aet)
+
+        for (const answer of answerDetails) {
+          const retrieveAnswer = await robot.orthancObject.makeRetrieve(answer.answerId, answer.answerNumber, robot.aetDestination, true)
+          console.log(retrieveAnswer)
+          const orthancResults = await robot.orthancObject.findInOrthancByUid(retrieveAnswer.Query[0]['0020,000d'])
+          job.getRetriveItem(i).setRetrievedOrthancId(orthancResults[0])
+        }
       }
     }
 
-    this.exportZips(studyInstancUIDRetrieve)
+    // If wanted do Anonymization
+
+    await this.exportDicom()
   }
 
-  async exportZips (studyInstancUIDArray) {
-    const retrieveRobot = this
-    const orthancStudyID = []
-    for (let i = 0; i < studyInstancUIDArray.length; i++) {
-      const orthancResults = await retrieveRobot.orthancObject.findInOrthancByUid(studyInstancUIDArray[i])
-      orthancStudyID.push(orthancResults[0])
-    }
+  // SK A FAIRE
+  anonymizeDicom () {
 
-    this.orthancObject.exportArchiveDicom(orthancStudyID, 'resultRobot')
+  }
+
+  async exportDicom () {
+    const retrieveRobot = this
+    console.log(this.robotJobs)
+    const usersRobots = Object.keys(this.robotJobs)
+
+    for (let i = 0; i < usersRobots.length; i++) {
+      const job = this.robotJobs[usersRobots[i]]
+      const retrievedOrthancIds = job.getRetrievedOrthancId()
+      console.log(retrievedOrthancIds)
+      await retrieveRobot.orthancObject.exportArchiveDicom(retrievedOrthancIds, job.username + '_' + job.projectName)
+    }
   }
 }
 

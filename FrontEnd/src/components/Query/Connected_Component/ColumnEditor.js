@@ -3,22 +3,20 @@ import { connect } from 'react-redux'
 import * as actions from '../../../actions/TableQuery'
 
 class ColumnEditor extends Component {
-
   constructor (props) {
     super(props)
-    this.editAllRow=this.editAllRow.bind(this)
+    this.editAllRow = this.editAllRow.bind(this)
   }
 
-  editAllRow(event){
+  editAllRow (event) {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
-    this.props.editColumnQuery(this.props.columnName, value);
-    
+    this.props.editColumnQuery(this.props.columnName, value)
   }
 
   render () {
-    return ( 
-        <input type="text" placeholder="Modify" onKeyUp={this.editAllRow} className="form-control btn-warning"/>
+    return (
+      <input type='text' placeholder='Modify' onKeyUp={this.editAllRow} className='form-control btn-warning' />
     )
   }
 }

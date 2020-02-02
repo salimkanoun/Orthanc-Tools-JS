@@ -30,7 +30,7 @@ class RetrieveButton extends Component {
     const classNameValue = this.getClassFromStatus()
     return (<div className='col-sm'>
       <input type='button' className={classNameValue} onClick={this.doRetrieve} value='Retrieve' />
-            </div>)
+    </div>)
   }
 
   async doRetrieve () {
@@ -66,15 +66,20 @@ class RetrieveButton extends Component {
         },
         body: JSON.stringify({ jobUid: jobUid })
       }).then((response) => { return response.json() })
-      console.log(jobData)
+
       const currentStatus = jobData.State
-      console.log(currentStatus)
+
       currentComponent.setState({
         status: currentStatus
       })
-      if (currentStatus !== 'Running') {
+
+      console.log(currentStatus)
+
+      if (currentStatus === 'Success' || currentStatus === 'Failure') {
         clearInterval(intervalChcker)
-        if (currentStatus === 'Success') currentComponent.props.setRetrieveStatus(currentComponent.props.rowData.key, true)
+        if (currentStatus === 'Success') {
+          currentComponent.props.setRetrieveStatus(currentComponent.props.rowData.key, true)
+        }
       }
     }
 

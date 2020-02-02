@@ -4,7 +4,7 @@ const initialState = {
   queries: []
 }
 
-export default function queryListReducer(state = initialState, action) {
+export default function queryListReducer (state = initialState, action) {
   switch (action.type) {
     case ADD_QUERY_TO_LIST:
       let maxKey = Math.max.apply(Math, state.queries.map(function (query) { return query.key }))
@@ -49,9 +49,9 @@ export default function queryListReducer(state = initialState, action) {
         queries: []
       }
     case EDIT_COLUMN_QUERY:
-      //Edit all column value
-      //Need to change key to force update
-      let newState = state.queries.map((query) => {
+      // Edit all column value
+      // Need to change key to force update
+      const newState = state.queries.map((query) => {
         query[query.key] = query.key++
         query[action.payload.columnName] = action.payload.text
         return query

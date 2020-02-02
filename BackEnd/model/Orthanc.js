@@ -82,11 +82,24 @@ class Orthanc {
   getAvailableAet () {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
-      request.get(currentOrthanc.createOptions('GET', '/modalities'), function (error, response, body) {
+      request.get(currentOrthanc.createOptions('GET', '/modalities?expand'), function (error, response, body) {
         console.log(body)
-        resolve(currentOrthanc.answerParser(body))
+        const answer = currentOrthanc.answerParser(body)
+        const aets = Object.keys(answer)
+        const aetsAnswer = []
+        aets.forEach((aetName) => {
+          const aetDetails = answer[aetName]
+          aetsAnswer.push({
+            name: aetName,
+            aetName: aetDetails.AET,
+            ip: aetDetails.Host,
+            port: aetDetails.Port,
+            manufacturer: aetDetails.Manufacturer
+          })
+        })
+        resolve(aetsAnswer)
       })
-    }).catch((error) => { 'Error get Aets ' + error })
+    }).catch((error) => { console.log('Error get Aets ' + error) })
     return promise
   }
 
@@ -282,7 +295,10 @@ class Orthanc {
     const promise = new Promise((resolve, reject) => {
       request.post(currentOrthanc.createOptions('POST', '/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', JSON.stringify(postData)), function (error, response, body) {
         const answer = currentOrthanc.answerParser(body)
-        resolve(answer.ID)
+        console.log('Result Retrieve')
+        console.log(answer)
+        console.log('Post result Retrieve')
+        resolve(answer)
       })
     }).catch((error) => { console.log('Error make retrieve ' + error) })
     return promise
@@ -360,18 +376,21 @@ class Orthanc {
   findInOrthancByUid (studyUID) {
     const currentOrthanc = this
 
-    const queryDetails = {}
-
-    queryDetails.StudyInstanceUID = studyUID
-
     const queryParameter = {
       Level: 'Study',
-      Query: queryDetails
+      Query: {
+        StudyInstanceUID: studyUID
+      }
     }
 
     const promise = new Promise((resolve, reject) => {
       request.post(currentOrthanc.createOptions('POST', '/tools/find', JSON.stringify(queryParameter)), function (error, response, body) {
         const answer = currentOrthanc.answerParser(body)
+
+        console.log('start orthancID')
+        console.log('seached ' + studyUID)
+        console.log(answer)
+        console.log('stop orthancID')
         resolve(answer)
       })
     }).catch((error) => { console.log('Error find In Orthanc ' + error) })

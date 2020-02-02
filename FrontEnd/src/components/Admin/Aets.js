@@ -22,17 +22,23 @@ export default class RobotStatus extends Component {
         dataField: 'name',
         text : 'Name'
     }, {
-        dataField: 'username',
-        text : 'Username'
+        dataField: 'aetName',
+        text : 'Aet Name'
     }, {
-        dataField: 'queriesNb',
-        text : 'Number of Queries'
+        dataField: 'ip',
+        text : 'IP Adress'
+    }, {
+        dataField: 'port',
+        text : 'Port'
+    },{
+        dataField : 'manufacturer',
+        text : 'Manufacturer'
     }];
 
 
     refreshHandler(){
 
-        fetch("/api/robot", {
+        fetch("/api/aets", {
         method: "GET",
         headers: {
             'Accept': 'application/json',
@@ -46,12 +52,14 @@ export default class RobotStatus extends Component {
 
                 state.rows = []
 
-                answerData.forEach(robotJob => {
+                answerData.forEach(aet => {
                     state.rows.push({
                         key : Math.random(),
-                        name : robotJob.projectName,
-                        username : robotJob.username,
-                        queriesNb : robotJob.retrieveList.length
+                        name : aet.name,
+                        aetName : aet.aetName,
+                        ip : aet.ip,
+                        port : aet.port,
+                        manufacturer : aet.manufacturer
                     })
                     
                 });

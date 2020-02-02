@@ -28,8 +28,8 @@ export function setRetrieveStatus (key, isRetrieved) {
   }
 }
 
-export function emptyResultsTable(){
+export function emptyResultsTable () {
   return {
-    type : EMPTY_RESULTS
+    type: EMPTY_RESULTS
   }
 }

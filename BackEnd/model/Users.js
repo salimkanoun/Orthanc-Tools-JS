@@ -1,61 +1,32 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt')
+const db = require('../database/models')
 
-class Users{
+class Users {
+  constructor (username) {
+    this.username = username
+  }
 
-    static saltRounds=10;
+  async checkPassword (plainPassword) {
+    const user = await db.User.findOne({ where: { username: this.username } })
+    const check = await bcrypt.compare(plainPassword, user.password).catch(() => { return false })
+    return check
+  }
 
-    constructor(databaseObject, username){
-        this.database=databaseObject;
-        this.username=username;
-    }
+  static async createUser (username, password, isAdmin) {
+    const saltRounds = 10
 
-    getDetails(){
-        var getStmt = `SELECT password, admin FROM users WHERE username=(?)`;
-        let currentUser=this;
-        let promise = new Promise((resolve, reject)=>{
-            currentUser.database.get(getStmt, [currentUser.username], function(err, row) {
-                console.log(err);
-                console.log(row);
-                if(row!==undefined){
-                    currentUser.password=row.password;
-                    currentUser.admin=row.admin;
-                }
-                
-                resolve(console.log(currentUser.password));
-            });
+    const promise = bcrypt.hash(password, saltRounds).then(function (hash) {
+      db.User.create({
+        username: username,
+        password: hash,
+        admin: isAdmin
+      })
+    }).catch(function (error) {
+      console.log('user create Failed ' + error)
+    })
 
-        }).catch( (error)=>{
-            console.log('User Retrieve failed '+error);
-        });
-
-        return promise;
-        
-    }
-
-    async checkPassword(plainPassword){
-        let check =await bcrypt.compare(plainPassword, this.password).catch(()=>{return false});
-        return check;
-    }
-
-    static async createUser(databaseObject, username, password, isAdmin){
-
-        let promise = bcrypt.hash(password, Users.saltRounds).then(function(hash) {
-            console.log(hash);
-            databaseObject.run(`INSERT INTO users(username, password, admin) VALUES(?, ?, ?)`, [username, hash, isAdmin], function(err) {
-                if(err){
-                    console.log(err);
-                }else{
-                    console.log('Done');
-                }
-            })
-        }).catch(function(error){
-            console.log('user create Failed '+ error);
-        });
-
-        return promise;
-       
-    }
-
+    return promise
+  }
 }
 
 module.exports = Users
