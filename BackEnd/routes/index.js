@@ -1,7 +1,7 @@
 var express = require('express')
 var router = express.Router()
 
-let {getRobotDetails, createRobot} = require('../controllers/Robot');
+const { getRobotDetails, createRobot } = require('../controllers/Robot')
 
 // Handle controller errors
 require('express-async-errors')

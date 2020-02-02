@@ -49,12 +49,11 @@ export default class Authentication extends Component {
     })
   }
 
-  handleKeyDown(event){
+  handleKeyDown (event) {
     if (event.key === 'Enter') {
-        this.handleClick()
+      this.handleClick()
     }
-
-}
+  }
 
   render () {
     if (this.state.authenthified) {

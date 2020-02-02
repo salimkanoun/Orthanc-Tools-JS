@@ -41,7 +41,7 @@ export default function retrieveListReducer (state = initialState, action) {
       return {
         ...state
       }
-    case EMPTY_RESULTS : 
+    case EMPTY_RESULTS :
       return {
         ...state,
         results: []

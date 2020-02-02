@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('Options', {
@@ -22,16 +22,16 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    }).then(()=>{
+    }).then(() => {
       queryInterface.bulkInsert('Options', [{
         hour: 22,
         min: 0,
         createdAt: new Date().toDateString(),
         updatedAt: new Date().toDateString()
-      }], {}) 
-    });
+      }], {})
+    })
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Options');
+    return queryInterface.dropTable('Options')
   }
-};
+}

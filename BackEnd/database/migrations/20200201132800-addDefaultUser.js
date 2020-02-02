@@ -1,19 +1,17 @@
-'use strict';
-const bcrypt = require('bcrypt');
+'use strict'
+const bcrypt = require('bcrypt')
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-
-    return bcrypt.hash('salim', 10).then(function(hash) {
+    return bcrypt.hash('salim', 10).then(function (hash) {
       queryInterface.bulkInsert('Users', [{
         username: 'salim',
         password: hash,
-        admin : false,
+        admin: false,
         createdAt: new Date().toDateString(),
         updatedAt: new Date().toDateString()
-      }], {}) 
-
-    });
+      }], {})
+    })
     /*
       Add altering commands here.
       Return a promise to correctly handle asynchronicity.
@@ -24,16 +22,15 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-
     return (
       queryInterface.bulkDelete('Users', [{
         username: 'salim',
         password: 'salim',
-        admin : false,
+        admin: false,
         createdAt: new Date().toDateString(),
         updatedAt: new Date().toDateString()
       }], {})
-    );
+    )
     /*
       Add reverting commands here.
       Return a promise to correctly handle asynchronicity.
@@ -42,4 +39,4 @@ module.exports = {
       return queryInterface.dropTable('users');
     */
   }
-};
+}

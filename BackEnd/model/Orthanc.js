@@ -84,17 +84,17 @@ class Orthanc {
     const promise = new Promise((resolve, reject) => {
       request.get(currentOrthanc.createOptions('GET', '/modalities?expand'), function (error, response, body) {
         console.log(body)
-        let answer=currentOrthanc.answerParser(body);
-        let aets = Object.keys(answer)
-        let aetsAnswer=[]
-        aets.forEach((aetName)=>{
-          let aetDetails=answer[aetName];
+        const answer = currentOrthanc.answerParser(body)
+        const aets = Object.keys(answer)
+        const aetsAnswer = []
+        aets.forEach((aetName) => {
+          const aetDetails = answer[aetName]
           aetsAnswer.push({
-            name : aetName,
-            aetName : aetDetails.AET,
-            ip : aetDetails.Host,
-            port : aetDetails.Port,
-            manufacturer : aetDetails.Manufacturer
+            name: aetName,
+            aetName: aetDetails.AET,
+            ip: aetDetails.Host,
+            port: aetDetails.Port,
+            manufacturer: aetDetails.Manufacturer
           })
         })
         resolve(aetsAnswer)
@@ -374,12 +374,12 @@ class Orthanc {
      * @param {string} studyUID
      */
   findInOrthancByUid (studyUID) {
-    let currentOrthanc = this
+    const currentOrthanc = this
 
-    let queryParameter = {
+    const queryParameter = {
       Level: 'Study',
       Query: {
-        StudyInstanceUID : studyUID
+        StudyInstanceUID: studyUID
       }
     }
 
@@ -388,7 +388,7 @@ class Orthanc {
         const answer = currentOrthanc.answerParser(body)
 
         console.log('start orthancID')
-        console.log('seached '+ studyUID)
+        console.log('seached ' + studyUID)
         console.log(answer)
         console.log('stop orthancID')
         resolve(answer)

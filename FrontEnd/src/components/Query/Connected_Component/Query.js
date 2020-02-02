@@ -17,7 +17,7 @@ class Query extends Component {
   }
 
   static async getAets () {
-    let aets = await fetch('/api/aets').then((answer)=>{ return answer.json() })
+    const aets = await fetch('/api/aets').then((answer) => { return answer.json() })
     return aets
   }
 

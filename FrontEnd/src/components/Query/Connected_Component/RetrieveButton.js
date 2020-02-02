@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import * as actions from '../../../actions/TableResult'
 
 class RetrieveButton extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.clickListner = this.clickListner.bind(this)
     this.doRetrieve = this.doRetrieve.bind(this)
@@ -12,13 +12,13 @@ class RetrieveButton extends Component {
     }
   }
 
-  clickListner() {
+  clickListner () {
     this.setState({
       status: 'Pending'
     })
   }
 
-  getClassFromStatus() {
+  getClassFromStatus () {
     if (this.state.status === 'Idle') return 'btn btn-info btn-large'
     else if (this.state.status === 'Running') return 'btn btn-warning btn-large'
     else if (this.state.status === 'Success') return 'btn btn-success btn-large'
@@ -26,14 +26,14 @@ class RetrieveButton extends Component {
     else if (this.state.status === 'Error') return 'btn btn-error btn-large'
   }
 
-  render() {
+  render () {
     const classNameValue = this.getClassFromStatus()
     return (<div className='col-sm'>
       <input type='button' className={classNameValue} onClick={this.doRetrieve} value='Retrieve' />
     </div>)
   }
 
-  async doRetrieve() {
+  async doRetrieve () {
     const rowData = this.props.rowData
     const postData = {
       queryID: rowData.answerId,
@@ -53,13 +53,12 @@ class RetrieveButton extends Component {
     this.monitorJob(jobUid)
   }
 
-  async monitorJob(jobUid) {
+  async monitorJob (jobUid) {
     const currentComponent = this
     let intervalChcker
 
-    let getJobData = async function () {
-
-      let jobData = await fetch('/api/job_details', {
+    const getJobData = async function () {
+      const jobData = await fetch('/api/job_details', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -68,15 +67,15 @@ class RetrieveButton extends Component {
         body: JSON.stringify({ jobUid: jobUid })
       }).then((response) => { return response.json() })
 
-      let currentStatus = jobData.State
+      const currentStatus = jobData.State
 
       currentComponent.setState({
         status: currentStatus
       })
 
-      console.log(currentStatus) 
+      console.log(currentStatus)
 
-      if (currentStatus === 'Success' || currentStatus === 'Failure' ) {
+      if (currentStatus === 'Success' || currentStatus === 'Failure') {
         clearInterval(intervalChcker)
         if (currentStatus === 'Success') {
           currentComponent.props.setRetrieveStatus(currentComponent.props.rowData.key, true)
