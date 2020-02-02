@@ -82,9 +82,22 @@ class Orthanc {
   getAvailableAet () {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
-      request.get(currentOrthanc.createOptions('GET', '/modalities'), function (error, response, body) {
+      request.get(currentOrthanc.createOptions('GET', '/modalities?expand'), function (error, response, body) {
         console.log(body)
-        resolve(currentOrthanc.answerParser(body))
+        let answer=currentOrthanc.answerParser(body);
+        let aets = Object.keys(answer)
+        let aetsAnswer=[]
+        aets.forEach((aetName)=>{
+          let aetDetails=answer[aetName];
+          aetsAnswer.push({
+            name : aetName,
+            aetName : aetDetails[0],
+            ip : aetDetails[1],
+            port : aetDetails[2],
+            manufacturer : aetDetails[3]
+          })
+        })
+        resolve(aetsAnswer)
       })
     }).catch((error) => { console.log('Error get Aets ' + error) })
     return promise

@@ -128,7 +128,9 @@ class TableQuery extends Component {
     editor: {
       type: Type.SELECT,
       getOptions: (setOptions, { row, column }) => {
-        return this.props.aets
+        return this.props.aets.map(function(aet){
+          return {value : aet.name, label : aet.name}
+        })
       }
     },
     filter: textFilter(),
@@ -234,7 +236,7 @@ class TableQuery extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    aets: state.FormInput.aetsObject,
+    aets: state.FormInput.aets,
     queries: state.QueryList,
     results: state.resultList
   }

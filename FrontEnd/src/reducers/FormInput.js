@@ -16,17 +16,9 @@ const initialState = {
 export default function formInputReducer (state = initialState, action) {
   switch (action.type) {
     case ADD_AET :
-      const aetsObject = []
-      action.payload.forEach((aet) => {
-        aetsObject.push({
-          value: aet,
-          label: aet
-        })
-      })
       return {
         ...state,
-        aets: action.payload,
-        aetsObject: aetsObject
+        aets: action.payload
       }
     case SET_FORM_DATA :
       return {

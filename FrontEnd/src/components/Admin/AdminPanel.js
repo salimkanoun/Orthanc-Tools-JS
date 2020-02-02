@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Options from './Options'
 import RobotStatus from './RobotStatus'
 import Aets from './Aets'
-import Aet_Form from './Aet_Form'
+import AetForm from './AetForm'
 
 export default class AdminPanel extends Component {
 
@@ -12,7 +12,7 @@ export default class AdminPanel extends Component {
                 <Options />
                 <RobotStatus />
                 <Aets />
-                <Aet_Form />
+                <AetForm />
             </div>
         )
     }

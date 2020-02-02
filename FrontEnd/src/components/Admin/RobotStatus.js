@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
 
 export default class RobotStatus extends Component {

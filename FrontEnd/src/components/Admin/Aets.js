@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
 
 export default class RobotStatus extends Component {
@@ -30,6 +30,9 @@ export default class RobotStatus extends Component {
     }, {
         dataField: 'port',
         text : 'Port'
+    },{
+        dataField : 'manufacturer',
+        text : 'Manufacturer'
     }];
 
 
@@ -54,7 +57,9 @@ export default class RobotStatus extends Component {
                         key : Math.random(),
                         name : aet.name,
                         aetName : aet.aetName,
-                        port : aet.port
+                        ip : aet.ip,
+                        port : aet.port,
+                        manufacturer : aet.manufacturer
                     })
                     
                 });
