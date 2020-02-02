@@ -1,15 +1,15 @@
 const Robot = require('./Retrieve_Robot')
 
-class RobotSingleton {
+class Robot_Singleton {
   constructor (orthancObject) {
-    if (!RobotSingleton.instance) {
-      RobotSingleton.instance = new Robot(orthancObject)
+    if (!Robot_Singleton.instance) {
+      Robot_Singleton.instance = new Robot(orthancObject)
     }
   }
 
   getRobot () {
-    return RobotSingleton.instance
+    return Robot_Singleton.instance
   }
 }
 
-module.exports = RobotSingleton
+module.exports = Robot_Singleton

@@ -1,11 +1,11 @@
-const RobotSingleton = require('../model/Robot_Singleton')
+const Robot_Singleton = require('../model/Robot_Singleton')
 const Robot_Job = require('../model/Robot_Job')
 const Orthanc = require('../model/Orthanc')
 
 let getRobotDetails = async function (req, res) {
 
   const orthanc = new Orthanc()
-  const robotSingleton = new RobotSingleton(orthanc)
+  const robotSingleton = new Robot_Singleton(orthanc)
   const retrieveRobot = robotSingleton.getRobot()
   let data=null
   if(req.params.username !== undefined){
@@ -21,7 +21,7 @@ let getRobotDetails = async function (req, res) {
 let createRobot = async function (req, res) {
 
   const orthanc = new Orthanc()
-  const robotSingleton = new RobotSingleton(orthanc)
+  const robotSingleton = new Robot_Singleton(orthanc)
   const retrieveRobot = robotSingleton.getRobot()
 
   const body = req.body

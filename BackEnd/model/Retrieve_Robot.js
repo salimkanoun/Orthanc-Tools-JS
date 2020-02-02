@@ -84,11 +84,12 @@ class Retrieve_Robot {
   async doRetrieve () {
 
     const robot = this
-    console.log(robot.retrieveList)
+    console.log(this.robotJobs)
+    let usersRobots = Object.keys(this.robotJobs)
 
-    for (let i = 0; i < this.robotJobs.length; i++){
+    for (let i = 0; i < usersRobots.length; i++){
 
-      let job=this.robotJobs[i]
+      let job=this.robotJobs[usersRobots[i]]
 
       for (let i = 0; i < job.retrieveList.length; i++) {
         let studyData = job.retrieveList[i]

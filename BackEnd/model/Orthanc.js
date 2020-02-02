@@ -91,10 +91,10 @@ class Orthanc {
           let aetDetails=answer[aetName];
           aetsAnswer.push({
             name : aetName,
-            aetName : aetDetails[0],
-            ip : aetDetails[1],
-            port : aetDetails[2],
-            manufacturer : aetDetails[3]
+            aetName : aetDetails.AET,
+            ip : aetDetails.Host,
+            port : aetDetails.Port,
+            manufacturer : aetDetails.Manufacturer
           })
         })
         resolve(aetsAnswer)

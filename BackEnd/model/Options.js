@@ -1,4 +1,6 @@
 const db = require('../database/models')
+const Orthanc = require('./Orthanc')
+const Robot_Singleton = require('./Robot_Singleton')
 class Options {
 
   async getOptions () {
@@ -11,6 +13,15 @@ class Options {
     option.hour = hour
     option.min = min
     await option.save()
+
+    //Refresh time of scheduled job
+    //SK A REVOIR
+    /*
+    const orthanc = new Orthanc()
+    const robotSingleton = new Robot_Singleton(orthanc)
+    const retrieveRobot = robotSingleton.getRobot()
+    retrieveRobot.scheduleRetrieve()
+    */
   }
 }
 
