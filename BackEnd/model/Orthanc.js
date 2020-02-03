@@ -1,6 +1,7 @@
 const request = require('request')
 const fs = require('fs')
 const QueryAnswer = require('./QueryAnswer')
+const QuerySerieAnswer = require('./QuerySerieAnswer')
 const TagAnon = require('./TagAnon')
 
 /**
@@ -215,6 +216,89 @@ class Orthanc {
     }).catch((error) => { console.log('Error Make Query ' + error) })
 
     return promise
+  }
+
+  //SK A FAIRE
+  querySeries(aet , studyUID){
+
+    const currentOrthanc = this
+
+    let query = {
+      'Level' : 'Series',
+      'Query' : {
+        'Modality' : '*',
+        'ProtocolName' : '*',
+        'SeriesDescription' : '*',
+        'SeriesInstanceUID' : '*',
+        'StudyInstanceUID' : studyUID
+      }
+    }
+
+    const promise = new Promise((resolve, reject) => {
+      request.post(currentOrthanc._createOptions('POST', '/modalities/' + aet + '/query' , JSON.stringify(query) ), function (error, response, body) {
+        const answer = currentOrthanc._answerParser(body)
+        console.log(answer)
+        resolve(answer)
+      })
+    }).then(function (answer) {
+      const answerDetails = currentOrthanc.getSeriesAnswerDetails(answer.ID, aet)
+      console.log(answerDetails)
+      return answerDetails
+    }).catch((error) => { console.log('Error Make Query ' + error) })
+
+    return promise
+
+  }
+
+  getSeriesAnswerDetails(answerId ,aet){
+
+    const currentOrthanc = this
+    const promise = new Promise((resolve, reject) => {
+      request.get(currentOrthanc._createOptions('GET', '/queries/' + answerId + '/answers?expand'), function (error, response, body) {
+        const answersObjects = []
+        try {
+          const answersList = currentOrthanc._answerParser(body)
+
+          answersList.forEach(element => {
+
+            let Modality = '*'
+            if (element.hasOwnProperty('0008,0060')) {
+              Modality = element['0008,0060'].Value
+            }
+
+            let SeriesDescription = '*'
+            if (element.hasOwnProperty('0008,103e')) {
+              SeriesDescription = element['0008,103e'].Value
+            }
+
+            let StudyInstanceUID = '*'
+            if (element.hasOwnProperty('0020,000d')) {
+              StudyInstanceUID = element['0020,000d'].Value
+            }
+
+            let SeriesInstanceUID = '*'
+            if (element.hasOwnProperty('0020,000e')) {
+              SeriesInstanceUID = element['0020,000e'].Value
+            }
+
+            let SeriesNumber = 0
+            if (element.hasOwnProperty('0020,0011')) {
+              SeriesNumber = element['0020,0011'].Value
+            }
+
+            const originAET = aet
+            const queryAnswserObject = new QuerySerieAnswer(StudyInstanceUID,SeriesInstanceUID,Modality,SeriesDescription,SeriesNumber, originAET )
+            answersObjects.push(queryAnswserObject)
+          })
+        } catch (exception) {
+          console.log('error' + exception)
+        }
+        resolve(answersObjects)
+      })
+    }).catch((error) => { console.log('Error get answers Details ' + error) })
+
+    return promise
+
   }
 
   getAnswerDetails (answerId, aet) {

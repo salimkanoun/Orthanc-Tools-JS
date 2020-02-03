@@ -89,7 +89,7 @@ class RetrieveRobot {
         const studyData = job.retrieveList[i]
         console.log(studyData)
 
-        robot.orthancObject.buildDicomQuery('Study', studyData.patientName, studyData.patientId, studyData.studyDate + '-' + studyData.studyDate,
+        robot.orthancObject.buildDicomQuery(studyData.level, studyData.patientName, studyData.patientId, studyData.studyDate + '-' + studyData.studyDate,
           studyData.modality, studyData.studyDescription, studyData.accessionNb)
 
         const answerDetails = await robot.orthancObject.makeDicomQuery(studyData.aet)

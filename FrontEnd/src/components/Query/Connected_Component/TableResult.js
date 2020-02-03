@@ -34,6 +34,31 @@ class TableResult extends Component {
         this.props.emptyResultsTable()
     }
 
+    async getSeriesDetails(studyUID, aet){
+
+        let post = {
+            level : 'Serie',
+            studyUID: studyUID,
+            aet : aet
+        }
+
+        let queryAnswers = await fetch("/api/query",
+        {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(post)
+        }).then((answer)=>{
+          return(answer.json())
+        })
+
+        console.log(queryAnswers)
+        return queryAnswers
+
+    }
+
     /*
     onSelectAll = (isSelected) => {
         if (isSelected) {            
@@ -117,6 +142,34 @@ class TableResult extends Component {
         csvExport: false
     }];
 
+    expandRow = {
+
+        showExpandColumn: true,
+        renderer : (row) => {
+            console.log(row.studyInstanceUID)
+            
+            console.log(row)
+            return (<div> {row.studyInstanceUID}
+            </div>)
+        },
+
+        onExpand: (row, isExpand, rowIndex, e) => {
+            let seriesDetails = this.getSeriesDetails(row.studyInstanceUID, row.originAET)
+            console.log(seriesDetails)
+            console.log(row.id);
+            console.log(isExpand);
+            console.log(rowIndex);
+            console.log(e);
+        },
+
+        onExpandAll: (isExpandAll, rows, e) => {
+            console.log(isExpandAll);
+            console.log(rows);
+            console.log(e);
+        }
+
+    }
+
 
 
     render() {
@@ -137,7 +190,7 @@ class TableResult extends Component {
                                     <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
                                     <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                                     <div className="mt-5">
-                                        <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} >
+                                        <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} expandRow={ this.expandRow } >
                                         </BootstrapTable>
                                     </div>
                                 </div>

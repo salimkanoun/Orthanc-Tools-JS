@@ -199,6 +199,7 @@ class TableQuery extends Component {
     }
 
     let queryPost = {
+      level : 'Study',
       patientName: queryParams.patientName,
       patientID: queryParams.patientId,
       accessionNumber: queryParams.accessionNumber,
