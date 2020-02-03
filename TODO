@@ -9,6 +9,8 @@ Front :
 
 - Spliter firstName, LastName dans toutes les tables query / results ?
 - Query level series avec expendable rows on click (declanche retrieve des series)
+    Async dans renderer : https://github.com/react-bootstrap-table/react-bootstrap-table2/issues/1001
+    essayer d'injecter un autre tableau qui gerera son state ...
 - Anonymisation vers table d'Anonymisation ?
 - Settings AutoQuery : 
     - Filtre sur le niveau Series => Contains et equal sur modality et series description
