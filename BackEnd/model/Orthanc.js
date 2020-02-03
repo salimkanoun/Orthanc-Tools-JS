@@ -27,11 +27,12 @@ class Orthanc {
 
   /**
      * Generate option object for Request
+     * Private Method
      * @param {string} method
      * @param {string} url
      * @param {string} data in JSON
      */
-  createOptions (method, url, data = 'none') {
+  _createOptions (method, url, data = 'none') {
     const serverString = this.getOrthancAdressString() + url
 
     let options = null
@@ -69,8 +70,8 @@ class Orthanc {
   getSystem () {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
-      request.get(currentOrthanc.createOptions('GET', '/system'), function (error, response, body) {
-        resolve(currentOrthanc.answerParser(body))
+      request.get(currentOrthanc._createOptions('GET', '/system'), function (error, response, body) {
+        resolve(currentOrthanc._answerParser(body))
       })
     }).catch((error) => { console.log('Error Get System ' + error) })
     return promise
@@ -82,22 +83,23 @@ class Orthanc {
   getAvailableAet () {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
-      request.get(currentOrthanc.createOptions('GET', '/modalities?expand'), function (error, response, body) {
-        console.log(body)
-        const answer = currentOrthanc.answerParser(body)
-        const aets = Object.keys(answer)
-        const aetsAnswer = []
-        aets.forEach((aetName) => {
-          const aetDetails = answer[aetName]
-          aetsAnswer.push({
-            name: aetName,
-            aetName: aetDetails.AET,
-            ip: aetDetails.Host,
-            port: aetDetails.Port,
-            manufacturer: aetDetails.Manufacturer
+      request.get(currentOrthanc._createOptions('GET', '/modalities?expand'), function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          const answer = currentOrthanc._answerParser(body)
+          const aets = Object.keys(answer)
+          const aetsAnswer = []
+          aets.forEach((aetName) => {
+            const aetDetails = answer[aetName]
+            aetsAnswer.push({
+              name: aetName,
+              aetName: aetDetails.AET,
+              ip: aetDetails.Host,
+              port: aetDetails.Port,
+              manufacturer: aetDetails.Manufacturer
+            })
           })
-        })
-        resolve(aetsAnswer)
+          resolve(aetsAnswer)
+        }
       })
     }).catch((error) => { console.log('Error get Aets ' + error) })
     return promise
@@ -112,20 +114,20 @@ class Orthanc {
      * @param {string} type
      */
   putAet (name, aet, ip, port, type) {
+
     let data = []
-    console.log(type)
     if (type === undefined) {
       data = [aet, ip, port]
     } else {
       data = [aet, ip, port, type]
     }
-
-    console.log(data)
-    console.log(name)
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
-      request.put(currentOrthanc.createOptions('PUT', '/modalities/' + name, JSON.stringify(data)), function (error, response, body) {
-        resolve(console.log('Aet Declared'))
+      request.put(currentOrthanc._createOptions('PUT', '/modalities/' + name, JSON.stringify(data)), function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          resolve(true)
+        }
+        
       })
     }).catch((error) => { console.log('Error put AET ' + error) })
 
@@ -140,7 +142,7 @@ class Orthanc {
   exportArchiveDicom (orthancIds, filename) {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
-      const inputStream = request.post(currentOrthanc.createOptions('POST', '/tools/create-archive', JSON.stringify(orthancIds)))
+      const inputStream = request.post(currentOrthanc._createOptions('POST', '/tools/create-archive', JSON.stringify(orthancIds)))
       inputStream.pipe(fs.createWriteStream('./data/export_dicom/' + filename + '.zip'))
 
       inputStream.on('end', () => {
@@ -154,7 +156,7 @@ class Orthanc {
      * Parse recieved answer
      * @param {string} answer
      */
-  answerParser (answer) {
+  _answerParser (answer) {
     let parsedAnwser = []
     try {
       parsedAnwser = JSON.parse(answer)
@@ -181,8 +183,6 @@ class Orthanc {
 
     if (studyDate === '-') studyDate = '*'
 
-    console.log(studyDate)
-
     this.preparedQuery = {
       Level: level,
       Query: {
@@ -205,9 +205,8 @@ class Orthanc {
     const currentOrthanc = this
 
     const promise = new Promise((resolve, reject) => {
-      request.post(currentOrthanc.createOptions('POST', '/modalities/' + aet + '/query', JSON.stringify(currentOrthanc.preparedQuery)), function (error, response, body) {
-        const answer = currentOrthanc.answerParser(body)
-        console.log(answer)
+      request.post(currentOrthanc._createOptions('POST', '/modalities/' + aet + '/query', JSON.stringify(currentOrthanc.preparedQuery)), function (error, response, body) {
+        const answer = currentOrthanc._answerParser(body)
         resolve(answer)
       })
     }).then(function (answer) {
@@ -221,10 +220,10 @@ class Orthanc {
   getAnswerDetails (answerId, aet) {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
-      request.get(currentOrthanc.createOptions('GET', '/queries/' + answerId + '/answers?expand'), function (error, response, body) {
+      request.get(currentOrthanc._createOptions('GET', '/queries/' + answerId + '/answers?expand'), function (error, response, body) {
         const answersObjects = []
         try {
-          const answersList = currentOrthanc.answerParser(body)
+          const answersList = currentOrthanc._answerParser(body)
           let answerNumber = 0
 
           answersList.forEach(element => {
@@ -293,11 +292,8 @@ class Orthanc {
       TargetAet: aet
     }
     const promise = new Promise((resolve, reject) => {
-      request.post(currentOrthanc.createOptions('POST', '/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', JSON.stringify(postData)), function (error, response, body) {
-        const answer = currentOrthanc.answerParser(body)
-        console.log('Result Retrieve')
-        console.log(answer)
-        console.log('Post result Retrieve')
+      request.post(currentOrthanc._createOptions('POST', '/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', JSON.stringify(postData)), function (error, response, body) {
+        const answer = currentOrthanc._answerParser(body)
         resolve(answer)
       })
     }).catch((error) => { console.log('Error make retrieve ' + error) })
@@ -307,9 +303,8 @@ class Orthanc {
   getJobData (jobUid) {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
-      request.get(currentOrthanc.createOptions('GET', '/jobs/' + jobUid), function (error, response, body) {
-        console.log(body)
-        const answer = currentOrthanc.answerParser(body)
+      request.get(currentOrthanc._createOptions('GET', '/jobs/' + jobUid), function (error, response, body) {
+        const answer = currentOrthanc._answerParser(body)
         const queryDetails = answer.Content.Query
         const remoteAET = queryDetails.RemoteAet
         const answerObject = []
@@ -360,8 +355,8 @@ class Orthanc {
       Query: queryDetails
     }
     const promise = new Promise((resolve, reject) => {
-      request.post(currentOrthanc.createOptions('POST', '/tools/find', JSON.stringify(queryParameter)), function (error, response, body) {
-        const answer = currentOrthanc.answerParser(body)
+      request.post(currentOrthanc._createOptions('POST', '/tools/find', JSON.stringify(queryParameter)), function (error, response, body) {
+        const answer = currentOrthanc._answerParser(body)
         resolve(answer)
       })
     }).catch((error) => { console.log('Error find in Orthanc ' + error) })
@@ -384,13 +379,8 @@ class Orthanc {
     }
 
     const promise = new Promise((resolve, reject) => {
-      request.post(currentOrthanc.createOptions('POST', '/tools/find', JSON.stringify(queryParameter)), function (error, response, body) {
-        const answer = currentOrthanc.answerParser(body)
-
-        console.log('start orthancID')
-        console.log('seached ' + studyUID)
-        console.log(answer)
-        console.log('stop orthancID')
+      request.post(currentOrthanc._createOptions('POST', '/tools/find', JSON.stringify(queryParameter)), function (error, response, body) {
+        const answer = currentOrthanc._answerParser(body)
         resolve(answer)
       })
     }).catch((error) => { console.log('Error find In Orthanc ' + error) })
@@ -406,8 +396,8 @@ class Orthanc {
   getOrthancDetails (level, orthancID) {
     const currentOrthanc = this
     const promise = new Promise(function (resolve, reject) {
-      request.get(currentOrthanc.createOptions('GET', '/' + level + '/' + orthancID), function (error, response, body) {
-        const answer = currentOrthanc.answerParser(body)
+      request.get(currentOrthanc._createOptions('GET', '/' + level + '/' + orthancID), function (error, response, body) {
+        const answer = currentOrthanc._answerParser(body)
         resolve(answer)
       })
     }).catch((error) => { console.log('Error get Orthanc level details ' + error) })
@@ -423,7 +413,7 @@ class Orthanc {
   deleteFromOrhtanc (level, orthancID) {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
-      request.delete(currentOrthanc.createOptions('DELETE', '/' + level + '/' + orthancID, function (error, response, body) {
+      request.delete(currentOrthanc._createOptions('DELETE', '/' + level + '/' + orthancID, function (error, response, body) {
       }))
     }).catch((error) => { console.log('Error delete from Orthanc ' + error) })
 
@@ -531,7 +521,7 @@ class Orthanc {
   makeAnon (level, orthancID, profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription) {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
-      request.post(currentOrthanc.createOptions('POST', '/' + level + '/' + orthancID + '/anonymize', currentOrthanc.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription)), function (error, response, body) {
+      request.post(currentOrthanc._createOptions('POST', '/' + level + '/' + orthancID + '/anonymize', currentOrthanc.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription)), function (error, response, body) {
         console.log(body)
       })
     }).catch((error) => { console.log('Error make anon ' + error) })

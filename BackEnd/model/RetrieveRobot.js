@@ -1,8 +1,8 @@
 const schedule = require('node-schedule')
-const Robot_Job = require('./Robot_Job')
+const RobotJob = require('./RobotJob')
 const Options = require('./Options')
 
-class Retrieve_Robot {
+class RetrieveRobot {
   constructor (orthancObject) {
     this.orthancObject = orthancObject
     this.robotJobs = []
@@ -20,7 +20,7 @@ class Retrieve_Robot {
   /**
    * Add RobotJob
    * @param {String} username
-   * @param {Robot_Job} robotJob
+   * @param {RobotJob} robotJob
    */
   addRobotJob (robotJob) {
     this.robotJobs[robotJob.username] = robotJob
@@ -127,4 +127,4 @@ class Retrieve_Robot {
   }
 }
 
-module.exports = Retrieve_Robot
+module.exports = RetrieveRobot

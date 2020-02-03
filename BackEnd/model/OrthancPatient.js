@@ -56,4 +56,5 @@ class OrthancPatient {
     this.studiesObjects = studiesObjects
   }
 }
+
 module.exports = OrthancPatient

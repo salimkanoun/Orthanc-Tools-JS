@@ -49,4 +49,5 @@ class OrthancStudy {
     await this.fillSeriesDetails()
   };
 }
+
 module.exports = OrthancStudy

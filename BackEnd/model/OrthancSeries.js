@@ -35,4 +35,5 @@ class OrthancSerie {
     }
     */
 }
+
 module.exports = OrthancSerie
