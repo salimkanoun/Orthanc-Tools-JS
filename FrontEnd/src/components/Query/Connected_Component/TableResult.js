@@ -14,6 +14,8 @@ import RetrieveButton from './RetrieveButton'
 import ExportButton from './ExportButton'
 import CreateRobot from './../Component/CreateRobot'
 
+import TableResultSeries from './TableResultSeries'
+
 
 class TableResult extends Component {
 
@@ -142,32 +144,17 @@ class TableResult extends Component {
         csvExport: false
     }];
 
+      
+      
     expandRow = {
-
+        
         showExpandColumn: true,
         renderer : (row) => {
-            console.log(row.studyInstanceUID)
-            
-            console.log(row)
-            return (<div> {row.studyInstanceUID}
-            </div>)
-        },
-
-        onExpand: (row, isExpand, rowIndex, e) => {
-            let seriesDetails = this.getSeriesDetails(row.studyInstanceUID, row.originAET)
-            console.log(seriesDetails)
-            console.log(row.id);
-            console.log(isExpand);
-            console.log(rowIndex);
-            console.log(e);
-        },
-
-        onExpandAll: (isExpandAll, rows, e) => {
-            console.log(isExpandAll);
-            console.log(rows);
-            console.log(e);
+            return(
+                <TableResultSeries rowData={row}></TableResultSeries>
+            )
         }
-
+        
     }
 
 
@@ -212,8 +199,6 @@ class TableResult extends Component {
     exportButton(cell, row, rowIndex, formatExtraData) {
         return <ExportButton rowData={row} />
     }
-
-
 
 }
 

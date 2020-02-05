@@ -1,6 +1,7 @@
 Front : 
 - Faire que le select all select tout les non filtre de toutes les pages ? => difficulté....
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
+- probleme du focus quand click sur query
 - Query et Retrieve button pas forcement à connecter
 
 - Ajout du Robot + interface suivi (bare de progression)
@@ -14,10 +15,11 @@ Front :
 - Anonymisation vers table d'Anonymisation ?
 - Settings AutoQuery : 
     - Filtre sur le niveau Series => Contains et equal sur modality et series description
-- Declaration des AET ? avec stockage dans la base de données ?
+- Declaration des AET ajout stockage dans la base de données ?
 
-+ tard  : historique des query dans BDD pour relancer une ancienne requete
-- Manual Querya avec le formulaire manuel avec un duplicat de la table results
++ tard  : 
+- historique des query dans BDD pour relancer une ancienne requete
+- Manual Query avec le formulaire manuel avec un duplicat de la table results
 
 Back :
 - Nettoyer les API pour etre conforme a la nommenclature Rest
