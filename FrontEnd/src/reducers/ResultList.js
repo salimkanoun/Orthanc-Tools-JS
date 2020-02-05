@@ -1,4 +1,4 @@
-import { RETRIEVE, REMOVE_RESULT, ADD_RESULT_TO_LIST, SET_RETRIVE_STATUS_STUDY, EMPTY_RESULTS } from '../actions/actions-types'
+import { RETRIEVE, REMOVE_RESULT, ADD_RESULT_TO_LIST, SET_RETRIVE_STATUS_STUDY, EMPTY_RESULTS, ADD_SERIES_DETAILS } from '../actions/actions-types'
 
 const initialState = {
   results: []
@@ -25,7 +25,8 @@ export default function retrieveListReducer (state = initialState, action) {
       state.results.push({
         key: (maxKey + 1),
         isRetrieved: false,
-        ...action.payload
+        ...action.payload,
+        seriesDetails : []
       })
       return {
         ...state
@@ -45,6 +46,22 @@ export default function retrieveListReducer (state = initialState, action) {
       return {
         ...state,
         results: []
+      }
+    case ADD_SERIES_DETAILS : 
+      let newResultsState = state.results.map((studyData)=>{
+        if(studyData.studyInstanceUID ===  action.payload.studyInstanceUID){
+            return {
+              ...studyData,
+              seriesDetails : action.payload.seriesDetails
+            }
+        } else {
+          return studyData
+        }
+      })
+      console.log(newResultsState)
+      return {
+        ...state,
+        results : newResultsState
       }
     default :
       return state

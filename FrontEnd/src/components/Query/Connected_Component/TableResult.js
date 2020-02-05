@@ -125,7 +125,7 @@ class TableResult extends Component {
         sort: true,
         filter: textFilter()
     }, {
-        dataField: 'studyInstanceUid',
+        dataField: 'studyInstanceUID',
         hidden: true,
         csvExport: false
     }, {

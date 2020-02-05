@@ -1,11 +1,11 @@
 class QuerySerieAnswer {
 
     constructor (studyUID, seriesUID, modality, seriesDescription, seriesNumber, originAET) {
-      this.studyUID = studyUID
-      this.seriesUID = seriesUID
+      this.studyInstanceUID = studyUID
+      this.serieInstanceUID = seriesUID
       this.modality = modality
-      this.seriesDescription = seriesDescription
-      this.seriesNumber = seriesNumber
+      this.serieDescription = seriesDescription
+      this.serieNumber = seriesNumber
       this.originAET = originAET
     }
   
