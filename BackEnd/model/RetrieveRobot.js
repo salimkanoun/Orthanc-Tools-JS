@@ -9,8 +9,7 @@ class RetrieveRobot {
   }
 
   async getScheduleTimeFromOptions () {
-    const optionObject = new Options()
-    const optionsParameters = await optionObject.getOptions()
+    const optionsParameters = await Options.getOptions()
     return {
       hour: optionsParameters.hour,
       min: optionsParameters.min
