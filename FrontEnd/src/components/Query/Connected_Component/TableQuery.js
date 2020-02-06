@@ -179,7 +179,7 @@ class TableQuery extends Component {
     for (const query of data) {
       let answeredResults = await this.makeAjaxQuery(query)
       answeredResults.forEach((answer) => {
-        this.props.addResult(answer)
+        this.props.addStudyResult(answer)
       })
 
     }
@@ -199,6 +199,7 @@ class TableQuery extends Component {
     }
 
     let queryPost = {
+      level : 'Study',
       patientName: queryParams.patientName,
       patientID: queryParams.patientId,
       accessionNumber: queryParams.accessionNumber,

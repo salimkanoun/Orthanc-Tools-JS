@@ -1,6 +1,6 @@
-const Retrieve_Item = require('./Retrieve_Item')
+const RetrieveItem = require('./RetrieveItem')
 
-class Robot_Job {
+class RobotJob {
   constructor (username, projectName = ['N/A']) {
     this.username = username
     this.projectName = projectName
@@ -8,7 +8,7 @@ class Robot_Job {
   }
 
   addRetrieveItem (level, patientName, patientID, studyDate, modality, studyDescription, accessionNb, aet) {
-    const retrieveItem = new Retrieve_Item(level, patientName, patientID, studyDate, modality, studyDescription, accessionNb, aet)
+    const retrieveItem = new RetrieveItem(level, patientName, patientID, studyDate, modality, studyDescription, accessionNb, aet)
     this.retrieveList.push(retrieveItem)
   }
 
@@ -42,4 +42,4 @@ class Robot_Job {
   }
 }
 
-module.exports = Robot_Job
+module.exports = RobotJob

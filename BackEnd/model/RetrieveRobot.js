@@ -1,16 +1,15 @@
 const schedule = require('node-schedule')
-const Robot_Job = require('./Robot_Job')
+const RobotJob = require('./RobotJob')
 const Options = require('./Options')
 
-class Retrieve_Robot {
+class RetrieveRobot {
   constructor (orthancObject) {
     this.orthancObject = orthancObject
     this.robotJobs = []
   }
 
   async getScheduleTimeFromOptions () {
-    const optionObject = new Options()
-    const optionsParameters = await optionObject.getOptions()
+    const optionsParameters = await Options.getOptions()
     return {
       hour: optionsParameters.hour,
       min: optionsParameters.min
@@ -20,7 +19,7 @@ class Retrieve_Robot {
   /**
    * Add RobotJob
    * @param {String} username
-   * @param {Robot_Job} robotJob
+   * @param {RobotJob} robotJob
    */
   addRobotJob (robotJob) {
     this.robotJobs[robotJob.username] = robotJob
@@ -89,7 +88,7 @@ class Retrieve_Robot {
         const studyData = job.retrieveList[i]
         console.log(studyData)
 
-        robot.orthancObject.buildDicomQuery('Study', studyData.patientName, studyData.patientId, studyData.studyDate + '-' + studyData.studyDate,
+        robot.orthancObject.buildDicomQuery(studyData.level, studyData.patientName, studyData.patientId, studyData.studyDate + '-' + studyData.studyDate,
           studyData.modality, studyData.studyDescription, studyData.accessionNb)
 
         const answerDetails = await robot.orthancObject.makeDicomQuery(studyData.aet)
@@ -127,4 +126,4 @@ class Retrieve_Robot {
   }
 }
 
-module.exports = Retrieve_Robot
+module.exports = RetrieveRobot

@@ -1,4 +1,5 @@
-class Retrieve_Item {
+class RetrieveItem {
+
   constructor (level, patientName, patientId, studyDate, modality, studyDescription, accessionNb, aet) {
     this.level = level
     this.patientName = patientName
@@ -32,4 +33,4 @@ class Retrieve_Item {
   }
 }
 
-module.exports = Retrieve_Item
+module.exports = RetrieveItem

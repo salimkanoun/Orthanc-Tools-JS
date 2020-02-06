@@ -9,7 +9,6 @@ class ExportButton extends Component {
   }
 
   render () {
-    console.log(this.props.rowData)
     return (<div className='col-sm'>
       <input type='button' className='btn btn-info btn-large' onClick={this.doExport} disabled={!this.props.rowData.isRetrieved} value='Export' />
             </div>)
@@ -17,7 +16,7 @@ class ExportButton extends Component {
 
   async doExport () {
     const currentComponent = this
-    const exportAnswer = await fetch('/api/export_dicom', {
+    fetch('/api/export_dicom', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -25,7 +24,6 @@ class ExportButton extends Component {
       },
       body: JSON.stringify({ studyUID: currentComponent.props.rowData.studyUID })
     }).then((response) => { return response.json() })
-    console.log(exportAnswer)
   }
 }
 

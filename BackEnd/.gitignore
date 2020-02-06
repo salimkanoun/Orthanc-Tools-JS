@@ -1,8 +1,4 @@
 node_modules
-data/_config/config.json
-myapp-linux
-myapp-macos
-myapp-win.exe
 data/database/imagefetcher.db
 !data/log/README
 .env

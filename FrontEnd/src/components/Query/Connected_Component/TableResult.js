@@ -14,6 +14,8 @@ import RetrieveButton from './RetrieveButton'
 import ExportButton from './ExportButton'
 import CreateRobot from './../Component/CreateRobot'
 
+import TableResultSeries from './TableResultSeries'
+
 
 class TableResult extends Component {
 
@@ -34,6 +36,31 @@ class TableResult extends Component {
         this.props.emptyResultsTable()
     }
 
+    async getSeriesDetails(studyUID, aet){
+
+        let post = {
+            level : 'Serie',
+            studyUID: studyUID,
+            aet : aet
+        }
+
+        let queryAnswers = await fetch("/api/query",
+        {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(post)
+        }).then((answer)=>{
+          return(answer.json())
+        })
+
+        console.log(queryAnswers)
+        return queryAnswers
+
+    }
+
     /*
     onSelectAll = (isSelected) => {
         if (isSelected) {            
@@ -52,6 +79,10 @@ class TableResult extends Component {
 
     columns = [{
         dataField: 'number',
+        hidden: true,
+        csvExport: false
+    },{
+        dataField: 'level',
         hidden: true,
         csvExport: false
     }, {
@@ -98,7 +129,7 @@ class TableResult extends Component {
         sort: true,
         filter: textFilter()
     }, {
-        dataField: 'studyInstanceUid',
+        dataField: 'studyInstanceUID',
         hidden: true,
         csvExport: false
     }, {
@@ -107,15 +138,24 @@ class TableResult extends Component {
         formatter: this.retrieveButton,
         csvExport: false
     }, {
-        dataField: 'jobId',
-        hidden: true,
-        csvExport: false
-    }, {
         dataField: 'export',
         text: 'Export',
         formatter: this.exportButton,
         csvExport: false
     }];
+
+      
+      
+    expandRow = {
+        
+        showExpandColumn: true,
+        renderer : (row) => {
+            return(
+                <TableResultSeries rowData={row}></TableResultSeries>
+            )
+        }
+        
+    }
 
 
 
@@ -137,7 +177,7 @@ class TableResult extends Component {
                                     <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
                                     <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                                     <div className="mt-5">
-                                        <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} >
+                                        <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} expandRow={ this.expandRow } >
                                         </BootstrapTable>
                                     </div>
                                 </div>
@@ -159,8 +199,6 @@ class TableResult extends Component {
     exportButton(cell, row, rowIndex, formatExtraData) {
         return <ExportButton rowData={row} />
     }
-
-
 
 }
 

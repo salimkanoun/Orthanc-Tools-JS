@@ -1,10 +1,10 @@
-const Robot_Singleton = require('../model/Robot_Singleton')
-const Robot_Job = require('../model/Robot_Job')
+const RobotSingleton = require('../model/RobotSingleton')
+const RobotJob = require('../model/RobotJob')
 const Orthanc = require('../model/Orthanc')
 
 const getRobotDetails = async function (req, res) {
   const orthanc = new Orthanc()
-  const robotSingleton = new Robot_Singleton(orthanc)
+  const robotSingleton = new RobotSingleton(orthanc)
   const retrieveRobot = robotSingleton.getRobot()
   let data = null
   if (req.params.username !== undefined) {
@@ -19,12 +19,12 @@ const getRobotDetails = async function (req, res) {
 
 const createRobot = async function (req, res) {
   const orthanc = new Orthanc()
-  const robotSingleton = new Robot_Singleton(orthanc)
+  const robotSingleton = new RobotSingleton(orthanc)
   const retrieveRobot = robotSingleton.getRobot()
 
   const body = req.body
   // SK passer Username en variable
-  const robotJob = new Robot_Job(req.session.username, body.projectName)
+  const robotJob = new RobotJob(req.session.username, body.projectName)
 
   body.studyArray.forEach((retrieveQuery) => {
     robotJob.addRetrieveItem('study', retrieveQuery.patientName, retrieveQuery.patientID, retrieveQuery.studyDate, retrieveQuery.modality, retrieveQuery.studyDescription, retrieveQuery.accessionNb, retrieveQuery.aet)

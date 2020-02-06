@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const db = require('../database/models')
 
 class Users {
+
   constructor (username) {
     this.username = username
   }

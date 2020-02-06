@@ -12,9 +12,6 @@ var session = require('express-session')
 var apisRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
 
-// Sequelize DB
-const db = require('./database/models')
-
 var app = express()
 
 // static routes

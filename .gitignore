@@ -1,2 +1,2 @@
-BackEnd/db.development.sqlite
+BackEnd/data/database/db.development.sqlite
 BackEnd/data/log/access.log
