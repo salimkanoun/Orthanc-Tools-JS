@@ -81,6 +81,10 @@ class TableResult extends Component {
         dataField: 'number',
         hidden: true,
         csvExport: false
+    },{
+        dataField: 'level',
+        hidden: true,
+        csvExport: false
     }, {
         dataField: 'answerId',
         hidden: true,
@@ -132,10 +136,6 @@ class TableResult extends Component {
         dataField: 'retrive',
         text: 'Retrieve',
         formatter: this.retrieveButton,
-        csvExport: false
-    }, {
-        dataField: 'jobId',
-        hidden: true,
         csvExport: false
     }, {
         dataField: 'export',

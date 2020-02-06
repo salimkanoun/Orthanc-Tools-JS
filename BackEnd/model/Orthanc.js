@@ -261,6 +261,10 @@ class Orthanc {
 
           answersList.forEach(element => {
 
+            let answerNumber = 0
+
+            const queryLevel = element['0008,0052'].Value
+
             let Modality = '*'
             if (element.hasOwnProperty('0008,0060')) {
               Modality = element['0008,0060'].Value
@@ -287,8 +291,9 @@ class Orthanc {
             }
 
             const originAET = aet
-            const queryAnswserObject = new QuerySerieAnswer(StudyInstanceUID,SeriesInstanceUID,Modality,SeriesDescription,SeriesNumber, originAET )
+            const queryAnswserObject = new QuerySerieAnswer(answerId, answerNumber, queryLevel, StudyInstanceUID,SeriesInstanceUID,Modality,SeriesDescription,SeriesNumber, originAET )
             answersObjects.push(queryAnswserObject)
+            answerNumber++
           })
         } catch (exception) {
           console.log('error' + exception)

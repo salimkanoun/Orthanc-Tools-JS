@@ -7,6 +7,9 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { connect } from 'react-redux'
 import * as actions from '../../../actions/TableResult'
 
+import RetrieveButton from './RetrieveButton'
+import ExportButton from './ExportButton'
+
 
 class TableResultSeries extends Component {
 
@@ -41,6 +44,7 @@ class TableResultSeries extends Component {
 
         console.log(queryAnswers)
         //SK SIMULATION REPONSE
+        /*
         queryAnswers = [{
             studyInstanceUID : studyUID,
             serieInstanceUID : 'seriesUID',
@@ -50,7 +54,7 @@ class TableResultSeries extends Component {
             originAET : aet
 
         }]
-
+        */
         console.log(queryAnswers)
         console.log(this.props)
         this.props.addSeriesDetails(queryAnswers, studyUID)
@@ -66,7 +70,19 @@ class TableResultSeries extends Component {
         dataField: 'number',
         hidden: true,
         csvExport: false
+    },{
+        dataField: 'level',
+        hidden: true,
+        csvExport: false
     }, {
+        dataField: 'answerId',
+        hidden: true,
+        csvExport: false
+    }, {
+        dataField: 'answerNumber',
+        hidden: true,
+        csvExport: false
+    },{
         dataField: 'studyInstanceUID',
         hidden: true,
         csvExport: false
@@ -86,6 +102,20 @@ class TableResultSeries extends Component {
         dataField: 'serieNumber',
         text: 'Serie Number',
         sort: true
+    }, {
+        dataField: 'retrive',
+        text: 'Retrieve',
+        formatter: this.retrieveButton,
+        csvExport: false
+    }, {
+        dataField: 'jobId',
+        hidden: true,
+        csvExport: false
+    }, {
+        dataField: 'export',
+        text: 'Export',
+        formatter: this.exportButton,
+        csvExport: false
     }];
 
     render() {
@@ -101,22 +131,12 @@ class TableResultSeries extends Component {
 
         console.log(currentStudy)
         let seriesDetails = currentStudy[0]['seriesDetails']
+
         console.log(seriesDetails)
-
-        let seriesData = []
-        seriesDetails.forEach( ( serie ) => {
-            seriesData.push( {
-                key : Math.random(),
-                ...serie
-            } )
-
-        })
-
-        console.log(seriesData)
         return (
             <ToolkitProvider
                 keyField="key"
-                data={seriesData}
+                data={seriesDetails}
                 columns={this.columns}
             >{
                     props => (
@@ -127,6 +147,17 @@ class TableResultSeries extends Component {
                 }
             </ToolkitProvider>
         )
+    }
+
+
+    retrieveButton(cell, row, rowIndex, formatExtraData) {
+        //Add Retrieve button for each result with row data in props
+        return <RetrieveButton rowData={row} />
+
+    }
+
+    exportButton(cell, row, rowIndex, formatExtraData) {
+        return <ExportButton rowData={row} />
     }
 
 

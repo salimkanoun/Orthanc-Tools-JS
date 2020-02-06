@@ -1,11 +1,5 @@
-import { RETRIEVE, REMOVE_RESULT, ADD_RESULT_TO_LIST, SET_RETRIVE_STATUS_STUDY, EMPTY_RESULTS, ADD_SERIES_DETAILS } from './actions-types'
+import { REMOVE_RESULT, ADD_RESULT_TO_LIST, SET_RETRIVE_STATUS_STUDY, EMPTY_RESULTS, ADD_SERIES_DETAILS, SET_RETRIEVE_STATUS_SERIES } from './actions-types'
 
-export function retrive (data) {
-  return {
-    type: RETRIEVE,
-    payload: data
-  }
-}
 
 export function removeResult (lineNumber) {
   return {
@@ -14,18 +8,32 @@ export function removeResult (lineNumber) {
   }
 }
 
-export function addResult (resultData) {
+export function addStudyResult (resultData) {
   return {
     type: ADD_RESULT_TO_LIST,
-    payload: resultData
+    payload: {
+      ...resultData
+    }
   }
 }
 
-export function setRetrieveStatus (key, isRetrieved) {
-  return {
-    type: SET_RETRIVE_STATUS_STUDY,
-    payload: { key, isRetrieved }
+export function setRetrieveStatus (row, isRetrieved) {
+  console.log('row data')
+  console.log(row)
+  if (row.level === 'STUDY'){
+    return {
+      type: SET_RETRIVE_STATUS_STUDY,
+      payload: { key : row.key, isRetrieved : isRetrieved }
+    }
+
+  } else if ( row.level === 'SERIES'){
+    return {
+      type: SET_RETRIEVE_STATUS_SERIES,
+      payload: { row : row, isRetrieved : isRetrieved }
+    }
+
   }
+  
 }
 
 export function emptyResultsTable () {

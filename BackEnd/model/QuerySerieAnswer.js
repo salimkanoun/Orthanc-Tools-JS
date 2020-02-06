@@ -1,6 +1,9 @@
 class QuerySerieAnswer {
 
-    constructor (studyUID, seriesUID, modality, seriesDescription, seriesNumber, originAET) {
+    constructor (answerId, answerNumber, level, studyUID, seriesUID, modality, seriesDescription, seriesNumber, originAET) {
+      this.answerId = answerId
+      this.answerNumber = answerNumber
+      this.level = level
       this.studyInstanceUID = studyUID
       this.serieInstanceUID = seriesUID
       this.modality = modality

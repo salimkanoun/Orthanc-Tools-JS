@@ -5,25 +5,18 @@ import * as actions from '../../../actions/TableResult'
 class RetrieveButton extends Component {
   constructor (props) {
     super(props)
-    this.clickListner = this.clickListner.bind(this)
     this.doRetrieve = this.doRetrieve.bind(this)
     this.state = {
       status: 'Idle'
     }
   }
 
-  clickListner () {
-    this.setState({
-      status: 'Pending'
-    })
-  }
-
+  //SK STATUS DOIT ETRE GERER DANS REDUX !
   getClassFromStatus () {
     if (this.state.status === 'Idle') return 'btn btn-info btn-large'
-    else if (this.state.status === 'Running') return 'btn btn-warning btn-large'
+    else if (this.state.status === 'Running' || this.state.status === 'Pending') return 'btn btn-warning btn-large'
     else if (this.state.status === 'Success') return 'btn btn-success btn-large'
-    // SK Checker Error ou Failed dans Orthanc status
-    else if (this.state.status === 'Error') return 'btn btn-error btn-large'
+    else if (this.state.status === 'Failure') return 'btn btn-error btn-large'
   }
 
   render () {
@@ -35,6 +28,11 @@ class RetrieveButton extends Component {
 
   async doRetrieve () {
     const rowData = this.props.rowData
+
+    this.setState({
+      status: 'Pending'
+    })
+
     const postData = {
       queryID: rowData.answerId,
       answerNumber: rowData.answerNumber
@@ -78,7 +76,7 @@ class RetrieveButton extends Component {
       if (currentStatus === 'Success' || currentStatus === 'Failure') {
         clearInterval(intervalChcker)
         if (currentStatus === 'Success') {
-          currentComponent.props.setRetrieveStatus(currentComponent.props.rowData.key, true)
+          currentComponent.props.setRetrieveStatus(currentComponent.props.rowData, true)
         }
       }
     }
