@@ -1,8 +1,8 @@
 Front : 
 - Faire que le select all select tout les non filtre de toutes les pages ? => difficulté....
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
-- probleme du focus quand click sur query
-- Query et Retrieve button pas forcement à connecter
+- retrieve et export button pas forcement à connecter
+    - Transformer export en dowload button pour download vers client
 - Query level series avec expendable rows on click (declanche retrieve des series)
     - Reste a gerer le Retrieve button pour agir sur Study et Serie level
     - Bug selection serie level

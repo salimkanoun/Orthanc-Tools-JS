@@ -9,9 +9,10 @@ class ExportButton extends Component {
   }
 
   render () {
-    return (<div className='col-sm'>
-      <input type='button' className='btn btn-info btn-large' onClick={this.doExport} disabled={!this.props.rowData.isRetrieved} value='Export' />
-            </div>)
+    return (
+      <div className='col-sm'>
+        <input type='button' className='btn btn-info btn-large' onClick={this.doExport} disabled={!this.props.rowData.isRetrieved} value='Export' />
+      </div>)
   }
 
   async doExport () {
