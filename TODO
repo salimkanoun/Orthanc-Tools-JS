@@ -3,19 +3,34 @@ Front :
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
 - retrieve et export button pas forcement à connecter
     - Transformer export en dowload button pour download vers client
+    - Le reserver que pour le unique query ?
+    
 - Query level series avec expendable rows on click (declanche retrieve des series)
-    - Reste a gerer le Retrieve button pour agir sur Study et Serie level
+    - Ne pas charger les series data si deja chargées dans le redux
+    - Reste a gerer le Retrieve / export button pour agir sur Study et Serie level
     - Bug selection serie level
     - Gerer la selection pour le robot...
 
-- Ajout du Robot + interface suivi (bare de progression)
-- Un robot par utilisateur avec un nom de projet (servira de base de nom a l'anon)
-- rapport de Query Retrieve ? et téléchargement des résultats?
+- Interface Suivi robot (pour un utilisateur)
+    -   List de detail requete
+    -   Editer ou effacer requete
+    -   Statut de chaque requete : Idle, Pending, Retrieved, error ? + progress bar
+    -   Si requete faite => 
+            - Vers outil Anon ou vers Export / telechargement via basket ?
+            - Liens vers visualisation dans OHIF
+    -   Export rapport Query / Retrieve
+
+- Interface suivi des robots (tous) pour un administrateur
+    -   Validation d'un robot avant execution (fonction preset plateforme)
+    -   Acces au robot de chaque utilisateur
+
 - Spliter firstName, LastName dans toutes les tables query / results ?
 
-- Anonymisation vers table d'Anonymisation ?
 - Settings AutoQuery : 
     - Filtre sur le niveau Series => Contains et equal sur modality et series description
+        - Plutot lors de creation robot + edition sur interface utilisateur ?
+    - Nombre limit de query si < limit => Retrieve auto
+
 - Declaration des AET ajout stockage dans la base de données ?
 
 + tard  : 
