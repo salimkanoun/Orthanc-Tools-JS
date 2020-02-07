@@ -7,7 +7,7 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "bcrypt": "^3.0.7",
+    "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
