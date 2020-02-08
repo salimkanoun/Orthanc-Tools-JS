@@ -85,7 +85,7 @@ class Orthanc {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
       request.get(currentOrthanc._createOptions('GET', '/modalities?expand'), function (error, response, body) {
-        if (!error && response.statusCode == 200) {
+        if (!error && response.statusCode === 200) {
           const answer = currentOrthanc._answerParser(body)
           const aets = Object.keys(answer)
           const aetsAnswer = []
@@ -115,7 +115,6 @@ class Orthanc {
      * @param {string} type
      */
   putAet (name, aet, ip, port, type) {
-
     let data = []
     if (type === undefined) {
       data = [aet, ip, port]
@@ -125,10 +124,9 @@ class Orthanc {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
       request.put(currentOrthanc._createOptions('PUT', '/modalities/' + name, JSON.stringify(data)), function (error, response, body) {
-        if (!error && response.statusCode == 200) {
+        if (!error && response.statusCode === 200) {
           resolve(true)
         }
-        
       })
     }).catch((error) => { console.log('Error put AET ' + error) })
 
@@ -209,6 +207,8 @@ class Orthanc {
       request.post(currentOrthanc._createOptions('POST', '/modalities/' + aet + '/query', JSON.stringify(currentOrthanc.preparedQuery)), function (error, response, body) {
         const answer = currentOrthanc._answerParser(body)
         resolve(answer)
+      }).catch((error) => {
+        reject(new Error('Error during study query'))
       })
     }).then(function (answer) {
       const answerDetails = currentOrthanc.getAnswerDetails(answer.ID, aet)
@@ -218,27 +218,28 @@ class Orthanc {
     return promise
   }
 
-  //SK A FAIRE
-  querySeries(aet , studyUID){
-
+  // SK A FAIRE
+  querySeries (aet, studyUID) {
     const currentOrthanc = this
 
-    let query = {
-      'Level' : 'Series',
-      'Query' : {
-        'Modality' : '*',
-        'ProtocolName' : '*',
-        'SeriesDescription' : '*',
-        'SeriesInstanceUID' : '*',
-        'StudyInstanceUID' : studyUID
+    const query = {
+      Level: 'Series',
+      Query: {
+        Modality: '*',
+        ProtocolName: '*',
+        SeriesDescription: '*',
+        SeriesInstanceUID: '*',
+        StudyInstanceUID: studyUID
       }
     }
 
     const promise = new Promise((resolve, reject) => {
-      request.post(currentOrthanc._createOptions('POST', '/modalities/' + aet + '/query' , JSON.stringify(query) ), function (error, response, body) {
+      request.post(currentOrthanc._createOptions('POST', '/modalities/' + aet + '/query', JSON.stringify(query)), function (error, response, body) {
         const answer = currentOrthanc._answerParser(body)
         console.log(answer)
         resolve(answer)
+      }).catch((error) => {
+        reject(new Error('Error Querying series'))
       })
     }).then(function (answer) {
       const answerDetails = currentOrthanc.getSeriesAnswerDetails(answer.ID, aet)
@@ -247,11 +248,9 @@ class Orthanc {
     }).catch((error) => { console.log('Error Make Query ' + error) })
 
     return promise
-
   }
 
-  getSeriesAnswerDetails(answerId ,aet){
-
+  getSeriesAnswerDetails (answerId, aet) {
     const currentOrthanc = this
     const promise = new Promise((resolve, reject) => {
       request.get(currentOrthanc._createOptions('GET', '/queries/' + answerId + '/answers?expand'), function (error, response, body) {
@@ -260,7 +259,6 @@ class Orthanc {
           const answersList = currentOrthanc._answerParser(body)
 
           answersList.forEach(element => {
-
             let answerNumber = 0
 
             const queryLevel = element['0008,0052'].Value
@@ -291,7 +289,7 @@ class Orthanc {
             }
 
             const originAET = aet
-            const queryAnswserObject = new QuerySerieAnswer(answerId, answerNumber, queryLevel, StudyInstanceUID,SeriesInstanceUID,Modality,SeriesDescription,SeriesNumber, originAET )
+            const queryAnswserObject = new QuerySerieAnswer(answerId, answerNumber, queryLevel, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET)
             answersObjects.push(queryAnswserObject)
             answerNumber++
           })
@@ -299,11 +297,12 @@ class Orthanc {
           console.log('error' + exception)
         }
         resolve(answersObjects)
+      }).catch((error) => {
+        reject(new Error('Error parsing series queries answer'))
       })
     }).catch((error) => { console.log('Error get answers Details ' + error) })
 
     return promise
-
   }
 
   getAnswerDetails (answerId, aet) {

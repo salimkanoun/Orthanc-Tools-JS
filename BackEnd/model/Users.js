@@ -2,21 +2,20 @@ const bcrypt = require('bcryptjs')
 const db = require('../database/models')
 
 class Users {
-
   constructor (username) {
     this.username = username
   }
 
-  async _getUserEntity(){
+  async _getUserEntity () {
     const user = await db.User.findOne({ where: { username: this.username } })
-    if(user === null) {
+    if (user === null) {
       throw new Error('User Not Found')
     }
     return user
   }
 
   async checkPassword (plainPassword) {
-    let user = await this._getUserEntity()
+    const user = await this._getUserEntity()
     const check = await bcrypt.compare(plainPassword, user.password).catch(() => { return false })
     return check
   }
@@ -30,7 +29,7 @@ class Users {
         password: hash,
         admin: isAdmin
       })
-    }).then(()=>{
+    }).then(() => {
       return true
     }).catch(function (error) {
       throw new Error('User Creation Failed')

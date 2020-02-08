@@ -3,18 +3,15 @@ var Orthanc = require('../model/Orthanc')
 var getResults = async function (req, res) {
   const body = req.body
   var orthancInstance = new Orthanc()
-  let queryAnswer = null; 
+  let queryAnswer = null
 
-  if(body.level === 'Study'){
-
+  if (body.level === 'Study') {
     orthancInstance.buildDicomQuery('Study', body.patientName, body.patientID, body.date, body.modality,
-    body.studyDescription, body.accessionNumber)
+      body.studyDescription, body.accessionNumber)
     queryAnswer = await orthancInstance.makeDicomQuery(body.aet)
-
-  }else if(body.level === 'Serie'){
+  } else if (body.level === 'Serie') {
     console.log(body.aet, body.studyUID)
-    queryAnswer  = await orthancInstance.querySeries(body.aet, body.studyUID)
-
+    queryAnswer = await orthancInstance.querySeries(body.aet, body.studyUID)
   }
 
   res.json(queryAnswer)

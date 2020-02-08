@@ -1,5 +1,4 @@
 class RetrieveItem {
-
   constructor (level, patientName, patientId, studyDate, modality, studyDescription, accessionNb, aet) {
     this.level = level
     this.patientName = patientName

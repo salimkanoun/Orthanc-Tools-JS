@@ -1,5 +1,4 @@
 class QueryAnswer {
-
   constructor (answerId, answerNumber, level, originAET, patientName, patientID, accessionNumber, modalitiesInStudy, studyDescription, studyInstanceUID, studyDate) {
     this.answerId = answerId
     this.answerNumber = answerNumber
@@ -13,7 +12,6 @@ class QueryAnswer {
     this.studyInstanceUID = studyInstanceUID
     this.studyDate = studyDate
   }
-
 }
 
 module.exports = QueryAnswer
