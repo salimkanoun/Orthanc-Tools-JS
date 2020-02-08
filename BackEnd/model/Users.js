@@ -7,13 +7,6 @@ class Users {
     this.username = username
   }
 
-  _getUserEntity2(){
-
-      throw new Error('User Not Found2')
-    
-
-  }
-
   async _getUserEntity(){
     const user = await db.User.findOne({ where: { username: this.username } })
     if(user === null) {
