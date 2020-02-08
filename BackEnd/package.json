@@ -4,7 +4,8 @@
   "private": false,
   "bin": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "jasmine"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -38,6 +39,8 @@
     ]
   },
   "devDependencies": {
+    "jasmine": "^3.5.0",
+    "mocha": "^7.0.1",
     "nodemon": "^2.0.2",
     "standard": "^14.3.1"
   }
