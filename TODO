@@ -39,8 +39,7 @@ Front :
 
 Back :
 - Bug pipe des zip >2GB
-- Nettoyer les API pour etre conforme a la nommenclature Rest
-- Fetch details series des studies
+- Midelware securite acces robot
 - PassportJS pour stateless
 - UnitTests
 
