@@ -7,7 +7,6 @@ export default class RobotStatus extends Component {
     constructor(props){
         super(props)
         this.refreshHandler=this.refreshHandler.bind(this)
-        this.showRobotDetailHandler=this.showRobotDetailHandler.bind(this)
         this.state = {
             rows : []
         }
@@ -36,12 +35,7 @@ export default class RobotStatus extends Component {
     }];
 
     showRobotDetailsButton(cell, row, rowIndex, formatExtraData) {
-        return <input type="button" onClick={() => <Link to='/query' />} className="btn btn-info" value="Show Details" />
-
-    }
-
-    showRobotDetailHandler(){
-        console.log('Click redirect')
+        return <Link className='nav-link btn btn-info' to={'/robot/'+row.username} >Query </Link>
     }
 
 

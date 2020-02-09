@@ -139,16 +139,18 @@ class Orthanc {
      * @param {string} filename
      */
   exportArchiveDicom (orthancIds, filename) {
-    const currentOrthanc = this
-    const promise = new Promise((resolve, reject) => {
-      const inputStream = request.post(currentOrthanc._createOptions('POST', '/tools/create-archive', JSON.stringify(orthancIds)))
-      inputStream.pipe(fs.createWriteStream('./data/export_dicom/' + filename + '.zip'))
 
-      inputStream.on('end', () => {
-        resolve(true)
-      })
-    }).catch((error) => { console.log('Error Create Archive ' + error) })
-    return promise
+    let destination = './data/export_dicom/' + filename + '.zip'
+    let streamWriter = fs.createWriteStream(destination)
+
+    request.post(this._createOptions('POST', '/tools/create-archive', JSON.stringify(orthancIds)))
+        .on('response', function(response) {
+          console.log(response.statusCode) // 200
+          console.log(response.headers['content-type']) // 'image/png'
+        })
+        .pipe(streamWriter)
+        .on('finish', function(){console.log('Writing Done')} );
+ 
   }
 
   /**

@@ -121,7 +121,7 @@ class RetrieveRobot {
       const job = this.robotJobs[usersRobots[i]]
       const retrievedOrthancIds = job.getRetrievedOrthancId()
       console.log(retrievedOrthancIds)
-      await retrieveRobot.orthancObject.exportArchiveDicom(retrievedOrthancIds, job.username + '_' + job.projectName)
+      retrieveRobot.orthancObject.exportArchiveDicom(retrievedOrthancIds, job.username + '_' + job.projectName)
     }
   }
 }

@@ -7,7 +7,8 @@ export default class RobotView extends Component {
         super(props)
         this.refreshHandler=this.refreshHandler.bind(this)
         this.state = {
-            rows : []
+            rows : [],
+            username : this.props.match.params.username
         }
     }
 
@@ -47,7 +48,7 @@ export default class RobotView extends Component {
 
     refreshHandler(){
 
-        fetch("/api/robot/"+this.props.username, {
+        fetch("/api/robot/"+this.state.username, {
         method: "GET",
         headers: {
             'Accept': 'application/json',
@@ -64,9 +65,7 @@ export default class RobotView extends Component {
                 answerData.retrieveList.forEach(robotJob => {
                     state.rows.push({
                         key : Math.random(),
-                        name : robotJob.projectName,
-                        username : robotJob.username,
-                        queriesNb : robotJob.retrieveList.length
+                        ...robotJob
                     })
                     
                 });
@@ -81,7 +80,8 @@ export default class RobotView extends Component {
     render() {
         return (
                 <div className="jumbotron">
-                    <h1> Robot for User : {this.props.username} Project Name : {this.state.projectName} </h1>
+                    <h1> Robot for User : {this.state.username} </h1>
+                    <h1>Project Name : {this.state.projectName} </h1>
                     <BootstrapTable keyField="key" striped={true} data={this.state.rows} columns={this.columns} />
                 </div>
         )
