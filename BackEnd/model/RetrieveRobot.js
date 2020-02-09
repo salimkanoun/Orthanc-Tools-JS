@@ -46,8 +46,8 @@ class RetrieveRobot {
     const responseArray = []
     const currentRobot = this
     Object.keys(this.robotJobs).forEach(function (username, index) {
-      const dataJob = JSON.stringify(currentRobot.getRobotData(username))
-      responseArray.push(JSON.parse(dataJob))
+      const dataJob = currentRobot.getRobotData(username)
+      responseArray.push(dataJob)
     })
 
     return responseArray

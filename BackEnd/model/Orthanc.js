@@ -1,4 +1,4 @@
-const request = require('request')
+const request = require('request-promise-native');
 const fs = require('fs')
 const QueryAnswer = require('./QueryAnswer')
 const QuerySerieAnswer = require('./QuerySerieAnswer')

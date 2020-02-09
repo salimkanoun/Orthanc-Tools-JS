@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
-import { Link } from 'react-router-dom'
 
-export default class RobotStatus extends Component {
+export default class RobotView extends Component {
 
     constructor(props){
         super(props)
         this.refreshHandler=this.refreshHandler.bind(this)
-        this.showRobotDetailHandler=this.showRobotDetailHandler.bind(this)
         this.state = {
             rows : []
         }
@@ -21,33 +19,35 @@ export default class RobotStatus extends Component {
         dataField: 'key',
         hidden: true
     },{
-        dataField: 'name',
-        text : 'Name'
+        dataField: 'level',
+        text : 'level'
     }, {
-        dataField: 'username',
-        text : 'Username'
+        dataField: 'patientName',
+        text : 'Patient Name'
     }, {
-        dataField: 'queriesNb',
-        text : 'Number of Queries'
+        dataField: 'patientId',
+        text : 'Patient ID'
     }, {
-        dataField: 'details',
-        text: 'Show Details',
-        formatter: this.showRobotDetailsButton
+        dataField : 'studyDate',
+        text : 'Study Date'
+    }, {
+        dataField : 'modality',
+        text : 'Modality'
+    }, {
+        dataField : 'studyDescription',
+        text : 'Study Description'
+    }, {
+        dataField : 'accessionNb',
+        text : 'Accession Nb'
+    }, {
+        dataField : 'aet',
+        text : 'AET'
     }];
-
-    showRobotDetailsButton(cell, row, rowIndex, formatExtraData) {
-        return <input type="button" onClick={() => <Link to='/query' />} className="btn btn-info" value="Show Details" />
-
-    }
-
-    showRobotDetailHandler(){
-        console.log('Click redirect')
-    }
 
 
     refreshHandler(){
 
-        fetch("/api/robot", {
+        fetch("/api/robot/"+this.props.username, {
         method: "GET",
         headers: {
             'Accept': 'application/json',
@@ -58,10 +58,10 @@ export default class RobotStatus extends Component {
            .then( (answerData) => {
 
                 let state=this.state
-
+                state.projectName= answerData.projectName
                 state.rows = []
 
-                answerData.forEach(robotJob => {
+                answerData.retrieveList.forEach(robotJob => {
                     state.rows.push({
                         key : Math.random(),
                         name : robotJob.projectName,
@@ -81,8 +81,8 @@ export default class RobotStatus extends Component {
     render() {
         return (
                 <div className="jumbotron">
+                    <h1> Robot for User : {this.props.username} Project Name : {this.state.projectName} </h1>
                     <BootstrapTable keyField="key" striped={true} data={this.state.rows} columns={this.columns} />
-                    <input type="button" className="btn btn-info" value="Refresh" onClick={this.refreshHandler} />
                 </div>
         )
     }
