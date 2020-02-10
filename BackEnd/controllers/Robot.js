@@ -6,15 +6,22 @@ const getRobotDetails = async function (req, res) {
   const orthanc = new Orthanc()
   const robotSingleton = new RobotSingleton(orthanc)
   const retrieveRobot = robotSingleton.getRobot()
-  let data = null
+  let data = []
   if (req.params.username !== undefined) {
     data = retrieveRobot.getRobotData(req.params.username)
-  } else {
+  }else{
     data = retrieveRobot.getAllRobotData()
   }
-
   console.log(data)
   res.json(data)
+}
+
+const deleteRobotJob = async function (req, res){
+  const orthanc = new Orthanc()
+  const robotSingleton = new RobotSingleton(orthanc)
+  const retrieveRobot = robotSingleton.getRobot()
+  retrieveRobot.removeRobotJob(req.params.username)
+  res.end()
 }
 
 const createRobot = async function (req, res) {
@@ -39,4 +46,4 @@ const createRobot = async function (req, res) {
   res.json('Done')
 }
 
-module.exports = { createRobot, getRobotDetails }
+module.exports = { createRobot, getRobotDetails, deleteRobotJob }

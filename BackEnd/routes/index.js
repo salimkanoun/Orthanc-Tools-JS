@@ -1,7 +1,7 @@
 var express = require('express')
 var router = express.Router()
 
-const { getRobotDetails, createRobot } = require('../controllers/Robot')
+const { getRobotDetails, createRobot, deleteRobotJob } = require('../controllers/Robot')
 
 // Handle controller errors
 require('express-async-errors')
@@ -30,6 +30,8 @@ router.post('/export_dicom', authUser, exportController.getResults)
 router.post('/robot', authUser, createRobot)
 
 router.get('/robot/:username', authUser, getRobotDetails)
+
+router.delete('/robot/:username', authUser, deleteRobotJob)
 
 router.get('/robot', authUser, getRobotDetails)
 

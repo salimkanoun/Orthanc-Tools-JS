@@ -26,12 +26,16 @@ Front :
 
 - Spliter firstName, LastName dans toutes les tables query / results ?
 
-- Settings AutoQuery : 
-    - Filtre sur le niveau Series => Contains et equal sur modality et series description
-        - Plutot lors de creation robot + edition sur interface utilisateur ?
-    - Nombre limit de query si < limit => Retrieve auto
+- Settings 
+    - Splitter les "domaines" dans des tabs avec refresh auto (plus de refresh)
+    - AutoQuery : 
+        - Filtre sur le niveau Series => Contains et equal sur modality et series description
+            - Lors de creation robot + edition sur interface utilisateur
+        - Nombre limit de query si < limit => Retrieve auto
 
-- Declaration des AET ajout stockage dans la base de données ?
+- Admin Panel : 
+    - Declaration des AET ajout stockage dans la base de données ?
+    - Echo des AETs
 
 + tard  : 
 - historique des query dans BDD pour relancer une ancienne requete

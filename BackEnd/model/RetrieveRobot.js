@@ -25,6 +25,10 @@ class RetrieveRobot {
     this.robotJobs[robotJob.username] = robotJob
   }
 
+  removeRobotJob (username){
+    delete this.robotJobs[username]
+  }
+
   /**
    * Destination of retrieval for this retrive robot
    * @param {String} aetDestination
@@ -42,12 +46,13 @@ class RetrieveRobot {
     return robotJob.toJSON()
   }
 
+
   getAllRobotData () {
     const responseArray = []
     const currentRobot = this
     Object.keys(this.robotJobs).forEach(function (username, index) {
-      const dataJob = currentRobot.getRobotData(username)
-      responseArray.push(dataJob)
+      const dataJob = JSON.stringify(currentRobot.getRobotData(username))
+      responseArray.push(JSON.parse(dataJob))
     })
 
     return responseArray
