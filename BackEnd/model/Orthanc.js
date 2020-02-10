@@ -1,4 +1,5 @@
 const request = require('request-promise-native');
+const OriginalRequest = require('request');
 const fs = require('fs')
 const QueryAnswer = require('./QueryAnswer')
 const QuerySerieAnswer = require('./QuerySerieAnswer')
@@ -143,7 +144,7 @@ class Orthanc {
     let destination = './data/export_dicom/' + filename + '.zip'
     let streamWriter = fs.createWriteStream(destination)
 
-    request.post(this._createOptions('POST', '/tools/create-archive', JSON.stringify(orthancIds)))
+    OriginalRequest.post(this._createOptions('POST', '/tools/create-archive', JSON.stringify(orthancIds)))
         .on('response', function(response) {
           console.log(response.statusCode) // 200
           console.log(response.headers['content-type']) // 'image/png'
