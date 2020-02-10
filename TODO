@@ -42,8 +42,8 @@ Front :
 - Manual Query avec le formulaire manuel avec un duplicat de la table results
 
 Back :
-- Securiser une seule retrieve
-- Bug pipe des zip >2GB
+- Securiser une seule retrieve par query lors execution du robot
+- Bug pipe des zip >2GB => Devrait etre OK
 - Midelware securite acces robot
 - PassportJS pour stateless
 - UnitTests

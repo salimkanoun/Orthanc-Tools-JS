@@ -30,7 +30,6 @@ const createRobot = async function (req, res) {
   const retrieveRobot = robotSingleton.getRobot()
 
   const body = req.body
-  // SK passer Username en variable
   const robotJob = new RobotJob(req.session.username, body.projectName)
 
   body.studyArray.forEach((retrieveQuery) => {
@@ -39,8 +38,9 @@ const createRobot = async function (req, res) {
 
   retrieveRobot.addRobotJob(robotJob)
   const orthancSystem = await orthanc.getSystem()
+  console.log('Orthanc System')
   console.log(orthancSystem)
-  retrieveRobot.setDestination(orthancSystem.DicomAet)
+  retrieveRobot.setDestination(orthancSystem['DicomAet'])
   retrieveRobot.scheduleRetrieve()
 
   res.json('Done')

@@ -34,6 +34,7 @@ class RetrieveRobot {
    * @param {String} aetDestination
    */
   setDestination (aetDestination) {
+    console.log('set destination '+ aetDestination)
     this.aetDestination = aetDestination
   }
 
