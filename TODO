@@ -42,6 +42,7 @@ Front :
 - Manual Query avec le formulaire manuel avec un duplicat de la table results
 
 Back :
+- Securiser une seule retrieve
 - Bug pipe des zip >2GB
 - Midelware securite acces robot
 - PassportJS pour stateless
