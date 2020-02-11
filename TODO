@@ -47,7 +47,7 @@ Back :
 - Midelware securite acces robot
 - PassportJS pour stateless
 - UnitTests
-
+- Envisager de switcher de Request à Got (damn...)
 
 Tutos : 
 
