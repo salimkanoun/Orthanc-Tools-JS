@@ -1,7 +1,7 @@
 image: node:latest
 
 before_script:
-    - cd /BackEnd
+    - cd ./BackEnd
 
 
 stages:
