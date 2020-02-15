@@ -1,12 +1,16 @@
 image: node:latest
 
+before_script:
+    - cd /BackEnd
+
+
 stages:
   - build
   - test
 
 cache:
   paths:
-    - BackEnd/node_modules/
+    - node_modules/
 
 install_dependencies:
   stage: build
@@ -14,7 +18,7 @@ install_dependencies:
     - npm install
   artifacts:
     paths:
-      - BackEnd/node_modules/
+      - node_modules/
 
 testing_testing:
   stage: test
