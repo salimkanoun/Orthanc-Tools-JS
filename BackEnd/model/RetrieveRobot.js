@@ -25,11 +25,16 @@ class RetrieveRobot {
     this.robotJobs[robotJob.username] = robotJob
   }
 
+  removeRobotJob (username){
+    delete this.robotJobs[username]
+  }
+
   /**
    * Destination of retrieval for this retrive robot
    * @param {String} aetDestination
    */
   setDestination (aetDestination) {
+    console.log('set destination '+ aetDestination)
     this.aetDestination = aetDestination
   }
 
@@ -41,6 +46,7 @@ class RetrieveRobot {
     const robotJob = this.robotJobs[username]
     return robotJob.toJSON()
   }
+
 
   getAllRobotData () {
     const responseArray = []
@@ -121,7 +127,7 @@ class RetrieveRobot {
       const job = this.robotJobs[usersRobots[i]]
       const retrievedOrthancIds = job.getRetrievedOrthancId()
       console.log(retrievedOrthancIds)
-      await retrieveRobot.orthancObject.exportArchiveDicom(retrievedOrthancIds, job.username + '_' + job.projectName)
+      retrieveRobot.orthancObject.exportArchiveDicom(retrievedOrthancIds, job.username + '_' + job.projectName)
     }
   }
 }

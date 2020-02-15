@@ -7,8 +7,22 @@ class Users {
     this.username = username
   }
 
+  async _getUserEntity () {
+    if(this.user !== undefined){
+      return this.user
+    }else{
+      let user = await db.User.findOne({ where: { username: this.username } })
+      if (user === null) {
+        throw new Error('User Not Found')
+      }
+      this.user=user
+      return this.user 
+    }
+
+  }
+
   async checkPassword (plainPassword) {
-    const user = await db.User.findOne({ where: { username: this.username } })
+    const user = await this._getUserEntity()
     const check = await bcrypt.compare(plainPassword, user.password).catch(() => { return false })
     return check
   }
@@ -22,8 +36,10 @@ class Users {
         password: hash,
         admin: isAdmin
       })
+    }).then(() => {
+      return true
     }).catch(function (error) {
-      console.log('user create Failed ' + error)
+      throw new Error('User Creation Failed')
     })
 
     return promise

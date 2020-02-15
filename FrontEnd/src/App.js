@@ -1,6 +1,5 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
   Link
@@ -12,47 +11,44 @@ import Helmet from 'react-helmet'
 import Query from './components/Query/Connected_Component/Query'
 import Authentication from './components/Authentication'
 import AdminPanel from './components/Admin/AdminPanel'
+import RobotView from './components/Query/Component/RobotView'
 
 function App () {
   return (
-    <>
+    <Fragment>
       <Helmet>
         <meta charSet='utf-8' />
         <title>Orthanc Tools</title>
       </Helmet>
-      <Router>
+      <Fragment>
         <div className='navbar navbar-expand-lg navbar-light bg-light mb-5'>
-          <ul className='navbar-nav mr-auto'>
+            <ul className='navbar-nav mr-auto'>
             <li className='nav-item'>
-              <Link className='nav-link' to='/'>Authentication</Link>
+                <Link className='nav-link' to='/'>Authentication</Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/query'>Query</Link>
+                <Link className='nav-link' to='/query'>Query</Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/options'>Options</Link>
+                <Link className='nav-link' to='/options'>Options</Link>
             </li>
-          </ul>
-
-          <hr />
+            </ul>
+            <hr />
         </div>
-        <div>
+      </Fragment>
+        <div >
           <Switch>
-            <Route exact path='/'>
-              <Authentication />
-            </Route>
-            <Route path='/query'>
-              <Query />
-            </Route>
-            <Route path='/options'>
-              <AdminPanel />
-            </Route>
+              <Route exact path='/' component={Authentication}>
+              </Route>
+              <Route exact path='/query' component = {Query}>
+              </Route>
+              <Route exact path='/options' component = {AdminPanel}>
+              </Route>
+              <Route exact path='/robot/:username' component = {RobotView}>
+              </Route>
           </Switch>
         </div>
-      </Router>
-
-    </>
-
+    </Fragment>
   )
 }
 

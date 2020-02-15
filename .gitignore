@@ -1,2 +1,3 @@
 BackEnd/data/database/db.development.sqlite
-BackEnd/data/log/access.log
+BackEnd/data/log/*
+!BackEnd/data/README

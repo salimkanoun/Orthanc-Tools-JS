@@ -1,0 +1,24 @@
+image: node:latest
+
+before_script:
+    - cd ./BackEnd
+
+stages:
+  - build
+  - test
+
+cache:
+  paths:
+    - BackEnd/node_modules/
+
+install_dependencies:
+  stage: build
+  script:
+    - npm install
+  artifacts:
+    paths:
+      - node_modules/
+
+testing_testing:
+  stage: test
+  script: npm test

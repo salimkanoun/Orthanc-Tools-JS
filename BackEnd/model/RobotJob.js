@@ -33,10 +33,13 @@ class RobotJob {
   }
 
   toJSON () {
+
     return {
       username: this.username,
       projectName: this.projectName,
-      retrieveList: this.retrieveList
+      retrieveList: this.retrieveList.map( (retrieveItem) =>{
+        return retrieveItem.toJSON()
+      })
 
     }
   }
