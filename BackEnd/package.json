@@ -4,8 +4,10 @@
   "private": false,
   "bin": "app.js",
   "scripts": {
+    "db:migrate": "./node_modules/.bin/sequelize db:migrate",
     "start": "node app.js",
-    "test": "jasmine"
+    "pretest": "APP_ENV=test npm run db:migrate",
+    "test": "./node_modules/.bin/jasmine"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
