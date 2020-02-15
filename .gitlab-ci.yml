@@ -9,7 +9,7 @@ stages:
 
 cache:
   paths:
-    - ./BackEnd/node_modules/
+    - BackEnd/node_modules/
 
 install_dependencies:
   stage: build
