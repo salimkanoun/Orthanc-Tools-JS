@@ -3,14 +3,13 @@ image: node:latest
 before_script:
     - cd ./BackEnd
 
-
 stages:
   - build
   - test
 
 cache:
   paths:
-    - node_modules/
+    - ./BackEnd/node_modules/
 
 install_dependencies:
   stage: build
