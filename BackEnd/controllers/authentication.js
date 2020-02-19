@@ -8,13 +8,12 @@ var getResults = async function (req, res) {
     if (checkPassword) {
       req.session.username = body.username
       res.json(true)
-    }else{
-      res.send(401, 'Wrong Credential');
+    } else {
+      res.send(401, 'Wrong Credential')
     }
-  } catch (Error){
-    res.send(401, 'Unknown user');
+  } catch (Error) {
+    res.send(401, 'Unknown user')
   }
-  
 }
 
 module.exports = { getResults }

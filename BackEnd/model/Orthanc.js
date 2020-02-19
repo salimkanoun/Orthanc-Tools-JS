@@ -1,5 +1,5 @@
-const request = require('request-promise-native');
-const OriginalRequest = require('request');
+const request = require('request-promise-native')
+const OriginalRequest = require('request')
 const fs = require('fs')
 const QueryAnswer = require('./QueryAnswer')
 const QuerySerieAnswer = require('./QuerySerieAnswer')
@@ -9,7 +9,6 @@ const TagAnon = require('./TagAnon')
  * Orthanc object to communications with orthanc server
  */
 class Orthanc {
-
   constructor () {
     this.address = process.env.ORTHANC_HOST
     this.port = process.env.ORTHANC_PORT
@@ -72,11 +71,11 @@ class Orthanc {
      */
   async getSystem () {
     const self = this
-    let requestPromise = request.get(self._createOptions('GET', '/system')).then(function (body) {
-        return self._answerParser(body)
-      }).catch((error) => { console.log('Error Get System ' + error) })
-  
-    return requestPromise 
+    const requestPromise = request.get(self._createOptions('GET', '/system')).then(function (body) {
+      return self._answerParser(body)
+    }).catch((error) => { console.log('Error Get System ' + error) })
+
+    return requestPromise
   }
 
   /**
@@ -84,25 +83,24 @@ class Orthanc {
      */
   getAvailableAet () {
     const self = this
-    let requestPromise = request.get(self._createOptions('GET', '/modalities?expand')).then(function (body) {
-        const answer = self._answerParser(body)
-        const aets = Object.keys(answer)
-        const aetsAnswer = []
-        aets.forEach((aetName) => {
-          const aetDetails = answer[aetName]
-          aetsAnswer.push({
-            name: aetName,
-            aetName: aetDetails.AET,
-            ip: aetDetails.Host,
-            port: aetDetails.Port,
-            manufacturer: aetDetails.Manufacturer
-          })
+    const requestPromise = request.get(self._createOptions('GET', '/modalities?expand')).then(function (body) {
+      const answer = self._answerParser(body)
+      const aets = Object.keys(answer)
+      const aetsAnswer = []
+      aets.forEach((aetName) => {
+        const aetDetails = answer[aetName]
+        aetsAnswer.push({
+          name: aetName,
+          aetName: aetDetails.AET,
+          ip: aetDetails.Host,
+          port: aetDetails.Port,
+          manufacturer: aetDetails.Manufacturer
         })
-        return(aetsAnswer)
-        
-      }).catch((error) => { console.log('Error get Aets ' + error) })
+      })
+      return (aetsAnswer)
+    }).catch((error) => { console.log('Error get Aets ' + error) })
 
-      return requestPromise
+    return requestPromise
   }
 
   /**
@@ -122,9 +120,9 @@ class Orthanc {
     }
     const self = this
 
-    let requestPromise = request.put( self._createOptions('PUT', '/modalities/' + name, JSON.stringify(data)) ).then(function (body) {
-          return true
-      }).catch((error) => { console.log('Error put AET ' + error) })
+    const requestPromise = request.put(self._createOptions('PUT', '/modalities/' + name, JSON.stringify(data))).then(function (body) {
+      return true
+    }).catch((error) => { console.log('Error put AET ' + error) })
 
     return requestPromise
   }
@@ -135,17 +133,15 @@ class Orthanc {
      * @param {string} filename
      */
   exportArchiveDicom (orthancIds, filename) {
-
-    let destination = './data/export_dicom/' + filename + '.zip'
-    let streamWriter = fs.createWriteStream(destination)
-    //Can't use request promise at the pipe is unsafe, use the stantard request library
+    const destination = './data/export_dicom/' + filename + '.zip'
+    const streamWriter = fs.createWriteStream(destination)
+    // Can't use request promise at the pipe is unsafe, use the stantard request library
     OriginalRequest.post(this._createOptions('POST', '/tools/create-archive', JSON.stringify(orthancIds)))
-        .on('response', function(response) {
-          console.log(response.statusCode + 'Writing started') // 200
-        })
-        .pipe(streamWriter)
-        .on('finish', function(){console.log('Writing Done')} );
- 
+      .on('response', function (response) {
+        console.log(response.statusCode + 'Writing started') // 200
+      })
+      .pipe(streamWriter)
+      .on('finish', function () { console.log('Writing Done') })
   }
 
   /**
@@ -199,9 +195,9 @@ class Orthanc {
      */
   makeDicomQuery (aet) {
     const self = this
-    let queryPromise = request.post( self._createOptions('POST', '/modalities/' + aet + '/query', JSON.stringify(self.preparedQuery)) ).then(function (body) {
-        const answer = self._answerParser(body)
-        return answer
+    const queryPromise = request.post(self._createOptions('POST', '/modalities/' + aet + '/query', JSON.stringify(self.preparedQuery))).then(function (body) {
+      const answer = self._answerParser(body)
+      return answer
     }).then(function (answer) {
       const answerDetails = self.getAnswerDetails(answer.ID, aet)
       return answerDetails
@@ -224,15 +220,15 @@ class Orthanc {
       }
     }
 
-    let requestAnswer = request.post(currentOrthanc._createOptions('POST', '/modalities/' + aet + '/query', JSON.stringify(query))).then(function (body) {
-        const answer = currentOrthanc._answerParser(body)
-        return answer
-      }).then(function (answer) {
-        const answerDetails = currentOrthanc.getSeriesAnswerDetails(answer.ID, aet)
-        return answerDetails
-      }).catch((error) => {
-        return new Error('Error Querying series' + error)
-      })
+    const requestAnswer = request.post(currentOrthanc._createOptions('POST', '/modalities/' + aet + '/query', JSON.stringify(query))).then(function (body) {
+      const answer = currentOrthanc._answerParser(body)
+      return answer
+    }).then(function (answer) {
+      const answerDetails = currentOrthanc.getSeriesAnswerDetails(answer.ID, aet)
+      return answerDetails
+    }).catch((error) => {
+      return new Error('Error Querying series' + error)
+    })
 
     return requestAnswer
   }
@@ -240,50 +236,50 @@ class Orthanc {
   getSeriesAnswerDetails (answerId, aet) {
     const self = this
 
-    let promiseRequest = request.get(self._createOptions('GET', '/queries/' + answerId + '/answers?expand')).then(function (body) {
-        const answersObjects = []
-        try {
-          const answersList = self._answerParser(body)
+    const promiseRequest = request.get(self._createOptions('GET', '/queries/' + answerId + '/answers?expand')).then(function (body) {
+      const answersObjects = []
+      try {
+        const answersList = self._answerParser(body)
 
-          answersList.forEach(element => {
-            let answerNumber = 0
+        answersList.forEach(element => {
+          let answerNumber = 0
 
-            const queryLevel = element['0008,0052'].Value
+          const queryLevel = element['0008,0052'].Value
 
-            let Modality = '*'
-            if (element.hasOwnProperty('0008,0060')) {
-              Modality = element['0008,0060'].Value
-            }
+          let Modality = '*'
+          if (element.hasOwnProperty('0008,0060')) {
+            Modality = element['0008,0060'].Value
+          }
 
-            let SeriesDescription = '*'
-            if (element.hasOwnProperty('0008,103e')) {
-              SeriesDescription = element['0008,103e'].Value
-            }
+          let SeriesDescription = '*'
+          if (element.hasOwnProperty('0008,103e')) {
+            SeriesDescription = element['0008,103e'].Value
+          }
 
-            let StudyInstanceUID = '*'
-            if (element.hasOwnProperty('0020,000d')) {
-              StudyInstanceUID = element['0020,000d'].Value
-            }
+          let StudyInstanceUID = '*'
+          if (element.hasOwnProperty('0020,000d')) {
+            StudyInstanceUID = element['0020,000d'].Value
+          }
 
-            let SeriesInstanceUID = '*'
-            if (element.hasOwnProperty('0020,000e')) {
-              SeriesInstanceUID = element['0020,000e'].Value
-            }
+          let SeriesInstanceUID = '*'
+          if (element.hasOwnProperty('0020,000e')) {
+            SeriesInstanceUID = element['0020,000e'].Value
+          }
 
-            let SeriesNumber = 0
-            if (element.hasOwnProperty('0020,0011')) {
-              SeriesNumber = element['0020,0011'].Value
-            }
+          let SeriesNumber = 0
+          if (element.hasOwnProperty('0020,0011')) {
+            SeriesNumber = element['0020,0011'].Value
+          }
 
-            const originAET = aet
-            const queryAnswserObject = new QuerySerieAnswer(answerId, answerNumber, queryLevel, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET)
-            answersObjects.push(queryAnswserObject)
-            answerNumber++
-          })
-        } catch (exception) {
-          console.log('error' + exception)
-        }
-        return answersObjects
+          const originAET = aet
+          const queryAnswserObject = new QuerySerieAnswer(answerId, answerNumber, queryLevel, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET)
+          answersObjects.push(queryAnswserObject)
+          answerNumber++
+        })
+      } catch (exception) {
+        console.log('error' + exception)
+      }
+      return answersObjects
     }).catch((error) => { console.log('Error get answers series Details ' + error) })
 
     return promiseRequest
@@ -291,60 +287,60 @@ class Orthanc {
 
   getAnswerDetails (answerId, aet) {
     const self = this
-    let queryPromise = request.get(self._createOptions('GET', '/queries/' + answerId + '/answers?expand')).then( function (body) {
-        const answersObjects = []
-        try {
-          const answersList = self._answerParser(body)
-          let answerNumber = 0
+    const queryPromise = request.get(self._createOptions('GET', '/queries/' + answerId + '/answers?expand')).then(function (body) {
+      const answersObjects = []
+      try {
+        const answersList = self._answerParser(body)
+        let answerNumber = 0
 
-          answersList.forEach(element => {
-            const queryLevel = element['0008,0052'].Value
+        answersList.forEach(element => {
+          const queryLevel = element['0008,0052'].Value
 
-            let accessionNb = '*'
-            if (element.hasOwnProperty('0008,0050')) {
-              accessionNb = element['0008,0050'].Value
-            }
+          let accessionNb = '*'
+          if (element.hasOwnProperty('0008,0050')) {
+            accessionNb = element['0008,0050'].Value
+          }
 
-            let studyDate = '*'
-            if (element.hasOwnProperty('0008,0020')) {
-              studyDate = element['0008,0020'].Value
-            }
+          let studyDate = '*'
+          if (element.hasOwnProperty('0008,0020')) {
+            studyDate = element['0008,0020'].Value
+          }
 
-            let studyDescription = '*'
-            if (element.hasOwnProperty('0008,1030')) {
-              studyDescription = element['0008,1030'].Value
-            }
+          let studyDescription = '*'
+          if (element.hasOwnProperty('0008,1030')) {
+            studyDescription = element['0008,1030'].Value
+          }
 
-            let patientName = '*'
-            if (element.hasOwnProperty('0010,0010')) {
-              patientName = element['0010,0010'].Value
-            }
+          let patientName = '*'
+          if (element.hasOwnProperty('0010,0010')) {
+            patientName = element['0010,0010'].Value
+          }
 
-            let patientID = '*'
-            if (element.hasOwnProperty('0010,0020')) {
-              patientID = element['0010,0020'].Value
-            }
+          let patientID = '*'
+          if (element.hasOwnProperty('0010,0020')) {
+            patientID = element['0010,0020'].Value
+          }
 
-            let studyUID = '*'
-            if (element.hasOwnProperty('0020,000d')) {
-              studyUID = element['0020,000d'].Value
-            }
+          let studyUID = '*'
+          if (element.hasOwnProperty('0020,000d')) {
+            studyUID = element['0020,000d'].Value
+          }
 
-            let modalitiesInStudy = '*'
-            // Modalities in studies not always present
-            if (element.hasOwnProperty('0008,0061')) {
-              modalitiesInStudy = element['0008,0061'].Value
-            }
-            const origineAET = aet
-            const queryAnswserObject = new QueryAnswer(answerId, answerNumber, queryLevel, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate)
-            answersObjects.push(queryAnswserObject)
-            answerNumber++
-          })
-        } catch (exception) {
-          console.log('error' + exception)
-        }
-        return answersObjects
-      }).catch((error) => { console.log('Error get answers Details ' + error) })
+          let modalitiesInStudy = '*'
+          // Modalities in studies not always present
+          if (element.hasOwnProperty('0008,0061')) {
+            modalitiesInStudy = element['0008,0061'].Value
+          }
+          const origineAET = aet
+          const queryAnswserObject = new QueryAnswer(answerId, answerNumber, queryLevel, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate)
+          answersObjects.push(queryAnswserObject)
+          answerNumber++
+        })
+      } catch (exception) {
+        console.log('error' + exception)
+      }
+      return answersObjects
+    }).catch((error) => { console.log('Error get answers Details ' + error) })
 
     return queryPromise
   }
@@ -362,34 +358,34 @@ class Orthanc {
       TargetAet: aet
     }
 
-    let requestPromise = request.post(self._createOptions('POST', '/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', JSON.stringify(postData)) ).then(function (body) {
+    const requestPromise = request.post(self._createOptions('POST', '/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', JSON.stringify(postData))).then(function (body) {
       return (self._answerParser(body))
     }).catch((error) => { console.log('Error make retrieve ' + error) })
-    
+
     return requestPromise
   }
 
   getJobData (jobUid) {
     const self = this
-    let requestPromise = request.get( self._createOptions('GET', '/jobs/' + jobUid) ).then(function (body) {
-        const answer = self._answerParser(body)
-        const queryDetails = answer.Content.Query
-        const remoteAET = queryDetails.RemoteAet
-        const answerObject = []
-        try {
-          queryDetails.forEach(queryData => {
-            const retrieveDetails = {
-              accessionNb: queryData['0008,0050'],
-              level: queryData['0008,0052'],
-              patientID: queryData['0010,0020'],
-              studyUID: queryData['0020,000d'],
-              remoteAet: remoteAET
-            }
-            answerObject.push(retrieveDetails)
-          })
-        } catch (exception) {};
-        return answer
-      }).catch((error) => { console.log('Error get job Details ' + error) })
+    const requestPromise = request.get(self._createOptions('GET', '/jobs/' + jobUid)).then(function (body) {
+      const answer = self._answerParser(body)
+      const queryDetails = answer.Content.Query
+      const remoteAET = queryDetails.RemoteAet
+      const answerObject = []
+      try {
+        queryDetails.forEach(queryData => {
+          const retrieveDetails = {
+            accessionNb: queryData['0008,0050'],
+            level: queryData['0008,0052'],
+            patientID: queryData['0010,0020'],
+            studyUID: queryData['0020,000d'],
+            remoteAet: remoteAET
+          }
+          answerObject.push(retrieveDetails)
+        })
+      } catch (exception) {};
+      return answer
+    }).catch((error) => { console.log('Error get job Details ' + error) })
 
     return requestPromise
   }
@@ -422,10 +418,10 @@ class Orthanc {
       Query: queryDetails
     }
 
-    let promiseRequest = request.post(currentOrthanc._createOptions('POST', '/tools/find', JSON.stringify(queryParameter))).then(function (body) {
-        const answer = currentOrthanc._answerParser(body)
-        return answer
-      }).catch((error) => { console.log('Error find in Orthanc ' + error) })
+    const promiseRequest = request.post(currentOrthanc._createOptions('POST', '/tools/find', JSON.stringify(queryParameter))).then(function (body) {
+      const answer = currentOrthanc._answerParser(body)
+      return answer
+    }).catch((error) => { console.log('Error find in Orthanc ' + error) })
 
     return promiseRequest
   }
@@ -444,10 +440,10 @@ class Orthanc {
       }
     }
 
-    let requestPromise = request.post(self._createOptions('POST', '/tools/find', JSON.stringify(queryParameter)) ).then(function (body) {
-        const answer = self._answerParser(body)
-        return answer
-      }).catch((error) => { console.log('Error find In Orthanc ' + error) })
+    const requestPromise = request.post(self._createOptions('POST', '/tools/find', JSON.stringify(queryParameter))).then(function (body) {
+      const answer = self._answerParser(body)
+      return answer
+    }).catch((error) => { console.log('Error find In Orthanc ' + error) })
 
     return requestPromise
   }
@@ -459,10 +455,10 @@ class Orthanc {
      */
   getOrthancDetails (level, orthancID) {
     const self = this
-    let requestPromise = request.get(self._createOptions('GET', '/' + level + '/' + orthancID)).then(function (body) {
-        const answer = self._answerParser(body)
-        return answer
-      }).catch( (error) => { console.log('Error get Orthanc level details ' + error) })
+    const requestPromise = request.get(self._createOptions('GET', '/' + level + '/' + orthancID)).then(function (body) {
+      const answer = self._answerParser(body)
+      return answer
+    }).catch((error) => { console.log('Error get Orthanc level details ' + error) })
 
     return requestPromise
   }
@@ -474,8 +470,8 @@ class Orthanc {
      */
   deleteFromOrhtanc (level, orthancID) {
     const self = this
-    let requestPromise = request.delete(self._createOptions('DELETE', '/' + level + '/' + orthancID))
-      .catch( (error) => { console.log('Error delete from Orthanc ' + error) } )
+    const requestPromise = request.delete(self._createOptions('DELETE', '/' + level + '/' + orthancID))
+      .catch((error) => { console.log('Error delete from Orthanc ' + error) })
     return requestPromise
   }
 
@@ -499,7 +495,6 @@ class Orthanc {
       tagObjectArray.push(new TagAnon('0010,0030', TagAnon.replace, '19000101')) // BirthDay
       tagObjectArray.push(new TagAnon('0008,1030', TagAnon.replace, newStudyDescription)) // studyDescription
       tagObjectArray.push(new TagAnon('0008,103E', TagAnon.keep)) // series Description
-
     } else if (profile === 'Full') {
       date = TagAnon.clear
       body = TagAnon.clear
@@ -507,7 +502,6 @@ class Orthanc {
       tagObjectArray.push(new TagAnon('0010,0030', TagAnon.replace, '19000101')) // BirthDay
       tagObjectArray.push(new TagAnon('0008,1030', TagAnon.clear)) // studyDescription
       tagObjectArray.push(new TagAnon('0008,103E', TagAnon.clear)) // series Description
-
     }
 
     // List tags releted to Date
@@ -581,10 +575,10 @@ class Orthanc {
 
   makeAnon (level, orthancID, profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription) {
     const self = this
-    
-    let requestPromise = request.post(self._createOptions('POST', '/' + level + '/' + orthancID + '/anonymize', self.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription))).then(function (body) {
-        console.log(body)
-      }).catch((error) => { console.log('Error make anon ' + error) })
+
+    const requestPromise = request.post(self._createOptions('POST', '/' + level + '/' + orthancID + '/anonymize', self.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription))).then(function (body) {
+      console.log(body)
+    }).catch((error) => { console.log('Error make anon ' + error) })
 
     return requestPromise
   }

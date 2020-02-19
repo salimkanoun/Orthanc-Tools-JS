@@ -1,5 +1,4 @@
 const schedule = require('node-schedule')
-const RobotJob = require('./RobotJob')
 const Options = require('./Options')
 
 class RetrieveRobot {
@@ -25,7 +24,7 @@ class RetrieveRobot {
     this.robotJobs[robotJob.username] = robotJob
   }
 
-  removeRobotJob (username){
+  removeRobotJob (username) {
     delete this.robotJobs[username]
   }
 
@@ -34,7 +33,7 @@ class RetrieveRobot {
    * @param {String} aetDestination
    */
   setDestination (aetDestination) {
-    console.log('set destination '+ aetDestination)
+    console.log('set destination ' + aetDestination)
     this.aetDestination = aetDestination
   }
 
@@ -46,7 +45,6 @@ class RetrieveRobot {
     const robotJob = this.robotJobs[username]
     return robotJob.toJSON()
   }
-
 
   getAllRobotData () {
     const responseArray = []
