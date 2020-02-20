@@ -30,6 +30,12 @@ describe('Testing User Data', () => {
     expect(checkPassword).toBe(true)
   })
 
+  it('should report user admin status', async () => {
+    const userObject = new User('TestUser')
+    expect(await userObject.isAdmin()).toBe(false)
+
+  })
+
   it('should delete user', async () => {
     const userObject = new User('TestUser')
     const userEntity = await userObject._getUserEntity()

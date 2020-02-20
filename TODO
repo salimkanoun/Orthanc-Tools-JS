@@ -43,10 +43,8 @@ Front :
 
 Back :
 - Securiser une seule retrieve par query lors execution du robot
-- Bug pipe des zip >2GB => Devrait etre OK
-- Midelware securite acces robot
+- Midelware securite acces robot => Reste a securiser les route pour lire le robot en fonction du role
 - PassportJS pour stateless
-- UnitTests
 - Envisager de switcher de Request à Got (damn...)
 
 Tutos : 

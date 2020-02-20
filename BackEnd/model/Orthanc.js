@@ -127,6 +127,16 @@ class Orthanc {
     return requestPromise
   }
 
+  echoAet(name){
+    const self = this
+    const requestPromise = request.post(self._createOptions('POST', '/modalities/' + name + '/echo', JSON.stringify({}))).then(function (body) {
+      return true
+    }).catch((error) => { console.log('Error put AET ' + error); return false })
+
+    return requestPromise
+
+  }
+
   /**
      * Export an orthanc ressource to Export folder in hierachical ZIP
      * @param {array} orthancIds

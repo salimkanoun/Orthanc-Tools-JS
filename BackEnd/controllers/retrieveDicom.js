@@ -1,6 +1,6 @@
 var Orthanc = require('../model/Orthanc')
 
-var getResults = async function (req, res) {
+var postRetrieve = async function (req, res) {
   const body = req.body
   var orthancInstance = new Orthanc()
   const systemInfo = await orthancInstance.getSystem()
@@ -8,4 +8,4 @@ var getResults = async function (req, res) {
   res.json(jobInfo.ID)
 }
 
-module.exports = { getResults }
+module.exports = { postRetrieve }

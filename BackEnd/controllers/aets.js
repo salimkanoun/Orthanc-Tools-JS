@@ -1,17 +1,21 @@
 var Orthanc = require('../model/Orthanc')
-
 var orthancInstance = new Orthanc()
 
-var getResults = async function (req, res) {
-  if (req.method === 'GET') {
+var getAets = async function (req, res) {
     const aets = await orthancInstance.getAvailableAet()
     res.json(aets)
-  } else if (req.method === 'POST') {
-    const body = req.body
-
-    await orthancInstance.putAet(body.name, body.aetName, body.ip, parseInt(body.port), body.manufacturer)
-    res.json(true)
-  }
 }
 
-module.exports = { getResults }
+var changeAets = async function (req, res) {
+  const body = req.body
+  await orthancInstance.putAet(body.name, body.aetName, body.ip, parseInt(body.port), body.manufacturer)
+  res.json(true)
+
+}
+
+var echoAets = async function (req, res) {
+  let answer = await orthancInstance.echoAet(req.params.name)
+  res.json(answer) 
+}
+
+module.exports = { getAets, changeAets, echoAets }

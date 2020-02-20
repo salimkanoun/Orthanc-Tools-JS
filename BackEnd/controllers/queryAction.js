@@ -1,6 +1,6 @@
 var Orthanc = require('../model/Orthanc')
 
-var getResults = async function (req, res) {
+var postQuery = async function (req, res) {
   const body = req.body
   var orthancInstance = new Orthanc()
   let queryAnswer = null
@@ -16,4 +16,4 @@ var getResults = async function (req, res) {
   res.json(queryAnswer)
 }
 
-module.exports = { getResults }
+module.exports = { postQuery }

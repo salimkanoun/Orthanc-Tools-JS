@@ -1,10 +1,9 @@
 var Orthanc = require('../model/Orthanc')
 
-var getResults = async function (req, res) {
-  const body = req.body
+var getJobData = async function (req, res) {
   var orthancInstance = new Orthanc()
-  const jobData = await orthancInstance.getJobData(body.jobUid)
+  const jobData = await orthancInstance.getJobData(req.params.id)
   res.json(jobData)
 }
 
-module.exports = { getResults }
+module.exports = { getJobData }

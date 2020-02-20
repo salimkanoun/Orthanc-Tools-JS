@@ -1,6 +1,6 @@
 var Users = require('../model/Users')
 
-var getResults = async function (req, res) {
+var authentication = async function (req, res) {
   const body = req.body
   try {
     const userObject = new Users(body.username)
@@ -16,4 +16,4 @@ var getResults = async function (req, res) {
   }
 }
 
-module.exports = { getResults }
+module.exports = { authentication }
