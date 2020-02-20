@@ -9,7 +9,7 @@ const userAuthMidelware = function (req, res, next) {
   }
 }
 
-const userAdminMidelware = function (req, res, next) {
+const userAdminMidelware = async function (req, res, next) {
     let user = new User(req.session.username)
     if( await user.isAdmin()){
       next()

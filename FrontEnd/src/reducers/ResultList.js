@@ -57,10 +57,14 @@ export default function retrieveListReducer (state = initialState, action) {
         ...state,
         results: []
       }
+      
     case ADD_SERIES_DETAILS : 
       let seriesDetails = action.payload.seriesDetails
-      seriesDetails['isRetrieved'] = false
-      seriesDetails['key'] = Math.random()
+      seriesDetails.forEach( (serieItem) =>{
+        serieItem['isRetrieved'] = false
+        serieItem['key'] = Math.random()
+      })
+
       let newResultsState = state.results.map((studyData)=>{
         if(studyData.studyInstanceUID ===  action.payload.studyInstanceUID){
             studyData =  {
@@ -71,11 +75,12 @@ export default function retrieveListReducer (state = initialState, action) {
         return studyData
         
       })
-      console.log(newResultsState)
+
       return {
         ...state,
         results : newResultsState
       }
+
     default :
       return state
   }
