@@ -7,7 +7,7 @@ module.exports = {
       queryInterface.bulkInsert('Users', [{
         username: 'salim',
         password: hash,
-        admin: false,
+        admin: true,
         createdAt: new Date().toDateString(),
         updatedAt: new Date().toDateString()
       }], {})

@@ -56,6 +56,10 @@ export default class RobotView extends Component {
         text : 'AET',
         filter: textFilter()
     }, {
+        dataField : 'status',
+        text : 'Status',
+        filter: textFilter()
+    }, {
         dataField : 'remove',
         text : 'Remove Query',
         formatter : this.removeQueryButton,

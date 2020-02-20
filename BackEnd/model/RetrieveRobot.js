@@ -1,5 +1,6 @@
 const schedule = require('node-schedule')
 const Options = require('./Options')
+const RetrieveItem = require('./RetrieveItem')
 
 class RetrieveRobot {
   constructor (orthancObject) {
@@ -89,19 +90,27 @@ class RetrieveRobot {
       const job = this.robotJobs[usersRobots[i]]
 
       for (let i = 0; i < job.retrieveList.length; i++) {
-        const studyData = job.retrieveList[i]
-        console.log(studyData)
+        const retrieveItem = job.getRetriveItem(i)
+        console.log(retrieveItem)
 
-        robot.orthancObject.buildDicomQuery(studyData.level, studyData.patientName, studyData.patientId, studyData.studyDate + '-' + studyData.studyDate,
-          studyData.modality, studyData.studyDescription, studyData.accessionNb)
+        robot.orthancObject.buildDicomQuery(retrieveItem.level, retrieveItem.patientName, retrieveItem.patientId, retrieveItem.studyDate + '-' + retrieveItem.studyDate,
+        retrieveItem.modality, retrieveItem.studyDescription, retrieveItem.accessionNb)
 
-        const answerDetails = await robot.orthancObject.makeDicomQuery(studyData.aet)
+        job.getRetriveItem(i).setStatus(RetrieveItem.STATUS_RETRIVING)
+        const answerDetails = await robot.orthancObject.makeDicomQuery(retrieveItem.aet)
 
-        for (const answer of answerDetails) {
+        if (answerDetails.length === 1 ) {
+          let answer = answerDetails[0]
           const retrieveAnswer = await robot.orthancObject.makeRetrieve(answer.answerId, answer.answerNumber, robot.aetDestination, true)
-          console.log(retrieveAnswer)
           const orthancResults = await robot.orthancObject.findInOrthancByUid(retrieveAnswer.Query[0]['0020,000d'])
-          job.getRetriveItem(i).setRetrievedOrthancId(orthancResults[0])
+
+          if(orthancResults.length === 1){
+            job.getRetriveItem(i).setStatus(RetrieveItem.STATUS_RETRIEVED)
+            job.getRetriveItem(i).setRetrievedOrthancId(orthancResults[0])
+          }else{
+            job.getRetriveItem(i).setStatus(RetrieveItem.STATUS_FAILURE)
+          }
+          
         }
       }
     }
