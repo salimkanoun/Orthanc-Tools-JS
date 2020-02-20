@@ -6,15 +6,12 @@ Front :
     - Le reserver que pour le unique query ?
     
 - Query level series avec expendable rows on click (declanche retrieve des series)
-    - Ne pas charger les series data si deja chargées dans le redux
     - Reste a gerer le Retrieve / export button pour agir sur Study et Serie level
-    - Bug selection serie level
     - Gerer la selection pour le robot...
 
 - Interface Suivi robot (pour un utilisateur)
-    -   List de detail requete
-    -   Editer ou effacer requete
     -   Statut de chaque requete : Idle, Pending, Retrieved, error ? + progress bar
+    -   Calcul de la progression voir si on peut recuperer le nombre d'instance
     -   Si requete faite => 
             - Vers outil Anon ou vers Export / telechargement via basket ?
             - Liens vers visualisation dans OHIF
@@ -35,7 +32,7 @@ Front :
 
 - Admin Panel : 
     - Declaration des AET ajout stockage dans la base de données ?
-    - Echo des AETs
+    - Echo des AETs à integrer dans interface
 
 + tard  : 
 - historique des query dans BDD pour relancer une ancienne requete
@@ -43,10 +40,10 @@ Front :
 
 Back :
 - Securiser une seule retrieve par query lors execution du robot
-- Bug pipe des zip >2GB => Devrait etre OK
-- Midelware securite acces robot
+- Statut des retrieve
+- Midelware securite acces robot => Reste a securiser les route pour lire le robot en fonction du role
+https://jasonwatmore.com/post/2018/11/28/nodejs-role-based-authorization-tutorial-with-example-api
 - PassportJS pour stateless
-- UnitTests
 - Envisager de switcher de Request à Got (damn...)
 
 Tutos : 

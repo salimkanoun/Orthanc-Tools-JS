@@ -16,6 +16,10 @@ class RobotJob {
     return this.retrieveList[index]
   }
 
+  removeRetrieveItem (index) {
+    this.retrieveList.splice(index, 1)
+  }
+
   getRetrieveListSize () {
     return this.retrieveList.length
   }
@@ -33,11 +37,10 @@ class RobotJob {
   }
 
   toJSON () {
-
     return {
       username: this.username,
       projectName: this.projectName,
-      retrieveList: this.retrieveList.map( (retrieveItem) =>{
+      retrieveList: this.retrieveList.map((retrieveItem) => {
         return retrieveItem.toJSON()
       })
 

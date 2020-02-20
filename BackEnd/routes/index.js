@@ -1,42 +1,42 @@
 var express = require('express')
 var router = express.Router()
-
-const { getRobotDetails, createRobot, deleteRobotJob } = require('../controllers/Robot')
-
 // Handle controller errors
 require('express-async-errors')
 
-var authenticationController = require('../controllers/authentication')
-var queryController = require('../controllers/queryAction')
-var jobDetailsController = require('../controllers/jobDetails')
-var retrieveController = require('../controllers/retrieveDicom')
-var exportController = require('../controllers/exportDicom')
-var optionsController = require('../controllers/options')
-var aetsController = require('../controllers/aets')
+const { getRobotDetails, createRobot, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot')
+const { changeSchedule , getSchedule } = require('../controllers/options')
+const { getAets, changeAets, echoAets} = require('../controllers/aets')
+const { getJobData } = require('../controllers/jobDetails')
+const { authentication } = require('../controllers/authentication')
+const { postQuery } = require('../controllers/queryAction')
+const { postRetrieve } = require('../controllers/retrieveDicom')
+const { postExportDicom } = require('../controllers/exportDicom')
 
-const authUser = require('./auth_middelware')
+const {userAuthMidelware, userAdminMidelware } = require('./auth_middelware')
 
-// Route request to controllers
-router.post('/authentication', authenticationController.getResults)
+//Authentication route
+router.post('/authentication', authentication)
 
-router.post('/query', authUser, queryController.getResults)
+//Query, retrieve, job, export routes
+router.post('/query', userAuthMidelware, postQuery)
+router.post('/retrieve', userAuthMidelware, postRetrieve)
+router.get('/job_details/:id', userAuthMidelware, getJobData)
+router.post('/export_dicom', userAuthMidelware, postExportDicom)
 
-router.post('/job_details', authUser, jobDetailsController.getResults)
+//Robot routes
+router.post('/robot', userAuthMidelware, createRobot)
+router.get('/robot', userAuthMidelware, getRobotDetails)
+router.get('/robot/:username', userAuthMidelware, getRobotDetails)
+router.delete('/robot/:username', userAuthMidelware, deleteRobotJob)
+router.delete('/robot/:username/:index', userAuthMidelware, removeQueryFromJob)
 
-router.post('/retrieve', authUser, retrieveController.getResults)
+//Options routes
+router.get('/options', [userAuthMidelware, userAdminMidelware], getSchedule)
+router.put('/options', [userAuthMidelware, userAdminMidelware], changeSchedule)
 
-router.post('/export_dicom', authUser, exportController.getResults)
-
-router.post('/robot', authUser, createRobot)
-
-router.get('/robot/:username', authUser, getRobotDetails)
-
-router.delete('/robot/:username', authUser, deleteRobotJob)
-
-router.get('/robot', authUser, getRobotDetails)
-
-router.all('/options', authUser, optionsController.getResults)
-
-router.all('/aets', aetsController.getResults)
+//Aets Routes
+router.put('/aets', [userAuthMidelware, userAdminMidelware] , changeAets)
+router.get('/aets', userAuthMidelware , getAets)
+router.get('/aets/:name/echo', [userAuthMidelware,  userAdminMidelware] , echoAets)
 
 module.exports = router

@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Link } from 'react-router-dom'
-import RemoveJobButton from './RemoveJobButton';
 
 export default class RobotStatus extends Component {
 
@@ -47,7 +46,6 @@ export default class RobotStatus extends Component {
 
 
     removeRobotButton(cell, row, rowIndex, formatExtraData) {
-
         return (<div className="text-center">
             <input type="button" className='btn btn-danger' onClick = {() => formatExtraData.deleteJobHandler(formatExtraData.refreshHandler)} value = "Remove Job" />
             </div>)

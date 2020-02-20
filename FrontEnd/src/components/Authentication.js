@@ -10,8 +10,8 @@ export default class Authentication extends Component {
     this.state = {
       username: '',
       password: '',
-      authenthified: false,
-      showError: false
+      authenthified: undefined,
+      errorMessage: undefined
     }
   }
 
@@ -21,7 +21,7 @@ export default class Authentication extends Component {
       password: this.state.password
     })
 
-    const accessCheck = await fetch('/api/authentication',
+    const answerObject = await fetch('/api/authentication',
       {
         method: 'POST',
         headers: {
@@ -30,13 +30,27 @@ export default class Authentication extends Component {
         },
         body: postString
       }).then((answer) => {
-      return (answer.json())
+        return answer 
     })
+
+    let newState=null;
+
+    if (answerObject.status === 200){
+      let answer = await answerObject.json();
+      newState =  {
+        accessCheck : answer
+      }
+    } else {
+      newState =  {
+        accessCheck : false,
+        errorMessage : await answerObject.text()
+      }
+    }
 
     this.setState({
       ...this.state,
-      authenthified: accessCheck,
-      showError: !accessCheck
+      authenthified: newState.accessCheck,
+      errorMessage : newState.errorMessage
     })
   }
 
@@ -61,7 +75,7 @@ export default class Authentication extends Component {
     }
     return (
       <>
-        <div className='alert alert-danger' id='error' style={{ display: this.state.showError ? '' : 'none' }}>Wrong Credentials</div>
+        <div className='alert alert-danger' id='error' style={{ display:  this.state.errorMessage === undefined ?  'none' : '' }}>{this.state.errorMessage}</div>
         <div className='jumbotron ' id='login'>
           <div className='block-title block block-400'>Authentication</div>
           <div className='block-content block block-400'>

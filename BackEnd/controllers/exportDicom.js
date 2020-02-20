@@ -1,6 +1,6 @@
 var Orthanc = require('../model/Orthanc')
 
-var getResults = async function (req, res) {
+var postExportDicom = async function (req, res) {
   const body = req.body
   var orthancInstance = new Orthanc()
   var date = new Date()
@@ -11,4 +11,4 @@ var getResults = async function (req, res) {
   res.json(data)
 }
 
-module.exports = { getResults }
+module.exports = { postExportDicom }

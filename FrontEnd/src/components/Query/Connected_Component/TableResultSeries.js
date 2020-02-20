@@ -19,7 +19,18 @@ class TableResultSeries extends Component {
     }
 
     componentDidMount(){
-        this.getSeriesDetails(this.props.rowData.studyInstanceUID, this.props.rowData.originAET)
+        this.fetchDataIfUnknown(this.props.rowData.studyInstanceUID, this.props.rowData.originAET)
+    }
+
+    fetchDataIfUnknown(studyInstanceUID, originAET){
+        
+        var result = this.props.results.filter(study => {
+            return study.studyInstanceUID === studyInstanceUID
+        })
+
+        if (result[0]['seriesDetails'].length === 0 ){
+            this.getSeriesDetails(studyInstanceUID, originAET)
+        } 
     }
 
     async getSeriesDetails(studyUID, aet){
@@ -67,7 +78,7 @@ class TableResultSeries extends Component {
     };
 
     columns = [{
-        dataField: 'number',
+        dataField: 'key',
         hidden: true,
         csvExport: false
     },{
@@ -119,20 +130,16 @@ class TableResultSeries extends Component {
     }];
 
     render() {
-        console.log(this.props.results)
-        console.log(this.props.rowData)
 
-        let currentStudy = this.props.results.results.filter( (studyData)=>{
+        let currentStudy = this.props.results.filter( (studyData)=>{
             if(studyData.studyInstanceUID === this.props.rowData.studyInstanceUID){
                 return true
             }
             return false
         })
 
-        console.log(currentStudy)
         let seriesDetails = currentStudy[0]['seriesDetails']
 
-        console.log(seriesDetails)
         return (
             <ToolkitProvider
                 keyField="key"
@@ -168,7 +175,7 @@ class TableResultSeries extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        results: state.ResultList
+        results: state.ResultList.results
     }
 }
 

@@ -9,14 +9,25 @@ const getRobotDetails = async function (req, res) {
   let data = []
   if (req.params.username !== undefined) {
     data = retrieveRobot.getRobotData(req.params.username)
-  }else{
+  } else {
     data = retrieveRobot.getAllRobotData()
   }
   console.log(data)
   res.json(data)
 }
 
-const deleteRobotJob = async function (req, res){
+const removeQueryFromJob = async function (req, res){
+  const orthanc = new Orthanc()
+  const robotSingleton = new RobotSingleton(orthanc)
+  const retrieveRobot = robotSingleton.getRobot()
+  if (req.params.username !== undefined) {
+    retrieveRobot.robotJobs[req.params.username].removeRetrieveItem(req.params.index)
+  } 
+  res.json(retrieveRobot.getRobotData(req.params.username))
+
+}
+
+const deleteRobotJob = async function (req, res) {
   const orthanc = new Orthanc()
   const robotSingleton = new RobotSingleton(orthanc)
   const retrieveRobot = robotSingleton.getRobot()
@@ -40,10 +51,10 @@ const createRobot = async function (req, res) {
   const orthancSystem = await orthanc.getSystem()
   console.log('Orthanc System')
   console.log(orthancSystem)
-  retrieveRobot.setDestination(orthancSystem['DicomAet'])
+  retrieveRobot.setDestination(orthancSystem.DicomAet)
   retrieveRobot.scheduleRetrieve()
 
   res.json('Done')
 }
 
-module.exports = { createRobot, getRobotDetails, deleteRobotJob }
+module.exports = { createRobot, getRobotDetails, deleteRobotJob, removeQueryFromJob }
