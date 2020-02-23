@@ -52,7 +52,7 @@ export default class AetForm extends Component {
 
         let putAnswer = await fetch("/api/aets",
             {
-                method: "POST",
+                method: "PUT",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'

@@ -5,7 +5,7 @@ require('express-async-errors')
 
 const { getRobotDetails, createRobot, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot')
 const { changeSchedule , getSchedule } = require('../controllers/options')
-const { getAets, changeAets, echoAets} = require('../controllers/aets')
+const { getAets, changeAets, echoAets, deleteAet} = require('../controllers/aets')
 const { getJobData } = require('../controllers/jobDetails')
 const { authentication } = require('../controllers/authentication')
 const { postQuery } = require('../controllers/queryAction')
@@ -38,5 +38,6 @@ router.put('/options', [userAuthMidelware, userAdminMidelware], changeSchedule)
 router.put('/aets', [userAuthMidelware, userAdminMidelware] , changeAets)
 router.get('/aets', userAuthMidelware , getAets)
 router.get('/aets/:name/echo', [userAuthMidelware,  userAdminMidelware] , echoAets)
+router.delete('/aets/:name', [userAuthMidelware,userAdminMidelware], deleteAet) 
 
 module.exports = router
