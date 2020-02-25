@@ -36,6 +36,7 @@ Front :
 Back :
 - Midelware securite acces robot => Reste a securiser les route pour lire le robot en fonction du role
 https://jasonwatmore.com/post/2018/11/28/nodejs-role-based-authorization-tutorial-with-example-api
+- Ne pas autoriser la modification du robot pendant sont execetion (bug Pierre D)
 - PassportJS pour stateless
 - Envisager de switcher de Request à Got (damn...)
 
