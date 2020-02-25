@@ -133,10 +133,10 @@ export default class RobotStatus extends Component {
 
     render() {
         return (
-                <div className="jumbotron">
-                    <BootstrapTable keyField="key" striped={true} data={this.state.rows} columns={this.columns} />
-                    <input type="button" className="btn btn-info" value="Refresh" onClick={this.refreshHandler} />
-                </div>
+            <div>
+                <BootstrapTable keyField="key" striped={true} data={this.state.rows} columns={this.columns} />
+                <input type="button" className="btn btn-info" value="Refresh" onClick={this.refreshHandler} />
+            </div>
         )
     }
 }
