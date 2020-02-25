@@ -10,8 +10,7 @@ Front :
     - Gerer la selection pour le robot...
 
 - Interface Suivi robot (pour un utilisateur)
-    -   Statut de chaque requete : Idle, Pending, Retrieved, error ? + progress bar
-    -   Calcul de la progression voir si on peut recuperer le nombre d'instance
+    -   Calcul de la progression voir si on peut recuperer le nombre d'instance - progress bar => Que niveau study ?
     -   Si requete faite => 
             - Vers outil Anon ou vers Export / telechargement via basket ?
             - Liens vers visualisation dans OHIF
@@ -30,17 +29,11 @@ Front :
             - Lors de creation robot + edition sur interface utilisateur
         - Nombre limit de query si < limit => Retrieve auto
 
-- Admin Panel : 
-    - Declaration des AET ajout stockage dans la base de données ?
-    - Echo des AETs à integrer dans interface
-
 + tard  : 
 - historique des query dans BDD pour relancer une ancienne requete
 - Manual Query avec le formulaire manuel avec un duplicat de la table results
 
 Back :
-- Securiser une seule retrieve par query lors execution du robot
-- Statut des retrieve
 - Midelware securite acces robot => Reste a securiser les route pour lire le robot en fonction du role
 https://jasonwatmore.com/post/2018/11/28/nodejs-role-based-authorization-tutorial-with-example-api
 - PassportJS pour stateless
@@ -50,3 +43,7 @@ Tutos :
 
 Sequelize
 https://stackabuse.com/using-sequelize-js-and-sqlite-in-an-express-js-app/
+
+
+-- Documentation
+In Orthanc :  set "DicomModalitiesInDatabase" : true

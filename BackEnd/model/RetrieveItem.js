@@ -1,4 +1,5 @@
 class RetrieveItem {
+
   constructor (level, patientName, patientId, studyDate, modality, studyDescription, accessionNb, aet) {
     this.level = level
     this.patientName = patientName
@@ -8,6 +9,7 @@ class RetrieveItem {
     this.studyDescription = studyDescription
     this.accessionNb = accessionNb
     this.aet = aet
+    this.status = RetrieveItem.STATUS_IDLE
   }
 
   setRetrievedOrthancId (orthancId) {
@@ -18,6 +20,15 @@ class RetrieveItem {
     return this.retrievedOrthancId
   }
 
+  setStatus(status){
+    this.status = status
+  }
+
+  getStatus(){
+    return this.status
+  }
+
+
   toJSON () {
     return {
       level: this.level,
@@ -27,9 +38,15 @@ class RetrieveItem {
       modality: this.modality,
       studyDescription: this.studyDescription,
       accessionNb: this.accessionNb,
-      aet: this.aet
+      aet: this.aet,
+      status : this.status
     }
   }
 }
+
+RetrieveItem.STATUS_IDLE = 'Idle';
+RetrieveItem.STATUS_RETRIVING = 'Retrieving';
+RetrieveItem.STATUS_RETRIEVED = 'Retrieved';
+RetrieveItem.STATUS_FAILURE = 'Failure';
 
 module.exports = RetrieveItem

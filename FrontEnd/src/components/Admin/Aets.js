@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
+import { toast } from 'react-toastify';
 
 export default class RobotStatus extends Component {
 
@@ -33,8 +34,67 @@ export default class RobotStatus extends Component {
     },{
         dataField : 'manufacturer',
         text : 'Manufacturer'
+    }, {
+        dataField : 'echo',
+        text : 'Echo Aet',
+        formatter : this.echoAetButton,
+        formatExtraData : this
+    }, {
+        dataField : 'remove',
+        text : 'Remove Aet',
+        formatter : this.removeAetButton,
+        formatExtraData : this
     }];
 
+    echoAetButton(cell, row, rowIndex, formatExtraData) {
+        return (<div className="text-center">
+            <input type="button" className='btn btn-info' onClick = {() => formatExtraData.echoAetHandler(row.name, formatExtraData.refreshHandler)} value = "Echo" />
+        </div>)
+    }
+
+    echoAetHandler(aetName, refreshHandler){
+
+        fetch('/api/aets/' + aetName + '/echo', {
+            method : 'GET'
+        }).then( res => res.json() ).then((answer) => {
+            if(answer){
+                toast.success('Echo ' + aetName +' Sucess', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true
+                });
+            }else{
+                toast.error('Echo ' + aetName +' Error', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true
+                });
+            }
+
+        })
+
+    }
+
+    removeAetButton(cell, row, rowIndex, formatExtraData) {
+        return (<div className="text-center">
+            <input type="button" className='btn btn-danger' onClick = {() => formatExtraData.deleteAetHandler(row.name, formatExtraData.refreshHandler)} value = "Remove" />
+            </div>)
+    }
+
+    deleteAetHandler(aetName, refreshHandler){
+        fetch('/api/aets/'+aetName, {
+            method : 'DELETE'
+        }).then( res => res.json() ).then(() => {
+            refreshHandler()
+        })
+
+    }
 
     refreshHandler(){
 

@@ -18,4 +18,9 @@ var echoAets = async function (req, res) {
   res.json(answer) 
 }
 
-module.exports = { getAets, changeAets, echoAets }
+var deleteAet = async function (req, res) {
+  let answer = await orthancInstance.removeAet(req.params.name)
+  res.json(answer)
+}
+
+module.exports = { getAets, changeAets, echoAets, deleteAet }
