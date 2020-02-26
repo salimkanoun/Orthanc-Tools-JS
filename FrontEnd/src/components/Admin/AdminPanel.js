@@ -28,7 +28,7 @@ export default class AdminPanel extends Component {
       case 'General' : 
         return ([<Options />])
       case 'Aets' : 
-        return ([ <Aets />, <AetForm /> ])
+        return ([ <AetForm />, <Aets /> ])
       case 'Robots' : 
         return ([<RobotStatus />])
       default : 
