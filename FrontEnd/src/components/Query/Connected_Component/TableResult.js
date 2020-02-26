@@ -132,12 +132,10 @@ class TableResult extends Component {
         csvExport: false
     }, {
         dataField: 'numberOfStudyRelatedSeries',
-        text: 'Series',
-        filter: numberFilter()
+        text: 'Series'
     }, {
         dataField: 'numberOfStudyRelatedInstances',
-        text: 'Instances',
-        filter: numberFilter()
+        text: 'Instances'
     }];
 
       
@@ -173,7 +171,7 @@ class TableResult extends Component {
                                     <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
                                     <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                                     <div className="mt-5">
-                                        <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} expandRow={ this.expandRow } >
+                                        <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} expandRow={ this.expandRow } >
                                         </BootstrapTable>
                                     </div>
                                 </div>
