@@ -26,4 +26,29 @@ describe('Testing Robot Job Creation', () => {
     const retrieveItem = robotJob.getRetriveItem(0)
     expect(retrieveItem.patientName).toBe('salimFirst')
   })
+
+  it('should not be validated yet', () =>{
+    expect(robotJob.isValidated()).toBe(false)
+  })
+
+  it('should valid Job', () => {
+    robotJob.setValidated()
+    expect(robotJob.isValidated()).toBe(true)
+  })
+
+  it('should not validate job when items not validated', () => {
+    robotJob.validated=false
+    robotJob.validateJobIfAllItemValidated()
+    expect(robotJob.isValidated()).toBe(false)
+  })
+
+  it('should validate job now all items validated', () => {
+    robotJob.validated=false
+    robotJob.getAllRetrieveItems().forEach((retrieveItem) => {
+      retrieveItem.setValidated()
+    })
+    robotJob.validateJobIfAllItemValidated()
+    expect(robotJob.isValidated()).toBe(true)
+  })
+
 })

@@ -2,13 +2,17 @@ Front :
 - Faire que le select all select tout les non filtre de toutes les pages ? => difficulté....
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
     
-- Query level series avec expendable rows on click (declanche retrieve des series)
-    - Reste a gerer le Retrieve / export button pour agir sur Study et Serie level
+- Robot Level Series
     - Gerer la selection pour le robot...
+    - Filtre sur le niveau Series => Contains et equal sur modality et series description
 
 - Interface Suivi robot (pour un utilisateur)
-    -   Calcul de la progression voir si on peut recuperer le nombre d'instance - progress bar 
-        - Une API de stat ?
+    - Validation
+        - Soit manuelle par administrateur
+        - Soit automatique lors declanchement robot (avant retrieve)
+    -   Calcul de la progression
+        - % age d'instance recupérer, granularité par study retrieve
+        - Route d'information au niveau job et au niveau robot
     -   Si requete faite => 
             - Liens vers visualisation dans OHIF
     -   Export rapport Query / Retrieve
@@ -22,8 +26,6 @@ Front :
 - Settings 
     - Splitter les "domaines" dans des tabs avec refresh auto (plus de refresh)
     - AutoQuery : 
-        - Filtre sur le niveau Series => Contains et equal sur modality et series description
-            - Lors de creation robot + edition sur interface utilisateur
         - Nombre limit de query si < limit => Retrieve auto
 
 - Module Anonymize

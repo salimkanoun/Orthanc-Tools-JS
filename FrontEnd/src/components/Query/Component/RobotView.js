@@ -124,7 +124,7 @@ export default class RobotView extends Component {
         return (
                 <div className="jumbotron">
                     <h1> Robot for user {this.state.username}, project : {this.state.projectName} </h1>
-                    <BootstrapTable keyField="key" striped={true} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
+                    <BootstrapTable wrapperClasses="table-responsive" keyField="key" striped={true} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
                 </div>
         )
     }

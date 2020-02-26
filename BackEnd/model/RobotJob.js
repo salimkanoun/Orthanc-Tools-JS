@@ -5,15 +5,39 @@ class RobotJob {
     this.username = username
     this.projectName = projectName
     this.retrieveList = []
+    this.validated = false
   }
 
-  addRetrieveItem (level, patientName, patientID, studyDate, modality, studyDescription, accessionNb, aet) {
-    const retrieveItem = new RetrieveItem(level, patientName, patientID, studyDate, modality, studyDescription, accessionNb, aet)
+  isValidated(){
+    return this.validated
+  }
+
+  validateJobIfAllItemValidated () {
+
+    let nonValidatedItems = this.retrieveList.filter((retrieveItem) =>{
+      return  ! retrieveItem.validated
+    })
+
+    if(nonValidatedItems.length === 0){
+      this.setValidated()
+    }
+  }
+
+  setValidated(){
+    this.validated = true
+  }
+
+  addRetrieveItem (level, patientName, patientID, studyDate, modality, studyDescription, accessionNb, studyInstanceUID, aet) {
+    const retrieveItem = new RetrieveItem(level, patientName, patientID, studyDate, modality, studyDescription, accessionNb, studyInstanceUID, aet)
     this.retrieveList.push(retrieveItem)
   }
 
   getRetriveItem (index) {
     return this.retrieveList[index]
+  }
+
+  getAllRetrieveItems () {
+    return this.retrieveList
   }
 
   removeRetrieveItem (index) {
