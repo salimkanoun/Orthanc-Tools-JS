@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
-import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter, dateFilter, numberFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
@@ -10,8 +10,6 @@ import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 import { connect } from 'react-redux'
 import * as actions from '../../../actions/TableResult'
 
-import RetrieveButton from './RetrieveButton'
-import ExportButton from './ExportButton'
 import CreateRobot from './../Component/CreateRobot'
 
 import TableResultSeries from './TableResultSeries'
@@ -133,15 +131,13 @@ class TableResult extends Component {
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'retrive',
-        text: 'Retrieve',
-        formatter: this.retrieveButton,
-        csvExport: false
+        dataField: 'numberOfStudyRelatedSeries',
+        text: 'Series',
+        filter: numberFilter()
     }, {
-        dataField: 'export',
-        text: 'Export',
-        formatter: this.exportButton,
-        csvExport: false
+        dataField: 'numberOfStudyRelatedInstances',
+        text: 'Instances',
+        filter: numberFilter()
     }];
 
       
@@ -188,16 +184,6 @@ class TableResult extends Component {
                 }
             </ToolkitProvider>
         )
-    }
-
-    retrieveButton(cell, row, rowIndex, formatExtraData) {
-        //Add Retrieve button for each result with row data in props
-        return <RetrieveButton rowData={row} />
-
-    }
-
-    exportButton(cell, row, rowIndex, formatExtraData) {
-        return <ExportButton rowData={row} />
     }
 
 }

@@ -188,7 +188,7 @@ class Orthanc {
      * @param {string} studyDescription
      * @param {string} accessionNb
      */
-  buildDicomQuery (level = 'Study', patientName = '*', patientID = '*', studyDate = '*', modality = '*', studyDescription = '*', accessionNb = '*') {
+  buildDicomQuery (level = 'Study', patientName = '', patientID = '', studyDate = '', modality = '', studyDescription = '', accessionNb = '', studyInstanceUID = '') {
     if (patientName === '*^*') patientName = '*'
     // Remove * character as until date X should be written -dateX and not *-dateX
     studyDate = studyDate.replace(/[*]/g, '')
@@ -203,7 +203,10 @@ class Orthanc {
         StudyDate: studyDate,
         ModalitiesInStudy: modality,
         StudyDescription: studyDescription,
-        AccessionNumber: accessionNb
+        AccessionNumber: accessionNb,
+        StudyInstanceUID : studyInstanceUID,
+        NumberOfStudyRelatedInstances : '',
+        NumberOfStudyRelatedSeries : ''
       }
 
     }
@@ -232,12 +235,16 @@ class Orthanc {
     const query = {
       Level: 'Series',
       Query: {
-        Modality: '*',
-        ProtocolName: '*',
-        SeriesDescription: '*',
-        SeriesInstanceUID: '*',
-        StudyInstanceUID: studyUID
-      }
+        Modality: '',
+        ProtocolName: '',
+        SeriesDescription: '',
+        SeriesInstanceUID: '',
+        StudyInstanceUID: studyUID,
+        SeriesNumber : '',
+        SeriesInstanceUID : '',
+        NumberOfSeriesRelatedInstances : '',
+      },
+      Normalize : false
     }
 
     const requestAnswer = request.post(currentOrthanc._createOptions('POST', '/modalities/' + aet + '/query', JSON.stringify(query))).then(function (body) {
@@ -291,8 +298,13 @@ class Orthanc {
             SeriesNumber = element['0020,0011'].Value
           }
 
+          let numberOfSeriesRelatedInstances = 'N/A'
+          if (element.hasOwnProperty('0020,1209')) {
+            numberOfSeriesRelatedInstances = element['0020,1209'].Value
+          }
+
           const originAET = aet
-          const queryAnswserObject = new QuerySerieAnswer(answerId, answerNumber, queryLevel, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET)
+          const queryAnswserObject = new QuerySerieAnswer(answerId, answerNumber, queryLevel, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET, numberOfSeriesRelatedInstances)
           answersObjects.push(queryAnswserObject)
           answerNumber++
         })
@@ -346,13 +358,23 @@ class Orthanc {
             studyUID = element['0020,000d'].Value
           }
 
+          let numberOfStudyRelatedSeries = 'N/A'
+          if (element.hasOwnProperty('0020,1206')) {
+            numberOfStudyRelatedSeries = element['0020,1206'].Value
+          }
+
+          let numberOfStudyRelatedInstances = 'N/A'
+          if (element.hasOwnProperty('0020,1208')) {
+            numberOfStudyRelatedInstances = element['0020,1208'].Value
+          }
+
           let modalitiesInStudy = '*'
           // Modalities in studies not always present
           if (element.hasOwnProperty('0008,0061')) {
             modalitiesInStudy = element['0008,0061'].Value
           }
           const origineAET = aet
-          const queryAnswserObject = new QueryAnswer(answerId, answerNumber, queryLevel, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate)
+          const queryAnswserObject = new QueryAnswer(answerId, answerNumber, queryLevel, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate, numberOfStudyRelatedSeries, numberOfStudyRelatedInstances)
           answersObjects.push(queryAnswserObject)
           answerNumber++
         })
