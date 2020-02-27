@@ -25,10 +25,10 @@ class Users {
     return check
   }
 
-  async isAdmin (){
+  async isAdmin () {
     const user = await this._getUserEntity()
     return user.admin
-  } 
+  }
 
   static async createUser (username, password, isAdmin) {
     const saltRounds = 10

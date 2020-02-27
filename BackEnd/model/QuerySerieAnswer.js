@@ -8,7 +8,7 @@ class QuerySerieAnswer {
     this.modality = modality
     this.serieDescription = seriesDescription
     this.serieNumber = seriesNumber
-    this.originAET = originAET,
+    this.originAET = originAET
     this.numberOfSeriesRelatedInstances = numberOfSeriesRelatedInstances
   }
 }

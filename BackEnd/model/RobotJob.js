@@ -8,22 +8,44 @@ class RobotJob {
     this.validated = false
   }
 
-  isValidated(){
+  getProgression () {
+    let totalRetrievedCount = 0
+    let totalInstanceCount = 0
+    let totalFailedCount = 0
+
+    this.retrieveList.forEach((retrieveItem) => {
+      const numberOfInstance = retrieveItem.getNumberOfInstances()
+      const itemStatus = retrieveItem.getStatus()
+      totalInstanceCount += numberOfInstance
+
+      if (itemStatus === RetrieveItem.STATUS_RETRIEVED) {
+        totalRetrievedCount += numberOfInstance
+      } else if (itemStatus === RetrieveItem.STATUS_FAILURE) {
+        totalFailedCount += numberOfInstance
+      }
+    })
+    return {
+      totalInstances: totalInstanceCount,
+      retrievedInstances: totalRetrievedCount,
+      failedInstances: totalFailedCount
+    }
+  }
+
+  isValidated () {
     return this.validated
   }
 
   validateJobIfAllItemValidated () {
-
-    let nonValidatedItems = this.retrieveList.filter((retrieveItem) =>{
-      return  ! retrieveItem.validated
+    const nonValidatedItems = this.retrieveList.filter((retrieveItem) => {
+      return !retrieveItem.validated
     })
 
-    if(nonValidatedItems.length === 0){
+    if (nonValidatedItems.length === 0) {
       this.setValidated()
     }
   }
 
-  setValidated(){
+  setValidated () {
     this.validated = true
   }
 
@@ -36,7 +58,7 @@ class RobotJob {
     return this.retrieveList[index]
   }
 
-  getAllRetrieveItems () {
+  getAllRetrieveItems () {
     return this.retrieveList
   }
 
@@ -66,7 +88,8 @@ class RobotJob {
       projectName: this.projectName,
       retrieveList: this.retrieveList.map((retrieveItem) => {
         return retrieveItem.toJSON()
-      })
+      }),
+      ...this.getProgression()
 
     }
   }

@@ -6,6 +6,7 @@ class RetrieveRobot {
   constructor (orthancObject) {
     this.orthancObject = orthancObject
     this.robotJobs = []
+    this.status = RetrieveItem.STATUS_IDLE
   }
 
   async getScheduleTimeFromOptions () {
@@ -85,20 +86,18 @@ class RetrieveRobot {
    * Check that each query return only one answer (study or serie)
    * Store number of instance in each query
    * Set RobotJob as validated to be processed
-   * @param {*} username 
+   * @param {*} username
    */
-  async validateContent(username){
+  async validateContent (username) {
+    const robotJob = this.robotJobs[username]
 
-    let robotJob = this.robotJobs[username]
-
-    if( ! robotJob.isValidated() ){
-      
-      let retrieveItems = robotJob.getAllRetrieveItems()
+    if (!robotJob.isValidated()) {
+      const retrieveItems = robotJob.getAllRetrieveItems()
 
       for (let i = 0; i < retrieveItems.length; i++) {
         this.orthancObject.buildDicomQuery('Study', '', '', '', '', '', '', retrieveItems[i].studyInstanceUID)
-        let answerDetails = this.orthancObject.makeDicomQuery(retrieveItems[i].aet)
-        if(answerDetails.length === 1 ){
+        const answerDetails = this.orthancObject.makeDicomQuery(retrieveItems[i].aet)
+        if (answerDetails.length === 1) {
           retrieveItems[i].setValidated()
           retrieveItems[i].setNumberOfSeries(retrieveItems[i].numberOfStudyRelatedSeries)
           retrieveItems[i].setNumberOfInstances(retrieveItems[i].numberOfStudyRelatedInstances)
@@ -106,57 +105,53 @@ class RetrieveRobot {
       }
 
       robotJob.validateJobIfAllItemValidated()
-
     }
-
   }
 
   async doRetrieve () {
-
     const usersRobots = Object.keys(this.robotJobs)
 
+    this.status = RetrieveItem.STATUS_RETRIVING
+
     for (let i = 0; i < usersRobots.length; i++) {
+      const job = this.robotJobs[usersRobots[i]]
 
-      let job = this.robotJobs[usersRobots[i]]
-
-      if(job.isValidated()){
+      if (job.isValidated()) {
         this.retrieveJob(usersRobots[i])
       }
-
     }
+
+    this.status = RetrieveItem.STATUS_RETRIEVED
 
     // Temporary export
     await this.exportDicom()
   }
 
-  async retrieveJob(username){
-
+  async retrieveJob (username) {
     const job = this.robotJobs[username]
 
     for (let i = 0; i < job.retrieveList.length; i++) {
       const retrieveItem = job.getRetriveItem(i)
 
       this.orthancObject.buildDicomQuery(retrieveItem.level, retrieveItem.patientName, retrieveItem.patientId, retrieveItem.studyDate + '-' + retrieveItem.studyDate,
-      retrieveItem.modality, retrieveItem.studyDescription, retrieveItem.accessionNb)
+        retrieveItem.modality, retrieveItem.studyDescription, retrieveItem.accessionNb)
 
       job.getRetriveItem(i).setStatus(RetrieveItem.STATUS_RETRIVING)
       const answerDetails = await this.orthancObject.makeDicomQuery(retrieveItem.aet)
 
-      if (answerDetails.length === 1 ) {
-        let answer = answerDetails[0]
+      if (answerDetails.length === 1) {
+        const answer = answerDetails[0]
         const retrieveAnswer = await this.orthancObject.makeRetrieve(answer.answerId, answer.answerNumber, this.aetDestination, true)
         const orthancResults = await this.orthancObject.findInOrthancByUid(retrieveAnswer.Query[0]['0020,000d'])
 
-        if(orthancResults.length === 1){
+        if (orthancResults.length === 1) {
           job.getRetriveItem(i).setStatus(RetrieveItem.STATUS_RETRIEVED)
           job.getRetriveItem(i).setRetrievedOrthancId(orthancResults[0])
-        }else{
+        } else {
           job.getRetriveItem(i).setStatus(RetrieveItem.STATUS_FAILURE)
         }
-        
       }
     }
-
   }
 
   // SK A FAIRE
@@ -174,6 +169,12 @@ class RetrieveRobot {
       const retrievedOrthancIds = job.getRetrievedOrthancId()
       console.log(retrievedOrthancIds)
       retrieveRobot.orthancObject.exportArchiveDicom(retrievedOrthancIds, job.username + '_' + job.projectName)
+    }
+  }
+
+  toJSON () {
+    return {
+      status: this.status
     }
   }
 }

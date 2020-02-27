@@ -6,7 +6,7 @@ describe('Testing Options', () =>{
 
         let schedule =await Options.getOptions()
         expect(schedule.hour).toBe(22)
-        expect(schedule.min).toBe(00)
+        expect(schedule.min).toBe(0)
 
     })
 

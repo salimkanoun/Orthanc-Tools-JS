@@ -10,13 +10,13 @@ const userAuthMidelware = function (req, res, next) {
 }
 
 const userAdminMidelware = async function (req, res, next) {
-    let user = new User(req.session.username)
-    if( await user.isAdmin()){
-      next()
-    }else{
-      console.log('Admin status required')
-      res.status(403).end()
-    }
+  const user = new User(req.session.username)
+  if (await user.isAdmin()) {
+    next()
+  } else {
+    console.log('Admin status required')
+    res.status(403).end()
+  }
 }
 
-module.exports = {userAuthMidelware, userAdminMidelware}
+module.exports = { userAuthMidelware, userAdminMidelware }

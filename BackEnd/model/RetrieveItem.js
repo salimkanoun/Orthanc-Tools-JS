@@ -1,5 +1,4 @@
 class RetrieveItem {
-
   constructor (level, patientName, patientId, studyDate, modality, studyDescription, accessionNb, studyInstanceUID, aet) {
     this.level = level
     this.patientName = patientName
@@ -11,21 +10,29 @@ class RetrieveItem {
     this.studyInstanceUID = studyInstanceUID
     this.aet = aet
     this.validated = false
-    this.numberOfSeries = 'N/A'
-    this.numberOfInstances = 'N/A'
+    this.numberOfSeries = 0
+    this.numberOfInstances = 0
     this.status = RetrieveItem.STATUS_IDLE
   }
 
-  setValidated(){
+  setValidated () {
     this.validated = true
   }
 
-  setNumberOfSeries(number){
-    this.numberOfSeries = number
+  setNumberOfSeries (number) {
+    this.numberOfSeries = parseInt(number)
   }
 
-  setNumberOfInstances(number){
-    this.numberOfInstances = number
+  getNumberOfSeries () {
+    return this.numberOfSeries
+  }
+
+  setNumberOfInstances (number) {
+    this.numberOfInstances = parseInt(number)
+  }
+
+  getNumberOfInstances () {
+    return this.numberOfInstances
   }
 
   setRetrievedOrthancId (orthancId) {
@@ -36,14 +43,13 @@ class RetrieveItem {
     return this.retrievedOrthancId
   }
 
-  setStatus(status){
+  setStatus (status) {
     this.status = status
   }
 
-  getStatus(){
+  getStatus () {
     return this.status
   }
-
 
   toJSON () {
     return {
@@ -54,18 +60,18 @@ class RetrieveItem {
       modality: this.modality,
       studyDescription: this.studyDescription,
       accessionNb: this.accessionNb,
-      studyInstanceUID : this.studyInstanceUID,
-      numberOfSeries : this.numberOfSeries,
-      numberOfInstances : this.numberOfInstances,
+      studyInstanceUID: this.studyInstanceUID,
+      numberOfSeries: this.numberOfSeries,
+      numberOfInstances: this.numberOfInstances,
       aet: this.aet,
-      status : this.status
+      status: this.status
     }
   }
 }
 
-RetrieveItem.STATUS_IDLE = 'Idle';
-RetrieveItem.STATUS_RETRIVING = 'Retrieving';
-RetrieveItem.STATUS_RETRIEVED = 'Retrieved';
-RetrieveItem.STATUS_FAILURE = 'Failure';
+RetrieveItem.STATUS_IDLE = 'Idle'
+RetrieveItem.STATUS_RETRIVING = 'Retrieving'
+RetrieveItem.STATUS_RETRIEVED = 'Retrieved'
+RetrieveItem.STATUS_FAILURE = 'Failure'
 
 module.exports = RetrieveItem

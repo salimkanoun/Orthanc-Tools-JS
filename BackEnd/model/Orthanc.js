@@ -127,24 +127,22 @@ class Orthanc {
     return requestPromise
   }
 
-  removeAet(name){
-    let self = this
+  removeAet (name) {
+    const self = this
     const requestPromise = request.delete(self._createOptions('DELETE', '/modalities/' + name)).then(function (body) {
       return true
     }).catch((error) => { console.log('Error put AET ' + error) })
 
     return requestPromise
-
   }
 
-  echoAet(name){
+  echoAet (name) {
     const self = this
     const requestPromise = request.post(self._createOptions('POST', '/modalities/' + name + '/echo', JSON.stringify({}))).then(function (body) {
       return true
     }).catch((error) => { console.log('Error put AET ' + error); return false })
 
     return requestPromise
-
   }
 
   /**
@@ -204,9 +202,9 @@ class Orthanc {
         ModalitiesInStudy: modality,
         StudyDescription: studyDescription,
         AccessionNumber: accessionNb,
-        StudyInstanceUID : studyInstanceUID,
-        NumberOfStudyRelatedInstances : '',
-        NumberOfStudyRelatedSeries : ''
+        StudyInstanceUID: studyInstanceUID,
+        NumberOfStudyRelatedInstances: '',
+        NumberOfStudyRelatedSeries: ''
       }
 
     }
@@ -240,11 +238,11 @@ class Orthanc {
         SeriesDescription: '',
         SeriesInstanceUID: '',
         StudyInstanceUID: studyUID,
-        SeriesNumber : '',
-        SeriesInstanceUID : '',
-        NumberOfSeriesRelatedInstances : '',
+        SeriesNumber: '',
+        SeriesInstanceUID: '',
+        NumberOfSeriesRelatedInstances: ''
       },
-      Normalize : false
+      Normalize: false
     }
 
     const requestAnswer = request.post(currentOrthanc._createOptions('POST', '/modalities/' + aet + '/query', JSON.stringify(query))).then(function (body) {

@@ -16,15 +16,14 @@ const getRobotDetails = async function (req, res) {
   res.json(data)
 }
 
-const removeQueryFromJob = async function (req, res){
+const removeQueryFromJob = async function (req, res) {
   const orthanc = new Orthanc()
   const robotSingleton = new RobotSingleton(orthanc)
   const retrieveRobot = robotSingleton.getRobot()
   if (req.params.username !== undefined) {
     retrieveRobot.robotJobs[req.params.username].removeRetrieveItem(req.params.index)
-  } 
+  }
   res.json(retrieveRobot.getRobotData(req.params.username))
-
 }
 
 const deleteRobotJob = async function (req, res) {
