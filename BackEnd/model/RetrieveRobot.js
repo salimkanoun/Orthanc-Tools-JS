@@ -88,7 +88,8 @@ class RetrieveRobot {
    * Set RobotJob as validated to be processed
    * @param {*} username
    */
-  async validateContent (username) {
+  async validateRobotJob (username) {
+
     const robotJob = this.robotJobs[username]
 
     if (!robotJob.isValidated()) {
@@ -96,14 +97,15 @@ class RetrieveRobot {
 
       for (let i = 0; i < retrieveItems.length; i++) {
         this.orthancObject.buildDicomQuery('Study', '', '', '', '', '', '', retrieveItems[i].studyInstanceUID)
-        const answerDetails = this.orthancObject.makeDicomQuery(retrieveItems[i].aet)
+        const answerDetails = await this.orthancObject.makeDicomQuery(retrieveItems[i].aet)
+        console.log()
         if (answerDetails.length === 1) {
           retrieveItems[i].setValidated()
-          retrieveItems[i].setNumberOfSeries(retrieveItems[i].numberOfStudyRelatedSeries)
-          retrieveItems[i].setNumberOfInstances(retrieveItems[i].numberOfStudyRelatedInstances)
+          retrieveItems[i].setNumberOfSeries(answerDetails[0].numberOfStudyRelatedSeries)
+          retrieveItems[i].setNumberOfInstances(answerDetails[0].numberOfStudyRelatedInstances)
         }
       }
-
+      console.log(robotJob)
       robotJob.validateJobIfAllItemValidated()
     }
   }

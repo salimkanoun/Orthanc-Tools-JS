@@ -48,7 +48,7 @@ describe('Retrieve Robot', () => {
   })
 
   it('should query each item and store instance series number on validation', async () => {
-    await retrieveRobot.validateContent('salim')
+    await retrieveRobot.validateRobotJob('salim')
     expect(orthanc.makeDicomQuery).toHaveBeenCalledTimes(2)
     expect(retrieveRobot.robotJobs.salim.isValidated()).toBe(true)
     /*

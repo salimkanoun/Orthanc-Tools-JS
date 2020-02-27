@@ -3,7 +3,7 @@ var router = express.Router()
 // Handle controller errors
 require('express-async-errors')
 
-const { getRobotDetails, createRobot, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot')
+const { getRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot')
 const { changeSchedule, getSchedule } = require('../controllers/options')
 const { getAets, changeAets, echoAets, deleteAet } = require('../controllers/aets')
 const { getJobData } = require('../controllers/jobDetails')
@@ -24,11 +24,12 @@ router.get('/job_details/:id', userAuthMidelware, getJobData)
 router.post('/export_dicom', userAuthMidelware, postExportDicom)
 
 // Robot routes
-router.post('/robot', userAuthMidelware, createRobot)
+router.post('/robot', userAuthMidelware, addRobotJob)
 router.get('/robot', userAuthMidelware, getRobotDetails)
 router.get('/robot/:username', userAuthMidelware, getRobotDetails)
 router.delete('/robot/:username', userAuthMidelware, deleteRobotJob)
 router.delete('/robot/:username/:index', userAuthMidelware, removeQueryFromJob)
+router.post('/robot/:username/validate', [userAuthMidelware, userAdminMidelware], validateRobotJob)
 
 // Options routes
 router.get('/options', [userAuthMidelware, userAdminMidelware], getSchedule)

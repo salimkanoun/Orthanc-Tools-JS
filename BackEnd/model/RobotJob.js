@@ -5,9 +5,12 @@ class RobotJob {
     this.username = username
     this.projectName = projectName
     this.retrieveList = []
-    this.validated = false
+    this.validated = RobotJob.VALIDATION_NOT_DONE
   }
 
+  /**
+   * Calculate progression of the current job
+   */
   getProgression () {
     let totalRetrievedCount = 0
     let totalInstanceCount = 0
@@ -24,15 +27,17 @@ class RobotJob {
         totalFailedCount += numberOfInstance
       }
     })
+
     return {
       totalInstances: totalInstanceCount,
       retrievedInstances: totalRetrievedCount,
       failedInstances: totalFailedCount
     }
+
   }
 
   isValidated () {
-    return this.validated
+    return this.validated === RobotJob.VALIDATION_DONE
   }
 
   validateJobIfAllItemValidated () {
@@ -46,7 +51,7 @@ class RobotJob {
   }
 
   setValidated () {
-    this.validated = true
+    this.validated = RobotJob.VALIDATION_DONE
   }
 
   addRetrieveItem (level, patientName, patientID, studyDate, modality, studyDescription, accessionNb, studyInstanceUID, aet) {
@@ -89,10 +94,15 @@ class RobotJob {
       retrieveList: this.retrieveList.map((retrieveItem) => {
         return retrieveItem.toJSON()
       }),
+      validated : this.validated,
       ...this.getProgression()
 
     }
   }
 }
+
+RobotJob.VALIDATION_NOT_DONE = "Not Done"
+RobotJob.VALIDATION_IN_PROGRESS = "Validating"
+RobotJob.VALIDATION_DONE = "Done"
 
 module.exports = RobotJob

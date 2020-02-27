@@ -34,7 +34,17 @@ const deleteRobotJob = async function (req, res) {
   res.end()
 }
 
-const createRobot = async function (req, res) {
+const validateRobotJob = async function (req, res) {
+  const orthanc = new Orthanc()
+  const robotSingleton = new RobotSingleton(orthanc)
+  const retrieveRobot = robotSingleton.getRobot()
+  console.log('stating validation')
+  retrieveRobot.validateRobotJob(req.params.username)
+  res.json('Finished')
+
+}
+
+const addRobotJob = async function (req, res) {
   const orthanc = new Orthanc()
   const robotSingleton = new RobotSingleton(orthanc)
   const retrieveRobot = robotSingleton.getRobot()
@@ -48,12 +58,11 @@ const createRobot = async function (req, res) {
 
   retrieveRobot.addRobotJob(robotJob)
   const orthancSystem = await orthanc.getSystem()
-  console.log('Orthanc System')
-  console.log(orthancSystem)
+
   retrieveRobot.setDestination(orthancSystem.DicomAet)
   retrieveRobot.scheduleRetrieve()
 
   res.json('Done')
 }
 
-module.exports = { createRobot, getRobotDetails, deleteRobotJob, removeQueryFromJob }
+module.exports = { addRobotJob, getRobotDetails, deleteRobotJob, removeQueryFromJob, validateRobotJob }
