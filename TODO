@@ -6,13 +6,12 @@ Front :
     - Gerer la selection pour le robot...
     - Filtre sur le niveau Series => Contains et equal sur modality et series description
 
+- Refesh automatique des vues de robot detail et de robot liste 
+
 - Interface Suivi robot (pour un utilisateur)
     - Validation
         - Soit manuelle par administrateur
         - Soit automatique lors declanchement robot (avant retrieve)
-    -   Calcul de la progression
-        - % age d'instance recupérer, granularité par study retrieve
-        - Route d'information au niveau job et au niveau robot
     -   Si requete faite => 
             - Liens vers visualisation dans OHIF
     -   Export rapport Query / Retrieve
@@ -29,6 +28,8 @@ Front :
         - Nombre limit de query si < limit => Retrieve auto
 
 - Module Anonymize
+    - Devra etre fait avec un robot coté back ?
+
 - Module Export
 
 + tard  : 
@@ -40,11 +41,12 @@ Back :
 https://jasonwatmore.com/post/2018/11/28/nodejs-role-based-authorization-tutorial-with-example-api
 - Ne pas autoriser la modification du robot pendant sont execetion (bug Pierre D)
 - PassportJS pour stateless
-- Envisager de switcher de Request à Got (damn...)
+- Envisager de switcher de Request à Got...
 
 
 
 Tutos : 
+https://towardsdatascience.com/react-best-practices-804def6d5215
 
 Sequelize
 https://stackabuse.com/using-sequelize-js-and-sqlite-in-an-express-js-app/
@@ -53,4 +55,5 @@ https://stackabuse.com/using-sequelize-js-and-sqlite-in-an-express-js-app/
 Executable windows avec wix ?
 
 -- Documentation
+https://medium.com/wolox-driving-innovation/documenting-a-nodejs-rest-api-with-openapi-3-swagger-5deee9f50420
 In Orthanc :  set "DicomModalitiesInDatabase" : true

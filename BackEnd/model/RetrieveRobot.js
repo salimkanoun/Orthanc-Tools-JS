@@ -156,11 +156,6 @@ class RetrieveRobot {
     }
   }
 
-  // SK A FAIRE
-  anonymizeDicom () {
-
-  }
-
   async exportDicom () {
     const retrieveRobot = this
     console.log(this.robotJobs)

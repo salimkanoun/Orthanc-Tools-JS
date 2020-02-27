@@ -1,4 +1,7 @@
-class QueryAnswer {
+const OrthancQueryAnswer = require ('./OrthancQueryAnswer')
+
+class QueryStudyAnswer extends OrthancQueryAnswer {
+
   constructor (answerId,
     answerNumber,
     level,
@@ -13,10 +16,7 @@ class QueryAnswer {
     numberOfStudyRelatedSeries,
     numberOfStudyRelatedInstances
   ) {
-    this.answerId = answerId
-    this.answerNumber = answerNumber
-    this.level = level
-    this.originAET = originAET
+    super(answerId,answerNumber,level,originAET,numberOfStudyRelatedInstances)
     this.patientName = patientName
     this.patientID = patientID
     this.accessionNumber = accessionNumber
@@ -25,8 +25,7 @@ class QueryAnswer {
     this.studyInstanceUID = studyInstanceUID
     this.studyDate = studyDate
     this.numberOfStudyRelatedSeries = numberOfStudyRelatedSeries
-    this.numberOfStudyRelatedInstances = numberOfStudyRelatedInstances
   }
 }
 
-module.exports = QueryAnswer
+module.exports = QueryStudyAnswer

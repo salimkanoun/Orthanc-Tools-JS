@@ -1,8 +1,8 @@
 const request = require('request-promise-native')
 const OriginalRequest = require('request')
 const fs = require('fs')
-const QueryAnswer = require('./QueryAnswer')
-const QuerySerieAnswer = require('./QuerySerieAnswer')
+const QueryStudyAnswer = require('./queries-answer/QueryStudyAnswer')
+const QuerySerieAnswer = require('./queries-answer/QuerySerieAnswer')
 const TagAnon = require('./TagAnon')
 
 /**
@@ -372,7 +372,7 @@ class Orthanc {
             modalitiesInStudy = element['0008,0061'].Value
           }
           const origineAET = aet
-          const queryAnswserObject = new QueryAnswer(answerId, answerNumber, queryLevel, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate, numberOfStudyRelatedSeries, numberOfStudyRelatedInstances)
+          const queryAnswserObject = new QueryStudyAnswer(answerId, answerNumber, queryLevel, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate, numberOfStudyRelatedSeries, numberOfStudyRelatedInstances)
           answersObjects.push(queryAnswserObject)
           answerNumber++
         })

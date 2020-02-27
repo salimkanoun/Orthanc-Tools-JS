@@ -1,7 +1,7 @@
 const RetrieveRobot = require('../model/RetrieveRobot')
 const RobotJob = require('../model/RobotJob')
 const Orthanc = require('../model/Orthanc')
-const QueryAnswer = require('../model/QueryAnswer')
+const QueryAnswer = require('../model/queries-answer/QueryStudyAnswer')
 
 describe('Retrieve Robot', () => {
   let orthanc = null
