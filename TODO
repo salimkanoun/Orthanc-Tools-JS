@@ -5,16 +5,18 @@ Front :
 - Robot Level Series
     - Gerer la selection pour le robot...
     - Filtre sur le niveau Series => Contains et equal sur modality et series description
+    - Gerer le robot pour qu'ils traites retrieve au niveau series et study
 
 - Refesh automatique des vues de robot detail et de robot liste 
 
 - Interface Suivi robot (pour un utilisateur)
-    - Validation
+    - Validation robot job
         - Soit manuelle par administrateur
-        - Soit automatique lors declanchement robot (avant retrieve)
-    -   Si requete faite => 
-            - Liens vers visualisation dans OHIF
+        - Soit automatique lors declanchement robot (avant retrieve ? ou lors de la creation du job ?)
+    -   Si requete faite , ressource disponible => 
+            - Liens vers visualisation dans OHIF -> Fait un composant reutilisable
     -   Export rapport Query / Retrieve
+    -   Telechargement du zip vers client ?
 
 - Interface suivi des robots (tous) pour un administrateur
     -   Validation d'un robot avant execution (fonction preset plateforme)
@@ -31,10 +33,17 @@ Front :
     - Devra etre fait avec un robot coté back ?
 
 - Module Export
+    - Liste d'item avec possibilité de créer un ou plusieurs ZIP
+
+- Module manual Query
+    - Reutiliser le form de recherche
+    - Reutiliser la table result study et series et y ajouter les bouttons retrieve
+
+- Module Import d'image
+    - Faire un composant commun avec GaelO
 
 + tard  : 
 - historique des query dans BDD pour relancer une ancienne requete
-- Manual Query avec le formulaire manuel avec un duplicat de la table results
 
 Back :
 - Midelware securite acces robot => Reste a securiser les route pour lire le robot en fonction du role
@@ -42,8 +51,6 @@ https://jasonwatmore.com/post/2018/11/28/nodejs-role-based-authorization-tutoria
 - Ne pas autoriser la modification du robot pendant sont execetion (bug Pierre D)
 - PassportJS pour stateless
 - Envisager de switcher de Request à Got...
-
-
 
 Tutos : 
 https://towardsdatascience.com/react-best-practices-804def6d5215
