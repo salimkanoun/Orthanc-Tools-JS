@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import Options from './Options'
 import RobotStatus from './RobotStatus'
-import Aets from './Aets'
-import AetForm from './AetForm'
+import AetPanel from './AetPanel'
 
 export default class AdminPanel extends Component {
 
@@ -28,7 +27,7 @@ export default class AdminPanel extends Component {
       case 'General' : 
         return ([<Options />])
       case 'Aets' : 
-        return ([ <AetForm />, <Aets /> ])
+        return ([ <AetPanel />])
       case 'Robots' : 
         return ([<RobotStatus />])
       default : 

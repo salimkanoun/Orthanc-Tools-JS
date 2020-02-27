@@ -24,8 +24,7 @@ Front :
 
 - Spliter firstName, LastName dans toutes les tables query / results ?
 
-- Settings 
-    - Splitter les "domaines" dans des tabs avec refresh auto (plus de refresh)
+- Settings
     - AutoQuery : 
         - Nombre limit de query si < limit => Retrieve auto
 

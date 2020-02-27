@@ -24,8 +24,6 @@ export default class AetForm extends Component {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
-
-        console.log(value)
         
         this.setState({
             [name]: value
@@ -34,35 +32,32 @@ export default class AetForm extends Component {
     }
 
     manufacturerChangeListener(item){
-        //Ajouter au state les valeurs selectionnées
         this.setState({
           ...this.state,
           manufacturer : item.value
         })
-  
-      }
-
+    }
 
     async handleClick() {
+
         let postString = JSON.stringify({ name: this.state.name, 
                                         aetName: this.state.aetName,
                                         ip : this.state.ip,
                                         port : this.state.port,
                                         manufacturer : this.state.manufacturer })
 
-        let putAnswer = await fetch("/api/aets",
-            {
+        await fetch("/api/aets", {
                 method: "PUT",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: postString
-            }).then((answer) => {
-                return (answer.json())
-            })
+        }).then((answer) => {
+            return (answer.json())
+        })
 
-        console.log(putAnswer)
+        this.props.refreshAetData()
 
     }
 

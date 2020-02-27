@@ -1,20 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
 import { toast } from 'react-toastify';
 
-export default class RobotStatus extends Component {
-
-    constructor(props){
-        super(props)
-        this.refreshHandler=this.refreshHandler.bind(this)
-        this.state = {
-            rows : []
-        }
-    }
-
-    componentDidMount(){
-        this.refreshHandler();
-    }
+export default class Aets extends Component {
 
     columns = [{
         dataField: 'key',
@@ -42,17 +30,17 @@ export default class RobotStatus extends Component {
     }, {
         dataField : 'remove',
         text : 'Remove Aet',
-        formatter : this.removeAetButton,
+        formatter : this.deleteAetButton,
         formatExtraData : this
     }];
 
     echoAetButton(cell, row, rowIndex, formatExtraData) {
         return (<div className="text-center">
-            <input type="button" className='btn btn-info' onClick = {() => formatExtraData.echoAetHandler(row.name, formatExtraData.refreshHandler)} value = "Echo" />
+            <input type="button" className='btn btn-info' onClick = {() => formatExtraData.echoAetHandler(row.name)} value = "Echo" />
         </div>)
     }
 
-    echoAetHandler(aetName, refreshHandler){
+    echoAetHandler(aetName){
 
         fetch('/api/aets/' + aetName + '/echo', {
             method : 'GET'
@@ -81,62 +69,29 @@ export default class RobotStatus extends Component {
 
     }
 
-    removeAetButton(cell, row, rowIndex, formatExtraData) {
+    deleteAetButton(cell, row, rowIndex, formatExtraData) {
+        console.log(formatExtraData)
         return (<div className="text-center">
-            <input type="button" className='btn btn-danger' onClick = {() => formatExtraData.deleteAetHandler(row.name, formatExtraData.refreshHandler)} value = "Remove" />
+            <input type="button" className='btn btn-danger' onClick = {() => formatExtraData.deleteAetHandler(row.name, formatExtraData.props.refreshAetData)} value = "Remove" />
             </div>)
     }
 
     deleteAetHandler(aetName, refreshHandler){
         fetch('/api/aets/'+aetName, {
             method : 'DELETE'
-        }).then( res => res.json() ).then(() => {
+        })
+        .then( res => res.json() )
+        .then(() => {
             refreshHandler()
         })
 
     }
 
-    refreshHandler(){
-
-        fetch("/api/aets", {
-        method: "GET",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-        }).then((answer)=>{
-           return answer.json()})
-           .then( (answerData) => {
-
-                let state=this.state
-
-                state.rows = []
-
-                answerData.forEach(aet => {
-                    state.rows.push({
-                        key : Math.random(),
-                        name : aet.name,
-                        aetName : aet.aetName,
-                        ip : aet.ip,
-                        port : aet.port,
-                        manufacturer : aet.manufacturer
-                    })
-                    
-                });
-
-                this.setState({
-                    ...this.state
-                })
-
-           })
-    }
-
     render() {
         return (
-            <div>
-                <BootstrapTable keyField="key" striped={true} data={this.state.rows} columns={this.columns} />
-                <input type="button" className="btn btn-info" value="Refresh" onClick={this.refreshHandler} />
-            </div>
+            <Fragment>
+                <BootstrapTable keyField="key" striped={true} data={this.props.rows} columns={this.columns} />
+            </Fragment>
         )
     }
 }
