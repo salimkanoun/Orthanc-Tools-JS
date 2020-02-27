@@ -42,11 +42,15 @@ https://jasonwatmore.com/post/2018/11/28/nodejs-role-based-authorization-tutoria
 - PassportJS pour stateless
 - Envisager de switcher de Request à Got (damn...)
 
+
+
 Tutos : 
 
 Sequelize
 https://stackabuse.com/using-sequelize-js-and-sqlite-in-an-express-js-app/
 
+--Compilation
+Executable windows avec wix ?
 
 -- Documentation
 In Orthanc :  set "DicomModalitiesInDatabase" : true

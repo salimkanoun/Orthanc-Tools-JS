@@ -1,13 +1,20 @@
 {
   "name": "@salim.kanoun/imagefetcher",
+  "author": {
+    "name": "Salim Kanoun",
+    "email": "salim.kanoun@gmail.com",
+    "url": "https://GaelO.fr"
+  },
+  "license": "AGPL v3",
   "version": "0.0.2",
   "private": false,
-  "bin": "app.js",
+  "main": "app.js",
   "scripts": {
     "db:migrate": "./node_modules/.bin/sequelize db:migrate",
     "start": "node app.js",
     "pretest": "APP_ENV=test npm run db:migrate",
-    "test": "./node_modules/.bin/jasmine"
+    "test": "./node_modules/.bin/jasmine",
+    "build" : "nexe -r database/**/* "
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

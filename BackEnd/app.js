@@ -15,7 +15,6 @@ var usersRouter = require('./routes/users')
 var app = express()
 
 // static routes
-app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'build')))
 
 app.use(logger('dev'))
