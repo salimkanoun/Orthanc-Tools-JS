@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import Options from './Options'
-import RobotStatus from './RobotStatus'
 import AetPanel from './AetPanel'
+import AutoRetrieveOptions from './AutoRetrieveOptions'
 
 export default class AdminPanel extends Component {
 
@@ -15,8 +14,6 @@ export default class AdminPanel extends Component {
 
 
   clickHandler(event){
-    console.log(event)
-    console.log(event.target.value)
     this.setState({
       selectedOptionMenu : event.target.value
     })
@@ -25,11 +22,11 @@ export default class AdminPanel extends Component {
   getComponentToDisplay(){
     switch (this.state.selectedOptionMenu){
       case 'General' : 
-        return ([<Options />])
+        return (<div></div>)
       case 'Aets' : 
         return ([ <AetPanel />])
       case 'Robots' : 
-        return ([<RobotStatus />])
+        return ([<AutoRetrieveOptions />])
       default : 
         return ([])
     }

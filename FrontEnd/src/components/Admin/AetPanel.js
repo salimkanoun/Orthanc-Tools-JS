@@ -50,8 +50,8 @@ export default class AetPanel extends Component {
     render(){
         return (
             <Fragment>
-                <AetForm refreshAetData={this.refreshAetsData} />
                 <Aets rows={this.state.aets} refreshAetData={this.refreshAetsData} />
+                <AetForm refreshAetData={this.refreshAetsData} />
             </Fragment>
         )
     }

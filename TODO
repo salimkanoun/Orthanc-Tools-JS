@@ -25,6 +25,7 @@ Front :
 - Spliter firstName, LastName dans toutes les tables query / results ?
 
 - Settings
+    - General gérer la connexion avec Orthanc persistance avec https://www.npmjs.com/package/configstore
     - AutoQuery : 
         - Nombre limit de query si < limit => Retrieve auto
 
