@@ -134,7 +134,7 @@ class TableResult extends Component {
         dataField: 'numberOfStudyRelatedSeries',
         text: 'Series'
     }, {
-        dataField: 'numberOfStudyRelatedInstances',
+        dataField: 'numberOfSeriesRelatedInstances',
         text: 'Instances'
     }];
 

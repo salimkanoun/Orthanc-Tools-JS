@@ -15,18 +15,18 @@ class TableResultSeries extends Component {
         console.log(props.rowData)
     }
 
-    componentDidMount(){
-        this.fetchDataIfUnknown(this.props.rowData.studyInstanceUID, this.props.rowData.originAET)
+    async componentDidMount(){
+        await this.fetchDataIfUnknown(this.props.rowData.studyInstanceUID, this.props.rowData.originAET)
     }
 
-    fetchDataIfUnknown(studyInstanceUID, originAET){
+    async fetchDataIfUnknown(studyInstanceUID, originAET){
         
         var result = this.props.results.filter(study => {
             return study.studyInstanceUID === studyInstanceUID
         })
 
         if (result[0]['seriesDetails'].length === 0 ){
-            this.getSeriesDetails(studyInstanceUID, originAET)
+            await this.getSeriesDetails(studyInstanceUID, originAET)
         } 
     }
 
