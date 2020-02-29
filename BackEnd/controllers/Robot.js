@@ -16,15 +16,14 @@ const getRobotDetails = async function (req, res) {
   res.json(data)
 }
 
-const removeQueryFromJob = async function (req, res){
+const removeQueryFromJob = async function (req, res) {
   const orthanc = new Orthanc()
   const robotSingleton = new RobotSingleton(orthanc)
   const retrieveRobot = robotSingleton.getRobot()
   if (req.params.username !== undefined) {
     retrieveRobot.robotJobs[req.params.username].removeRetrieveItem(req.params.index)
-  } 
+  }
   res.json(retrieveRobot.getRobotData(req.params.username))
-
 }
 
 const deleteRobotJob = async function (req, res) {
@@ -35,7 +34,17 @@ const deleteRobotJob = async function (req, res) {
   res.end()
 }
 
-const createRobot = async function (req, res) {
+const validateRobotJob = async function (req, res) {
+  const orthanc = new Orthanc()
+  const robotSingleton = new RobotSingleton(orthanc)
+  const retrieveRobot = robotSingleton.getRobot()
+  console.log('stating validation')
+  retrieveRobot.validateRobotJob(req.params.username)
+  res.json('Finished')
+
+}
+
+const addRobotJob = async function (req, res) {
   const orthanc = new Orthanc()
   const robotSingleton = new RobotSingleton(orthanc)
   const retrieveRobot = robotSingleton.getRobot()
@@ -44,17 +53,16 @@ const createRobot = async function (req, res) {
   const robotJob = new RobotJob(req.session.username, body.projectName)
 
   body.studyArray.forEach((retrieveQuery) => {
-    robotJob.addRetrieveItem('study', retrieveQuery.patientName, retrieveQuery.patientID, retrieveQuery.studyDate, retrieveQuery.modality, retrieveQuery.studyDescription, retrieveQuery.accessionNb, retrieveQuery.aet)
+    robotJob.addRetrieveItem('study', retrieveQuery.patientName, retrieveQuery.patientID, retrieveQuery.studyDate, retrieveQuery.modality, retrieveQuery.studyDescription, retrieveQuery.accessionNb, retrieveQuery.studyInstanceUID, retrieveQuery.aet)
   })
 
   retrieveRobot.addRobotJob(robotJob)
   const orthancSystem = await orthanc.getSystem()
-  console.log('Orthanc System')
-  console.log(orthancSystem)
+
   retrieveRobot.setDestination(orthancSystem.DicomAet)
   retrieveRobot.scheduleRetrieve()
 
   res.json('Done')
 }
 
-module.exports = { createRobot, getRobotDetails, deleteRobotJob, removeQueryFromJob }
+module.exports = { addRobotJob, getRobotDetails, deleteRobotJob, removeQueryFromJob, validateRobotJob }

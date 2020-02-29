@@ -27,6 +27,7 @@ export default class CreateRobot extends Component {
         modality: result.modalitiesInStudy,
         studyDescription: result.studyDescription,
         accessionNb: result.accessionNumber,
+        studyInstanceUID : result.studyInstanceUID,
         aet: result.originAET
       }
 

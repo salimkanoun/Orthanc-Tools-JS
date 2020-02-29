@@ -33,7 +33,6 @@ describe('Testing User Data', () => {
   it('should report user admin status', async () => {
     const userObject = new User('TestUser')
     expect(await userObject.isAdmin()).toBe(false)
-
   })
 
   it('should delete user', async () => {

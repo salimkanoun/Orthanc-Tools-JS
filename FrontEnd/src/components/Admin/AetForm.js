@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Select from 'react-select'
 
 export default class AetForm extends Component {
@@ -24,8 +24,6 @@ export default class AetForm extends Component {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
-
-        console.log(value)
         
         this.setState({
             [name]: value
@@ -34,42 +32,39 @@ export default class AetForm extends Component {
     }
 
     manufacturerChangeListener(item){
-        //Ajouter au state les valeurs selectionnées
         this.setState({
           ...this.state,
           manufacturer : item.value
         })
-  
-      }
-
+    }
 
     async handleClick() {
+
         let postString = JSON.stringify({ name: this.state.name, 
                                         aetName: this.state.aetName,
                                         ip : this.state.ip,
                                         port : this.state.port,
                                         manufacturer : this.state.manufacturer })
 
-        let putAnswer = await fetch("/api/aets",
-            {
+        await fetch("/api/aets", {
                 method: "PUT",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: postString
-            }).then((answer) => {
-                return (answer.json())
-            })
+        }).then((answer) => {
+            return (answer.json())
+        })
 
-        console.log(putAnswer)
+        this.props.refreshAetData()
 
     }
 
     render() {
         return (
-            <div className="jumbotron" >
-                <div>
+            <Fragment>
+                <div className="form-group">
                     <h2 className="card-title">Add Aet</h2>
                     <label htmlFor="name">Name : </label>
                     <input type='text' name="name" className="row form-control" onChange={this.handleChange} />
@@ -79,12 +74,14 @@ export default class AetForm extends Component {
                     <input type='text' name="ip" className="row form-control" onChange={this.handleChange} />
                     <label htmlFor="port">Port : </label>
                     <input type='number' min="0" max="999999" name="port" className="row form-control" onChange={this.handleChange} />
-                    <label htmlFor="manufacturer">manufacturer : </label>
+                    <label htmlFor="manufacturer">Manufacturer : </label>
                     <Select options={this.manufacturers} name="manufacturer" onChange={this.manufacturerChangeListener}/>
-        
-                    <input type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
+                    
                 </div>
-            </div>
+                <div className="text-right mb-5">
+                <input type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
+                </div>
+            </Fragment>
         )
     }
 }

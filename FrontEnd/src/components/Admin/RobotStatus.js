@@ -8,6 +8,7 @@ export default class RobotStatus extends Component {
         super(props)
         this.refreshHandler = this.refreshHandler.bind(this)
         this.deleteJobHandler = this.deleteJobHandler.bind(this)
+        this.validationRobotHandler = this.validationRobotHandler.bind(this)
         this.state = {
             rows : []
         }
@@ -33,6 +34,11 @@ export default class RobotStatus extends Component {
         dataField: 'details',
         text: 'Show Details',
         formatter: this.showRobotDetailsButton
+    },{
+        dataField: 'validated',
+        text: 'Validation Status',
+        formatter : this.validationComponent,
+        formatExtraData : this
     }, {
         dataField : 'remove',
         text : 'Remove Robot',
@@ -40,6 +46,16 @@ export default class RobotStatus extends Component {
         formatExtraData : this
     }];
 
+    validationComponent(cell, row, rowIndex, formatExtraData){
+        if(row.validated !== 'Not Done'){
+            return <div className="text-center">{row.validated}</div>
+        }else{
+            return (<div className="text-center">
+                        <input type="button" className='btn btn-success' onClick={() => formatExtraData.validationRobotHandler(row.username, formatExtraData.refreshHandler)} value="Validate" />
+                    </div>)
+        }
+
+    }
     showRobotDetailsButton(cell, row, rowIndex, formatExtraData) {
         return <Link className='nav-link btn btn-info' to={'/robot/'+row.username} > Details </Link>
     }
@@ -47,14 +63,29 @@ export default class RobotStatus extends Component {
 
     removeRobotButton(cell, row, rowIndex, formatExtraData) {
         return (<div className="text-center">
-            <input type="button" className='btn btn-danger' onClick = {() => formatExtraData.deleteJobHandler(formatExtraData.refreshHandler)} value = "Remove Job" />
+            <input type="button" className='btn btn-danger' onClick = {() => formatExtraData.deleteJobHandler(row.username, formatExtraData.refreshHandler)} value = "Remove Job" />
             </div>)
     }
 
-    deleteJobHandler (refreshHandler) {
+    validationRobotHandler(username, refreshHandler){
+
+        fetch("/api/robot/"+username+"/validate", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            })
+            .then(()=>{
+                refreshHandler()
+            }).catch( (error)=>{ console.log(error) } )
+
+    }
+
+    deleteJobHandler (username , refreshHandler) {
         
-        fetch("/api/robot/salim", {
-            method: "DELETE"
+        fetch("/api/robot/"+username, {
+            method: "DELETE",
             })
             .then(()=>{
                 refreshHandler()
@@ -85,7 +116,8 @@ export default class RobotStatus extends Component {
                         key : Math.random(),
                         name : robotJob.projectName,
                         username : robotJob.username,
-                        queriesNb : robotJob.retrieveList.length
+                        queriesNb : robotJob.retrieveList.length,
+                        validated : robotJob.validated
                     })
                     
                 });
@@ -99,10 +131,7 @@ export default class RobotStatus extends Component {
 
     render() {
         return (
-                <div className="jumbotron">
-                    <BootstrapTable keyField="key" striped={true} data={this.state.rows} columns={this.columns} />
-                    <input type="button" className="btn btn-info" value="Refresh" onClick={this.refreshHandler} />
-                </div>
+            <BootstrapTable keyField="key" striped={true} data={this.state.rows} columns={this.columns} />
         )
     }
 }

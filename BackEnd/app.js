@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 var createError = require('http-errors')
 var express = require('express')
 var morgan = require('morgan')
@@ -15,7 +13,6 @@ var usersRouter = require('./routes/users')
 var app = express()
 
 // static routes
-app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'build')))
 
 app.use(logger('dev'))

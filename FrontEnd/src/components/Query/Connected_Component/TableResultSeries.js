@@ -7,9 +7,6 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { connect } from 'react-redux'
 import * as actions from '../../../actions/TableResult'
 
-import RetrieveButton from './RetrieveButton'
-import ExportButton from './ExportButton'
-
 
 class TableResultSeries extends Component {
 
@@ -18,18 +15,18 @@ class TableResultSeries extends Component {
         console.log(props.rowData)
     }
 
-    componentDidMount(){
-        this.fetchDataIfUnknown(this.props.rowData.studyInstanceUID, this.props.rowData.originAET)
+    async componentDidMount(){
+        await this.fetchDataIfUnknown(this.props.rowData.studyInstanceUID, this.props.rowData.originAET)
     }
 
-    fetchDataIfUnknown(studyInstanceUID, originAET){
+    async fetchDataIfUnknown(studyInstanceUID, originAET){
         
         var result = this.props.results.filter(study => {
             return study.studyInstanceUID === studyInstanceUID
         })
 
         if (result[0]['seriesDetails'].length === 0 ){
-            this.getSeriesDetails(studyInstanceUID, originAET)
+            await this.getSeriesDetails(studyInstanceUID, originAET)
         } 
     }
 
@@ -114,19 +111,8 @@ class TableResultSeries extends Component {
         text: 'Serie Number',
         sort: true
     }, {
-        dataField: 'retrive',
-        text: 'Retrieve',
-        formatter: this.retrieveButton,
-        csvExport: false
-    }, {
-        dataField: 'jobId',
-        hidden: true,
-        csvExport: false
-    }, {
-        dataField: 'export',
-        text: 'Export',
-        formatter: this.exportButton,
-        csvExport: false
+        dataField: 'numberOfSeriesRelatedInstances',
+        text: 'Instances'
     }];
 
     render() {
@@ -154,17 +140,6 @@ class TableResultSeries extends Component {
                 }
             </ToolkitProvider>
         )
-    }
-
-
-    retrieveButton(cell, row, rowIndex, formatExtraData) {
-        //Add Retrieve button for each result with row data in props
-        return <RetrieveButton rowData={row} />
-
-    }
-
-    exportButton(cell, row, rowIndex, formatExtraData) {
-        return <ExportButton rowData={row} />
     }
 
 

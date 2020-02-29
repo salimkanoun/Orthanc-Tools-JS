@@ -4,7 +4,7 @@ var postQuery = async function (req, res) {
   const body = req.body
   var orthancInstance = new Orthanc()
   let queryAnswer = null
-  
+
   if (body.level === 'Study') {
     orthancInstance.buildDicomQuery('Study', body.patientName, body.patientID, body.date, body.modality,
       body.studyDescription, body.accessionNumber)

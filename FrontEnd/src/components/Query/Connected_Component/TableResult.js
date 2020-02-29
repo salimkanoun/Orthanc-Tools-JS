@@ -10,8 +10,6 @@ import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 import { connect } from 'react-redux'
 import * as actions from '../../../actions/TableResult'
 
-import RetrieveButton from './RetrieveButton'
-import ExportButton from './ExportButton'
 import CreateRobot from './../Component/CreateRobot'
 
 import TableResultSeries from './TableResultSeries'
@@ -133,15 +131,11 @@ class TableResult extends Component {
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'retrive',
-        text: 'Retrieve',
-        formatter: this.retrieveButton,
-        csvExport: false
+        dataField: 'numberOfStudyRelatedSeries',
+        text: 'Series'
     }, {
-        dataField: 'export',
-        text: 'Export',
-        formatter: this.exportButton,
-        csvExport: false
+        dataField: 'numberOfSeriesRelatedInstances',
+        text: 'Instances'
     }];
 
       
@@ -177,7 +171,7 @@ class TableResult extends Component {
                                     <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
                                     <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                                     <div className="mt-5">
-                                        <BootstrapTable ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} expandRow={ this.expandRow } >
+                                        <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} expandRow={ this.expandRow } >
                                         </BootstrapTable>
                                     </div>
                                 </div>
@@ -188,16 +182,6 @@ class TableResult extends Component {
                 }
             </ToolkitProvider>
         )
-    }
-
-    retrieveButton(cell, row, rowIndex, formatExtraData) {
-        //Add Retrieve button for each result with row data in props
-        return <RetrieveButton rowData={row} />
-
-    }
-
-    exportButton(cell, row, rowIndex, formatExtraData) {
-        return <ExportButton rowData={row} />
     }
 
 }

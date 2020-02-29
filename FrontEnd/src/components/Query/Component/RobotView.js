@@ -2,16 +2,22 @@ import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import filterFactory, { textFilter, dateFilter, selectFilter } from 'react-bootstrap-table2-filter'
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 export default class RobotView extends Component {
+
+    state = {
+        rows : [],
+        username : this.props.match.params.username,
+        totalPercentageProgress : 0,
+        percentageFailure: 0
+    }
 
     constructor(props){
         super(props)
         this.refreshHandler=this.refreshHandler.bind(this)
-        this.state = {
-            rows : [],
-            username : this.props.match.params.username
-        }
+        
     }
 
     componentDidMount(){
@@ -90,6 +96,10 @@ export default class RobotView extends Component {
                     })
                     
                 });
+                if(answerData.totalInstances !== 0){
+                    state.totalPercentageProgress = (answerData.retrievedInstances / answerData.totalInstances)
+                    state.percentageFailure = (answerData.failedInstances / answerData.totalInstances)
+                }
 
                 this.setState({
                     ...this.state
@@ -123,8 +133,29 @@ export default class RobotView extends Component {
     render() {
         return (
                 <div className="jumbotron">
-                    <h1> Robot for user {this.state.username}, project : {this.state.projectName} </h1>
-                    <BootstrapTable keyField="key" striped={true} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
+                    <div class="row mb-5">
+                    <h1 class="col"> Robot for user {this.state.username}, project : {this.state.projectName} </h1>
+                    
+                        <div className="col-md-2 text-right" >
+
+                        <CircularProgressbarWithChildren
+                            value={this.state.totalPercentageProgress} text={`Progress : ${this.state.totalPercentageProgress}%`}
+                            styles={buildStyles({
+                                textSize: '10px'
+                            })}
+                        >
+                            {/* Foreground path */}
+                            <CircularProgressbar
+                            value={this.state.percentageFailure}
+                            styles={buildStyles({
+                                trailColor: "transparent",
+                                pathColor: "#f00"
+                            })}
+                            />
+                        </CircularProgressbarWithChildren>
+                        </div>
+                    </div>
+                    <BootstrapTable wrapperClasses="table-responsive" keyField="key" striped={true} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
                 </div>
         )
     }
