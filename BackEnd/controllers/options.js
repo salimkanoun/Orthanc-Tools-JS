@@ -10,4 +10,22 @@ var getSchedule = async function (req, res) {
   res.json(optionsValues)
 }
 
-module.exports = { changeSchedule, getSchedule }
+var getOrthancServer =  function (req, res) {
+  let orthancSettings = Options.getOrthancConnexionSettings()
+  res.json(orthancSettings)
+}
+
+var setOrthancServer =  function (req, res) {
+  let data=req.body
+  Options.setOrthancConnexionSettings(data.address, data.port, data.username, data.password)
+  res.end()
+}
+
+var getOrthancSystem = async function (req, res) {
+  var Orthanc = require('../model/Orthanc')
+  orthancInstance = new Orthanc()
+  const systemInfo = await orthancInstance.getSystem()
+  res.json(systemInfo)
+}
+
+module.exports = { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getOrthancSystem }

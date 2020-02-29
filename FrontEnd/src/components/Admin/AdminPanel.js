@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import OrthancSettings from './OrthancSettings'
 import AetPanel from './AetPanel'
 import AutoRetrieveOptions from './AutoRetrieveOptions'
 
@@ -22,7 +23,7 @@ export default class AdminPanel extends Component {
   getComponentToDisplay(){
     switch (this.state.selectedOptionMenu){
       case 'General' : 
-        return (<div></div>)
+        return (<OrthancSettings/>)
       case 'Aets' : 
         return ([ <AetPanel />])
       case 'Robots' : 

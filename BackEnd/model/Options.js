@@ -1,4 +1,7 @@
 const db = require('../database/models')
+const Configstore = require('configstore');
+const packageJson = require('../package.json');
+const config = new Configstore(packageJson.name, {OrthancAdress: 'http://localhost', OrthancPort : 8042});
 
 const Options = {
 
@@ -12,7 +15,24 @@ const Options = {
     option.hour = hour
     option.min = min
     await option.save()
+  },
+
+  setOrthancConnexionSettings :  (address, port, username, password) => {
+    config.set('OrthancAdress', address);
+    config.set('OrthancPort', port);
+    config.set('OrthancUsername', username);
+    config.set('OrthancPassword', password);
+  },
+
+  getOrthancConnexionSettings : () =>{
+    return {
+      OrthancAdress : config.get('OrthancAdress'),
+      OrthancPort : config.get('OrthancPort'),
+      OrthancUsername : config.get('OrthancUsername'),
+      OrthancPassword : config.get('OrthancPassword')
+    }
   }
+  
 }
 
 module.exports = Options

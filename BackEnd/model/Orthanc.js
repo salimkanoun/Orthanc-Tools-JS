@@ -1,3 +1,4 @@
+const Options = require('./Options')
 const request = require('request-promise-native')
 const OriginalRequest = require('request')
 const fs = require('fs')
@@ -10,14 +11,11 @@ const TagAnon = require('./TagAnon')
  */
 class Orthanc {
   constructor () {
-    this.address = process.env.ORTHANC_HOST
-    this.port = process.env.ORTHANC_PORT
-    this.username = process.env.ORTHANC_USERNAME
-    this.password = process.env.ORTHANC_PASS
-    console.log(this.address)
-    console.log(this.port)
-    console.log(this.username)
-    console.log(this.password)
+    let orthancSettions = Options.getOrthancConnexionSettings()
+    this.address = orthancSettions['OrthancAdress']
+    this.port = orthancSettions['OrthancPort']
+    this.username = orthancSettions['OrthancUsername']
+    this.password = orthancSettions['OrthancPassword']
   }
 
   /**

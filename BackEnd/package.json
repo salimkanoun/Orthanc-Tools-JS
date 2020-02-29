@@ -1,5 +1,5 @@
 {
-  "name": "@salim.kanoun/imagefetcher",
+  "name": "@salim.kanoun/orthanctools",
   "author": {
     "name": "Salim Kanoun",
     "email": "salim.kanoun@gmail.com",
@@ -14,13 +14,13 @@
     "start": "node app.js",
     "pretest": "APP_ENV=test npm run db:migrate",
     "test": "./node_modules/.bin/jasmine",
-    "build" : "nexe -r database/**/* "
+    "build": "nexe -r database/**/* "
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "configstore": "^5.0.1",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
-    "dotenv": "^8.2.0",
     "ejs": "~2.6.1",
     "eslint": "^6.8.0",
     "express": "~4.16.1",
@@ -53,6 +53,7 @@
     "jasmine-console-reporter": "^3.1.0",
     "mocha": "^7.0.1",
     "nodemon": "^2.0.2",
-    "standard": "^14.3.1"
+    "standard": "^14.3.1",
+    "supertest": "^4.0.2"
   }
 }

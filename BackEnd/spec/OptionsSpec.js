@@ -17,4 +17,14 @@ describe('Testing Options', () =>{
         expect(schedule.min).toBe(30)
         await Options.setScheduleTime(22, 00);
     })
+
+    it('shoud set orthanc settings', () => {
+        Options.setOrthancConnexionSettings('http://localhost', 8042, 'salimTest', 'salim')
+        expect(Options.getOrthancConnexionSettings()).toEqual({
+            OrthancAdress : 'http://localhost',
+            OrthancPort : 8042,
+            OrthancUsername : 'salimTest',
+            OrthancPassword : 'salim'
+        })
+    })
 })

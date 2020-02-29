@@ -4,7 +4,7 @@ var router = express.Router()
 require('express-async-errors')
 
 const { getRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot')
-const { changeSchedule, getSchedule } = require('../controllers/options')
+const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getOrthancSystem } = require('../controllers/options')
 const { getAets, changeAets, echoAets, deleteAet } = require('../controllers/aets')
 const { getJobData } = require('../controllers/jobDetails')
 const { authentication } = require('../controllers/authentication')
@@ -34,11 +34,19 @@ router.post('/robot/:username/validate', [userAuthMidelware, userAdminMidelware]
 // Options routes
 router.get('/options', [userAuthMidelware, userAdminMidelware], getSchedule)
 router.put('/options', [userAuthMidelware, userAdminMidelware], changeSchedule)
+//Orthanc Settings routes
+router.get('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], getOrthancServer)
+router.put('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], setOrthancServer)
+//Orthanc System
+router.get('/options/orthanc-system', [userAuthMidelware, userAdminMidelware], getOrthancSystem)
+getOrthancSystem
 
 // Aets Routes
 router.put('/aets', [userAuthMidelware, userAdminMidelware], changeAets)
 router.get('/aets', userAuthMidelware, getAets)
 router.get('/aets/:name/echo', [userAuthMidelware, userAdminMidelware], echoAets)
 router.delete('/aets/:name', [userAuthMidelware, userAdminMidelware], deleteAet)
+
+
 
 module.exports = router
