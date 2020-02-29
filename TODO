@@ -1,13 +1,13 @@
 Front : 
 - Faire que le select all select tout les non filtre de toutes les pages ? => difficulté....
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
-    
+
+- Refesh automatique des vues de robot detail
+
 - Robot Level Series
     - Gerer la selection pour le robot...
     - Filtre sur le niveau Series => Contains et equal sur modality et series description
     - Gerer le robot pour qu'ils traites retrieve au niveau series et study
-
-- Refesh automatique des vues de robot detail et de robot liste 
 
 - Interface Suivi robot (pour un utilisateur)
     - Validation robot job
@@ -25,7 +25,6 @@ Front :
 - Spliter firstName, LastName dans toutes les tables query / results ?
 
 - Settings
-    - General gérer la connexion avec Orthanc persistance avec https://www.npmjs.com/package/configstore
     - AutoQuery : 
         - Nombre limit de query si < limit => Retrieve auto
 
