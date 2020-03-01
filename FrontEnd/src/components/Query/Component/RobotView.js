@@ -17,11 +17,18 @@ export default class RobotView extends Component {
     constructor(props){
         super(props)
         this.refreshHandler=this.refreshHandler.bind(this)
+        this.startProgressMonitoring = this.startProgressMonitoring.bind(this)
+        this.stopProgressMonitoring = this.stopProgressMonitoring.bind(this)
         
     }
 
     componentDidMount(){
-        this.refreshHandler();
+        this.refreshHandler()
+        this.startProgressMonitoring()
+    }
+
+    componentWillUnmount(){
+        this.stopProgressMonitoring()
     }
 
     columns = [{
@@ -72,6 +79,13 @@ export default class RobotView extends Component {
         formatExtraData : this
     }];
 
+    startProgressMonitoring(){
+        this.intervalChcker = setInterval(this.refreshHandler, 2000)
+    }
+
+    stopProgressMonitoring(){
+        clearInterval(this.intervalChcker)
+    }
 
     refreshHandler(){
 

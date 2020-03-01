@@ -2,7 +2,8 @@ Front :
 - Faire que le select all select tout les non filtre de toutes les pages ? => difficulté....
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
 
-- Refesh automatique des vues de robot detail
+- Debug progression robot
+- Reverse proxy vers dicom-web : https://github.com/http-party/node-http-proxy
 
 - Robot Level Series
     - Gerer la selection pour le robot...
@@ -16,7 +17,6 @@ Front :
     -   Si requete faite , ressource disponible => 
             - Liens vers visualisation dans OHIF -> Fait un composant reutilisable
     -   Export rapport Query / Retrieve
-    -   Telechargement du zip vers client ?
 
 - Interface suivi des robots (tous) pour un administrateur
     -   Validation d'un robot avant execution (fonction preset plateforme)
@@ -33,6 +33,7 @@ Front :
 
 - Module Export
     - Liste d'item avec possibilité de créer un ou plusieurs ZIP
+    - retour du zip vers client
 
 - Module manual Query
     - Reutiliser le form de recherche
