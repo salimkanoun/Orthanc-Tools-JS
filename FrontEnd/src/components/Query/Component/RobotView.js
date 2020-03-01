@@ -71,7 +71,14 @@ export default class RobotView extends Component {
     }, {
         dataField : 'status',
         text : 'Status',
-        filter: textFilter()
+        filter: textFilter(),
+        style: function callback(cell, row, rowIndex, colIndex) {
+            if(cell === 'Retrieved'){
+                return ({backgroundColor: 'green'})
+            }else if (cell === 'Failed'){
+                return ({backgroundColor: 'red'})
+            }
+         }
     }, {
         dataField : 'remove',
         text : 'Remove Query',
@@ -111,8 +118,8 @@ export default class RobotView extends Component {
                     
                 });
                 if(answerData.totalInstances !== 0){
-                    state.totalPercentageProgress = (answerData.retrievedInstances / answerData.totalInstances)
-                    state.percentageFailure = (answerData.failedInstances / answerData.totalInstances)
+                    state.totalPercentageProgress = Math.round((answerData.retrievedInstances / answerData.totalInstances)*100)
+                    state.percentageFailure = Math.round((answerData.failedInstances / answerData.totalInstances)*100)
                 }
 
                 this.setState({

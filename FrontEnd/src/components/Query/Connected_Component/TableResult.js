@@ -54,7 +54,6 @@ class TableResult extends Component {
           return(answer.json())
         })
 
-        console.log(queryAnswers)
         return queryAnswers
 
     }

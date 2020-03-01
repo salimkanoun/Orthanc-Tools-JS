@@ -20,7 +20,6 @@ class RetrieveItem {
   }
 
   setNumberOfSeries (number) {
-    console.log(number)
     this.numberOfSeries = parseInt(number)
   }
 

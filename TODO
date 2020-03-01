@@ -2,7 +2,6 @@ Front :
 - Faire que le select all select tout les non filtre de toutes les pages ? => difficulté....
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
 
-- Debug progression robot
 - Reverse proxy vers dicom-web : https://github.com/http-party/node-http-proxy
 
 - Robot Level Series
@@ -49,6 +48,7 @@ Back :
 - Midelware securite acces robot => Reste a securiser les route pour lire le robot en fonction du role
 https://jasonwatmore.com/post/2018/11/28/nodejs-role-based-authorization-tutorial-with-example-api
 - Ne pas autoriser la modification du robot pendant sont execetion (bug Pierre D)
+- Tester les controlleurs sur les methodes appelées?
 - PassportJS pour stateless
 - Envisager de switcher de Request à Got...
 

@@ -70,8 +70,6 @@ class RetrieveButton extends Component {
         status: currentStatus
       })
 
-      console.log(currentStatus)
-
       if (currentStatus === 'Success' || currentStatus === 'Failure') {
         clearInterval(intervalChcker)
         if (currentStatus === 'Success') {

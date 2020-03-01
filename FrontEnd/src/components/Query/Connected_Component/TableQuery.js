@@ -173,7 +173,7 @@ class TableQuery extends Component {
   }
 
   async query() {
-    console.log(this.node.props.data)
+
     let data = this.node.props.data
 
     for (const query of data) {
@@ -209,9 +209,6 @@ class TableQuery extends Component {
       aet: queryParams.aet
     }
     let postString = JSON.stringify(queryPost)
-    console.log(queryPost)
-
-
 
     let queryAnswers = await fetch("/api/query",
       {

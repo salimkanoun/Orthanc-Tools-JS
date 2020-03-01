@@ -18,8 +18,7 @@ export function addStudyResult (resultData) {
 }
 
 export function setRetrieveStatus (row, isRetrieved) {
-  console.log('row data')
-  console.log(row)
+  
   if (row.level === 'STUDY'){
     return {
       type: SET_RETRIVE_STATUS_STUDY,

@@ -10,11 +10,6 @@ import * as actions from '../../../actions/TableResult'
 
 class TableResultSeries extends Component {
 
-    constructor(props) {
-        super(props)
-        console.log(props.rowData)
-    }
-
     async componentDidMount(){
         await this.fetchDataIfUnknown(this.props.rowData.studyInstanceUID, this.props.rowData.originAET)
     }
@@ -50,21 +45,6 @@ class TableResultSeries extends Component {
           return(answer.json())
         })
 
-        console.log(queryAnswers)
-        //SK SIMULATION REPONSE
-        /*
-        queryAnswers = [{
-            studyInstanceUID : studyUID,
-            serieInstanceUID : 'seriesUID',
-            modality : 'modality',
-            serieDescription : 'seriesDescription',
-            serieNumber : 'seriesNumber',
-            originAET : aet
-
-        }]
-        */
-        console.log(queryAnswers)
-        console.log(this.props)
         this.props.addSeriesDetails(queryAnswers, studyUID)
 
     }
