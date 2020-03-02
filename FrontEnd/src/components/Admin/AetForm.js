@@ -53,8 +53,6 @@ export default class AetForm extends Component {
                     'Content-Type': 'application/json'
                 },
                 body: postString
-        }).then((answer) => {
-            return (answer.json())
         })
 
         this.props.refreshAetData()

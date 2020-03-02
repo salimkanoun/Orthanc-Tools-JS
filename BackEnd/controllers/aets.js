@@ -10,7 +10,7 @@ var changeAets = async function (req, res) {
 }
 
 var echoAets = async function (req, res) {
-  reverseProxy.streamToRes('/modalities/' + req.params.name + '/echo', 'GET', undefined, res )
+  reverseProxy.streamToRes('/modalities/' + req.params.name + '/echo', 'POST', JSON.stringify({}), res )
 }
 
 var deleteAet = async function (req, res) {

@@ -46,7 +46,7 @@ const ReverseProxy  = {
         return options
       },
 
-      streamToRes (api, method, data , res) {
+    streamToRes (api, method, data , res) {
         request(this.makeOptions(method, api, data))
                 .on('response', function (response) {
                     if (response.statusCode === 200) {
@@ -58,6 +58,20 @@ const ReverseProxy  = {
                     console.log(error)
                     res.status(500).send(error.statusMessage);
                 } )
+    },
+
+    streamToFile(api, method, data, streamWriter){
+
+        request(this.makeOptions(method, api, data))
+                .on('response', function (response) {
+                    if (response.statusCode === 200) {
+                        response.pipe(streamWriter)
+                        .on('finish', function () { console.log('Writing Done') })
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                } )
+
     },
 
     async getAnswer(api, method, data){

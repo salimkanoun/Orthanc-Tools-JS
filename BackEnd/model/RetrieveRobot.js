@@ -96,7 +96,7 @@ class RetrieveRobot {
       const retrieveItems = robotJob.getAllRetrieveItems()
 
       for (let i = 0; i < retrieveItems.length; i++) {
-        this.orthancObject.buildDicomQuery('Study', '', '', '', '', '', '', retrieveItems[i].studyInstanceUID)
+        this.orthancObject.buildStudyDicomQuery('', '', '', '', '', '', retrieveItems[i].studyInstanceUID)
         const answerDetails = await this.orthancObject.makeDicomQuery(retrieveItems[i].aet)
 
         if (answerDetails.length === 1) {
@@ -135,8 +135,8 @@ class RetrieveRobot {
     for (let i = 0; i < job.retrieveList.length; i++) {
       const retrieveItem = job.getRetriveItem(i)
 
-      this.orthancObject.buildDicomQuery(retrieveItem.level, retrieveItem.patientName, retrieveItem.patientId, retrieveItem.studyDate + '-' + retrieveItem.studyDate,
-        retrieveItem.modality, retrieveItem.studyDescription, retrieveItem.accessionNb)
+      this.orthancObject.buildStudyDicomQuery(retrieveItem.patientName, retrieveItem.patientId, retrieveItem.studyDate + '-' + retrieveItem.studyDate,
+        retrieveItem.modality, retrieveItem.studyDescription, retrieveItem.accessionNb, retrieveItem.studyInstanceUID)
 
       job.getRetriveItem(i).setStatus(RetrieveItem.STATUS_RETRIVING)
       const answerDetails = await this.orthancObject.makeDicomQuery(retrieveItem.aet)
@@ -147,7 +147,7 @@ class RetrieveRobot {
         const orthancResults = await this.orthancObject.findInOrthancByUid(retrieveAnswer.Query[0]['0020,000d'])
         if (orthancResults.length === 1) {
           job.getRetriveItem(i).setStatus(RetrieveItem.STATUS_RETRIEVED)
-          job.getRetriveItem(i).setRetrievedOrthancId(orthancResults[0])
+          job.getRetriveItem(i).setRetrievedOrthancId(orthancResults[0].ID)
         } else {
           job.getRetriveItem(i).setStatus(RetrieveItem.STATUS_FAILURE)
         }
