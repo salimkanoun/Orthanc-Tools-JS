@@ -35,7 +35,6 @@ class RetrieveRobot {
    * @param {String} aetDestination
    */
   async setDestination (aetDestination = undefined) {
-
     if(aetDestination === undefined){
       let orthancAetName  = await this.orthancObject.getOrthancAetName()
       this.aetDestination = orthancAetName

@@ -26,10 +26,9 @@ const Options = {
   },
 
   getOrthancConnexionSettings : () =>{
-    console.log(Options.configSettings)
 
     if(Options.configSettings === undefined){
-
+      
       Options.configSettings = {
         OrthancAdress : config.get('OrthancAdress'),
         OrthancPort : config.get('OrthancPort'),

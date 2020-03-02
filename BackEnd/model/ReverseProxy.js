@@ -61,12 +61,8 @@ const ReverseProxy  = {
     },
 
     async getAnswer(api, method, data){
-        const requestPromise = request(this.makeOptions(method, api, data)).on('response', function (error, response, body) {
-            if (response.statusCode === 200) {
-                return body.json()
-            }else {
-                throw(error)
-            }
+        const requestPromise = request(this.makeOptions(method, api, data)).then(function (body) {
+            return JSON.parse(body)
         }).catch((error) => { console.log('Error Orthanc communication' + error); return false })
         
         return await requestPromise

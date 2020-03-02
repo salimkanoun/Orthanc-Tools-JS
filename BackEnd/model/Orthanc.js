@@ -69,36 +69,8 @@ class Orthanc {
      * Return /System API data
      */
   async getOrthancAetName () {
-    const self = this
-    const requestPromise = request.get(self._createOptions('GET', '/system')).then(function (body) {
-      return self._answerParser(body)
-    }).then(answer => answer.DicomAet).catch((error) => { console.log('Error Get System ' + error) })
-
-    return requestPromise
-  }
-
-  /**
-     * Add DICOM Peer modality to Orthanc
-     * @param {string} name
-     * @param {string} aet
-     * @param {string} ip
-     * @param {number} port
-     * @param {string} type
-     */
-  putAet (name, aet, ip, port, type) {
-    let data = []
-    if (type === undefined) {
-      data = [aet, ip, port]
-    } else {
-      data = [aet, ip, port, type]
-    }
-    const self = this
-
-    const requestPromise = request.put(self._createOptions('PUT', '/modalities/' + name, JSON.stringify(data))).then(function (body) {
-      return true
-    }).catch((error) => { console.log('Error put AET ' + error) })
-
-    return requestPromise
+    let systemAnswer = await ReverseProxy.getAnswer('/system', 'GET', undefined)
+    return systemAnswer.DicomAet
   }
 
   /**
