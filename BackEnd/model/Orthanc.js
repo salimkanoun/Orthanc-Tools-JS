@@ -9,9 +9,6 @@ const ReverseProxy = require('./ReverseProxy')
  */
 class Orthanc {
 
-  /**
-     * Return /System API data
-     */
   async getOrthancAetName () {
     let systemAnswer = await ReverseProxy.getAnswer('/system', 'GET', undefined)
     return systemAnswer.DicomAet
@@ -399,12 +396,10 @@ class Orthanc {
   }
 
   async makeAnon (level, orthancID, profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription) {
-
     let answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID + '/anonymize', 'POST', self.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription))
-
     return answer
-
   }
+
 }
 
 module.exports = Orthanc

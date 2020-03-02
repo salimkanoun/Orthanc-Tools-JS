@@ -9,7 +9,6 @@ const ReverseProxy  = {
         this.port = orthancSettings['OrthancPort']
         this.username = orthancSettings['OrthancUsername']
         this.password = orthancSettings['OrthancPassword']
-        console.log(this.address+ ':' +this.port)
         return this.address+ ':' +this.port
       },
 
