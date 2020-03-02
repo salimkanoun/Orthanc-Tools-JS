@@ -5,6 +5,7 @@ const fs = require('fs')
 const QueryStudyAnswer = require('./queries-answer/QueryStudyAnswer')
 const QuerySerieAnswer = require('./queries-answer/QuerySerieAnswer')
 const TagAnon = require('./TagAnon')
+const ReverseProxy = require('./ReverseProxy')
 
 /**
  * Orthanc object to communications with orthanc server
@@ -96,15 +97,6 @@ class Orthanc {
     const requestPromise = request.put(self._createOptions('PUT', '/modalities/' + name, JSON.stringify(data))).then(function (body) {
       return true
     }).catch((error) => { console.log('Error put AET ' + error) })
-
-    return requestPromise
-  }
-
-  echoAet (name) {
-    const self = this
-    const requestPromise = request.post(self._createOptions('POST', '/modalities/' + name + '/echo', JSON.stringify({}))).then(function (body) {
-      return true
-    }).catch((error) => { console.log('Error put AET ' + error); return false })
 
     return requestPromise
   }

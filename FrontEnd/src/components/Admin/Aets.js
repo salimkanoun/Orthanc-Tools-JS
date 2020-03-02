@@ -77,7 +77,6 @@ export default class Aets extends Component {
         fetch('/api/aets/'+aetName, {
             method : 'DELETE'
         })
-        .then( res => res.json() )
         .then(() => {
             refreshHandler()
         })

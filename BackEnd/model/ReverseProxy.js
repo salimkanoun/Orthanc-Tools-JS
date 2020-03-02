@@ -1,7 +1,7 @@
 const request = require('request-promise-native')
 const Options = require('./Options')
 
-class ReverseProxy {
+const ReverseProxy  = {
 
       getOrthancAddress () {
         let orthancSettings = Options.getOrthancConnexionSettings()
@@ -9,11 +9,11 @@ class ReverseProxy {
         this.port = orthancSettings['OrthancPort']
         this.username = orthancSettings['OrthancUsername']
         this.password = orthancSettings['OrthancPassword']
-
+        console.log(this.address+ ':' +this.port)
         return this.address+ ':' +this.port
-      }
+      },
 
-      prepareOptions(method, api, data){
+      makeOptions(method, api, data){
         const serverString = this.getOrthancAddress() + api
 
         let options = null
@@ -44,11 +44,10 @@ class ReverseProxy {
         }
 
         return options
-      }
+      },
 
-      getAnswer (api, method, data , res) {
-        
-        request.get(this.getOrthancAddress() + api, options)
+      streamToRes (api, method, data , res) {
+        request(this.makeOptions(method, api, data))
                 .on('response', function (response) {
                     if (response.statusCode === 200) {
                         response.pipe(res)
@@ -57,25 +56,23 @@ class ReverseProxy {
                     }
                 }).catch((error) => {
                     console.log(error)
-                    res.status(error.statusCode).send(error.statusMessage);
+                    res.status(500).send(error.statusMessage);
                 } )
+    },
+
+    async getAnswer(api, method, data){
+        const requestPromise = request(this.makeOptions(method, api, data)).on('response', function (error, response, body) {
+            if (response.statusCode === 200) {
+                return body.json()
+            }else {
+                throw(error)
+            }
+        }).catch((error) => { console.log('Error Orthanc communication' + error); return false })
+        
+        return await requestPromise
+
     }
+
 }
 
-function getOrthancApis ( api, res ) {
-    if(ReverseProxy.instance == undefined){
-        ReverseProxy.instance = new ReverseProxy()
-    }
-    ReverseProxy.instance.getAnswer('GET', api, undefined , res)
-}
-
-function deleteOrthancApis ( api, res ){
-    if(ReverseProxy.instance == undefined){
-        ReverseProxy.instance = new ReverseProxy()
-    }
-
-    ReverseProxy.instance.getAnswer('DELETE', api, undefined, res)
-
-}
-
-module.exports = {getOrthancApis, deleteOrthancApis}
+module.exports = ReverseProxy

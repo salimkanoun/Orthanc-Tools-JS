@@ -22,14 +22,15 @@ const Options = {
     config.set('OrthancPort', port);
     config.set('OrthancUsername', username);
     config.set('OrthancPassword', password);
-    this.configSettings = undefined
+    Options.configSettings = undefined
   },
 
   getOrthancConnexionSettings : () =>{
+    console.log(Options.configSettings)
 
-    if(this.configSettings === undefined){
+    if(Options.configSettings === undefined){
 
-      this.configSettings = {
+      Options.configSettings = {
         OrthancAdress : config.get('OrthancAdress'),
         OrthancPort : config.get('OrthancPort'),
         OrthancUsername : config.get('OrthancUsername'),
@@ -38,7 +39,7 @@ const Options = {
 
     }
     
-    return this.configSettings
+    return Options.configSettings
   }
   
 }

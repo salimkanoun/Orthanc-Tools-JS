@@ -28,7 +28,7 @@ var setOrthancServer =  function (req, res) {
 }
 
 var getOrthancSystem = async function (req, res) {
-  ReverseProxy.getOrthancApis('/system', res)
+  ReverseProxy.streamToRes('/system', 'GET', undefined, res)
 }
 
 module.exports = { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getOrthancSystem }
