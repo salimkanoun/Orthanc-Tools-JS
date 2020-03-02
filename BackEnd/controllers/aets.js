@@ -1,9 +1,9 @@
 var Orthanc = require('../model/Orthanc')
+var reverseProxy  = require('../model/ReverseProxy')
 var orthancInstance = new Orthanc()
 
 var getAets = async function (req, res) {
-  const aets = await orthancInstance.getAvailableAet()
-  res.json(aets)
+  reverseProxy.getOrthancApis('/modalities?expand', res)
 }
 
 var changeAets = async function (req, res) {

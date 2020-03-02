@@ -67,36 +67,11 @@ class Orthanc {
   /**
      * Return /System API data
      */
-  async getSystem () {
+  async getOrthancAetName () {
     const self = this
     const requestPromise = request.get(self._createOptions('GET', '/system')).then(function (body) {
       return self._answerParser(body)
-    }).catch((error) => { console.log('Error Get System ' + error) })
-
-    return requestPromise
-  }
-
-  /**
-     * Return available AETs in Orthanc
-     */
-  getAvailableAet () {
-    const self = this
-    const requestPromise = request.get(self._createOptions('GET', '/modalities?expand')).then(function (body) {
-      const answer = self._answerParser(body)
-      const aets = Object.keys(answer)
-      const aetsAnswer = []
-      aets.forEach((aetName) => {
-        const aetDetails = answer[aetName]
-        aetsAnswer.push({
-          name: aetName,
-          aetName: aetDetails.AET,
-          ip: aetDetails.Host,
-          port: aetDetails.Port,
-          manufacturer: aetDetails.Manufacturer
-        })
-      })
-      return (aetsAnswer)
-    }).catch((error) => { console.log('Error get Aets ' + error) })
+    }).then(answer => answer.DicomAet).catch((error) => { console.log('Error Get System ' + error) })
 
     return requestPromise
   }

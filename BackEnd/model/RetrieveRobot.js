@@ -37,8 +37,8 @@ class RetrieveRobot {
   async setDestination (aetDestination = undefined) {
 
     if(aetDestination === undefined){
-      let orthancSystem  = await this.orthancObject.getSystem()
-      this.aetDestination = orthancSystem.DicomAet
+      let orthancAetName  = await this.orthancObject.getOrthancAetName()
+      this.aetDestination = orthancAetName
     }else{
       this.aetDestination = aetDestination
     }

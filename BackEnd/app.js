@@ -79,7 +79,8 @@ app.use(function (err, req, res, next) {
 
 app.listen(4000, function () {
   console.log('Example app listening on port 4000!')
-  opn('http://localhost:4000');
+  console.log(app.get('env'))
+  if( ! app.get('env') === 'development') opn('http://localhost:4000');
   
 })
 

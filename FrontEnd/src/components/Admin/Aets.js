@@ -5,9 +5,6 @@ import { toast } from 'react-toastify';
 export default class Aets extends Component {
 
     columns = [{
-        dataField: 'key',
-        hidden: true
-    },{
         dataField: 'name',
         text : 'Name'
     }, {
@@ -90,7 +87,7 @@ export default class Aets extends Component {
     render() {
         return (
             <Fragment>
-                <BootstrapTable keyField="key" striped={true} data={this.props.rows} columns={this.columns} />
+                <BootstrapTable keyField="name" striped={true} data={this.props.rows} columns={this.columns} />
             </Fragment>
         )
     }
