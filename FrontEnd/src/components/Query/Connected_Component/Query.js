@@ -18,7 +18,18 @@ class Query extends Component {
 
   static async getAets () {
     const aets = await fetch('/api/aets').then((answer) => { return answer.json() })
-    return aets
+    const aetsRows= []
+    for (const property in aets) {
+      aetsRows.push({
+          name : property,
+          aetName : aets[property].AET,
+          ip : aets[property].Host,
+          port : aets[property].Port,
+          manufacturer : aets[property].Manufacturer
+      })
+
+  }
+    return aetsRows
   }
 
   render () {
