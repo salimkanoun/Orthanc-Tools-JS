@@ -63,11 +63,11 @@ export default class Options extends Component {
         <div>
           <h2 className="card-title">Retrieve Schedule Time : </h2>
           <div className="form-row">
-            <div class="col">
+            <div className="col">
               <label htmlFor='hour'>Hour : </label>
               <input type='number' name='hour' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hour} />
             </div>
-            <div class="col">
+            <div className="col">
               <label htmlFor='min'>Minutes : </label>
               <input type='number' name='min' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.min} />
             </div>

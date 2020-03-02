@@ -46,11 +46,10 @@ class SelectModalities extends Component {
         valueArray = this.state.selectedModalities
 
       }
-      
-      console.log(valueArray)
-        return (
-          <Select isMulti options={this.modalities} value = { valueArray } onBlur={this.saveListener} onChange={this.changeListener}/>
-        )
+
+      return (
+      <Select isMulti options={this.modalities} value = { valueArray } onBlur={this.saveListener} onChange={this.changeListener}/>
+      )
     }
 
     getValue() {

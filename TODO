@@ -1,13 +1,15 @@
 Front : 
 - Faire que le select all select tout les non filtre de toutes les pages ? => difficulté....
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
+- Spliter firstName, LastName dans toutes les tables query / results ?
 
-- Refesh automatique des vues de robot detail
+- Reverse proxy vers dicom-web : https://github.com/http-party/node-http-proxy
 
 - Robot Level Series
     - Gerer la selection pour le robot...
     - Filtre sur le niveau Series => Contains et equal sur modality et series description
     - Gerer le robot pour qu'ils traites retrieve au niveau series et study
+        - Si une serie est selectionnée alors n'importer que les series selectionnées au lieau de la study
 
 - Interface Suivi robot (pour un utilisateur)
     - Validation robot job
@@ -16,13 +18,10 @@ Front :
     -   Si requete faite , ressource disponible => 
             - Liens vers visualisation dans OHIF -> Fait un composant reutilisable
     -   Export rapport Query / Retrieve
-    -   Telechargement du zip vers client ?
 
 - Interface suivi des robots (tous) pour un administrateur
     -   Validation d'un robot avant execution (fonction preset plateforme)
     -   Acces au robot de chaque utilisateur
-
-- Spliter firstName, LastName dans toutes les tables query / results ?
 
 - Settings
     - AutoQuery : 
@@ -33,6 +32,7 @@ Front :
 
 - Module Export
     - Liste d'item avec possibilité de créer un ou plusieurs ZIP
+    - retour du zip vers client
 
 - Module manual Query
     - Reutiliser le form de recherche
@@ -48,6 +48,7 @@ Back :
 - Midelware securite acces robot => Reste a securiser les route pour lire le robot en fonction du role
 https://jasonwatmore.com/post/2018/11/28/nodejs-role-based-authorization-tutorial-with-example-api
 - Ne pas autoriser la modification du robot pendant sont execetion (bug Pierre D)
+- Tester les controlleurs sur les methodes appelées?
 - PassportJS pour stateless
 - Envisager de switcher de Request à Got...
 

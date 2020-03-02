@@ -34,9 +34,14 @@ class RetrieveRobot {
    * Destination of retrieval for this retrive robot
    * @param {String} aetDestination
    */
-  setDestination (aetDestination) {
-    console.log('set destination ' + aetDestination)
-    this.aetDestination = aetDestination
+  async setDestination (aetDestination = undefined) {
+    if(aetDestination === undefined){
+      let orthancAetName  = await this.orthancObject.getOrthancAetName()
+      this.aetDestination = orthancAetName
+    }else{
+      this.aetDestination = aetDestination
+    }
+
   }
 
   /**
@@ -61,10 +66,7 @@ class RetrieveRobot {
   async scheduleRetrieve () {
     const robot = this
 
-    console.log(this.scheduledJob)
-
     if (this.scheduledJob !== undefined) {
-      console.log('Cancelled previous job')
       this.scheduledJob.cancel()
     }
 
@@ -72,13 +74,11 @@ class RetrieveRobot {
     this.scheduleTime = await this.getScheduleTimeFromOptions()
 
     const scheduledJob = schedule.scheduleJob(this.scheduleTime.min + ' ' + this.scheduleTime.hour + ' * * *', function () {
-      console.log('Scheduled Retrieve Started')
       robot.doRetrieve()
     })
 
     this.scheduledJob = scheduledJob
 
-    console.log(scheduledJob)
   }
 
   /**
@@ -96,16 +96,16 @@ class RetrieveRobot {
       const retrieveItems = robotJob.getAllRetrieveItems()
 
       for (let i = 0; i < retrieveItems.length; i++) {
-        this.orthancObject.buildDicomQuery('Study', '', '', '', '', '', '', retrieveItems[i].studyInstanceUID)
+        this.orthancObject.buildStudyDicomQuery('', '', '', '', '', '', retrieveItems[i].studyInstanceUID)
         const answerDetails = await this.orthancObject.makeDicomQuery(retrieveItems[i].aet)
-        console.log()
+
         if (answerDetails.length === 1) {
           retrieveItems[i].setValidated()
           retrieveItems[i].setNumberOfSeries(answerDetails[0].numberOfStudyRelatedSeries)
-          retrieveItems[i].setNumberOfInstances(answerDetails[0].numberOfStudyRelatedInstances)
+          retrieveItems[i].setNumberOfInstances(answerDetails[0].numberOfSeriesRelatedInstances)
         }
       }
-      console.log(robotJob)
+
       robotJob.validateJobIfAllItemValidated()
     }
   }
@@ -119,7 +119,7 @@ class RetrieveRobot {
       const job = this.robotJobs[usersRobots[i]]
 
       if (job.isValidated()) {
-        this.retrieveJob(usersRobots[i])
+        await this.retrieveJob(usersRobots[i])
       }
     }
 
@@ -135,8 +135,8 @@ class RetrieveRobot {
     for (let i = 0; i < job.retrieveList.length; i++) {
       const retrieveItem = job.getRetriveItem(i)
 
-      this.orthancObject.buildDicomQuery(retrieveItem.level, retrieveItem.patientName, retrieveItem.patientId, retrieveItem.studyDate + '-' + retrieveItem.studyDate,
-        retrieveItem.modality, retrieveItem.studyDescription, retrieveItem.accessionNb)
+      this.orthancObject.buildStudyDicomQuery(retrieveItem.patientName, retrieveItem.patientId, retrieveItem.studyDate + '-' + retrieveItem.studyDate,
+        retrieveItem.modality, retrieveItem.studyDescription, retrieveItem.accessionNb, retrieveItem.studyInstanceUID)
 
       job.getRetriveItem(i).setStatus(RetrieveItem.STATUS_RETRIVING)
       const answerDetails = await this.orthancObject.makeDicomQuery(retrieveItem.aet)
@@ -145,10 +145,9 @@ class RetrieveRobot {
         const answer = answerDetails[0]
         const retrieveAnswer = await this.orthancObject.makeRetrieve(answer.answerId, answer.answerNumber, this.aetDestination, true)
         const orthancResults = await this.orthancObject.findInOrthancByUid(retrieveAnswer.Query[0]['0020,000d'])
-
         if (orthancResults.length === 1) {
           job.getRetriveItem(i).setStatus(RetrieveItem.STATUS_RETRIEVED)
-          job.getRetriveItem(i).setRetrievedOrthancId(orthancResults[0])
+          job.getRetriveItem(i).setRetrievedOrthancId(orthancResults[0].ID)
         } else {
           job.getRetriveItem(i).setStatus(RetrieveItem.STATUS_FAILURE)
         }
@@ -158,13 +157,11 @@ class RetrieveRobot {
 
   async exportDicom () {
     const retrieveRobot = this
-    console.log(this.robotJobs)
     const usersRobots = Object.keys(this.robotJobs)
 
     for (let i = 0; i < usersRobots.length; i++) {
       const job = this.robotJobs[usersRobots[i]]
       const retrievedOrthancIds = job.getRetrievedOrthancId()
-      console.log(retrievedOrthancIds)
       retrieveRobot.orthancObject.exportArchiveDicom(retrievedOrthancIds, job.username + '_' + job.projectName)
     }
   }

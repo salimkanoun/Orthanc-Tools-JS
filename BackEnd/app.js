@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 var rfs = require('rotating-file-stream')
 var session = require('express-session')
+var opn = require('opn');
+
 
 var apisRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
@@ -44,6 +46,7 @@ var accessLogStream = rfs('access.log', {
 logger.token('username', function (req, res) {
   return req.session.username
 })
+
 logger.token('post', function (req, res) {
   return JSON.stringify(req.body)
 })
@@ -77,6 +80,9 @@ app.use(function (err, req, res, next) {
 
 app.listen(4000, function () {
   console.log('Example app listening on port 4000!')
+  console.log(app.get('env'))
+  if( ! app.get('env') === 'development') opn('http://localhost:4000');
+  
 })
 
 module.exports = app

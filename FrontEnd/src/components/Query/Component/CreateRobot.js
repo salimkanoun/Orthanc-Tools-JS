@@ -11,11 +11,8 @@ export default class CreateRobot extends Component {
   }
 
   async createRobot () {
-    // SK ICI TRAITER QUE LES RESULTS SELECTIONNES ?
-    // Serait a gerer dans le state ?
-    const results = this.props.resultArray
 
-    console.log(results)
+    const results = this.props.resultArray
 
     const retrieveArray = []
 
@@ -34,7 +31,7 @@ export default class CreateRobot extends Component {
       retrieveArray.push(resultToRobot)
     })
 
-    const createAnswer = await fetch('/api/robot',
+    await fetch('/api/robot',
       {
         method: 'POST',
         headers: {
@@ -46,7 +43,6 @@ export default class CreateRobot extends Component {
       return (answer.json())
     })
 
-    console.log(createAnswer)
   }
 
   handleChange (event) {

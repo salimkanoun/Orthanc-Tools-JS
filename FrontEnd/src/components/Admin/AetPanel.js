@@ -29,17 +29,16 @@ export default class AetPanel extends Component {
             return answer.json()})
         
         let rows = []
-
-        aetsAnswer.forEach(aet => {
+        for (const property in aetsAnswer) {
             rows.push({
-                key : Math.random(),
-                name : aet.name,
-                aetName : aet.aetName,
-                ip : aet.ip,
-                port : aet.port,
-                manufacturer : aet.manufacturer
+                name : property,
+                aetName : aetsAnswer[property].AET,
+                ip : aetsAnswer[property].Host,
+                port : aetsAnswer[property].Port,
+                manufacturer : aetsAnswer[property].Manufacturer
             })
-        });
+
+        }
 
         this.setState({
             aets : rows

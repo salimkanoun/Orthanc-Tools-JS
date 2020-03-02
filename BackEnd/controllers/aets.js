@@ -1,25 +1,20 @@
-var Orthanc = require('../model/Orthanc')
-var orthancInstance = new Orthanc()
+var reverseProxy  = require('../model/ReverseProxy')
 
 var getAets = async function (req, res) {
-  const aets = await orthancInstance.getAvailableAet()
-  res.json(aets)
+  reverseProxy.streamToRes('/modalities?expand', 'GET', undefined, res)
 }
 
 var changeAets = async function (req, res) {
-  const body = req.body
-  await orthancInstance.putAet(body.name, body.aetName, body.ip, parseInt(body.port), body.manufacturer)
-  res.json(true)
+  let data = req.body
+  reverseProxy.streamToRes('/modalities/' + data.name, 'PUT', JSON.stringify([data.aetName, data.ip, parseInt(data.port), data.manufacturer]), res)
 }
 
 var echoAets = async function (req, res) {
-  const answer = await orthancInstance.echoAet(req.params.name)
-  res.json(answer)
+  reverseProxy.streamToRes('/modalities/' + req.params.name + '/echo', 'POST', JSON.stringify({}), res )
 }
 
 var deleteAet = async function (req, res) {
-  const answer = await orthancInstance.removeAet(req.params.name)
-  res.json(answer)
+  reverseProxy.streamToRes('/modalities/' + req.params.name, 'DELETE', undefined, res)
 }
 
 module.exports = { getAets, changeAets, echoAets, deleteAet }

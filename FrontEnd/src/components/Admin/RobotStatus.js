@@ -9,13 +9,28 @@ export default class RobotStatus extends Component {
         this.refreshHandler = this.refreshHandler.bind(this)
         this.deleteJobHandler = this.deleteJobHandler.bind(this)
         this.validationRobotHandler = this.validationRobotHandler.bind(this)
+        this.startRefreshMonitoring = this.startRefreshMonitoring.bind(this)
+        this.stopRefreshMonitoring = this.stopRefreshMonitoring.bind(this)
         this.state = {
             rows : []
         }
     }
 
     componentDidMount(){
-        this.refreshHandler();
+        this.refreshHandler()
+        this.startRefreshMonitoring()
+    }
+
+    componentWillUnmount () {
+        this.stopRefreshMonitoring()
+    }
+
+    startRefreshMonitoring(){
+        this.intervalChcker = setInterval(this.refreshHandler, 2000)
+    }
+
+    stopRefreshMonitoring () {
+        clearInterval(this.intervalChcker)
     }
 
     columns = [{

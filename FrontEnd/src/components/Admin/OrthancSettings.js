@@ -76,6 +76,7 @@ export default class OrthancSettings extends Component {
                 'Content-Type': 'application/json'
             }
         }).then((answer) => {
+            if (!answer.ok) { throw answer }
             return (answer.json())
         }).then((answer) => {
             toast.success('Orthanc Version : '+answer.Version, {
@@ -87,8 +88,7 @@ export default class OrthancSettings extends Component {
                 draggable: true
             });
         }).catch((error) =>{
-
-            toast.error('Orthanc Server Unreacheable', {
+            toast.error('Orthanc Server Error  : '+error.statusText , {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,

@@ -5,7 +5,7 @@ var postExportDicom = async function (req, res) {
   var orthancInstance = new Orthanc()
   var date = new Date()
   const orthancID = await orthancInstance.findInOrthancByUid(body.studyUID)
-  await orthancInstance.exportArchiveDicom(orthancID, 'export' + date.getTime())
+  await orthancInstance.exportArchiveDicom(orthancID[0].ID, 'export' + date.getTime())
   const data = {}
   data.fileName = 'export' + date.getTime() + '.zip'
   res.json(data)

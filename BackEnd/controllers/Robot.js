@@ -1,10 +1,8 @@
 const RobotSingleton = require('../model/RobotSingleton')
 const RobotJob = require('../model/RobotJob')
-const Orthanc = require('../model/Orthanc')
 
 const getRobotDetails = async function (req, res) {
-  const orthanc = new Orthanc()
-  const robotSingleton = new RobotSingleton(orthanc)
+  const robotSingleton = new RobotSingleton()
   const retrieveRobot = robotSingleton.getRobot()
   let data = []
   if (req.params.username !== undefined) {
@@ -12,13 +10,11 @@ const getRobotDetails = async function (req, res) {
   } else {
     data = retrieveRobot.getAllRobotData()
   }
-  console.log(data)
   res.json(data)
 }
 
 const removeQueryFromJob = async function (req, res) {
-  const orthanc = new Orthanc()
-  const robotSingleton = new RobotSingleton(orthanc)
+  const robotSingleton = new RobotSingleton()
   const retrieveRobot = robotSingleton.getRobot()
   if (req.params.username !== undefined) {
     retrieveRobot.robotJobs[req.params.username].removeRetrieveItem(req.params.index)
@@ -27,26 +23,22 @@ const removeQueryFromJob = async function (req, res) {
 }
 
 const deleteRobotJob = async function (req, res) {
-  const orthanc = new Orthanc()
-  const robotSingleton = new RobotSingleton(orthanc)
+  const robotSingleton = new RobotSingleton()
   const retrieveRobot = robotSingleton.getRobot()
   retrieveRobot.removeRobotJob(req.params.username)
   res.end()
 }
 
 const validateRobotJob = async function (req, res) {
-  const orthanc = new Orthanc()
-  const robotSingleton = new RobotSingleton(orthanc)
+  const robotSingleton = new RobotSingleton()
   const retrieveRobot = robotSingleton.getRobot()
-  console.log('stating validation')
   retrieveRobot.validateRobotJob(req.params.username)
   res.json('Finished')
 
 }
 
 const addRobotJob = async function (req, res) {
-  const orthanc = new Orthanc()
-  const robotSingleton = new RobotSingleton(orthanc)
+  const robotSingleton = new RobotSingleton()
   const retrieveRobot = robotSingleton.getRobot()
 
   const body = req.body
@@ -57,9 +49,7 @@ const addRobotJob = async function (req, res) {
   })
 
   retrieveRobot.addRobotJob(robotJob)
-  const orthancSystem = await orthanc.getSystem()
-
-  retrieveRobot.setDestination(orthancSystem.DicomAet)
+  retrieveRobot.setDestination()
   retrieveRobot.scheduleRetrieve()
 
   res.json('Done')

@@ -5,9 +5,6 @@ import { toast } from 'react-toastify';
 export default class Aets extends Component {
 
     columns = [{
-        dataField: 'key',
-        hidden: true
-    },{
         dataField: 'name',
         text : 'Name'
     }, {
@@ -70,17 +67,16 @@ export default class Aets extends Component {
     }
 
     deleteAetButton(cell, row, rowIndex, formatExtraData) {
-        console.log(formatExtraData)
-        return (<div className="text-center">
+        return (
+        <div className="text-center">
             <input type="button" className='btn btn-danger' onClick = {() => formatExtraData.deleteAetHandler(row.name, formatExtraData.props.refreshAetData)} value = "Remove" />
-            </div>)
+        </div>)
     }
 
     deleteAetHandler(aetName, refreshHandler){
         fetch('/api/aets/'+aetName, {
             method : 'DELETE'
         })
-        .then( res => res.json() )
         .then(() => {
             refreshHandler()
         })
@@ -90,7 +86,7 @@ export default class Aets extends Component {
     render() {
         return (
             <Fragment>
-                <BootstrapTable keyField="key" striped={true} data={this.props.rows} columns={this.columns} />
+                <BootstrapTable keyField="name" striped={true} data={this.props.rows} columns={this.columns} />
             </Fragment>
         )
     }

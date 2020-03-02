@@ -25,9 +25,9 @@ export default class AdminPanel extends Component {
       case 'General' : 
         return (<OrthancSettings/>)
       case 'Aets' : 
-        return ([ <AetPanel />])
+        return (<AetPanel />)
       case 'Robots' : 
-        return ([<AutoRetrieveOptions />])
+        return (<AutoRetrieveOptions />)
       default : 
         return ([])
     }

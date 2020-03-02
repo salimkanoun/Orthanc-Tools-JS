@@ -1,146 +1,17 @@
-const Options = require('./Options')
-const request = require('request-promise-native')
-const OriginalRequest = require('request')
 const fs = require('fs')
 const QueryStudyAnswer = require('./queries-answer/QueryStudyAnswer')
 const QuerySerieAnswer = require('./queries-answer/QuerySerieAnswer')
 const TagAnon = require('./TagAnon')
+const ReverseProxy = require('./ReverseProxy')
 
 /**
  * Orthanc object to communications with orthanc server
  */
 class Orthanc {
-  constructor () {
-    let orthancSettions = Options.getOrthancConnexionSettings()
-    this.address = orthancSettions['OrthancAdress']
-    this.port = orthancSettions['OrthancPort']
-    this.username = orthancSettions['OrthancUsername']
-    this.password = orthancSettions['OrthancPassword']
-  }
 
-  /**
-     * return orthanc connection string
-     */
-  getOrthancAdressString () {
-    return (this.address + ':' + this.port)
-  }
-
-  /**
-     * Generate option object for Request
-     * Private Method
-     * @param {string} method
-     * @param {string} url
-     * @param {string} data in JSON
-     */
-  _createOptions (method, url, data = 'none') {
-    const serverString = this.getOrthancAdressString() + url
-
-    let options = null
-    if (method === 'GET' || method === 'DELETE') {
-      options = {
-        method: method,
-        url: serverString,
-        auth: {
-          user: this.username,
-          password: this.password
-        }
-      }
-    } else {
-      options = {
-        method: method,
-        url: serverString,
-        auth: {
-          user: this.username,
-          password: this.password
-        },
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': data.length
-        },
-        body: data
-      }
-    }
-
-    return options
-  }
-
-  /**
-     * Return /System API data
-     */
-  async getSystem () {
-    const self = this
-    const requestPromise = request.get(self._createOptions('GET', '/system')).then(function (body) {
-      return self._answerParser(body)
-    }).catch((error) => { console.log('Error Get System ' + error) })
-
-    return requestPromise
-  }
-
-  /**
-     * Return available AETs in Orthanc
-     */
-  getAvailableAet () {
-    const self = this
-    const requestPromise = request.get(self._createOptions('GET', '/modalities?expand')).then(function (body) {
-      const answer = self._answerParser(body)
-      const aets = Object.keys(answer)
-      const aetsAnswer = []
-      aets.forEach((aetName) => {
-        const aetDetails = answer[aetName]
-        aetsAnswer.push({
-          name: aetName,
-          aetName: aetDetails.AET,
-          ip: aetDetails.Host,
-          port: aetDetails.Port,
-          manufacturer: aetDetails.Manufacturer
-        })
-      })
-      return (aetsAnswer)
-    }).catch((error) => { console.log('Error get Aets ' + error) })
-
-    return requestPromise
-  }
-
-  /**
-     * Add DICOM Peer modality to Orthanc
-     * @param {string} name
-     * @param {string} aet
-     * @param {string} ip
-     * @param {number} port
-     * @param {string} type
-     */
-  putAet (name, aet, ip, port, type) {
-    let data = []
-    if (type === undefined) {
-      data = [aet, ip, port]
-    } else {
-      data = [aet, ip, port, type]
-    }
-    const self = this
-
-    const requestPromise = request.put(self._createOptions('PUT', '/modalities/' + name, JSON.stringify(data))).then(function (body) {
-      return true
-    }).catch((error) => { console.log('Error put AET ' + error) })
-
-    return requestPromise
-  }
-
-  removeAet (name) {
-    const self = this
-    const requestPromise = request.delete(self._createOptions('DELETE', '/modalities/' + name)).then(function (body) {
-      return true
-    }).catch((error) => { console.log('Error put AET ' + error) })
-
-    return requestPromise
-  }
-
-  echoAet (name) {
-    const self = this
-    const requestPromise = request.post(self._createOptions('POST', '/modalities/' + name + '/echo', JSON.stringify({}))).then(function (body) {
-      return true
-    }).catch((error) => { console.log('Error put AET ' + error); return false })
-
-    return requestPromise
+  async getOrthancAetName () {
+    let systemAnswer = await ReverseProxy.getAnswer('/system', 'GET', undefined)
+    return systemAnswer.DicomAet
   }
 
   /**
@@ -151,27 +22,7 @@ class Orthanc {
   exportArchiveDicom (orthancIds, filename) {
     const destination = './data/export_dicom/' + filename + '.zip'
     const streamWriter = fs.createWriteStream(destination)
-    // Can't use request promise at the pipe is unsafe, use the stantard request library
-    OriginalRequest.post(this._createOptions('POST', '/tools/create-archive', JSON.stringify(orthancIds)))
-      .on('response', function (response) {
-        console.log(response.statusCode + 'Writing started') // 200
-      })
-      .pipe(streamWriter)
-      .on('finish', function () { console.log('Writing Done') })
-  }
-
-  /**
-     * Parse recieved answer
-     * @param {string} answer
-     */
-  _answerParser (answer) {
-    let parsedAnwser = []
-    try {
-      parsedAnwser = JSON.parse(answer)
-    } catch (error) {
-      console.error('Parsing Response Error answer : ' + answer + ' Thrown Error : ' + error)
-    }
-    return parsedAnwser
+    ReverseProxy.streamToFile('/tools/create-archive', 'POST', JSON.stringify(orthancIds), streamWriter)
   }
 
   /**
@@ -184,15 +35,15 @@ class Orthanc {
      * @param {string} studyDescription
      * @param {string} accessionNb
      */
-  buildDicomQuery (level = 'Study', patientName = '', patientID = '', studyDate = '', modality = '', studyDescription = '', accessionNb = '', studyInstanceUID = '') {
-    if (patientName === '*^*') patientName = '*'
+  buildStudyDicomQuery (patientName = '', patientID = '', studyDate = '', modality = '', studyDescription = '', accessionNb = '', studyInstanceUID = '') {
+    if (patientName === '*^*') patientName = ''
     // Remove * character as until date X should be written -dateX and not *-dateX
     studyDate = studyDate.replace(/[*]/g, '')
 
-    if (studyDate === '-') studyDate = '*'
+    if (studyDate === '-') studyDate = ''
 
     this.preparedQuery = {
-      Level: level,
+      Level: 'Study',
       Query: {
         PatientName: patientName,
         PatientID: patientID,
@@ -208,238 +59,195 @@ class Orthanc {
     }
   }
 
-  /**
-     * Make Query on AET an return response path location
-     * @param {String} aet
-     */
-  makeDicomQuery (aet) {
-    const self = this
-    const queryPromise = request.post(self._createOptions('POST', '/modalities/' + aet + '/query', JSON.stringify(self.preparedQuery))).then(function (body) {
-      const answer = self._answerParser(body)
-      return answer
-    }).then(function (answer) {
-      const answerDetails = self.getAnswerDetails(answer.ID, aet)
-      return answerDetails
-    }).catch((error) => { console.log('Error Making Study Query ' + error) })
+  buildSerieDicomQuery(studyUID='', modality='', protocolName = '', seriesDescription='', seriesNumber='', seriesInstanceUID=''){
 
-    return queryPromise
-  }
-
-  querySeries (aet, studyUID) {
-    const currentOrthanc = this
-
-    const query = {
+    this.preparedQuery = {
       Level: 'Series',
       Query: {
-        Modality: '',
-        ProtocolName: '',
-        SeriesDescription: '',
-        SeriesInstanceUID: '',
+        Modality: modality,
+        ProtocolName: protocolName,
+        SeriesDescription: seriesDescription,
+        SeriesInstanceUID: seriesInstanceUID,
         StudyInstanceUID: studyUID,
-        SeriesNumber: '',
-        SeriesInstanceUID: '',
+        SeriesNumber: seriesNumber,
         NumberOfSeriesRelatedInstances: ''
       },
       Normalize: false
     }
 
-    const requestAnswer = request.post(currentOrthanc._createOptions('POST', '/modalities/' + aet + '/query', JSON.stringify(query))).then(function (body) {
-      const answer = currentOrthanc._answerParser(body)
-      return answer
-    }).then(function (answer) {
-      const answerDetails = currentOrthanc.getSeriesAnswerDetails(answer.ID, aet)
-      return answerDetails
-    }).catch((error) => {
-      return new Error('Error Querying series' + error)
-    })
-
-    return requestAnswer
-  }
-
-  getSeriesAnswerDetails (answerId, aet) {
-    const self = this
-
-    const promiseRequest = request.get(self._createOptions('GET', '/queries/' + answerId + '/answers?expand')).then(function (body) {
-      const answersObjects = []
-      try {
-        const answersList = self._answerParser(body)
-
-        answersList.forEach(element => {
-          let answerNumber = 0
-
-          const queryLevel = element['0008,0052'].Value
-
-          let Modality = '*'
-          if (element.hasOwnProperty('0008,0060')) {
-            Modality = element['0008,0060'].Value
-          }
-
-          let SeriesDescription = '*'
-          if (element.hasOwnProperty('0008,103e')) {
-            SeriesDescription = element['0008,103e'].Value
-          }
-
-          let StudyInstanceUID = '*'
-          if (element.hasOwnProperty('0020,000d')) {
-            StudyInstanceUID = element['0020,000d'].Value
-          }
-
-          let SeriesInstanceUID = '*'
-          if (element.hasOwnProperty('0020,000e')) {
-            SeriesInstanceUID = element['0020,000e'].Value
-          }
-
-          let SeriesNumber = 0
-          if (element.hasOwnProperty('0020,0011')) {
-            SeriesNumber = element['0020,0011'].Value
-          }
-
-          let numberOfSeriesRelatedInstances = 'N/A'
-          if (element.hasOwnProperty('0020,1209')) {
-            numberOfSeriesRelatedInstances = element['0020,1209'].Value
-          }
-
-          const originAET = aet
-          const queryAnswserObject = new QuerySerieAnswer(answerId, answerNumber, queryLevel, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET, numberOfSeriesRelatedInstances)
-          answersObjects.push(queryAnswserObject)
-          answerNumber++
-        })
-      } catch (exception) {
-        console.log('error' + exception)
-      }
-      return answersObjects
-    }).catch((error) => { console.log('Error get answers series Details ' + error) })
-
-    return promiseRequest
-  }
-
-  getAnswerDetails (answerId, aet) {
-    const self = this
-    const queryPromise = request.get(self._createOptions('GET', '/queries/' + answerId + '/answers?expand')).then(function (body) {
-      const answersObjects = []
-      try {
-        const answersList = self._answerParser(body)
-        let answerNumber = 0
-
-        answersList.forEach(element => {
-          const queryLevel = element['0008,0052'].Value
-
-          let accessionNb = '*'
-          if (element.hasOwnProperty('0008,0050')) {
-            accessionNb = element['0008,0050'].Value
-          }
-
-          let studyDate = '*'
-          if (element.hasOwnProperty('0008,0020')) {
-            studyDate = element['0008,0020'].Value
-          }
-
-          let studyDescription = '*'
-          if (element.hasOwnProperty('0008,1030')) {
-            studyDescription = element['0008,1030'].Value
-          }
-
-          let patientName = '*'
-          if (element.hasOwnProperty('0010,0010')) {
-            patientName = element['0010,0010'].Value
-          }
-
-          let patientID = '*'
-          if (element.hasOwnProperty('0010,0020')) {
-            patientID = element['0010,0020'].Value
-          }
-
-          let studyUID = '*'
-          if (element.hasOwnProperty('0020,000d')) {
-            studyUID = element['0020,000d'].Value
-          }
-
-          let numberOfStudyRelatedSeries = 'N/A'
-          if (element.hasOwnProperty('0020,1206')) {
-            numberOfStudyRelatedSeries = element['0020,1206'].Value
-          }
-
-          let numberOfStudyRelatedInstances = 'N/A'
-          if (element.hasOwnProperty('0020,1208')) {
-            numberOfStudyRelatedInstances = element['0020,1208'].Value
-          }
-
-          let modalitiesInStudy = '*'
-          // Modalities in studies not always present
-          if (element.hasOwnProperty('0008,0061')) {
-            modalitiesInStudy = element['0008,0061'].Value
-          }
-          const origineAET = aet
-          const queryAnswserObject = new QueryStudyAnswer(answerId, answerNumber, queryLevel, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate, numberOfStudyRelatedSeries, numberOfStudyRelatedInstances)
-          answersObjects.push(queryAnswserObject)
-          answerNumber++
-        })
-      } catch (exception) {
-        console.log('error' + exception)
-      }
-      return answersObjects
-    }).catch((error) => { console.log('Error get answers Details ' + error) })
-
-    return queryPromise
   }
 
   /**
-     * retrieve a qurey answer to an AET
-     * return the JobID of the retrieve call
-     * @param {QueryAnswer} queryAnswerObject
-     * @param {string} aet
+     * Make Query on AET an return response path location
+     * @param {String} aet
      */
-  makeRetrieve (queryID, answerNumber, aet, synchronous = false) {
-    const self = this
+  async makeDicomQuery (aet) {
+    let answer = await ReverseProxy.getAnswer('/modalities/' + aet + '/query', 'POST', JSON.stringify(this.preparedQuery))
+
+    if(this.preparedQuery.Level === 'Study'){
+       return this.getStudyAnswerDetails(answer.ID, aet)
+    } else {
+      return this.getSeriesAnswerDetails(answer.ID, aet)
+    }
+
+  }
+
+  async getAnswerDetails(answerId){
+    return await ReverseProxy.getAnswer('/queries/' + answerId + '/answers?expand', 'GET', undefined)
+  }
+
+  async getSeriesAnswerDetails (answerId, aet) {
+
+    let answerQuery = await this.getAnswerDetails(answerId)
+
+    const answersObjects = []
+
+    for(let i=0; i<answerQuery.length; i++){
+      let element=answerQuery[i]
+
+      const queryLevel = element['0008,0052'].Value
+
+      let Modality = '*'
+      if (element.hasOwnProperty('0008,0060')) {
+        Modality = element['0008,0060'].Value
+      }
+
+      let SeriesDescription = '*'
+      if (element.hasOwnProperty('0008,103e')) {
+        SeriesDescription = element['0008,103e'].Value
+      }
+
+      let StudyInstanceUID = '*'
+      if (element.hasOwnProperty('0020,000d')) {
+        StudyInstanceUID = element['0020,000d'].Value
+      }
+
+      let SeriesInstanceUID = '*'
+      if (element.hasOwnProperty('0020,000e')) {
+        SeriesInstanceUID = element['0020,000e'].Value
+      }
+
+      let SeriesNumber = 0
+      if (element.hasOwnProperty('0020,0011')) {
+        SeriesNumber = element['0020,0011'].Value
+      }
+
+      let numberOfSeriesRelatedInstances = 'N/A'
+      if (element.hasOwnProperty('0020,1209')) {
+        numberOfSeriesRelatedInstances = element['0020,1209'].Value
+      }
+
+      const originAET = aet
+      const queryAnswserObject = new QuerySerieAnswer(answerId, i , queryLevel, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET, numberOfSeriesRelatedInstances)
+      answersObjects.push(queryAnswserObject)
+
+    }
+
+    return answersObjects
+
+  }
+
+  async getStudyAnswerDetails (answerId, aet) {
+
+    let studyAnswers = await this.getAnswerDetails(answerId)
+
+    const answersObjects = []
+
+    for(let i = 0; i < studyAnswers.length; i ++){
+      let element = studyAnswers[i]
+      const queryLevel = element['0008,0052'].Value
+
+      let accessionNb = '*'
+      if (element.hasOwnProperty('0008,0050')) {
+        accessionNb = element['0008,0050'].Value
+      }
+
+      let studyDate = '*'
+      if (element.hasOwnProperty('0008,0020')) {
+        studyDate = element['0008,0020'].Value
+      }
+
+      let studyDescription = '*'
+      if (element.hasOwnProperty('0008,1030')) {
+        studyDescription = element['0008,1030'].Value
+      }
+
+      let patientName = '*'
+      if (element.hasOwnProperty('0010,0010')) {
+        patientName = element['0010,0010'].Value
+      }
+
+      let patientID = '*'
+      if (element.hasOwnProperty('0010,0020')) {
+        patientID = element['0010,0020'].Value
+      }
+
+      let studyUID = '*'
+      if (element.hasOwnProperty('0020,000d')) {
+        studyUID = element['0020,000d'].Value
+      }
+
+      let numberOfStudyRelatedSeries = 'N/A'
+      if (element.hasOwnProperty('0020,1206')) {
+        numberOfStudyRelatedSeries = element['0020,1206'].Value
+      }
+
+      let numberOfStudyRelatedInstances = 'N/A'
+      if (element.hasOwnProperty('0020,1208')) {
+        numberOfStudyRelatedInstances = element['0020,1208'].Value
+      }
+
+      let modalitiesInStudy = '*'
+      // Modalities in studies not always present
+      if (element.hasOwnProperty('0008,0061')) {
+        modalitiesInStudy = element['0008,0061'].Value
+      }
+      const origineAET = aet
+      const queryAnswserObject = new QueryStudyAnswer(answerId, i, queryLevel, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate, numberOfStudyRelatedSeries, numberOfStudyRelatedInstances)
+      answersObjects.push(queryAnswserObject)
+
+    }
+
+    return answersObjects
+
+  }
+
+  async makeRetrieve (queryID, answerNumber, aet, synchronous = false) {
+
     const postData = {
       Synchronous: synchronous,
       TargetAet: aet
     }
 
-    const requestPromise = request.post(self._createOptions('POST', '/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', JSON.stringify(postData))).then(function (body) {
-      return (self._answerParser(body))
-    }).catch((error) => { console.log('Error make retrieve ' + error) })
+    let answer = await ReverseProxy.getAnswer('/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', 'POST', JSON.stringify(postData))
 
-    return requestPromise
+    return answer
   }
 
-  getJobData (jobUid) {
-    const self = this
-    const requestPromise = request.get(self._createOptions('GET', '/jobs/' + jobUid)).then(function (body) {
-      const answer = self._answerParser(body)
-      const queryDetails = answer.Content.Query
-      const remoteAET = queryDetails.RemoteAet
-      const answerObject = []
-      try {
-        queryDetails.forEach(queryData => {
-          const retrieveDetails = {
-            accessionNb: queryData['0008,0050'],
-            level: queryData['0008,0052'],
-            patientID: queryData['0010,0020'],
-            studyUID: queryData['0020,000d'],
-            remoteAet: remoteAET
-          }
-          answerObject.push(retrieveDetails)
-        })
-      } catch (exception) {};
-      return answer
-    }).catch((error) => { console.log('Error get job Details ' + error) })
+  async getJobData (jobUid) {
+    let answer = await ReverseProxy.getAnswer('/jobs/' + jobUid, 'GET', undefined)
 
-    return requestPromise
+    const queryDetails = answer.Content.Query
+    const remoteAET = queryDetails.RemoteAet
+    const answerObject = []
+    try {
+      queryDetails.forEach(queryData => {
+        const retrieveDetails = {
+          accessionNb: queryData['0008,0050'],
+          level: queryData['0008,0052'],
+          patientID: queryData['0010,0020'],
+          studyUID: queryData['0020,000d'],
+          remoteAet: remoteAET
+        }
+        answerObject.push(retrieveDetails)
+      })
+    } catch (exception) {};
+
+    return answerObject
   }
 
-  /**
-     * Search for content in Orthanc
-     * @param {string} level
-     * @param {string} patientName
-     * @param {string} patientID
-     * @param {string} accessionNb
-     * @param {string} date
-     * @param {string} studyDescription
-     * @param {string} modality
-     */
-  findInOrthanc (level = 'Study', patientName = '*', patientID = '*', accessionNb = '*', date = '*', studyDescription = '*', modality = '*') {
-    const currentOrthanc = this
+  async findInOrthanc (level = 'Study', patientName = '*', patientID = '*', accessionNb = '*', date = '*', studyDescription = '*', modality = '*', studyInstanceUID = '*') {
+    
     const queryDetails = {}
 
     if (date !== '*') queryDetails.StudyDate = date
@@ -448,6 +256,7 @@ class Orthanc {
     if (patientName !== '*') queryDetails.PatientName = patientName
     if (patientID !== '*') queryDetails.PatientID = patientID
     if (accessionNb !== '*') queryDetails.AccessionNumber = accessionNb
+    if (studyInstanceUID !== '*') queryDetails.StudyInstanceUID = studyInstanceUID
 
     const queryParameter = {
       Level: level,
@@ -456,34 +265,18 @@ class Orthanc {
       Query: queryDetails
     }
 
-    const promiseRequest = request.post(currentOrthanc._createOptions('POST', '/tools/find', JSON.stringify(queryParameter))).then(function (body) {
-      const answer = currentOrthanc._answerParser(body)
-      return answer
-    }).catch((error) => { console.log('Error find in Orthanc ' + error) })
+    let answer = await ReverseProxy.getAnswer('/tools/find', 'POST', JSON.stringify(queryParameter))
 
-    return promiseRequest
+    return answer
   }
 
   /**
      * Find Orthanc study ID by dicom StudyInstanceUID
      * @param {string} studyUID
      */
-  findInOrthancByUid (studyUID) {
-    const self = this
-
-    const queryParameter = {
-      Level: 'Study',
-      Query: {
-        StudyInstanceUID: studyUID
-      }
-    }
-
-    const requestPromise = request.post(self._createOptions('POST', '/tools/find', JSON.stringify(queryParameter))).then(function (body) {
-      const answer = self._answerParser(body)
-      return answer
-    }).catch((error) => { console.log('Error find In Orthanc ' + error) })
-
-    return requestPromise
+  async findInOrthancByUid (studyUID) {
+    let answer = await this.findInOrthanc('Study', '*', '*', '*','*', '*', '*', studyUID)
+    return answer
   }
 
   /**
@@ -491,14 +284,9 @@ class Orthanc {
      * @param {string} level
      * @param {string} orthancID
      */
-  getOrthancDetails (level, orthancID) {
-    const self = this
-    const requestPromise = request.get(self._createOptions('GET', '/' + level + '/' + orthancID)).then(function (body) {
-      const answer = self._answerParser(body)
-      return answer
-    }).catch((error) => { console.log('Error get Orthanc level details ' + error) })
-
-    return requestPromise
+  async getOrthancDetails (level, orthancID) {
+    let answer  = await ReverseProxy.getAnswer('/' + level + '/' + orthancID, 'GET', undefined)
+    return answer
   }
 
   /**
@@ -506,11 +294,9 @@ class Orthanc {
      * @param {string} level
      * @param {string} orthancID
      */
-  deleteFromOrhtanc (level, orthancID) {
-    const self = this
-    const requestPromise = request.delete(self._createOptions('DELETE', '/' + level + '/' + orthancID))
-      .catch((error) => { console.log('Error delete from Orthanc ' + error) })
-    return requestPromise
+  async deleteFromOrhtanc (level, orthancID) {
+    let answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID, 'DELETE', undefined)
+    return answer
   }
 
   /**
@@ -606,20 +392,14 @@ class Orthanc {
       }
     })
 
-    console.log(JSON.stringify(anonParameters))
-
     return JSON.stringify(anonParameters)
   }
 
-  makeAnon (level, orthancID, profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription) {
-    const self = this
-
-    const requestPromise = request.post(self._createOptions('POST', '/' + level + '/' + orthancID + '/anonymize', self.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription))).then(function (body) {
-      console.log(body)
-    }).catch((error) => { console.log('Error make anon ' + error) })
-
-    return requestPromise
+  async makeAnon (level, orthancID, profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription) {
+    let answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID + '/anonymize', 'POST', self.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription))
+    return answer
   }
+
 }
 
 module.exports = Orthanc

@@ -83,7 +83,6 @@ class RobotJob {
     const retrivedOrthancId = this.retrieveList.map(function (retrieveItem) {
       return retrieveItem.getRetrievedOrthancId()
     })
-
     return retrivedOrthancId
   }
 
