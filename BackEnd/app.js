@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 var rfs = require('rotating-file-stream')
 var session = require('express-session')
+var opn = require('opn');
+
 
 var apisRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
@@ -77,6 +79,8 @@ app.use(function (err, req, res, next) {
 
 app.listen(4000, function () {
   console.log('Example app listening on port 4000!')
+  opn('http://localhost:4000');
+  
 })
 
 module.exports = app

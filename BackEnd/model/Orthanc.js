@@ -11,11 +11,11 @@ const TagAnon = require('./TagAnon')
  */
 class Orthanc {
   constructor () {
-    let orthancSettions = Options.getOrthancConnexionSettings()
-    this.address = orthancSettions['OrthancAdress']
-    this.port = orthancSettions['OrthancPort']
-    this.username = orthancSettions['OrthancUsername']
-    this.password = orthancSettions['OrthancPassword']
+    let orthancSettings = Options.getOrthancConnexionSettings()
+    this.address = orthancSettings['OrthancAdress']
+    this.port = orthancSettings['OrthancPort']
+    this.username = orthancSettings['OrthancUsername']
+    this.password = orthancSettings['OrthancPassword']
   }
 
   /**
