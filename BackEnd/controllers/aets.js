@@ -18,8 +18,7 @@ var echoAets = async function (req, res) {
 }
 
 var deleteAet = async function (req, res) {
-  const answer = await orthancInstance.removeAet(req.params.name)
-  res.json(answer)
+  reverseProxy.deleteOrthancApis('/modalities/' + req.params.name, res)
 }
 
 module.exports = { getAets, changeAets, echoAets, deleteAet }

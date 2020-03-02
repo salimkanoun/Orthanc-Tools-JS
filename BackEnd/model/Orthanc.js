@@ -100,15 +100,6 @@ class Orthanc {
     return requestPromise
   }
 
-  removeAet (name) {
-    const self = this
-    const requestPromise = request.delete(self._createOptions('DELETE', '/modalities/' + name)).then(function (body) {
-      return true
-    }).catch((error) => { console.log('Error put AET ' + error) })
-
-    return requestPromise
-  }
-
   echoAet (name) {
     const self = this
     const requestPromise = request.post(self._createOptions('POST', '/modalities/' + name + '/echo', JSON.stringify({}))).then(function (body) {

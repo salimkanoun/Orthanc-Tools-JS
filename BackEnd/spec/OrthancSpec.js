@@ -9,7 +9,5 @@ describe('Test Orthanc', () => {
     spyOn(orthanc, 'removeAet').and.returnValue(true)
   })
 
-  it('should Remove Orthanc AET', async () => {
-    expect(orthanc.removeAet()).toBe(true)
-  })
+  
 })
