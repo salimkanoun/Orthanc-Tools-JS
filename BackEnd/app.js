@@ -58,6 +58,10 @@ app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
 })
 
+app.get('/ohif/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'ohif.html'))
+})
+
 app.use('/api', apisRouter)
 app.use('/users', usersRouter)
 

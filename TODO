@@ -3,7 +3,7 @@ Front :
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
 - Spliter firstName, LastName dans toutes les tables query / results ?
 
-- Integration OHIF dans robot View
+- Integration OHIF dans robot View => A tester ne marche pas en dev
 
 - Robot Level Series
     - Gerer la selection pour le robot...
@@ -15,9 +15,7 @@ Front :
     - Validation robot job
         - Soit manuelle par administrateur
         - Soit automatique lors declanchement robot (avant retrieve ? ou lors de la creation du job ?)
-    -   Si requete faite , ressource disponible => 
-            - Liens vers visualisation dans OHIF -> Fait un composant reutilisable
-    -   Export rapport Query / Retrieve
+    - Export rapport Query / Retrieve
 
 - Interface suivi des robots (tous) pour un administrateur
     -   Validation d'un robot avant execution (fonction preset plateforme)

@@ -4,6 +4,7 @@ import filterFactory, { textFilter, dateFilter, selectFilter } from 'react-boots
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import OhifLink from '../../OhifLink';
 
 export default class RobotView extends Component {
 
@@ -92,7 +93,7 @@ export default class RobotView extends Component {
         text : 'View in OHIF',
         formatter : function(cell, row, rowIndex, formatExtraData){
             return (
-                <a href = {"/ohif.html/viewer/" + row.studyInstanceUID} target="_blank">View Images</a>
+                <OhifLink studyInstanceUID = {row.studyInstanceUID} />
             )
         }
     }];
