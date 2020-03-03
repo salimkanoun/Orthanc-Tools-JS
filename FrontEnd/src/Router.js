@@ -7,10 +7,10 @@ function createRoutes () {
             <Route exact path='/'>
               <Authentication />
             </Route>
-            <Route path='/query'>
+            <Route exact path='/query'>
               <Query />
             </Route>
-            <Route path='/options'>
+            <Route exact path='/options'>
               <AdminPanel />
             </Route>
       </Router>

@@ -41,6 +41,9 @@ export default class RobotView extends Component {
             options: { study : 'study', series : 'series'}
         })
     }, {
+        dataField: 'studyInstanceUID',
+        hidden: true
+    }, {
         dataField: 'patientName',
         text : 'Patient Name',
         filter: textFilter()
@@ -84,6 +87,14 @@ export default class RobotView extends Component {
         text : 'Remove Query',
         formatter : this.removeQueryButton,
         formatExtraData : this
+    }, {
+        dataField : 'ohif',
+        text : 'View in OHIF',
+        formatter : function(cell, row, rowIndex, formatExtraData){
+            return (
+                <a href = {"/ohif.html/viewer/" + row.studyInstanceUID} target="_blank">View Images</a>
+            )
+        }
     }];
 
     startProgressMonitoring(){

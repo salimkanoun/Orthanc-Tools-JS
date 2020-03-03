@@ -3,7 +3,7 @@ Front :
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
 - Spliter firstName, LastName dans toutes les tables query / results ?
 
-- Reverse proxy vers dicom-web : https://github.com/http-party/node-http-proxy
+- Integration OHIF dans robot View
 
 - Robot Level Series
     - Gerer la selection pour le robot...
@@ -40,6 +40,7 @@ Front :
 
 - Module Import d'image
     - Faire un composant commun avec GaelO
+    - https://github.com/react-dropzone/react-dropzone
 
 + tard  : 
 - historique des query dans BDD pour relancer une ancienne requete

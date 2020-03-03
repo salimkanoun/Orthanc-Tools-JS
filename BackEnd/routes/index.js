@@ -11,6 +11,7 @@ const { authentication } = require('../controllers/authentication')
 const { postQuery } = require('../controllers/queryAction')
 const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
+const { reverseProxyGet } = require('../controllers/reverseProxy')
 
 const { userAuthMidelware, userAdminMidelware } = require('./auth_middelware')
 
@@ -46,6 +47,11 @@ router.put('/aets', [userAuthMidelware, userAdminMidelware], changeAets)
 router.get('/aets', userAuthMidelware, getAets)
 router.get('/aets/:name/echo', [userAuthMidelware, userAdminMidelware], echoAets)
 router.delete('/aets/:name', [userAuthMidelware, userAdminMidelware], deleteAet)
+
+//DicomWebRoutes
+router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet)
+router.get('/api/wado/*', [userAuthMidelware], reverseProxyGet)
+
 
 
 

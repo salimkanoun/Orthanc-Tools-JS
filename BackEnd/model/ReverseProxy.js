@@ -46,7 +46,7 @@ const ReverseProxy  = {
       },
 
     streamToRes (api, method, data , res) {
-        request(this.makeOptions(method, api, data))
+        request( this.makeOptions(method, api, data) )
                 .on('response', function (response) {
                     if (response.statusCode === 200) {
                         response.pipe(res)
