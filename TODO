@@ -3,8 +3,6 @@ Front :
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
 - Spliter firstName, LastName dans toutes les tables query / results ?
 
-- Integration OHIF dans robot View => A tester ne marche pas en dev
-
 - Robot Level Series
     - Gerer la selection pour le robot...
     - Filtre sur le niveau Series => Contains et equal sur modality et series description
