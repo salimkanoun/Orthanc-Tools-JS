@@ -15,7 +15,36 @@ const { reverseProxyGet } = require('../controllers/reverseProxy')
 
 const { userAuthMidelware, userAdminMidelware } = require('./auth_middelware')
 
-// Authentication route
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management
+ */
+
+ /**
+ * @swagger
+ * path:
+ *  /authentication/:
+ *    post:
+ *      summary: Authentify User
+ *      tags: [Users]
+ *      requestBody:
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  username:
+ *                      type: string
+ *                  password:
+ *                      type: string
+ *      responses:
+ *        "200":
+ *          description: Sucess
+ *        "401":
+ *          description: Unauthorized
+ */
 router.post('/authentication', authentication)
 
 // Query, retrieve, job, export routes
