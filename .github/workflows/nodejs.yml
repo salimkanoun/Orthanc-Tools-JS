@@ -27,9 +27,14 @@ jobs:
     - name: Install dependencies
       run: npm install
       working-directory: BackEnd
-    - run: npm test
+    - name: Test BackEnd
+      run: npm test
       working-directory: BackEnd
-    - run: npm run-script build
+    - name: Install FrontEnd
+      run: npm install
+      working-directory: FrontEnd
+    - name: BuildFront
+      run: npm run-script build
       working-directory: FrontEnd
       env:
         CI: true
