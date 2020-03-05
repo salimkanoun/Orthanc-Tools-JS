@@ -37,6 +37,9 @@ jobs:
       with:
         name: OrthancToolsJS
         path: BackEnd
+    - name: Install dependencies
+      run: npm install
+      working-directory: BackEnd
     - name: Test BackEnd
       run: npm test
       working-directory: BackEnd
