@@ -1,6 +1,7 @@
 # Orthanc Tools JS
 
 ![Node.js CI](https://github.com/salimkanoun/Orthanc-Tools-JS/workflows/Node.js%20CI/badge.svg)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 Rewriting of Orthanc Tools in NodeJS.
 
