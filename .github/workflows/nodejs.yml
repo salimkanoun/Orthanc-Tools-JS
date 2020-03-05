@@ -37,6 +37,6 @@ jobs:
       run: npm run-script build
       working-directory: FrontEnd
     - name: copy FrontEnd build to BackEnd
-      run : mv ./build ../BackEnd
+      run : mv build ../BackEnd
       env:
         CI: true
