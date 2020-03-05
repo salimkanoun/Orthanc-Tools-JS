@@ -37,6 +37,10 @@ jobs:
       with:
         name: OrthancToolsJS
         path: BackEnd
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "OrthancToolsJS.zip"
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Install dependencies
       run: npm install
       working-directory: BackEnd
