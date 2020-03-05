@@ -3,8 +3,6 @@ Front :
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
 - Spliter firstName, LastName dans toutes les tables query / results ?
 
-- Reverse proxy vers dicom-web : https://github.com/http-party/node-http-proxy
-
 - Robot Level Series
     - Gerer la selection pour le robot...
     - Filtre sur le niveau Series => Contains et equal sur modality et series description
@@ -15,9 +13,7 @@ Front :
     - Validation robot job
         - Soit manuelle par administrateur
         - Soit automatique lors declanchement robot (avant retrieve ? ou lors de la creation du job ?)
-    -   Si requete faite , ressource disponible => 
-            - Liens vers visualisation dans OHIF -> Fait un composant reutilisable
-    -   Export rapport Query / Retrieve
+    - Export rapport Query / Retrieve
 
 - Interface suivi des robots (tous) pour un administrateur
     -   Validation d'un robot avant execution (fonction preset plateforme)
@@ -40,6 +36,7 @@ Front :
 
 - Module Import d'image
     - Faire un composant commun avec GaelO
+    - https://github.com/react-dropzone/react-dropzone
 
 + tard  : 
 - historique des query dans BDD pour relancer une ancienne requete

@@ -11,10 +11,40 @@ const { authentication } = require('../controllers/authentication')
 const { postQuery } = require('../controllers/queryAction')
 const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
+const { reverseProxyGet } = require('../controllers/reverseProxy')
 
 const { userAuthMidelware, userAdminMidelware } = require('./auth_middelware')
 
-// Authentication route
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: User management
+ */
+
+ /**
+ * @swagger
+ * path:
+ *  /authentication/:
+ *    post:
+ *      summary: Authentify User
+ *      tags: [Users]
+ *      requestBody:
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                  username:
+ *                      type: string
+ *                  password:
+ *                      type: string
+ *      responses:
+ *        "200":
+ *          description: Sucess
+ *        "401":
+ *          description: Unauthorized
+ */
 router.post('/authentication', authentication)
 
 // Query, retrieve, job, export routes
@@ -46,6 +76,11 @@ router.put('/aets', [userAuthMidelware, userAdminMidelware], changeAets)
 router.get('/aets', userAuthMidelware, getAets)
 router.get('/aets/:name/echo', [userAuthMidelware, userAdminMidelware], echoAets)
 router.delete('/aets/:name', [userAuthMidelware, userAdminMidelware], deleteAet)
+
+//DicomWebRoutes
+router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet)
+router.get('/api/wado/*', [userAuthMidelware], reverseProxyGet)
+
 
 
 

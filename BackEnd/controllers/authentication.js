@@ -9,10 +9,10 @@ var authentication = async function (req, res) {
       req.session.username = body.username
       res.json(true)
     } else {
-      res.send(401, 'Wrong Credential')
+      res.status(401).send('Wrong Credential')
     }
   } catch (Error) {
-    res.send(401, 'Unknown user')
+    res.status(401).send('Unknown user')
   }
 }
 

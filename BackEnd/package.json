@@ -5,14 +5,18 @@
     "email": "salim.kanoun@gmail.com",
     "url": "https://GaelO.fr"
   },
-  "license": "AGPL v3",
-  "version": "0.0.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/salimkanoun/Orthanc-Tools-JS.git"
+  },
+  "license": "AGPL-3.0",
+  "version": "0.0.3",
   "private": false,
   "main": "app.js",
   "scripts": {
-    "db:migrate": "./node_modules/.bin/sequelize db:migrate",
+    "migrate": "./node_modules/.bin/sequelize db:migrate",
     "start": "node app.js",
-    "pretest": "APP_ENV=test npm run db:migrate",
+    "pretest": "APP_ENV=test npm run migrate",
     "test": "./node_modules/.bin/jasmine",
     "build": "nexe -r database/**/* "
   },
@@ -50,11 +54,14 @@
     ]
   },
   "devDependencies": {
+    "cors": "^2.8.5",
     "jasmine": "^3.5.0",
     "jasmine-console-reporter": "^3.1.0",
     "mocha": "^7.0.1",
     "nodemon": "^2.0.2",
     "standard": "^14.3.1",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "swagger-jsdoc": "^3.5.0",
+    "swagger-ui-express": "^4.1.3"
   }
 }
