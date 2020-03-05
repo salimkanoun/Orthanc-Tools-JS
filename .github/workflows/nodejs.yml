@@ -41,3 +41,16 @@ jobs:
       working-directory: FrontEnd
       env:
         CI: true
+        
+  pre-release:
+    name: "Release"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Release"
+        working-directory: BackEnd
+
+      - name: Publish
+        if: github.ref == 'refs/heads/master'
+        uses: salimkanoun/Orthanc-Tools-JS@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
