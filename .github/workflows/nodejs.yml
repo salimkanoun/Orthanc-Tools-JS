@@ -40,6 +40,8 @@ jobs:
     - uses: ncipollo/release-action@v1
       with:
         artifacts: "OrthancToolsJS.zip"
+        allowUpdates: true
+        tag: "TestVersion"
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Install dependencies
       run: npm install
