@@ -38,5 +38,6 @@ jobs:
       working-directory: FrontEnd
     - name: copy FrontEnd build to BackEnd
       run : mv build ../BackEnd
+      working-directory: FrontEnd
       env:
         CI: true
