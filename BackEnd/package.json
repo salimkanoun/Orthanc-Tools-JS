@@ -16,7 +16,7 @@
   "scripts": {
     "migrate": "./node_modules/.bin/sequelize db:migrate",
     "start": "node app.js",
-    "pretest": "APP_ENV=test npm run db:migrate",
+    "pretest": "APP_ENV=test npm run migrate",
     "test": "./node_modules/.bin/jasmine",
     "build": "nexe -r database/**/* "
   },
