@@ -24,12 +24,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install dependencies
-      run: npm install
-      working-directory: BackEnd
-    - name: Test BackEnd
-      run: npm test
-      working-directory: BackEnd
     - name: Install FrontEnd
       run: npm install
       working-directory: FrontEnd
@@ -39,10 +33,13 @@ jobs:
     - name: copy FrontEnd build to BackEnd
       run : mv build ../BackEnd
       working-directory: FrontEnd
-      env:
-        CI: true
     - uses: actions/upload-artifact@v1
       with:
         name: OrthancToolsJS
         path: BackEnd
+    - name: Test BackEnd
+      run: npm test
+      working-directory: BackEnd
+      env:
+        CI: true
 
