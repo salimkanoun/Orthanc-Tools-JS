@@ -1,6 +1,6 @@
-# ImageFetcher
+# Orthanc Tools JS
 
-<a href="https://gitlab.com/salimkanoun/ImageFetcher/-/commits/master"><img alt="pipeline status" src="https://gitlab.com/salimkanoun/ImageFetcher/badges/master/pipeline.svg" /></a>
+![Node.js CI](https://github.com/salimkanoun/Orthanc-Tools-JS/workflows/Node.js%20CI/badge.svg)
 
 Rewriting of Orthanc Tools in NodeJS.
 
