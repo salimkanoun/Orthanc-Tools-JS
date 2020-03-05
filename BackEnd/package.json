@@ -5,7 +5,11 @@
     "email": "salim.kanoun@gmail.com",
     "url": "https://GaelO.fr"
   },
-  "license": "AGPL v3",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/salimkanoun/Orthanc-Tools-JS.git"
+  },
+  "license": "AGPL-3.0",
   "version": "0.0.2",
   "private": false,
   "main": "app.js",
