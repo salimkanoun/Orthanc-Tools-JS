@@ -34,7 +34,7 @@ jobs:
       run : mv build ../BackEnd
       working-directory: FrontEnd
     - name: create ZIP distribution
-      run : zip -r OrthancToolsJS.zip
+      run : zip -r OrthancToolsJS.zip .
       working-directory: BackEnd
     - name: Create Release
       id: create_release
