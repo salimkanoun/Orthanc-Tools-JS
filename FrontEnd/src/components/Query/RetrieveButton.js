@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import * as actions from '../../../actions/TableResult'
+import * as actions from '../../actions/TableResult'
 
 class RetrieveButton extends Component {
   constructor (props) {
@@ -56,7 +56,7 @@ class RetrieveButton extends Component {
     let intervalChcker
 
     const getJobData = async function () {
-      const jobData = await fetch('/api/job_details/'+jobUid, {
+      const jobData = await fetch('/api/jobs/'+jobUid, {
         method: 'GET',
         headers: {
           Accept: 'application/json',

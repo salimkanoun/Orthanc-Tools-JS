@@ -92,13 +92,13 @@ class Orthanc {
 
   }
 
-  async getAnswerDetails(answerId){
+  async _getAnswerDetails(answerId){
     return await ReverseProxy.getAnswer('/queries/' + answerId + '/answers?expand', 'GET', undefined)
   }
 
   async getSeriesAnswerDetails (answerId, aet) {
 
-    let answerQuery = await this.getAnswerDetails(answerId)
+    let answerQuery = await this._getAnswerDetails(answerId)
 
     const answersObjects = []
 
@@ -149,7 +149,7 @@ class Orthanc {
 
   async getStudyAnswerDetails (answerId, aet) {
 
-    let studyAnswers = await this.getAnswerDetails(answerId)
+    let studyAnswers = await this._getAnswerDetails(answerId)
 
     const answersObjects = []
 
@@ -222,28 +222,6 @@ class Orthanc {
     let answer = await ReverseProxy.getAnswer('/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', 'POST', JSON.stringify(postData))
 
     return answer
-  }
-
-  async getJobData (jobUid) {
-    let answer = await ReverseProxy.getAnswer('/jobs/' + jobUid, 'GET', undefined)
-
-    const queryDetails = answer.Content.Query
-    const remoteAET = queryDetails.RemoteAet
-    const answerObject = []
-    try {
-      queryDetails.forEach(queryData => {
-        const retrieveDetails = {
-          accessionNb: queryData['0008,0050'],
-          level: queryData['0008,0052'],
-          patientID: queryData['0010,0020'],
-          studyUID: queryData['0020,000d'],
-          remoteAet: remoteAET
-        }
-        answerObject.push(retrieveDetails)
-      })
-    } catch (exception) {};
-
-    return answerObject
   }
 
   async findInOrthanc (level = 'Study', patientName = '*', patientID = '*', accessionNb = '*', date = '*', studyDescription = '*', modality = '*', studyInstanceUID = '*') {

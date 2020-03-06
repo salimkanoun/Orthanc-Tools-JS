@@ -4,7 +4,7 @@ import filterFactory, { textFilter, dateFilter, selectFilter } from 'react-boots
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import OhifLink from '../../ohif/OhifLink';
+import OhifLink from '../../Ohif/OhifLink';
 
 export default class RobotView extends Component {
 

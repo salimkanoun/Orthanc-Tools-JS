@@ -6,13 +6,13 @@ import TableResult from './TableResult'
 import { connect } from 'react-redux'
 import * as actions from '../../../actions'
 
-class Query extends Component {
+class AutoQuery extends Component {
   activate (divName) {
     this.props.setTab(divName)
   }
 
   async componentDidMount () {
-    const aets = await Query.getAets()
+    const aets = await this.getAets()
     this.props.setAets(aets)
   }
 
@@ -58,4 +58,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, actions)(Query)
+export default connect(mapStateToProps, actions)(AutoQuery)

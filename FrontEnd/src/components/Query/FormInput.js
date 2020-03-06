@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import AetButton from './aet_button'
-import ChosenSelect from './chosen_select'
+import AetButton from './AetButton'
 
 import { connect } from 'react-redux'
-import * as actions from '../../../actions/FormInput'
+import * as actions from '../../actions/FormInput'
 
 class FormInput extends Component {
   constructor (props) {
@@ -52,7 +51,6 @@ class FormInput extends Component {
           </div>
           <div className='col-sm'>
             <label htmlFor='modality'>Modality</label>
-            <ChosenSelect />
           </div>
 
         </div>
