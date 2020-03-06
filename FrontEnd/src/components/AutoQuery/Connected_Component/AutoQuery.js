@@ -7,12 +7,13 @@ import { connect } from 'react-redux'
 import * as actions from '../../../actions'
 
 class AutoQuery extends Component {
+  
   activate (divName) {
     this.props.setTab(divName)
   }
 
   async componentDidMount () {
-    const aets = await this.getAets()
+    const aets = await AutoQuery.getAets()
     this.props.setAets(aets)
   }
 

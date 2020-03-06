@@ -4,7 +4,7 @@ import AetButton from './AetButton'
 import { connect } from 'react-redux'
 import * as actions from '../../actions/FormInput'
 
-class FormInput extends Component {
+class QueryForm extends Component {
   constructor (props) {
     super(props)
     this.handleChange = this.handleChange.bind(this)
@@ -24,8 +24,7 @@ class FormInput extends Component {
       aetButtons = this.buildAetButtons()
     }
     return (
-      <div className='jumbotron' style={this.props.style}>
-        <h2 className='card-title'>Manual Input</h2>
+      <div className='jumbotron'>
         <div className='row'>
           <div className='col-sm'>
             <label htmlFor='lastName'>Last Name</label>
@@ -114,4 +113,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, actions)(FormInput)
+export default connect(mapStateToProps, actions)(QueryForm)
