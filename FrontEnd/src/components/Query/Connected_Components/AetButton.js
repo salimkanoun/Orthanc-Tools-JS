@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import * as actions from '../../../actions'
 
 class AetButton extends Component {
 
@@ -22,9 +20,4 @@ class AetButton extends Component {
 
 }
 
-const mapStateToProps = (state) => {
-  return {
-  }
-}
-
-export default connect(mapStateToProps, actions)(AetButton)
+export default AetButton

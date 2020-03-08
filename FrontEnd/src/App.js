@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import Helmet from 'react-helmet'
 
 import Query from './components/Query/Query'
-import AutoQuery from './components/AutoQuery/Connected_Component/AutoQuery'
+import AutoQuery from './components/AutoQuery/Component/AutoQuery'
 import RobotView from './components/AutoQuery/Component/RobotView'
 import Authentication from './components/Authentication'
 import AdminPanel from './components/Admin/AdminPanel'
