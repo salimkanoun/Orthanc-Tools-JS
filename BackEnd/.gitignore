@@ -1,5 +1,5 @@
 node_modules
-data/database/imagefetcher.db
+!data/database/README
 !data/log/README
 .env
 /build

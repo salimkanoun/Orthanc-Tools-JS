@@ -14,10 +14,10 @@
   "private": false,
   "main": "app.js",
   "scripts": {
+    "prestart": "NODE_ENV=production npm run migrate",
     "migrate": "./node_modules/.bin/sequelize db:migrate",
-    "start": "NODE_ENV=production node app.js",
-    "dev": "node app.js",
-    "pretest": "APP_ENV=test npm run migrate",
+    "start": "node app.js",
+    "pretest": "NODE_ENV=test npm run migrate",
     "test": "./node_modules/.bin/jasmine",
     "build": "nexe -r database/**/* "
   },
