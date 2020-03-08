@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 var rfs = require('rotating-file-stream')
 var session = require('express-session')
-var opn = require('opn');
+var open = require('open');
 
 
 var apisRouter = require('./routes/index')
@@ -85,7 +85,7 @@ app.use(function (err, req, res, next) {
 app.listen(4000, function () {
   console.log('Example app listening on port 4000!')
   console.log(app.get('env'))
-  if( ! app.get('env') === 'development') opn('http://localhost:4000');
+  if( app.get('env') === 'production') open('http://localhost:4000');
   
 })
 
