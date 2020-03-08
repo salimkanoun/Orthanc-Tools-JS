@@ -3,7 +3,7 @@ import Papa from 'papaparse'
 import moment from 'moment'
 
 import { connect } from 'react-redux'
-import * as actions from '../../../actions/FormInput'
+import * as actions from '../../../actions/TableQuery'
 
 class CsvLoader extends Component {
 
@@ -63,9 +63,7 @@ class CsvLoader extends Component {
 }
 
 const mapStateToProps = ( state )=>{
-    return {
-      form : state.FormInput
-    }
+    return {}
   }
   
 export default connect(mapStateToProps, actions)(CsvLoader);

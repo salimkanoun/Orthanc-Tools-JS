@@ -1,26 +1,32 @@
 import React, { Component } from 'react'
 import AetButton from './AetButton'
+import * as actions from '../../../actions/OrthancTools'
 
 import { connect } from 'react-redux'
-import * as actions from '../../actions/FormInput'
 
 class QueryForm extends Component {
   constructor (props) {
     super(props)
     this.handleChange = this.handleChange.bind(this)
-    this.addQueryToList = this.addQueryToList.bind(this)
+  }
+
+  async componentDidMount(){
+    let aets = await fetch('/api/aets').then((answer) => { return answer.json() })
+    this.props.loadAvailableAETS(aets)
   }
 
   handleChange (event) {
     const target = event.target
     const name = target.name
     const value = target.type === 'checkbox' ? target.checked : target.value
-    this.props.setFormData(name, value)
+    this.setState({
+      [name] : value
+    })
   }
 
   render () {
     let aetButtons = null
-    if (this.props.form.aets.length) {
+    if (this.props.aets.length) {
       aetButtons = this.buildAetButtons()
     }
     return (
@@ -71,45 +77,21 @@ class QueryForm extends Component {
     )
   };
 
-  addQueryToList (aet) {
-    const currentProps = this.props.form
-
-    const modalityString = currentProps.modalities.join('/')
-
-    let nameString = ''
-
-    if (currentProps.lastName === '' && currentProps.firstName !== '') {
-      nameString = '*^' + currentProps.firstName
-    } else if (currentProps.lastName !== '' && currentProps.firstName === '') {
-      nameString = currentProps.lastName + '^*'
-    } else if (currentProps.lastName !== '' && currentProps.firstName !== '') {
-      nameString = currentProps.lastName + '^' + currentProps.firstName
-    }
-
-    const query = {
-      patientName: nameString,
-      patientId: currentProps.patientId,
-      accessionNumber: currentProps.accessionNumber,
-      dateFrom: currentProps.dateFrom,
-      dateTo: currentProps.dateTo,
-      studyDescription: currentProps.studyDescription,
-      modalities: modalityString,
-      aet: aet
-    }
-
-    this.props.addQueryToList(query)
+  doQueryTo (aet) {
+    
   }
 
   buildAetButtons () {
-    return (this.props.form.aets.map((item, key) =>
-      <AetButton key={key} aetName={item} clickListner={() => this.addQueryToList(item)} />
+    console.log(this.props.aets)
+    return (this.props.aets.map((aet, key) =>
+      <AetButton key={key} aetName={aet} clickListner={() => this.doQueryTo(aet)} />
     ))
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    form: state.FormInput
+    aets: state.OrthancTools.OrthancAets
   }
 }
 

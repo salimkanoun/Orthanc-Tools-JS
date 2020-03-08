@@ -1,5 +1,0 @@
-node_modules
-!data/database/README
-!data/log/README
-.env
-/build

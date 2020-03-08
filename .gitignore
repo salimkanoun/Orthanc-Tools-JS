@@ -1,3 +1,7 @@
-BackEnd/data/database/db.development.sqlite
+BackEnd/node_modules
+!BackEnd/data/database/README
+!BackEnd/data/log/README
+BackEnd/build
+
 BackEnd/data/log/*
 !BackEnd/data/README
