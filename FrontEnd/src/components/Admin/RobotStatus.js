@@ -122,12 +122,10 @@ export default class RobotStatus extends Component {
                 return answer.json()})
             .then( (answerData) => {
 
-                let state=this.state
-
-                state.rows = []
+                let rows = []
 
                 answerData.forEach(robotJob => {
-                    state.rows.push({
+                    rows.push({
                         key : Math.random(),
                         name : robotJob.projectName,
                         username : robotJob.username,
@@ -138,7 +136,7 @@ export default class RobotStatus extends Component {
                 });
 
                 this.setState({
-                    ...this.state
+                    rows : rows
                 })
 
            })

@@ -33,7 +33,6 @@ export default class AetForm extends Component {
 
     manufacturerChangeListener(item){
         this.setState({
-          ...this.state,
           manufacturer : item.value
         })
     }

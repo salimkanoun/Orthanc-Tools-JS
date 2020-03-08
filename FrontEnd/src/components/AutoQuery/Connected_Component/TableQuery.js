@@ -27,8 +27,6 @@ class TableQuery extends Component {
     this.query = this.query.bind(this)
     this.emptyTable = this.emptyTable.bind(this)
     this.deselectAll= this.deselectAll.bind(this)
-    this.aetsObject = []
-
   }
   
   async componentDidMount(){

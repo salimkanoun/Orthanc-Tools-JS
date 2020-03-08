@@ -3,6 +3,10 @@ import Select from 'react-select'
 
 class SelectModalities extends Component {
 
+    state = {
+      selectedModalities : []
+    }
+
     modalities= [
       { value: 'CT', label: 'CT' },
       { value: 'PT', label: 'PT' },
@@ -16,13 +20,10 @@ class SelectModalities extends Component {
       super(props)
       this.saveListener = this.saveListener.bind(this)
       this.changeListener= this.changeListener.bind(this);
-      this.state = {
-        selectedModalities : []
-      }
     }
 
     changeListener(value){
-      //Ajouter au state les valeurs selectionnées
+
       this.setState({
         ...this.state,
         selectedModalities : value

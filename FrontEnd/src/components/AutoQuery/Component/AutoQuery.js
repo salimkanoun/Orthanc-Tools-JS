@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 
 import TableQuery from '../Connected_Component/TableQuery'
 import TableResult from '../Connected_Component/TableResult'
@@ -10,8 +10,14 @@ function AutoQuery() {
 
   const [currentMainTab, setCurrentMainTab] = useState('Query')
 
+  function getComponentToDisplay(){
+    let component = null
+    currentMainTab === 'Query' ? component = <TableQuery/> : component =  <TableResult/>
+    return component
+  }
+
   return (
-      <>
+    <Fragment>
         <div id='navBar' className='mb-5'>
           <ul className='nav nav-pills nav-fill'>
             <li className='nav-item'>
@@ -22,9 +28,10 @@ function AutoQuery() {
             </li>
           </ul>
         </div>
-        <TableQuery style={currentMainTab === 'Query' ? {} : { display: 'none' }} />
-        <TableResult style={currentMainTab === 'Results' ? {} : { display: 'none' }} />
-      </>
+        <div>
+          {getComponentToDisplay()}
+        </div>
+    </Fragment>
     )
 
 }
