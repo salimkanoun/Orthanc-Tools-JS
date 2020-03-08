@@ -11,6 +11,7 @@ Roadmap :
 2) ManualQuery
 3) Anonymization Tools
 4) Export Tools
-5) Orthanc content explorer
-6) Monitoring Tools
-7) Settings panel (developped in each step)
+5) Import DICOM Tools
+6) Orthanc content explorer
+7) Monitoring Tools
+8) Settings panel (developped in each step)
