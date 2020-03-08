@@ -5,7 +5,7 @@ import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
 import { connect } from 'react-redux'
-import * as actions from '../../actions/TableResult'
+import * as actions from '../../../actions/TableResult'
 
 
 class TableResultSeries extends Component {

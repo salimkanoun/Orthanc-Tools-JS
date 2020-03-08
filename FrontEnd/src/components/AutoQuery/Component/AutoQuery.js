@@ -1,39 +1,32 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 
 import TableQuery from '../Connected_Component/TableQuery'
 import TableResult from '../Connected_Component/TableResult'
 
-class AutoQuery extends Component {
+/**
+ * Test de React Hooks (nouvelle syntaxe sans classe)
+ */
+function AutoQuery() {
 
-  state = {
-    currentMainTab : 'Query'
-  }
-  
-  activate (divName) {
-    this.setState({
-      currentMainTab : divName
-    })
-  }
+  const [currentMainTab, setCurrentMainTab] = useState('Query')
 
-  render () {
-    return (
+  return (
       <>
         <div id='navBar' className='mb-5'>
           <ul className='nav nav-pills nav-fill'>
             <li className='nav-item'>
-              <button className={this.state.currentMainTab === 'Query' ? 'col nav-link active link-button' : ' col nav-link link-button'} onClick={() => this.activate('Query')}>Auto Query</button>
+              <button className={currentMainTab === 'Query' ? 'col nav-link active link-button' : ' col nav-link link-button'} onClick={() => setCurrentMainTab('Query')}>Auto Query</button>
             </li>
             <li className='nav-item'>
-              <button className={this.state.currentMainTab === 'Results' ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => this.activate('Results')}>Result answers</button>
+              <button className={currentMainTab === 'Results' ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab('Results')}>Result answers</button>
             </li>
           </ul>
         </div>
-        <TableQuery style={this.state.currentMainTab === 'Query' ? {} : { display: 'none' }} />
-        <TableResult style={this.state.currentMainTab === 'Results' ? {} : { display: 'none' }} />
+        <TableQuery style={currentMainTab === 'Query' ? {} : { display: 'none' }} />
+        <TableResult style={currentMainTab === 'Results' ? {} : { display: 'none' }} />
       </>
     )
-  }
-}
 
+}
 
 export default AutoQuery

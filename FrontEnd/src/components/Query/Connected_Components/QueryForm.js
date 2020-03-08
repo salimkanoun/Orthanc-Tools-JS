@@ -3,16 +3,23 @@ import AetButton from './AetButton'
 import * as actions from '../../../actions/OrthancTools'
 
 import { connect } from 'react-redux'
+import SelectModalities from '../../AutoQuery/Component/SelectModalities'
 
 class QueryForm extends Component {
   constructor (props) {
     super(props)
     this.handleChange = this.handleChange.bind(this)
+    this.updateModalities = this.updateModalities.bind(this)
   }
 
   async componentDidMount(){
     let aets = await fetch('/api/aets').then((answer) => { return answer.json() })
     this.props.loadAvailableAETS(aets)
+  }
+
+  updateModalities(state){
+    console.log(state)
+
   }
 
   handleChange (event) {
@@ -56,6 +63,7 @@ class QueryForm extends Component {
           </div>
           <div className='col-sm'>
             <label htmlFor='modality'>Modality</label>
+            <SelectModalities onUpdate={this.updateModalities}/>
           </div>
 
         </div>
@@ -78,6 +86,8 @@ class QueryForm extends Component {
   };
 
   doQueryTo (aet) {
+    console.log(aet)
+    console.log(this.state)
     
   }
 

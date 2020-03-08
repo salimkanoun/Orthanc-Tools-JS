@@ -1,27 +1,21 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import OrthancSettings from './OrthancSettings'
 import AetPanel from './AetPanel'
 import AutoRetrieveOptions from './AutoRetrieveOptions'
 
-export default class AdminPanel extends Component {
+/**
+ * Using React Hooks
+ */
+const AdminPanel = () => {
 
-  constructor(props){
-    super(props)
-    this.clickHandler=this.clickHandler.bind(this)
-    this.state ={
-      selectedOptionMenu : 'General'
-    }
+  const [selectedOptionMenu, setSelectedOptionMenu] = useState('General');
+
+  function clickHandler(event){
+    setSelectedOptionMenu(event.target.value)
   }
 
-
-  clickHandler(event){
-    this.setState({
-      selectedOptionMenu : event.target.value
-    })
-  }
-
-  getComponentToDisplay(){
-    switch (this.state.selectedOptionMenu){
+  function getComponentToDisplay(){
+    switch (selectedOptionMenu){
       case 'General' : 
         return (<OrthancSettings/>)
       case 'Aets' : 
@@ -33,21 +27,21 @@ export default class AdminPanel extends Component {
     }
   }
 
-  render () {
-    let components = this.getComponentToDisplay()
-    return (
-      <div className='jumbotron row'>
-        <div className="col-3">
-            <div className="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
-              <input className="btn btn-link text-left" type="button" onClick={this.clickHandler} value="General" />
-              <input className="btn btn-link text-left" type="button" onClick={this.clickHandler} value="Aets" />
-              <input className="btn btn-link text-left" type="button" onClick={this.clickHandler} value="Robots" />
-            </div>
-        </div>
-        <div className="col-sm">
-            {components}
-        </div>
+  return (
+    <div className='jumbotron row'>
+      <div className="col-3">
+          <div className="nav flex-column nav-pills" role="tablist" aria-orientation="vertical">
+            <input className="btn btn-link text-left" type="button" onClick={clickHandler} value="General" />
+            <input className="btn btn-link text-left" type="button" onClick={clickHandler} value="Aets" />
+            <input className="btn btn-link text-left" type="button" onClick={clickHandler} value="Robots" />
+          </div>
       </div>
-    )
-  }
+      <div className="col-sm">
+          {getComponentToDisplay()}
+      </div>
+    </div>
+  )
+  
 }
+
+export default AdminPanel
