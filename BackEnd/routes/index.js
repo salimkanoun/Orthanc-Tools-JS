@@ -13,7 +13,7 @@ const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
 const { reverseProxyGet } = require('../controllers/reverseProxy')
 
-const { userAuthMidelware, userAdminMidelware } = require('./auth_middelware')
+const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authentication')
 
 /**
  * @swagger
@@ -50,7 +50,7 @@ router.post('/authentication', authentication)
 // Query, retrieve, job, export routes
 router.post('/query', userAuthMidelware, postQuery)
 router.post('/retrieve', userAuthMidelware, postRetrieve)
-router.get('/job_details/:id', userAuthMidelware, getJobData)
+router.get('/jobs/:jobId', userAuthMidelware, getJobData)
 router.post('/export_dicom', userAuthMidelware, postExportDicom)
 
 // Robot routes
@@ -69,7 +69,6 @@ router.get('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], g
 router.put('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], setOrthancServer)
 //Orthanc System
 router.get('/options/orthanc-system', [userAuthMidelware, userAdminMidelware], getOrthancSystem)
-getOrthancSystem
 
 // Aets Routes
 router.put('/aets', [userAuthMidelware, userAdminMidelware], changeAets)
@@ -79,9 +78,6 @@ router.delete('/aets/:name', [userAuthMidelware, userAdminMidelware], deleteAet)
 
 //DicomWebRoutes
 router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet)
-router.get('/api/wado/*', [userAuthMidelware], reverseProxyGet)
-
-
-
+router.get('/wado/*', [userAuthMidelware], reverseProxyGet)
 
 module.exports = router

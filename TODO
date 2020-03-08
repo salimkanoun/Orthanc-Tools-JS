@@ -58,6 +58,8 @@ https://stackabuse.com/using-sequelize-js-and-sqlite-in-an-express-js-app/
 --Compilation
 Executable windows avec wix ?
 
+--Deploiement regarder les warning lors du npm install du backend
+
 -- Documentation
 https://medium.com/wolox-driving-innovation/documenting-a-nodejs-rest-api-with-openapi-3-swagger-5deee9f50420
 In Orthanc :  set "DicomModalitiesInDatabase" : true
