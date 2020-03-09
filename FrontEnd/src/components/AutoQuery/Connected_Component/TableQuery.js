@@ -13,6 +13,7 @@ import ColumnEditor from './ColumnEditor'
 import { connect } from 'react-redux'
 import * as actions from '../../../actions/TableQuery'
 import * as resultActions from '../../../actions/TableResult'
+import * as orthancToolsActions from '../../../actions/OrthancTools'
 
 import CsvLoader from './CsvLoader'
 import SelectModalities from '../Component/SelectModalities';
@@ -26,10 +27,13 @@ class TableQuery extends Component {
     this.query = this.query.bind(this)
     this.emptyTable = this.emptyTable.bind(this)
     this.deselectAll= this.deselectAll.bind(this)
-    this.aetsObject = []
-
   }
-
+  
+  async componentDidMount(){
+    let aets = await fetch('/api/aets').then((answer) => { return answer.json() })
+    this.props.loadAvailableAETS(aets)
+  }
+  
   deselectAll(){
     this.node.selectionContext.selected = []
   }
@@ -129,7 +133,7 @@ class TableQuery extends Component {
       type: Type.SELECT,
       getOptions: (setOptions, { row, column }) => {
         return this.props.aets.map(function(aet){
-          return {value : aet.name, label : aet.name}
+          return {value : aet, label : aet}
         })
       }
     },
@@ -234,7 +238,7 @@ class TableQuery extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    aets: state.FormInput.aets,
+    aets: state.OrthancTools.OrthancAets,
     queries: state.QueryList,
     results: state.resultList
   }
@@ -243,6 +247,7 @@ const mapStateToProps = (state) => {
 const mapActionsToProps = {
   ...actions,
   ...resultActions,
+  ...orthancToolsActions
 };
 
 export default connect(mapStateToProps, mapActionsToProps)(TableQuery);

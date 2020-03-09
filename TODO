@@ -1,4 +1,5 @@
 Front : 
+- voir ReduxThunk pour stocker de maniere globale les data https://dev.to/markusclaus/fetching-data-from-an-api-using-reactredux-55ao
 - Faire que le select all select tout les non filtre de toutes les pages ? => difficulté....
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
 - Spliter firstName, LastName dans toutes les tables query / results ?

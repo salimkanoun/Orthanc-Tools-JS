@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
 
 export default class CreateRobot extends Component {
+
+  state = {
+    projectName: ''
+  }
+
   constructor (props) {
     super(props)
     this.createRobot = this.createRobot.bind(this)
     this.handleChange = this.handleChange.bind(this)
-    this.state = {
-      projectName: ''
-    }
   }
 
   async createRobot () {
@@ -50,19 +52,17 @@ export default class CreateRobot extends Component {
     const name = target.name
     const value = target.type === 'checkbox' ? target.checked : target.value
 
-    const newState = {
-      ...this.state
-    }
-    newState[name] = value
+    this.setState({
+      [name] : value
+    })
 
-    this.setState(newState)
   }
 
   render () {
     return (
       <div className='container'>
         <div className='row float-right'>
-                Project Name :
+          Project Name :
           <input type='text' className='' name='projectName' value={this.state.value} onChange={this.handleChange} />
           <input type='button' className='btn btn-success' onClick={this.createRobot} value='Create Robot' />
         </div>

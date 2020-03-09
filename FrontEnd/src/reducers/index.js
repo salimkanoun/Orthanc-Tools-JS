@@ -1,12 +1,10 @@
 import { combineReducers } from 'redux'
-import Query from './Query'
-import FormInput from './FormInput'
+import OrthancTools from './OrthancTools'
 import QueryList from './QueryList'
 import ResultList from './ResultList'
 
 export default combineReducers({
-  Query,
-  FormInput,
+  OrthancTools,
   QueryList,
   ResultList
 })

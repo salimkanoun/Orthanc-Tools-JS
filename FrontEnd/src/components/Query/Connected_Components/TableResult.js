@@ -10,7 +10,7 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { connect } from 'react-redux'
 import TableResultSeries from './TableResultSeries'
 
-import * as actions from '../../actions/TableResult'
+import * as actions from '../../../actions/TableResult'
 
 
 class TableResult extends Component {

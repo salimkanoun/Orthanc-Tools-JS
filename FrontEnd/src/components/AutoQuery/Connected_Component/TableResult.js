@@ -11,7 +11,6 @@ import { connect } from 'react-redux'
 import * as actions from '../../../actions/TableResult'
 
 import CreateRobot from './../Component/CreateRobot'
-
 import TableResultSeries from './TableResultSeries'
 
 
