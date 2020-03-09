@@ -14,13 +14,12 @@
   "private": false,
   "main": "OrthancToolsJS.js",
   "scripts": {
-    "prestart": "NODE_ENV=production npm run migrate",
+    "prestart": "cross-env NODE_ENV=production npm run migrate",
     "migrate": "./node_modules/.bin/sequelize db:migrate",
-    "start": "node OrthancToolsJS.js",
-    "pretest": "NODE_ENV=test npm run migrate",
-    "test": "./node_modules/.bin/jasmine",
-    "build": "webpack OrthancToolsJS.js",
-    "postinstall": "electron-rebuild"
+    "start": "cross-env NODE_ENV=production node OrthancToolsJS.js",
+    "pretest": "cross-env NODE_ENV=test npm run migrate",
+    "test": "cross-env NODE_ENV=test ./node_modules/.bin/jasmine",
+    "build": "webpack OrthancToolsJS.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
