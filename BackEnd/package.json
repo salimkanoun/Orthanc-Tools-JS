@@ -12,14 +12,14 @@
   "license": "AGPL-3.0",
   "version": "0.0.3",
   "private": false,
-  "main": "app.js",
+  "main": "OrthancToolsJS.js",
   "scripts": {
     "prestart": "NODE_ENV=production npm run migrate",
     "migrate": "./node_modules/.bin/sequelize db:migrate",
-    "start": "node app.js",
+    "start": "node OrthancToolsJS.js",
     "pretest": "NODE_ENV=test npm run migrate",
     "test": "./node_modules/.bin/jasmine",
-    "build": "nexe -r database/**/* "
+    "build": "webpack"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -56,6 +56,7 @@
   },
   "devDependencies": {
     "cors": "^2.8.5",
+    "cross-env": "^7.0.2",
     "jasmine": "^3.5.0",
     "jasmine-console-reporter": "^3.1.0",
     "mocha": "^7.0.1",
@@ -63,6 +64,8 @@
     "standard": "^14.3.1",
     "supertest": "^4.0.2",
     "swagger-jsdoc": "^3.5.0",
-    "swagger-ui-express": "^4.1.3"
+    "swagger-ui-express": "^4.1.3",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11"
   }
 }
