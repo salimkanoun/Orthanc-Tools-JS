@@ -19,7 +19,8 @@
     "start": "node OrthancToolsJS.js",
     "pretest": "NODE_ENV=test npm run migrate",
     "test": "./node_modules/.bin/jasmine",
-    "build": "webpack"
+    "build": "webpack OrthancToolsJS.js",
+    "postinstall": "electron-rebuild"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -57,6 +58,8 @@
   "devDependencies": {
     "cors": "^2.8.5",
     "cross-env": "^7.0.2",
+    "electron-prebuilt": "^1.4.13",
+    "electron-rebuild": "^1.10.0",
     "jasmine": "^3.5.0",
     "jasmine-console-reporter": "^3.1.0",
     "mocha": "^7.0.1",
