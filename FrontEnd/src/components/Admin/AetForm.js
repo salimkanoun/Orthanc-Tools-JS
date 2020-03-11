@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import Select from 'react-select'
 
+/**
+ * Form to declare or modify an AET
+ */
 export default class AetForm extends Component {
 
     constructor(props) {
@@ -83,7 +86,7 @@ export default class AetForm extends Component {
                     <label htmlFor="port">Port : </label>
                     <input type='number' min="0" max="999999" name="port" className="row form-control" onChange={this.handleChange} />
                     <label htmlFor="manufacturer">Manufacturer : </label>
-                    <Select options={this.manufacturers} name="manufacturer" onChange={this.manufacturerChangeListener}/>
+                    <Select className="col-sm" options={this.manufacturers} name="manufacturer" onChange={this.manufacturerChangeListener}/>
                 </div>
                 <div className="text-right mb-5">
                     <input type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />

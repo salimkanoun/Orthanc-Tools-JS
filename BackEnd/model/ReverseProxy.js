@@ -5,7 +5,7 @@ const ReverseProxy  = {
 
       getOrthancAddress () {
         let orthancSettings = Options.getOrthancConnexionSettings()
-        this.address = orthancSettings['OrthancAdress']
+        this.address = orthancSettings['OrthancAddress']
         this.port = orthancSettings['OrthancPort']
         this.username = orthancSettings['OrthancUsername']
         this.password = orthancSettings['OrthancPassword']

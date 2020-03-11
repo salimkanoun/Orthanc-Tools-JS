@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import OrthancSettings from './OrthancSettings'
 import AetRootPanel from './AetRootPanel'
-import AutoRetrieveOptions from './AutoRetrieveOptions'
+import AutoRetrieveRootPanel from './AutoRetrieveRootPanel'
 
 /**
  * Root Panel of Admin route
@@ -22,7 +22,7 @@ const AdminPanel = () => {
       case 'Aets' : 
         return (<AetRootPanel />)
       case 'Robots' : 
-        return (<AutoRetrieveOptions />)
+        return (<AutoRetrieveRootPanel />)
       default : 
         return ([])
     }

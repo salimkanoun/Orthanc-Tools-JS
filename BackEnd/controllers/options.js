@@ -23,7 +23,7 @@ var getOrthancServer =  function (req, res) {
 
 var setOrthancServer =  function (req, res) {
   let data=req.body
-  Options.setOrthancConnexionSettings(data.address, data.port, data.username, data.password)
+  Options.setOrthancConnexionSettings(data.OrthancAddress, data.OrthancPort, data.OrthancUsername, data.OrthancPassword)
   res.end()
 }
 
