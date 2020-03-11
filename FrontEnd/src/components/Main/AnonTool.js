@@ -9,9 +9,9 @@ export default class AnonTool extends Component {
 
     render(){
         return (
-            <button type="button" class="btn btn-primary">
-            Anonymize <span class="badge badge-light">{this.state.size}</span>
-            <span class="sr-only">Anonymization List</span>
+            <button type="button" className="btn btn-primary">
+            Anonymize <span className="badge badge-light">{this.state.size}</span>
+            <span className="sr-only">Anonymization List</span>
           </button>
         )
     }

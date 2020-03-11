@@ -20,6 +20,10 @@ export default class AetForm extends Component {
         { value: 'GE', label: 'GE' }
     ]
 
+    /**
+     * Fill input text of users in current state
+     * @param {*} event 
+     */
     handleChange(event) {
         const target = event.target
         const name = target.name
@@ -31,12 +35,19 @@ export default class AetForm extends Component {
 
     }
 
+    /**
+     * Fill manufacturer select choice in current state
+     * @param {*} item 
+     */
     manufacturerChangeListener(item){
         this.setState({
           manufacturer : item.value
         })
     }
 
+    /**
+     * Listener on form submission
+     */
     async handleClick() {
 
         let postString = JSON.stringify({ name: this.state.name, 
@@ -61,8 +72,8 @@ export default class AetForm extends Component {
     render() {
         return (
             <Fragment>
+                <h2 className="card-title">Add Aet</h2>
                 <div className="form-group">
-                    <h2 className="card-title">Add Aet</h2>
                     <label htmlFor="name">Name : </label>
                     <input type='text' name="name" className="row form-control" onChange={this.handleChange} />
                     <label htmlFor="aetName">Aet Name : </label>
@@ -73,10 +84,9 @@ export default class AetForm extends Component {
                     <input type='number' min="0" max="999999" name="port" className="row form-control" onChange={this.handleChange} />
                     <label htmlFor="manufacturer">Manufacturer : </label>
                     <Select options={this.manufacturers} name="manufacturer" onChange={this.manufacturerChangeListener}/>
-                    
                 </div>
                 <div className="text-right mb-5">
-                <input type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
+                    <input type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
                 </div>
             </Fragment>
         )
