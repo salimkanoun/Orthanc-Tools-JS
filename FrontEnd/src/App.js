@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import Helmet from 'react-helmet'
 
 import Query from './components/Query/Components/Query'
-import AutoQuery from './components/AutoQuery/Component/AutoQuery'
+import AutoQueryRoot from './components/AutoQuery/Component/AutoQueryRoot'
 import RobotView from './components/AutoQuery/Component/RobotView'
 import Authentication from './components/Authentication'
 import AdminRootPanel from './components/Admin/AdminRootPanel'
@@ -35,7 +35,7 @@ function App () {
           </Route>
           <Route exact path='/query' component = {Query}>
           </Route>
-          <Route exact path='/auto-query' component = {AutoQuery}>
+          <Route exact path='/auto-query' component = {AutoQueryRoot}>
           </Route>
           <Route exact path='/options' component = {AdminRootPanel}>
           </Route>

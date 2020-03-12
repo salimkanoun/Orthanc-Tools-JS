@@ -21,9 +21,9 @@ export default class OrthancSettings extends Component {
     /**
      * Fetch value from BackEnd
      */
-    async componentDidMount(){
+    componentDidMount(){
 
-        let answer = await fetch("/api/options/orthanc-server", {
+        fetch("/api/options/orthanc-server", {
             method: "GET",
             headers: {
                 'Accept': 'application/json',

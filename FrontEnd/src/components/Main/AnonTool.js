@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 
+//ce composant sera a connecter au redux pour avoir la longueur de la list d'anon
 export default class AnonTool extends Component {
 
     state = {

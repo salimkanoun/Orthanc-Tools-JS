@@ -53,7 +53,7 @@ export default class RobotStatus extends Component {
     },{
         dataField: 'validated',
         text: 'Validation Status',
-        formatter : this.validationComponent,
+        formatter : this.validationButton,
         formatExtraData : this
     }, {
         dataField : 'remove',
@@ -62,27 +62,27 @@ export default class RobotStatus extends Component {
         formatExtraData : this
     }];
 
-    validationComponent(cell, row, rowIndex, formatExtraData){
+    validationButton(cell, row, rowIndex, parentComponent){
         if(row.validated !== 'Not Done'){
             return <div className="text-center">{row.validated}</div>
         }else{
             return (
                 <div className="text-center">
-                    <input type="button" className='btn btn-success' onClick={() => formatExtraData.validationRobotHandler(row.username, formatExtraData.refreshHandler)} value="Validate" />
+                    <input type="button" className='btn btn-success' onClick={() => parentComponent.validationRobotHandler(row.username, parentComponent.refreshHandler)} value="Validate" />
                 </div>
             )
         }
 
     }
 
-    showRobotDetailsButton(cell, row, rowIndex, formatExtraData) {
+    showRobotDetailsButton(cell, row, rowIndex, parentComponent) {
         return <Link className='nav-link btn btn-info' to={'/robot/'+row.username} > Details </Link>
     }
 
-    removeRobotButton(cell, row, rowIndex, formatExtraData) {
+    removeRobotButton(cell, row, rowIndex, parentComponent) {
         return (
             <div className="text-center">
-                <input type="button" className='btn btn-danger' onClick = {() => formatExtraData.deleteJobHandler(row.username, formatExtraData.refreshHandler)} value = "Remove Job" />
+                <input type="button" className='btn btn-danger' onClick = {() => parentComponent.deleteJobHandler(row.username, parentComponent.refreshHandler)} value = "Remove Job" />
             </div>
         )
     }
@@ -111,7 +111,6 @@ export default class RobotStatus extends Component {
         }).catch( (error)=>{ console.log(error) } )
 
     }
-
 
     refreshHandler(){
         

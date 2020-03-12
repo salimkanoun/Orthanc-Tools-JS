@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 
+//Ce composant sera a connecter au redux pour connaitre la longueur de la liste d'export
 export default class ExportTool extends Component {
 
     state = {
