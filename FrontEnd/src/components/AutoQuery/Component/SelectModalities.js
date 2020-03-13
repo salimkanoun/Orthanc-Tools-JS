@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
 
+/**
+ * Component for a Select modality input
+ * Used in manual and AutoQuery
+ */
 export default class SelectModalities extends Component {
 
     state = {
@@ -23,7 +27,7 @@ export default class SelectModalities extends Component {
     }
 
     componentDidMount(){
-      //If we recieve a previous modality input, load it in the state
+      //If we recieve a previous modality input in props, load it in the state
       if(this.props.previousModalities !== ""){
         let previousModalityArray = this.props.previousModalities.split('/').map( (modality)=> {
             return { value: modality, label: modality }
@@ -50,8 +54,7 @@ export default class SelectModalities extends Component {
      * On exiting component (on blur), return the string value of modalities
      */
     saveListener(){
-      let modalityString = this.getValue()
-      this.props.onUpdate(modalityString);
+      this.props.onUpdate( this.getValue() );
     }
 
     render() {

@@ -122,8 +122,6 @@ class TableResultSeries extends Component {
         )
     }
 
-
-
 }
 
 const mapStateToProps = (state) => {

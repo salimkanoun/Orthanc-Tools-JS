@@ -3,6 +3,10 @@ import React, { useState, Fragment } from 'react'
 import TableQuery from '../Connected_Component/TableQuery'
 import TableResult from '../Connected_Component/TableResult'
 
+/**
+ * Root Panel of AutoQuery module
+ * Using Hooks
+ */
 function AutoQueryRoot() {
 
   const [currentMainTab, setCurrentMainTab] = useState('Query')

@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 
+/**
+ * Create Robot button with create robot API action call
+ */
 export default class CreateRobot extends Component {
 
   state = {
@@ -33,20 +36,23 @@ export default class CreateRobot extends Component {
       retrieveArray.push(resultToRobot)
     })
 
-    await fetch('/api/robot',
-      {
+    await fetch('/api/robot', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ projectName: this.state.projectName, studyArray: retrieveArray })
-      }).then((answer) => {
-      return (answer.json())
-    })
+      })
+      .then( (answer) => { return (answer.json()) } )
+      .then( (answer) => {console.log('Created')} )
 
   }
 
+  /**
+   * Fill Robot Name in current state
+   * @param {*} event 
+   */
   handleChange (event) {
     const target = event.target
     const name = target.name
@@ -63,10 +69,11 @@ export default class CreateRobot extends Component {
       <div className='container'>
         <div className='row float-right'>
           Project Name :
-          <input type='text' className='' name='projectName' value={this.state.value} onChange={this.handleChange} />
+          <input type='text' name='projectName' value={this.state.value} onChange={this.handleChange} />
           <input type='button' className='btn btn-success' onClick={this.createRobot} value='Create Robot' />
         </div>
       </div>
     )
   }
+  
 }
