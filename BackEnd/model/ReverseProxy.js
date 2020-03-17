@@ -80,6 +80,14 @@ const ReverseProxy  = {
         
         return await requestPromise
 
+    },
+
+    async getAnswerPlainText(api, method, data){
+        const requestPromise = request(this.makeOptions(method, api, data)).then(function (body) {
+            return body
+        }).catch((error) => { console.log('Error Orthanc communication' + error); return false })
+
+        return await requestPromise
     }
 
 }

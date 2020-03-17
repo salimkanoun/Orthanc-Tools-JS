@@ -237,7 +237,7 @@ class TableQuery extends Component {
 
   async getQueryAnswers(orthancIdQuery) {
 
-    let queryAnswers = await fetch("/api/queries/"+orthancIdQuery+"/answers?expand", {
+    let queryAnswers = await fetch("/api/queries/"+orthancIdQuery+"/parsedAnswers", {
       method: "GET",
       headers: {
         'Accept': 'application/json',

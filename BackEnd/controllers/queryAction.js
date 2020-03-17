@@ -1,17 +1,23 @@
 var Orthanc = require('../model/Orthanc')
 
+/**
+ * Higher level API to simplyfy Orthanc Result retrieve API.
+ * From a Query ID, return results in a JSON with results details (series and study level)s
+ * @param {*} req 
+ * @param {*} res 
+ */
 var getParsedAnswer = async function(req, res){
 
-  //SK ALGO A REVOIR
-  // IMPLEMENTER LE GET D INFO EN PLAIN TEXT DANS LE REVERSE PROXY
-  // API DE PLUS HAUT NIVEAU POUR RECUPERER LES RESULTS D UNE QUERY
-  // RETOURNE UNE REPONSE ADAPTE AU NIVEAU DE QUERY (COMME EXISTANT PRECEDEMMENT)
-  // PROBABLEMENT RENOMMER CE FICHIER VU QUE LE QUERY VA DIRECTEMENT VIA LE REVERSE PROXY
   let orthanc = new Orthanc()
-  orthanc.getStudyAnswerDetails()
-}
-
-var getSeriesQueryParsedAnswer = async function (req, res) {
+  let level = await orthanc._getAnswerLevel(req.params.orthancIdQuery)
+  let originAET = await orthanc._getAnswerOriginAET(req.params.orthancIdQuery)
+  let answerDetails= []
+  if(level === "Study"){
+    answerDetails = await orthanc.getStudyAnswerDetails(req.params.orthancIdQuery, originAET)
+  }else if (level === "Series"){
+    answerDetails = await orthanc.getSeriesAnswerDetails(req.params.orthancIdQuery, originAET)
+  }
+  res.json(answerDetails)
 
 }
 

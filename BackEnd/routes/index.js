@@ -52,7 +52,7 @@ router.post('/authentication', authentication)
 //Query Route
 router.post('/modalities/:modality/query', userAuthMidelware, reverseProxyPost)
 router.get('/queries/:orthancIdQuery/answers*', userAuthMidelware, reverseProxyGet)
-router.get('/queries/:orthancIdQuery/parsedAnswer', userAuthMidelware, getParsedAnswer)
+router.get('/queries/:orthancIdQuery/parsedAnswers', userAuthMidelware, getParsedAnswer)
 
 router.post('/retrieve', userAuthMidelware, postRetrieve)
 router.get('/jobs/:jobId', userAuthMidelware, getJobData)
