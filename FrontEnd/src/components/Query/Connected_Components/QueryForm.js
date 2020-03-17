@@ -6,6 +6,11 @@ import { connect } from 'react-redux'
 import SelectModalities from '../../AutoQuery/Component/SelectModalities'
 
 class QueryForm extends Component {
+
+  state = {
+    modalities : ''
+  }
+
   constructor (props) {
     super(props)
     this.handleChange = this.handleChange.bind(this)
@@ -17,11 +22,20 @@ class QueryForm extends Component {
     this.props.loadAvailableAETS(aets)
   }
 
-  updateModalities(state){
-    console.log(state)
-
+  /**
+   * Store modality string comming from SelectModalities component in the current state
+   * @param {String} modalityString 
+   */
+  updateModalities(modalityString){
+    this.setState({
+      modalities : modalityString
+    })
   }
 
+  /**
+   * Fill current form values in state
+   * @param {*} event 
+   */
   handleChange (event) {
     const target = event.target
     const name = target.name
@@ -63,7 +77,7 @@ class QueryForm extends Component {
           </div>
           <div className='col-sm'>
             <label htmlFor='modality'>Modality</label>
-            <SelectModalities onUpdate={this.updateModalities}/>
+            <SelectModalities previousModalities={this.state.modalities} onUpdate={this.updateModalities} />
           </div>
 
         </div>
@@ -85,6 +99,7 @@ class QueryForm extends Component {
     )
   };
 
+  //SK TODO : LISTENER TO MAKE MANUAL QUERY
   doQueryTo (aet) {
     console.log(aet)
     console.log(this.state)
@@ -92,7 +107,6 @@ class QueryForm extends Component {
   }
 
   buildAetButtons () {
-    console.log(this.props.aets)
     return (this.props.aets.map((aet, key) =>
       <AetButton key={key} aetName={aet} clickListner={() => this.doQueryTo(aet)} />
     ))

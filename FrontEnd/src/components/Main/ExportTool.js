@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 
+//Ce composant sera a connecter au redux pour connaitre la longueur de la liste d'export
 export default class ExportTool extends Component {
 
     state = {
@@ -9,9 +9,9 @@ export default class ExportTool extends Component {
 
     render(){
         return (
-            <button type="button" class="btn btn-primary">
-            Export <span class="badge badge-light">{this.state.size}</span>
-            <span class="sr-only">Export List</span>
+            <button type="button" className="btn btn-primary">
+            Export <span className="badge badge-light">{this.state.size}</span>
+            <span className="sr-only">Export List</span>
           </button>
         )
     }

@@ -4,9 +4,10 @@ import TableQuery from '../Connected_Component/TableQuery'
 import TableResult from '../Connected_Component/TableResult'
 
 /**
- * Test de React Hooks (nouvelle syntaxe sans classe)
+ * Root Panel of AutoQuery module
+ * Using Hooks
  */
-function AutoQuery() {
+function AutoQueryRoot() {
 
   const [currentMainTab, setCurrentMainTab] = useState('Query')
 
@@ -36,4 +37,4 @@ function AutoQuery() {
 
 }
 
-export default AutoQuery
+export default AutoQueryRoot

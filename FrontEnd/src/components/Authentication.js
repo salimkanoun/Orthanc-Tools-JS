@@ -2,17 +2,19 @@ import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 
 export default class Authentication extends Component {
+
+  state = {
+    username: '',
+    password: '',
+    authenthified: undefined,
+    errorMessage: undefined
+  }
+
   constructor (props) {
     super(props)
     this.handleClick = this.handleClick.bind(this)
     this.handleChange = this.handleChange.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
-    this.state = {
-      username: '',
-      password: '',
-      authenthified: undefined,
-      errorMessage: undefined
-    }
   }
 
   async handleClick () {
@@ -21,8 +23,7 @@ export default class Authentication extends Component {
       password: this.state.password
     })
 
-    const answerObject = await fetch('/api/authentication',
-      {
+    const answerObject = await fetch('/api/authentication', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -31,7 +32,7 @@ export default class Authentication extends Component {
         body: postString
       }).then((answer) => {
         return answer 
-    })
+      })
 
     let newState=null;
 
@@ -48,7 +49,6 @@ export default class Authentication extends Component {
     }
 
     this.setState({
-      ...this.state,
       authenthified: newState.accessCheck,
       errorMessage : newState.errorMessage
     })

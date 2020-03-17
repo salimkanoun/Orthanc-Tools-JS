@@ -1,20 +1,23 @@
 import React, { Component } from 'react'
 import { toast } from 'react-toastify';
 
-export default class Options extends Component {
+export default class AutoRetrieveSchedule extends Component {
+
+  /**Init state */
+  state = {
+    hour: '00',
+    min: '00'
+  }
+
   constructor (props) {
     super(props)
     this.handleClick = this.handleClick.bind(this)
     this.handleChange = this.handleChange.bind(this)
-    this.state = {
-      hour: '00',
-      min: '00'
-    }
   }
 
   /**
-     * Get defined schedule hour and min from backend
-     */
+   * Get defined schedule hour and min from backend
+   */
   async componentDidMount () {
     const response = await fetch('/api/options').then((answer) => { return answer.json() })
     this.setState({
@@ -23,6 +26,10 @@ export default class Options extends Component {
     })
   }
 
+  /**
+   * Store written value in state
+   * @param {*} event 
+   */
   handleChange (event) {
     const target = event.target
     const name = target.name
@@ -33,29 +40,45 @@ export default class Options extends Component {
     })
   }
 
-  async handleClick () {
-    const putString = JSON.stringify({ hour: this.state.hour, min: this.state.min })
+  /**
+   * Submission of new values of schedule
+   */
+  handleClick () {
 
-    await fetch('/api/options',
-      {
+    fetch('/api/options', {
         method: 'PUT',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         },
-        body: putString
-      }).then((answer) => {
-      return (answer.json())
+        body: JSON.stringify({ hour: this.state.hour, min: this.state.min })
+
+    }).then((answer) => {
+        if (!answer.ok) { throw answer }
+        return (answer.json())
+
+    }).then(() => {
+      toast.success('Done', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true
+      })
+
+    }).catch(error => {
+      toast.error(error.statusText, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true
+      })
     })
 
-    toast.success('Done', {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true
-  });
+
   }
 
   render () {
@@ -79,4 +102,5 @@ export default class Options extends Component {
 
     )
   }
+
 }

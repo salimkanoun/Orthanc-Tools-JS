@@ -10,7 +10,7 @@ class CsvLoader extends Component {
     constructor(props) {
         super(props)
         this.parseCSV = this.parseCSV.bind(this)
-        this.fileInput = React.createRef();
+        this.fileInput = React.createRef()
         this.completeFn= this.completeFn.bind(this)
     }
 
@@ -64,7 +64,7 @@ class CsvLoader extends Component {
 
 const mapStateToProps = ( state )=>{
     return {}
-  }
+}
   
 export default connect(mapStateToProps, actions)(CsvLoader);
 

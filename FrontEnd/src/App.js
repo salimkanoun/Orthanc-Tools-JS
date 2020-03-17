@@ -8,10 +8,10 @@ import 'bootstrap/dist/css/bootstrap.css'
 import Helmet from 'react-helmet'
 
 import Query from './components/Query/Components/Query'
-import AutoQuery from './components/AutoQuery/Component/AutoQuery'
+import AutoQueryRoot from './components/AutoQuery/Component/AutoQueryRoot'
 import RobotView from './components/AutoQuery/Component/RobotView'
 import Authentication from './components/Authentication'
-import AdminPanel from './components/Admin/AdminPanel'
+import AdminRootPanel from './components/Admin/AdminRootPanel'
 
 
 import { toast } from 'react-toastify';
@@ -35,9 +35,9 @@ function App () {
           </Route>
           <Route exact path='/query' component = {Query}>
           </Route>
-          <Route exact path='/auto-query' component = {AutoQuery}>
+          <Route exact path='/auto-query' component = {AutoQueryRoot}>
           </Route>
-          <Route exact path='/options' component = {AdminPanel}>
+          <Route exact path='/options' component = {AdminRootPanel}>
           </Route>
           <Route exact path='/robot/:username' component = {RobotView}>
           </Route>

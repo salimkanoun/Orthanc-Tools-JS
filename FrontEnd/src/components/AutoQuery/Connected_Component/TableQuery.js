@@ -123,7 +123,7 @@ class TableQuery extends Component {
     filter: textFilter(),
     headerFormatter: this.customHeader,
     editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => (
-      <SelectModalities { ...editorProps } value={ value } />
+      <SelectModalities { ...editorProps } previousModalities={ value } />
     )
   }, {
     dataField: 'aet',

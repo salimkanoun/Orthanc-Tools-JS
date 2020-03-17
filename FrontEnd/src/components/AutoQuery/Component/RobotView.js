@@ -108,42 +108,41 @@ export default class RobotView extends Component {
 
     refreshHandler(){
 
-        fetch("/api/robot/"+this.state.username, {
-        method: "GET",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-        }).then((answer)=>{
-           return answer.json()})
-           .then( (answerData) => {
-
-                let state=this.state
-                state.projectName= answerData.projectName
-                state.rows = []
-
-                answerData.retrieveList.forEach(robotJob => {
-                    state.rows.push({
-                        key : Math.random(),
-                        ...robotJob
-                    })
-                    
-                });
-                if(answerData.totalInstances !== 0){
-                    state.totalPercentageProgress = Math.round((answerData.retrievedInstances / answerData.totalInstances)*100)
-                    state.percentageFailure = Math.round((answerData.failedInstances / answerData.totalInstances)*100)
+        fetch( "/api/robot/"+this.state.username, {
+                method: "GET",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 }
+            })
+        .then( (answer)=>{ return answer.json() })
+        .then( (answerData) => {
+            let state = this.state
+            state.projectName = answerData.projectName
+            state.rows = []
 
-                this.setState({
-                    ...this.state
+            answerData.retrieveList.forEach(robotJob => {
+                state.rows.push({
+                    key : Math.random(),
+                    ...robotJob
                 })
+            });
 
-           })
+            if(answerData.totalInstances !== 0){
+                state.totalPercentageProgress = Math.round((answerData.retrievedInstances / answerData.totalInstances)*100)
+                state.percentageFailure = Math.round((answerData.failedInstances / answerData.totalInstances)*100)
+            }
+
+            this.setState({
+                ...this.state
+            })
+
+        })
     }
 
-    async deleteQueryHandler(rowIndex, refreshHandler){
+    deleteQueryHandler(rowIndex, refreshHandler){
 
-        await fetch("/api/robot/"+this.state.username+"/"+rowIndex, {
+        fetch("/api/robot/"+this.state.username+"/"+rowIndex, {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json',
@@ -151,9 +150,9 @@ export default class RobotView extends Component {
             }
         }).then((answer)=>{
             return answer.json()
+        }).then( () => {
+            refreshHandler()
         })
-
-        refreshHandler()
 
     }
 
@@ -165,12 +164,10 @@ export default class RobotView extends Component {
 
     render() {
         return (
-                <div className="jumbotron">
-                    <div class="row mb-5">
-                    <h1 class="col"> Robot for user {this.state.username}, project : {this.state.projectName} </h1>
-                    
-                        <div className="col-md-2 text-right" >
-
+            <div className="jumbotron">
+                <div class="row mb-5">
+                <h1 class="col"> Robot for user {this.state.username}, project : {this.state.projectName} </h1>
+                    <div className="col-md-2 text-right" >
                         <CircularProgressbarWithChildren
                             value={this.state.totalPercentageProgress} text={`Progress : ${this.state.totalPercentageProgress}%`}
                             styles={buildStyles({
@@ -186,10 +183,10 @@ export default class RobotView extends Component {
                             })}
                             />
                         </CircularProgressbarWithChildren>
-                        </div>
                     </div>
-                    <BootstrapTable wrapperClasses="table-responsive" keyField="key" striped={true} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
                 </div>
+                <BootstrapTable wrapperClasses="table-responsive" keyField="key" striped={true} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
+            </div>
         )
     }
 }

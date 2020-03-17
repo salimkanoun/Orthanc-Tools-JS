@@ -1,7 +1,11 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
 
-class SelectModalities extends Component {
+/**
+ * Component for a Select modality input
+ * Used in manual and AutoQuery
+ */
+export default class SelectModalities extends Component {
 
     state = {
       selectedModalities : []
@@ -22,44 +26,59 @@ class SelectModalities extends Component {
       this.changeListener= this.changeListener.bind(this);
     }
 
-    changeListener(value){
-
-      this.setState({
-        ...this.state,
-        selectedModalities : value
-      })
-
-    }
-
-    saveListener(){
-      let modalityString = this.getValue()
-      this.props.onUpdate(modalityString);
-    }
-
-    render() {
-      let valueArray=[];
-      if(this.state === null && this.props.value.length >0 ){
-        valueArray = this.props.value.split('/').map( (modality)=> {
+    componentDidMount(){
+      //If we recieve a previous modality input in props, load it in the state
+      if(this.props.previousModalities !== ""){
+        let previousModalityArray = this.props.previousModalities.split('/').map( (modality)=> {
             return { value: modality, label: modality }
         })
 
-      }else if (this.state !== null){
-        valueArray = this.state.selectedModalities
-
+        this.setState({
+          selectedModalities : previousModalityArray
+        })
       }
 
+    }
+
+    /**
+     * Fill user choice in the state
+     * @param {*} value 
+     */
+    changeListener(value){
+      this.setState({
+        selectedModalities : value
+      })
+    }
+
+    /**
+     * On exiting component (on blur), return the string value of modalities
+     */
+    saveListener(){
+      this.props.onUpdate( this.getValue() );
+    }
+
+    render() {
       return (
-      <Select isMulti options={this.modalities} value = { valueArray } onBlur={this.saveListener} onChange={this.changeListener}/>
+        <Select isMulti options={this.modalities} 
+          value = { this.state.selectedModalities } 
+          onBlur={this.saveListener} 
+          onChange={this.changeListener}
+          />
       )
     }
 
+    /**
+     * Return modality String to be used in Orthanc API query parameters
+     */
     getValue() {
-      let modalityArray = this.state.selectedModalities.map((modalitiesObject)=>{
+      let modalityArray = this.state.selectedModalities.map( (modalitiesObject) => {
         return modalitiesObject.value;
       });
-      let modalityString= modalityArray.join('/')
+
+      let modalityString= ''
+      if(modalityArray.length > 0) modalityString = modalityArray.join('/')
+
       return modalityString;
     }
+    
 }
-
-export default SelectModalities;

@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import OrthancSettings from './OrthancSettings'
-import AetPanel from './AetPanel'
-import AutoRetrieveOptions from './AutoRetrieveOptions'
+import AetRootPanel from './AetRootPanel'
+import AutoRetrieveRootPanel from './AutoRetrieveRootPanel'
 
 /**
+ * Root Panel of Admin route
  * Using React Hooks
  */
 const AdminPanel = () => {
 
-  const [selectedOptionMenu, setSelectedOptionMenu] = useState('General');
+  const [selectedOptionMenu, setSelectedOptionMenu] = useState('General')
 
   function clickHandler(event){
     setSelectedOptionMenu(event.target.value)
@@ -19,9 +20,9 @@ const AdminPanel = () => {
       case 'General' : 
         return (<OrthancSettings/>)
       case 'Aets' : 
-        return (<AetPanel />)
+        return (<AetRootPanel />)
       case 'Robots' : 
-        return (<AutoRetrieveOptions />)
+        return (<AutoRetrieveRootPanel />)
       default : 
         return ([])
     }
