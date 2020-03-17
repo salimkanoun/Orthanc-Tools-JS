@@ -8,10 +8,10 @@ const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getOrth
 const { getAets, changeAets, echoAets, deleteAet } = require('../controllers/aets')
 const { getJobData } = require('../controllers/jobDetails')
 const { authentication } = require('../controllers/authentication')
-const { postQuery } = require('../controllers/queryAction')
+const { getParsedAnswer } = require('../controllers/queryAction')
 const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
-const { reverseProxyGet } = require('../controllers/reverseProxy')
+const { reverseProxyGet, reverseProxyPost } = require('../controllers/reverseProxy')
 
 const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authentication')
 
@@ -48,7 +48,12 @@ const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authent
 router.post('/authentication', authentication)
 
 // Query, retrieve, job, export routes
-router.post('/query', userAuthMidelware, postQuery)
+
+//Query Route
+router.post('/modalities/:modality/query', userAuthMidelware, reverseProxyPost)
+router.get('/queries/:orthancIdQuery/answers*', userAuthMidelware, reverseProxyGet)
+router.get('/queries/:orthancIdQuery/parsedAnswer', userAuthMidelware, getParsedAnswer)
+
 router.post('/retrieve', userAuthMidelware, postRetrieve)
 router.get('/jobs/:jobId', userAuthMidelware, getJobData)
 router.post('/export_dicom', userAuthMidelware, postExportDicom)

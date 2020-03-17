@@ -181,7 +181,7 @@ class TableQuery extends Component {
     let data = this.node.props.data
 
     for (const query of data) {
-      let answeredResults = await this.makeAjaxQuery(query)
+      let answeredResults = await this.makeDicomQuery(query)
       answeredResults.forEach((answer) => {
         this.props.addStudyResult(answer)
       })
@@ -189,8 +189,9 @@ class TableQuery extends Component {
     }
   }
 
-  async makeAjaxQuery(queryParams) {
+  async makeDicomQuery(queryParams) {
 
+    //Prepare Date string
     let dateString = '*';
     queryParams.dateFrom=queryParams.dateFrom.split('-').join('')
     queryParams.dateTo=queryParams.dateTo.split('-').join('')
@@ -202,37 +203,57 @@ class TableQuery extends Component {
       dateString = queryParams.dateFrom + '-*'
     }
 
+    //Prepare POST payload for query (follow Orthanc APIs)
     let queryPost = {
-      level : 'Study',
-      patientName: queryParams.patientName,
-      patientID: queryParams.patientId,
-      accessionNumber: queryParams.accessionNumber,
-      date: dateString,
-      studyDescription: queryParams.studyDescription,
-      modality: queryParams.modalities,
-      aet: queryParams.aet
+      Level: 'Study',
+      Query: {
+        PatientName: queryParams.patientName,
+        PatientID: queryParams.patientId,
+        StudyDate: dateString,
+        ModalitiesInStudy: queryParams.modalities,
+        StudyDescription: queryParams.studyDescription,
+        AccessionNumber: queryParams.accessionNumber,
+        NumberOfStudyRelatedInstances: '',
+        NumberOfStudyRelatedSeries: ''
+      }
     }
-    let postString = JSON.stringify(queryPost)
 
-    let queryAnswers = await fetch("/api/query",
-      {
+    let createQueryRessource = await fetch("/api/modalities/"+queryParams.aet+"/query", {
         method: "POST",
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: postString
+        body: JSON.stringify(queryPost)
       }).then((answer)=>{
         return(answer.json())
-      })
+      }).catch(error => console.log(error))
 
+    let queryAnswer = await this.getQueryAnswers(createQueryRessource.ID)
+    
+    return queryAnswer
+
+  }
+
+  async getQueryAnswers(orthancIdQuery) {
+
+    let queryAnswers = await fetch("/api/queries/"+orthancIdQuery+"/answers?expand", {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }).then((answer)=>{
+      return(answer.json())
+    }).catch(error => console.log(error))
 
     return queryAnswers
-
 
   }
 
 }
+
+
 
 
 

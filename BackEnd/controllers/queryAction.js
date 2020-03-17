@@ -1,24 +1,18 @@
 var Orthanc = require('../model/Orthanc')
 
-var postQuery = async function (req, res) {
-  const body = req.body
-  var orthancInstance = new Orthanc()
-  let queryAnswer = null
+var getParsedAnswer = async function(req, res){
 
-  if (body.level === 'Study') {
-
-    orthancInstance.buildStudyDicomQuery(body.patientName, body.patientID, body.date, body.modality,
-      body.studyDescription, body.accessionNumber)
-
-  } else if (body.level === 'Serie') {
-
-    orthancInstance.buildSerieDicomQuery(body.studyUID,'','','','','')
-    
-  }
-
-  queryAnswer = await orthancInstance.makeDicomQuery(body.aet)
-
-  res.json(queryAnswer)
+  //SK ALGO A REVOIR
+  // IMPLEMENTER LE GET D INFO EN PLAIN TEXT DANS LE REVERSE PROXY
+  // API DE PLUS HAUT NIVEAU POUR RECUPERER LES RESULTS D UNE QUERY
+  // RETOURNE UNE REPONSE ADAPTE AU NIVEAU DE QUERY (COMME EXISTANT PRECEDEMMENT)
+  // PROBABLEMENT RENOMMER CE FICHIER VU QUE LE QUERY VA DIRECTEMENT VIA LE REVERSE PROXY
+  let orthanc = new Orthanc()
+  orthanc.getStudyAnswerDetails()
 }
 
-module.exports = { postQuery }
+var getSeriesQueryParsedAnswer = async function (req, res) {
+
+}
+
+module.exports = { getParsedAnswer }
