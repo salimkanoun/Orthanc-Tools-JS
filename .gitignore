@@ -4,3 +4,4 @@ BackEnd/Data/database/*
 BackEnd/build
 BackEnd/data/log/*
 !BackEnd/data/log/README
+BackEnd/data/database/db.development.sqlite
