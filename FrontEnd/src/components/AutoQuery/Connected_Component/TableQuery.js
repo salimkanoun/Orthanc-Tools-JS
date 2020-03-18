@@ -17,6 +17,7 @@ import * as orthancToolsActions from '../../../actions/OrthancTools'
 
 import CsvLoader from './CsvLoader'
 import SelectModalities from '../Component/SelectModalities';
+import apis from '../../../services/aets';
 
 
 class TableQuery extends Component {
@@ -30,8 +31,7 @@ class TableQuery extends Component {
   }
   
   async componentDidMount(){
-    let aets = await fetch('/api/aets').then((answer) => { return answer.json() })
-    this.props.loadAvailableAETS(aets)
+    this.props.loadAvailableAETS(await apis.getAets() )
   }
   
   deselectAll(){

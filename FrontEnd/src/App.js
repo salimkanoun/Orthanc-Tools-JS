@@ -4,7 +4,7 @@ import {
   Route
 } from 'react-router-dom'
 import './style.css'
-import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Helmet from 'react-helmet'
 
 import Query from './components/Query/Components/Query'
