@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
-import { toast } from 'react-toastify';
+import apis from '../../services/aets';
 
 /**
  * Table with known AETs details with Echo and Remove button
@@ -33,20 +33,18 @@ export default class Aets extends Component {
     }, {
         dataField : 'remove',
         text : 'Remove AET',
-        formatter : this.deleteAetButton,
-        formatExtraData : this
+        formatter : this.deleteAetButton
     }];
 
     /**
      * Echo AET button nested in Bootstrap Table
      * @param {*} cell 
      * @param {*} row 
-     * @param {*} rowIndex 
-     * @param {*} echoAetHandler 
+     * @param {*} rowIndex
      */
-    echoAetButton(cell, row, rowIndex, echoAetHandler) {
+    echoAetButton(cell, row, rowIndex) {
         return (<div className="text-center">
-            <input type="button" className='btn btn-info' onClick = {() => echoAetHandler(row.name)} value = "Echo" />
+            <input type="button" className='btn btn-info' onClick = {() => apis.echoAet(row.name)} value = "Echo" />
         </div>)
     }
 
@@ -60,51 +58,8 @@ export default class Aets extends Component {
     deleteAetButton(cell, row, rowIndex, parentComponent) {
         return (
         <div className="text-center">
-            <input type="button" className='btn btn-danger' onClick = {async () => {await parentComponent.deleteAetHandler(row.name); parentComponent.props.refreshAetData()}} value = "Remove" />
+            <input type="button" className='btn btn-danger' onClick = {async () => {await apis.deleteAet(row.name); parentComponent.props.refreshAetData()}} value = "Remove" />
         </div>)
-    }
-
-    /**
-     * Echo AET and return result in an alertify dialog
-     * @param {String} aetName 
-     */
-    echoAetHandler(aetName){
-
-        fetch('/api/aets/' + aetName + '/echo', {
-            method : 'GET'
-        }).then( res => res.json() ).then((answer) => {
-            if(answer){
-                toast.success('Echo ' + aetName +' Sucess', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true
-                });
-            }else{
-                toast.error('Echo ' + aetName +' Error', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true
-                });
-            }
-
-        })
-
-    }
-
-    /**
-     * Trigger AET Delete API in Backend to delete an AET
-     * @param {*} aetName 
-     */
-    async deleteAetHandler(aetName){
-        await fetch('/api/aets/'+aetName, {
-            method : 'DELETE'
-        })
     }
 
     /**

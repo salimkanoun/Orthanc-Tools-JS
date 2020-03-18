@@ -7,9 +7,8 @@ const initialState = {
 export default function orthancToolsReducer (state = initialState, action) {
   switch (action.type) {
     case LOAD_AETS :
-      let aetArray = Object.keys(action.payload)
       return {
-        OrthancAets: aetArray
+        OrthancAets: action.payload
       }
     default:
       return state

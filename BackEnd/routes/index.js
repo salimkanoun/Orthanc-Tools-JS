@@ -3,15 +3,17 @@ var router = express.Router()
 // Handle controller errors
 require('express-async-errors')
 
+const { authentication } = require('../controllers/authentication')
 const { getRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot')
 const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getOrthancSystem } = require('../controllers/options')
-const { getAets, changeAets, echoAets, deleteAet } = require('../controllers/aets')
-const { getJobData } = require('../controllers/jobDetails')
-const { authentication } = require('../controllers/authentication')
 const { getParsedAnswer } = require('../controllers/query')
+const { reverseProxyGet, reverseProxyPost, reverseProxyPut, reverseProxyDelete } = require('../controllers/reverseProxy')
+
+//SK Probalement a enlenver ne passer que par le reverse proxy
+const { getJobData } = require('../controllers/jobDetails')
 const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
-const { reverseProxyGet, reverseProxyPost } = require('../controllers/reverseProxy')
+
 
 const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authentication')
 
@@ -76,11 +78,13 @@ router.put('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], s
 //Orthanc System
 router.get('/options/orthanc-system', [userAuthMidelware, userAdminMidelware], getOrthancSystem)
 
-// Aets Routes
-router.put('/aets', [userAuthMidelware, userAdminMidelware], changeAets)
-router.get('/aets', userAuthMidelware, getAets)
-router.get('/aets/:name/echo', [userAuthMidelware, userAdminMidelware], echoAets)
-router.delete('/aets/:name', [userAuthMidelware, userAdminMidelware], deleteAet)
+// Aets Routes follows Orthanc APIS
+router.get('/modalities', userAuthMidelware, reverseProxyGet)
+router.get('/modalities*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.delete('/modalities/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
+router.post('/modalities/:dicom/echo', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
+router.put('/modalities/:dicom/', [[userAuthMidelware, userAdminMidelware]], reverseProxyPut)
+
 
 //DicomWebRoutes
 router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet)

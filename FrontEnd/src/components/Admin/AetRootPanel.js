@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Aets from './AetsListTable'
 import AetForm from './AetForm'
+import apis from '../../services/aets'
 
 /**
  * Root Panel of AETs options
@@ -21,19 +22,8 @@ const AetRootPanel = () => {
      * Get Aets Data from backend
      */
     async function refreshAetsData(){
-
-        let aetsAnswer = await fetch("/api/aets", {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }).then((answer)=>{
-            return answer.json()
-        })
-
+        let aetsAnswer = await apis.getAetsExpand()
         setAets(aetsAnswer)
-
     }
 
 

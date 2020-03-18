@@ -15,4 +15,20 @@ var reverseProxyPost = function (req, res) {
 
 }
 
-module.exports = { reverseProxyGet, reverseProxyPost }
+var reverseProxyDelete = function (req, res) {
+    let apiAdress = req.originalUrl
+    let ortahncCalledApi = apiAdress.replace('/api', '');
+    console.log('reverseGET'+ ortahncCalledApi)
+    ReverseProxy.streamToRes(ortahncCalledApi, 'DELETE', undefined ,res)
+
+}
+
+var reverseProxyPut = function(req, res){
+    let apiAdress = req.originalUrl
+    let ortahncCalledApi = apiAdress.replace('/api', '');
+    console.log('reverseGET'+ ortahncCalledApi)
+    ReverseProxy.streamToRes(ortahncCalledApi, 'PUT', req.body ,res)
+
+}
+
+module.exports = { reverseProxyGet, reverseProxyPost, reverseProxyPut, reverseProxyDelete }
