@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import Aets from './AetsListTable'
 import AetForm from './AetForm'
-import apis from '../../services/aets'
+import apis from '../../services/apis'
 
 /**
  * Root Panel of AETs options
@@ -22,7 +22,7 @@ const AetRootPanel = () => {
      * Get Aets Data from backend
      */
     async function refreshAetsData(){
-        let aetsAnswer = await apis.getAetsExpand()
+        let aetsAnswer = await apis.aets.getAetsExpand()
         setAets(aetsAnswer)
     }
 

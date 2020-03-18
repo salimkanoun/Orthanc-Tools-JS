@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { toast } from 'react-toastify';
+import apis from '../../services/apis';
 
 export default class AutoRetrieveSchedule extends Component {
 
@@ -19,7 +19,7 @@ export default class AutoRetrieveSchedule extends Component {
    * Get defined schedule hour and min from backend
    */
   async componentDidMount () {
-    const response = await fetch('/api/options').then((answer) => { return answer.json() })
+    const response = await apis.options.getRobotScheduledHour()
     this.setState({
       hour: response.hour,
       min: response.min
@@ -44,41 +44,7 @@ export default class AutoRetrieveSchedule extends Component {
    * Submission of new values of schedule
    */
   handleClick () {
-
-    fetch('/api/options', {
-        method: 'PUT',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ hour: this.state.hour, min: this.state.min })
-
-    }).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return (answer.json())
-
-    }).then(() => {
-      toast.success('Done', {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true
-      })
-
-    }).catch(error => {
-      toast.error(error.statusText, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true
-      })
-    })
-
-
+    apis.options.setRobotScheduleHour(this.state.hour, this.state.min )
   }
 
   render () {

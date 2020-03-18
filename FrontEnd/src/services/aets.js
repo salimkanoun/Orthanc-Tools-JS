@@ -1,6 +1,6 @@
-import { toast } from 'react-toastify';
+import {toastifySuccess, toastifyError} from './toastify'
 
-const apis = {
+const aets = {
 
     async getAets() {
         let aetsAnswers = await fetch('/api/modalities').then((answer) => { return answer.json() }).catch((error)=>{
@@ -56,27 +56,4 @@ const apis = {
 
 }
 
-function toastifySuccess(message) {
-
-    toast.success(message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true
-    })
-}
-
-function toastifyError(message){
-    toast.error(message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true
-    });
-}
-
-export default apis
+export default aets

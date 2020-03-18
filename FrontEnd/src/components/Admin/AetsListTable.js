@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
-import apis from '../../services/aets';
+import apis from '../../services/apis';
 
 /**
  * Table with known AETs details with Echo and Remove button
@@ -28,12 +28,12 @@ export default class Aets extends Component {
     }, {
         dataField : 'echo',
         text : 'Echo AET',
-        formatter : this.echoAetButton,
-        formatExtraData : this.echoAetHandler
+        formatter : this.echoAetButton
     }, {
         dataField : 'remove',
         text : 'Remove AET',
-        formatter : this.deleteAetButton
+        formatter : this.deleteAetButton,
+        formatExtraData : this
     }];
 
     /**
@@ -44,7 +44,7 @@ export default class Aets extends Component {
      */
     echoAetButton(cell, row, rowIndex) {
         return (<div className="text-center">
-            <input type="button" className='btn btn-info' onClick = {() => apis.echoAet(row.name)} value = "Echo" />
+            <input type="button" className='btn btn-info' onClick = {() => apis.aets.echoAet(row.name)} value = "Echo" />
         </div>)
     }
 
@@ -58,7 +58,7 @@ export default class Aets extends Component {
     deleteAetButton(cell, row, rowIndex, parentComponent) {
         return (
         <div className="text-center">
-            <input type="button" className='btn btn-danger' onClick = {async () => {await apis.deleteAet(row.name); parentComponent.props.refreshAetData()}} value = "Remove" />
+            <input type="button" className='btn btn-danger' onClick = {async () => {await apis.aets.deleteAet(row.name); parentComponent.props.refreshAetData()}} value = "Remove" />
         </div>)
     }
 
@@ -66,6 +66,7 @@ export default class Aets extends Component {
      * Translate Orthanc API in array of Rows to be consumed by BootstrapTable
      */
     orthancApisToRows() {
+
         let aetsAnswer = this.props.aetsData
         let rows = []
 

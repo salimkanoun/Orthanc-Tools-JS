@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { toast } from 'react-toastify';
+import apis from '../../services/apis';
 
 export default class OrthancSettings extends Component {
 
@@ -21,18 +22,9 @@ export default class OrthancSettings extends Component {
     /**
      * Fetch value from BackEnd
      */
-    componentDidMount(){
-
-        fetch("/api/options/orthanc-server", {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }).then((answer) => {
-            return (answer.json())
-        }).then(answer => this.setState(answer) )
-
+    async componentDidMount(){
+        let answer = await apis.options.getOrthancServer()
+        this.setState(answer)
     }
 
     /**
@@ -54,16 +46,9 @@ export default class OrthancSettings extends Component {
      * Send new value to BackEnd
      */
     async handleClick() {
-        let postString = JSON.stringify(this.state)
 
-        await fetch("/api/options/orthanc-server", {
-                method: "PUT",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: postString
-        })
+        apis.options.setOrthancServer(this.state.OrthancAddress, this.state.OrthancPort, 
+            this.state.OrthancUsername, this.state.OrthancPassword)
     }
 
     /**
