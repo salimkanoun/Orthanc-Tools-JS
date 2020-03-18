@@ -8,7 +8,7 @@ const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getOrth
 const { getAets, changeAets, echoAets, deleteAet } = require('../controllers/aets')
 const { getJobData } = require('../controllers/jobDetails')
 const { authentication } = require('../controllers/authentication')
-const { getParsedAnswer } = require('../controllers/queryAction')
+const { getParsedAnswer } = require('../controllers/query')
 const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
 const { reverseProxyGet, reverseProxyPost } = require('../controllers/reverseProxy')
@@ -52,6 +52,7 @@ router.post('/authentication', authentication)
 //Query Route
 router.post('/modalities/:modality/query', userAuthMidelware, reverseProxyPost)
 router.get('/queries/:orthancIdQuery/answers*', userAuthMidelware, reverseProxyGet)
+//Custom API to get simplified results from Orthanc
 router.get('/queries/:orthancIdQuery/parsedAnswers', userAuthMidelware, getParsedAnswer)
 
 router.post('/retrieve', userAuthMidelware, postRetrieve)

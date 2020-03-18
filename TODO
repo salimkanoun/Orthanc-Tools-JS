@@ -45,8 +45,10 @@ Front :
 Back :
 - Midelware securite acces robot => Reste a securiser les route pour lire le robot en fonction du role
 https://jasonwatmore.com/post/2018/11/28/nodejs-role-based-authorization-tutorial-with-example-api
-- Ne pas autoriser la modification du robot pendant sont execetion (bug Pierre D)
-- Tester les controlleurs sur les methodes appelées?
+- Ne pas autoriser la modification du robot pendant son execetion (bug Pierre D)
+- Tests : 
+    Tester les controlleurs sur les methodes appelées
+    Mock des API d'orthanc ?
 - PassportJS pour stateless
 - Envisager de switcher de Request à Got...
 
@@ -58,8 +60,6 @@ https://stackabuse.com/using-sequelize-js-and-sqlite-in-an-express-js-app/
 
 --Compilation
 Executable windows avec wix ?
-
---Deploiement regarder les warning lors du npm install du backend
 
 -- Documentation
 https://medium.com/wolox-driving-innovation/documenting-a-nodejs-rest-api-with-openapi-3-swagger-5deee9f50420

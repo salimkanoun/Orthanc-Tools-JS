@@ -1,7 +1,6 @@
 BackEnd/node_modules
-! BackEnd/data/database/README
-! BackEnd/data/log/README
+BackEnd/Data/database/*
+!BackEnd/data/database/README
 BackEnd/build
-
 BackEnd/data/log/*
-!BackEnd/data/README
+!BackEnd/data/log/README

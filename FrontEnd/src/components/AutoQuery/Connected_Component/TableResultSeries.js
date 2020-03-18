@@ -25,27 +25,56 @@ class TableResultSeries extends Component {
         } 
     }
 
+
     async getSeriesDetails(studyUID, aet){
 
-        let post = {
-            level : 'Serie',
-            studyUID: studyUID,
-            aet : aet
+        let queryData = {
+            Level: 'Series',
+            Query: {
+                Modality: '',
+                ProtocolName: '',
+                SeriesDescription: '',
+                SeriesInstanceUID: '',
+                StudyInstanceUID: studyUID,
+                SeriesNumber: '',
+                NumberOfSeriesRelatedInstances: ''
+            },
+            Normalize: false
         }
 
-        let queryAnswers = await fetch("/api/query",
+        let queryAnswers = await fetch("/api/modalities/"+aet+"/query",
         {
           method: "POST",
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(post)
+          body: JSON.stringify(queryData)
         }).then((answer)=>{
           return(answer.json())
         })
 
-        this.props.addSeriesDetails(queryAnswers, studyUID)
+        let seriesAnswers = await this.getSeriesDetailsAnswer(queryAnswers.ID)
+
+        this.props.addSeriesDetails(seriesAnswers, studyUID)
+
+    }
+
+    //SK : Cette fonction est dupliquée dans table query
+    // Voir avec evolution de React Thunk
+    async getSeriesDetailsAnswer(orthancIdQuery){
+
+        let queryAnswers = await fetch("/api/queries/"+orthancIdQuery+"/parsedAnswers", {
+            method: "GET",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+            }).then((answer)=>{
+            return(answer.json())
+            }).catch(error => console.log(error))
+        
+        return queryAnswers
 
     }
 

@@ -198,9 +198,7 @@ class TableQuery extends Component {
     if (queryParams.dateFrom !== '' && queryParams.dateTo !== '') {
       dateString = queryParams.dateFrom + '-' + queryParams.dateTo
     } else if (queryParams.dateFrom === '' && queryParams.dateTo !== '') {
-      dateString = '*-' + queryParams.dateTo
-    } else if (queryParams.dateFrom !== '' && queryParams.dateTo === '') {
-      dateString = queryParams.dateFrom + '-*'
+      dateString = '-' + queryParams.dateTo
     }
 
     //Prepare POST payload for query (follow Orthanc APIs)
@@ -252,9 +250,6 @@ class TableQuery extends Component {
   }
 
 }
-
-
-
 
 
 const mapStateToProps = (state) => {
