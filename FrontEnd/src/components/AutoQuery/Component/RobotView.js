@@ -117,24 +117,28 @@ export default class RobotView extends Component {
             })
         .then( (answer)=>{ return answer.json() })
         .then( (answerData) => {
-            let state = this.state
-            state.projectName = answerData.projectName
-            state.rows = []
+            
+            let rowsRetrieveList = []
 
             answerData.retrieveList.forEach(robotJob => {
-                state.rows.push({
+                rowsRetrieveList.push({
                     key : Math.random(),
                     ...robotJob
                 })
             });
 
+            let newTotalPercentageProgress = 0
+            let newPercentageFailure = 0
             if(answerData.totalInstances !== 0){
-                state.totalPercentageProgress = Math.round((answerData.retrievedInstances / answerData.totalInstances)*100)
-                state.percentageFailure = Math.round((answerData.failedInstances / answerData.totalInstances)*100)
+                newTotalPercentageProgress = Math.round((answerData.retrievedInstances / answerData.totalInstances)*100)
+                newPercentageFailure = Math.round((answerData.failedInstances / answerData.totalInstances)*100)
             }
 
             this.setState({
-                ...this.state
+                projectName : answerData.projectName,
+                rows : rowsRetrieveList,
+                totalPercentageProgress : newTotalPercentageProgress,
+                percentageFailure : newPercentageFailure
             })
 
         })
