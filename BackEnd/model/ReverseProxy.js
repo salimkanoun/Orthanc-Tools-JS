@@ -22,8 +22,8 @@ const ReverseProxy  = {
                 method: method,
                 url: serverString,
                 auth: {
-                user: this.username,
-                password: this.password
+                    user: this.username,
+                    password: this.password
                 }
             }
         } else {
@@ -31,14 +31,14 @@ const ReverseProxy  = {
                 method: method,
                 url: serverString,
                 auth: {
-                user: this.username,
-                password: this.password
+                    user: this.username,
+                    password: this.password
                 },
                 headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': data.length
                 },
-                body: data
+                body: JSON.stringify(data)
             }
         }
 
@@ -80,6 +80,14 @@ const ReverseProxy  = {
         
         return await requestPromise
 
+    },
+
+    async getAnswerPlainText(api, method, data){
+        const requestPromise = request(this.makeOptions(method, api, data)).then(function (body) {
+            return body
+        }).catch((error) => { console.log('Error Orthanc communication' + error); return false })
+
+        return await requestPromise
     }
 
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import AetButton from './AetButton'
+import api from '../../../services/aets'
 import * as actions from '../../../actions/OrthancTools'
 
 import { connect } from 'react-redux'
@@ -18,8 +19,7 @@ class QueryForm extends Component {
   }
 
   async componentDidMount(){
-    let aets = await fetch('/api/aets').then((answer) => { return answer.json() })
-    this.props.loadAvailableAETS(aets)
+    this.props.loadAvailableAETS(await api.getAets())
   }
 
   /**

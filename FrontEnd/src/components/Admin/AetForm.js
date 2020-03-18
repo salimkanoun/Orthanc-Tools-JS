@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import Select from 'react-select'
+import apis from '../../services/aets'
 
 /**
  * Form to declare or modify an AET
@@ -53,20 +54,14 @@ export default class AetForm extends Component {
      */
     async handleClick() {
 
-        let postString = JSON.stringify({ name: this.state.name, 
-                                        aetName: this.state.aetName,
-                                        ip : this.state.ip,
-                                        port : this.state.port,
-                                        manufacturer : this.state.manufacturer })
+        let postData = {
+            AET : this.state.aetName,
+            Host : this.state.ip,
+            Port : this.state.port,
+            Manufacturer : this.state.manufacturer
+        }
 
-        await fetch("/api/aets", {
-                method: "PUT",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: postString
-        })
+        apis.updateAet(this.state.name, postData)
 
         this.props.refreshAetData()
 

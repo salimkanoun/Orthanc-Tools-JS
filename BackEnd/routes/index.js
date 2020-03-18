@@ -3,15 +3,17 @@ var router = express.Router()
 // Handle controller errors
 require('express-async-errors')
 
+const { authentication } = require('../controllers/authentication')
 const { getRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot')
 const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getOrthancSystem } = require('../controllers/options')
-const { getAets, changeAets, echoAets, deleteAet } = require('../controllers/aets')
+const { getParsedAnswer } = require('../controllers/query')
+const { reverseProxyGet, reverseProxyPost, reverseProxyPut, reverseProxyDelete } = require('../controllers/reverseProxy')
+
+//SK Probalement a enlenver ne passer que par le reverse proxy
 const { getJobData } = require('../controllers/jobDetails')
-const { authentication } = require('../controllers/authentication')
-const { postQuery } = require('../controllers/queryAction')
 const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
-const { reverseProxyGet } = require('../controllers/reverseProxy')
+
 
 const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authentication')
 
@@ -48,7 +50,13 @@ const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authent
 router.post('/authentication', authentication)
 
 // Query, retrieve, job, export routes
-router.post('/query', userAuthMidelware, postQuery)
+
+//Query Route
+router.post('/modalities/:modality/query', userAuthMidelware, reverseProxyPost)
+router.get('/queries/:orthancIdQuery/answers*', userAuthMidelware, reverseProxyGet)
+//Custom API to get simplified results from Orthanc
+router.get('/queries/:orthancIdQuery/parsedAnswers', userAuthMidelware, getParsedAnswer)
+
 router.post('/retrieve', userAuthMidelware, postRetrieve)
 router.get('/jobs/:jobId', userAuthMidelware, getJobData)
 router.post('/export_dicom', userAuthMidelware, postExportDicom)
@@ -70,11 +78,13 @@ router.put('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], s
 //Orthanc System
 router.get('/options/orthanc-system', [userAuthMidelware, userAdminMidelware], getOrthancSystem)
 
-// Aets Routes
-router.put('/aets', [userAuthMidelware, userAdminMidelware], changeAets)
-router.get('/aets', userAuthMidelware, getAets)
-router.get('/aets/:name/echo', [userAuthMidelware, userAdminMidelware], echoAets)
-router.delete('/aets/:name', [userAuthMidelware, userAdminMidelware], deleteAet)
+// Aets Routes follows Orthanc APIS
+router.get('/modalities', userAuthMidelware, reverseProxyGet)
+router.get('/modalities*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.delete('/modalities/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
+router.post('/modalities/:dicom/echo', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
+router.put('/modalities/:dicom/', [[userAuthMidelware, userAdminMidelware]], reverseProxyPut)
+
 
 //DicomWebRoutes
 router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet)

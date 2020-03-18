@@ -33,30 +33,6 @@ class TableResult extends Component {
         this.props.emptyResultsTable()
     }
 
-    async getSeriesDetails(studyUID, aet){
-
-        let post = {
-            level : 'Serie',
-            studyUID: studyUID,
-            aet : aet
-        }
-
-        let queryAnswers = await fetch("/api/query",
-        {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(post)
-        }).then((answer)=>{
-          return(answer.json())
-        })
-
-        return queryAnswers
-
-    }
-
     /*
     onSelectAll = (isSelected) => {
         if (isSelected) {            

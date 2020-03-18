@@ -92,6 +92,14 @@ class Orthanc {
 
   }
 
+  async _getAnswerLevel(answerId){
+    return await ReverseProxy.getAnswerPlainText('/queries/' + answerId + '/level', 'GET', undefined)
+  }
+
+  async _getAnswerOriginAET(answerId){
+    return await ReverseProxy.getAnswerPlainText('/queries/' + answerId + '/modality', 'GET', undefined)
+  }
+
   async _getAnswerDetails(answerId){
     return await ReverseProxy.getAnswer('/queries/' + answerId + '/answers?expand', 'GET', undefined)
   }
