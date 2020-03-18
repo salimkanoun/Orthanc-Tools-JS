@@ -1,7 +1,7 @@
 BackEnd/node_modules
-BackEnd/Data/database/*
+BackEnd/data/database/*
 !BackEnd/data/database/README
 BackEnd/build
 BackEnd/data/log/*
 !BackEnd/data/log/README
-BackEnd/data/database/db.development.sqlite
+
