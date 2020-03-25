@@ -45,8 +45,43 @@ const ReverseProxy  = {
         return options
       },
 
+      makeOptionsUpload(method, api, data){
+        const serverString = this.getOrthancAddress() + api
+
+        let options = {
+                method: method,
+                url: serverString,
+                auth: {
+                    user: this.username,
+                    password: this.password
+                },
+                headers: {
+                'Content-Type': 'application/dicom',
+                'Content-Length': data.length
+                },
+                body: data
+            }
+        
+
+        return options
+      },
+
     streamToRes (api, method, data , res) {
         request( this.makeOptions(method, api, data) )
+                .on('response', function (response) {
+                    if (response.statusCode === 200) {
+                        response.pipe(res)
+                    }else{
+                        res.status(response.statusCode).send(response.statusMessage);
+                    }
+                }).catch((error) => {
+                    console.log(error)
+                    res.status(500).send(error.statusMessage);
+                } )
+    },
+
+    streamToResUploadDicom(api, method, data, res){
+        request( this.makeOptionsUpload(method, api, data) )
                 .on('response', function (response) {
                     if (response.statusCode === 200) {
                         response.pipe(res)

@@ -7,7 +7,7 @@ const { authentication } = require('../controllers/authentication')
 const { getRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot')
 const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getOrthancSystem } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
-const { reverseProxyGet, reverseProxyPost, reverseProxyPut, reverseProxyDelete } = require('../controllers/reverseProxy')
+const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyDelete } = require('../controllers/reverseProxy')
 
 //SK Probalement a enlenver ne passer que par le reverse proxy
 const { getJobData } = require('../controllers/jobDetails')
@@ -56,6 +56,8 @@ router.post('/modalities/:modality/query', userAuthMidelware, reverseProxyPost)
 router.get('/queries/:orthancIdQuery/answers*', userAuthMidelware, reverseProxyGet)
 //Custom API to get simplified results from Orthanc
 router.get('/queries/:orthancIdQuery/parsedAnswers', userAuthMidelware, getParsedAnswer)
+//Dicom Import Routes
+router.post('/instances', [userAuthMidelware], reverseProxyPostUploadDicom)
 
 router.post('/retrieve', userAuthMidelware, postRetrieve)
 router.get('/jobs/:jobId', userAuthMidelware, getJobData)

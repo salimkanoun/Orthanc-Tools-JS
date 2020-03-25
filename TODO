@@ -36,8 +36,8 @@ Front :
     - Reutiliser la table result study et series et y ajouter les bouttons retrieve
 
 - Module Import d'image
-    - Faire un composant commun avec GaelO
-    - https://github.com/react-dropzone/react-dropzone
+    - Montrer resultat de upload
+        - Probablement meme composant que listing content orthanc
 
 + tard  : 
 - historique des query dans BDD pour relancer une ancienne requete

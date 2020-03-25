@@ -15,6 +15,12 @@ var reverseProxyPost = function (req, res) {
 
 }
 
+var reverseProxyPostUploadDicom = function (req, res) {
+    let apiAdress = req.originalUrl
+    let ortahncCalledApi = apiAdress.replace('/api', '');
+    ReverseProxy.streamToResUploadDicom(ortahncCalledApi, 'POST', req.body, res)
+}
+
 var reverseProxyDelete = function (req, res) {
     let apiAdress = req.originalUrl
     let ortahncCalledApi = apiAdress.replace('/api', '');
@@ -31,4 +37,4 @@ var reverseProxyPut = function(req, res){
 
 }
 
-module.exports = { reverseProxyGet, reverseProxyPost, reverseProxyPut, reverseProxyDelete }
+module.exports = { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyDelete }

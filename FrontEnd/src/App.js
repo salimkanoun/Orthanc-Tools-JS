@@ -12,11 +12,16 @@ import AutoQueryRoot from './components/AutoQuery/Component/AutoQueryRoot'
 import RobotView from './components/AutoQuery/Component/RobotView'
 import Authentication from './components/Authentication'
 import AdminRootPanel from './components/Admin/AdminRootPanel'
+import Import from './components/Import/Import'
 
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NavBar from './components/Main/NavBar'
+
+import '@uppy/core/dist/style.css'
+import '@uppy/drag-drop/dist/style.css'
+import '@uppy/status-bar/dist/style.css'
 
 // Call it once in your app. At the root of your app is the best place
 toast.configure()
@@ -32,6 +37,8 @@ function App () {
       <NavBar/>
       <Switch>
           <Route exact path='/' component={Authentication}>
+          </Route>
+          <Route exact path='/import' component={Import}> 
           </Route>
           <Route exact path='/query' component = {Query}>
           </Route>

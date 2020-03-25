@@ -19,6 +19,7 @@ app.use(express.static(path.join(__dirname, 'build')))
 
 app.use(logger('dev'))
 app.use(express.json())
+app.use(express.raw({limit : '2mb', type : ['application/dicom'] }))
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
@@ -38,7 +39,7 @@ var unless = function (path, middleware) {
   }
 }
 
-var accessLogStream = rfs('access.log', {
+var accessLogStream = rfs.createStream('access.log', {
   interval: '1d', // rotate daily
   path: path.join(__dirname, '/data/log')
 })
