@@ -19,7 +19,6 @@ class ColumnEditor extends Component {
       <input type='text' placeholder='Modify' onKeyUp={this.editAllRow} className='form-control btn-warning' />
     )
   }
-
 }
 
 const mapStateToProps = (state) => {

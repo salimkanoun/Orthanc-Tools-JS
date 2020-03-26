@@ -4,7 +4,7 @@ const ReverseProxy = require('../model/ReverseProxy')
 
 var changeSchedule = async function (req, res) {
   await Options.setScheduleTime(req.body.hour, req.body.min)
-  //Refresh Retrieve Robot to the new time
+  // Refresh Retrieve Robot to the new time
   const robotSingleton = new RobotSingleton()
   const retrieveRobot = robotSingleton.getRobot()
   retrieveRobot.scheduleRetrieve()
@@ -16,19 +16,15 @@ var getSchedule = async function (req, res) {
   res.json(optionsValues)
 }
 
-var getOrthancServer =  function (req, res) {
-  let orthancSettings = Options.getOrthancConnexionSettings()
+var getOrthancServer = function (req, res) {
+  const orthancSettings = Options.getOrthancConnexionSettings()
   res.json(orthancSettings)
 }
 
-var setOrthancServer =  function (req, res) {
-  let data=req.body
+var setOrthancServer = function (req, res) {
+  const data = req.body
   Options.setOrthancConnexionSettings(data.OrthancAddress, data.OrthancPort, data.OrthancUsername, data.OrthancPassword)
   res.end()
 }
 
-var getOrthancSystem = async function (req, res) {
-  ReverseProxy.streamToRes('/system', 'GET', undefined, res)
-}
-
-module.exports = { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getOrthancSystem }
+module.exports = { changeSchedule, getSchedule, getOrthancServer, setOrthancServer }

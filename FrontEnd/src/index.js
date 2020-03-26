@@ -16,7 +16,7 @@ ReactDOM.render(
     store={createStoreWithMiddleware(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())}
   >
     <BrowserRouter>
-    <App />
+      <App />
     </BrowserRouter>
   </Provider>, document.getElementById('root'))
 

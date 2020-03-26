@@ -6,8 +6,7 @@ var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 var rfs = require('rotating-file-stream')
 var session = require('express-session')
-var open = require('open');
-
+var open = require('open')
 
 var apisRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
@@ -19,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'build')))
 
 app.use(logger('dev'))
 app.use(express.json())
-app.use(express.raw({limit : '2mb', type : ['application/dicom'] }))
+app.use(express.raw({ limit: '2mb', type: ['application/dicom'] }))
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
@@ -86,8 +85,7 @@ app.use(function (err, req, res, next) {
 app.listen(4000, function () {
   console.log('Example app listening on port 4000!')
   console.log(app.get('env'))
-  if( app.get('env') === 'production') open('http://localhost:4000');
-  
+  if (app.get('env') === 'production') open('http://localhost:4000')
 })
 
 module.exports = app

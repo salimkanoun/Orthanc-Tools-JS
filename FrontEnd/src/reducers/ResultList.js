@@ -22,7 +22,7 @@ export default function retrieveListReducer (state = initialState, action) {
         key: (maxKey + 1),
         isRetrieved: false,
         ...action.payload,
-        seriesDetails : []
+        seriesDetails: []
       })
       return {
         ...state
@@ -38,47 +38,46 @@ export default function retrieveListReducer (state = initialState, action) {
         ...state
       }
     case SET_RETRIEVE_STATUS_SERIES:
-      const newResultArray  = state.results.map((studyData)=>{
-          if(studyData.studyInstanceUID ===  action.payload.row.studyInstanceUID){
-            studyData.seriesDetails.forEach((serieDetails) => {
-              if(serieDetails.serieInstanceUID === action.payload.row.serieInstanceUID){
-                serieDetails.isRetrieved=true
-              }
-            })
-          }
-          return studyData
+      const newResultArray = state.results.map((studyData) => {
+        if (studyData.studyInstanceUID === action.payload.row.studyInstanceUID) {
+          studyData.seriesDetails.forEach((serieDetails) => {
+            if (serieDetails.serieInstanceUID === action.payload.row.serieInstanceUID) {
+              serieDetails.isRetrieved = true
+            }
+          })
+        }
+        return studyData
       })
       return {
         ...state,
-        results : newResultArray
+        results: newResultArray
       }
     case EMPTY_RESULTS :
       return {
         ...state,
         results: []
       }
-      
-    case ADD_SERIES_DETAILS : 
-      let seriesDetails = action.payload.seriesDetails
-      seriesDetails.forEach( (serieItem) =>{
-        serieItem['isRetrieved'] = false
-        serieItem['key'] = Math.random()
+
+    case ADD_SERIES_DETAILS :
+      const seriesDetails = action.payload.seriesDetails
+      seriesDetails.forEach((serieItem) => {
+        serieItem.isRetrieved = false
+        serieItem.key = Math.random()
       })
 
-      let newResultsState = state.results.map((studyData)=>{
-        if(studyData.studyInstanceUID ===  action.payload.studyInstanceUID){
-            studyData =  {
-              ...studyData,
-              seriesDetails : seriesDetails
-            }
+      const newResultsState = state.results.map((studyData) => {
+        if (studyData.studyInstanceUID === action.payload.studyInstanceUID) {
+          studyData = {
+            ...studyData,
+            seriesDetails: seriesDetails
+          }
         }
         return studyData
-        
       })
 
       return {
         ...state,
-        results : newResultsState
+        results: newResultsState
       }
 
     default :

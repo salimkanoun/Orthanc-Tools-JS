@@ -11,7 +11,7 @@ class RetrieveButton extends Component {
     }
   }
 
-  //SK STATUS DOIT ETRE GERER DANS REDUX !
+  // SK STATUS DOIT ETRE GERER DANS REDUX !
   getClassFromStatus () {
     if (this.state.status === 'Idle') return 'btn btn-info btn-large'
     else if (this.state.status === 'Running' || this.state.status === 'Pending') return 'btn btn-warning btn-large'
@@ -56,7 +56,7 @@ class RetrieveButton extends Component {
     let intervalChcker
 
     const getJobData = async function () {
-      const jobData = await fetch('/api/jobs/'+jobUid, {
+      const jobData = await fetch('/api/jobs/' + jobUid, {
         method: 'GET',
         headers: {
           Accept: 'application/json',

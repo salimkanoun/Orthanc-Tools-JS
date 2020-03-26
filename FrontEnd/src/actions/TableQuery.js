@@ -7,7 +7,7 @@ export function removeQuery (lineNumber) {
   }
 }
 
-export function addQueryToList(query){
+export function addQueryToList (query) {
   return {
     type: ADD_QUERY_TO_LIST,
     payload: query

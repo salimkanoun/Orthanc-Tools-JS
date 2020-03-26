@@ -17,17 +17,15 @@ class CsvLoader extends Component {
 
     parseCSV(event) {
         event.preventDefault();
-        this.parseCsv(this.fileInput.current.files[0]);
-
-    }
-
-    parseCsv = function (file) {
         let currentObject=this
-        Papa.parse(file,{
+        Papa.parse(currentObject.fileInput.current.files[0],{
                 header: true,
                 complete: currentObject.completeFn// base config to use for each file
         })
-    };
+
+        this.parseCsv(this.fileInput.current.files[0]);
+
+    }
 
     completeFn(result, file) {
         let currentObject=this

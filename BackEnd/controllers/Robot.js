@@ -34,7 +34,6 @@ const validateRobotJob = async function (req, res) {
   const retrieveRobot = robotSingleton.getRobot()
   retrieveRobot.validateRobotJob(req.params.username)
   res.json('Finished')
-
 }
 
 const addRobotJob = async function (req, res) {

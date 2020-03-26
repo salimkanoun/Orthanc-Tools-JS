@@ -33,7 +33,6 @@ class RobotJob {
       retrievedInstances: totalRetrievedCount,
       failedInstances: totalFailedCount
     }
-
   }
 
   isValidated () {
@@ -93,15 +92,15 @@ class RobotJob {
       retrieveList: this.retrieveList.map((retrieveItem) => {
         return retrieveItem.toJSON()
       }),
-      validated : this.validated,
+      validated: this.validated,
       ...this.getProgression()
 
     }
   }
 }
 
-RobotJob.VALIDATION_NOT_DONE = "Not Done"
-RobotJob.VALIDATION_IN_PROGRESS = "Validating"
-RobotJob.VALIDATION_DONE = "Done"
+RobotJob.VALIDATION_NOT_DONE = 'Not Done'
+RobotJob.VALIDATION_IN_PROGRESS = 'Validating'
+RobotJob.VALIDATION_DONE = 'Done'
 
 module.exports = RobotJob

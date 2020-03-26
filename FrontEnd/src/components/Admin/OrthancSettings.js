@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react'
-import { toast } from 'react-toastify';
 import apis from '../../services/apis';
 
 export default class OrthancSettings extends Component {
@@ -46,45 +45,15 @@ export default class OrthancSettings extends Component {
      * Send new value to BackEnd
      */
     async handleClick() {
-
         apis.options.setOrthancServer(this.state.OrthancAddress, this.state.OrthancPort, 
             this.state.OrthancUsername, this.state.OrthancPassword)
     }
 
     /**
-     * Try to connect to Orthanc System API
+     * Try to connect to Orthanc System API, response is shown in an toastify
      */
-    async testConnexion () {
-
-        await fetch("/api/options/orthanc-system", {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return (answer.json())
-        }).then((answer) => {
-            toast.success('Orthanc Version : '+answer.Version, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true
-            });
-        }).catch((error) =>{
-            toast.error('Orthanc Server Error  : '+error.statusText , {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true
-            });
-        })
-
+    testConnexion () {
+        apis.options.getOrthancSystem()
     }
 
     render() {
