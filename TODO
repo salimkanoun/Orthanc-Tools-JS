@@ -47,10 +47,34 @@ Front :
         - Stream du contenu
         - Attention au timemout (a tester)
     - Stockage ZIP vers backend ? (peut etre defini dans options)
+    - Vers AET (quid storage commitment)
+    - Sous module share vers FTP, SFTP, GaelO, Orthanc Peer ? 
 
 - Module Import d'image
     - Montrer resultat de upload
         - Probablement meme composant que listing content orthanc
+
+- Module Exploration Contenu d'Orthanc
+    - GUI a reflechir
+    - Modification de ressources
+    - Preview d'images ? (Bof plutot OHIF)
+    - Visualisation de Tag ?
+    - API statisitics ?
+
+- Module de Delete ressources d'Orthanc
+    - Comme Anon et Export
+
+- options
+    - Restart d'orthanc
+    - Changer le log level ?
+    - Visualisation et declaration et test connexion de peers
+
+- Module Disc Producer
+- Module Monotoring
+    - Prefetching
+    - Database tag monitoring
+    - Dicom Routing?
+
 
 + tard  : 
     - historique des query dans BDD pour relancer une ancienne requete
