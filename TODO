@@ -1,46 +1,59 @@
+Avant Arrivée Sylvain : 
+    - Code Refactoring Backend et FrontEnd
+    - Swagger Documentation
+    - Finir Manual Query
+        - Redux a faire
+        - Reutiliser la table result study et series et y ajouter les bouttons retrieve
+    - Finir implementation level Series retrieve
+        - Gerer la selection pour le robot...
+        - Filtre sur le niveau Series => Contains et equal sur modality et series description
+        - Gerer le robot pour qu'ils traites retrieve au niveau series et study
+            - Si une serie est selectionnée alors n'importer que les series selectionnées au lieu de la study
+    - BackEnd Finaliser les tests
+
 Front : 
 - voir ReduxThunk pour stocker de maniere globale les data https://dev.to/markusclaus/fetching-data-from-an-api-using-reactredux-55ao
 - Faire que le select all select tout les non filtre de toutes les pages ? => difficulté....
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
 - Spliter firstName, LastName dans toutes les tables query / results ?
 
-- Robot Level Series
-    - Gerer la selection pour le robot...
-    - Filtre sur le niveau Series => Contains et equal sur modality et series description
-    - Gerer le robot pour qu'ils traites retrieve au niveau series et study
-        - Si une serie est selectionnée alors n'importer que les series selectionnées au lieau de la study
-
 - Interface Suivi robot (pour un utilisateur)
     - Validation robot job
         - Soit manuelle par administrateur
         - Soit automatique lors declanchement robot (avant retrieve ? ou lors de la creation du job ?)
-    - Export rapport Query / Retrieve
+    - Export rapport Query / Retrieve (CSV)
 
 - Interface suivi des robots (tous) pour un administrateur
     -   Validation d'un robot avant execution (fonction preset plateforme)
     -   Acces au robot de chaque utilisateur
+    -   Fonction Pause 
 
 - Settings
     - AutoQuery : 
         - Nombre limit de query si < limit => Retrieve auto
+        - Heure de pause automatique ? (a partir 7h du mat ?)
 
 - Module Anonymize
-    - Devra etre fait avec un robot coté back ?
+    - Faire un robot coté Backend
+    - Execution automatique non differée
+    - Pour chaque robot choix du profile d'anonymisation
 
 - Module Export
     - Liste d'item avec possibilité de créer un ou plusieurs ZIP
-    - retour du zip vers client
-
-- Module manual Query
-    - Reutiliser le form de recherche
-    - Reutiliser la table result study et series et y ajouter les bouttons retrieve
+        - Un button pour un Zip par item
+        - Un boutton global pour toutes les ressources dans un ZIP
+        - Choix hirachique (default) ou DicomDir
+    - Retour du zip vers client
+        - Stream du contenu
+        - Attention au timemout (a tester)
+    - Stockage ZIP vers backend ? (peut etre defini dans options)
 
 - Module Import d'image
     - Montrer resultat de upload
         - Probablement meme composant que listing content orthanc
 
 + tard  : 
-- historique des query dans BDD pour relancer une ancienne requete
+    - historique des query dans BDD pour relancer une ancienne requete
 
 Back :
 - Midelware securite acces robot => Reste a securiser les route pour lire le robot en fonction du role
