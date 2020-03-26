@@ -4,6 +4,7 @@ import AnonTool from './AnonTool'
 import ExportTool from './ExportTool'
 
 export default class NavBar extends Component {
+
   render () {
     return (
       <div className='navbar navbar-expand-lg navbar-light bg-light mb-5'>
@@ -31,4 +32,5 @@ export default class NavBar extends Component {
       </div>
     )
   }
+  
 }

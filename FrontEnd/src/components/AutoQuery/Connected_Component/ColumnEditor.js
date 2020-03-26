@@ -1,13 +1,21 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import * as actions from '../../../actions/TableQuery'
-
+/**
+ * Column editor component, for global modification of column
+ * (editor component of the table header modifier)
+ */
 class ColumnEditor extends Component {
+  
   constructor (props) {
     super(props)
     this.editAllRow = this.editAllRow.bind(this)
   }
 
+  /**
+   * Use Redux to modify all items proprieties
+   * @param {*} event 
+   */
   editAllRow (event) {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value

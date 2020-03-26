@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import apis from '../../../services/apis'
 
 /**
  * Create Robot button with create robot API action call
@@ -15,10 +16,11 @@ export default class CreateRobot extends Component {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  async createRobot () {
-
+  /**
+   * Take array of retrieve from Redux and build a retrieve Array to send to API
+   */
+  createRobot () {
     const results = this.props.resultArray
-
     const retrieveArray = []
 
     results.forEach(result => {
@@ -36,16 +38,8 @@ export default class CreateRobot extends Component {
       retrieveArray.push(resultToRobot)
     })
 
-    await fetch('/api/robot', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ projectName: this.state.projectName, studyArray: retrieveArray })
-      })
-      .then( (answer) => { return (answer.json()) } )
-      .then( (answer) => {console.log('Created')} )
+    //Send the retrieve array to back end
+    apis.queryRobot.createRobot(this.state.projectName, retrieveArray)
 
   }
 

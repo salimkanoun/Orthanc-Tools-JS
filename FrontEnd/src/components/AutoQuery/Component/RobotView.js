@@ -5,7 +5,12 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import OhifLink from '../../Ohif/OhifLink';
+import apis from '../../../services/apis';
 
+/**
+ * View page of a sigle Retrieve Robot content
+ * With progress monitoring and delete item action
+ */
 export default class RobotView extends Component {
 
     state = {
@@ -107,15 +112,8 @@ export default class RobotView extends Component {
     }
 
     refreshHandler(){
-
-        fetch( "/api/robot/"+this.state.username, {
-                method: "GET",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            })
-        .then( (answer)=>{ return answer.json() })
+        apis.queryRobot
+        .getRobotDetails(this.state.username)
         .then( (answerData) => {
             
             let rowsRetrieveList = []
@@ -145,16 +143,9 @@ export default class RobotView extends Component {
     }
 
     deleteQueryHandler(rowIndex, refreshHandler){
-
-        fetch("/api/robot/"+this.state.username+"/"+rowIndex, {
-            method: "DELETE",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }).then((answer)=>{
-            return answer.json()
-        }).then( () => {
+        apis.queryRobot
+        .deleteRobotItem(this.state.username, rowIndex)
+        .then( () => {
             refreshHandler()
         })
 
@@ -169,8 +160,8 @@ export default class RobotView extends Component {
     render() {
         return (
             <div className="jumbotron">
-                <div class="row mb-5">
-                <h1 class="col"> Robot for user {this.state.username}, project : {this.state.projectName} </h1>
+                <div className="row mb-5">
+                <h1 className="col"> Robot for user {this.state.username}, project : {this.state.projectName} </h1>
                     <div className="col-md-2 text-right" >
                         <CircularProgressbarWithChildren
                             value={this.state.totalPercentageProgress} text={`Progress : ${this.state.totalPercentageProgress}%`}

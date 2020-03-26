@@ -18,6 +18,10 @@ import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import NavBar from './components/Main/NavBar'
 
+//Css for boostrap table
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+//Css for uppy
 import '@uppy/core/dist/style.css'
 import '@uppy/drag-drop/dist/style.css'
 import '@uppy/status-bar/dist/style.css'
