@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
+
 import BootstrapTable from 'react-bootstrap-table-next';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
-import { connect } from 'react-redux'
-import * as actions from '../../../actions/TableResult'
+import { emptyResultsTable } from '../../../actions/TableResult'
 
-import CreateRobot from './../Component/CreateRobot'
+import CreateRobot from '../Component/CreateRobot'
 import TableResultSeries from './TableResultSeries'
 
-
-class TableResult extends Component {
+const { ExportCSVButton } = CSVExport;
+/**
+ * Result Table of Query for Study Level
+ */
+class TableResultStudy extends Component {
 
     constructor(props) {
         super(props)
         this.removeRow = this.removeRow.bind(this)
-        this.emptyTable=this.emptyTable.bind(this)
-        //this.onSelectAll=this.onSelectAll.bind(this)
+        this.emptyTable = this.emptyTable.bind(this)
     }
 
     removeRow() {
@@ -29,31 +29,20 @@ class TableResult extends Component {
         this.node.selectionContext.selected = []
     }
 
-    emptyTable () {
+    emptyTable() {
         this.props.emptyResultsTable()
     }
-
-    /*
-    onSelectAll = (isSelected) => {
-        if (isSelected) {            
-           return this.node.table.props.data.map(row => row.key);
-         } else {
-           return [];
-         }
-      }
-      */
 
     selectRow = {
         mode: 'checkbox',
         clickToSelect: true
-        //,onSelectAll: this.onSelectAll
-    };
+    }
 
     columns = [{
         dataField: 'number',
         hidden: true,
         csvExport: false
-    },{
+    }, {
         dataField: 'level',
         hidden: true,
         csvExport: false
@@ -112,28 +101,20 @@ class TableResult extends Component {
         text: 'Instances'
     }];
 
-      
-      
     expandRow = {
-        
         showExpandColumn: true,
-        renderer : (row) => {
-            return(
+        renderer: (row) => {
+            return (
                 <TableResultSeries rowData={row}></TableResultSeries>
             )
         }
-        
     }
 
-
-
     render() {
-
-        const { ExportCSVButton } = CSVExport;
         return (
             <ToolkitProvider
                 keyField="key"
-                data={this.props.results.results}
+                data={this.props.results}
                 columns={this.columns}
                 exportCSV={{ onlyExportSelection: false, exportAll: true }}
             >{
@@ -145,11 +126,11 @@ class TableResult extends Component {
                                     <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
                                     <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                                     <div className="mt-5">
-                                        <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} expandRow={ this.expandRow } >
+                                        <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} expandRow={this.expandRow} >
                                         </BootstrapTable>
                                     </div>
                                 </div>
-                                <CreateRobot resultArray={this.props.results.results}></CreateRobot>
+                                <CreateRobot resultArray={this.props.results}></CreateRobot>
                             </div>
                         </React.Fragment>
                     )
@@ -160,12 +141,14 @@ class TableResult extends Component {
 
 }
 
-
-
 const mapStateToProps = (state) => {
     return {
-        results: state.ResultList
+        results: state.ResultList.results
     }
 }
 
-export default connect(mapStateToProps, actions)(TableResult);
+const mapDispatchToProps = {
+    emptyResultsTable
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TableResultStudy);

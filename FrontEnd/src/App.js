@@ -1,10 +1,10 @@
-import React, {Fragment} from 'react'
+import React from 'react'
 import {
   Switch,
   Route
 } from 'react-router-dom'
 import './style.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css'
 import Helmet from 'react-helmet'
 
 import Query from './components/Query/Components/Query'
@@ -12,37 +12,48 @@ import AutoQueryRoot from './components/AutoQuery/Component/AutoQueryRoot'
 import RobotView from './components/AutoQuery/Component/RobotView'
 import Authentication from './components/Authentication'
 import AdminRootPanel from './components/Admin/AdminRootPanel'
+import Import from './components/Import/Import'
 
-
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import NavBar from './components/Main/NavBar'
 
-// Call it once in your app. At the root of your app is the best place
-toast.configure()
+//Css for boostrap table
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
+//Css for uppy
+import '@uppy/core/dist/style.css'
+import '@uppy/drag-drop/dist/style.css'
+import '@uppy/status-bar/dist/style.css'
+
+// Configuring Toastify params that will be used all over the app
+toast.configure({
+  position: 'top-right',
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true
+})
 
 function App () {
   return (
-    
-    <Fragment>
+
+    <>
       <Helmet>
         <meta charSet='utf-8' />
         <title>Orthanc Tools</title>
       </Helmet>
-      <NavBar/>
+      <NavBar />
       <Switch>
-          <Route exact path='/' component={Authentication}>
-          </Route>
-          <Route exact path='/query' component = {Query}>
-          </Route>
-          <Route exact path='/auto-query' component = {AutoQueryRoot}>
-          </Route>
-          <Route exact path='/options' component = {AdminRootPanel}>
-          </Route>
-          <Route exact path='/robot/:username' component = {RobotView}>
-          </Route>
+        <Route exact path='/' component={Authentication} />
+        <Route exact path='/import' component={Import} />
+        <Route exact path='/query' component={Query} />
+        <Route exact path='/auto-query' component={AutoQueryRoot} />
+        <Route exact path='/options' component={AdminRootPanel} />
+        <Route exact path='/robot/:username' component={RobotView} />
       </Switch>
-    </Fragment>
+    </>
   )
 }
 

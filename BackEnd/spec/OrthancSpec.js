@@ -8,6 +8,4 @@ describe('Test Orthanc', () => {
 
     spyOn(orthanc, 'removeAet').and.returnValue(true)
   })
-
-  
 })

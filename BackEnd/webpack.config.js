@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path')
 
 module.exports = {
   externals: ['pg', 'sqlite3', 'tedious', 'pg-hstore'],
@@ -8,4 +8,4 @@ module.exports = {
     filename: 'api.bundle.js'
   },
   target: 'node'
-};
+}

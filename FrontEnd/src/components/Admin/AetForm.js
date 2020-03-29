@@ -14,7 +14,7 @@ export default class AetForm extends Component {
         this.manufacturerChangeListener=this.manufacturerChangeListener.bind(this)
     }
 
-    manufacturers= [
+    manufacturers = [
         { value: 'Generic', label: 'Generic' },
         { value: 'GenericNoWildcardInDates', label: 'GenericNoWildcardInDates' },
         { value: 'StoreScp', label: 'StoreScp' },
@@ -61,7 +61,7 @@ export default class AetForm extends Component {
             Manufacturer : this.state.manufacturer
         }
 
-        apis.updateAet(this.state.name, postData)
+        await apis.updateAet(this.state.name, postData)
 
         this.props.refreshAetData()
 

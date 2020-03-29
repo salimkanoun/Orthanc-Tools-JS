@@ -1,40 +1,40 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
+
 import BootstrapTable from 'react-bootstrap-table-next';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import cellEditFactory, { Type } from 'react-bootstrap-table2-editor'
-
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
 import ColumnEditor from './ColumnEditor'
-
-import { connect } from 'react-redux'
-import * as actions from '../../../actions/TableQuery'
-import * as resultActions from '../../../actions/TableResult'
-import * as orthancToolsActions from '../../../actions/OrthancTools'
-
+import { removeQuery, emptyQueryTable } from '../../../actions/TableQuery'
+import { addStudyResult } from '../../../actions/TableResult'
+import { loadAvailableAETS } from '../../../actions/OrthancTools'
 import CsvLoader from './CsvLoader'
 import SelectModalities from '../Component/SelectModalities';
-import apis from '../../../services/aets';
 
+import apis from '../../../services/apis';
+
+const { ExportCSVButton } = CSVExport;
 
 class TableQuery extends Component {
+
+  
 
   constructor(props) {
     super(props)
     this.removeRow = this.removeRow.bind(this)
     this.query = this.query.bind(this)
     this.emptyTable = this.emptyTable.bind(this)
-    this.deselectAll= this.deselectAll.bind(this)
+    this.deselectAll = this.deselectAll.bind(this)
   }
-  
-  async componentDidMount(){
-    this.props.loadAvailableAETS(await apis.getAets() )
+
+  async componentDidMount() {
+    this.props.loadAvailableAETS(await apis.aets.getAets())
   }
-  
-  deselectAll(){
+
+  deselectAll() {
     this.node.selectionContext.selected = []
   }
 
@@ -43,21 +43,20 @@ class TableQuery extends Component {
     this.props.removeQuery(selectedKeyRow)
   }
 
-  emptyTable(){
+  emptyTable() {
     this.props.emptyQueryTable()
   }
 
   customHeader(column, colIndex, { sortElement, filterElement }) {
     return (
-      <div style={ { display: 'flex', flexDirection: 'column' } }>
-        { column.text }
-        { filterElement }
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {column.text}
+        {filterElement}
         <ColumnEditor columnName={column.dataField} />
-
       </div>
     );
   }
-  
+
 
 
   selectRow = {
@@ -67,7 +66,7 @@ class TableQuery extends Component {
   cellEdit = cellEditFactory({
     mode: 'click',
     blurToSave: true,
-    autoSelectText : true
+    autoSelectText: true
   });
 
   columns = [{
@@ -123,7 +122,7 @@ class TableQuery extends Component {
     filter: textFilter(),
     headerFormatter: this.customHeader,
     editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => (
-      <SelectModalities { ...editorProps } previousModalities={ value } />
+      <SelectModalities {...editorProps} previousModalities={value} />
     )
   }, {
     dataField: 'aet',
@@ -132,8 +131,8 @@ class TableQuery extends Component {
     editor: {
       type: Type.SELECT,
       getOptions: (setOptions, { row, column }) => {
-        return this.props.aets.map(function(aet){
-          return {value : aet, label : aet}
+        return this.props.aets.map(function (aet) {
+          return { value: aet, label: aet }
         })
       }
     },
@@ -142,11 +141,10 @@ class TableQuery extends Component {
   }];
 
   render() {
-    const { ExportCSVButton } = CSVExport
     return (
       <ToolkitProvider
         keyField="key"
-        data={this.props.queries.queries}
+        data={this.props.queries}
         columns={this.columns}
         exportCSV={{ onlyExportSelection: true, exportAll: true }}
       >{
@@ -160,12 +158,12 @@ class TableQuery extends Component {
                   <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                   <CsvLoader />
                   <div className="mt-5">
-                  <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} >
-                  </BootstrapTable>
+                    <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} >
+                    </BootstrapTable>
                   </div>
                 </div>
                 <div className="text-center">
-                  <input type="button" className="btn btn-primary" value="Query" onClick={this.query}  />
+                  <input type="button" className="btn btn-primary" value="Query" onClick={this.query} />
                 </div>
               </div>
 
@@ -179,9 +177,10 @@ class TableQuery extends Component {
   async query() {
 
     let data = this.node.props.data
-
     for (const query of data) {
+      //For each line make dicom query and return results
       let answeredResults = await this.makeDicomQuery(query)
+      //For each results, fill the result table through Redux
       answeredResults.forEach((answer) => {
         this.props.addStudyResult(answer)
       })
@@ -191,10 +190,10 @@ class TableQuery extends Component {
 
   async makeDicomQuery(queryParams) {
 
-    //Prepare Date string
+    //Prepare Date string for post data
     let dateString = '*';
-    queryParams.dateFrom=queryParams.dateFrom.split('-').join('')
-    queryParams.dateTo=queryParams.dateTo.split('-').join('')
+    queryParams.dateFrom = queryParams.dateFrom.split('-').join('')
+    queryParams.dateTo = queryParams.dateTo.split('-').join('')
     if (queryParams.dateFrom !== '' && queryParams.dateTo !== '') {
       dateString = queryParams.dateFrom + '-' + queryParams.dateTo
     } else if (queryParams.dateFrom === '' && queryParams.dateTo !== '') {
@@ -216,54 +215,28 @@ class TableQuery extends Component {
       }
     }
 
-    let createQueryRessource = await fetch("/api/modalities/"+queryParams.aet+"/query", {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(queryPost)
-      }).then((answer)=>{
-        return(answer.json())
-      }).catch(error => console.log(error))
+    //Call Orthanc API to make Query
+    let createQueryRessource = await apis.query.dicomQuery(queryParams.aet, queryPost)
+    //Call OrthancToolsJS API to get a parsed answer of the results
+    let queryAnswer = await apis.query.retrieveAnswer(createQueryRessource.ID)
 
-    let queryAnswer = await this.getQueryAnswers(createQueryRessource.ID)
-    
     return queryAnswer
-
-  }
-
-  async getQueryAnswers(orthancIdQuery) {
-
-    let queryAnswers = await fetch("/api/queries/"+orthancIdQuery+"/parsedAnswers", {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then((answer)=>{
-      return(answer.json())
-    }).catch(error => console.log(error))
-
-    return queryAnswers
-
   }
 
 }
-
 
 const mapStateToProps = (state) => {
   return {
     aets: state.OrthancTools.OrthancAets,
-    queries: state.QueryList,
-    results: state.resultList
+    queries: state.QueryList.queries
   }
 }
 
-const mapActionsToProps = {
-  ...actions,
-  ...resultActions,
-  ...orthancToolsActions
+const mapDispatchToProps = {
+  loadAvailableAETS,
+  removeQuery,
+  emptyQueryTable,
+  addStudyResult,
 };
 
-export default connect(mapStateToProps, mapActionsToProps)(TableQuery);
+export default connect(mapStateToProps, mapDispatchToProps)(TableQuery);

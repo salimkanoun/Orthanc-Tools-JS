@@ -35,13 +35,12 @@ class RetrieveRobot {
    * @param {String} aetDestination
    */
   async setDestination (aetDestination = undefined) {
-    if(aetDestination === undefined){
-      let orthancAetName  = await this.orthancObject.getOrthancAetName()
+    if (aetDestination === undefined) {
+      const orthancAetName = await this.orthancObject.getOrthancAetName()
       this.aetDestination = orthancAetName
-    }else{
+    } else {
       this.aetDestination = aetDestination
     }
-
   }
 
   /**
@@ -78,7 +77,6 @@ class RetrieveRobot {
     })
 
     this.scheduledJob = scheduledJob
-
   }
 
   /**
@@ -89,7 +87,6 @@ class RetrieveRobot {
    * @param {*} username
    */
   async validateRobotJob (username) {
-
     const robotJob = this.robotJobs[username]
 
     if (!robotJob.isValidated()) {

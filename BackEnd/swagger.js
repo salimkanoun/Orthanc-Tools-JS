@@ -6,23 +6,23 @@ const swaggerJsDoc = require('swagger-jsdoc')
 const swaggerUI = require('swagger-ui-express')
 
 const swaggerOptions = {
-    swaggerDefinition : {
-        openapi: "3.0.0",
-        info : {
-            title : 'Orthanc Tools JS',
-            description : 'API description of Orthanc Tools JS',
-            contact : {
-                name : 'Salim Kanoun'
-            }
-            
-        },
-        servers: [
-            {
-              url: "http://localhost:4000/api/"
-            }
-          ]
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Orthanc Tools JS',
+      description: 'API description of Orthanc Tools JS',
+      contact: {
+        name: 'Salim Kanoun'
+      }
+
     },
-    apis : ["./routes/index.js"]
+    servers: [
+      {
+        url: 'http://localhost:4000/api/'
+      }
+    ]
+  },
+  apis: ['./routes/index.js']
 }
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions)
@@ -30,5 +30,5 @@ app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocs))
 app.use(cors())
 
 app.listen(5000, function () {
-    console.log('Example app listening on port 5000!')   
-  })
+  console.log('Example app listening on port 5000!')
+})

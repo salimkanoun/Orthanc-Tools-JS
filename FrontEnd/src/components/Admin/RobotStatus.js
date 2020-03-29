@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Link } from 'react-router-dom'
+import apis from '../../services/apis';
 
 export default class RobotStatus extends Component {
 
@@ -34,33 +35,35 @@ export default class RobotStatus extends Component {
         clearInterval(this.intervalChcker)
     }
 
-    columns = [{
-        dataField: 'key',
-        hidden: true
-    },{
-        dataField: 'name',
-        text : 'Name'
-    }, {
-        dataField: 'username',
-        text : 'Username'
-    }, {
-        dataField: 'queriesNb',
-        text : 'Number of Queries'
-    }, {
-        dataField: 'details',
-        text: 'Show Details',
-        formatter: this.showRobotDetailsButton
-    },{
-        dataField: 'validated',
-        text: 'Validation Status',
-        formatter : this.validationButton,
-        formatExtraData : this
-    }, {
-        dataField : 'remove',
-        text : 'Remove Robot',
-        formatter : this.removeRobotButton,
-        formatExtraData : this
-    }];
+    columns = [ 
+        {
+            dataField: 'key',
+            hidden: true
+        }, {
+            dataField: 'name',
+            text : 'Name'
+        }, {
+            dataField: 'username',
+            text : 'Username'
+        }, {
+            dataField: 'queriesNb',
+            text : 'Number of Queries'
+        }, {
+            dataField: 'details',
+            text: 'Show Details',
+            formatter: this.showRobotDetailsButton
+        }, {
+            dataField: 'validated',
+            text: 'Validation Status',
+            formatter : this.validationButton,
+            formatExtraData : this
+        }, {
+            dataField : 'remove',
+            text : 'Remove Robot',
+            formatter : this.removeRobotButton,
+            formatExtraData : this
+        }
+    ];
 
     validationButton(cell, row, rowIndex, parentComponent){
         if(row.validated !== 'Not Done'){
@@ -89,56 +92,37 @@ export default class RobotStatus extends Component {
 
     validationRobotHandler(username, refreshHandler){
 
-        fetch("/api/robot/"+username+"/validate", {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-        }).then(()=>{
+        apis.queryRobot.validateRobot(username).then(()=>{
             refreshHandler()
-        }).catch( (error)=>{ console.log(error) } )
-
+        })
     }
 
     deleteJobHandler (username , refreshHandler) {
-        
-        fetch("/api/robot/"+username, {
-            method: "DELETE",
-            })
-        .then(()=>{
+
+        apis.queryRobot.deleteRobot(username).then(()=>{
             refreshHandler()
-        }).catch( (error)=>{ console.log(error) } )
+        })
 
     }
 
     refreshHandler(){
-        
-        fetch("/api/robot", {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then((answer)=>{return answer.json() })
-        .then( (answerData) => {
-                let rows = []
-                answerData.forEach(robotJob => {
-                    rows.push({
-                        key : Math.random(),
-                        name : robotJob.projectName,
-                        username : robotJob.username,
-                        queriesNb : robotJob.retrieveList.length,
-                        validated : robotJob.validated
-                    })
-                    
-                });
-
-                this.setState({
-                    rows : rows
+        apis.queryRobot.getAllRobotsDetails().then( (answerData) => {
+            let rows = []
+            answerData.forEach(robotJob => {
+                rows.push({
+                    key : Math.random(),
+                    name : robotJob.projectName,
+                    username : robotJob.username,
+                    queriesNb : robotJob.retrieveList.length,
+                    validated : robotJob.validated
                 })
-           })
+                
+            });
+
+            this.setState({
+                rows : rows
+            })
+        })
     }
 
     render() {

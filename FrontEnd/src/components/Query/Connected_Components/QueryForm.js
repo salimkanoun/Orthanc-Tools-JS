@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import AetButton from './AetButton'
+import AetButton from '../Components/AetButton'
 import api from '../../../services/aets'
 import * as actions from '../../../actions/OrthancTools'
 

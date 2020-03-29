@@ -8,9 +8,8 @@ const ReverseProxy = require('./ReverseProxy')
  * Orthanc object to communications with orthanc server
  */
 class Orthanc {
-
   async getOrthancAetName () {
-    let systemAnswer = await ReverseProxy.getAnswer('/system', 'GET', undefined)
+    const systemAnswer = await ReverseProxy.getAnswer('/system', 'GET', undefined)
     return systemAnswer.DicomAet
   }
 
@@ -59,8 +58,7 @@ class Orthanc {
     }
   }
 
-  buildSerieDicomQuery(studyUID='', modality='', protocolName = '', seriesDescription='', seriesNumber='', seriesInstanceUID=''){
-
+  buildSerieDicomQuery (studyUID = '', modality = '', protocolName = '', seriesDescription = '', seriesNumber = '', seriesInstanceUID = '') {
     this.preparedQuery = {
       Level: 'Series',
       Query: {
@@ -74,7 +72,6 @@ class Orthanc {
       },
       Normalize: false
     }
-
   }
 
   /**
@@ -82,36 +79,34 @@ class Orthanc {
      * @param {String} aet
      */
   async makeDicomQuery (aet) {
-    let answer = await ReverseProxy.getAnswer('/modalities/' + aet + '/query', 'POST', JSON.stringify(this.preparedQuery))
+    const answer = await ReverseProxy.getAnswer('/modalities/' + aet + '/query', 'POST', JSON.stringify(this.preparedQuery))
 
-    if(this.preparedQuery.Level === 'Study'){
-       return this.getStudyAnswerDetails(answer.ID, aet)
+    if (this.preparedQuery.Level === 'Study') {
+      return this.getStudyAnswerDetails(answer.ID, aet)
     } else {
       return this.getSeriesAnswerDetails(answer.ID, aet)
     }
-
   }
 
-  async _getAnswerLevel(answerId){
+  async _getAnswerLevel (answerId) {
     return await ReverseProxy.getAnswerPlainText('/queries/' + answerId + '/level', 'GET', undefined)
   }
 
-  async _getAnswerOriginAET(answerId){
+  async _getAnswerOriginAET (answerId) {
     return await ReverseProxy.getAnswerPlainText('/queries/' + answerId + '/modality', 'GET', undefined)
   }
 
-  async _getAnswerDetails(answerId){
+  async _getAnswerDetails (answerId) {
     return await ReverseProxy.getAnswer('/queries/' + answerId + '/answers?expand', 'GET', undefined)
   }
 
   async getSeriesAnswerDetails (answerId, aet) {
-
-    let answerQuery = await this._getAnswerDetails(answerId)
+    const answerQuery = await this._getAnswerDetails(answerId)
 
     const answersObjects = []
 
-    for(let i=0; i<answerQuery.length; i++){
-      let element=answerQuery[i]
+    for (let i = 0; i < answerQuery.length; i++) {
+      const element = answerQuery[i]
 
       const queryLevel = element['0008,0052'].Value
 
@@ -146,23 +141,20 @@ class Orthanc {
       }
 
       const originAET = aet
-      const queryAnswserObject = new QuerySerieAnswer(answerId, i , queryLevel, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET, numberOfSeriesRelatedInstances)
+      const queryAnswserObject = new QuerySerieAnswer(answerId, i, queryLevel, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET, numberOfSeriesRelatedInstances)
       answersObjects.push(queryAnswserObject)
-
     }
 
     return answersObjects
-
   }
 
   async getStudyAnswerDetails (answerId, aet) {
-
-    let studyAnswers = await this._getAnswerDetails(answerId)
+    const studyAnswers = await this._getAnswerDetails(answerId)
 
     const answersObjects = []
 
-    for(let i = 0; i < studyAnswers.length; i ++){
-      let element = studyAnswers[i]
+    for (let i = 0; i < studyAnswers.length; i++) {
+      const element = studyAnswers[i]
       const queryLevel = element['0008,0052'].Value
 
       let accessionNb = '*'
@@ -213,27 +205,23 @@ class Orthanc {
       const origineAET = aet
       const queryAnswserObject = new QueryStudyAnswer(answerId, i, queryLevel, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate, numberOfStudyRelatedSeries, numberOfStudyRelatedInstances)
       answersObjects.push(queryAnswserObject)
-
     }
 
     return answersObjects
-
   }
 
   async makeRetrieve (queryID, answerNumber, aet, synchronous = false) {
-
     const postData = {
       Synchronous: synchronous,
       TargetAet: aet
     }
 
-    let answer = await ReverseProxy.getAnswer('/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', 'POST', JSON.stringify(postData))
+    const answer = await ReverseProxy.getAnswer('/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', 'POST', JSON.stringify(postData))
 
     return answer
   }
 
   async findInOrthanc (level = 'Study', patientName = '*', patientID = '*', accessionNb = '*', date = '*', studyDescription = '*', modality = '*', studyInstanceUID = '*') {
-    
     const queryDetails = {}
 
     if (date !== '*') queryDetails.StudyDate = date
@@ -251,7 +239,7 @@ class Orthanc {
       Query: queryDetails
     }
 
-    let answer = await ReverseProxy.getAnswer('/tools/find', 'POST', JSON.stringify(queryParameter))
+    const answer = await ReverseProxy.getAnswer('/tools/find', 'POST', JSON.stringify(queryParameter))
 
     return answer
   }
@@ -261,7 +249,7 @@ class Orthanc {
      * @param {string} studyUID
      */
   async findInOrthancByUid (studyUID) {
-    let answer = await this.findInOrthanc('Study', '*', '*', '*','*', '*', '*', studyUID)
+    const answer = await this.findInOrthanc('Study', '*', '*', '*', '*', '*', '*', studyUID)
     return answer
   }
 
@@ -271,7 +259,7 @@ class Orthanc {
      * @param {string} orthancID
      */
   async getOrthancDetails (level, orthancID) {
-    let answer  = await ReverseProxy.getAnswer('/' + level + '/' + orthancID, 'GET', undefined)
+    const answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID, 'GET', undefined)
     return answer
   }
 
@@ -281,7 +269,7 @@ class Orthanc {
      * @param {string} orthancID
      */
   async deleteFromOrhtanc (level, orthancID) {
-    let answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID, 'DELETE', undefined)
+    const answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID, 'DELETE', undefined)
     return answer
   }
 
@@ -382,10 +370,9 @@ class Orthanc {
   }
 
   async makeAnon (level, orthancID, profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription) {
-    let answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID + '/anonymize', 'POST', self.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription))
+    const answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID + '/anonymize', 'POST', self.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription))
     return answer
   }
-
 }
 
 module.exports = Orthanc
