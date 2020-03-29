@@ -1,5 +1,6 @@
 Avant Arrivée Sylvain : 
     - Code Refactoring Backend et FrontEnd
+    - FrontEnd : Passer les actions en mapdispatchtoprops
     - Swagger Documentation
     - Finir Manual Query
         - Redux a faire

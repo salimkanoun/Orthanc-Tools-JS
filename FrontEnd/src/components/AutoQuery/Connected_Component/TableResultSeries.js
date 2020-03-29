@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
+
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
-import { connect } from 'react-redux'
-import * as actions from '../../../actions/TableResult'
+import { addSeriesDetails } from '../../../actions/TableResult'
+import apis from '../../../services/apis';
 
 
+/**
+ * Generate Boostrap Table with Series related data
+ * Will be nested in Result query Table
+ */
 class TableResultSeries extends Component {
 
     async componentDidMount(){
@@ -40,39 +46,10 @@ class TableResultSeries extends Component {
             Normalize: false
         }
 
-        let queryAnswers = await fetch("/api/modalities/"+aet+"/query",
-        {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(queryData)
-        }).then((answer)=>{
-          return(answer.json())
-        })
-
-        let seriesAnswers = await this.getSeriesDetailsAnswer(queryAnswers.ID)
+        let queryAnswers = await apis.query.dicomQuery(aet,queryData);
+        let seriesAnswers = await apis.query.retrieveAnswer(queryAnswers.ID)
 
         this.props.addSeriesDetails(seriesAnswers, studyUID)
-
-    }
-
-    //SK : Cette fonction est dupliquée dans table query
-    // Voir avec evolution de React Thunk
-    async getSeriesDetailsAnswer(orthancIdQuery){
-
-        let queryAnswers = await fetch("/api/queries/"+orthancIdQuery+"/parsedAnswers", {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-            }).then((answer)=>{
-            return(answer.json())
-            }).catch(error => console.log(error))
-        
-        return queryAnswers
 
     }
 
@@ -157,4 +134,8 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, actions)(TableResultSeries);
+const mapDispatchToProps = {
+    addSeriesDetails
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TableResultSeries);

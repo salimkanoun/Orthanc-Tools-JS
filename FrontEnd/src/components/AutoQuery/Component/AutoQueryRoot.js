@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import TableQuery from '../Connected_Component/TableQuery'
-import TableResult from '../Connected_Component/TableResult'
+import TableResultStudy from '../Connected_Component/TableResultStudy'
 
 /**
  * Root Panel of AutoQuery module
@@ -12,7 +12,7 @@ function AutoQueryRoot () {
 
   function getComponentToDisplay () {
     let component = null
-    currentMainTab === 'Query' ? component = <TableQuery /> : component = <TableResult />
+    currentMainTab === 'Query' ? component = <TableQuery /> : component = <TableResultStudy />
     return component
   }
 

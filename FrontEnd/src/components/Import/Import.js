@@ -9,6 +9,7 @@ export default class Import extends Component {
 
     constructor(props){
         super(props)
+        
         this.uppy = Uppy({
             autoProceed: true
         })
@@ -45,12 +46,6 @@ export default class Import extends Component {
         this.uppy.close()
     }
 
-
-
-    state = {
-        
-    }
-
     render(){
         return (
             <Fragment>
@@ -60,7 +55,7 @@ export default class Import extends Component {
                     strings: {
                         // Text to show on the droppable area.
                         // `%{browse}` is replaced with a link that opens the system file selection dialog.
-                        dropHereOr: 'Drop here or %{browse}',
+                        dropHereOr: 'Drop Dicom Folder',
                         // Used as the label for the link that opens the system file selection dialog.
                         browse: 'browse'
                     }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import * as actions from '../../../actions/TableQuery'
+import { editColumnQuery } from '../../../actions/TableQuery'
 /**
  * Column editor component, for global modification of column
  * (editor component of the table header modifier)
@@ -35,4 +35,8 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, actions)(ColumnEditor)
+const mapDispatchToProps =  {
+  editColumnQuery
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ColumnEditor)

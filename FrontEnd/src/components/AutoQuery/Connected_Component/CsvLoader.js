@@ -3,7 +3,7 @@ import Papa from 'papaparse'
 import moment from 'moment'
 
 import { connect } from 'react-redux'
-import * as actions from '../../../actions/TableQuery'
+import { addQueryToList } from '../../../actions/TableQuery'
 
 class CsvLoader extends Component {
 
@@ -22,8 +22,6 @@ class CsvLoader extends Component {
                 header: true,
                 complete: currentObject.completeFn// base config to use for each file
         })
-
-        this.parseCsv(this.fileInput.current.files[0]);
 
     }
 
@@ -60,10 +58,13 @@ class CsvLoader extends Component {
     }
 }
 
-const mapStateToProps = ( state )=>{
-    return {}
+
+const mapStateToProps = (state) => { return {}  }
+
+const mapDispatchToProps = {
+    addQueryToList
 }
   
-export default connect(mapStateToProps, actions)(CsvLoader);
+export default connect(mapStateToProps, mapDispatchToProps)(CsvLoader);
 
 
