@@ -1,6 +1,7 @@
 Avant Arrivée Sylvain : 
     - Code Refactoring Backend et FrontEnd
     - FrontEnd : Passer les actions en mapdispatchtoprops
+    - FrontEnd : ExportButton , query manuel et authenthication
     - Swagger Documentation
     - Finir Manual Query
         - Redux a faire

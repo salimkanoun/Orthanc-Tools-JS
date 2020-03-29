@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
+
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
-import { connect } from 'react-redux'
 import * as actions from '../../../actions/TableResult'
 
 
