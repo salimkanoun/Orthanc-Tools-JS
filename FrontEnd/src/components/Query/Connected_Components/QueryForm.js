@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import AetButton from '../Components/AetButton'
-import api from '../../../services/aets'
-import * as actions from '../../../actions/OrthancTools'
-
 import { connect } from 'react-redux'
+
+import { loadAvailableAETS } from '../../../actions/OrthancTools'
+
+import AetButton from '../Components/AetButton'
+import apis from '../../../services/apis'
+
 import SelectModalities from '../../AutoQuery/Component/SelectModalities'
 
 class QueryForm extends Component {
@@ -19,7 +21,7 @@ class QueryForm extends Component {
   }
 
   async componentDidMount(){
-    this.props.loadAvailableAETS(await api.getAets())
+    this.props.loadAvailableAETS(await apis.aets.getAets())
   }
 
   /**
@@ -99,10 +101,53 @@ class QueryForm extends Component {
     )
   };
 
-  //SK TODO : LISTENER TO MAKE MANUAL QUERY
   doQueryTo (aet) {
-    console.log(aet)
-    console.log(this.state)
+
+      let dateFrom = this.state.dateFrom
+      let dateTo = this.state.dateTo
+
+      //Prepare Date string for post data
+      let dateString = '*';
+      dateFrom = dateFrom.split('-').join('')
+      dateTo = dateTo.split('-').join('')
+      if (dateFrom !== '' && dateTo !== '') {
+        dateString = dateFrom + '-' + dateTo
+      } else if (dateFrom === '' && dateTo !== '') {
+        dateString = '-' + dateTo
+      }
+
+      let patientName = ''
+
+      let inputLastName = this.state.lastName
+      let inputFirstName = this.state.firstName
+
+      if(inputLastName === '' && inputFirstName !== ''){
+        patientName = '^'+inputFirstName
+      } else if (inputLastName !== '' && inputFirstName === ''){
+        patientName = inputLastName
+      }else{
+        patientName = inputLastName+'^'+inputFirstName
+      }
+    
+      //Prepare POST payload for query (follow Orthanc APIs)
+      let queryPost = {
+        Level: 'Study',
+        Query: {
+          PatientName: patientName,
+          PatientID: this.state.patientId,
+          StudyDate: dateString,
+          ModalitiesInStudy: this.state.modalities,
+          StudyDescription: this.state.studyDescription,
+          AccessionNumber: this.state.accessionNumber,
+          NumberOfStudyRelatedInstances: '',
+          NumberOfStudyRelatedSeries: ''
+        },
+        Normalize : false
+      }
+    
+    let answers = apis.query.dicomQuery(aet,queryPost)
+    //SK ICI A ENVOYER AU REDUCER ET FAIRE CONSOMMER A LA TABLE RESULTS
+    console.log(answers)
     
   }
 
@@ -119,4 +164,8 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, actions)(QueryForm)
+const mapDispatchToProps = {
+  loadAvailableAETS
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(QueryForm)

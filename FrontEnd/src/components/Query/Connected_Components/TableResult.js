@@ -1,41 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
-import { connect } from 'react-redux'
+import * as actions from '../../../actions/TableResult'
+import ExportButton from '../../Export/ExportButton';
 import TableResultSeries from './TableResultSeries'
 
-import * as actions from '../../../actions/TableResult'
-
-
 class TableResult extends Component {
-
-    async getSeriesDetails(studyUID, aet){
-
-        let post = {
-            level : 'Serie',
-            studyUID: studyUID,
-            aet : aet
-        }
-
-        let queryAnswers = await fetch("/api/query",
-        {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(post)
-        }).then((answer)=>{
-          return(answer.json())
-        })
-
-        return queryAnswers
-
-    }
 
     columns = [{
         dataField: 'number',
@@ -94,7 +69,21 @@ class TableResult extends Component {
     }, {
         dataField: 'numberOfSeriesRelatedInstances',
         text: 'Instances'
+    },{
+        dataField: 'studyOrthancID',
+        hidden : true
+    }, {
+        dataField : 'retrieve',
+        text: 'Retrieve'
+    }, {
+        dataField : 'export',
+        text : 'export',
+        formatter : this.exportButton
     }];
+
+    exportButton(cell, row, rowIndex) {
+        return (<ExportButton exportType={ExportButton.HIRACHICAL} orthancIds={ [row.studyOrthancID] }/>)
+    }
 
     expandRow = {
         showExpandColumn: true,

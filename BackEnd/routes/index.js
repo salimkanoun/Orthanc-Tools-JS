@@ -48,16 +48,6 @@ const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authent
  */
 router.post('/authentication', authentication)
 
-// Query, retrieve, job, export routes
-
-// Query Route
-router.post('/modalities/:modality/query', userAuthMidelware, reverseProxyPost)
-router.get('/queries/:orthancIdQuery/answers*', userAuthMidelware, reverseProxyGet)
-// Custom API to get simplified results from Orthanc
-router.get('/queries/:orthancIdQuery/parsedAnswers', userAuthMidelware, getParsedAnswer)
-// Dicom Import Routes
-router.post('/instances', [userAuthMidelware], reverseProxyPostUploadDicom)
-
 router.post('/retrieve', userAuthMidelware, postRetrieve)
 router.get('/jobs/:jobId', userAuthMidelware, getJobData)
 router.post('/export_dicom', userAuthMidelware, postExportDicom)
@@ -70,24 +60,39 @@ router.delete('/robot/:username', userAuthMidelware, deleteRobotJob)
 router.delete('/robot/:username/:index', userAuthMidelware, removeQueryFromJob)
 router.post('/robot/:username/validate', [userAuthMidelware, userAdminMidelware], validateRobotJob)
 
-// Options routes
+// OrthancToolsJS Options routes
 router.get('/options', [userAuthMidelware, userAdminMidelware], getSchedule)
 router.put('/options', [userAuthMidelware, userAdminMidelware], changeSchedule)
-// Orthanc Settings routes
+// OrthancToolsJS Settings routes
 router.get('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], getOrthancServer)
 router.put('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], setOrthancServer)
+
+// Custom API to get simplified results from Orthanc
+router.get('/queries/:orthancIdQuery/parsedAnswers', userAuthMidelware, getParsedAnswer)
+
+// Orthanc Query Routes
+router.post('/modalities/:modality/query', userAuthMidelware, reverseProxyPost)
+router.get('/queries/:orthancIdQuery/answers*', userAuthMidelware, reverseProxyGet)
+
 // Orthanc System API
 router.get('/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 
-// Aets Routes follows Orthanc APIS
+// Orthanc Dicom Import Route
+router.post('/instances', [userAuthMidelware], reverseProxyPostUploadDicom)
+
+// Orthanc Aets Routes
 router.get('/modalities', userAuthMidelware, reverseProxyGet)
 router.get('/modalities*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 router.delete('/modalities/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 router.post('/modalities/:dicom/echo', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
 router.put('/modalities/:dicom/', [[userAuthMidelware, userAdminMidelware]], reverseProxyPut)
 
-// DicomWebRoutes
+// Orthanc DicomWebRoutes
 router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet)
 router.get('/wado/*', [userAuthMidelware], reverseProxyGet)
+
+//Orthanc export routes
+router.post('/tools/create-archive',[userAuthMidelware] , reverseProxyPost )
+router.post('/tools/create-media-extended',[userAuthMidelware] , reverseProxyPost )
 
 module.exports = router
