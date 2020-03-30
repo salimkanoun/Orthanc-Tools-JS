@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { loadAvailableAETS } from '../../../actions/OrthancTools'
+import { addManualQueryStudyResult } from '../../../actions/ManualQuery'
 
 import AetButton from '../Components/AetButton'
 import apis from '../../../services/apis'
@@ -11,7 +12,14 @@ import SelectModalities from '../../AutoQuery/Component/SelectModalities'
 class QueryForm extends Component {
 
   state = {
-    modalities : ''
+    lastName : '',
+    firstName : '',
+    modalities : '',
+    dateFrom : '',
+    dateTo : '',
+    patientId : '',
+    studyDescription : '',
+    accessionNumber : ''
   }
 
   constructor (props) {
@@ -101,7 +109,7 @@ class QueryForm extends Component {
     )
   };
 
-  doQueryTo (aet) {
+  async doQueryTo (aet) {
 
       let dateFrom = this.state.dateFrom
       let dateTo = this.state.dateTo
@@ -125,7 +133,7 @@ class QueryForm extends Component {
         patientName = '^'+inputFirstName
       } else if (inputLastName !== '' && inputFirstName === ''){
         patientName = inputLastName
-      }else{
+      }else if (inputLastName !== '' && inputFirstName !== '') {
         patientName = inputLastName+'^'+inputFirstName
       }
     
@@ -145,7 +153,12 @@ class QueryForm extends Component {
         Normalize : false
       }
     
-    let answers = apis.query.dicomQuery(aet,queryPost)
+    let queryAnswer = await apis.query.dicomQuery(aet,queryPost)
+    let answers = await apis.query.retrieveAnswer(queryAnswer['ID'])
+    answers.forEach((answer)=> {
+      this.props.addManualQueryStudyResult(answer)
+    })
+
     //SK ICI A ENVOYER AU REDUCER ET FAIRE CONSOMMER A LA TABLE RESULTS
     console.log(answers)
     
@@ -165,7 +178,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-  loadAvailableAETS
+  loadAvailableAETS,
+  addManualQueryStudyResult
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(QueryForm)

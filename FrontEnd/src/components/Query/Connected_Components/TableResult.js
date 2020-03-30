@@ -6,7 +6,6 @@ import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-fi
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
-import * as actions from '../../../actions/TableResult'
 import ExportButton from '../../Export/ExportButton';
 import TableResultSeries from './TableResultSeries'
 
@@ -98,7 +97,7 @@ class TableResult extends Component {
         return (
             <ToolkitProvider
                 keyField="key"
-                data={this.props.results.results}
+                data={this.props.results}
                 columns={this.columns}
             >{
                     props => (
@@ -120,8 +119,12 @@ class TableResult extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        results: state.ResultList
+        results: state.ManualQuery.manualQueryResults
     }
 }
 
-export default connect(mapStateToProps, actions)(TableResult);
+const mapDispatchToProps = {
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TableResult);
