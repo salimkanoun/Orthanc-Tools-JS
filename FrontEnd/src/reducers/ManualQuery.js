@@ -10,14 +10,17 @@ export default function manualQueryReducer (state = initialState, action) {
     case ADD_MANUAL_QUERY_RESULT_TO_LIST:
       let maxKey = Math.max.apply(Math, state.manualQueryResults.map(function (query) { return query.key }))
       maxKey = Math.max(0, maxKey)
-      state.manualQueryResults.push({
+      //SK
+      let newState = state.manualQueryResults.slice()
+      newState.push({
         key: (maxKey + 1),
         isRetrieved: false,
         ...action.payload,
+        studyOrthancID : '',
         seriesDetails: []
       })
       return {
-        ...state
+        ...newState
       }
 
     case SET_MANUAL_QUERY_RETRIVE_STATUS_STUDY:

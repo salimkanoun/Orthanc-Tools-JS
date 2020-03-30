@@ -158,9 +158,6 @@ class QueryForm extends Component {
     answers.forEach((answer)=> {
       this.props.addManualQueryStudyResult(answer)
     })
-
-    //SK ICI A ENVOYER AU REDUCER ET FAIRE CONSOMMER A LA TABLE RESULTS
-    console.log(answers)
     
   }
 

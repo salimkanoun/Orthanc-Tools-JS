@@ -12,17 +12,14 @@ import TableResultSeries from './TableResultSeries'
 class TableResult extends Component {
 
     columns = [{
-        dataField: 'number',
-        hidden: true,
-        csvExport: false
+        dataField: 'key',
+        hidden: true
     }, {
         dataField: 'answerId',
-        hidden: true,
-        csvExport: false
+        hidden: true
     }, {
         dataField: 'answerNumber',
-        hidden: true,
-        csvExport: false
+        hidden: true
     }, {
         dataField: 'patientName',
         text: 'Patient Name',
@@ -60,8 +57,7 @@ class TableResult extends Component {
         filter: textFilter()
     }, {
         dataField: 'studyInstanceUID',
-        hidden: true,
-        csvExport: false
+        hidden: true
     }, {
         dataField: 'numberOfStudyRelatedSeries',
         text: 'Series'

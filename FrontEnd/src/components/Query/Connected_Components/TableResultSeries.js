@@ -55,28 +55,22 @@ class TableResultSeries extends Component {
 
     columns = [{
         dataField: 'key',
-        hidden: true,
-        csvExport: false
+        hidden: true
     },{
         dataField: 'level',
-        hidden: true,
-        csvExport: false
+        hidden: true
     }, {
         dataField: 'answerId',
-        hidden: true,
-        csvExport: false
+        hidden: true
     }, {
         dataField: 'answerNumber',
-        hidden: true,
-        csvExport: false
+        hidden: true
     },{
         dataField: 'studyInstanceUID',
-        hidden: true,
-        csvExport: false
+        hidden: true
     }, {
         dataField: 'serieInstanceUID',
-        hidden: true,
-        csvExport: false
+        hidden: true
     }, {
         dataField: 'serieDescription',
         text: 'Serie Description',
