@@ -1,10 +1,10 @@
 Avant Arrivée Sylvain : 
     - Refactor FrontEnd : 
-        - Passer les actions en mapdispatchtoprops
+        - Passer les actions en mapdispatchtoprops => Reste Retrieve button dans manual query
         - Retrieve et Export Button
+        - authenthication
         - query manuel
         - Enlever le selector du level series pour manual query
-        - authenthication
         - Reducer utiliser les splices (array doit etre copiée pour etre détectée)
     - Refactor BackEnd
         - Finir nettoyer routes et controlleurs

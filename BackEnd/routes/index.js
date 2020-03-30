@@ -52,7 +52,7 @@ router.post('/retrieve', userAuthMidelware, postRetrieve)
 router.get('/jobs/:jobId', userAuthMidelware, getJobData)
 router.post('/export_dicom', userAuthMidelware, postExportDicom)
 
-// Robot routes
+// OrthancToolsJS Robot routes
 router.post('/robot', userAuthMidelware, addRobotJob)
 router.get('/robot', userAuthMidelware, getRobotDetails)
 router.get('/robot/:username', userAuthMidelware, getRobotDetails)
@@ -67,7 +67,7 @@ router.put('/options', [userAuthMidelware, userAdminMidelware], changeSchedule)
 router.get('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], getOrthancServer)
 router.put('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], setOrthancServer)
 
-// Custom API to get simplified results from Orthanc
+// OrthancToolsJS API to get simplified results from Orthanc
 router.get('/queries/:orthancIdQuery/parsedAnswers', userAuthMidelware, getParsedAnswer)
 
 // Orthanc Query Routes
