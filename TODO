@@ -1,20 +1,24 @@
 Avant Arrivée Sylvain : 
-    - Code Refactoring Backend et FrontEnd
-    - FrontEnd : Passer les actions en mapdispatchtoprops
-    - FrontEnd : ExportButton , query manuel et authenthication
-    - Swagger Documentation
-    - Finir Manual Query
-        - Redux a faire
-        - Reutiliser la table result study et series et y ajouter les bouttons retrieve
+    - Refactor FrontEnd : 
+        - Passer les actions en mapdispatchtoprops
+        - Retrieve et Export Button
+        - query manuel
+        - Enlever le selector du level series pour manual query
+        - authenthication
+        - Reducer utiliser les splices (array doit etre copiée pour etre détectée)
+    - Refactor BackEnd
+        - Finir nettoyer routes et controlleurs
+        - Swagger Documentation
+        - Test Unitaires
     - Finir implementation level Series retrieve
         - Gerer la selection pour le robot...
         - Filtre sur le niveau Series => Contains et equal sur modality et series description
         - Gerer le robot pour qu'ils traites retrieve au niveau series et study
             - Si une serie est selectionnée alors n'importer que les series selectionnées au lieu de la study
-    - BackEnd Finaliser les tests
 
 Front : 
 - voir ReduxThunk pour stocker de maniere globale les data https://dev.to/markusclaus/fetching-data-from-an-api-using-reactredux-55ao
+    - En fait c'est un middleWare => Potentiellement utile pour passportJS => Voir cours Udemy
 - Faire que le select all select tout les non filtre de toutes les pages ? => difficulté....
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
 - Spliter firstName, LastName dans toutes les tables query / results ?
@@ -34,6 +38,9 @@ Front :
     - AutoQuery : 
         - Nombre limit de query si < limit => Retrieve auto
         - Heure de pause automatique ? (a partir 7h du mat ?)
+
+- Module de Delete ressources d'Orthanc
+    - Comme Anon et Export
 
 - Module Anonymize
     - Faire un robot coté Backend
@@ -63,13 +70,10 @@ Front :
     - Visualisation de Tag ?
     - API statisitics ?
 
-- Module de Delete ressources d'Orthanc
-    - Comme Anon et Export
-
 - options
     - Restart d'orthanc
     - Changer le log level ?
-    - Visualisation et declaration et test connexion de peers
+    - Visualisation et declaration et test connexion de peers => Meme principes que AETs
 
 - Module Disc Producer
 - Module Monotoring

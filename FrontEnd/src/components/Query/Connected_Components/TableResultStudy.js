@@ -52,9 +52,7 @@ class TableResult extends Component {
         filter: textFilter()
     }, {
         dataField: 'originAET',
-        text: 'AET',
-        sort: true,
-        filter: textFilter()
+        hidden: true
     }, {
         dataField: 'studyInstanceUID',
         hidden: true
