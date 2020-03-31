@@ -77,7 +77,7 @@ class Orthanc {
      * @param {String} aet
      */
   async makeDicomQuery (aet) {
-    const answer = await ReverseProxy.getAnswer('/modalities/' + aet + '/query', 'POST', JSON.stringify(this.preparedQuery))
+    const answer = await ReverseProxy.getAnswer('/modalities/' + aet + '/query', 'POST', this.preparedQuery)
 
     if (this.preparedQuery.Level === 'Study') {
       return this.getStudyAnswerDetails(answer.ID, aet)
@@ -214,7 +214,7 @@ class Orthanc {
       TargetAet: aet
     }
 
-    const answer = await ReverseProxy.getAnswer('/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', 'POST', JSON.stringify(postData))
+    const answer = await ReverseProxy.getAnswer('/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', 'POST', postData)
 
     return answer
   }

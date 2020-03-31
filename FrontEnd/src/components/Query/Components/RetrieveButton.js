@@ -22,9 +22,9 @@ export default class RetrieveButton extends Component {
 
   getClassFromStatus() {
     if (this.state.status === 'Idle') return 'btn btn-info btn-large'
-    else if (this.state.status === 'Running' || this.state.status === 'Pending') return 'btn btn-warning btn-large'
-    else if (this.state.status === 'Success') return 'btn btn-success btn-large'
-    else if (this.state.status === 'Failure') return 'btn btn-error btn-large'
+    else if (this.state.status === RetrieveButton.Pending ) return 'btn btn-warning btn-large'
+    else if (this.state.status === RetrieveButton.Success ) return 'btn btn-success btn-large'
+    else if (this.state.status === RetrieveButton.Failure ) return 'btn btn-error btn-large'
   }
 
   render() {
@@ -41,17 +41,17 @@ export default class RetrieveButton extends Component {
     let queryAet = this.props.queryAet
 
     this.setState({
-      status: 'Pending'
+      status: RetrieveButton.Pending
     })
 
     const postData = {}
 
     if( level ===  RetrieveButton.Study ){
-      postData.seriesInstanceUID = uid
+      postData.studyInstanceUID = uid
       postData.aet = queryAet
 
     } else if ( level === RetrieveButton.Series ){
-      postData.studyInstanceUID = uid
+      postData.seriesInstanceUID = uid
       postData.aet = queryAet
     }
 
@@ -68,14 +68,14 @@ export default class RetrieveButton extends Component {
     clearInterval(this.intervalChcker)
   }
 
-  jobMonitoring(jobUID) {
-    const jobData = apis.jobs.getJobData(jobUID)
+  async jobMonitoring(jobUID) {
+    const jobData = await apis.jobs.getJobInfos(jobUID)
     const currentStatus = jobData.State
     this.setState({
       status: currentStatus
     })
 
-    if (currentStatus === 'Success' || currentStatus === 'Failure') {
+    if (currentStatus === RetrieveButton.Success || currentStatus === RetrieveButton.Failure ) {
       this.stopMonitoringJob()
     }
 
@@ -85,3 +85,7 @@ export default class RetrieveButton extends Component {
 
 RetrieveButton.Study = 0
 RetrieveButton.Series = 1
+
+RetrieveButton.Success = 'Success'
+RetrieveButton.Failure = 'Failure'
+RetrieveButton.Pending = 'Pending'

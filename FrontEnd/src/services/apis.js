@@ -4,6 +4,7 @@ import queryRobot from './queryRobot'
 import query from './query'
 import jobs from './jobs'
 import retrieve from './retrieve'
+import exportDicom from './exportDicom'
 
 export default {
   aets,
@@ -11,5 +12,6 @@ export default {
   queryRobot,
   query,
   jobs,
-  retrieve
+  retrieve,
+  exportDicom
 }

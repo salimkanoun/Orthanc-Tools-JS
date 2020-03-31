@@ -23,7 +23,7 @@ export default class ExportButton extends Component {
 
   async doExport() {
     if (this.props.exportType === ExportButton.HIRACHICAL) {
-      apis.export.exportHirachicalDicoms(this.props.orthancIds)
+      apis.exportDicom.exportHirachicalDicoms(this.props.orthancIds)
 
     } else if (this.props.exportType === ExportButton.DICOMDIR) {
 
