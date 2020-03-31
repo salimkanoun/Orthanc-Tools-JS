@@ -9,17 +9,20 @@ export default function queryListReducer (state = initialState, action) {
     case ADD_QUERY_TO_LIST:
       let maxKey = Math.max.apply(Math, state.queries.map(function (query) { return query.key }))
       maxKey = Math.max(0, maxKey)
-      state.queries.push({
+      let queriesListCopy = [...state.queries]
+      queriesListCopy.push({
         key: (maxKey + 1),
         ...action.payload
       })
       return {
-        ...state
+        ...state,
+        queries : queriesListCopy
       }
     case ADD_EMPTY_QUERY:
       let maxKey2 = Math.max.apply(Math, state.queries.map(function (query) { return query.key }))
       maxKey2 = Math.max(0, maxKey2)
-      state.queries.push({
+      let queriesCopy = [...state.queries]
+      queriesCopy.push({
         key: (maxKey2 + 1),
         patientName: '',
         patientId: '',
@@ -32,7 +35,8 @@ export default function queryListReducer (state = initialState, action) {
 
       })
       return {
-        ...state
+        ...state,
+        queries : queriesCopy
       }
     case REMOVE_QUERY:
       const removedLines = action.payload
