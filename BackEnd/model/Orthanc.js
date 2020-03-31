@@ -54,7 +54,6 @@ class Orthanc {
         NumberOfStudyRelatedInstances: '',
         NumberOfStudyRelatedSeries: ''
       }
-
     }
   }
 
@@ -69,8 +68,7 @@ class Orthanc {
         StudyInstanceUID: studyUID,
         SeriesNumber: seriesNumber,
         NumberOfSeriesRelatedInstances: ''
-      },
-      Normalize: false
+      }
     }
   }
 

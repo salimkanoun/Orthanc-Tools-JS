@@ -7,6 +7,7 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { addManualQuerySeriesDetails } from '../../../actions/ManualQuery'
 
 import apis from '../../../services/apis'
+import RetrieveButton from '../Components/RetrieveButton';
 
 
 class TableResultSeries extends Component {
@@ -87,7 +88,15 @@ class TableResultSeries extends Component {
     }, {
         dataField: 'numberOfSeriesRelatedInstances',
         text: 'Instances'
+    }, {
+        dataField : 'retrieve',
+        text: 'Retrieve',
+        formatter : this.retrieveButton
     }];
+
+    retrieveButton(cell, row, rowIndex){
+        return (<RetrieveButton queryAet={row.originAET} uid={row.serieInstanceUID} level={RetrieveButton.Series} />)
+    }
 
     render() {
 

@@ -8,6 +8,7 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
 import ExportButton from '../../Export/ExportButton';
 import TableResultSeries from './TableResultSeries'
+import RetrieveButton from '../Components/RetrieveButton';
 
 class TableResult extends Component {
 
@@ -67,7 +68,8 @@ class TableResult extends Component {
         hidden : true
     }, {
         dataField : 'retrieve',
-        text: 'Retrieve'
+        text: 'Retrieve',
+        formatter : this.retrieveButton
     }, {
         dataField : 'export',
         text : 'export',
@@ -76,6 +78,10 @@ class TableResult extends Component {
 
     exportButton(cell, row, rowIndex) {
         return (<ExportButton exportType={ExportButton.HIRACHICAL} orthancIds={ [row.studyOrthancID] }/>)
+    }
+
+    retrieveButton(cell, row, rowIndex){
+        return (<RetrieveButton queryAet={row.originAET} uid={row.studyInstanceUID} level={RetrieveButton.Study} />)
     }
 
     expandRow = {

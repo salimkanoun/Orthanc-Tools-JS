@@ -1,5 +1,6 @@
 var Orthanc = require('../model/Orthanc')
 
+//SK A FAIRE EVOLUER VERS UN EXPORT DICOM TO BACKEND
 var postExportDicom = async function (req, res) {
   const body = req.body
   var orthancInstance = new Orthanc()

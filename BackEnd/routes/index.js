@@ -10,7 +10,6 @@ const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyDelete } = require('../controllers/reverseProxy')
 
 // SK Probalement a enlenver ne passer que par le reverse proxy
-const { getJobData } = require('../controllers/jobDetails')
 const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
 
@@ -49,8 +48,9 @@ const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authent
 router.post('/authentication', authentication)
 
 router.post('/retrieve', userAuthMidelware, postRetrieve)
-router.get('/jobs/:jobId', userAuthMidelware, getJobData)
-router.post('/export_dicom', userAuthMidelware, postExportDicom)
+
+//OrthancToolsJS export to backend => SK A VOIR
+router.post('/tools/orthanc-tools-js/create-archive', userAuthMidelware, postExportDicom)
 
 // OrthancToolsJS Robot routes
 router.post('/robot', userAuthMidelware, addRobotJob)
@@ -79,6 +79,9 @@ router.get('/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 
 // Orthanc Dicom Import Route
 router.post('/instances', [userAuthMidelware], reverseProxyPostUploadDicom)
+
+// Orthanc Job API
+router.get('/jobs/*', userAuthMidelware, reverseProxyGet)
 
 // Orthanc Aets Routes
 router.get('/modalities', userAuthMidelware, reverseProxyGet)

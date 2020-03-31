@@ -122,6 +122,8 @@ class QueryForm extends Component {
         dateString = dateFrom + '-' + dateTo
       } else if (dateFrom === '' && dateTo !== '') {
         dateString = '-' + dateTo
+      } else if (dateFrom !== '' && dateTo === ''){
+        dateString = dateFrom + '-'
       }
 
       let patientName = ''
