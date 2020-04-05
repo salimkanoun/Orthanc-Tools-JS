@@ -14,13 +14,13 @@ class OrthancPatient {
      * @param {function()} returnCallBack
      */
   fillDetails () {
-    const orthancPatientInstance = this
+    const self = this
     return this.orthancInstance.getOrthancDetails('patients', this.patientOrthancID).then(function (answer) {
       for (const element in answer) {
-        orthancPatientInstance[element] = answer[element]
-      };
-      orthancPatientInstance.getStudies()
-      return orthancPatientInstance
+        self[element] = answer[element]
+      }
+      self.getStudies()
+      return self
     }).catch((error) => { console.log('Error getting patient details ' + error) })
   }
 
@@ -48,10 +48,10 @@ class OrthancPatient {
      * Store references of child Study object
      */
   getStudies () {
-    const orthancPatientInstance = this
+    const self = this
     const studiesObjects = []
     this.Studies.forEach(element => {
-      studiesObjects.push(new OrthancStudy(element, orthancPatientInstance.orthancInstance))
+      studiesObjects.push(new OrthancStudy(element, self.orthancInstance))
     })
     this.studiesObjects = studiesObjects
   }

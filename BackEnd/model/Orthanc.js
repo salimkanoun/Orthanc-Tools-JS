@@ -8,20 +8,24 @@ const ReverseProxy = require('./ReverseProxy')
  * Orthanc object to communications with orthanc server
  */
 class Orthanc {
+
+  /**
+   * Return AET Name of the Orthanc Server
+   */
   async getOrthancAetName () {
     const systemAnswer = await ReverseProxy.getAnswer('/system', 'GET', undefined)
     return systemAnswer.DicomAet
   }
 
-  /**
-     * Export an orthanc ressource to Export folder in hierachical ZIP
-     * @param {array} orthancIds
-     * @param {string} filename
-     */
+   /**
+    * Export an orthanc ressource to Export folder in hierachical ZIP
+    * @param {Array} orthancIds 
+    * @param {string} filename without extension
+    */
   exportArchiveDicom (orthancIds, filename) {
     const destination = './data/export_dicom/' + filename + '.zip'
     const streamWriter = fs.createWriteStream(destination)
-    ReverseProxy.streamToFile('/tools/create-archive', 'POST', JSON.stringify(orthancIds), streamWriter)
+    ReverseProxy.streamToFile('/tools/create-archive', 'POST', orthancIds, streamWriter)
   }
 
   /**
@@ -73,7 +77,7 @@ class Orthanc {
   }
 
   /**
-     * Make Query on AET an return response path location
+     * Make Query on AET an return response a parsed answer
      * @param {String} aet
      */
   async makeDicomQuery (aet) {
@@ -364,11 +368,12 @@ class Orthanc {
       }
     })
 
-    return JSON.stringify(anonParameters)
+    return anonParameters
   }
 
   async makeAnon (level, orthancID, profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription) {
-    const answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID + '/anonymize', 'POST', self.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription))
+    let postData = this.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription);
+    const answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID + '/anonymize', 'POST', postData )
     return answer
   }
 }

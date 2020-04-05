@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import apis from '../../services/apis'
 
-
 /**
  * Export Button to retrieve Orthanc Ressources to client
  * Props : 
- * exportType (see class constant)
- * orthancIds : array of OrthancIDs to be exported
+ *  exportType (see ExportButton constants)
+ *  orthancIds : array of OrthancIDs to be exported
  */
 export default class ExportButton extends Component {
+
   constructor(props) {
     super(props)
     this.doExport = this.doExport.bind(this)
@@ -22,17 +22,20 @@ export default class ExportButton extends Component {
   }
 
   async doExport() {
+
     if (this.props.exportType === ExportButton.HIRACHICAL) {
+
       apis.exportDicom.exportHirachicalDicoms(this.props.orthancIds)
 
     } else if (this.props.exportType === ExportButton.DICOMDIR) {
+
+      apis.exportDicom.exportDicomDirDicoms(this.props.orthancIds)
 
     }
 
   }
 
 }
-
 
 ExportButton.HIRACHICAL = 0
 ExportButton.DICOMDIR = 1

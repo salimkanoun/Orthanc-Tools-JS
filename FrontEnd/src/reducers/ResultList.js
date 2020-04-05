@@ -18,14 +18,16 @@ export default function retrieveListReducer (state = initialState, action) {
     case ADD_RESULT_TO_LIST:
       let maxKey = Math.max.apply(Math, state.results.map(function (query) { return query.key }))
       maxKey = Math.max(0, maxKey)
-      state.results.push({
+      let resultsCopy = [...state.results]
+      resultsCopy.push({
         key: (maxKey + 1),
         isRetrieved: false,
         ...action.payload,
         seriesDetails: []
       })
       return {
-        ...state
+        ...state,
+        results : resultsCopy
       }
     case SET_RETRIVE_STATUS_STUDY:
       for (const i in state.results) {
@@ -34,8 +36,10 @@ export default function retrieveListReducer (state = initialState, action) {
           break
         }
       }
+      let resultsCopy2 = [...state.results]
       return {
-        ...state
+        ...state,
+        results : resultsCopy2
       }
     case SET_RETRIEVE_STATUS_SERIES:
       const newResultArray = state.results.map((studyData) => {

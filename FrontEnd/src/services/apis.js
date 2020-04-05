@@ -5,6 +5,7 @@ import query from './query'
 import jobs from './jobs'
 import retrieve from './retrieve'
 import exportDicom from './exportDicom'
+import authentication from './authentication'
 
 export default {
   aets,
@@ -13,5 +14,6 @@ export default {
   query,
   jobs,
   retrieve,
-  exportDicom
+  exportDicom,
+  authentication
 }

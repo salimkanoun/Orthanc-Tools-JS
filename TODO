@@ -1,14 +1,14 @@
 Avant Arrivée Sylvain : 
-    - Refactor FrontEnd : 
-        - Retrieve et Export Button
-        - authenthication
-        - query manuel
-        - Enlever le selector du level series pour manual query => a voir ou faire un retrieve global ?
-        - Reducer utiliser les splices (array doit etre copiée pour etre détectée) => Reste la result table autoQuery
     - Refactor BackEnd
         - Finir nettoyer routes et controlleurs
         - Swagger Documentation
         - Test Unitaires
+            - Model Orthanc
+            - Model Retrive Robot (a voir)
+            - Reverse Proxy
+            - Robot Job (à voir)
+            - User (à voir, probablement passer en integration)
+            - Routes / controllers ?
     - Finir implementation level Series retrieve
         - Gerer la selection pour le robot...
         - Filtre sur le niveau Series => Contains et equal sur modality et series description
@@ -18,7 +18,7 @@ Avant Arrivée Sylvain :
 Front : 
 - voir ReduxThunk pour stocker de maniere globale les data https://dev.to/markusclaus/fetching-data-from-an-api-using-reactredux-55ao
     - En fait c'est un middleWare => Potentiellement utile pour passportJS => Voir cours Udemy
-- Faire que le select all select tout les non filtre de toutes les pages ? => difficulté....
+- Faire que le select all select tous les non filtre de toutes les pages ? => difficulté....
 - Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
 - Spliter firstName, LastName dans toutes les tables query / results ?
 
@@ -34,6 +34,9 @@ Front :
     -   Fonction Pause 
 
 - Settings
+    - Restart d'orthanc
+    - Changer le log level ?
+    - Visualisation et declaration et test connexion de peers => Meme principes que AETs
     - AutoQuery : 
         - Nombre limit de query si < limit => Retrieve auto
         - Heure de pause automatique ? (a partir 7h du mat ?)
@@ -58,10 +61,6 @@ Front :
     - Vers AET (quid storage commitment)
     - Sous module share vers FTP, SFTP, GaelO, Orthanc Peer ? 
 
-- Module Import d'image
-    - Montrer resultat de upload
-        - Probablement meme composant que listing content orthanc
-
 - Module Exploration Contenu d'Orthanc
     - GUI a reflechir
     - Modification de ressources
@@ -69,19 +68,19 @@ Front :
     - Visualisation de Tag ?
     - API statisitics ?
 
-- options
-    - Restart d'orthanc
-    - Changer le log level ?
-    - Visualisation et declaration et test connexion de peers => Meme principes que AETs
+- Module Import d'image
+    - Montrer resultat de upload
+        - Probablement meme composant que listing content orthanc
 
 - Module Disc Producer
+
 - Module Monotoring
     - Prefetching
     - Database tag monitoring
     - Dicom Routing?
 
 
-+ tard  : 
++ tard : 
     - historique des query dans BDD pour relancer une ancienne requete
 
 Back :

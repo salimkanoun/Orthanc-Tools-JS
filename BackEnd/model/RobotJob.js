@@ -1,7 +1,7 @@
 const RetrieveItem = require('./RetrieveItem')
 
 class RobotJob {
-  constructor (username, projectName = ['N/A']) {
+  constructor (username, projectName) {
     this.username = username
     this.projectName = projectName
     this.retrieveList = []

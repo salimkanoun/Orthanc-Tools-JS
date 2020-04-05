@@ -3,21 +3,22 @@ import apis from '../../../services/apis'
 
 /**
  * Retrieve Button
- * Click start the retrieve process of a ressource (study or series identified by UID)
+ * Click starts the retrieve process of a ressource (study or series identified by UID)
  * Color of button change with retrieve status (embedded monitoring of job retrieve)
  * Props : 
- * level (see static variable)
- * uid (series ou study instance uid)
- * queryAet (source of retrieve)
+ *  level (see static variable)
+ *  uid (series ou study instance uid)
+ *  queryAet (source of retrieve)
  */
 export default class RetrieveButton extends Component {
+
+  state = {
+    status: 'Idle'
+  }
 
   constructor(props) {
     super(props)
     this.doRetrieve = this.doRetrieve.bind(this)
-    this.state = {
-      status: 'Idle'
-    }
   }
 
   getClassFromStatus() {
@@ -60,17 +61,30 @@ export default class RetrieveButton extends Component {
     this.startMonitoringJob(jobUID)
   }
 
+  /**
+   * Start monitoring of job by looping on jobMonitoring every 2 seconds
+   * @param {string} jobUID 
+   */
   startMonitoringJob(jobUID) {
     this.intervalChcker = setInterval(() => this.jobMonitoring(jobUID), 2000)
   }
 
+  /**
+   * End the monitoring loop
+   */
   stopMonitoringJob() {
     clearInterval(this.intervalChcker)
   }
 
+  /**
+   * Check the job progression, when job finished, stop the monitoring loop
+   * @param {string} jobUID 
+   */
   async jobMonitoring(jobUID) {
+
     const jobData = await apis.jobs.getJobInfos(jobUID)
     const currentStatus = jobData.State
+
     this.setState({
       status: currentStatus
     })
