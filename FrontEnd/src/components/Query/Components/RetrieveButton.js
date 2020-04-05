@@ -1,91 +1,105 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import * as actions from '../../../actions/TableResult'
+import apis from '../../../services/apis'
 
-class RetrieveButton extends Component {
-  constructor (props) {
+/**
+ * Retrieve Button
+ * Click starts the retrieve process of a ressource (study or series identified by UID)
+ * Color of button change with retrieve status (embedded monitoring of job retrieve)
+ * Props : 
+ *  level (see static variable)
+ *  uid (series ou study instance uid)
+ *  queryAet (source of retrieve)
+ */
+export default class RetrieveButton extends Component {
+
+  state = {
+    status: 'Idle'
+  }
+
+  constructor(props) {
     super(props)
     this.doRetrieve = this.doRetrieve.bind(this)
-    this.state = {
-      status: 'Idle'
-    }
   }
 
-  // SK STATUS DOIT ETRE GERER DANS REDUX !
-  getClassFromStatus () {
+  getClassFromStatus() {
     if (this.state.status === 'Idle') return 'btn btn-info btn-large'
-    else if (this.state.status === 'Running' || this.state.status === 'Pending') return 'btn btn-warning btn-large'
-    else if (this.state.status === 'Success') return 'btn btn-success btn-large'
-    else if (this.state.status === 'Failure') return 'btn btn-error btn-large'
+    else if (this.state.status === RetrieveButton.Pending ) return 'btn btn-warning btn-large'
+    else if (this.state.status === RetrieveButton.Success ) return 'btn btn-success btn-large'
+    else if (this.state.status === RetrieveButton.Failure ) return 'btn btn-error btn-large'
   }
 
-  render () {
+  render() {
     const classNameValue = this.getClassFromStatus()
     return (<div className='col-sm'>
       <input type='button' className={classNameValue} onClick={this.doRetrieve} value='Retrieve' />
     </div>)
   }
 
-  async doRetrieve () {
-    const rowData = this.props.rowData
+  async doRetrieve() {
+
+    let level = this.props.level
+    let uid = this.props.uid
+    let queryAet = this.props.queryAet
 
     this.setState({
-      status: 'Pending'
+      status: RetrieveButton.Pending
     })
 
-    const postData = {
-      queryID: rowData.answerId,
-      answerNumber: rowData.answerNumber
+    const postData = {}
+
+    if( level ===  RetrieveButton.Study ){
+      postData.studyInstanceUID = uid
+      postData.aet = queryAet
+
+    } else if ( level === RetrieveButton.Series ){
+      postData.seriesInstanceUID = uid
+      postData.aet = queryAet
     }
 
-    const jobUid = await fetch('/api/retrieve',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(postData)
-      }).then((response) => { return response.json() })
+    let jobUID = await apis.retrieve.retrieveByUID(postData)
 
-    this.monitorJob(jobUid)
+    this.startMonitoringJob(jobUID)
   }
 
-  async monitorJob (jobUid) {
-    const currentComponent = this
-    let intervalChcker
+  /**
+   * Start monitoring of job by looping on jobMonitoring every 2 seconds
+   * @param {string} jobUID 
+   */
+  startMonitoringJob(jobUID) {
+    this.intervalChcker = setInterval(() => this.jobMonitoring(jobUID), 2000)
+  }
 
-    const getJobData = async function () {
-      const jobData = await fetch('/api/jobs/' + jobUid, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }).then((response) => { return response.json() })
+  /**
+   * End the monitoring loop
+   */
+  stopMonitoringJob() {
+    clearInterval(this.intervalChcker)
+  }
 
-      const currentStatus = jobData.State
+  /**
+   * Check the job progression, when job finished, stop the monitoring loop
+   * @param {string} jobUID 
+   */
+  async jobMonitoring(jobUID) {
 
-      currentComponent.setState({
-        status: currentStatus
-      })
+    const jobData = await apis.jobs.getJobInfos(jobUID)
+    const currentStatus = jobData.State
 
-      if (currentStatus === 'Success' || currentStatus === 'Failure') {
-        clearInterval(intervalChcker)
-        if (currentStatus === 'Success') {
-          currentComponent.props.setRetrieveStatus(currentComponent.props.rowData, true)
-        }
-      }
+    this.setState({
+      status: currentStatus
+    })
+
+    if (currentStatus === RetrieveButton.Success || currentStatus === RetrieveButton.Failure ) {
+      this.stopMonitoringJob()
     }
 
-    intervalChcker = setInterval(getJobData, 2000)
   }
+
 }
 
-const mapStateToProps = (state) => {
-  return {
-    results: state.resultList
-  }
-}
+RetrieveButton.Study = 0
+RetrieveButton.Series = 1
 
-export default connect(mapStateToProps, actions)(RetrieveButton)
+RetrieveButton.Success = 'Success'
+RetrieveButton.Failure = 'Failure'
+RetrieveButton.Pending = 'Pending'

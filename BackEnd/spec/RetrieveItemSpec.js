@@ -1,10 +1,17 @@
 const RetrieveItem = require('../model/RetrieveItem')
 
 describe('Testing Retrieve Item', () => {
+
   const retrieveItem = new RetrieveItem('study', 'Name', 'id', '20180101', 'CT', 'Description', 'Accession', 'uid', 'self')
 
-  it('should create Retrieve Item', async () => {
+  it('should create Retrieve Item', () => {
     expect(retrieveItem).toBeInstanceOf(RetrieveItem)
+  })
+
+  it('should set item validated', () => {
+    expect(retrieveItem.validated).toBe(false)
+    retrieveItem.setValidated()
+    expect(retrieveItem.validated).toBe(true)
   })
 
   it('should change retrieve status', () => {
@@ -40,7 +47,9 @@ describe('Testing Retrieve Item', () => {
       numberOfSeries: 6,
       numberOfInstances: 15,
       aet: 'self',
-      status: RetrieveItem.STATUS_RETRIVING
+      validated : true,
+      status: RetrieveItem.STATUS_RETRIVING,
+      retrievedOrthancId : '123456789'
     })
   })
 })

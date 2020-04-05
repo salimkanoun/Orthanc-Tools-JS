@@ -3,7 +3,8 @@ const RetrieveItem = require('../model/RetrieveItem')
 
 describe('Testing Robot Job Creation', () => {
   let robotJob = null
-  it('should create Robot', async () => {
+
+  it('should create Robot', () => {
     robotJob = new RobotJob('test', 'testJob')
     expect(robotJob).toBeInstanceOf(RobotJob)
   })

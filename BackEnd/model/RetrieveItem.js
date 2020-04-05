@@ -13,6 +13,7 @@ class RetrieveItem {
     this.numberOfSeries = 0
     this.numberOfInstances = 0
     this.status = RetrieveItem.STATUS_IDLE
+    this.retrievedOrthancId = null
   }
 
   setValidated () {
@@ -63,7 +64,9 @@ class RetrieveItem {
       studyInstanceUID: this.studyInstanceUID,
       numberOfSeries: this.numberOfSeries,
       numberOfInstances: this.numberOfInstances,
+      validated : this.validated,
       aet: this.aet,
+      retrievedOrthancId : this.retrievedOrthancId,
       status: this.status
     }
   }

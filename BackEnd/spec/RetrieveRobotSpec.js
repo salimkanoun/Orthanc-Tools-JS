@@ -1,4 +1,5 @@
 const RetrieveRobot = require('../model/RetrieveRobot')
+const Options = require('../model/Options')
 const RobotJob = require('../model/RobotJob')
 const Orthanc = require('../model/Orthanc')
 const QueryAnswer = require('../model/queries-answer/QueryStudyAnswer')
@@ -35,6 +36,12 @@ describe('Retrieve Robot', () => {
 
     // Add job to robot
     retrieveRobot.addRobotJob(robotJob)
+  })
+
+  it('should get schedule from options', async ()=>{
+    var optionGetSpy = spyOn(Options, 'getOptions').and.returnValue({hour:22, min:00})
+    expect( await retrieveRobot.getScheduleTimeFromOptions() ).toEqual({hour:22, min:00})
+    expect(optionGetSpy).toHaveBeenCalledTimes(1)
   })
 
   it('should have 2 items in job', () => {

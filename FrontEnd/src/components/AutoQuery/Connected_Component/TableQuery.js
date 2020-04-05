@@ -8,7 +8,7 @@ import cellEditFactory, { Type } from 'react-bootstrap-table2-editor'
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
 import ColumnEditor from './ColumnEditor'
-import { removeQuery, emptyQueryTable } from '../../../actions/TableQuery'
+import { removeQuery, emptyQueryTable, addRow } from '../../../actions/TableQuery'
 import { addStudyResult } from '../../../actions/TableResult'
 import { loadAvailableAETS } from '../../../actions/OrthancTools'
 import CsvLoader from './CsvLoader'
@@ -234,6 +234,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   loadAvailableAETS,
+  addRow,
   removeQuery,
   emptyQueryTable,
   addStudyResult,

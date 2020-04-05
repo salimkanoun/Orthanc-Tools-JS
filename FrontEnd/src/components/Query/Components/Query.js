@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react'
 import QueryForm from '../Connected_Components/QueryForm'
-import TableResult from '../Connected_Components/TableResult'
+import TableResultStudy from '../Connected_Components/TableResultStudy'
 
 export default function Query () {
   return (
     <Fragment>
       <QueryForm />
-      <TableResult />
+      <TableResultStudy />
     </Fragment>
   )
 }

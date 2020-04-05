@@ -1,54 +1,26 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
-import { connect } from 'react-redux'
+import ExportButton from '../../Export/ExportButton';
 import TableResultSeries from './TableResultSeries'
-
-import * as actions from '../../../actions/TableResult'
-
+import RetrieveButton from '../Components/RetrieveButton';
 
 class TableResult extends Component {
 
-    async getSeriesDetails(studyUID, aet){
-
-        let post = {
-            level : 'Serie',
-            studyUID: studyUID,
-            aet : aet
-        }
-
-        let queryAnswers = await fetch("/api/query",
-        {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(post)
-        }).then((answer)=>{
-          return(answer.json())
-        })
-
-        return queryAnswers
-
-    }
-
     columns = [{
-        dataField: 'number',
-        hidden: true,
-        csvExport: false
+        dataField: 'key',
+        hidden: true
     }, {
         dataField: 'answerId',
-        hidden: true,
-        csvExport: false
+        hidden: true
     }, {
         dataField: 'answerNumber',
-        hidden: true,
-        csvExport: false
+        hidden: true
     }, {
         dataField: 'patientName',
         text: 'Patient Name',
@@ -81,20 +53,36 @@ class TableResult extends Component {
         filter: textFilter()
     }, {
         dataField: 'originAET',
-        text: 'AET',
-        sort: true,
-        filter: textFilter()
+        hidden: true
     }, {
         dataField: 'studyInstanceUID',
-        hidden: true,
-        csvExport: false
+        hidden: true
     }, {
         dataField: 'numberOfStudyRelatedSeries',
         text: 'Series'
     }, {
         dataField: 'numberOfSeriesRelatedInstances',
         text: 'Instances'
+    },{
+        dataField: 'studyOrthancID',
+        hidden : true
+    }, {
+        dataField : 'retrieve',
+        text: 'Retrieve',
+        formatter : this.retrieveButton
+    }, {
+        dataField : 'export',
+        text : 'export',
+        formatter : this.exportButton
     }];
+
+    exportButton(cell, row, rowIndex) {
+        return (<ExportButton exportType={ExportButton.HIRACHICAL} orthancIds={ [row.studyOrthancID] }/>)
+    }
+
+    retrieveButton(cell, row, rowIndex){
+        return (<RetrieveButton queryAet={row.originAET} uid={row.studyInstanceUID} level={RetrieveButton.Study} />)
+    }
 
     expandRow = {
         showExpandColumn: true,
@@ -109,7 +97,7 @@ class TableResult extends Component {
         return (
             <ToolkitProvider
                 keyField="key"
-                data={this.props.results.results}
+                data={this.props.results}
                 columns={this.columns}
             >{
                     props => (
@@ -131,8 +119,12 @@ class TableResult extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        results: state.ResultList
+        results: state.ManualQuery.manualQueryResults
     }
 }
 
-export default connect(mapStateToProps, actions)(TableResult);
+const mapDispatchToProps = {
+
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TableResult);

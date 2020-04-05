@@ -1,48 +1,42 @@
-import { SET_RETRIEVE_STATUS_SERIES, REMOVE_RESULT, ADD_RESULT_TO_LIST, SET_RETRIVE_STATUS_STUDY, EMPTY_RESULTS, ADD_SERIES_DETAILS } from '../actions/actions-types'
+import { SET_MANUAL_QUERY_RETRIEVE_STATUS_SERIES, ADD_MANUAL_QUERY_RESULT_TO_LIST, SET_MANUAL_QUERY_RETRIVE_STATUS_STUDY, ADD_MANUAL_QUERY_SERIES_DETAILS } from '../actions/actions-types'
 
 const initialState = {
-  results: []
+  manualQueryResults: []
 }
 
-export default function retrieveListReducer (state = initialState, action) {
+export default function manualQueryReducer (state = initialState, action) {
   switch (action.type) {
-    case REMOVE_RESULT :
-      const removedLines = action.payload
-      const newResults = state.results.filter(function (results) {
-        return !removedLines.includes(results.key)
-      })
-      return {
-        ...state,
-        results: newResults
-      }
-    case ADD_RESULT_TO_LIST:
-      let maxKey = Math.max.apply(Math, state.results.map(function (query) { return query.key }))
+
+    case ADD_MANUAL_QUERY_RESULT_TO_LIST:
+      let maxKey = Math.max.apply(Math, state.manualQueryResults.map(function (query) { return query.key }))
       maxKey = Math.max(0, maxKey)
-      let resultsCopy = [...state.results]
-      resultsCopy.push({
+      //SK
+      let newResults = state.manualQueryResults.slice()
+      newResults.push({
         key: (maxKey + 1),
         isRetrieved: false,
         ...action.payload,
+        studyOrthancID : '',
         seriesDetails: []
       })
       return {
         ...state,
-        results : resultsCopy
+        manualQueryResults: newResults
       }
-    case SET_RETRIVE_STATUS_STUDY:
-      for (const i in state.results) {
+
+    case SET_MANUAL_QUERY_RETRIVE_STATUS_STUDY:
+      for (const i in state.manualQueryResults) {
         if (state.results[i].key === action.payload.key) {
           state.results[i].isRetrieved = action.payload.isRetrieved
           break
         }
       }
-      let resultsCopy2 = [...state.results]
       return {
-        ...state,
-        results : resultsCopy2
+        ...state
       }
-    case SET_RETRIEVE_STATUS_SERIES:
-      const newResultArray = state.results.map((studyData) => {
+
+    case SET_MANUAL_QUERY_RETRIEVE_STATUS_SERIES:
+      const newResultArray = state.manualQueryResults.map((studyData) => {
         if (studyData.studyInstanceUID === action.payload.row.studyInstanceUID) {
           studyData.seriesDetails.forEach((serieDetails) => {
             if (serieDetails.serieInstanceUID === action.payload.row.serieInstanceUID) {
@@ -54,22 +48,17 @@ export default function retrieveListReducer (state = initialState, action) {
       })
       return {
         ...state,
-        results: newResultArray
-      }
-    case EMPTY_RESULTS :
-      return {
-        ...state,
-        results: []
+        manualQueryResults: newResultArray
       }
 
-    case ADD_SERIES_DETAILS :
+    case ADD_MANUAL_QUERY_SERIES_DETAILS :
       const seriesDetails = action.payload.seriesDetails
       seriesDetails.forEach((serieItem) => {
         serieItem.isRetrieved = false
         serieItem.key = Math.random()
       })
 
-      const newResultsState = state.results.map((studyData) => {
+      const newResultsState = state.manualQueryResults.map((studyData) => {
         if (studyData.studyInstanceUID === action.payload.studyInstanceUID) {
           studyData = {
             ...studyData,
@@ -81,7 +70,7 @@ export default function retrieveListReducer (state = initialState, action) {
 
       return {
         ...state,
-        results: newResultsState
+        manualQueryResults: newResultsState
       }
 
     default :

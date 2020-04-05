@@ -3,6 +3,9 @@ const Configstore = require('configstore')
 const packageJson = require('../package.json')
 const config = new Configstore(packageJson.name, { OrthancAddress: 'http://localhost', OrthancPort: 8042 })
 
+/**
+ * Update and read configuration data from database or config store
+ */
 const Options = {
 
   getOptions: async () => {

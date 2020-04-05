@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
+import apis from '../services/apis'
 
 export default class Authentication extends Component {
 
@@ -18,40 +19,32 @@ export default class Authentication extends Component {
   }
 
   async handleClick () {
-    const postString = JSON.stringify({
+    const postData = {
       username: this.state.username,
       password: this.state.password
-    })
+    }
 
-    const answerObject = await fetch('/api/authentication', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: postString
-      }).then((answer) => {
-        return answer 
-      })
+    let newState = { }
 
-    let newState=null;
-
-    if (answerObject.status === 200){
-      let answer = await answerObject.json();
+    await apis.authentication.sendAuthentication(postData).then((answer)=>{
       newState =  {
         accessCheck : answer
       }
-    } else {
+
+    }).catch( async (error) => {
+      console.log(error)
       newState =  {
         accessCheck : false,
-        errorMessage : await answerObject.text()
+        errorMessage : await error.text()
       }
-    }
+
+    })
 
     this.setState({
       authenthified: newState.accessCheck,
       errorMessage : newState.errorMessage
     })
+    
   }
 
   handleChange (event) {
@@ -63,6 +56,10 @@ export default class Authentication extends Component {
     })
   }
 
+  /**
+   * Redirect press enter to login button
+   * @param {*} event 
+   */
   handleKeyDown (event) {
     if (event.key === 'Enter') {
       this.handleClick()
@@ -74,12 +71,13 @@ export default class Authentication extends Component {
       return <Redirect to='/query' />
     }
     return (
-      <>
+      <Fragment>
         <div className='alert alert-danger' id='error' style={{ display:  this.state.errorMessage === undefined ?  'none' : '' }}>{this.state.errorMessage}</div>
         <div className='jumbotron ' id='login'>
           <div className='block-title block block-400'>Authentication</div>
           <div className='block-content block block-400'>
             <form id='login-form' onKeyPress={this.handleKeyDown}>
+
               <fieldset>
                 <label>Username*</label>
                 <input className='form-control' type='text' placeholder='username' name='username' value={this.state.username.value} onChange={this.handleChange} required />
@@ -97,7 +95,7 @@ export default class Authentication extends Component {
             </form>
           </div>
         </div>
-      </>
+      </Fragment>
     )
   }
 }
