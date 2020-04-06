@@ -6,6 +6,7 @@ import jobs from './jobs'
 import retrieve from './retrieve'
 import exportDicom from './exportDicom'
 import authentication from './authentication'
+import peers from './peers'
 
 export default {
   aets,
@@ -15,5 +16,6 @@ export default {
   jobs,
   retrieve,
   exportDicom,
-  authentication
+  authentication, 
+  peers
 }
