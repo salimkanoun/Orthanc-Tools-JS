@@ -13,7 +13,7 @@ import apis from '../../services/apis';
      */
 
      columns = [{
-         dataField: 'name', 
+         dataField: 'Name', 
          text: 'Name'
      }, {
          dataField: 'Peer', 
@@ -25,11 +25,11 @@ import apis from '../../services/apis';
         dataField: 'Port',
         text : 'Port'
     }, {
-        dataField : 'echo',
+        dataField : 'Echo',
         text : 'Echo Peer',
         formatter : this.echoPeerButton
     }, {
-        dataField : 'remove',
+        dataField : 'Remove',
         text : 'Remove Peer',
         formatter : this.deletPeerButton,
         formatExtraData : this
@@ -41,7 +41,7 @@ import apis from '../../services/apis';
      * @param {*} row 
      * @param {*} rowIndex
      */
-    echoAetButton(cell, row, rowIndex) {
+    echoPeerButton(cell, row, rowIndex) {
         return (<div className="text-center">
             <input type="button" className='btn btn-info' onClick = {() => apis.peer.echoPeer(row.name)} value = "Echo" />
         </div>)
@@ -54,7 +54,7 @@ import apis from '../../services/apis';
      * @param {*} rowIndex 
      * @param {*} parentComponent 
      */
-    deleteAetButton(cell, row, rowIndex, parentComponent) {
+    deletePeerButton(cell, row, rowIndex, parentComponent) {
         return (
         <div className="text-center">
             <input type="button" className='btn btn-danger' onClick = {async () => {await apis.Peer.deletepeer(row.name); parentComponent.props.refreshAetData()}} value = "Remove" />

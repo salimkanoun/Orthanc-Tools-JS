@@ -33,14 +33,14 @@ export default class PeerForm extends Component{
     async handleClick(){
         let putData = {
             Peer = this.state.peerName, 
-            URL = this.state.ip + this.state.port, 
+            Host = this.state.ip + ":" + this.state.port, 
             User = this.state.username, 
             Pass = this.state.password
         }
 
         await apis.updatePeer(this.state.name, putData)
 
-        this.props.refreshPerrData()
+        this.props.refreshPeerData()
     }
 
 
