@@ -35,8 +35,7 @@ Front :
 
 - Settings
     - Restart d'orthanc
-    - Changer le log level ?
-    - Visualisation et declaration et test connexion de peers => Meme principes que AETs
+    - Changer le log level
     - AutoQuery : 
         - Nombre limit de query si < limit => Retrieve auto
         - Heure de pause automatique ? (a partir 7h du mat ?)
