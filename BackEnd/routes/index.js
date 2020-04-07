@@ -98,4 +98,10 @@ router.get('/wado/*', [userAuthMidelware], reverseProxyGet)
 router.post('/tools/create-archive',[userAuthMidelware] , reverseProxyPost )
 router.post('/tools/create-media-extended',[userAuthMidelware] , reverseProxyPost )
 
+//Orthanc Peers Routes
+router.get('/peers*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.delete('/peers/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
+router.post('/peers/:dicom/system', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
+router.put('/peers/:dicom/', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
+
 module.exports = router
