@@ -57,7 +57,7 @@ import apis from '../../services/apis';
     deletePeerButton(cell, row, rowIndex, parentComponent) {
         return (
         <div className="text-center">
-            <input type="button" className='btn btn-danger' onClick = {async () => {await apis.Peer.deletepeer(row.name); parentComponent.props.refreshAetData()}} value = "Remove" />
+            <input type="button" className='btn btn-danger' onClick = {async () => {await apis.Peer.deletePeer(row.name); parentComponent.props.refreshPeerData()}} value = "Remove" />
         </div>)
     }
 
@@ -66,13 +66,13 @@ import apis from '../../services/apis';
      */
     orthancApisToRows() {
 
-        let peerAnswer = this.props.peerData
+        let peersAnswer = this.props.peersData
         let rows = []
 
-        for (const peerName in peerAnswer) {
+        for (const peerName in peersAnswer) {
             rows.push({
                 name : peerName,
-                ...peerAnswer[peerName]
+                ...peersAnswer[peerName]
             })
 
         }

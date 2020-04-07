@@ -6,9 +6,10 @@ const peers = {
     getPeersExpand(){
         return fetch('/api/peers?expand')
             .then((answer) => {
-                if (!answer.ok) {throw answer}
+                if (!answer.ok) { throw answer }
                 return (answer.json())
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 toastifyError(error)
             })
     },
@@ -54,8 +55,8 @@ const peers = {
             }, 
             body: JSON.stringify({})
         }).then(response => {
-            if (!response.ok) {throw response}
-            response.json()
+            if (response.ok) response.json()
+            else throw response
         }).then((answer) => {
             toastifySuccess('Echo ' + peerName + ' Sucess') 
         }).catch(error => toastifyError('Echo ' + peerName + ' Error'))

@@ -50,20 +50,20 @@ export default class PeerForm extends Component{
                 <h2 className="card-title">Add Peer</h2>
                 <div className="form-group">
                     <label htmlFor="name">Name : </label>
-                    <input type='text' name="name" className="row form-control"/>
+                    <input type='text' name="name" className="row form-control" onChange={this.handleChange}/>
                     <label htmlFor="username">Username : </label>
-                    <input type='text' name="username" className="row form-control"/>
+                    <input type='text' name="username" className="row form-control" onChange={this.handleChange}/>
                     <label htmlFor="password">Password : </label>
-                    <input type='password' name="password" className="row form-control"/>
+                    <input type='password' name="password" className="row form-control" onChange={this.handleChange}/>
                     <label htmlFor="peerName">Peer name : </label>
-                    <input type='text' name="peerName" className="row form-control"/>
+                    <input type='text' name="peerName" className="row form-control" onChange={this.handleChange}/>
                     <label htmlFor="ip">IP : </label>
-                    <input type='text' name="ip" className="row form-control"/>
+                    <input type='text' name="ip" className="row form-control" onChange={this.handleChange}/>
                     <label htmlFor="port">Port : </label>
-                    <input type='number' name="port" className="row form-control"/>
+                    <input type='number' name="port" className="row form-control" onChange={this.handleChange}/>
                 </div>
                 <div className="text-right mb-5">
-                    <input type='button' className='Row btn btn-primary' onclick={this.handleClick} value='send'/>
+                    <input type='button' className='Row btn btn-primary' onClick={this.handleClick} value='send'/>
                 </div>
 
             </Fragment>

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import OrthancSettings from './OrthancSettings'
 import AetRootPanel from './AetRootPanel'
 import AutoRetrieveRootPanel from './AutoRetrieveRootPanel'
+import PeerRootPanel from './PeerRootPanel'
 
 /**
  * Root Panel of Admin route
@@ -20,6 +21,8 @@ const AdminPanel = () => {
         return (<OrthancSettings />)
       case 'Aets' :
         return (<AetRootPanel />)
+      case 'Peers' :
+        return (<PeerRootPanel />)
       case 'Robots' :
         return (<AutoRetrieveRootPanel />)
       default :
@@ -33,6 +36,7 @@ const AdminPanel = () => {
         <div className='nav flex-column nav-pills' role='tablist' aria-orientation='vertical'>
           <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='General' />
           <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Aets' />
+          <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers' />
           <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Robots' />
         </div>
       </div>
