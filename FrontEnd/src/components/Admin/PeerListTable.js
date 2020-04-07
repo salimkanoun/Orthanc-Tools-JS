@@ -28,7 +28,7 @@ import apis from '../../services/apis';
     }, {
         dataField : 'Remove',
         text : 'Remove Peer',
-        formatter : this.deletPeerButton,
+        formatter : this.deletePeerButton,
         formatExtraData : this
     }]
 
@@ -54,7 +54,7 @@ import apis from '../../services/apis';
     deletePeerButton(cell, row, rowIndex, parentComponent) {
         return (
         <div className="text-center">
-            <input type="button" className='btn btn-danger' onClick = {async () => {await apis.Peer.deletePeer(row.name); parentComponent.props.refreshPeerData()}} value = "Remove" />
+            <input type="button" className='btn btn-danger' onClick = {async () => {await apis.peers.deletePeer(row.name); parentComponent.props.refreshPeerData()}} value = "Remove" />
         </div>)
     }
 

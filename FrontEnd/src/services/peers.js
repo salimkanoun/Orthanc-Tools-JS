@@ -1,6 +1,5 @@
 import { toastifySuccess, toastifyError } from './toastify'
 
-
 const peers = {
 
     getPeersExpand(){
@@ -19,16 +18,15 @@ const peers = {
             method: 'PUT', 
             headers: {
                 Accept: 'application/json',
-        'Content-Type': 'application/json' 
+                'Content-Type': 'application/json' 
             }, 
             body: JSON.stringify(parameters)
         }).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
+        }).catch((error) => {
+            toastifyError(error)
         })
-            .catch((error) => {
-                toastifyError(error)
-            })
     },
 
     deletePeer(name){
@@ -43,14 +41,7 @@ const peers = {
     },
 
     echoPeer(peerName){
-        fetch ('/api/peers/' + peerName + '/system', {
-            method : 'POST', 
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            }, 
-            body: JSON.stringify({})
-        }).then(response => {
+        fetch ('/api/peers/' + peerName + '/system').then(response => {
             if (response.ok) response.json()
             else throw response
         }).then((answer) => {
