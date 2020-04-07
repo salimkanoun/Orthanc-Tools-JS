@@ -62,10 +62,12 @@ Front :
 
 - Module Exploration Contenu d'Orthanc
     - GUI a reflechir
-    - Modification de ressources
-    - Preview d'images ? (Bof plutot OHIF)
-    - Visualisation de Tag ?
-    - API statisitics ?
+        - 3 component Patient / Study /Visit en table et on verra comment on les embrique
+        - Les action du click droit dans un dropdow (https://react-bootstrap.github.io/components/dropdowns/)
+            - Modification de ressources
+            - Preview d'images via lien vers OHIF
+            - Visualisation de Tag => GUI a reflechir
+            - API statisitics => GUI à reflechir
 
 - Module Import d'image
     - Montrer resultat de upload
