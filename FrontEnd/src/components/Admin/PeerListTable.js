@@ -13,17 +13,14 @@ import apis from '../../services/apis';
      */
 
      columns = [{
-         dataField: 'Name', 
-         text: 'Name'
+         dataField: 'Username', 
+         text: 'Username'
      }, {
-         dataField: 'Peer', 
-         text: 'peer'
+         dataField: 'name', 
+         text: 'PeerName'
      }, {
-        dataField: 'Host',
-        text : 'Host'
-    }, {
-        dataField: 'Port',
-        text : 'Port'
+        dataField: 'Url',
+        text : 'Url'
     }, {
         dataField : 'Echo',
         text : 'Echo Peer',
@@ -43,7 +40,7 @@ import apis from '../../services/apis';
      */
     echoPeerButton(cell, row, rowIndex) {
         return (<div className="text-center">
-            <input type="button" className='btn btn-info' onClick = {() => apis.peer.echoPeer(row.name)} value = "Echo" />
+            <input type="button" className='btn btn-info' onClick = {() => apis.peers.echoPeer(row.name)} value = "Echo" />
         </div>)
     }
 
@@ -67,7 +64,7 @@ import apis from '../../services/apis';
     orthancApisToRows() {
 
         let peersAnswer = this.props.peersData
-        let rows = []
+        let rows =  []
 
         for (const peerName in peersAnswer) {
             rows.push({

@@ -21,11 +21,7 @@ const peers = {
                 Accept: 'application/json',
         'Content-Type': 'application/json' 
             }, 
-            body: {
-                'Url': parameters.Host,
-                'Username': parameters.User,
-                'Password': parameters.Pass
-            } 
+            body: JSON.stringify(parameters)
         }).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
