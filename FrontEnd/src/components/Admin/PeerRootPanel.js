@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react'
-import Peer from './PeerListTable'
+import PeerListTable from './PeerListTable'
 import PeerForm from './PeerForm'
 import apis from '../../services/apis'
 
@@ -28,7 +28,7 @@ const PeerRootPanel = () => {
 
   return (
     <Fragment>
-      <Peer peersData={peer} refreshPeerData={refreshPeersData} />
+      <PeerListTable peersData={peer} refreshPeerData={refreshPeersData} />
       <PeerForm refreshPeerData={refreshPeersData} />
     </Fragment>
   )

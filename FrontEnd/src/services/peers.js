@@ -1,14 +1,14 @@
 import { toastifySuccess, toastifyError } from './toastify'
 
-
 const peers = {
 
     getPeersExpand(){
         return fetch('/api/peers?expand')
             .then((answer) => {
-                if (!answer.ok) {throw answer}
+                if (!answer.ok) { throw answer }
                 return (answer.json())
-            }).catch((error) => {
+            })
+            .catch((error) => {
                 toastifyError(error)
             })
     },
@@ -18,20 +18,15 @@ const peers = {
             method: 'PUT', 
             headers: {
                 Accept: 'application/json',
-        'Content-Type': 'application/json' 
+                'Content-Type': 'application/json' 
             }, 
-            body: {
-                'Url': parameters.Host,
-                'Username': parameters.User,
-                'Password': parameters.Pass
-            } 
+            body: JSON.stringify(parameters)
         }).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
+        }).catch((error) => {
+            toastifyError(error)
         })
-            .catch((error) => {
-                toastifyError(error)
-            })
     },
 
     deletePeer(name){
@@ -46,16 +41,9 @@ const peers = {
     },
 
     echoPeer(peerName){
-        fetch ('/api/peers/' + peerName + '/system', {
-            method : 'POST', 
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            }, 
-            body: JSON.stringify({})
-        }).then(response => {
-            if (!response.ok) {throw response}
-            response.json()
+        fetch ('/api/peers/' + peerName + '/system').then(response => {
+            if (response.ok) response.json()
+            else throw response
         }).then((answer) => {
             toastifySuccess('Echo ' + peerName + ' Sucess') 
         }).catch(error => toastifyError('Echo ' + peerName + ' Error'))

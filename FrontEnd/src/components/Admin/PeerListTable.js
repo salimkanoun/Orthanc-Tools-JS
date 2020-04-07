@@ -13,17 +13,14 @@ import apis from '../../services/apis';
      */
 
      columns = [{
-         dataField: 'Name', 
-         text: 'Name'
+         dataField: 'Username', 
+         text: 'Username'
      }, {
-         dataField: 'Peer', 
-         text: 'peer'
+         dataField: 'name', 
+         text: 'PeerName'
      }, {
-        dataField: 'Host',
-        text : 'Host'
-    }, {
-        dataField: 'Port',
-        text : 'Port'
+        dataField: 'Url',
+        text : 'Url'
     }, {
         dataField : 'Echo',
         text : 'Echo Peer',
@@ -31,7 +28,7 @@ import apis from '../../services/apis';
     }, {
         dataField : 'Remove',
         text : 'Remove Peer',
-        formatter : this.deletPeerButton,
+        formatter : this.deletePeerButton,
         formatExtraData : this
     }]
 
@@ -43,7 +40,7 @@ import apis from '../../services/apis';
      */
     echoPeerButton(cell, row, rowIndex) {
         return (<div className="text-center">
-            <input type="button" className='btn btn-info' onClick = {() => apis.peer.echoPeer(row.name)} value = "Echo" />
+            <input type="button" className='btn btn-info' onClick = {() => apis.peers.echoPeer(row.name)} value = "Echo" />
         </div>)
     }
 
@@ -57,7 +54,7 @@ import apis from '../../services/apis';
     deletePeerButton(cell, row, rowIndex, parentComponent) {
         return (
         <div className="text-center">
-            <input type="button" className='btn btn-danger' onClick = {async () => {await apis.Peer.deletepeer(row.name); parentComponent.props.refreshAetData()}} value = "Remove" />
+            <input type="button" className='btn btn-danger' onClick = {async () => {await apis.peers.deletePeer(row.name); parentComponent.props.refreshPeerData()}} value = "Remove" />
         </div>)
     }
 
@@ -66,13 +63,13 @@ import apis from '../../services/apis';
      */
     orthancApisToRows() {
 
-        let peerAnswer = this.props.peerData
-        let rows = []
+        let peersAnswer = this.props.peersData
+        let rows =  []
 
-        for (const peerName in peerAnswer) {
+        for (const peerName in peersAnswer) {
             rows.push({
                 name : peerName,
-                ...peerAnswer[peerName]
+                ...peersAnswer[peerName]
             })
 
         }

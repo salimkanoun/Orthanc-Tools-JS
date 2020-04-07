@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react'
 import apis from '../../services/apis'
 
 /**
- * Form to declare or modify PEER
+ * Form to declare or modify an Orthanc Peer
  */
 
 export default class PeerForm extends Component{
@@ -31,14 +31,17 @@ export default class PeerForm extends Component{
      * Listener on form submission
      */
     async handleClick(){
+        
         let putData = {
-            Peer: this.state.peerName, 
-            Host: this.state.ip + ":" + this.state.port, 
-            User: this.state.username, 
-            Pass: this.state.password
+            PeerName: this.state.name, 
+            Url: this.state.ip + ":" + this.state.port, 
+            Username: this.state.username, 
+            Password: this.state.password
         }
-
+        
+        
         await apis.peers.updatePeer(this.state.name, putData)
+        
 
         this.props.refreshPeerData()
     }
@@ -49,21 +52,19 @@ export default class PeerForm extends Component{
             <Fragment>
                 <h2 className="card-title">Add Peer</h2>
                 <div className="form-group">
-                    <label htmlFor="name">Name : </label>
-                    <input type='text' name="name" className="row form-control"/>
-                    <label htmlFor="username">Username : </label>
-                    <input type='text' name="username" className="row form-control"/>
-                    <label htmlFor="password">Password : </label>
-                    <input type='password' name="password" className="row form-control"/>
-                    <label htmlFor="peerName">Peer name : </label>
-                    <input type='text' name="peerName" className="row form-control"/>
-                    <label htmlFor="ip">IP : </label>
-                    <input type='text' name="ip" className="row form-control"/>
+                    <label htmlFor="username">Peer Name : </label>
+                    <input type='text' name="name" className="row form-control" onChange={this.handleChange}/>
+                    <label htmlFor="ip">Url : </label>
+                    <input type='text' name="ip" className="row form-control" placeholder="http://" onChange={this.handleChange}/>
                     <label htmlFor="port">Port : </label>
-                    <input type='number' name="port" className="row form-control"/>
+                    <input type='number' name="port" className="row form-control" onChange={this.handleChange}/>
+                    <label htmlFor="name">Username : </label>
+                    <input type='text' name="username" className="row form-control" onChange={this.handleChange}/>
+                    <label htmlFor="password">Password : </label>
+                    <input type='password' name="password" className="row form-control" onChange={this.handleChange}/>
                 </div>
                 <div className="text-right mb-5">
-                    <input type='button' className='Row btn btn-primary' onclick={this.handleClick} value='send'/>
+                    <input type='button' className='Row btn btn-primary' onClick={this.handleClick} value='send'/>
                 </div>
 
             </Fragment>

@@ -101,7 +101,7 @@ router.post('/tools/create-media-extended',[userAuthMidelware] , reverseProxyPos
 //Orthanc Peers Routes
 router.get('/peers*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 router.delete('/peers/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
-router.post('/peers/:dicom/system', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
-router.put('/peers/:dicom/', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
+router.get('/peers/:peer/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.put('/peers/:peer/', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
 
 module.exports = router
