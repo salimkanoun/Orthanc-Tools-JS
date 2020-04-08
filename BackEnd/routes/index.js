@@ -7,7 +7,7 @@ const { authentication } = require('../controllers/authentication')
 const { getRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot')
 const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
-const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyDelete } = require('../controllers/reverseProxy')
+const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
@@ -109,5 +109,9 @@ router.post('/tools/reset', [userAuthMidelware, userAdminMidelware], reverseProx
 
 //Orthanc shutdown route
 router.post('/tools/shutdown', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
+
+//Orthanc get and set Verbosity
+router.get('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.put('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseProxyPutPlainText)
 
 module.exports = router

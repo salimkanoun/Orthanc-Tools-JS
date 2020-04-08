@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import apis from '../../services/apis';
+import Select from 'react-select'
 
 export default class OrthancSettings extends Component {
 
@@ -24,6 +25,13 @@ export default class OrthancSettings extends Component {
     async componentDidMount(){
         let answer = await apis.options.getOrthancServer()
         this.setState(answer)
+        let verbosity = await apis.options.getVerbosity()
+        this.setState({'verbosity': verbosity})
+    }
+
+    //get current versoity in Orthanc log
+    getVerbosity(){
+        return apis.options.getVerbosity()
     }
 
     /**
@@ -64,6 +72,18 @@ export default class OrthancSettings extends Component {
         apis.options.shutdownOrthanc()
     }
 
+    changeListener(value){
+        apis.options.setVerbosity(value.value)
+    }
+
+    
+
+    verbosities = [
+        { value: 'default', label: 'Default'},
+        { value: 'verbose', label: 'Verbose'},
+        { value: 'trace', label: 'Trace'},
+    ]
+
     render() {
         return (
             <Fragment>
@@ -77,6 +97,8 @@ export default class OrthancSettings extends Component {
                     <input type='text' name="OrthancUsername" className="row form-control" value={this.state.OrthancUsername} onChange={this.handleChange} />
                     <label htmlFor="password">Password : </label>
                     <input type='password' name="OrthancPassword" className="row form-control" value={this.state.OrthancPassword} onChange={this.handleChange} />
+                    <label htmlFor="tetx">Verbosity : </label>
+                    <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} />
                 </div>
                 <div className="form-group text-right">
                     <input type='button' className='btn btn-primary' onClick={this.handleClick} value='Update' />

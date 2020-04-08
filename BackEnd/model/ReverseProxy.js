@@ -45,7 +45,7 @@ const ReverseProxy = {
     return options
   },
 
-  makeOptionsUpload (method, api, data) {
+  makeOptionsUpload (method, api, data, plain=false) {
     const serverString = this.getOrthancAddress() + api
 
     const options = {
@@ -56,7 +56,7 @@ const ReverseProxy = {
         password: this.password
       },
       headers: {
-        'Content-Type': 'application/dicom',
+        'Content-Type': plain ? 'application/dicom' : 'text/plain',
         'Content-Length': data.length
       },
       body: data
@@ -67,6 +67,20 @@ const ReverseProxy = {
 
   streamToRes (api, method, data, res) {
     request(this.makeOptions(method, api, data))
+      .on('response', function (response) {
+        if (response.statusCode === 200) {
+          response.pipe(res)
+        } else {
+          res.status(response.statusCode).send(response.statusMessage)
+        }
+      }).catch((error) => {
+        console.log(error)
+        res.status(500).send(error.statusMessage)
+      })
+  },
+
+  streamToResPlainText(api, method, data, res){
+    request(this.makeOptionsUpload(method, api, data, true))
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(res)
