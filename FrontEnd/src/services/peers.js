@@ -42,10 +42,10 @@ const peers = {
 
     echoPeer(peerName){
         fetch ('/api/peers/' + peerName + '/system').then(response => {
-            if (response.ok) response.json()
+            if (response.ok) return response.json()
             else throw response
-        }).then((answer) => {
-            toastifySuccess('Echo ' + peerName + ' Sucess') 
+        }).then((response) => {
+            toastifySuccess('Version ' + peerName + ' = ' + response.Version)
         }).catch(error => toastifyError('Echo ' + peerName + ' Error'))
     }
 }
