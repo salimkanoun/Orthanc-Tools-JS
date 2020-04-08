@@ -56,6 +56,14 @@ export default class OrthancSettings extends Component {
         apis.options.getOrthancSystem()
     }
 
+    reset(){
+        apis.options.resetOrthanc()
+    }
+
+    shutdown(){
+        apis.options.shutdownOrthanc()
+    }
+
     render() {
         return (
             <Fragment>
@@ -73,6 +81,8 @@ export default class OrthancSettings extends Component {
                 <div className="form-group text-right">
                     <input type='button' className='btn btn-primary' onClick={this.handleClick} value='Update' />
                     <input type='button' className='btn btn-info' onClick={this.testConnexion} value='Check Connexion' />
+                    <input type='button' className='btn btn-warning' onClick={this.reset} value='Reset' />
+                    <input type='button' className='btn btn-danger' onClick={this.shutdown} value='Shutdown' />
                 </div>
             </Fragment>
         )

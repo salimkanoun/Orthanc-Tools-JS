@@ -78,6 +78,28 @@ const Options = {
     }).catch((error) => {
       toastifyError('Orthanc Server Error: ' + error.statusText)
     })
+  }, 
+
+  resetOrthanc(){
+    return fetch('/api/tools/reset', {
+      method: 'POST'
+    }).then((answer) => {
+      if (!answer.ok) {throw answer}
+      return (answer.json())
+    }).catch((error) => {
+      toastifyError(error)
+    })
+  },
+
+  shutdownOrthanc(){
+    return fetch('api/tools/shutdown', {
+      method: 'POST'
+    }).then((answer) => {
+      if (!answer.ok) {throw answer}
+      return (answer.json())
+    }).catch((error) => {
+      toastifyError(error)
+    })
   }
 
 }

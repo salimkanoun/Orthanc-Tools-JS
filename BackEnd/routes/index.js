@@ -104,4 +104,10 @@ router.delete('/peers/*', [userAuthMidelware, userAdminMidelware], reverseProxyD
 router.get('/peers/:peer/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 router.put('/peers/:peer/', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
 
+//Orthanc reset route
+router.post('/tools/reset', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
+
+//Orthanc shutdown route
+router.post('/tools/shutdown', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
+
 module.exports = router
