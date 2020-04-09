@@ -124,7 +124,6 @@ const Options = {
     }).then((answer) => {
       if (!answer.ok) {throw answer}
       toastifySuccess("Verbosity have been updated")
-      return (answer.json())
     }).catch((error) => {
       toastifyError(error)
     })

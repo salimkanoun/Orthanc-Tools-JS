@@ -109,7 +109,7 @@ export default class OrthancSettings extends Component {
                         <label htmlFor="verbosity">Verbosity : </label>
                     </div>
                     <div class="col-sm">
-                    <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} placeholder={this.state.verbosity}/>
+                        <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} placeholder={this.state.verbosity}/>
                     </div>
                 </div>
             </Fragment>
