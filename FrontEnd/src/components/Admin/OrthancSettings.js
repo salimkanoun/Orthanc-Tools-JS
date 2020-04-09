@@ -14,7 +14,7 @@ export default class OrthancSettings extends Component {
     
     constructor(props) {
         super(props)
-        this.handleClick = this.handleClick.bind(this)
+        this.submitOrthancSettings = this.submitOrthancSettings.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.testConnexion = this.testConnexion.bind(this)
     }
@@ -26,7 +26,7 @@ export default class OrthancSettings extends Component {
         let answer = await apis.options.getOrthancServer()
         this.setState(answer)
         let verbosity = await this.getVerbosity()
-        this.setState({'verbosity': verbosity})
+        this.setState({verbosity : verbosity})
     }
 
     //get current versoity in Orthanc log
@@ -52,7 +52,7 @@ export default class OrthancSettings extends Component {
     /**
      * Send new value to BackEnd
      */
-    async handleClick() {
+    async submitOrthancSettings() {
         apis.options.setOrthancServer(this.state.OrthancAddress, this.state.OrthancPort, 
             this.state.OrthancUsername, this.state.OrthancPassword)
     }
@@ -99,7 +99,7 @@ export default class OrthancSettings extends Component {
                     <input type='password' name="OrthancPassword" className="row form-control" value={this.state.OrthancPassword} onChange={this.handleChange} />
                 </div>
                 <div className="form-group text-right">
-                    <input type='button' className='btn btn-primary' onClick={this.handleClick} value='Update' />
+                    <input type='button' className='btn btn-primary' onClick={this.submitOrthancSettings} value='Update' />
                     <input type='button' className='btn btn-info' onClick={this.testConnexion} value='Check Connexion' />
                     <input type='button' className='btn btn-warning' onClick={this.reset} value='Reset' />
                     <input type='button' className='btn btn-danger' onClick={this.shutdown} value='Shutdown' />
@@ -109,7 +109,7 @@ export default class OrthancSettings extends Component {
                         <label htmlFor="verbosity">Verbosity : </label>
                     </div>
                     <div class="col-sm">
-                        <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} placeholder={this.state.verbosity}/>
+                        <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} value={this.state.verbosity}/>
                     </div>
                 </div>
             </Fragment>
