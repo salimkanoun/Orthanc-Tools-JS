@@ -26,7 +26,7 @@ export default class OrthancSettings extends Component {
         let answer = await apis.options.getOrthancServer()
         this.setState(answer)
         let verbosity = await this.getVerbosity()
-        this.setState({'verbosity': verbosity})
+        this.setState({verbosity : verbosity})
     }
 
     //get current versoity in Orthanc log
@@ -109,7 +109,7 @@ export default class OrthancSettings extends Component {
                         <label htmlFor="verbosity">Verbosity : </label>
                     </div>
                     <div class="col-sm">
-                        <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} placeholder={this.state.verbosity}/>
+                        <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} value={this.state.verbosity}/>
                     </div>
                 </div>
             </Fragment>
