@@ -34,4 +34,11 @@ var reverseProxyPut = function (req, res) {
   ReverseProxy.streamToRes(ortahncCalledApi, 'PUT', req.body, res)
 }
 
-module.exports = { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyDelete }
+var reverseProxyPutPlainText = function (req, res) {
+  const apiAdress = req.originalUrl
+  const ortahncCalledApi = apiAdress.replace('/api', '')
+  console.log('reverseGET' + ortahncCalledApi)
+  ReverseProxy.streamToResPlainText(ortahncCalledApi, 'PUT', req.body, res)
+}
+
+module.exports = { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete }

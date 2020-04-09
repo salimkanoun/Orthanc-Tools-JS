@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import apis from '../../services/apis';
+import Select from 'react-select'
 
 export default class OrthancSettings extends Component {
 
@@ -24,6 +25,13 @@ export default class OrthancSettings extends Component {
     async componentDidMount(){
         let answer = await apis.options.getOrthancServer()
         this.setState(answer)
+        let verbosity = await this.getVerbosity()
+        this.setState({'verbosity': verbosity})
+    }
+
+    //get current versoity in Orthanc log
+    getVerbosity(){
+        return apis.options.getVerbosity()
     }
 
     /**
@@ -56,6 +64,26 @@ export default class OrthancSettings extends Component {
         apis.options.getOrthancSystem()
     }
 
+    reset(){
+        apis.options.resetOrthanc()
+    }
+
+    shutdown(){
+        apis.options.shutdownOrthanc()
+    }
+
+    changeListener(event){
+        apis.options.setVerbosity(event.value)
+    }
+
+    
+
+    verbosities = [
+        { value: 'default', label: 'Default'},
+        { value: 'verbose', label: 'Verbose'},
+        { value: 'trace', label: 'Trace'},
+    ]
+
     render() {
         return (
             <Fragment>
@@ -73,6 +101,16 @@ export default class OrthancSettings extends Component {
                 <div className="form-group text-right">
                     <input type='button' className='btn btn-primary' onClick={this.handleClick} value='Update' />
                     <input type='button' className='btn btn-info' onClick={this.testConnexion} value='Check Connexion' />
+                    <input type='button' className='btn btn-warning' onClick={this.reset} value='Reset' />
+                    <input type='button' className='btn btn-danger' onClick={this.shutdown} value='Shutdown' />
+                </div>
+                <div class="row">
+                    <div class="col-md-auto">
+                        <label htmlFor="verbosity">Verbosity : </label>
+                    </div>
+                    <div class="col-sm">
+                        <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} placeholder={this.state.verbosity}/>
+                    </div>
                 </div>
             </Fragment>
         )
