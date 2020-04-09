@@ -24,6 +24,9 @@ export default class NavBar extends Component {
           <li className='nav-item'>
             <Link className='nav-link' to='/options'>Options</Link>
           </li>
+          <li className='nav-item'>
+            <Link className='nav-link' to='/OrthancContent'>Orthanc Content</Link>
+          </li>
         </ul>
         <div>
           <AnonTool />
