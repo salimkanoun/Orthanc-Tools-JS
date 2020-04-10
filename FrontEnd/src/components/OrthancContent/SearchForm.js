@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import SelectModalities from '../AutoQuery/Component/SelectModalities'
-import Select from 'react-select'
+import apis from '../../services/apis'
 
 class SearchForm extends Component{
 
@@ -8,32 +8,20 @@ class SearchForm extends Component{
         super(props)
         this.handleChange=this.handleChange.bind(this)
         this.handleClick=this.handleClick.bind(this)
-        this.changeListener=this.changeListener.bind(this)
         this.updateModalities = this.updateModalities.bind(this)
         //this.dataSearch=this.dataSearch.binf(this)
     }
     
     state = {
-        type: '',
-        valeurType: '',
         firstName: '',
+        lastName: '', 
+        patientID: '',
+        accessionNumber: '', 
         studyDescription: '', 
         dateFrom: '', 
         dateTo: '',
         modalities: '',
-        query: {}
     }
-
-    content = {
-        level: '',
-        date: ''
-    }
-
-    options=[
-        {value: 'patientName', label: "Patient name" },
-        {value: 'patientID', label: "Patient ID" },
-        {value: 'accessionNumber', label: "Acession number" }
-    ]
 
     /**
    * Store modality string comming from SelectModalities component in the current state
@@ -62,57 +50,70 @@ class SearchForm extends Component{
 
     }
 
-    changeListener(event){
-        this.setState({
-            'type': event.value
-        })
+    async handleClick(){
+        let studies = await apis.content.getContent(this.dataSearch())
+        this.traitementStudies(studies)
     }
 
-    handleClick(event){
-        this.dataSearch()
-        console.log(this.state.query)
+    traitementStudies(studies){
+        let tab = []
+        studies.forEach(element => {
+            let study = {
+                [element.ParentPatient]: {
+                    patientBirdDate: element.PatientMainDicomTags.PatientBirthDate,
+                    patientName: element.PatientMainDicomTags.PatientName, 
+                    patientSex: element.PatientMainDicomTags.PatientSex, 
+                    studies: { [element.ID]: {
+                        isStable: element.IsStable,
+                        lastUpdtae: element.LastUpdate,
+                        patientId: element.PatientMainDicomTags.PatientID,
+                        accessionNumber: element.MainDicomTags.AccessionNumber, 
+                        studyDate: element.MainDicomTags.StudyDate, 
+                        studyDescription: element.MainDicomTags.StudyDescription, 
+                        studyInstanceUID: element.MainDicomTags.StudyInstanceUID, 
+                        studyTime: element.MainDicomTags.StudyTime, 
+                        series: element.Series
+                    }
+                        
+                    } 
+                }
+            }
+            tab.push(study)
+        })
     }
 
     dataSearch(){
         //prepare query for API /tools/find
 
         //dateForm
-        let date = ''
-        date = this.state.dateFrom.replace('-', '').replace('-', '') + '-' + this.state.dateTo.replace('-', '').replace('-', '')
+        let date = ""
+        if (this.state.dateFrom !== "" || this.state.dateTo !== "") //if dateFrom or dateTo isn't empty 
+            date = this.state.dateFrom.replace('-', '').replace('-', '') + '-' + this.state.dateTo.replace('-', '').replace('-', '')
         //patient name
-        let patientName = ''
-        if (this.state.type === 'patientName'){
-            patientName= this.state.valeurType + '^' + this.state.firstName
-        }
+        let patientName = ""
+        if (this.state.lastName !== '' && this.state.firstName ==='')
+            patientName = this.state.lastName
+        else if (this.state.lastName === '' && this.state.firstName !== '')
+            patientName = '^' + this.state.firstName
+        else if (this.state.lastName !== '' && this.state.firstName !== '')
+            patientName = this.state.lastName + '^' + this.state.firstName
 
         let contentSearch = {
-            Level: 'Patient',
-            CaseSensitive: true, 
+            Level: 'Study',
+            CaseSensitive: false,
+            Expand: true, 
             Query: {
-                PatientName: '', 
-                PatientID: '',
-                AccessionNumber: '',
+                PatientName: patientName, 
+                PatientID: this.state.patientID,
+                AccessionNumber: this.state.accessionNumber,
                 StudyDate: date, 
                 ModalityInStudy: this.state.modalities,
                 StudyDescription: this.state.studyDescription
             }
         }
-
-        switch(this.state.type){
-            case 'patientName':
-                contentSearch['Query']['PatientName'] = patientName
-                break;
-            case 'patientID':
-               contentSearch['Query']['PatientID'] = this.state.valeurType
-                break;
-            case 'accessionNumber': 
-                contentSearch['Query']['AccessionNumer'] = this.state.valeurType
-                break; 
-            default: 
-                break; 
-        }
-        this.state.query = contentSearch
+        return contentSearch
     }
+
     //form
     render(){
         return (
@@ -120,16 +121,16 @@ class SearchForm extends Component{
                 <h2 className="card-title">Search</h2>
                 <div className='row'>
                 <div className='col-sm'>
-                    <label htmlFor='type'>Type</label>
-                    <Select name='type' single options={this.options} onChange={this.changeListener}/>
-                </div>
-                <div className='col-sm'>
-                    <label />
-                    <input type='text' name='valeurType' id='valeurType' className='form-control' onChange={this.handleChange} />
+                    <label htmlFor='lastName'>Last Name</label>
+                    <input type='text' name='lastName' id='lastName' className='form-control' placeholder='Last name' onChange={this.handleChange} />
                 </div>
                 <div className='col-sm'>
                     <label htmlFor='firstName'>First Name</label>
-                    <input type='text' name='firstName' id='firstName' className='form-control' placeholder='First name' onChange={this.handleChange} disabled={this.state.type !== 'patientName'} />
+                    <input type='text' name='firstName' id='firstName' className='form-control' placeholder='First name' onChange={this.handleChange} />
+                </div>
+                <div className='col-sm'>
+                    <label htmlFor='patientID'>Patient ID</label>
+                    <input type='text' name='patientID' id='patientID' className='form-control' placeholder='Patient ID' onChange={this.handleChange} />
                 </div>
                 </div>
                 <div className='row'>

@@ -104,11 +104,11 @@ export default class OrthancSettings extends Component {
                     <input type='button' className='btn btn-warning' onClick={this.reset} value='Reset' />
                     <input type='button' className='btn btn-danger' onClick={this.shutdown} value='Shutdown' />
                 </div>
-                <div class="row">
-                    <div class="col-md-auto">
+                <div className="row">
+                    <div className="col-md-auto">
                         <label htmlFor="verbosity">Verbosity : </label>
                     </div>
-                    <div class="col-sm">
+                    <div className="col-sm">
                         <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} value={this.state.verbosity}/>
                     </div>
                 </div>

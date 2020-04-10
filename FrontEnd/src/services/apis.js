@@ -7,6 +7,7 @@ import retrieve from './retrieve'
 import exportDicom from './exportDicom'
 import authentication from './authentication'
 import peers from './peers'
+import content from './content'
 
 export default {
   aets,
@@ -17,5 +18,6 @@ export default {
   retrieve,
   exportDicom,
   authentication, 
-  peers
+  peers, 
+  content
 }
