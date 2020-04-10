@@ -7,9 +7,10 @@ class SearchForm extends Component{
     constructor(props){
         super(props)
         this.handleChange=this.handleChange.bind(this)
-        this.handleClick=this.handleChange.bind(this)
+        this.handleClick=this.handleClick.bind(this)
         this.changeListener=this.changeListener.bind(this)
         this.updateModalities = this.updateModalities.bind(this)
+        //this.dataSearch=this.dataSearch.binf(this)
     }
     
     state = {
@@ -19,9 +20,15 @@ class SearchForm extends Component{
         studyDescription: '', 
         dateFrom: '', 
         dateTo: '',
-        modalities: '', 
-
+        modalities: '',
+        query: {}
     }
+
+    content = {
+        level: '',
+        date: ''
+    }
+
     options=[
         {value: 'patientName', label: "Patient name" },
         {value: 'patientID', label: "Patient ID" },
@@ -52,7 +59,6 @@ class SearchForm extends Component{
         this.setState({
             [name]: value
         })
-        console.log(this.state)
 
     }
 
@@ -63,10 +69,50 @@ class SearchForm extends Component{
     }
 
     handleClick(event){
-        //TODO
+        this.dataSearch()
+        console.log(this.state.query)
     }
 
+    dataSearch(){
+        //prepare query for API /tools/find
 
+        //dateForm
+        let date = ''
+        date = this.state.dateFrom.replace('-', '').replace('-', '') + '-' + this.state.dateTo.replace('-', '').replace('-', '')
+        //patient name
+        let patientName = ''
+        if (this.state.type === 'patientName'){
+            patientName= this.state.valeurType + '^' + this.state.firstName
+        }
+
+        let contentSearch = {
+            Level: 'Patient',
+            CaseSensitive: true, 
+            Query: {
+                PatientName: '', 
+                PatientID: '',
+                AccessionNumber: '',
+                StudyDate: date, 
+                ModalityInStudy: this.state.modalities,
+                StudyDescription: this.state.studyDescription
+            }
+        }
+
+        switch(this.state.type){
+            case 'patientName':
+                contentSearch['Query']['PatientName'] = patientName
+                break;
+            case 'patientID':
+               contentSearch['Query']['PatientID'] = this.state.valeurType
+                break;
+            case 'accessionNumber': 
+                contentSearch['Query']['AccessionNumer'] = this.state.valeurType
+                break; 
+            default: 
+                break; 
+        }
+        this.state.query = contentSearch
+    }
     //form
     render(){
         return (
@@ -112,7 +158,7 @@ class SearchForm extends Component{
                 </div>
                 </div>
                 <div className='row'>
-                    <input type='button' className='btn btn-primary' onClick={this.onClick} value='Search' />
+                    <input type='button' className='btn btn-primary' onClick={this.handleClick} value='Search' />
                 </div>
             </Fragment>
         )
