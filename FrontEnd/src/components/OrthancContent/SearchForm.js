@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import SelectModalities from '../AutoQuery/Component/SelectModalities'
 import apis from '../../services/apis'
+import TablePatients from './TablePatients'
 
 class SearchForm extends Component{
 
@@ -9,7 +10,7 @@ class SearchForm extends Component{
         this.handleChange=this.handleChange.bind(this)
         this.handleClick=this.handleClick.bind(this)
         this.updateModalities = this.updateModalities.bind(this)
-        //this.dataSearch=this.dataSearch.binf(this)
+        //this.dataSearch=this.dataSearch.bind(this)
     }
     
     state = {
@@ -21,6 +22,7 @@ class SearchForm extends Component{
         dateFrom: '', 
         dateTo: '',
         modalities: '',
+        studies: []
     }
 
     /**
@@ -52,7 +54,7 @@ class SearchForm extends Component{
 
     async handleClick(){
         let studies = await apis.content.getContent(this.dataSearch())
-        this.traitementStudies(studies)
+        this.setState({studies: this.traitementStudies(studies)})
     }
 
     traitementStudies(studies){
@@ -60,7 +62,7 @@ class SearchForm extends Component{
         studies.forEach(element => {
             let study = {
                 [element.ParentPatient]: {
-                    patientBirdDate: element.PatientMainDicomTags.PatientBirthDate,
+                    patientBirthDate: element.PatientMainDicomTags.PatientBirthDate,
                     patientName: element.PatientMainDicomTags.PatientName, 
                     patientSex: element.PatientMainDicomTags.PatientSex, 
                     studies: { [element.ID]: {
@@ -80,6 +82,7 @@ class SearchForm extends Component{
             }
             tab.push(study)
         })
+        return tab
     }
 
     dataSearch(){
@@ -113,6 +116,9 @@ class SearchForm extends Component{
         }
         return contentSearch
     }
+
+
+
 
     //form
     render(){
@@ -160,6 +166,14 @@ class SearchForm extends Component{
                 </div>
                 <div className='row'>
                     <input type='button' className='btn btn-primary' onClick={this.handleClick} value='Search' />
+                </div>
+                <div className='jumbotron row'>
+                    <div className='col-sm'>
+                        {<TablePatients data={this.state.studies} />}
+                    </div>
+                    <div className='col-sm'>
+                        {<label >TableSeries</label> }
+                    </div>
                 </div>
             </Fragment>
         )

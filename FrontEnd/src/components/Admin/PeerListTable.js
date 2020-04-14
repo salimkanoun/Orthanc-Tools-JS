@@ -73,7 +73,7 @@ import apis from '../../services/apis';
             })
 
         }
-
+        
         return rows
     }
 

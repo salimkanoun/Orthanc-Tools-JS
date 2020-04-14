@@ -1,16 +1,21 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import SearchForm from './SearchForm'
+import TablePatients from './TablePatients'
 
 
 
 const ContentPanel = () => {
   
     return (
-      <div className='jumbotron row'>
-        <div className='col-sm'>
-          {<SearchForm />}
+      <Fragment>
+        <div className='jumbotron row'>
+          <div className='col-sm'>
+            {<SearchForm />}
+          </div>
         </div>
-      </div>
+        
+
+      </Fragment>
     )
 
 
