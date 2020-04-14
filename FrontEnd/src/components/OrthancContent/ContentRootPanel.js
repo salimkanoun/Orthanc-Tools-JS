@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import SearchForm from './SearchForm'
-import TablePatients from './TablePatients'
 
 
 

@@ -10,7 +10,6 @@ class SearchForm extends Component{
         this.handleChange=this.handleChange.bind(this)
         this.handleClick=this.handleClick.bind(this)
         this.updateModalities = this.updateModalities.bind(this)
-        //this.dataSearch=this.dataSearch.bind(this)
     }
     
     state = {
@@ -56,11 +55,12 @@ class SearchForm extends Component{
         let studies = await apis.content.getContent(this.dataSearch())
         let hirachicalAnswer = this.traitementStudies(studies)
         let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
+        console.log("dataForPatientTable = ", dataForPatientTable)
         this.setState({studies: dataForPatientTable })
     }
 
     prepareDataForTable(responseArray){
-
+        console.log("avant prépa = ", responseArray)
         console.log(responseArray)
         let answer = []
         for(let patient in responseArray) {
@@ -69,7 +69,7 @@ class SearchForm extends Component{
                 ...responseArray[patient]
             })
         }
-        console.log(answer)
+        console.log("après prépa = ", answer)
         return answer
 
     }
@@ -84,6 +84,7 @@ class SearchForm extends Component{
                     patientSex: element.PatientMainDicomTags.PatientSex, 
                     studies: { 
                             [element.ID]: {
+                                ID: element.ID,
                                 isStable: element.IsStable,
                                 lastUpdtae: element.LastUpdate,
                                 patientId: element.PatientMainDicomTags.PatientID,
@@ -99,7 +100,6 @@ class SearchForm extends Component{
                 } 
                 
             })
-          
         return responseMap
         
     }

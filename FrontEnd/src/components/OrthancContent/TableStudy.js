@@ -1,29 +1,24 @@
 import React, {Component} from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import Dropdown from 'react-bootstrap/Dropdown'
-import TableStudy from './TableStudy'
 
-class TablePatients extends Component{
-
+class TableStudy extends Component{
 
     columns = [{
-        dataField: 'patientOrthancID', 
+        datafield: 'studyID', 
         hidden: true
     }, {
-        dataField: 'studies',
-        text: 'Study',
-        formatter: this.tableStudy
+        datafield: 'studyDate', 
+        text: 'Study Date'
     }, {
-        dataField: 'patientName', 
-        text: 'Patient Name', 
-        sort: true,
+        datafield: 'studyDesctiption', 
+        text: 'description'
     }, {
-        dataField: 'patientID', 
-        text: 'Patient ID', 
-        sort: true, 
+        datafield: 'accessionNumber', 
+        text: 'Accession Number'
     }, {
-        dataField: 'action', 
-        text: 'action',
+        datafield: 'action', 
+        text: 'action', 
         formatter: this.actionButton
     }]
 
@@ -43,23 +38,12 @@ class TablePatients extends Component{
             )
     }
 
-    //patients's studies 
-    tableStudy (cell, row, rowIndex) {
-        console.log("cell = ", cell)
-        return(
-            "{}"
-            //<TableStudy data={cell}></TableStudy>
-        )
-    }
-    
     render(){
-        console.log(this.props.data)
         return (
-            <BootstrapTable keyField="patientOrthancID" striped={true} data={this.props.data} columns={this.columns} expandRow={this.tableStudy} />
+            <BootstrapTable keyField="StudyID" striped={true} data={this.props.data} columns={this.columns} />
         )
     }
-
 
 }
 
-export default TablePatients 
+export default TableStudy
