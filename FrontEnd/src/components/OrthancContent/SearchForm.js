@@ -54,35 +54,54 @@ class SearchForm extends Component{
 
     async handleClick(){
         let studies = await apis.content.getContent(this.dataSearch())
-        this.setState({studies: this.traitementStudies(studies)})
+        let hirachicalAnswer = this.traitementStudies(studies)
+        let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
+        this.setState({studies: dataForPatientTable })
+    }
+
+    prepareDataForTable(responseArray){
+
+        console.log(responseArray)
+        let answer = []
+        for(let patient in responseArray) {
+            answer.push( {
+                patientOrthancID  : patient,
+                ...responseArray[patient]
+            })
+        }
+        console.log(answer)
+        return answer
+
     }
 
     traitementStudies(studies){
-        let tab = []
+        let responseMap = []
         studies.forEach(element => {
-            let study = {
-                [element.ParentPatient]: {
+                responseMap[element.ParentPatient] = {
                     patientBirthDate: element.PatientMainDicomTags.PatientBirthDate,
+                    patientID : element.PatientMainDicomTags.PatientID,
                     patientName: element.PatientMainDicomTags.PatientName, 
                     patientSex: element.PatientMainDicomTags.PatientSex, 
-                    studies: { [element.ID]: {
-                        isStable: element.IsStable,
-                        lastUpdtae: element.LastUpdate,
-                        patientId: element.PatientMainDicomTags.PatientID,
-                        accessionNumber: element.MainDicomTags.AccessionNumber, 
-                        studyDate: element.MainDicomTags.StudyDate, 
-                        studyDescription: element.MainDicomTags.StudyDescription, 
-                        studyInstanceUID: element.MainDicomTags.StudyInstanceUID, 
-                        studyTime: element.MainDicomTags.StudyTime, 
-                        series: element.Series
-                    }
-                        
-                    } 
-                }
-            }
-            tab.push(study)
-        })
-        return tab
+                    studies: { 
+                            [element.ID]: {
+                                isStable: element.IsStable,
+                                lastUpdtae: element.LastUpdate,
+                                patientId: element.PatientMainDicomTags.PatientID,
+                                accessionNumber: element.MainDicomTags.AccessionNumber, 
+                                studyDate: element.MainDicomTags.StudyDate, 
+                                studyDescription: element.MainDicomTags.StudyDescription, 
+                                studyInstanceUID: element.MainDicomTags.StudyInstanceUID, 
+                                studyTime: element.MainDicomTags.StudyTime, 
+                                series: element.Series
+                            }
+                         }
+
+                } 
+                
+            })
+          
+        return responseMap
+        
     }
 
     dataSearch(){
@@ -169,10 +188,10 @@ class SearchForm extends Component{
                 </div>
                 <div className='jumbotron row'>
                     <div className='col-sm'>
-                        {<TablePatients data={this.state.studies} />}
+                        <TablePatients data={this.state.studies} />
                     </div>
                     <div className='col-sm'>
-                        {<label >TableSeries</label> }
+                        <label >TableSeries</label>
                     </div>
                 </div>
             </Fragment>

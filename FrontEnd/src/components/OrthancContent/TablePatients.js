@@ -5,53 +5,55 @@ import Dropdown from 'react-bootstrap/Dropdown'
 class TablePatients extends Component{
 
     columns = [{
-        dataField: 'Key', 
+        dataField: 'patientOrthancID', 
         hidden: true
     }, {
         dataField: 'studies',
         text: 'Study',
-        //formatter: this.tableStudy
+        formatter: this.tableStudy
     }, {
         dataField: 'patientName', 
         text: 'Patient Name', 
         sort: true,
     }, {
-        dataField: 'patientId', 
+        dataField: 'patientID', 
         text: 'Patient ID', 
         sort: true, 
     }, {
         dataField: 'action', 
-        text: 'action', 
+        text: 'action',
         formatter: this.actionButton
     }]
 
     actionButton(){
         return (
-            <div className="dropdown">
-                <button className="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                    Dropdown button
-                </button>
-                <div className="dropdown-menu">
-                    <a className="dropdown-item" href="#">Action</a>
-                    <a className="dropdown-item" href="#">Another action</a>
-                    <a className="dropdown-item" href="#">Something else here</a>
-                </div>
-            </div>)
-    }
-    /*
-    //patients's studies 
-    expandRow = {
-        showExpandColumn: true,
-        renderer : (row) => {
-            return(
-                <tableStudy rowData={row}></tableStudy>
+            <Dropdown>
+                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                    Dropdown Button
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                    <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                    <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                    <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
             )
-        }
     }
-    */
+    
+    //patients's studies 
+    tableStudy (cell, row, rowIndex) {
+        console.log(cell)
+        return(
+            "{}"
+            //<TableStudy rowData={cell}></TableStudy>
+        )
+    }
+    
     render(){
+        console.log(this.props.data)
         return (
-            <BootstrapTable keyField="key" striped={true} data={this.props.data} columns={this.columns} /* expandRow={this.expandRow}*/ />
+            <BootstrapTable keyField="patientOrthancID" striped={true} data={this.props.data} columns={this.columns} /* expandRow={this.expandRow}*/ />
         )
     }
 
