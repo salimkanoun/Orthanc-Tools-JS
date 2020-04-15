@@ -116,5 +116,6 @@ router.put('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseP
 
 //Orthanc content
 router.post('/tools/find',  [userAuthMidelware, userAdminMidelware], reverseProxyPost )
+router.get('/series/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 
 module.exports = router

@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import SelectModalities from '../AutoQuery/Component/SelectModalities'
 import apis from '../../services/apis'
 import TablePatients from './TablePatients'
+import TableSeries from './TableSeries'
 
 class SearchForm extends Component{
 
@@ -10,7 +11,9 @@ class SearchForm extends Component{
         this.handleChange=this.handleChange.bind(this)
         this.handleClick=this.handleClick.bind(this)
         this.updateModalities = this.updateModalities.bind(this)
+        this.handleRowSelect = this.handleRowSelect.bind(this)
     }
+
     
     state = {
         firstName: '',
@@ -21,7 +24,8 @@ class SearchForm extends Component{
         dateFrom: '', 
         dateTo: '',
         modalities: '',
-        studies: []
+        studies: [], 
+        series: []
     }
 
     /**
@@ -55,13 +59,10 @@ class SearchForm extends Component{
         let studies = await apis.content.getContent(this.dataSearch())
         let hirachicalAnswer = this.traitementStudies(studies)
         let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
-        console.log("dataForPatientTable = ", dataForPatientTable)
-        this.setState({studies: dataForPatientTable })
+        this.setState({ studies: dataForPatientTable })
     }
 
     prepareDataForTable(responseArray){
-        console.log("avant prépa = ", responseArray)
-        console.log(responseArray)
         let answer = []
         for(let patient in responseArray) {
             answer.push( {
@@ -69,7 +70,6 @@ class SearchForm extends Component{
                 ...responseArray[patient]
             })
         }
-        console.log("après prépa = ", answer)
         return answer
 
     }
@@ -84,7 +84,6 @@ class SearchForm extends Component{
                     patientSex: element.PatientMainDicomTags.PatientSex, 
                     studies: { 
                             [element.ID]: {
-                                ID: element.ID,
                                 isStable: element.IsStable,
                                 lastUpdtae: element.LastUpdate,
                                 patientId: element.PatientMainDicomTags.PatientID,
@@ -102,6 +101,41 @@ class SearchForm extends Component{
             })
         return responseMap
         
+    }
+
+    traitementSeries(series){
+        let responseMap = []
+        responseMap[series.ID] = {
+            ExpectedNumberOfInstances: series.ExpectedNumberOfInstances, 
+            Instances: series.Instances, 
+            IsStable: series.IsStable, 
+            LastUpdate: series.LastUpdate, 
+            BodyPartExamined: series.MainDicomTags.BodyPartExamined, 
+            Manufacturer: series.MainDicomTags.Manufacturer, 
+            Modality: series.MainDicomTags.Modality, 
+            SeriesDate: series.MainDicomTagsSeriesDate, 
+            SeriesDescription: series.MainDicomTags.SeriesDescription, 
+            SeriesInstanceUID: series.MainDicomTags.SeriesInstanceUID, 
+            SeriesNumber: series.MainDicomTags.SeriesNumber, 
+            SeriesTime: series.MainDicomTags.SeriesTime, 
+            ParentStudy: series.ParentStudy, 
+            Status: series.Status,
+            Type: series.Type
+            
+        }
+        return responseMap
+    }
+
+    prepareDataForTableSeries(responseArray){
+        let answer = []
+        for(let series in responseArray) {
+            answer.push( {
+                serieOrthancID  : series,
+                ...responseArray[series]
+            })
+        }
+        return answer
+
     }
 
     dataSearch(){
@@ -136,11 +170,31 @@ class SearchForm extends Component{
         return contentSearch
     }
 
+    async handleRowSelect(row){
+        if (row.series !== []){
+            let seriesArray = row.series
+            let rows = []
+            
+            for (let i = 0; i < seriesArray.length; i++){
+                let series = await apis.content.getSeriesDetails(seriesArray[i])
+                let hirachicalAnswer = this.traitementSeries(series)
+                let data = this.prepareDataForTableSeries(hirachicalAnswer)
+                rows.push(data[0])
+            }
+            console.log("row = ", rows)
+            this.setState({series: rows})
+        }
+    }
+
 
 
 
     //form
     render(){
+        const selectRow={
+            mode: 'radio', 
+            onSelect: this.handleRowSelect
+        }
         return (
             <Fragment>
                 <h2 className="card-title">Search</h2>
@@ -188,10 +242,10 @@ class SearchForm extends Component{
                 </div>
                 <div className='jumbotron row'>
                     <div className='col-sm'>
-                        <TablePatients data={this.state.studies} />
+                        <TablePatients data={this.state.studies} selectRow={ selectRow } />
                     </div>
                     <div className='col-sm'>
-                        <label >TableSeries</label>
+                        <TableSeries data={this.state.series} />
                     </div>
                 </div>
             </Fragment>

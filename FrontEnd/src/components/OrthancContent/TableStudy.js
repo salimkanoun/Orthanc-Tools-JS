@@ -5,19 +5,19 @@ import Dropdown from 'react-bootstrap/Dropdown'
 class TableStudy extends Component{
 
     columns = [{
-        datafield: 'studyID', 
+        dataField: 'studyOrthancID', 
         hidden: true
     }, {
-        datafield: 'studyDate', 
+        dataField: 'studyDate', 
         text: 'Study Date'
     }, {
-        datafield: 'studyDesctiption', 
+        dataField: 'studyDescription', 
         text: 'description'
     }, {
-        datafield: 'accessionNumber', 
+        dataField: 'accessionNumber', 
         text: 'Accession Number'
     }, {
-        datafield: 'action', 
+        dataField: 'action', 
         text: 'action', 
         formatter: this.actionButton
     }]
@@ -38,9 +38,11 @@ class TableStudy extends Component{
             )
     }
 
+    
+
     render(){
         return (
-            <BootstrapTable keyField="StudyID" striped={true} data={this.props.data} columns={this.columns} />
+            <BootstrapTable keyField="studyOrthancID" striped={true} columns={this.columns} data={this.props.data} selectRow={ this.props.selectRow } />
         )
     }
 

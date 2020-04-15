@@ -16,6 +16,21 @@ const query  = {
         }).catch((error) => {
             toastifyError(error)
         })
+    },
+
+    getSeriesDetails(series){
+        return fetch('api/series/' + series, {
+            method: 'GET', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            if (!response.ok) {throw response}
+            return response.json()
+        }).catch((error) => {
+            toastifyError(error)
+        })
     }
 }
 
