@@ -22,6 +22,11 @@ class TablePatients extends Component{
         formatter: this.actionButton
     }]
 
+    /**
+     * Ici le dropdow devrait etre identique pour Patient / Studies / Series
+     * Il devrait contenir  2 entrées Modify et Delete
+     * On devrait pouvoir l'abstrait dans un composant qui aurait comme props le level (patient/study/series) et l'orthancID de la ressource qui l'instancie
+     */
     actionButton(){
         return (
             <Dropdown>
@@ -38,48 +43,19 @@ class TablePatients extends Component{
             )
     }
 
-    traitementStudies(study){
-        console.log("study = ", study)
-        let responseMap = []
-        let key = Object.keys(study)
-        responseMap[Object.keys(key)] = {
-            accessionNumber: study[key].accessionNumber, 
-            isStable: study[key].isStable,
-            lastUpdate: study[key].lastUpdate, 
-            patientId: study[key].patientId, 
-            series: study[key].series, 
-            studyDate: study[key].studyDate, 
-            studyDescription: study[key].studyDescription, 
-            studyInstanceIUD: study[key].studyInstanceUID, 
-            studyTime: study[key].studyTime 
-        }
-            
-        return responseMap
-    }
-
-
     expandRow = {
         showExpandColumn: true,
         renderer: (row) => {
-            let responseMap = []
-            let key = Object.keys(row.studies)
-            responseMap[Object.keys(key)] = {
-                accessionNumber: row.studies[key].accessionNumber, 
-                isStable: row.studies[key].isStable,
-                lastUpdate: row.studies[key].lastUpdate, 
-                patientId: row.studies[key].patientId, 
-                series: row.studies[key].series, 
-                studyDate: row.studies[key].studyDate, 
-                studyDescription: row.studies[key].studyDescription, 
-                studyInstanceUID: row.studies[key].studyInstanceUID, 
-                studyTime: row.studies[key].studyTime 
-            }
-            
+            // SK : J'ai modifié ici j'ai pas compris ce que t'avais fait,
+            //Ici quand tu clique sur expand tu a les data de la row courrante qui t'est passée en parametre
+            //Il suffit de recupérer la clé studies qui contient ton array de studies,
+            // tu boucle sur la propriété ID pour eclater cette propriété dans un array de JSON ou la propriété devient un clé additionelle au reste
+            let studies = row.studies 
             let answer = []
-            for(let study in responseMap) {
+            for(let study in studies) {
                 answer.push( {
                     studyOrthancID  : study,
-                    ...responseMap[study]
+                    ...studies[study]
                 })
             }
             return (

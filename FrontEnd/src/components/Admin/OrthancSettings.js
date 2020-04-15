@@ -99,10 +99,10 @@ export default class OrthancSettings extends Component {
                     <input type='password' name="OrthancPassword" className="row form-control" value={this.state.OrthancPassword} onChange={this.handleChange} />
                 </div>
                 <div className="form-group text-right">
-                    <input type='button' className='btn btn-primary' onClick={this.submitOrthancSettings} value='Update' />
-                    <input type='button' className='btn btn-info' onClick={this.testConnexion} value='Check Connexion' />
-                    <input type='button' className='btn btn-warning' onClick={this.reset} value='Reset' />
-                    <input type='button' className='btn btn-danger' onClick={this.shutdown} value='Shutdown' />
+                    <input type='button' className='btn btn-primary mr-1' onClick={this.submitOrthancSettings} value='Update' />
+                    <input type='button' className='btn btn-info mr-1' onClick={this.testConnexion} value='Check Connexion' />
+                    <input type='button' className='btn btn-warning mr-1' onClick={this.reset} value='Reset' />
+                    <input type='button' className='btn btn-danger mr-1' onClick={this.shutdown} value='Shutdown' />
                 </div>
                 <div className="row">
                     <div className="col-md-auto">

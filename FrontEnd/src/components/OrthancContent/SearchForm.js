@@ -85,7 +85,7 @@ class SearchForm extends Component{
                     studies: { 
                             [element.ID]: {
                                 isStable: element.IsStable,
-                                lastUpdtae: element.LastUpdate,
+                                lastUpdate: element.LastUpdate,
                                 patientId: element.PatientMainDicomTags.PatientID,
                                 accessionNumber: element.MainDicomTags.AccessionNumber, 
                                 studyDate: element.MainDicomTags.StudyDate, 

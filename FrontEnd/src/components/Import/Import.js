@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import Uppy from '@uppy/core'
 import StatusBar from '@uppy/status-bar'
 import XHRUpload from '@uppy/xhr-upload'
@@ -48,20 +48,20 @@ export default class Import extends Component {
 
     render(){
         return (
-            <Fragment>
+            <div className="jumbotron">
                  <DragDrop
                     uppy={this.uppy}
                     locale={{
-                    strings: {
-                        // Text to show on the droppable area.
-                        // `%{browse}` is replaced with a link that opens the system file selection dialog.
-                        dropHereOr: 'Drop Dicom Folder',
-                        // Used as the label for the link that opens the system file selection dialog.
-                        browse: 'browse'
-                    }
+                        strings: {
+                            // Text to show on the droppable area.
+                            // `%{browse}` is replaced with a link that opens the system file selection dialog.
+                            dropHereOr: 'Drop Dicom Folder',
+                            // Used as the label for the link that opens the system file selection dialog.
+                            browse: 'browse'
+                        }
                     }}
                 />
-            </Fragment>
+            </div>
 
         )
     }

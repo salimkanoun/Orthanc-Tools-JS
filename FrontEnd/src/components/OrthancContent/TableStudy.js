@@ -38,7 +38,17 @@ class TableStudy extends Component{
             )
     }
 
-    
+    /**
+     * Ici a évaluer, si les details ne sont pas envoyés dans les props il faut les fetch depuis orthanc (
+     * pour rendre ce composant réutilisables)
+     * ou sinon faire cette injection de data par un HOC (Higher Order component => Faut que tu vois le cours c'est un composant qui renvoie un composant)
+     * https://fr.reactjs.org/docs/higher-order-components.html
+     */
+    componentDidMount(){
+        if(this.props.data.length === 0){
+            //Faire Appel API pour load les data des studies du patient (dont l'ID doit venir en prop du coup)
+        }
+    }
 
     render(){
         return (

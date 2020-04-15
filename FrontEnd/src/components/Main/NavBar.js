@@ -13,6 +13,9 @@ export default class NavBar extends Component {
             <Link className='nav-link' to='/'>Authentication</Link>
           </li>
           <li className='nav-item'>
+            <Link className='nav-link' to='/OrthancContent'>Orthanc Content</Link>
+          </li>
+          <li className='nav-item'>
             <Link className='nav-link' to='/import'>Import</Link>
           </li>
           <li className='nav-item'>
@@ -23,9 +26,6 @@ export default class NavBar extends Component {
           </li>
           <li className='nav-item'>
             <Link className='nav-link' to='/options'>Options</Link>
-          </li>
-          <li className='nav-item'>
-            <Link className='nav-link' to='/OrthancContent'>Orthanc Content</Link>
           </li>
         </ul>
         <div>
