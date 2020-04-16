@@ -96,13 +96,8 @@ const ReverseProxy = {
   streamToResUploadDicom (api, method, data, res) {
     request(this.makeOptionsUpload(method, api, data))
       .on('response', function (response) {
-        if (response.statusCode === 200) {
           response.pipe(res)
-        } else {
-          res.status(response.statusCode).send(response.statusMessage)
-        }
       }).catch((error) => {
-        console.log(error)
         res.status(500).send('Upload Failed')
       })
   },
