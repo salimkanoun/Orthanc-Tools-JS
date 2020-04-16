@@ -11,7 +11,8 @@ export default class Import extends Component {
         super(props)
         
         this.uppy = Uppy({
-            autoProceed: true
+            autoProceed: true,
+            allowMultipleUploads: true,
         })
 
         this.uppy.use(XHRUpload, {

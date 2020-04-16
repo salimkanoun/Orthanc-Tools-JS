@@ -48,8 +48,12 @@ const query  = {
         })
     }, 
 
-    getSeriesDetails(series){
-        return fetch('api/series/' + series, {
+    /**
+     * Retrieve series details of a study
+     * @param {string} studyID 
+     */
+    getSeriesDetails(studyID){
+        return fetch('api/studies/' + studyID + '/series?expand', {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',

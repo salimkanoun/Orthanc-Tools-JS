@@ -3,18 +3,12 @@ import SelectModalities from '../AutoQuery/Component/SelectModalities'
 import apis from '../../services/apis'
 import TablePatients from './TablePatients'
 import TableSeries from './TableSeries'
+import tableSeriesFillFromParent from './TableSeriesFillFromParent'
+
+const EnhancedComponent = tableSeriesFillFromParent(TableSeries);
 
 class SearchForm extends Component{
 
-    constructor(props){
-        super(props)
-        this.handleChange=this.handleChange.bind(this)
-        this.handleClick=this.handleClick.bind(this)
-        this.updateModalities = this.updateModalities.bind(this)
-        this.handleRowSelect = this.handleRowSelect.bind(this)
-    }
-
-    
     state = {
         firstName: '',
         lastName: '', 
@@ -25,20 +19,27 @@ class SearchForm extends Component{
         dateTo: '',
         modalities: '',
         studies: [], 
-        series: []
+        series: [],
+        currentSelectedStudyId : ""
+    }
+
+    constructor(props){
+        super(props)
+        this.handleChange=this.handleChange.bind(this)
+        this.handleClick=this.handleClick.bind(this)
+        this.updateModalities = this.updateModalities.bind(this)
+        this.handleRowSelect = this.handleRowSelect.bind(this)
     }
 
     /**
-   * Store modality string comming from SelectModalities component in the current state
-   * @param {String} modalityString 
-   */
-     updateModalities(modalityString){
+     * Store modality string comming from SelectModalities component in the current state
+     * @param {String} modalityString 
+     */
+    updateModalities(modalityString){
         this.setState({
-        modalities : modalityString
+            modalities : modalityString
         })
-  }
-
-    
+    }
 
     /**
      * Fill input text of users in current state
@@ -176,21 +177,12 @@ class SearchForm extends Component{
     }
 
     rowEvents = {
-        onClick: async (e, row, rowIndex) => {
-            if (row.series !== []){
-                let seriesArray = row.series
-                let rows = []
-                
-                for (let i = 0; i < seriesArray.length; i++){
-                    let series = await apis.content.getSeriesDetails(seriesArray[i])
-                    let hirachicalAnswer = this.traitementSeries(series)
-                    let data = this.prepareDataForTableSeries(hirachicalAnswer)
-                    rows.push(data[0])
-                }
-                console.log("row = ", rows)
-                this.setState({series: rows})
-            }
+        onClick: (e, row, rowIndex) => {
+            this.setState({
+                currentSelectedStudyId : row.studyOrthancID
+            })
         }
+        
     }
 
 
@@ -252,7 +244,8 @@ class SearchForm extends Component{
                         <TablePatients patients={this.state.studies} selectRow={ selectRow } rowEvents={ this.rowEvents } />
                     </div>
                     <div className='col-sm'>
-                        {/*<TableSeries series={this.state.series} />*/}
+                     <EnhancedComponent studyID={this.state.currentSelectedStudyId}/>
+                        
                     </div>
                 </div>
             </Fragment>
