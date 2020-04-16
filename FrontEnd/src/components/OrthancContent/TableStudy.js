@@ -4,6 +4,19 @@ import Dropdown from 'react-bootstrap/Dropdown'
 
 class TableStudy extends Component{
 
+    state = {
+        studies :  []
+    }
+
+    constructor(props){
+        super(props)
+        this.setState({
+            studies : props.studies
+        })
+    }
+
+
+
     columns = [{
         dataField: 'studyOrthancID', 
         hidden: true
@@ -45,8 +58,10 @@ class TableStudy extends Component{
      * https://fr.reactjs.org/docs/higher-order-components.html
      */
     componentDidMount(){
-        if(this.props.data.length === 0){
+        if(this.state.studies.length === 0){
             //Faire Appel API pour load les data des studies du patient (dont l'ID doit venir en prop du coup)
+            // GET /patients/{id}
+            //le patient ID sera dans les props (ex : this.props.parentPatientID)
         }
     }
 

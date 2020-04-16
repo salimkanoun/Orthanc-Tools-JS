@@ -65,6 +65,11 @@ class TableSeries extends Component{
             )
     }
 
+    componentDidMount(){
+        //Appeler API /studies/{id}? GET
+
+    }
+
     render(){
         return (
             <BootstrapTable keyField="serieOrthancID" striped={true} data={this.props.data} columns={this.columns} />
