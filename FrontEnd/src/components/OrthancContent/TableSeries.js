@@ -1,9 +1,33 @@
 import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
+import apis from '../../services/apis'
 
 
 class TableSeries extends Component{
+
+    state = {
+        series :  []
+    }
+
+    constructor(props){
+        super(props)
+        
+        this.setState({
+            series : this.props.series
+        })
+        console.log(props.series)
+        this.componentDidMount = this.componentDidMount.bind(this)
+    }
+
+    async componentDidMount(){
+        if(this.state.series.length === 0){
+            let serieDetails = await apis.content.getSeriesDetails(this.props.seriesID)
+            console.log("serieDetail = ", serieDetails)
+            this.setState({series: serieDetails})
+        }
+    }
+
 
     columns = [{
         dataField: 'serieOrthancID', 
@@ -24,19 +48,22 @@ class TableSeries extends Component{
     }, {
         dataField: 'Action', 
         text: 'Action',
-        formatter: ((value, row, index) => <ActionBouton level='series' orthancID={this.props.data[index].serieOrthancID} />)
+        formatter: ((value, row, index) => console.log(index))//<ActionBouton level='series' orthancID={this.props.series[index].serieOrthancID} />)
     }]
 
-    componentDidMount(){
-        //Appeler API /studies/{id}? GET
-
-    }
 
     render(){
+        
         return (
-            <BootstrapTable keyField="serieOrthancID" striped={true} data={this.props.data} columns={this.columns} />
+            <BootstrapTable keyField="serieOrthancID" striped={true} data={this.state.series} columns={this.columns} />
         )
+        
     }
+}
+
+TableSeries.defaultProps = {
+    series: [], 
+    seriesID: null
 }
 
 export default TableSeries

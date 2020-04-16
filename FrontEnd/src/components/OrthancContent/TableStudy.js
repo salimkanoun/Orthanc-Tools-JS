@@ -45,8 +45,8 @@ class TableStudy extends Component{
      */
     async componentDidMount(){
         if(this.state.studies.length === 0){
-            let patientDetails = await apis.content.getPatients(this.props.parentPatientID)
-            this.setState({studies: patientDetails})
+            let studiesDetails = await apis.content.getStudiesDetails(this.props.studiesID)
+            this.setState({studies: studiesDetails})
             //Faire Appel API pour load les data des studies du patient (dont l'ID doit venir en prop du coup)
             // GET /patients/{id}
             //le patient ID sera dans les props (ex : this.props.parentPatientID)
@@ -55,7 +55,7 @@ class TableStudy extends Component{
 
     render(){
         return (
-            <BootstrapTable keyField="studyOrthancID" striped={true} columns={this.columns} data={this.props.studies} selectRow={ this.props.selectRow } rowEvents={ this.props.rowEvents } />
+            <BootstrapTable keyField="studyOrthancID" striped={true} columns={this.columns} data={this.state.studies} selectRow={ this.props.selectRow } rowEvents={ this.props.rowEvents } />
         )
     }
 

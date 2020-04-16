@@ -60,7 +60,7 @@ class SearchForm extends Component{
         let hirachicalAnswer = this.traitementStudies(studies)
         let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
         this.setState({ studies: dataForPatientTable })
-        console.log(dataForPatientTable)
+        console.log("data pour tablePatient ", dataForPatientTable)
     }
 
     prepareDataForTable(responseArray){
@@ -249,11 +249,10 @@ class SearchForm extends Component{
                 </div>
                 <div className='jumbotron row'>
                     <div className='col-sm'>
-                        <TablePatients data={this.state.studies} selectRow={ selectRow } rowEvents={ this.rowEvents } />
+                        <TablePatients patients={this.state.studies} selectRow={ selectRow } rowEvents={ this.rowEvents } />
                     </div>
                     <div className='col-sm'>
-                        <TableSeries data={this.state.series} />
-                        {console.log("series : ", this.state.series)}
+                        {/*<TableSeries series={this.state.series} />*/}
                     </div>
                 </div>
             </Fragment>

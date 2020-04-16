@@ -2,9 +2,33 @@ import React, {Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import TableStudy from './TableStudy'
 import ActionBouton from './ActionBouton'
+import apis from '../../services/apis'
 
 class TablePatients extends Component{
     
+
+    state = {
+        patients :  []
+    }
+
+    constructor(props){
+        super(props)
+        console.log("props patients", this.props.patients)
+        this.setState({
+            patients : this.props.patients
+        })
+        this.componentDidMount = this.componentDidMount.bind(this)
+    }
+
+    async componentDidMount(){
+        if(this.state.patients.length === 0 && this.props.patientsID !== ""){
+            let patientsDetails = await apis.content.getPatientsDetails(this.props.patientsID)
+            this.setState({patients: patientsDetails})
+        }
+        console.log("tablePatient state = ", this.state)
+    }
+
+
     columns = [{
         dataField: 'patientOrthancID', 
         hidden: true
@@ -19,7 +43,8 @@ class TablePatients extends Component{
     }, {
         dataField: 'action', 
         text: 'action',
-        formatter: ((value, row, index) => <ActionBouton level='patient' orthancID={this.props.data[index].patientOrthancID} />)
+        formatter: ((value, row, index) => <ActionBouton level='patient' orthancID={this.props.patients[index].patientOrthancID} />)
+    
     }]
 
     expandRow = {
@@ -46,11 +71,16 @@ class TablePatients extends Component{
     
     render(){
         return (
-            <BootstrapTable keyField="patientOrthancID" striped={true} data={this.props.data} columns={this.columns} expandRow={this.expandRow}/>
+            <BootstrapTable keyField="patientOrthancID" striped={true} data={this.state.patients} columns={this.columns} expandRow={this.expandRow}/>
         )
     }
 
 
+}
+
+TablePatients.defaultProps = {
+    patients: [], 
+    patientsID: ""
 }
 
 export default TablePatients 

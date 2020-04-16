@@ -116,6 +116,8 @@ router.put('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseP
 
 //Orthanc content
 router.post('/tools/find',  [userAuthMidelware, userAdminMidelware], reverseProxyPost )
+router.get('/patients/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.get('/studies/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 router.get('/series/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 router.delete('/patients/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 router.delete('/studies/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
