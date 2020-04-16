@@ -1,7 +1,7 @@
 import React, {Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
-import Dropdown from 'react-bootstrap/Dropdown'
 import TableStudy from './TableStudy'
+import ActionBouton from './ActionBouton'
 
 class TablePatients extends Component{
     
@@ -19,29 +19,8 @@ class TablePatients extends Component{
     }, {
         dataField: 'action', 
         text: 'action',
-        formatter: this.actionButton
+        formatter: ((value, row, index) => <ActionBouton level='patient' orthancID={this.props.data[index].patientOrthancID} />)
     }]
-
-    /**
-     * Ici le dropdow devrait etre identique pour Patient / Studies / Series
-     * Il devrait contenir  2 entrées Modify et Delete
-     * On devrait pouvoir l'abstrait dans un composant qui aurait comme props le level (patient/study/series) et l'orthancID de la ressource qui l'instancie
-     */
-    actionButton(){
-        return (
-            <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                    Dropdown Button
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                    <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                    <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
-            )
-    }
 
     expandRow = {
         showExpandColumn: true,
@@ -59,7 +38,7 @@ class TablePatients extends Component{
                 })
             }
             return (
-                <TableStudy data={answer} selectRow={ this.props.selectRow } />
+                <TableStudy studies={answer} selectRow={ this.props.selectRow } rowEvents={this.props.rowEvents} />
             )
         }
              

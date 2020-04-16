@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
-import Dropdown from 'react-bootstrap/Dropdown'
+import ActionBouton from './ActionBouton'
+import apis from '../../services/apis'
 
 class TableStudy extends Component{
 
@@ -13,6 +14,7 @@ class TableStudy extends Component{
         this.setState({
             studies : props.studies
         })
+        this.componentDidMount = this.componentDidMount.bind(this)
     }
 
 
@@ -32,24 +34,8 @@ class TableStudy extends Component{
     }, {
         dataField: 'action', 
         text: 'action', 
-        formatter: this.actionButton
+        formatter: ((value, row, index) => <ActionBouton level='studies' orthancID={this.props.data[index].studyOrthancID} />)
     }]
-
-    actionButton(){
-        return (
-            <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                    Dropdown Button
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                    <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                    <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
-            )
-    }
 
     /**
      * Ici a évaluer, si les details ne sont pas envoyés dans les props il faut les fetch depuis orthanc (
@@ -57,8 +43,10 @@ class TableStudy extends Component{
      * ou sinon faire cette injection de data par un HOC (Higher Order component => Faut que tu vois le cours c'est un composant qui renvoie un composant)
      * https://fr.reactjs.org/docs/higher-order-components.html
      */
-    componentDidMount(){
+    async componentDidMount(){
         if(this.state.studies.length === 0){
+            let patientDetails = await apis.content.getPatients(this.props.parentPatientID)
+            this.setState({studies: patientDetails})
             //Faire Appel API pour load les data des studies du patient (dont l'ID doit venir en prop du coup)
             // GET /patients/{id}
             //le patient ID sera dans les props (ex : this.props.parentPatientID)
@@ -67,7 +55,7 @@ class TableStudy extends Component{
 
     render(){
         return (
-            <BootstrapTable keyField="studyOrthancID" striped={true} columns={this.columns} data={this.props.data} selectRow={ this.props.selectRow } />
+            <BootstrapTable keyField="studyOrthancID" striped={true} columns={this.columns} data={this.props.studies} selectRow={ this.props.selectRow } rowEvents={ this.props.rowEvents } />
         )
     }
 

@@ -60,6 +60,7 @@ class SearchForm extends Component{
         let hirachicalAnswer = this.traitementStudies(studies)
         let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
         this.setState({ studies: dataForPatientTable })
+        console.log(dataForPatientTable)
     }
 
     prepareDataForTable(responseArray){
@@ -171,18 +172,24 @@ class SearchForm extends Component{
     }
 
     async handleRowSelect(row){
-        if (row.series !== []){
-            let seriesArray = row.series
-            let rows = []
-            
-            for (let i = 0; i < seriesArray.length; i++){
-                let series = await apis.content.getSeriesDetails(seriesArray[i])
-                let hirachicalAnswer = this.traitementSeries(series)
-                let data = this.prepareDataForTableSeries(hirachicalAnswer)
-                rows.push(data[0])
+        console.log("Selected row : ", row)
+    }
+
+    rowEvents = {
+        onClick: async (e, row, rowIndex) => {
+            if (row.series !== []){
+                let seriesArray = row.series
+                let rows = []
+                
+                for (let i = 0; i < seriesArray.length; i++){
+                    let series = await apis.content.getSeriesDetails(seriesArray[i])
+                    let hirachicalAnswer = this.traitementSeries(series)
+                    let data = this.prepareDataForTableSeries(hirachicalAnswer)
+                    rows.push(data[0])
+                }
+                console.log("row = ", rows)
+                this.setState({series: rows})
             }
-            console.log("row = ", rows)
-            this.setState({series: rows})
         }
     }
 
@@ -192,7 +199,7 @@ class SearchForm extends Component{
     //form
     render(){
         const selectRow={
-            mode: 'radio', 
+            mode: 'checkbox', 
             onSelect: this.handleRowSelect
         }
         return (
@@ -242,10 +249,11 @@ class SearchForm extends Component{
                 </div>
                 <div className='jumbotron row'>
                     <div className='col-sm'>
-                        <TablePatients data={this.state.studies} selectRow={ selectRow } />
+                        <TablePatients data={this.state.studies} selectRow={ selectRow } rowEvents={ this.rowEvents } />
                     </div>
                     <div className='col-sm'>
                         <TableSeries data={this.state.series} />
+                        {console.log("series : ", this.state.series)}
                     </div>
                 </div>
             </Fragment>
