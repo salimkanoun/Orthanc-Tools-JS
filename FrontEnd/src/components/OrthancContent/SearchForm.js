@@ -20,7 +20,8 @@ class SearchForm extends Component{
         modalities: '',
         studies: [], 
         series: [],
-        currentSelectedStudyId : ""
+        currentSelectedStudyId : "",
+        clearSeriesTable: false
     }
 
     constructor(props){
@@ -61,7 +62,6 @@ class SearchForm extends Component{
         let hirachicalAnswer = this.traitementStudies(studies)
         let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
         this.setState({ studies: dataForPatientTable })
-        console.log("data pour tablePatient ", dataForPatientTable)
     }
 
     prepareDataForTable(responseArray){
@@ -103,41 +103,6 @@ class SearchForm extends Component{
             })
         return responseMap
         
-    }
-
-    traitementSeries(series){
-        let responseMap = []
-        responseMap[series.ID] = {
-            ExpectedNumberOfInstances: series.ExpectedNumberOfInstances, 
-            Instances: series.Instances, 
-            IsStable: series.IsStable, 
-            LastUpdate: series.LastUpdate, 
-            BodyPartExamined: series.MainDicomTags.BodyPartExamined, 
-            Manufacturer: series.MainDicomTags.Manufacturer, 
-            Modality: series.MainDicomTags.Modality, 
-            SeriesDate: series.MainDicomTagsSeriesDate, 
-            SeriesDescription: series.MainDicomTags.SeriesDescription, 
-            SeriesInstanceUID: series.MainDicomTags.SeriesInstanceUID, 
-            SeriesNumber: series.MainDicomTags.SeriesNumber, 
-            SeriesTime: series.MainDicomTags.SeriesTime, 
-            ParentStudy: series.ParentStudy, 
-            Status: series.Status,
-            Type: series.Type
-            
-        }
-        return responseMap
-    }
-
-    prepareDataForTableSeries(responseArray){
-        let answer = []
-        for(let series in responseArray) {
-            answer.push( {
-                serieOrthancID  : series,
-                ...responseArray[series]
-            })
-        }
-        return answer
-
     }
 
     dataSearch(){
@@ -186,14 +151,13 @@ class SearchForm extends Component{
     }
 
 
-
-
     //form
     render(){
         const selectRow={
             mode: 'checkbox', 
             onSelect: this.handleRowSelect
         }
+
         return (
             <Fragment>
                 <h2 className="card-title">Search</h2>
@@ -244,7 +208,7 @@ class SearchForm extends Component{
                         <TablePatients patients={this.state.studies} selectRow={ selectRow } rowEvents={ this.rowEvents } />
                     </div>
                     <div className='col-sm'>
-                     <EnhancedComponent studyID={this.state.currentSelectedStudyId}/>
+                        <EnhancedComponent studyID={this.state.currentSelectedStudyId} />
                         
                     </div>
                 </div>

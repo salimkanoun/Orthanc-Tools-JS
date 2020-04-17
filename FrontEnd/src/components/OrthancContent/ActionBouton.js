@@ -32,6 +32,9 @@ class ActionBouton extends Component{
             default:
                 toastifyError("Wrong level")
         }
+
+        this.props.setIdDeleted(orthancID)
+
     }
 
     render(){

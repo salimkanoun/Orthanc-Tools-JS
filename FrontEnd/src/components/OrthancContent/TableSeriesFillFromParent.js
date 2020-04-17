@@ -11,8 +11,8 @@ export default function tableSeriesFillFromParent(TableSeries) {
 
         async componentWillReceiveProps(){
             if(this.props.studyID !== ""){
-
                 let seriesAnswer = await apis.content.getSeriesDetails(this.props.studyID)
+                if (seriesAnswer !== undefined){
                 let seriesData = []
                 seriesAnswer.forEach( (serie) => {
                     seriesData.push({
@@ -24,13 +24,12 @@ export default function tableSeriesFillFromParent(TableSeries) {
                 })
                 this.setState({
                     series : seriesData
-                })
+                })}
 
             }
 
-
         }
-
+        
         render(){
             return(
                 <TableSeries series={this.state.series} {...this.props} />

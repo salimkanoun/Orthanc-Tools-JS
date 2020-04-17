@@ -6,8 +6,20 @@ import TableStudyFillFromParent from './TableStudyFillFromParent'
 
 class TablePatients extends Component{
 
+    constructor(props){
+        super(props)
+        this.setIdDeleted = this.setIdDeleted.bind(this)
+    }
+
+    
+
     state = {
-        patients :  []
+        patients :  [], 
+        idDeleted: ''
+    }
+    
+    setIdDeleted(ID){
+        this.setState({idDeleted: ID})
     }
 
     columns = [{
@@ -30,6 +42,8 @@ class TablePatients extends Component{
     
     }]
 
+    
+
     expandRow = {
         showExpandColumn: true,
         renderer: (row) => {
@@ -42,9 +56,13 @@ class TablePatients extends Component{
                     ...studies[study]
                 })
             }
+            
+            if (this.state.idDeleted !== ''){
+                answer = answer.filter(study => study.studyOrthancID !== this.state.idDeleted)
+            }
   
             return (
-                <TableStudy studies={answer} parentPatientId={row.patientOrthancID} selectRow={ this.props.selectRow } rowEvents={ this.props.rowEvents } />
+                <TableStudy data={answer} parentPatientId={row.patientOrthancID} selectRow={ this.props.selectRow } rowEvents={ this.props.rowEvents } setIdDeleted={this.setIdDeleted} cleanSeries={this.props.cleanSeries} />
             )
         }
              
@@ -52,7 +70,7 @@ class TablePatients extends Component{
     
     render(){
         return (
-            <BootstrapTable keyField="patientOrthancID" striped={true} data={this.props.patients} columns={this.columns} expandRow={this.expandRow}/>
+            <BootstrapTable keyField="patientOrthancID" striped={true} data={this.props.patients} columns={this.columns} expandRow={this.expandRow} />
         )
     }
 
