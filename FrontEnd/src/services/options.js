@@ -78,6 +78,55 @@ const Options = {
     }).catch((error) => {
       toastifyError('Orthanc Server Error: ' + error.statusText)
     })
+  }, 
+
+  resetOrthanc(){
+    return fetch('/api/tools/reset', {
+      method: 'POST'
+    }).then((answer) => {
+      if (!answer.ok) {throw answer}
+      return (answer.json())
+    }).catch((error) => {
+      toastifyError(error)
+    })
+  },
+
+  shutdownOrthanc(){
+    return fetch('api/tools/shutdown', {
+      method: 'POST'
+    }).then((answer) => {
+      if (!answer.ok) {throw answer}
+      return (answer.json())
+    }).catch((error) => {
+      toastifyError(error)
+    })
+  },
+
+  //return current verbosity in Orthanc log
+  getVerbosity(){
+    return fetch('api/tools/log-level',{ 
+      method: 'GET'
+    }).then(response => {
+        if (response.ok) {
+          return response.text()
+        }
+        else throw response
+      }).catch(error => {
+      toastifyError(error)
+    })
+  },
+
+  //set verbosity in Orthanc
+  setVerbosity(value){
+    return fetch('api/tools/log-level', {
+      method: 'PUT', 
+      body: value
+    }).then((answer) => {
+      if (!answer.ok) {throw answer}
+      toastifySuccess("Verbosity have been updated")
+    }).catch((error) => {
+      toastifyError(error)
+    })
   }
 
 }
