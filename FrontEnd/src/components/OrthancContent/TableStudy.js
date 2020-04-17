@@ -3,7 +3,6 @@ import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
 
 class TableStudy extends Component {
-    
 
     columns = [{
         dataField: 'studyOrthancID', 
@@ -13,7 +12,7 @@ class TableStudy extends Component {
         text: 'Study Date'
     }, {
         dataField: 'studyDescription', 
-        text: 'description'
+        text: 'Description'
     }, {
         dataField: 'accessionNumber', 
         text: 'Accession Number'
@@ -21,7 +20,7 @@ class TableStudy extends Component {
         dataField: 'action', 
         text: 'Action', 
         formatter:  ( (value, row, index) => 
-            <ActionBouton level='studies' orthancID={row.studyOrthancID} setIdDeleted={this.props.setIdDeleted} cleanSeries={this.props.cleanSeries} />
+            <ActionBouton level='studies' orthancID={row.studyOrthancID} onDelete={this.props.onDelete} />
         )
     }]
 

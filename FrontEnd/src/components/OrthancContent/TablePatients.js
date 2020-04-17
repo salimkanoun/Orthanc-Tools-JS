@@ -2,24 +2,11 @@ import React, {Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import TableStudy from './TableStudy'
 import ActionBouton from './ActionBouton'
-import TableStudyFillFromParent from './TableStudyFillFromParent'
 
 class TablePatients extends Component{
 
-    constructor(props){
-        super(props)
-        this.setIdDeleted = this.setIdDeleted.bind(this)
-    }
-
-    
-
     state = {
-        patients :  [], 
-        idDeleted: ''
-    }
-    
-    setIdDeleted(ID){
-        this.setState({idDeleted: ID})
+        patients :  []
     }
 
     columns = [{
@@ -35,14 +22,12 @@ class TablePatients extends Component{
         sort: true, 
     }, {
         dataField: 'action', 
-        text: 'action',
+        text: 'Action',
         formatter: ( (value, row, index) => {
-            return <ActionBouton level='patient' orthancID={row.patientOrthancID} />
+            return <ActionBouton level='patient' orthancID={row.patientOrthancID} onDelete={this.props.onDelete} />
         })
     
     }]
-
-    
 
     expandRow = {
         showExpandColumn: true,
@@ -55,10 +40,6 @@ class TablePatients extends Component{
                     studyOrthancID  : study,
                     ...studies[study]
                 })
-            }
-            
-            if (this.state.idDeleted !== ''){
-                answer = answer.filter(study => study.studyOrthancID !== this.state.idDeleted)
             }
   
             return (

@@ -5,15 +5,6 @@ import ActionBouton from './ActionBouton'
 
 class TableSeries extends Component{
 
-    constructor(props){
-        super(props)
-        this.setIdDeleted = this.setIdDeleted.bind(this)
-    }
-
-    state = { 
-        idDeleted: ''
-    }
-
     columns = [{
         dataField: 'serieOrthancID', 
         hidden: true,
@@ -33,20 +24,19 @@ class TableSeries extends Component{
     }, {
         dataField: 'Action', 
         text: 'Action',
-        formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.serieOrthancID} setIdDeleted={this.setIdDeleted} />)
+        formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.serieOrthancID} onDelete={this.props.onDelete} />)
     }]
-
-    setIdDeleted(ID){
-        this.setState({idDeleted: ID})
-    }
 
 
     render(){
-        
         return (
-            <BootstrapTable keyField="serieOrthancID" striped={true} data={this.props.series} columns={this.columns} />
+            <BootstrapTable 
+                keyField="serieOrthancID" 
+                striped={true} 
+                data={this.props.series} 
+                columns={this.columns} 
+            />
         )
-        
     }
 }
 

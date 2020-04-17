@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import apis from '../../services/apis'
 
 export default function tableSeriesFillFromParent(TableSeries) {
-    
     class TableSeriesFillFromParent extends Component {
 
         state = {
@@ -13,21 +12,20 @@ export default function tableSeriesFillFromParent(TableSeries) {
             if(this.props.studyID !== ""){
                 let seriesAnswer = await apis.content.getSeriesDetails(this.props.studyID)
                 if (seriesAnswer !== undefined){
-                let seriesData = []
-                seriesAnswer.forEach( (serie) => {
-                    seriesData.push({
-                        serieOrthancID : serie.ID,
-                        Instances : serie.Instances.length,
-                        ...serie.MainDicomTags
+                    let seriesData = []
+                    seriesAnswer.forEach( (serie) => {
+                        seriesData.push({
+                            serieOrthancID : serie.ID,
+                            Instances : serie.Instances.length,
+                            ...serie.MainDicomTags
+                        })
+        
                     })
-    
-                })
-                this.setState({
-                    series : seriesData
-                })}
-
+                    this.setState({
+                        series : seriesData
+                    })
+                }
             }
-
         }
         
         render(){

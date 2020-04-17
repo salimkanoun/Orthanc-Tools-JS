@@ -11,12 +11,13 @@ class ActionBouton extends Component{
         this.delete = this.delete.bind(this)
     }
 
-    modify(level, orthancID){
-        console.log("//TODO")
+    modify() {
+        console.log("Modify Call" + this.props.level +" ID "+ this.props.orthancID)
     }
 
-    async delete(level, orthancID){
-        switch(level){
+    async delete( ) {
+        let orthancID = this.props.orthancID
+        switch(this.props.level){
             case 'patient':
                 await apis.content.deletePatient(orthancID)
                 toastifySuccess("Patient " + orthancID + " have been deleted")
@@ -33,8 +34,7 @@ class ActionBouton extends Component{
                 toastifyError("Wrong level")
         }
 
-        this.props.setIdDeleted(orthancID)
-
+        this.props.onDelete(orthancID)
     }
 
     render(){
@@ -45,8 +45,8 @@ class ActionBouton extends Component{
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                    <button className='dropdown-item bg-warning' type='button' onClick={() => this.modify(this.props.level, this.props.orthancID)} >Modify</button>
-                    <button className='dropdown-item bg-danger' type='button' onClick={() => this.delete(this.props.level, this.props.orthancID)}>Delete</button>
+                    <button className='dropdown-item bg-warning' type='button' onClick={ this.modify } >Modify</button>
+                    <button className='dropdown-item bg-danger' type='button' onClick={ this.delete }>Delete</button>
                 </Dropdown.Menu>
             </Dropdown>
             )

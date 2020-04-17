@@ -1,11 +1,6 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import SelectModalities from '../AutoQuery/Component/SelectModalities'
-import apis from '../../services/apis'
-import TablePatients from './TablePatients'
-import TableSeries from './TableSeries'
-import tableSeriesFillFromParent from './TableSeriesFillFromParent'
 
-const EnhancedComponent = tableSeriesFillFromParent(TableSeries);
 
 class SearchForm extends Component{
 
@@ -17,19 +12,14 @@ class SearchForm extends Component{
         studyDescription: '', 
         dateFrom: '', 
         dateTo: '',
-        modalities: '',
-        studies: [], 
-        series: [],
-        currentSelectedStudyId : "",
-        clearSeriesTable: false
+        modalities: ''
     }
 
     constructor(props){
         super(props)
         this.handleChange=this.handleChange.bind(this)
-        this.handleClick=this.handleClick.bind(this)
         this.updateModalities = this.updateModalities.bind(this)
-        this.handleRowSelect = this.handleRowSelect.bind(this)
+        this.dataSearch = this.dataSearch.bind(this)
     }
 
     /**
@@ -57,53 +47,7 @@ class SearchForm extends Component{
 
     }
 
-    async handleClick(){
-        let studies = await apis.content.getContent(this.dataSearch())
-        let hirachicalAnswer = this.traitementStudies(studies)
-        let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
-        this.setState({ studies: dataForPatientTable })
-    }
 
-    prepareDataForTable(responseArray){
-        let answer = []
-        for(let patient in responseArray) {
-            answer.push( {
-                patientOrthancID  : patient,
-                ...responseArray[patient]
-            })
-        }
-        return answer
-
-    }
-
-    traitementStudies(studies){
-        let responseMap = []
-        studies.forEach(element => {
-                responseMap[element.ParentPatient] = {
-                    patientBirthDate: element.PatientMainDicomTags.PatientBirthDate,
-                    patientID : element.PatientMainDicomTags.PatientID,
-                    patientName: element.PatientMainDicomTags.PatientName, 
-                    patientSex: element.PatientMainDicomTags.PatientSex, 
-                    studies: { 
-                            [element.ID]: {
-                                isStable: element.IsStable,
-                                lastUpdate: element.LastUpdate,
-                                patientId: element.PatientMainDicomTags.PatientID,
-                                accessionNumber: element.MainDicomTags.AccessionNumber, 
-                                studyDate: element.MainDicomTags.StudyDate, 
-                                studyDescription: element.MainDicomTags.StudyDescription, 
-                                studyInstanceUID: element.MainDicomTags.StudyInstanceUID, 
-                                studyTime: element.MainDicomTags.StudyTime, 
-                                series: element.Series
-                            }
-                         }
-
-                } 
-                
-            })
-        return responseMap
-        
-    }
 
     dataSearch(){
         //prepare query for API /tools/find
@@ -134,85 +78,61 @@ class SearchForm extends Component{
                 StudyDescription: this.state.studyDescription
             }
         }
-        return contentSearch
-    }
 
-    async handleRowSelect(row){
-        console.log("Selected row : ", row)
-    }
+        //Call submit function to be handled by parent
+        this.props.onSubmit(contentSearch)
 
-    rowEvents = {
-        onClick: (e, row, rowIndex) => {
-            this.setState({
-                currentSelectedStudyId : row.studyOrthancID
-            })
-        }
-        
     }
-
 
     //form
     render(){
-        const selectRow={
-            mode: 'checkbox', 
-            onSelect: this.handleRowSelect
-        }
-
         return (
-            <Fragment>
+            <div>
                 <h2 className="card-title">Search</h2>
                 <div className='row'>
-                <div className='col-sm'>
-                    <label htmlFor='lastName'>Last Name</label>
-                    <input type='text' name='lastName' id='lastName' className='form-control' placeholder='Last name' onChange={this.handleChange} />
-                </div>
-                <div className='col-sm'>
-                    <label htmlFor='firstName'>First Name</label>
-                    <input type='text' name='firstName' id='firstName' className='form-control' placeholder='First name' onChange={this.handleChange} />
-                </div>
-                <div className='col-sm'>
-                    <label htmlFor='patientID'>Patient ID</label>
-                    <input type='text' name='patientID' id='patientID' className='form-control' placeholder='Patient ID' onChange={this.handleChange} />
-                </div>
-                </div>
-                <div className='row'>
-                <div className='col-sm'>
-                    <label htmlFor='accessionNumber'>Accession Number</label>
-                    <input type='text' name='accessionNumber' id='accessionNumber' className='form-control' placeholder='Accession Number' onChange={this.handleChange} />
-                </div>
-                <div className='col-sm'>
-                    <label htmlFor='studyDescription'>Study Description</label>
-                    <input type='text' name='studyDescription' id='studyDescription' className='form-control' placeholder='Study Description' onChange={this.handleChange} />
-                </div>
-                <div className='col-sm'>
-                    <label htmlFor='modalities'>Modalities</label>
-                    <SelectModalities previousModalities={this.state.modalities} onUpdate={this.updateModalities} />
-                </div>
-
-                </div>
-                <div className='row'>
-                <div className='col-sm'>
-                    <label htmlFor='dateFrom'>Date From</label>
-                    <input type='date' name='dateFrom' id='dateFrom' className='form-control' placeholder='Date From' onChange={this.handleChange} />
-                </div>
-                <div className='col-sm'>
-                    <label htmlFor='dateTo'>Date To</label>
-                    <input type='date' name='dateTo' id='dateTo' className='form-control' placeholder='Date To' onChange={this.handleChange} />
-                </div>
-                </div>
-                <div className='row'>
-                    <input type='button' className='btn btn-primary' onClick={this.handleClick} value='Search' />
-                </div>
-                <div className='jumbotron row'>
                     <div className='col-sm'>
-                        <TablePatients patients={this.state.studies} selectRow={ selectRow } rowEvents={ this.rowEvents } />
+                        <label htmlFor='lastName'>Last Name</label>
+                        <input type='text' name='lastName' id='lastName' className='form-control' placeholder='Last name' onChange={this.handleChange} />
                     </div>
                     <div className='col-sm'>
-                        <EnhancedComponent studyID={this.state.currentSelectedStudyId} />
-                        
+                        <label htmlFor='firstName'>First Name</label>
+                        <input type='text' name='firstName' id='firstName' className='form-control' placeholder='First name' onChange={this.handleChange} />
+                    </div>
+                    <div className='col-sm'>
+                        <label htmlFor='patientID'>Patient ID</label>
+                        <input type='text' name='patientID' id='patientID' className='form-control' placeholder='Patient ID' onChange={this.handleChange} />
                     </div>
                 </div>
-            </Fragment>
+                <div className='row'>
+                    <div className='col-sm'>
+                        <label htmlFor='accessionNumber'>Accession Number</label>
+                        <input type='text' name='accessionNumber' id='accessionNumber' className='form-control' placeholder='Accession Number' onChange={this.handleChange} />
+                    </div>
+                    <div className='col-sm'>
+                        <label htmlFor='studyDescription'>Study Description</label>
+                        <input type='text' name='studyDescription' id='studyDescription' className='form-control' placeholder='Study Description' onChange={this.handleChange} />
+                    </div>
+                    <div className='col-sm'>
+                        <label htmlFor='modalities'>Modalities</label>
+                        <SelectModalities previousModalities={this.state.modalities} onUpdate={this.updateModalities} />
+                    </div>
+                </div>
+                <div className='row'>
+                    <div className='col-sm'>
+                        <label htmlFor='dateFrom'>Date From</label>
+                        <input type='date' name='dateFrom' id='dateFrom' className='form-control' placeholder='Date From' onChange={this.handleChange} />
+                    </div>
+                    <div className='col-sm'>
+                        <label htmlFor='dateTo'>Date To</label>
+                        <input type='date' name='dateTo' id='dateTo' className='form-control' placeholder='Date To' onChange={this.handleChange} />
+                    </div>
+                </div>
+                <div className='row mt-3 mb-3'>
+                    <div className ='col-sm'>
+                    <input type='button' className='btn btn-primary' onClick={this.dataSearch} value='Search' />
+                    </div>
+                </div>
+            </div>
         )
     }
 }
