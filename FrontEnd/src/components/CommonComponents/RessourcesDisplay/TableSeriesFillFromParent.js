@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import apis from '../../services/apis'
+import apis from '../../../services/apis'
 
 export default function tableSeriesFillFromParent(TableSeries) {
     class TableSeriesFillFromParent extends Component {
@@ -57,6 +57,10 @@ export default function tableSeriesFillFromParent(TableSeries) {
                 <TableSeries series={this.state.series} onDelete={this.onDelete} {...this.props} />
             )
         }
+    }
+
+    TableSeriesFillFromParent.props ={
+        onEmptySeries : function () {}
     }
 
     return TableSeriesFillFromParent

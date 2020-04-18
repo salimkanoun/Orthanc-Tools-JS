@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
-import apis from '../../services/apis'
-import { toastifySuccess, toastifyError } from '../../services/toastify'
+import apis from '../../../services/apis'
+import { toastifySuccess, toastifyError } from '../../../services/toastify'
 
 class ActionBouton extends Component{
 

@@ -3,11 +3,7 @@ import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
 
 class TablePatients extends Component{
-
-    state = {
-        patients :  []
-    }
-
+    
     columns = [{
         dataField: 'patientOrthancID', 
         hidden: true

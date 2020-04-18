@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import SelectModalities from '../AutoQuery/Component/SelectModalities'
+import SelectModalities from '../CommonComponents/SearchForm/SelectModalities'
 
 
 class SearchForm extends Component{

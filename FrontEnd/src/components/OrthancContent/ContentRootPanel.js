@@ -1,11 +1,11 @@
 import React, { Fragment, Component } from 'react'
 import SearchForm from './SearchForm'
 import apis from '../../services/apis'
-import TablePatients from './TablePatients'
+import TablePatients from '../CommonComponents/RessourcesDisplay/TablePatients'
 
-import TableSeries from './TableSeries'
-import tableSeriesFillFromParent from './TableSeriesFillFromParent'
-import tablePatientWithNestedStudies from './TablePatientsWithNestedStudies'
+import TableSeries from '../CommonComponents/RessourcesDisplay/TableSeries'
+import tableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
+import tablePatientWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 
 const TableSeriesFillFromParent = tableSeriesFillFromParent(TableSeries);
@@ -116,7 +116,7 @@ class ContentPanel extends Component {
                   <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
               </div>
               <div className='col-sm'>
-                  <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={console.log('Plus de Series faire Refresh?')} />
+                  <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} />
               </div>
           </div>
         </div>

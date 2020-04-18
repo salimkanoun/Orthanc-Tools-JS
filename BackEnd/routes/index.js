@@ -4,7 +4,7 @@ var router = express.Router()
 require('express-async-errors')
 
 const { authentication } = require('../controllers/authentication')
-const { getRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot')
+const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot')
 const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
@@ -54,7 +54,7 @@ router.post('/tools/orthanc-tools-js/create-archive', userAuthMidelware, postExp
 
 // OrthancToolsJS Robot routes
 router.post('/robot', userAuthMidelware, addRobotJob)
-router.get('/robot', userAuthMidelware, getRobotDetails)
+router.get('/robot', [userAuthMidelware, userAdminMidelware], getAllRobotDetails)
 router.get('/robot/:username', userAuthMidelware, getRobotDetails)
 router.delete('/robot/:username', userAuthMidelware, deleteRobotJob)
 router.delete('/robot/:username/:index', userAuthMidelware, removeQueryFromJob)

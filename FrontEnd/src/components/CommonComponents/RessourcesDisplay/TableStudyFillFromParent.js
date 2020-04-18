@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import apis from '../../services/apis'
+import apis from '../../../services/apis'
 
 export default function tableStudyFillFromParent (TableStudy) {
     return class extends Component {
