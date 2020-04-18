@@ -14,7 +14,7 @@ export default function tableSeriesFillFromParent(TableSeries) {
         }
 
         onDelete(idDeleted){
-            
+
             let newSeriesRows = this.state.series.filter((serie) =>{
                 return serie.serieOrthancID !== idDeleted
             })
@@ -22,6 +22,9 @@ export default function tableSeriesFillFromParent(TableSeries) {
             this.setState({
                 series : newSeriesRows
             })
+            if(this.state.series.length ===0){
+                this.props.onEmptySeries()
+            }
 
         }
 

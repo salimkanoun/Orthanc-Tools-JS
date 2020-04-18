@@ -116,7 +116,7 @@ class ContentPanel extends Component {
                   <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
               </div>
               <div className='col-sm'>
-                  <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} />
+                  <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={console.log('Plus de Series faire Refresh?')} />
               </div>
           </div>
         </div>
