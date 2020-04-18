@@ -34,9 +34,16 @@ class TableSeries extends Component{
                 keyField="serieOrthancID" 
                 striped={true} 
                 data={this.props.series} 
-                columns={this.columns} 
+                columns={this.columns}
+                {...this.props} 
             />
         )
+    }
+}
+
+TableSeries.props = {
+    onDelete : function(id){
+        console.log('Deleted Series ID' + id)
     }
 }
 

@@ -1,6 +1,5 @@
 import React, {Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
-import TableStudy from './TableStudy'
 import ActionBouton from './ActionBouton'
 
 class TablePatients extends Component{
@@ -29,33 +28,17 @@ class TablePatients extends Component{
     
     }]
 
-    expandRow = {
-        showExpandColumn: true,
-        renderer: (row) => {
-            //Flatenning the study array for the nested study table
-            let studies = row.studies 
-            let answer = []
-            for(let study in studies) {
-                answer.push( {
-                    studyOrthancID  : study,
-                    ...studies[study]
-                })
-            }
-  
-            return (
-                <TableStudy data={answer} parentPatientId={row.patientOrthancID} selectRow={ this.props.selectRow } rowEvents={ this.props.rowEvents } setIdDeleted={this.setIdDeleted} cleanSeries={this.props.cleanSeries} />
-            )
-        }
-             
-    }
-    
     render(){
         return (
-            <BootstrapTable keyField="patientOrthancID" striped={true} data={this.props.patients} columns={this.columns} expandRow={this.expandRow} />
+            <BootstrapTable keyField="patientOrthancID" striped={true} data={this.props.patients} columns={this.columns}  {...this.props}/>
         )
     }
 
 
+}
+
+TablePatients.props = {
+    onDelete : function(id){console.log('Deleted Patient ID '+id)}
 }
 
 export default TablePatients 

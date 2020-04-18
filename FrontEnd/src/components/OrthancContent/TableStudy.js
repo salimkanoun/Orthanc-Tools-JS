@@ -24,8 +24,6 @@ class TableStudy extends Component {
         )
     }]
 
-    
-
     render() {
         return (
             <BootstrapTable 
@@ -33,8 +31,7 @@ class TableStudy extends Component {
                 striped={true} 
                 columns={this.columns} 
                 data={this.props.data} 
-                selectRow={ this.props.selectRow } 
-                rowEvents={ this.props.rowEvents } 
+                {...this.props} 
             />
         )
     }

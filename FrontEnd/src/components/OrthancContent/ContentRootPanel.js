@@ -5,22 +5,23 @@ import TablePatients from './TablePatients'
 
 import TableSeries from './TableSeries'
 import tableSeriesFillFromParent from './TableSeriesFillFromParent'
+import tablePatientWithNestedStudies from './TablePatientsWithNestedStudies'
 
 
-const EnhancedComponent = tableSeriesFillFromParent(TableSeries);
+const TableSeriesFillFromParent = tableSeriesFillFromParent(TableSeries);
+const TablePatientsWithNestedStudies = tablePatientWithNestedStudies(TablePatients)
 
 class ContentPanel extends Component {
 
   state = {
     studies: [], 
-    series: [],
-    currentSelectedStudyId : "",
-    clearSeriesTable: false
+    currentSelectedStudyId : ""
   } 
 
   constructor(props){
     super(props)
     this.sendSearch = this.sendSearch.bind(this)
+    this.onDeletePatient = this.onDeletePatient(this)
   }
 
 
@@ -73,6 +74,23 @@ class ContentPanel extends Component {
       
   }
 
+  onDeletePatient(idDeleted){
+
+
+  }
+
+  onDeleteStudy(idDeleted){
+
+  }
+
+  onDeleteSeries(idDeleted){
+
+    this.setState({
+      currentSelectedStudyId : ''
+    })
+
+  }
+
   selectRow={
     mode: 'checkbox', 
     onSelect: this.handleRowSelect
@@ -82,7 +100,7 @@ class ContentPanel extends Component {
       console.log("Selected row : ", row)
   }
 
-  rowEvents = {
+  rowEventsStudies = {
       onClick: (e, row, rowIndex) => {
           this.setState({
               currentSelectedStudyId : row.studyOrthancID
@@ -99,10 +117,10 @@ class ContentPanel extends Component {
           </div>
           <div className='row'>
               <div className='col-sm'>
-                  <TablePatients patients={this.state.studies} selectRow={ this.selectRow } rowEvents={ this.rowEvents } onDelete={this.onDeletePatient} />
+                  <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDelete={this.onDeletePatient} />
               </div>
               <div className='col-sm'>
-                  <EnhancedComponent studyID={this.state.currentSelectedStudyId} />
+                  <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onDelete = {this.onDeleteSeries} />
               </div>
           </div>
         </div>

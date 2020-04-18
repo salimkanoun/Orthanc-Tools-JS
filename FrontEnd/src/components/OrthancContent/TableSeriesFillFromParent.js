@@ -25,6 +25,10 @@ export default function tableSeriesFillFromParent(TableSeries) {
                         series : seriesData
                     })
                 }
+            } else {
+                this.setState({
+                    series : []
+                })
             }
         }
         
