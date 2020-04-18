@@ -23,7 +23,6 @@ class ContentPanel extends Component {
     this.sendSearch = this.sendSearch.bind(this)
     this.onDeletePatient = this.onDeletePatient(this)
     this.onDeleteStudy = this.onDeleteStudy(this)
-    this.onDeleteSeries = this.onDeleteSeries.bind(this)
   }
 
 
@@ -82,11 +81,6 @@ class ContentPanel extends Component {
   }
 
   onDeleteStudy(idDeleted){
-
-  }
-
-  onDeleteSeries(idDeleted){
-
     this.setState({
       currentSelectedStudyId : ''
     })
@@ -122,7 +116,7 @@ class ContentPanel extends Component {
                   <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
               </div>
               <div className='col-sm'>
-                  <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onDelete = {this.onDeleteSeries} />
+                  <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} />
               </div>
           </div>
         </div>

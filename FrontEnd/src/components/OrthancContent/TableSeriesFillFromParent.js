@@ -8,6 +8,23 @@ export default function tableSeriesFillFromParent(TableSeries) {
             series : []
         }
 
+        constructor(props){
+            super(props)
+            this.onDelete=this.onDelete.bind(this)
+        }
+
+        onDelete(idDeleted){
+            
+            let newSeriesRows = this.state.series.filter((serie) =>{
+                return serie.serieOrthancID !== idDeleted
+            })
+
+            this.setState({
+                series : newSeriesRows
+            })
+
+        }
+
         async componentWillReceiveProps(){
             if(this.props.studyID !== ""){
                 let seriesAnswer = await apis.content.getSeriesDetails(this.props.studyID)
@@ -34,7 +51,7 @@ export default function tableSeriesFillFromParent(TableSeries) {
         
         render(){
             return(
-                <TableSeries series={this.state.series} {...this.props} />
+                <TableSeries series={this.state.series} onDelete={this.onDelete} {...this.props} />
             )
         }
     }
