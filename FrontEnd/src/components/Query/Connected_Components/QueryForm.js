@@ -7,7 +7,7 @@ import { addManualQueryStudyResult } from '../../../actions/ManualQuery'
 import AetButton from '../Components/AetButton'
 import apis from '../../../services/apis'
 
-import SelectModalities from '../../AutoQuery/Component/SelectModalities'
+import SelectModalities from '../../CommonComponents/SearchForm/SelectModalities'
 
 class QueryForm extends Component {
 

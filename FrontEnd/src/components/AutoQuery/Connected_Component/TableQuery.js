@@ -12,7 +12,7 @@ import { removeQuery, emptyQueryTable, addRow } from '../../../actions/TableQuer
 import { addStudyResult } from '../../../actions/TableResult'
 import { loadAvailableAETS } from '../../../actions/OrthancTools'
 import CsvLoader from './CsvLoader'
-import SelectModalities from '../Component/SelectModalities';
+import SelectModalities from '../../CommonComponents/SearchForm/SelectModalities';
 
 import apis from '../../../services/apis';
 

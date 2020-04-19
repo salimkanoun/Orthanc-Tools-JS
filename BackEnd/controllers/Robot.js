@@ -4,12 +4,21 @@ const RobotJob = require('../model/RobotJob')
 const getRobotDetails = async function (req, res) {
   const robotSingleton = new RobotSingleton()
   const retrieveRobot = robotSingleton.getRobot()
-  let data = []
-  if (req.params.username !== undefined) {
-    data = retrieveRobot.getRobotData(req.params.username)
-  } else {
-    data = retrieveRobot.getAllRobotData()
+  try{
+    let data = retrieveRobot.getRobotData(req.params.username)
+    res.json(data)
+  }catch(error){
+    res.json({
+      retrieveList : []
+    })
   }
+
+}
+
+const getAllRobotDetails = async function (req, res){
+  const robotSingleton = new RobotSingleton()
+  const retrieveRobot = robotSingleton.getRobot()
+  let data = retrieveRobot.getAllRobotData()
   res.json(data)
 }
 
@@ -54,4 +63,4 @@ const addRobotJob = async function (req, res) {
   res.json('Done')
 }
 
-module.exports = { addRobotJob, getRobotDetails, deleteRobotJob, removeQueryFromJob, validateRobotJob }
+module.exports = { addRobotJob, getRobotDetails, getAllRobotDetails, deleteRobotJob, removeQueryFromJob, validateRobotJob }

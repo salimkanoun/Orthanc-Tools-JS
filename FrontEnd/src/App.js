@@ -13,6 +13,7 @@ import RobotView from './components/AutoQuery/Component/RobotView'
 import Authentication from './components/Authentication'
 import AdminRootPanel from './components/Admin/AdminRootPanel'
 import Import from './components/Import/Import'
+import ContentRootPanel from './components/OrthancContent/ContentRootPanel'
 
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -51,6 +52,7 @@ function App () {
         <Route exact path='/query' component={Query} />
         <Route exact path='/auto-query' component={AutoQueryRoot} />
         <Route exact path='/options' component={AdminRootPanel} />
+        <Route exact path='/OrthancContent' component={ContentRootPanel} />
         <Route exact path='/robot/:username' component={RobotView} />
       </Switch>
     </>
