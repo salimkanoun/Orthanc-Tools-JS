@@ -67,6 +67,23 @@ const query  = {
         })
     },
 
+    getSeriesParentDetails(seriesID, parentLevel){
+
+        return fetch('api/series/' + seriesID + '/'+parentLevel+'?expand', {
+            method: 'GET', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            if (!response.ok) {throw response}
+            return response.json()
+        }).catch((error) => {
+            toastifyError(error)
+        })
+
+    },
+
     deletePatient(ID){
         return fetch('api/patients/' + ID, {
             method: 'DELETE'
