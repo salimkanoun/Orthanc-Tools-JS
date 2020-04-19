@@ -12,13 +12,13 @@ export default function tablePatientWithNestedStudies(TablePatients) {
                 let answer = []
                 for(let study in studies) {
                     answer.push( {
-                        studyOrthancID  : study,
+                        StudyOrthancID  : study,
                         ...studies[study]
                     })
                 }
       
                 return (
-                    <TableStudy data={answer} parentPatientId={row.patientOrthancID} onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} />
+                    <TableStudy data={answer} parentPatientId={row.PatientOrthancID} onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} />
                 )
             }
                  

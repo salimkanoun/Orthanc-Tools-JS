@@ -5,28 +5,28 @@ import ActionBouton from './ActionBouton'
 class TablePatients extends Component{
     
     columns = [{
-        dataField: 'patientOrthancID', 
+        dataField: 'PatientOrthancID', 
         hidden: true
     }, {
-        dataField: 'patientName', 
+        dataField: 'PatientName', 
         text: 'Patient Name', 
         sort: true,
     }, {
-        dataField: 'patientID', 
+        dataField: 'PatientID', 
         text: 'Patient ID', 
         sort: true, 
     }, {
-        dataField: 'action', 
+        dataField: 'Action', 
         text: 'Action',
         formatter: ( (value, row, index) => {
-            return <ActionBouton level='patient' orthancID={row.patientOrthancID} onDelete={this.props.onDelete} />
+            return <ActionBouton level='patient' orthancID={row.PatientOrthancID} onDelete={this.props.onDelete} />
         })
     
     }]
 
     render(){
         return (
-            <BootstrapTable keyField="patientOrthancID" striped={true} data={this.props.patients} columns={this.columns}  {...this.props}/>
+            <BootstrapTable keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns}  {...this.props}/>
         )
     }
 

@@ -16,7 +16,7 @@ export default function tableSeriesFillFromParent(TableSeries) {
         onDelete(idDeleted){
 
             let newSeriesRows = this.state.series.filter((serie) =>{
-                return serie.serieOrthancID !== idDeleted
+                return serie.SerieOrthancID !== idDeleted
             })
 
             this.setState({
@@ -35,7 +35,7 @@ export default function tableSeriesFillFromParent(TableSeries) {
                     let seriesData = []
                     seriesAnswer.forEach( (serie) => {
                         seriesData.push({
-                            serieOrthancID : serie.ID,
+                            SerieOrthancID : serie.ID,
                             Instances : serie.Instances.length,
                             ...serie.MainDicomTags
                         })

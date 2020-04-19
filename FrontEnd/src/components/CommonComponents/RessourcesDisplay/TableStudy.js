@@ -5,29 +5,29 @@ import ActionBouton from './ActionBouton'
 class TableStudy extends Component {
 
     columns = [{
-        dataField: 'studyOrthancID', 
+        dataField: 'StudyOrthancID', 
         hidden: true
     }, {
-        dataField: 'studyDate', 
+        dataField: 'StudyDate', 
         text: 'Study Date'
     }, {
-        dataField: 'studyDescription', 
+        dataField: 'StudyDescription', 
         text: 'Description'
     }, {
-        dataField: 'accessionNumber', 
+        dataField: 'AccessionNumber', 
         text: 'Accession Number'
     }, {
-        dataField: 'action', 
+        dataField: 'Action', 
         text: 'Action', 
         formatter:  ( (value, row, index) => 
-            <ActionBouton level='studies' orthancID={row.studyOrthancID} onDelete={this.props.onDelete} />
+            <ActionBouton level='studies' orthancID={row.StudyOrthancID} onDelete={this.props.onDelete} />
         )
     }]
 
     render() {
         return (
             <BootstrapTable 
-                keyField="studyOrthancID" 
+                keyField="StudyOrthancID" 
                 striped={true} 
                 columns={this.columns} 
                 data={this.props.data} 

@@ -6,11 +6,11 @@ import ActionBouton from './ActionBouton'
 class TableSeries extends Component{
 
     columns = [{
-        dataField: 'serieOrthancID', 
+        dataField: 'SerieOrthancID', 
         hidden: true,
     }, {
         dataField: 'SeriesDescription', 
-        text: 'Description'
+        text: 'Series Description'
     }, {
         dataField: 'Modality', 
         text: 'Modality'
@@ -24,14 +24,14 @@ class TableSeries extends Component{
     }, {
         dataField: 'Action', 
         text: 'Action',
-        formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.serieOrthancID} onDelete={this.props.onDelete} />)
+        formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.SerieOrthancID} onDelete={this.props.onDelete} />)
     }]
 
 
     render(){
         return (
             <BootstrapTable 
-                keyField="serieOrthancID" 
+                keyField="SerieOrthancID" 
                 striped={true} 
                 data={this.props.series} 
                 columns={this.columns}

@@ -30,6 +30,7 @@ class ContentPanel extends Component {
     let studies = await apis.content.getContent(dataFrom)
     let hirachicalAnswer = this.traitementStudies(studies)
     let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
+    console.log(dataForPatientTable)
     this.setState({ studies: dataForPatientTable })
   }
 
@@ -38,7 +39,7 @@ class ContentPanel extends Component {
     let answer = []
     for(let patient in responseArray) {
         answer.push( {
-            patientOrthancID  : patient,
+            PatientOrthancID  : patient,
             ...responseArray[patient]
         })
     }
@@ -50,21 +51,10 @@ class ContentPanel extends Component {
       let responseMap = []
       studies.forEach(element => {
               responseMap[element.ParentPatient] = {
-                  patientBirthDate: element.PatientMainDicomTags.PatientBirthDate,
-                  patientID : element.PatientMainDicomTags.PatientID,
-                  patientName: element.PatientMainDicomTags.PatientName, 
-                  patientSex: element.PatientMainDicomTags.PatientSex, 
+                  ...element.PatientMainDicomTags, 
                   studies: { 
                           [element.ID]: {
-                              isStable: element.IsStable,
-                              lastUpdate: element.LastUpdate,
-                              patientId: element.PatientMainDicomTags.PatientID,
-                              accessionNumber: element.MainDicomTags.AccessionNumber, 
-                              studyDate: element.MainDicomTags.StudyDate, 
-                              studyDescription: element.MainDicomTags.StudyDescription, 
-                              studyInstanceUID: element.MainDicomTags.StudyInstanceUID, 
-                              studyTime: element.MainDicomTags.StudyTime, 
-                              series: element.Series
+                              ...element.MainDicomTags
                           }
                       }
 
@@ -99,7 +89,7 @@ class ContentPanel extends Component {
   rowEventsStudies = {
       onClick: (e, row, rowIndex) => {
           this.setState({
-              currentSelectedStudyId : row.studyOrthancID
+              currentSelectedStudyId : row.StudyOrthancID
           })
       } 
   }

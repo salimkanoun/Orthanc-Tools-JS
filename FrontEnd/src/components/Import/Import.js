@@ -3,6 +3,8 @@ import Uppy from '@uppy/core'
 import StatusBar from '@uppy/status-bar'
 import XHRUpload from '@uppy/xhr-upload'
 import { DragDrop } from '@uppy/react'
+
+import TablePatientsWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudiesAndSeries'
 import apis from '../../services/apis'
 
 //Ce composant sera a connecter au redux pour connaitre la longueur de la liste d'export
@@ -27,6 +29,7 @@ export default class Import extends Component {
         this.uppy.use(XHRUpload, {
             endpoint: '/api/instances',
             formData : false,
+            limit : 1,
             headers: {
                 'Content-Type' : 'application/dicom',
                 'Accept': 'application/json'
@@ -44,9 +47,7 @@ export default class Import extends Component {
         this.uppy.on('upload-success', async (file, response) => {
             console.log(response)
             if(response.body.ID !== undefined){
-                console.log('AvantTTT')
                 await this.addUploadedFileToState(response.body)
-                console.log('ApresTTT')
             }
             
         })
@@ -82,7 +83,6 @@ export default class Import extends Component {
                 newStudyId=orthancAnswer.ParentStudy
             }
 
-
         }
         
         if(!isExistingSerie) {
@@ -90,6 +90,10 @@ export default class Import extends Component {
             this.addSeriesToState(orthancAnswer.ParentPatient, orthancAnswer.ParentStudy, orthancAnswer.ParentSeries,  seriesDetails.MainDicomTags)
             newSeriesId=orthancAnswer.ParentSeries
 
+        }
+
+        if(!isExistingSerie){
+            //SK ICI RAFRAICHIR LE STATE POUR MISE A JOUR DES TABLES D AFFICHAGE
         }
 
         console.log(this.state)
@@ -103,7 +107,7 @@ export default class Import extends Component {
         objectToAdd[patientID] = mainDicomTags
         objectToAdd[patientID]['studies']=[]
         this.setState(state => {
-                        Object.assign(state, objectToAdd)
+                        Object.assign(state['importedTree'], objectToAdd)
                         state.patientIdArray.push(patientID)
                         return state
             }
@@ -115,7 +119,7 @@ export default class Import extends Component {
         objectToAdd[studyID] = mainDicomTags
         objectToAdd[studyID]['series'] = []
         this.setState(state => {
-            Object.assign(state[patientID].studies, objectToAdd)
+            Object.assign(state['importedTree'][patientID].studies, objectToAdd)
             state.studiesIdArray.push(studyID)
             return state
             }
@@ -127,7 +131,7 @@ export default class Import extends Component {
         let objectToAdd = []
         objectToAdd[seriesID] = mainDicomTags
         this.setState(state => {
-            Object.assign(state[patientID]['studies'][studyID]['series'], objectToAdd);
+            Object.assign(state['importedTree'][patientID]['studies'][studyID]['series'], objectToAdd);
             state.seriesIdArray.push(seriesID)
             return state
             }
@@ -173,9 +177,21 @@ export default class Import extends Component {
         return answer
     }
 
+    prepareDataToTable(){
+        let dataArray = []
+        for( let patient in this.state.importedTree){
+            dataArray.push({
+                patientOrthancID : patient,
+                ...this.state.importedTree[patient]
+            })
+        }
+        console.log(dataArray)
+        return dataArray
+    }
     render(){
         return (
             <div className="jumbotron">
+                <div className="col mb-5">
                  <DragDrop
                     uppy={this.uppy}
                     locale={{
@@ -185,6 +201,10 @@ export default class Import extends Component {
                         }
                     }}
                 />
+                </div>
+                <div className="col">
+                <TablePatientsWithNestedStudiesAndSeries patients = {this.prepareDataToTable()}/>
+                </div>
             </div>
 
         )
