@@ -26,7 +26,7 @@ export default class NavBar extends Component {
             <Link className='nav-link' to='/auto-query'>Auto-Query</Link>
           </li>
           <li className='nav-item'>
-            <Link className='nav-link' to='/options'>Options</Link>
+            <Link className='nav-link' to='/options'>Administation</Link>
           </li>
         </ul>
         <div className="row">
