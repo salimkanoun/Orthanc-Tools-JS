@@ -7,8 +7,11 @@ import { Link } from 'react-router-dom'
  */
 export default class OhifLink extends Component {
   render () {
+    if(this.props.StudyInstanceUID === undefined) {
+      return (null)
+    }
     return (
-      <Link to={'/viewer/' + this.props.studyInstanceUID} target='_blank'>View</Link>
+      <Link className={this.props.className} to={'ohif.html/' + this.props.StudyInstanceUID} target='_blank'>View on OHIF</Link>
     )
   }
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
 import apis from '../../../services/apis'
 import { toastifySuccess, toastifyError } from '../../../services/toastify'
+import OhifLink from '../../Ohif/OhifLink'
 
 class ActionBouton extends Component{
 
@@ -45,6 +46,7 @@ class ActionBouton extends Component{
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
+                    <OhifLink className='dropdown-item bg-info' {...this.props} />
                     <button className='dropdown-item bg-warning' type='button' onClick={ this.modify } >Modify</button>
                     <button className='dropdown-item bg-danger' type='button' onClick={ this.delete }>Delete</button>
                 </Dropdown.Menu>

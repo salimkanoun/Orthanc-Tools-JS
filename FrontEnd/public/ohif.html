@@ -28,11 +28,11 @@
     <noscript> You need to enable JavaScript to run this app. </noscript>
 
     <div id="root"></div>
-    <script crossorigin src="https://unpkg.com/@ohif/viewer@1.4.3/dist/index.umd.js"></script>
-    <script crossorigin src="https://unpkg.com/@ohif/extension-dicom-microscopy@0.50.5/dist/index.umd.js"></script>
-    <script crossorigin src="https://unpkg.com/@ohif/extension-vtk@0.52.1/dist/index.umd.js"></script>
-    <script crossorigin src="https://unpkg.com/@ohif/extension-cornerstone@1.2.5/dist/index.umd.js"></script>
-    <script crossorigin src="https://unpkg.com/@ohif/extension-dicom-html@1.0.0/dist/index.umd.js"></script>
+    <script crossorigin src="https://unpkg.com/@ohif/viewer/dist/index.umd.js"></script>
+    <script crossorigin src="https://unpkg.com/@ohif/extension-dicom-microscopy/dist/index.umd.js"></script>
+    <script crossorigin src="https://unpkg.com/@ohif/extension-vtk/dist/index.umd.js"></script>
+    <script crossorigin src="https://unpkg.com/@ohif/extension-cornerstone/dist/index.umd.js"></script>
+    <script crossorigin src="https://unpkg.com/@ohif/extension-dicom-html/dist/index.umd.js"></script>
     
     <script>
       var containerId = "root";
@@ -60,7 +60,8 @@
               }
             ]
           },
-          extensions: [OHIFExtDicomMicroscopy, OHIFExtVtk, OHIFExtCornerstone, OHIFExtDicomHtml]
+          //OHIFExtVtk makes app crashing
+          extensions: [OHIFExtDicomMicroscopy, OHIFExtCornerstone, OHIFExtDicomHtml]
         },
         containerId,
         componentRenderedOrUpdatedCallback

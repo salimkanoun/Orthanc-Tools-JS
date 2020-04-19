@@ -46,7 +46,7 @@ export default class RobotView extends Component {
             options: { study : 'study', series : 'series'}
         })
     }, {
-        dataField: 'studyInstanceUID',
+        dataField: 'StudyInstanceUID',
         hidden: true
     }, {
         dataField: 'patientName',
@@ -97,7 +97,7 @@ export default class RobotView extends Component {
         text : 'View in OHIF',
         formatter : function(cell, row, rowIndex, formatExtraData){
             return (
-                <OhifLink studyInstanceUID = {row.studyInstanceUID} />
+                <OhifLink StudyInstanceUID = {row.StudyInstanceUID} />
             )
         }
     }];

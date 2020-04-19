@@ -20,7 +20,7 @@ class TableStudy extends Component {
         dataField: 'Action', 
         text: 'Action', 
         formatter:  ( (value, row, index) => 
-            <ActionBouton level='studies' orthancID={row.StudyOrthancID} onDelete={this.props.onDelete} />
+            <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} />
         )
     }]
 
