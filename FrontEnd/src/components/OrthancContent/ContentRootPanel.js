@@ -78,10 +78,12 @@ class ContentPanel extends Component {
 
   selectRow={
     mode: 'checkbox', 
+    clickToExpand: true,
     onSelect: this.handleRowSelect
   }
 
   async handleRowSelect(row){
+      
       console.log("Selected row : ", row)
   }
 
@@ -89,7 +91,7 @@ class ContentPanel extends Component {
       onClick: (e, row, rowIndex) => {
             this.setState({
               currentSelectedStudyId : row.StudyOrthancID
-          })
+            })
       } 
   }
   
