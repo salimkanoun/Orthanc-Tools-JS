@@ -30,7 +30,6 @@ class ContentPanel extends Component {
     let studies = await apis.content.getContent(dataFrom)
     let hirachicalAnswer = this.traitementStudies(studies)
     let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
-    console.log(dataForPatientTable)
     this.setState({ studies: dataForPatientTable })
   }
 
@@ -86,9 +85,9 @@ class ContentPanel extends Component {
       console.log("Selected row : ", row)
   }
 
-  rowEventsStudies = {
+   rowEventsStudies = {
       onClick: (e, row, rowIndex) => {
-          this.setState({
+            this.setState({
               currentSelectedStudyId : row.StudyOrthancID
           })
       } 
