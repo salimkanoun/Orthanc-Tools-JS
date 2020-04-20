@@ -26,7 +26,7 @@ class TableStudy extends Component {
 
     render() {
         return (
-            <BootstrapTable 
+            <BootstrapTable
                 keyField="StudyOrthancID" 
                 striped={true} 
                 columns={this.columns} 

@@ -94,6 +94,17 @@ class ContentPanel extends Component {
             })
       } 
   }
+
+  rowStyle = (row, rowIndex) => {
+    row.index = rowIndex;
+    const style = {};
+    if (row.StudyOrthancID === this.state.currentSelectedStudyId){
+      style.backgroundColor = 'rgba(255,153,51)'
+    }
+    style.borderTop = 'none';
+
+    return style;
+  }
   
   render() {
       return (
@@ -104,7 +115,7 @@ class ContentPanel extends Component {
           </div>
           <div className='row'>
               <div className='col-sm'>
-                  <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
+                  <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} rowStyle={this.rowStyle} />
               </div>
               <div className='col-sm'>
                   <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} />

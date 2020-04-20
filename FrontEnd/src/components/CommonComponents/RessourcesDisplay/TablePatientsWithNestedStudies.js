@@ -18,7 +18,7 @@ export default function tablePatientWithNestedStudies(TablePatients) {
                 }
       
                 return (
-                    <TableStudy data={answer} parentPatientId={row.PatientOrthancID} onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} />
+                    <TableStudy data={answer} parentPatientId={row.PatientOrthancID} onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyle}/>
                 )
             }
                  
