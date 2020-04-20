@@ -6,7 +6,7 @@ import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/Tab
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 
-class ContentPanel extends Component {
+class ContentRootPanel extends Component {
 
   state = {
     studies: [], 
@@ -90,8 +90,7 @@ class ContentPanel extends Component {
       } 
   }
 
-  rowStyle = (row, rowIndex) => {
-    row.index = rowIndex;
+  rowStyleStudies = (row, rowIndex) => {
     const style = {};
     if (row.StudyOrthancID === this.state.currentSelectedStudyId){
       style.backgroundColor = 'rgba(255,153,51)'
@@ -110,7 +109,7 @@ class ContentPanel extends Component {
           </div>
           <div className='row'>
               <div className='col-sm'>
-                  <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} rowStyle={this.rowStyle} />
+                  <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} rowStyleStudies={this.rowStyleStudies} />
               </div>
               <div className='col-sm'>
                   <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} />
@@ -123,4 +122,4 @@ class ContentPanel extends Component {
 
 }
 
-export default ContentPanel
+export default ContentRootPanel

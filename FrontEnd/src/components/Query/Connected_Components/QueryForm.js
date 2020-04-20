@@ -102,7 +102,9 @@ class QueryForm extends Component {
         aetButtons = this.buildAetButtons()
       }
       return (
-      <Form title='Query' buttons={aetButtons} changeState={this.changeState}/>
+        <div className="jumbotron">
+          <Form title='Query' buttons={aetButtons} changeState={this.changeState}/>
+        </div>
       )
     }
 
