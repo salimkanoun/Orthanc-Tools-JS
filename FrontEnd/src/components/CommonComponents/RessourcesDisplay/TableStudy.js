@@ -9,13 +9,16 @@ class TableStudy extends Component {
         hidden: true
     }, {
         dataField: 'StudyDate', 
-        text: 'Study Date'
+        text: 'Study Date', 
+        sort: true
     }, {
         dataField: 'StudyDescription', 
-        text: 'Description'
+        text: 'Description',
+        sort: true
     }, {
         dataField: 'AccessionNumber', 
-        text: 'Accession Number'
+        text: 'Accession Number',
+        sort: true
     }, {
         dataField: 'Action', 
         text: 'Action', 
