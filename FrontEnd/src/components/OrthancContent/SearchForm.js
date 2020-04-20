@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import SelectModalities from '../CommonComponents/SearchForm/SelectModalities'
+import Form from '../CommonComponents/SearchForm/Form'
 
 
 class SearchForm extends Component{
 
+    
     state = {
         firstName: '',
         lastName: '', 
@@ -11,42 +12,20 @@ class SearchForm extends Component{
         accessionNumber: '', 
         studyDescription: '', 
         dateFrom: '', 
-        dateTo: '',
-        modalities: ''
+        dateTo: ''
     }
+    
+
 
     constructor(props){
         super(props)
-        this.handleChange=this.handleChange.bind(this)
-        this.updateModalities = this.updateModalities.bind(this)
         this.dataSearch = this.dataSearch.bind(this)
+        this.changeState = this.changeState.bind(this)
     }
 
-    /**
-     * Store modality string comming from SelectModalities component in the current state
-     * @param {String} modalityString 
-     */
-    updateModalities(modalityString){
-        this.setState({
-            modalities : modalityString
-        })
+    changeState(name, value){
+        this.setState({[name]: value})
     }
-
-    /**
-     * Fill input text of users in current state
-     * @param {*} event 
-     */
-    handleChange(event) {
-        const target = event.target
-        const name = target.name
-        const value = target.value
-        
-        this.setState({
-            [name]: value
-        })
-
-    }
-
 
 
     dataSearch(){
@@ -87,52 +66,7 @@ class SearchForm extends Component{
     //form
     render(){
         return (
-            <div>
-                <h2 className="card-title">Search</h2>
-                <div className='row'>
-                    <div className='col-sm'>
-                        <label htmlFor='lastName'>Last Name</label>
-                        <input type='text' name='lastName' id='lastName' className='form-control' placeholder='Last name' onChange={this.handleChange} />
-                    </div>
-                    <div className='col-sm'>
-                        <label htmlFor='firstName'>First Name</label>
-                        <input type='text' name='firstName' id='firstName' className='form-control' placeholder='First name' onChange={this.handleChange} />
-                    </div>
-                    <div className='col-sm'>
-                        <label htmlFor='patientID'>Patient ID</label>
-                        <input type='text' name='patientID' id='patientID' className='form-control' placeholder='Patient ID' onChange={this.handleChange} />
-                    </div>
-                </div>
-                <div className='row'>
-                    <div className='col-sm'>
-                        <label htmlFor='accessionNumber'>Accession Number</label>
-                        <input type='text' name='accessionNumber' id='accessionNumber' className='form-control' placeholder='Accession Number' onChange={this.handleChange} />
-                    </div>
-                    <div className='col-sm'>
-                        <label htmlFor='studyDescription'>Study Description</label>
-                        <input type='text' name='studyDescription' id='studyDescription' className='form-control' placeholder='Study Description' onChange={this.handleChange} />
-                    </div>
-                    <div className='col-sm'>
-                        <label htmlFor='modalities'>Modalities</label>
-                        <SelectModalities previousModalities={this.state.modalities} onUpdate={this.updateModalities} />
-                    </div>
-                </div>
-                <div className='row'>
-                    <div className='col-sm'>
-                        <label htmlFor='dateFrom'>Date From</label>
-                        <input type='date' name='dateFrom' id='dateFrom' className='form-control' placeholder='Date From' onChange={this.handleChange} />
-                    </div>
-                    <div className='col-sm'>
-                        <label htmlFor='dateTo'>Date To</label>
-                        <input type='date' name='dateTo' id='dateTo' className='form-control' placeholder='Date To' onChange={this.handleChange} />
-                    </div>
-                </div>
-                <div className='row mt-3 mb-3'>
-                    <div className ='col-sm'>
-                    <input type='button' className='btn btn-primary' onClick={this.dataSearch} value='Search' />
-                    </div>
-                </div>
-            </div>
+            <Form title="Search" buttons={<input type='button' className='btn btn-primary' onClick={this.dataSearch} value='Search' />} changeState={this.changeState} />
         )
     }
 }
