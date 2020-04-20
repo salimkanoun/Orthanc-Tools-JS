@@ -16,8 +16,8 @@ class ContentRootPanel extends Component {
   constructor(props){
     super(props)
     this.sendSearch = this.sendSearch.bind(this)
-    this.onDeletePatient = this.onDeletePatient(this)
-    this.onDeleteStudy = this.onDeleteStudy(this)
+    this.onDeletePatient = this.onDeletePatient.bind(this)
+    this.onDeleteStudy = this.onDeleteStudy.bind(this)
   }
 
 
