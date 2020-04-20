@@ -115,7 +115,7 @@ class QueryForm extends Component {
       let dateTo = this.state.dateTo
 
       //Prepare Date string for post data
-      let dateString = '*';
+      let dateString = '';
       dateFrom = dateFrom.split('-').join('')
       dateTo = dateTo.split('-').join('')
       if (dateFrom !== '' && dateTo !== '') {

@@ -28,28 +28,33 @@ export default function tableSeriesFillFromParent(TableSeries) {
 
         }
 
-        async componentWillReceiveProps(nextProps){
-            if(nextProps.studyID !== ""){
-                let seriesAnswer = await apis.content.getSeriesDetails(nextProps.studyID)
-                if (seriesAnswer !== undefined){
-                    let seriesData = []
-                    seriesAnswer.forEach( (serie) => {
-                        seriesData.push({
-                            SerieOrthancID : serie.ID,
-                            Instances : serie.Instances.length,
-                            ...serie.MainDicomTags
-                        })
-        
-                    })
+        async componentDidUpdate(prevProps){
+            if(this.props.studyID !== prevProps.studyID){
+                if(this.props.studyID === "") {
                     this.setState({
-                        series : seriesData
+                        series : []
                     })
+                }else{
+                    this.loadSeriesInState(this.props.studyID)
                 }
-            } else {
-                this.setState({
-                    series : []
-                })
             }
+        }
+
+        async loadSeriesInState(studyID) {
+            let seriesAnswer = await apis.content.getSeriesDetails(studyID)
+            let seriesData = []
+            seriesAnswer.forEach( (serie) => {
+                seriesData.push({
+                    SerieOrthancID : serie.ID,
+                    Instances : serie.Instances.length,
+                    ...serie.MainDicomTags
+                })
+
+            })
+            this.setState({
+                series : seriesData
+            })
+
         }
         
         render(){
