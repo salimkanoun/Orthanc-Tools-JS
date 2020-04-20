@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'build')))
 
 app.use(logger('dev'))
 app.use(express.json())
-app.use(express.raw({ limit: '2mb', type: ['application/dicom', 'text/plain'] }))
+app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 

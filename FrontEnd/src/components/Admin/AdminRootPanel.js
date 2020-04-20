@@ -31,17 +31,19 @@ const AdminPanel = () => {
   }
 
   return (
-    <div className='jumbotron row'>
-      <div className='col-3'>
-        <div className='nav flex-column nav-pills' role='tablist' aria-orientation='vertical'>
-          <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='General' />
-          <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Aets' />
-          <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers' />
-          <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Robots' />
+    <div className='jumbotron'>
+      <div className= "row">
+        <div className='col-3'>
+          <div className='nav flex-column nav-pills' role='tablist' aria-orientation='vertical'>
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='General' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Aets' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Robots' />
+          </div>
         </div>
-      </div>
-      <div className='col-sm'>
-        {getComponentToDisplay()}
+        <div className='col-sm'>
+          {getComponentToDisplay()}
+        </div>
       </div>
     </div>
   )

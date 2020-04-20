@@ -49,7 +49,12 @@ class RetrieveRobot {
    */
   getRobotData (username) {
     const robotJob = this.robotJobs[username]
-    return robotJob.toJSON()
+    if(robotJob !== undefined){
+      return robotJob.toJSON()
+    }else{
+      throw('No Robot for User')
+    }
+    
   }
 
   getAllRobotData () {

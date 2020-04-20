@@ -15,7 +15,6 @@ export default class RobotView extends Component {
 
     state = {
         rows : [],
-        username : this.props.match.params.username,
         totalPercentageProgress : 0,
         percentageFailure: 0
     }
@@ -47,7 +46,7 @@ export default class RobotView extends Component {
             options: { study : 'study', series : 'series'}
         })
     }, {
-        dataField: 'studyInstanceUID',
+        dataField: 'StudyInstanceUID',
         hidden: true
     }, {
         dataField: 'patientName',
@@ -98,7 +97,7 @@ export default class RobotView extends Component {
         text : 'View in OHIF',
         formatter : function(cell, row, rowIndex, formatExtraData){
             return (
-                <OhifLink studyInstanceUID = {row.studyInstanceUID} />
+                <OhifLink StudyInstanceUID = {row.StudyInstanceUID} />
             )
         }
     }];
@@ -113,7 +112,7 @@ export default class RobotView extends Component {
 
     refreshHandler(){
         apis.queryRobot
-        .getRobotDetails(this.state.username)
+        .getRobotDetails(this.props.username)
         .then( (answerData) => {
             
             let rowsRetrieveList = []
@@ -144,7 +143,7 @@ export default class RobotView extends Component {
 
     deleteQueryHandler(rowIndex, refreshHandler){
         apis.queryRobot
-        .deleteRobotItem(this.state.username, rowIndex)
+        .deleteRobotItem(this.props.username, rowIndex)
         .then( () => {
             refreshHandler()
         })
@@ -161,7 +160,7 @@ export default class RobotView extends Component {
         return (
             <div className="jumbotron">
                 <div className="row mb-5">
-                <h1 className="col"> Robot for user {this.state.username}, project : {this.state.projectName} </h1>
+                <h1 className="col"> Robot for user {this.props.username}, project : {this.state.projectName} </h1>
                     <div className="col-md-2 text-right" >
                         <CircularProgressbarWithChildren
                             value={this.state.totalPercentageProgress} text={`Progress : ${this.state.totalPercentageProgress}%`}

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import TableQuery from '../Connected_Component/TableQuery'
 import TableResultStudy from '../Connected_Component/TableResultStudy'
+import RobotView from './RobotView'
 
 /**
  * Root Panel of AutoQuery module
@@ -12,7 +13,20 @@ function AutoQueryRoot () {
 
   function getComponentToDisplay () {
     let component = null
-    currentMainTab === 'Query' ? component = <TableQuery /> : component = <TableResultStudy />
+    switch(currentMainTab) { 
+      case 'Query':
+        component = <TableQuery />
+        break
+      case 'Results':
+        component = <TableResultStudy />
+        break
+      case 'MyRobot':
+        component = <RobotView username="salim" />
+        break
+      default : 
+        break
+    }
+
     return component
   }
 
@@ -25,6 +39,9 @@ function AutoQueryRoot () {
           </li>
           <li className='nav-item'>
             <button className={currentMainTab === 'Results' ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab('Results')}>Result answers</button>
+          </li>
+          <li className='nav-item'>
+            <button className={currentMainTab === 'MyRobot' ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab('MyRobot')}>My Robot</button>
           </li>
         </ul>
       </div>
