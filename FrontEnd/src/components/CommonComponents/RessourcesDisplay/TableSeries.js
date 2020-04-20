@@ -10,13 +10,16 @@ class TableSeries extends Component{
         hidden: true,
     }, {
         dataField: 'SeriesDescription', 
-        text: 'Series Description'
+        text: 'Series Description',
+        sort: true
     }, {
         dataField: 'Modality', 
-        text: 'Modality'
+        text: 'Modality',
+        sort: true
     },{
         dataField: 'Instances', 
-        text: 'Instances'
+        text: 'Instances',
+        sort: true
     }, {
         dataField: 'SeriesNumber',
         text: 'Series Number', 

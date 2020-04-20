@@ -9,24 +9,27 @@ class TableStudy extends Component {
         hidden: true
     }, {
         dataField: 'StudyDate', 
-        text: 'Study Date'
+        text: 'Study Date', 
+        sort: true
     }, {
         dataField: 'StudyDescription', 
-        text: 'Description'
+        text: 'Description',
+        sort: true
     }, {
         dataField: 'AccessionNumber', 
-        text: 'Accession Number'
+        text: 'Accession Number',
+        sort: true
     }, {
         dataField: 'Action', 
         text: 'Action', 
         formatter:  ( (value, row, index) => 
-            <ActionBouton level='studies' orthancID={row.StudyOrthancID} onDelete={this.props.onDelete} />
+            <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} />
         )
     }]
 
     render() {
         return (
-            <BootstrapTable 
+            <BootstrapTable
                 keyField="StudyOrthancID" 
                 striped={true} 
                 columns={this.columns} 

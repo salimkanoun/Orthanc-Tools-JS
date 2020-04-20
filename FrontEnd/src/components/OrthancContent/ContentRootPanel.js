@@ -1,17 +1,12 @@
 import React, { Fragment, Component } from 'react'
 import SearchForm from './SearchForm'
 import apis from '../../services/apis'
-import TablePatients from '../CommonComponents/RessourcesDisplay/TablePatients'
 
-import TableSeries from '../CommonComponents/RessourcesDisplay/TableSeries'
-import tableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
-import tablePatientWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
+import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
+import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 
-const TableSeriesFillFromParent = tableSeriesFillFromParent(TableSeries);
-const TablePatientsWithNestedStudies = tablePatientWithNestedStudies(TablePatients)
-
-class ContentPanel extends Component {
+class ContentRootPanel extends Component {
 
   state = {
     studies: [], 
@@ -30,7 +25,6 @@ class ContentPanel extends Component {
     let studies = await apis.content.getContent(dataFrom)
     let hirachicalAnswer = this.traitementStudies(studies)
     let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
-    console.log(dataForPatientTable)
     this.setState({ studies: dataForPatientTable })
   }
 
@@ -79,19 +73,31 @@ class ContentPanel extends Component {
 
   selectRow={
     mode: 'checkbox', 
+    clickToExpand: true,
     onSelect: this.handleRowSelect
   }
 
   async handleRowSelect(row){
+      
       console.log("Selected row : ", row)
   }
 
-  rowEventsStudies = {
+   rowEventsStudies = {
       onClick: (e, row, rowIndex) => {
-          this.setState({
+            this.setState({
               currentSelectedStudyId : row.StudyOrthancID
-          })
+            })
       } 
+  }
+
+  rowStyleStudies = (row, rowIndex) => {
+    const style = {};
+    if (row.StudyOrthancID === this.state.currentSelectedStudyId){
+      style.backgroundColor = 'rgba(255,153,51)'
+    }
+    style.borderTop = 'none';
+
+    return style;
   }
   
   render() {
@@ -103,7 +109,7 @@ class ContentPanel extends Component {
           </div>
           <div className='row'>
               <div className='col-sm'>
-                  <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
+                  <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} rowStyleStudies={this.rowStyleStudies} />
               </div>
               <div className='col-sm'>
                   <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} />
@@ -116,4 +122,4 @@ class ContentPanel extends Component {
 
 }
 
-export default ContentPanel
+export default ContentRootPanel

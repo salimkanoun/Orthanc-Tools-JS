@@ -65,22 +65,16 @@ export default class Import extends Component {
         let isExistingPatient = this.isknownPatient(orthancAnswer.ParentPatient)
         let isExistingStudy = this.isKnownStudy(orthancAnswer.ParentStudy)
 
-        let newSeriesId = null
-        let newStudyId = null
-        let newPatientId = null
-
         if(!isExistingStudy || !isExistingPatient){
 
             let studyDetails = await apis.content.getSeriesParentDetails(orthancAnswer.ParentSeries, 'study')
 
             if(!isExistingPatient){
                 this.addPatientToState(orthancAnswer.ParentPatient, studyDetails.PatientMainDicomTags)
-                newPatientId = orthancAnswer.ParentPatient
             }
 
             if(!isExistingStudy){
                 this.addStudyToState(orthancAnswer.ParentPatient, orthancAnswer.ParentStudy, studyDetails.MainDicomTags)
-                newStudyId=orthancAnswer.ParentStudy
             }
 
         }
@@ -88,12 +82,6 @@ export default class Import extends Component {
         if(!isExistingSerie) {
             let seriesDetails = await apis.content.getSeriesParentDetails(orthancAnswer.ParentSeries, '')
             this.addSeriesToState(orthancAnswer.ParentPatient, orthancAnswer.ParentStudy, orthancAnswer.ParentSeries,  seriesDetails.MainDicomTags)
-            newSeriesId=orthancAnswer.ParentSeries
-
-        }
-
-        if(!isExistingSerie){
-            //SK ICI RAFRAICHIR LE STATE POUR MISE A JOUR DES TABLES D AFFICHAGE
         }
 
         console.log(this.state)

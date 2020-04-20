@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import TableStudiesWithNestedSeries from './TableStudiesWithNestedSeries'
 import TablePatients from './TablePatients'
 
-export default class TablePatientsWithNestedStudiesAndSeries extends Component {
+class TablePatientsWithNestedStudiesAndSeries extends Component {
 
     expandRow = {
         showExpandColumn: true,
@@ -36,3 +36,5 @@ TableStudiesWithNestedSeries.props = {
     onDeleteStudy : function(){},
     onDeleteSeries : function(){}
 }
+
+export default TablePatientsWithNestedStudiesAndSeries

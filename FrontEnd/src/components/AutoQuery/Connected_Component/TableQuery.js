@@ -191,7 +191,7 @@ class TableQuery extends Component {
   async makeDicomQuery(queryParams) {
 
     //Prepare Date string for post data
-    let dateString = '*';
+    let dateString = '';
     queryParams.dateFrom = queryParams.dateFrom.split('-').join('')
     queryParams.dateTo = queryParams.dateTo.split('-').join('')
     if (queryParams.dateFrom !== '' && queryParams.dateTo !== '') {

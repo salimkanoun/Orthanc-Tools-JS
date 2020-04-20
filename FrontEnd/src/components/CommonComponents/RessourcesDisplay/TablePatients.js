@@ -26,7 +26,7 @@ class TablePatients extends Component{
 
     render(){
         return (
-            <BootstrapTable keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns}  {...this.props}/>
+            <BootstrapTable keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} {...this.props}/>
         )
     }
 
