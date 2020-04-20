@@ -1,15 +1,10 @@
 import React, { Fragment, Component } from 'react'
 import SearchForm from './SearchForm'
 import apis from '../../services/apis'
-import TablePatients from '../CommonComponents/RessourcesDisplay/TablePatients'
 
-import TableSeries from '../CommonComponents/RessourcesDisplay/TableSeries'
-import tableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
-import tablePatientWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
+import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
+import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
-
-const TableSeriesFillFromParent = tableSeriesFillFromParent(TableSeries);
-const TablePatientsWithNestedStudies = tablePatientWithNestedStudies(TablePatients)
 
 class ContentPanel extends Component {
 
