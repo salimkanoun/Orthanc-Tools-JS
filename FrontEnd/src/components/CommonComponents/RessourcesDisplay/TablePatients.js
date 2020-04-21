@@ -1,6 +1,7 @@
 import React, {Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
 class TablePatients extends Component{
     
@@ -26,7 +27,7 @@ class TablePatients extends Component{
 
     render(){
         return (
-            <BootstrapTable keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} {...this.props}/>
+            <BootstrapTable keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} pagination={paginationFactory()} {...this.props}/>
         )
     }
 
