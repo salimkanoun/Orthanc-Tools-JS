@@ -14,6 +14,7 @@ class TablePatientsWithNestedStudies extends Component {
 
     expandRow = {
         showExpandColumn: true,
+        parentClassName: 'rgba(255, 0, 0)',
         renderer: (row) => {
             //Flatenning the study array for the nested study table
             let studies = row.studies 
@@ -43,7 +44,6 @@ class TablePatientsWithNestedStudies extends Component {
     }
     rowEvents = {
         onClick : (e, row, rowIndex) => {
-            console.log(row)
             this.setState({
                 selectedPatientID : row.PatientOrthancID
             })

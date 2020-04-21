@@ -84,9 +84,15 @@ class ContentRootPanel extends Component {
 
    rowEventsStudies = {
       onClick: (e, row, rowIndex) => {
+        if (this.state.currentSelectedStudyId !== row.StudyOrthancID){
             this.setState({
               currentSelectedStudyId : row.StudyOrthancID
             })
+        } else {
+          this.setState({
+            currentSelectedStudyId : ''
+          })
+        }
       } 
   }
 

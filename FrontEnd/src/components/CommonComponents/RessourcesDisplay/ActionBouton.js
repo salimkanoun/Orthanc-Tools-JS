@@ -38,10 +38,14 @@ class ActionBouton extends Component{
         this.props.onDelete(orthancID)
     }
 
+    handleClick(e){
+        e.stopPropagation()
+    }
+
     render(){
         return (
-            <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <Dropdown onClick={this.handleClick}>
+                <Dropdown.Toggle variant="success" id="dropdown-basic"  >
                     Action
                 </Dropdown.Toggle>
 

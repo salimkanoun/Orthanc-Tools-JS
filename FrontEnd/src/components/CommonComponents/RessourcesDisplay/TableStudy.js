@@ -24,7 +24,8 @@ class TableStudy extends Component {
         text: 'Action', 
         formatter:  ( (value, row, index) => 
             <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} />
-        )
+        ),
+        clickToSelect: false
     }]
 
     render() {
