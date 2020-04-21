@@ -110,9 +110,7 @@ class ContentRootPanel extends Component {
       return (
       <Fragment>
         <div className='jumbotron'>
-          <div >
-            <SearchForm onSubmit={this.sendSearch}/>
-          </div>
+          <SearchForm onSubmit={this.sendSearch}/>
           <div className='row'>
               <div className='col-sm'>
                   <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} rowStyleStudies={this.rowStyleStudies} />

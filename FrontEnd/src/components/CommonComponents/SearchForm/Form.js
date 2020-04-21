@@ -152,8 +152,10 @@ class Search extends Component{
                         <input type='date' name='dateTo' id='dateTo' className='form-control' placeholder='Date To' onChange={this.handleChange} value={this.state.dateTo} disabled={this.state.presetDate !== 'none'} />
                     </div>
                 </div>
-                <div className='row text-center mt-5'>
-                    {this.props.buttons}
+                <div className='row mt-3 mb-3'>
+                    <div className='col-sm text-center'>
+                        {this.props.buttons}
+                    </div>
                 </div>
             </div>
         )
