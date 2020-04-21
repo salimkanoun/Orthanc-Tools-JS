@@ -22,7 +22,8 @@ class Search extends Component{
         studyDescription: '', 
         dateFrom: '', 
         dateTo: '',
-        modalities: ''
+        modalities: '', 
+        presetDate: 'none'
     }
 
     constructor(props){
@@ -62,7 +63,7 @@ class Search extends Component{
     }
 
     dates = [
-        {value: 'none', label: 'none'},
+        {value: 'none', label: 'None'},
         {value: 'today', label: 'Today'},
         {value: 'yesterday', label: 'Yesterday'},
         {value: 'lastWeek', label: 'Last Week'},
@@ -72,14 +73,15 @@ class Search extends Component{
     ]
 
     changeListener(event){
-        console.log(moment().format('YYYY-MM-DD'))
+        this.setState({presetDate: event.value})
         let dateFrom = ''
         let dateTo = moment().format('YYYY-MM-DD')
         switch(event.value){
             case 'none':
+                dateTo = ''
                 break
             case 'today':
-                dateFrom = moment().subtract(1, 'days').format('YYYY-MM-DD')
+                dateFrom = moment().format('YYYY-MM-DD') 
                 break;
             case 'yesterday':
                 dateFrom = moment().subtract(1, 'days').format("YYYY-MM-DD")
@@ -138,16 +140,16 @@ class Search extends Component{
                 </div>
                 <div className='row'>
                     <div className='col-sm'>
-                        <label htmlFor='date'>Relative Date</label>
+                        <label htmlFor='date'>Date Preset</label>
                         <Select name="dates" single options={this.dates} onChange={this.changeListener} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='dateFrom'>Date From</label>
-                        <input type='date' name='dateFrom' id='dateFrom' className='form-control' placeholder='Date From' onChange={this.handleChange} value={this.state.dateFrom} />
+                        <input type='date' name='dateFrom' id='dateFrom' className='form-control' placeholder='Date From' onChange={this.handleChange} value={this.state.dateFrom} disabled={this.state.presetDate !== 'none'} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='dateTo'>Date To</label>
-                        <input type='date' name='dateTo' id='dateTo' className='form-control' placeholder='Date To' onChange={this.handleChange} value={this.state.dateTo} />
+                        <input type='date' name='dateTo' id='dateTo' className='form-control' placeholder='Date To' onChange={this.handleChange} value={this.state.dateTo} disabled={this.state.presetDate !== 'none'} />
                     </div>
                 </div>
                 <div className='row text-center mt-5'>
