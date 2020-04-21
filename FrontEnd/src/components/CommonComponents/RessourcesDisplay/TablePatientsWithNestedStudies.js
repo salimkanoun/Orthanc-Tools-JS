@@ -10,11 +10,11 @@ class TablePatientsWithNestedStudies extends Component {
     constructor(props){
         super(props)
         this.rowStyle = this.rowStyle.bind(this)
+        this.handleOnExpand = this.handleOnExpand.bind(this)
     }
 
     expandRow = {
         showExpandColumn: true,
-        parentClassName: 'rgba(255, 0, 0)',
         renderer: (row) => {
             //Flatenning the study array for the nested study table
             let studies = row.studies 
@@ -29,8 +29,17 @@ class TablePatientsWithNestedStudies extends Component {
             return (
                 <TableStudy data={answer} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyleStudies}/>
             )
-        }
+        }, 
+        onExpand: this.handleOnExpand
                 
+    }
+
+    handleOnExpand(row, isExpand, rowIndex, e){
+        console.log(row)
+        if (isExpand)
+            this.setState({selectedPatientID: row.PatientOrthancID}) //ne reconnait pas le this
+        else
+            this.setState({selectedPatientID: ''})
     }
 
     rowStyle = (row, rowIndex) => {
@@ -41,13 +50,6 @@ class TablePatientsWithNestedStudies extends Component {
         }
 
         return style;
-    }
-    rowEvents = {
-        onClick : (e, row, rowIndex) => {
-            this.setState({
-                selectedPatientID : row.PatientOrthancID
-            })
-        } 
     }
 
     
