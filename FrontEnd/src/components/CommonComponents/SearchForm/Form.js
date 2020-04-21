@@ -10,12 +10,25 @@ import SelectModalities from '../SearchForm/SelectModalities'
  */
 class Search extends Component{
 
-    state = {modalities: ''}
+    state = {
+        firstName: '',
+        lastName: '', 
+        patientID: '',
+        accessionNumber: '', 
+        studyDescription: '', 
+        dateFrom: '', 
+        dateTo: '',
+        modalities: ''
+    }
 
     constructor(props){
         super(props)
         this.handleChange=this.handleChange.bind(this)
         this.updateModalities = this.updateModalities.bind(this)
+    }
+
+    getState(){
+        return this.state
     }
 
     /**
@@ -37,7 +50,9 @@ class Search extends Component{
         const name = target.name
         const value = target.value
         
-        this.props.changeState(name, value)
+        this.setState({
+            [name]: value
+        })
 
     }
 
