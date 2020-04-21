@@ -1,12 +1,16 @@
 import React, { Component } from 'react'
 import SelectModalities from '../SearchForm/SelectModalities'
 
+import Select from 'react-select'
+import moment from 'moment'
+
+
+
 /**
  * Abstract search form
  * need props :
  * title : title of the form
  * buttons : buttons to validate and treat the form 
- * changeState : function to change the parent State
  */
 class Search extends Component{
 
@@ -25,6 +29,7 @@ class Search extends Component{
         super(props)
         this.handleChange=this.handleChange.bind(this)
         this.updateModalities = this.updateModalities.bind(this)
+        this.changeListener = this.changeListener.bind(this)
     }
 
     getState(){
@@ -54,6 +59,48 @@ class Search extends Component{
             [name]: value
         })
 
+    }
+
+    dates = [
+        {value: 'none', label: 'none'},
+        {value: 'today', label: 'Today'},
+        {value: 'yesterday', label: 'Yesterday'},
+        {value: 'lastWeek', label: 'Last Week'},
+        {value: 'lastMonth', label: 'Last Month'},
+        {value: 'last3Months', label: 'Last 3 months'},
+        {value: 'lastYear', label: 'Last Year'}
+    ]
+
+    changeListener(event){
+        console.log(moment().format('YYYY-MM-DD'))
+        let dateFrom = ''
+        let dateTo = moment().format('YYYY-MM-DD')
+        switch(event.value){
+            case 'none':
+                break
+            case 'today':
+                dateFrom = moment().subtract(1, 'days').format('YYYY-MM-DD')
+                break;
+            case 'yesterday':
+                dateFrom = moment().subtract(1, 'days').format("YYYY-MM-DD")
+                break
+            case 'lastWeek':
+                dateFrom = moment().subtract(7, 'days').format('YYYY-MM-DD')
+                break
+            case 'lastMonth':
+               dateFrom = moment().subtract(1, 'month').format('YYYY-MM-DD')
+                break
+            case 'last3Months':
+                dateFrom = moment().subtract(3, 'months').format('YYYY-MM-DD')
+                break
+            case 'lastYear':
+                dateFrom = moment().subtract(1, 'year').format('YYYY-MM-DD')
+                break
+            default:
+                this.setState({dateFrom: '', dateTo: ''})
+                break
+        }
+        this.setState({'dateFrom': dateFrom, 'dateTo': dateTo})
     }
 
     //form
@@ -91,12 +138,16 @@ class Search extends Component{
                 </div>
                 <div className='row'>
                     <div className='col-sm'>
+                        <label htmlFor='date'>Relative Date</label>
+                        <Select name="dates" single options={this.dates} onChange={this.changeListener} />
+                    </div>
+                    <div className='col-sm'>
                         <label htmlFor='dateFrom'>Date From</label>
-                        <input type='date' name='dateFrom' id='dateFrom' className='form-control' placeholder='Date From' onChange={this.handleChange} />
+                        <input type='date' name='dateFrom' id='dateFrom' className='form-control' placeholder='Date From' onChange={this.handleChange} value={this.state.dateFrom} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='dateTo'>Date To</label>
-                        <input type='date' name='dateTo' id='dateTo' className='form-control' placeholder='Date To' onChange={this.handleChange} />
+                        <input type='date' name='dateTo' id='dateTo' className='form-control' placeholder='Date To' onChange={this.handleChange} value={this.state.dateTo} />
                     </div>
                 </div>
                 <div className='row text-center mt-5'>
