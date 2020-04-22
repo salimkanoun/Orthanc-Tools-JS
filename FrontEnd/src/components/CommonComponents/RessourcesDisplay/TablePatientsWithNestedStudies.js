@@ -7,11 +7,6 @@ class TablePatientsWithNestedStudies extends Component {
         selectedPatientID : ''
     }
 
-    constructor(props){
-        super(props)
-        this.rowStyle = this.rowStyle.bind(this)
-    }
-
     expandRow = {
         showExpandColumn: true,
         renderer: (row) => {
@@ -28,28 +23,17 @@ class TablePatientsWithNestedStudies extends Component {
             return (
                 <TableStudy data={answer} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyleStudies}/>
             )
+        }, 
+        parentClassName: (isExpanded, row, rowIndex) => {
+            console.log(row)
+            if(isExpanded){
+                return 'bg-info'
+            }else{
+                return ''
+            }
         }
                 
     }
-
-    rowStyle = (row, rowIndex) => {
-        const style = {};
-        if(row.PatientOrthancID === this.state.selectedPatientID){
-            style.backgroundColor = 'rgba(255,153,51)'
-            style.borderTop = 'none';
-        }
-
-        return style;
-    }
-    rowEvents = {
-        onClick : (e, row, rowIndex) => {
-            console.log(row)
-            this.setState({
-                selectedPatientID : row.PatientOrthancID
-            })
-        } 
-    }
-
     
     render(){
         return(

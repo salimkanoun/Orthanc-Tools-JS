@@ -16,8 +16,8 @@ class ContentRootPanel extends Component {
   constructor(props){
     super(props)
     this.sendSearch = this.sendSearch.bind(this)
-    this.onDeletePatient = this.onDeletePatient(this)
-    this.onDeleteStudy = this.onDeleteStudy(this)
+    this.onDeletePatient = this.onDeletePatient.bind(this)
+    this.onDeleteStudy = this.onDeleteStudy.bind(this)
   }
 
 
@@ -84,9 +84,15 @@ class ContentRootPanel extends Component {
 
    rowEventsStudies = {
       onClick: (e, row, rowIndex) => {
+        if (this.state.currentSelectedStudyId !== row.StudyOrthancID){
             this.setState({
               currentSelectedStudyId : row.StudyOrthancID
             })
+        } else {
+          this.setState({
+            currentSelectedStudyId : ''
+          })
+        }
       } 
   }
 
@@ -104,9 +110,7 @@ class ContentRootPanel extends Component {
       return (
       <Fragment>
         <div className='jumbotron'>
-          <div >
-            <SearchForm onSubmit={this.sendSearch}/>
-          </div>
+          <SearchForm onSubmit={this.sendSearch}/>
           <div className='row'>
               <div className='col-sm'>
                   <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} rowStyleStudies={this.rowStyleStudies} />
