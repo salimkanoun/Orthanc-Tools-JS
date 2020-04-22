@@ -21,6 +21,7 @@ class ContentRootPanel extends Component {
     this.sendSearch = this.sendSearch.bind(this)
     this.onDeletePatient = this.onDeletePatient.bind(this)
     this.onDeleteStudy = this.onDeleteStudy.bind(this)
+    this.handleRowSelect = this.handleRowSelect.bind(this)
   }
 
 
@@ -77,34 +78,35 @@ class ContentRootPanel extends Component {
   selectRow={
     mode: 'checkbox', 
     clickToExpand: true,
-    onSelect: (row, isSelected) => { //Je le fais directement depuis là parce que j'ai une erreur 'this is undefined' quand je passe par un handleRowSelected
-      let level = ''
-      let id = ''
-      if (row.PatientOrthancID !== undefined){
-        level = 'patients'
-        id = row.PatientOrthancID
-      }
-      if (row.StudyOrthancID !== undefined){
-        level = 'studies'
-        id = row.StudyOrthancID
-      }
-      if (row.SerieOrthancID !== undefined){
-        level = 'series'
-        id = row.SerieOrthancID
-      }
-      console.log("level : " + level + "; id : " + id)
-      if (isSelected)
-        this.props.addContent({level: level, id: id}) //ajoute le level et l'id au state global 
-      else
-        this.props.removeContent({level: level, id: id}) //le supprime du state global mais fonctionne pas 
-    },
+    onSelect: (row, isSelected) => this.handleRowSelect(row, isSelected),
     onSelectAll: (isSelected, rows, e) => {
       rows.forEach((row) => this.handleRowSelect(row, isSelected))
     }
   }
 
 
- 
+  
+  handleRowSelect = (row, isSelected) => {
+    let level = ''
+    let id = ''
+    if (row.PatientOrthancID !== undefined){
+      level = 'patients'
+      id = row.PatientOrthancID
+    }
+    if (row.StudyOrthancID !== undefined){
+      level = 'studies'
+      id = row.StudyOrthancID
+    }
+    if (row.SerieOrthancID !== undefined){
+      level = 'series'
+      id = row.SerieOrthancID
+    }
+    console.log("level : " + level + "; id : " + id)
+    if (isSelected)
+      this.props.addContent({level: level, id: id}) //ajoute l'id et le level au state global 
+    else
+      this.props.removeContent({level: level, id: id}) //supprime du state global mais fonctionne pas (peut être à cause du filter)
+  }
 
    rowEventsStudies = {
       onClick: (e, row, rowIndex) => {
