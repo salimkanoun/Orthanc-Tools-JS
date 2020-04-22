@@ -5,6 +5,9 @@ import apis from '../../services/apis'
 import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
+import { connect } from 'react-redux'
+import { deleteContent, addContent, removeContent } from '../../actions/OrthancContent'
+
 
 class ContentRootPanel extends Component {
 
@@ -74,13 +77,34 @@ class ContentRootPanel extends Component {
   selectRow={
     mode: 'checkbox', 
     clickToExpand: true,
-    onSelect: this.handleRowSelect
+    onSelect: (row, isSelected) => { //Je le fais directement depuis là parce que j'ai une erreur 'this is undefined' quand je passe par un handleRowSelected
+      let level = ''
+      let id = ''
+      if (row.PatientOrthancID !== undefined){
+        level = 'patients'
+        id = row.PatientOrthancID
+      }
+      if (row.StudyOrthancID !== undefined){
+        level = 'studies'
+        id = row.StudyOrthancID
+      }
+      if (row.SerieOrthancID !== undefined){
+        level = 'series'
+        id = row.SerieOrthancID
+      }
+      console.log("level : " + level + "; id : " + id)
+      if (isSelected)
+        this.props.addContent({level: level, id: id}) //ajoute le level et l'id au state global 
+      else
+        this.props.removeContent({level: level, id: id}) //le supprime du state global mais fonctionne pas 
+    },
+    onSelectAll: (isSelected, rows, e) => {
+      rows.forEach((row) => this.handleRowSelect(row, isSelected))
+    }
   }
 
-  async handleRowSelect(row){
-      
-      console.log("Selected row : ", row)
-  }
+
+ 
 
    rowEventsStudies = {
       onClick: (e, row, rowIndex) => {
@@ -116,7 +140,7 @@ class ContentRootPanel extends Component {
                   <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} rowStyleStudies={this.rowStyleStudies} />
               </div>
               <div className='col-sm'>
-                  <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} />
+                  <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} selectRow={this.selectRow} />
               </div>
           </div>
         </div>
@@ -126,4 +150,16 @@ class ContentRootPanel extends Component {
 
 }
 
-export default ContentRootPanel
+const mapStateToProps = state => {
+  return {
+    listContent: state.listContent
+  }
+}
+
+const mapDispatchToProps = {
+    addContent, 
+    removeContent, 
+    deleteContent
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContentRootPanel)
