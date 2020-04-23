@@ -20,14 +20,11 @@ class TablePatientsWithNestedStudies extends Component {
                     ...studies[study]
                 })
             }
-            console.log('answer = ', answer)
-            console.log(row)
             return (
-                <TableStudy data={answer} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyleStudies} selectRow={this.props.selectRow} />
+                <TableStudy data={answer} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyleStudies} selectRow={this.props.selectRow} button={this.props.button} />
             )
         }, 
         parentClassName: (isExpanded, row, rowIndex) => {
-            console.log(row)
             if(isExpanded){
                 return 'bg-info'
             }else{

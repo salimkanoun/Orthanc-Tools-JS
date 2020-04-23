@@ -1,4 +1,4 @@
-import React, {Component } from 'react'
+import React, {Component, Fragment } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -27,7 +27,10 @@ class TablePatients extends Component{
 
     render(){
         return (
-            <BootstrapTable keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} pagination={paginationFactory()} {...this.props}/>
+            <Fragment>
+                <BootstrapTable keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} pagination={paginationFactory()} {...this.props}/>
+                {this.props.button}
+            </Fragment>
         )
     }
 

@@ -2,15 +2,20 @@ import { ADD_CONTENT, REMOVE_CONTENT } from './actions-types'
 
 
 export function addContent(content){
-    return {
+
+        return {
         type: ADD_CONTENT, 
         payload: {
             level: content.level, 
             id: content.id, 
             studies: content.studies, 
-            parentID: content.parentID
+            parentID: content.parentID, 
+            row: content.row
         }
+    
     }
+    
+    
 }
 
 export function removeContent(content){

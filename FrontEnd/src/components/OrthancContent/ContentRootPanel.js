@@ -11,9 +11,21 @@ import { addContent, removeContent } from '../../actions/ContentList'
 
 class ContentRootPanel extends Component {
 
+  /*
+
+  Il faut gérer les select, si un patient est select, toutes ses studies doivent alors être selected
+  Lorsqu'on click sur send to delete, il faudrait que la table entière se deselecte ? 
+  ou
+  Il faut que les element qui sont dans la liste des delete soient automatiquement selected et disabled => enable lorqu'ils sont pas dans la liste 
+
+  Lors de l'envoie vers la state global, il y a déjà une verification qui empeche les doublons dans la liste
+  
+  */
+
   state = {
     studies: [], 
-    currentSelectedStudyId : ""
+    currentSelectedStudyId : "", 
+    listToDelete : '' //list will be send to deleteTool
   } 
 
   constructor(props){
@@ -22,6 +34,7 @@ class ContentRootPanel extends Component {
     this.onDeletePatient = this.onDeletePatient.bind(this)
     this.onDeleteStudy = this.onDeleteStudy.bind(this)
     this.handleRowSelect = this.handleRowSelect.bind(this)
+    this.sendToDeleteList = this.sendToDeleteList.bind(this)
   }
 
 
@@ -85,7 +98,13 @@ class ContentRootPanel extends Component {
     }
   }
 
-
+  sendToDeleteList(){
+    if(this.state.listToDelete !== '')
+      this.state.listToDelete.forEach(element => this.props.addContent(element)) //send listToDelete to the redux store
+    else
+      console.log("empty");
+      
+  }
   
   handleRowSelect = (row, isSelected) => {
     let level = ''
@@ -98,15 +117,14 @@ class ContentRootPanel extends Component {
       studies = row.studies
     }
     if (row.StudyOrthancID !== undefined){
-      console.log("row = ", row)
       level = 'studies'
       id = row.StudyOrthancID
       parentID = row.PatientOrthancID
     }
     if (isSelected)
-      this.props.addContent({level: level, id: id, studies: studies, parentID: parentID}) //ajoute l'id et le level au state global 
+      this.setState({listToDelete: [...this.state.listToDelete, {level: level, id: id, studies: studies, parentID: parentID, row: row}]}) //ajoute l'id et le level au state 
     else
-      this.props.removeContent({level: level, id: id}) //supprime du state global
+      this.setState({listToDelete: this.state.listToDelete.filter(obj => obj.id !== id)})
   }
 
    rowEventsStudies = {
@@ -134,13 +152,21 @@ class ContentRootPanel extends Component {
   }
   
   render() {
+    const sendToDeleteListButton = <input type='button' className='btn btn-danger' onClick={this.sendToDeleteList} value='Send to delete List' />
       return (
       <Fragment>
         <div className='jumbotron'>
           <SearchForm onSubmit={this.sendSearch}/>
           <div className='row'>
               <div className='col-sm'>
-                  <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} rowStyleStudies={this.rowStyleStudies} />
+                  <TablePatientsWithNestedStudies 
+                    patients={this.state.studies} 
+                    selectRow={ this.selectRow } 
+                    rowEventsStudies={ this.rowEventsStudies } 
+                    onDeletePatient={this.onDeletePatient} 
+                    onDeleteStudy={this.onDeleteStudy} 
+                    rowStyleStudies={this.rowStyleStudies} 
+                    button={sendToDeleteListButton}/>
               </div>
               <div className='col-sm'>
                   <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} />

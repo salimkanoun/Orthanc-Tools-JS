@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, Fragment} from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
 
@@ -30,13 +30,16 @@ class TableStudy extends Component {
 
     render() {
         return (
-            <BootstrapTable
-                keyField="StudyOrthancID" 
-                striped={true} 
-                columns={this.columns} 
-                data={this.props.data} 
-                {...this.props} 
-            />
+            <Fragment>
+                <BootstrapTable
+                    keyField="StudyOrthancID" 
+                    striped={true} 
+                    columns={this.columns} 
+                    data={this.props.data} 
+                    {...this.props} 
+                />
+                {this.props.button}
+            </Fragment>
         )
     }
 
