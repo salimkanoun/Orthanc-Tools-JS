@@ -6,7 +6,7 @@ import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/Tab
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 import { connect } from 'react-redux'
-import { deleteContent, addContent, removeContent } from '../../actions/OrthancContent'
+import { addContent, removeContent } from '../../actions/ContentList'
 
 
 class ContentRootPanel extends Component {
@@ -29,6 +29,7 @@ class ContentRootPanel extends Component {
     let studies = await apis.content.getContent(dataFrom)
     let hirachicalAnswer = this.traitementStudies(studies)
     let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
+    console.log("Studies = ", dataForPatientTable)
     this.setState({ studies: dataForPatientTable })
   }
 
@@ -89,23 +90,23 @@ class ContentRootPanel extends Component {
   handleRowSelect = (row, isSelected) => {
     let level = ''
     let id = ''
+    let studies = {}
+    let parentID = ''
     if (row.PatientOrthancID !== undefined){
       level = 'patients'
       id = row.PatientOrthancID
+      studies = row.studies
     }
     if (row.StudyOrthancID !== undefined){
+      console.log("row = ", row)
       level = 'studies'
       id = row.StudyOrthancID
+      parentID = row.PatientOrthancID
     }
-    if (row.SerieOrthancID !== undefined){
-      level = 'series'
-      id = row.SerieOrthancID
-    }
-    console.log("level : " + level + "; id : " + id)
     if (isSelected)
-      this.props.addContent({level: level, id: id}) //ajoute l'id et le level au state global 
+      this.props.addContent({level: level, id: id, studies: studies, parentID: parentID}) //ajoute l'id et le level au state global 
     else
-      this.props.removeContent({level: level, id: id}) //supprime du state global mais fonctionne pas (peut être à cause du filter)
+      this.props.removeContent({level: level, id: id}) //supprime du state global
   }
 
    rowEventsStudies = {
@@ -142,7 +143,7 @@ class ContentRootPanel extends Component {
                   <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} rowStyleStudies={this.rowStyleStudies} />
               </div>
               <div className='col-sm'>
-                  <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} selectRow={this.selectRow} />
+                  <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} />
               </div>
           </div>
         </div>
@@ -160,8 +161,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
     addContent, 
-    removeContent, 
-    deleteContent
+    removeContent
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentRootPanel)

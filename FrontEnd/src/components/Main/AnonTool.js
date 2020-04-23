@@ -29,7 +29,7 @@ class AnonTool extends Component {
 
 const mapStateToProps = state => {
     return {
-      listContent: state.OrthancContent.listContent
+        listContent: state.ContentList.listContent
     }
 }
 

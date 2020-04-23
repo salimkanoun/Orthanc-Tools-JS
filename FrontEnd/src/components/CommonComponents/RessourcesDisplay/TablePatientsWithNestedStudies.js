@@ -16,10 +16,12 @@ class TablePatientsWithNestedStudies extends Component {
             for(let study in studies) {
                 answer.push( {
                     StudyOrthancID  : study,
+                    PatientOrthancID: row.PatientOrthancID,
                     ...studies[study]
                 })
             }
-    
+            console.log('answer = ', answer)
+            console.log(row)
             return (
                 <TableStudy data={answer} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyleStudies} selectRow={this.props.selectRow} />
             )

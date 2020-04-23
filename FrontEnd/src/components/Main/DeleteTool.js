@@ -29,7 +29,7 @@ class DeleteTool extends Component {
 
 const mapStateToProps = state => {
     return {
-      listContent: state.OrthancContent.listContent
+        listContent: state.ContentList.listContent
     }
 }
 
