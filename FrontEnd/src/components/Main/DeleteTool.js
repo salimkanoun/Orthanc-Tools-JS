@@ -40,8 +40,8 @@ class DeleteTool extends Component {
     }
 
     popover = (
-        <Popover id="popover-basic">
-            <Popover.Title as="h3">Popover</Popover.Title>
+        <Popover id="popover-basic" >
+            <Popover.Title as="h3">Delete List</Popover.Title>
             <Popover.Content>
                 <TablePatientsWithNestedStudies data={this.data(this.props.listContent)} />
             </Popover.Content>
@@ -51,7 +51,7 @@ class DeleteTool extends Component {
     render(){
         return (
             <Fragment>
-                <OverlayTrigger trigger="click" placement="left" overlay={this.popover}>
+                <OverlayTrigger trigger="click" placement="bottom" overlay={this.popover}>
                 <button type="button" className="btn btn-danger" onClick={this.handleClick}  >
                     Delete <br/>
                     <span className="badge badge-light">{this.props.listContent.length}</span>

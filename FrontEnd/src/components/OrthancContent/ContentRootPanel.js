@@ -152,21 +152,21 @@ class ContentRootPanel extends Component {
   }
   
   render() {
-    const sendToDeleteListButton = <input type='button' className='btn btn-danger' onClick={this.sendToDeleteList} value='Send to delete List' />
       return (
       <Fragment>
         <div className='jumbotron'>
-          <SearchForm onSubmit={this.sendSearch}/>
+          <SearchForm onSubmit={this.sendSearch} />
+          <input type='button' className='btn btn-danger mb-3' onClick={this.sendToDeleteList} value='To Delete List' />   
           <div className='row'>
               <div className='col-sm'>
-                  <TablePatientsWithNestedStudies 
+                   <TablePatientsWithNestedStudies 
                     patients={this.state.studies} 
                     selectRow={ this.selectRow } 
                     rowEventsStudies={ this.rowEventsStudies } 
                     onDeletePatient={this.onDeletePatient} 
                     onDeleteStudy={this.onDeleteStudy} 
                     rowStyleStudies={this.rowStyleStudies} 
-                    button={sendToDeleteListButton}/>
+                  />
               </div>
               <div className='col-sm'>
                   <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} />
