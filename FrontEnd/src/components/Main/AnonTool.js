@@ -1,19 +1,36 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
 //ce composant sera a connecter au redux pour avoir la longueur de la list d'anon
-export default class AnonTool extends Component {
+class AnonTool extends Component {
 
-    state = {
-        size : 0
+    constructor(props){
+        super(props)
+        this.handleClick = this.handleClick.bind(this)
+    }
+
+    handleClick(){
+        //call API Anon 
+        this.props.listContent.forEach((content) => {
+            console.log("Will anonymize " + content.id + " from " + content.level + " level")
+        })
     }
 
     render(){
         return (
-            <button type="button" className="btn btn-primary">
+            <button type="button" className="btn btn-primary" onClick={this.handleClick} >
                 Anonymize <br/>
-                <span className="badge badge-light">{this.state.size}</span>
+                <span className="badge badge-light">{this.props.listContent.length}</span>
                 <span className="sr-only">Anonymization List</span>
             </button>
         )
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        listContent: state.ContentList.listContent
+    }
+}
+
+export default connect(mapStateToProps)(AnonTool)
