@@ -27,6 +27,7 @@ class TableSeries extends Component{
     }, {
         dataField: 'Action', 
         text: 'Action',
+        hidden: this.props.hiddenActionBouton,
         formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.SerieOrthancID} onDelete={this.props.onDelete} />)
     }]
 
@@ -47,7 +48,8 @@ class TableSeries extends Component{
 TableSeries.props = {
     onDelete : function(id){
         console.log('Deleted Series ID' + id)
-    }
+    }, 
+    hiddenActionBouton: false
 }
 
 export default TableSeries

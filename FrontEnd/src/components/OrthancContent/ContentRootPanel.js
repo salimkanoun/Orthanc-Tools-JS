@@ -42,7 +42,6 @@ class ContentRootPanel extends Component {
     let studies = await apis.content.getContent(dataFrom)
     let hirachicalAnswer = this.traitementStudies(studies)
     let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
-    console.log("Studies = ", dataForPatientTable)
     this.setState({ studies: dataForPatientTable })
   }
 

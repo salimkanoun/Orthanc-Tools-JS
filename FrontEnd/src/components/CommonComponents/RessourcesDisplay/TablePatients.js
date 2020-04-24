@@ -19,9 +19,16 @@ class TablePatients extends Component{
     }, {
         dataField: 'Action', 
         text: 'Action',
+        hidden: this.props.hiddenActionBouton,
         formatter: ( (value, row, index) => {
             return <ActionBouton level='patient' orthancID={row.PatientOrthancID} onDelete={this.props.onDelete} />
         })
+    
+    }, {
+        dataField: 'Remove', 
+        text: 'Remove',
+        hidden: this.props.hiddenRemoveRow,
+        formatter: () => this.props.buttonRemove
     
     }]
 
@@ -38,7 +45,9 @@ class TablePatients extends Component{
 }
 
 TablePatients.props = {
-    onDelete : function(id){console.log('Deleted Patient ID '+id)}
+    onDelete : function(id){console.log('Deleted Patient ID '+id)}, 
+    hiddenActionBouton: false, 
+    hiddenRemoveRow: true
 }
 
 export default TablePatients 

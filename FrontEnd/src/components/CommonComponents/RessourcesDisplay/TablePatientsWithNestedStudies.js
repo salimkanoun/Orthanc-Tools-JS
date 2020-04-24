@@ -17,11 +17,13 @@ class TablePatientsWithNestedStudies extends Component {
                 answer.push( {
                     StudyOrthancID  : study,
                     PatientOrthancID: row.PatientOrthancID,
+                    PatientID: row.PatientID, 
+                    PatientName: row.PatientName,
                     ...studies[study]
                 })
             }
             return (
-                <TableStudy data={answer} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyleStudies} selectRow={this.props.selectRow} button={this.props.button} />
+                <TableStudy data={answer} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyleStudies} selectRow={this.props.selectRow} button={this.props.button} hiddenActionBouton={false} hiddenRemoveRow={true} {...this.props} />
             )
         }, 
         parentClassName: (isExpanded, row, rowIndex) => {
@@ -36,7 +38,7 @@ class TablePatientsWithNestedStudies extends Component {
     
     render(){
         return(
-            <TablePatients studies={this.props.studies} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} rowStyle={this.rowStyle} rowEvents={this.rowEvents} {...this.props} />
+            <TablePatients  studies={this.props.studies} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} rowStyle={this.rowStyle} rowEvents={this.rowEvents} hiddenActionBouton={false} hiddenRemoveRow={true} {...this.props} />
         )
     }
 }

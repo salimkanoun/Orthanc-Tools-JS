@@ -5,7 +5,6 @@ const initialState = {
 }
 
 export default function orthancContentReducer (state = initialState, action) {
-    console.log(action);
     
     switch (action.type) {
         case ADD_CONTENT:
