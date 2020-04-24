@@ -3,7 +3,8 @@ FROM node:12.16.2
 
 WORKDIR /usr/src/OrthancToolsJs
 
-COPY . .
+COPY ./FrontEnd ./FrontEnd
+COPY ./BackEnd ./BackEnd
 
 WORKDIR /usr/src/OrthancToolsJs/FrontEnd
 RUN npm install
