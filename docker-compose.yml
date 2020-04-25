@@ -9,6 +9,11 @@ services:
         ports: ["80:4000"]
         restart: unless-stopped
         volumes: ["orthanctoolsjs:/OrthancToolsJs/data:Z"]
+        environment:
+            OrthancAddress: "http://orthanc"
+            OrthancPort: "8042"
+            OrthancUsername: "salim"
+            OrthancPassword: "salim"
     
     orthanc:
         image: osimis/orthanc:20.4.2
@@ -46,6 +51,12 @@ services:
             ORTHANC__NAME: "OrthancPacs"
             ORTHANC__REGISTERED_USERS: |
                     {"salim": "salim"}
+
+    watchtower:
+        image: containrrr/watchtower
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        restart: always
 
 
 volumes:

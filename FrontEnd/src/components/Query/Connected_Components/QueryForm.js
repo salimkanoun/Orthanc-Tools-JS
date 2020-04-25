@@ -86,7 +86,7 @@ class QueryForm extends Component {
 
   render () {
       let aetButtons = null
-      if (this.props.aets.length) {
+      if (this.props.aets !== undefined ) {
         aetButtons = this.buildAetButtons()
       }
       return (
