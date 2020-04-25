@@ -9,6 +9,11 @@ services:
         ports: ["80:4000"]
         restart: unless-stopped
         volumes: ["orthanctoolsjs:/OrthancToolsJs/data:Z"]
+        environment:
+            OrthancAddress: "http://orthanc"
+            OrthancPort: "8042"
+            OrthancUsername: "salim"
+            OrthancPassword: "salim"
     
     orthanc:
         image: osimis/orthanc:20.4.2
