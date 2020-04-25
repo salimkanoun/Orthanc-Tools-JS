@@ -9,7 +9,7 @@ WORKDIR /usr/src/OrthancToolsJs/FrontEnd
 RUN npm install
 
 RUN npm run build
-COPY ./build ../BackEnd/
+COPY ./build/ ../BackEnd/build
 
 WORKDIR /usr/src/OrthancToolsJs/BackEnd
 RUN npm install
