@@ -14,6 +14,7 @@ import Authentication from './components/Authentication'
 import AdminRootPanel from './components/Admin/AdminRootPanel'
 import Import from './components/Import/Import'
 import ContentRootPanel from './components/OrthancContent/ContentRootPanel'
+import Footer from './components/Main/Footer'
 
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -55,6 +56,7 @@ function App () {
         <Route exact path='/OrthancContent' component={ContentRootPanel} />
         <Route exact path='/robot/:username' component={RobotView} />
       </Switch>
+      <Footer/>
     </>
   )
 }

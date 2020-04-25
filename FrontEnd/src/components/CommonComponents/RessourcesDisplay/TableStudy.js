@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, Fragment} from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
 
@@ -22,23 +22,39 @@ class TableStudy extends Component {
     }, {
         dataField: 'Action', 
         text: 'Action', 
+        hidden: this.props.hiddenActionBouton,
         formatter:  ( (value, row, index) => 
             <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} />
-        )
+        ),
+        clickToSelect: false
+    }, {
+        dataField: 'Remove', 
+        text: 'Remove',
+        hidden: this.props.hiddenRemoveRow,
+        formatter: () => this.props.buttonRemove
+    
     }]
 
     render() {
         return (
-            <BootstrapTable
-                keyField="StudyOrthancID" 
-                striped={true} 
-                columns={this.columns} 
-                data={this.props.data} 
-                {...this.props} 
-            />
+            <Fragment>
+                <BootstrapTable
+                    keyField="StudyOrthancID" 
+                    striped={true} 
+                    columns={this.columns} 
+                    data={this.props.data} 
+                    {...this.props} 
+                />
+                {this.props.button}
+            </Fragment>
         )
     }
 
+}
+
+TableStudy.props = {
+    hiddenActionBouton: false, 
+    hiddenRemoveRow: true
 }
 
 export default TableStudy

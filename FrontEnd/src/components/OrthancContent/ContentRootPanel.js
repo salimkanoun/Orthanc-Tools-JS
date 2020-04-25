@@ -5,19 +5,36 @@ import apis from '../../services/apis'
 import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
+import { connect } from 'react-redux'
+import { addContent, removeContent } from '../../actions/ContentList'
+
 
 class ContentRootPanel extends Component {
 
+  /*
+
+  Il faut gérer les select, si un patient est select, toutes ses studies doivent alors être selected
+  Lorsqu'on click sur send to delete, il faudrait que la table entière se deselecte ? 
+  ou
+  Il faut que les element qui sont dans la liste des delete soient automatiquement selected et disabled => enable lorqu'ils sont pas dans la liste 
+
+  Lors de l'envoie vers la state global, il y a déjà une verification qui empeche les doublons dans la liste
+  
+  */
+
   state = {
     studies: [], 
-    currentSelectedStudyId : ""
+    currentSelectedStudyId : "", 
+    listToDelete : '' //list will be send to deleteTool
   } 
 
   constructor(props){
     super(props)
     this.sendSearch = this.sendSearch.bind(this)
-    this.onDeletePatient = this.onDeletePatient(this)
-    this.onDeleteStudy = this.onDeleteStudy(this)
+    this.onDeletePatient = this.onDeletePatient.bind(this)
+    this.onDeleteStudy = this.onDeleteStudy.bind(this)
+    this.handleRowSelect = this.handleRowSelect.bind(this)
+    this.sendToDeleteList = this.sendToDeleteList.bind(this)
   }
 
 
@@ -74,19 +91,52 @@ class ContentRootPanel extends Component {
   selectRow={
     mode: 'checkbox', 
     clickToExpand: true,
-    onSelect: this.handleRowSelect
+    onSelect: (row, isSelected) => this.handleRowSelect(row, isSelected),
+    onSelectAll: (isSelected, rows, e) => {
+      rows.forEach((row) => this.handleRowSelect(row, isSelected))
+    }
   }
 
-  async handleRowSelect(row){
+  sendToDeleteList(){
+    if(this.state.listToDelete !== '')
+      this.state.listToDelete.forEach(element => this.props.addContent(element)) //send listToDelete to the redux store
+    else
+      console.log("empty");
       
-      console.log("Selected row : ", row)
+  }
+  
+  handleRowSelect = (row, isSelected) => {
+    let level = ''
+    let id = ''
+    let studies = {}
+    let parentID = ''
+    if (row.PatientOrthancID !== undefined){
+      level = 'patients'
+      id = row.PatientOrthancID
+      studies = row.studies
+    }
+    if (row.StudyOrthancID !== undefined){
+      level = 'studies'
+      id = row.StudyOrthancID
+      parentID = row.PatientOrthancID
+    }
+    if (isSelected)
+      this.setState({listToDelete: [...this.state.listToDelete, {level: level, id: id, studies: studies, parentID: parentID, row: row}]}) //ajoute l'id et le level au state 
+    else
+      this.setState({listToDelete: this.state.listToDelete.filter(obj => obj.id !== id)})
   }
 
    rowEventsStudies = {
       onClick: (e, row, rowIndex) => {
+        if (this.state.currentSelectedStudyId !== row.StudyOrthancID){
             this.setState({
               currentSelectedStudyId : row.StudyOrthancID
             })
+        } else {
+          this.setState({
+            currentSelectedStudyId : ''
+          })
+        }
       } 
   }
 
@@ -104,12 +154,18 @@ class ContentRootPanel extends Component {
       return (
       <Fragment>
         <div className='jumbotron'>
-          <div >
-            <SearchForm onSubmit={this.sendSearch}/>
-          </div>
+          <SearchForm onSubmit={this.sendSearch} />
+          <input type='button' className='btn btn-danger mb-3' onClick={this.sendToDeleteList} value='To Delete List' />   
           <div className='row'>
               <div className='col-sm'>
-                  <TablePatientsWithNestedStudies patients={this.state.studies} selectRow={ this.selectRow } rowEventsStudies={ this.rowEventsStudies } onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} rowStyleStudies={this.rowStyleStudies} />
+                   <TablePatientsWithNestedStudies 
+                    patients={this.state.studies} 
+                    selectRow={ this.selectRow } 
+                    rowEventsStudies={ this.rowEventsStudies } 
+                    onDeletePatient={this.onDeletePatient} 
+                    onDeleteStudy={this.onDeleteStudy} 
+                    rowStyleStudies={this.rowStyleStudies} 
+                  />
               </div>
               <div className='col-sm'>
                   <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} />
@@ -122,4 +178,15 @@ class ContentRootPanel extends Component {
 
 }
 
-export default ContentRootPanel
+const mapStateToProps = state => {
+  return {
+    listContent: state.listContent
+  }
+}
+
+const mapDispatchToProps = {
+    addContent, 
+    removeContent
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContentRootPanel)

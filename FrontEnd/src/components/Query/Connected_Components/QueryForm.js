@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { connect } from 'react-redux'
 
 import { loadAvailableAETS } from '../../../actions/OrthancTools'
@@ -10,77 +10,65 @@ import apis from '../../../services/apis'
 import Form from '../../CommonComponents/SearchForm/Form'
 
 class QueryForm extends Component {
-
-  state = {
-    lastName : '',
-    firstName : '',
-    dateFrom : '',
-    dateTo : '',
-    patientId : '',
-    studyDescription : '',
-    accessionNumber : ''
-  }
+  
 
   constructor (props) {
     super(props)
-    this.changeState = this.changeState.bind(this)
-  }
-
-  changeState(name, value){
-    this.setState({[name]: value})
+    this.child = createRef()
   }
 
   async componentDidMount(){
     this.props.loadAvailableAETS(await apis.aets.getAets())
   }
 
-  
-
   async doQueryTo (aet) {
 
-      let dateFrom = this.state.dateFrom
-      let dateTo = this.state.dateTo
+    //get Form state
+    let formData = this.child.current.getState()
 
-      //Prepare Date string for post data
-      let dateString = '';
-      dateFrom = dateFrom.split('-').join('')
-      dateTo = dateTo.split('-').join('')
-      if (dateFrom !== '' && dateTo !== '') {
-        dateString = dateFrom + '-' + dateTo
-      } else if (dateFrom === '' && dateTo !== '') {
-        dateString = '-' + dateTo
-      } else if (dateFrom !== '' && dateTo === ''){
-        dateString = dateFrom + '-'
-      }
+    let dateFrom = formData.dateFrom
+    let dateTo = formData.dateTo
 
-      let patientName = ''
+    //Prepare Date string for post data
+    let dateString = '';
+    dateFrom = dateFrom.split('-').join('')
+    dateTo = dateTo.split('-').join('')
+    if (dateFrom !== '' && dateTo !== '') {
+      dateString = dateFrom + '-' + dateTo
+    } else if (dateFrom === '' && dateTo !== '') {
+      dateString = '-' + dateTo
+    } else if (dateFrom !== '' && dateTo === ''){
+      dateString = dateFrom + '-'
+    }
 
-      let inputLastName = this.state.lastName
-      let inputFirstName = this.state.firstName
+    let patientName = ''
 
-      if(inputLastName === '' && inputFirstName !== ''){
-        patientName = '^'+inputFirstName
-      } else if (inputLastName !== '' && inputFirstName === ''){
-        patientName = inputLastName
-      }else if (inputLastName !== '' && inputFirstName !== '') {
-        patientName = inputLastName+'^'+inputFirstName
-      }
-    
-      //Prepare POST payload for query (follow Orthanc APIs)
-      let queryPost = {
-        Level: 'Study',
-        Query: {
-          PatientName: patientName,
-          PatientID: this.state.patientId,
-          StudyDate: dateString,
-          ModalitiesInStudy: this.state.modalities,
-          StudyDescription: this.state.studyDescription,
-          AccessionNumber: this.state.accessionNumber,
-          NumberOfStudyRelatedInstances: '',
-          NumberOfStudyRelatedSeries: ''
-        },
-        Normalize : false
-      }
+    let inputLastName = formData.lastName
+    let inputFirstName = formData.firstName
+
+    if(inputLastName === '' && inputFirstName !== ''){
+      patientName = '^'+inputFirstName
+    } else if (inputLastName !== '' && inputFirstName === ''){
+      patientName = inputLastName
+    }else if (inputLastName !== '' && inputFirstName !== '') {
+      patientName = inputLastName+'^'+inputFirstName
+    }
+  
+    //Prepare POST payload for query (follow Orthanc APIs)
+    let queryPost = {
+      Level: 'Study',
+      Query: {
+        PatientName: patientName,
+        PatientID: formData.patientId,
+        StudyDate: dateString,
+        ModalitiesInStudy: formData.modalities,
+        StudyDescription: formData.studyDescription,
+        AccessionNumber: formData.accessionNumber,
+        NumberOfStudyRelatedInstances: '',
+        NumberOfStudyRelatedSeries: ''
+      },
+      Normalize : false
+    }
     
     let queryAnswer = await apis.query.dicomQuery(aet,queryPost)
     let answers = await apis.query.retrieveAnswer(queryAnswer['ID'])
@@ -103,7 +91,7 @@ class QueryForm extends Component {
       }
       return (
         <div className="jumbotron">
-          <Form title='Query' buttons={aetButtons} changeState={this.changeState}/>
+          <Form ref={this.child} title='Query' buttons={aetButtons} />
         </div>
       )
     }

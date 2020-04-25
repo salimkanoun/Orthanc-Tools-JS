@@ -1,6 +1,7 @@
-import React, {Component } from 'react'
+import React, {Component, Fragment } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
 class TablePatients extends Component{
     
@@ -18,15 +19,25 @@ class TablePatients extends Component{
     }, {
         dataField: 'Action', 
         text: 'Action',
+        hidden: this.props.hiddenActionBouton,
         formatter: ( (value, row, index) => {
             return <ActionBouton level='patient' orthancID={row.PatientOrthancID} onDelete={this.props.onDelete} />
         })
+    
+    }, {
+        dataField: 'Remove', 
+        text: 'Remove',
+        hidden: this.props.hiddenRemoveRow,
+        formatter: () => this.props.buttonRemove
     
     }]
 
     render(){
         return (
-            <BootstrapTable keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} {...this.props}/>
+            <Fragment>
+                <BootstrapTable keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} pagination={paginationFactory()} {...this.props}/>
+                {this.props.button}
+            </Fragment>
         )
     }
 
@@ -34,7 +45,9 @@ class TablePatients extends Component{
 }
 
 TablePatients.props = {
-    onDelete : function(id){console.log('Deleted Patient ID '+id)}
+    onDelete : function(id){console.log('Deleted Patient ID '+id)}, 
+    hiddenActionBouton: false, 
+    hiddenRemoveRow: true
 }
 
 export default TablePatients 
