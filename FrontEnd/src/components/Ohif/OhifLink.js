@@ -11,7 +11,7 @@ export default class OhifLink extends Component {
       return (null)
     }
     return (
-      <Link className={this.props.className} to={'ohif.html/' + this.props.StudyInstanceUID} target='_blank'>View on OHIF</Link>
+      <Link className={this.props.className} to={'viewer/' + this.props.StudyInstanceUID} target='_blank'>View on OHIF</Link>
     )
   }
 }

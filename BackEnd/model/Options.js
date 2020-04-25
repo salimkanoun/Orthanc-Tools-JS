@@ -1,7 +1,10 @@
 const db = require('../database/models')
 const Configstore = require('configstore')
 const packageJson = require('../package.json')
-const config = new Configstore(packageJson.name, { OrthancAddress: 'http://localhost', OrthancPort: 8042, OrthancUsername : '', OrthancPassword : '' })
+const config = new Configstore(packageJson.name, { OrthancAddress: process.env.OrthancAddress || 'http://localhost', 
+                                                    OrthancPort: process.env.Port || 8042, 
+                                                    OrthancUsername : process.env.OrthancUsername || '', 
+                                                    OrthancPassword : process.env.OrthancPassword || '' })
 
 /**
  * Update and read configuration data from database or config store
