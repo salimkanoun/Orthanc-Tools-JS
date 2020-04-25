@@ -1,0 +1,54 @@
+version: "2"
+#if needed to map the orthancPACS to a different hard disk device (after mounting it in path)
+# volumes: ["/home/petctviewer/orthanc:/var/lib/orthanc/db:Z"]
+services:
+
+    orthanctoolsjs:
+        image: salimkanoun/orthanctoolsjs
+        container_name: orthanctoolsjs
+        ports: ["8080:4000"]
+        restart: unless-stopped
+        volumes: ["orthanctoolsjs:/OrthancToolsJs/data:Z"]
+    
+    orthanc:
+        image: osimis/orthanc:20.4.2
+        container_name: orthanc
+        restart: unless-stopped
+        ports: ["8042:8042"]
+        volumes: ["orthanc:/var/lib/orthanc/db:Z"]
+        environment:
+            ORTHANC__NAME: "OrthancToolsJS"
+            ORTHANC__DICOM_SERVER_ENABLED: "true"
+            ORTHANC__DICOM_MODALITIES_IN_DATABASE: "true"
+            ORTHANC__ORTHANC_PEERS_IN_DATABASE: "true"
+            DICOM_WEB_PLUGIN_ENABLED: "true"
+            OSIMIS_WEB_VIEWER1_PLUGIN_ENABLED: "true"
+            PYTHON_PLUGIN_ENABLED: "true"
+            TRANSFERS_PLUGIN_ENABLED: "true"
+            WORKLISTS_PLUGIN_ENABLED: "true"
+            ORTHANC__REGISTERED_USERS: |
+                {"salim": "salim"}
+            ORTHANC__DICOM_WEB__ENABLE: "true"
+            ORTHANC__DICOM_WEB__ROOT: "/dicom-web/"
+            ORTHANC__DICOM_WEB__ENABLEWADO: "true"
+            ORTHANC__DICOM_WEB__WADOROOT: "/wado"
+            ORTHANC__DICOM_WEB__SSL: "true"
+            ORTHANC__DICOM_WEB__STUDIESMETADATA: "MainDicomTags"
+            ORTHANC__DICOM_WEB__SERIESMETADATA: "Full"
+
+    orthanctoolsjspacs:
+        image: osimis/orthanc:20.4.2
+        ports: ["8043:8042"]
+        container_name: orthanctoolsjspacs
+        restart: unless-stopped
+        volumes: ["orthancpacs:/var/lib/orthanc/db:Z"]
+        environment:
+            ORTHANC__NAME: "OrthancPacs"
+            ORTHANC__REGISTERED_USERS: |
+                    {"salim": "salim"}
+
+
+volumes:
+        orthanc:
+        orthancpacs:
+        orthanctoolsjs:
