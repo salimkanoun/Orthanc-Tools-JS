@@ -2,7 +2,9 @@ BackEnd/node_modules
 BackEnd/data/database/*
 !BackEnd/data/database/README
 BackEnd/build
+BackEnd/node_modules
 BackEnd/data/log/*
 !BackEnd/data/log/README
 FrontEnd/build
+FrontEnd/node_modules
 
