@@ -4,4 +4,5 @@ BackEnd/data/database/*
 BackEnd/build
 BackEnd/data/log/*
 !BackEnd/data/log/README
+FrontEnd/build
 

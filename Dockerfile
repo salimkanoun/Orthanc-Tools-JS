@@ -1,18 +1,17 @@
-FROM node:12.16.2
-
-WORKDIR /usr/src/OrthancToolsJs
-
-COPY ./FrontEnd ./FrontEnd
-COPY ./BackEnd ./BackEnd
-
-WORKDIR /usr/src/OrthancToolsJs/FrontEnd
+FROM node:12.16.2 as react
+WORKDIR /app
+COPY ./FrontEnd .
 RUN npm install
-
 RUN npm run build
-COPY ./build/ ../BackEnd/build
 
-WORKDIR /usr/src/OrthancToolsJs/BackEnd
-RUN npm install
+FROM node:12.16.2
+WORKDIR /OrthancToolsJs
+RUN mkdir build
+RUN ls
+COPY --from=react /app/build ./build/
+COPY ./BackEnd .
+RUN ls
+RUN npm install --only=prod
 
 EXPOSE 4000
 CMD [ "npm", "start" ]
