@@ -52,6 +52,12 @@ services:
             ORTHANC__REGISTERED_USERS: |
                     {"salim": "salim"}
 
+    watchtower:
+        image: containrrr/watchtower
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        restart: always
+
 
 volumes:
         orthanc:
