@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 import Popover from 'react-bootstrap/Popover'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import { removePatientFromDeleteList, removeStudyFromDeleteList } from '../../actions/DeleteList'
 
 //Ce composant sera a connecter au redux pour connaitre la longueur de la liste de delete 
 class DeleteTool extends Component {
@@ -14,7 +15,7 @@ class DeleteTool extends Component {
 
     =>Modifier la taille du popover, c'est moche, la table ne rentre pas
 
-    =>Configurer le bouton (removeContent) pour récupérer les info de la ligne 
+    
 
     >Ajouter un bouton pour confirmer le delete qui soit 
     -boucle et delete via l'api 
@@ -25,15 +26,17 @@ class DeleteTool extends Component {
         super(props)
         this.handleClick = this.handleClick.bind(this)
         this.data = this.data.bind(this)
+        this.removeContent = this.removeContent.bind(this)
+        this.setRemoveRow = this.setRemoveRow.bind(this)
     }
 
-    state = {dataForTable: []}
+    state = {dataForTable: [], removeRow: {}}
 
     data(){
         let answer = [] //data pour trier les study et les patients
         let dataForTable = [] //data sous forme de row pour la table
         
-        this.props.listContent.forEach(element => {
+        this.props.deleteList.forEach(element => {
             if (element.level === 'patients'){
                 answer[element.row.PatientOrthancID] = {...element.row}
             }else{
@@ -65,15 +68,29 @@ class DeleteTool extends Component {
 
     handleClick(){
         //call API DELETE 
-        this.props.listContent.forEach((content) => {
+        this.props.deleteList.forEach((content) => {
             console.log("Will delete " + content.id + " from " + content.level + " level")
         })
         this.data()
     }
 
     removeContent(e){
-        console.log("remove ", e)
+        console.log(this.state.removeRow)
+        switch (this.state.removeRow.level){
+            case 'patient':
+                this.props.removePatientFromDeleteList(this.state.removeRow.row)
+                break
+            case 'study':
+                this.props.removeStudyFromDeleteList(this.state.removeRow.row)
+                break
+            default:
+                break
+        }
         e.stopPropagation()
+    }
+
+    setRemoveRow(row, level){
+        this.setState({removeRow: {row: row, level: level}})
     }
 
     
@@ -83,7 +100,7 @@ class DeleteTool extends Component {
             <Popover id="popover-basic" >
                 <Popover.Title as="h3">Delete List</Popover.Title>
                 <Popover.Content>
-                    <TablePatientsWithNestedStudies patients={this.state.dataForTable} hiddenActionBouton={true} hiddenRemoveRow={false} buttonRemove={button}/>
+                    <TablePatientsWithNestedStudies patients={this.state.dataForTable} hiddenActionBouton={true} hiddenRemoveRow={false} buttonRemove={button} setRemoveRow={this.setRemoveRow} />
                 </Popover.Content>
             </Popover>
         )
@@ -92,7 +109,7 @@ class DeleteTool extends Component {
                 <OverlayTrigger trigger="click" placement="bottom" overlay={popover}   >
                 <button type="button" className="btn btn-danger" onClick={this.handleClick}  >
                     Delete <br/>
-                    <span className="badge badge-light">{this.props.listContent.length}</span>
+                    <span className="badge badge-light">{this.props.deleteList.length}</span>
                     <span className="sr-only">Delete List</span>
                 </button>
                 </OverlayTrigger>
@@ -103,8 +120,13 @@ class DeleteTool extends Component {
 
 const mapStateToProps = state => {
     return {
-        listContent: state.ContentList.listContent
+        deleteList: state.DeleteList.deleteList
     }
 }
 
-export default connect(mapStateToProps)(DeleteTool)
+const mapDispatchToProps = {
+    removePatientFromDeleteList, 
+    removeStudyFromDeleteList
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteTool)

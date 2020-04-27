@@ -6,7 +6,7 @@ import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/Tab
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 import { connect } from 'react-redux'
-import { addContent, removeContent } from '../../actions/ContentList'
+import { addToDeleteList } from '../../actions/DeleteList'
 
 
 class ContentRootPanel extends Component {
@@ -99,7 +99,7 @@ class ContentRootPanel extends Component {
 
   sendToDeleteList(){
     if(this.state.listToDelete !== '')
-      this.state.listToDelete.forEach(element => this.props.addContent(element)) //send listToDelete to the redux store
+      this.state.listToDelete.forEach(element => this.props.addToDeleteList(element)) //send listToDelete to the redux store
     else
       console.log("empty");
       
@@ -180,13 +180,12 @@ class ContentRootPanel extends Component {
 
 const mapStateToProps = state => {
   return {
-    listContent: state.listContent
+    deleteList: state.deleteList
   }
 }
 
 const mapDispatchToProps = {
-    addContent, 
-    removeContent
+  addToDeleteList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentRootPanel)

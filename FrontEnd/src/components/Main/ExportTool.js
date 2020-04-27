@@ -33,4 +33,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(ExportTool)
+export default /*connect(mapStateToProps)*/(ExportTool)

@@ -31,7 +31,14 @@ class TableStudy extends Component {
         dataField: 'Remove', 
         text: 'Remove',
         hidden: this.props.hiddenRemoveRow,
-        formatter: () => this.props.buttonRemove
+        formatter: (value, row, index) => {
+            try {
+                this.props.setRemoveRow(row, 'study')
+            }catch (error){
+                console.log(error)
+            }
+            return this.props.buttonRemove
+        }
     
     }]
 

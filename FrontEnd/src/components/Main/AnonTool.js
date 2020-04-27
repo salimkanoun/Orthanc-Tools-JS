@@ -31,6 +31,7 @@ const mapStateToProps = state => {
     return {
         listContent: state.ContentList.listContent
     }
+    
 }
 
 export default connect(mapStateToProps)(AnonTool)

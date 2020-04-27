@@ -28,10 +28,16 @@ class TablePatients extends Component{
         dataField: 'Remove', 
         text: 'Remove',
         hidden: this.props.hiddenRemoveRow,
-        formatter: () => this.props.buttonRemove
+        formatter: (cell, row, index) => {
+            try{
+                this.props.setRemoveRow(row, 'patient')
+            }catch (error){
+                console.log(error)
+            }
+            return this.props.buttonRemove
+        }
     
     }]
-
     render(){
         return (
             <Fragment>
@@ -45,7 +51,7 @@ class TablePatients extends Component{
 }
 
 TablePatients.props = {
-    onDelete : function(id){console.log('Deleted Patient ID '+id)}, 
+    onDelete : function(id){console.log('Deleted Patient ID '+id)},
     hiddenActionBouton: false, 
     hiddenRemoveRow: true
 }

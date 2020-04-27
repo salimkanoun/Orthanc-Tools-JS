@@ -31,10 +31,12 @@ export default class NavBar extends Component {
         </ul>
         <div className="row">
           <div className="mr-1">
-            <AnonTool />
+            {//<AnonTool />
+  }
           </div>
           <div className="mr-1">
-            <ExportTool />
+            {//<ExportTool />
+  }
           </div>
           <div className="mr-1">
           <DeleteTool />
