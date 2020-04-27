@@ -4,20 +4,15 @@
 name: Node.js CI
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [12.x]
-
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -37,16 +32,18 @@ jobs:
       run : zip -r OrthancToolsJS.zip .
       working-directory: BackEnd
     - name: Create Release
+      if: github.event.pull_request.merged == true
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        tag_name: ${{ github.event.pull_request.title }}
+        release_name: Release ${{ github.event.pull_request.title }}
         draft: true
         prerelease: true
     - name: Upload Release Asset
+      if: github.event.pull_request.merged == true
       id: upload-release-asset 
       uses: actions/upload-release-asset@v1
       env:
