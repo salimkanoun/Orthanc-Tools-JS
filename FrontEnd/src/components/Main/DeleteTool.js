@@ -41,11 +41,17 @@ class DeleteTool extends Component {
                 answer[element.row.PatientOrthancID] = {...element.row}
             }else{
                 //traitement si study 
+                let previewStudies = {}
+                try {
+                    previewStudies = answer[element.row.PatientOrthancID].studies
+                }
+                catch (error){}
                 answer[element.row.PatientOrthancID] = {
                         PatientOrthancID: element.row.PatientOrthancID, 
                         PatientID: element.row.PatientID, 
                         PatientName: element.row.PatientName, 
                         studies: {
+                            ...previewStudies,
                             [element.row.StudyOrthancID]: {
                                 StudyDate: element.row.StudyDate, 
                                 StudyDescription: element.row.StudyDescription, 

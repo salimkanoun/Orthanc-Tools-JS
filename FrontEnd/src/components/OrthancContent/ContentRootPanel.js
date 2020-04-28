@@ -42,6 +42,7 @@ class ContentRootPanel extends Component {
     let studies = await apis.content.getContent(dataFrom)
     let hirachicalAnswer = this.traitementStudies(studies)
     let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
+    console.log(dataForPatientTable)
     this.setState({ studies: dataForPatientTable })
   }
 
@@ -59,17 +60,25 @@ class ContentRootPanel extends Component {
   }
 
   traitementStudies(studies){
+    console.log(studies);
+    
       let responseMap = []
       studies.forEach(element => {
-              responseMap[element.ParentPatient] = {
-                  ...element.PatientMainDicomTags, 
-                  studies: { 
-                          [element.ID]: {
-                              ...element.MainDicomTags
-                          }
-                      }
+        let previewStudies = {}
+        try {
+          previewStudies = responseMap[element.ParentPatient].studies
+        }
+        catch (error) { }
+          responseMap[element.ParentPatient] = {
+            ...element.PatientMainDicomTags, 
+            studies: {
+              ...previewStudies,
+              [element.ID]: {
+                  ...element.MainDicomTags
+              }
+            }
 
-              } 
+          } 
               
           })
       return responseMap
