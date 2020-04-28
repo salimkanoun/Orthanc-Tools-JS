@@ -3,7 +3,11 @@ import TableSeries from './TableSeries'
 import TableStudy from './TableStudy'
 
 class TableStudiesWithNestedSeries extends Component {
-
+    
+    static defaultProps = {
+        onDeleteStudy : function(){},
+        onDeleteSeries : function(){}
+    }
     expandRow = {
         showExpandColumn: true,
         renderer: (row) => {
@@ -29,11 +33,6 @@ class TableStudiesWithNestedSeries extends Component {
             <TableStudy studies={this.props.studies} expandRow={this.expandRow} onDelete={this.props.onDeleteStudy} {...this.props} />
         )
     }
-}
-
-TableStudiesWithNestedSeries.props = {
-    onDeleteStudy : function(){},
-    onDeleteSeries : function(){}
 }
 
 export default TableStudiesWithNestedSeries

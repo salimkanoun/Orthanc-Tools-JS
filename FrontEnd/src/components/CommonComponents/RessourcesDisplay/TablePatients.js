@@ -4,6 +4,12 @@ import ActionBouton from './ActionBouton'
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
 class TablePatients extends Component{
+
+    static defaultProps = {
+        onDelete : function(id){console.log('Deleted Patient ID '+id)},
+        hiddenActionBouton: false, 
+        hiddenRemoveRow: true
+    }
     
     columns = [{
         dataField: 'PatientOrthancID', 
@@ -29,11 +35,9 @@ class TablePatients extends Component{
         text: 'Remove',
         hidden: this.props.hiddenRemoveRow,
         formatter: (cell, row, index) => {
-            try{
-                this.props.setRemoveRow(row, 'patient')
-            }catch (error){
-                console.log(error)
-            }
+            
+            this.props.setRemoveRow(row, 'patient')
+            
             return this.props.buttonRemove
         }
     
@@ -48,12 +52,6 @@ class TablePatients extends Component{
     }
 
 
-}
-
-TablePatients.props = {
-    onDelete : function(id){console.log('Deleted Patient ID '+id)},
-    hiddenActionBouton: false, 
-    hiddenRemoveRow: true
 }
 
 export default TablePatients 
