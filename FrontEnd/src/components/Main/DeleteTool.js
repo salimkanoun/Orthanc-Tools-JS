@@ -4,6 +4,7 @@ import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDispla
 import Popover from 'react-bootstrap/Popover'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import { removePatientFromDeleteList, removeStudyFromDeleteList } from '../../actions/DeleteList'
+import apis from '../../services/apis'
 
 //Ce composant sera a connecter au redux pour connaitre la longueur de la liste de delete 
 class DeleteTool extends Component {
@@ -26,94 +27,64 @@ class DeleteTool extends Component {
         super(props)
         this.handleClick = this.handleClick.bind(this)
         this.data = this.data.bind(this)
-        this.removeContent = this.removeContent.bind(this)
-        this.setRemoveRow = this.setRemoveRow.bind(this)
+        this.removeRow = this.removeRow.bind(this)
     }
 
-    state = {dataForTable: [], removeRow: {}}
-
     data(){
-        let answer = [] //data pour trier les study et les patients
+        let answer = this.props.deleteList
         let dataForTable = [] //data sous forme de row pour la table
-        
-        this.props.deleteList.forEach(element => {
-            if (element.level === 'patients'){
-                answer[element.row.PatientOrthancID] = {...element.row}
-            }else{
-                //traitement si study 
-                let previewStudies = {}
-                try {
-                    previewStudies = answer[element.row.PatientOrthancID].studies
-                }
-                catch (error){}
-                answer[element.row.PatientOrthancID] = {
-                        PatientOrthancID: element.row.PatientOrthancID, 
-                        PatientID: element.row.PatientID, 
-                        PatientName: element.row.PatientName, 
-                        studies: {
-                            ...previewStudies,
-                            [element.row.StudyOrthancID]: {
-                                StudyDate: element.row.StudyDate, 
-                                StudyDescription: element.row.StudyDescription, 
-                                StudyInstanceUID: element.row.StudyInstanceUID,
-                                AccessionNumber: element.row.AccessionNumber, 
-                                StudyTime: element.row.StudyTime
-                            }
-                        }
-                    }
-            }
-        })
         for(let patient in answer) {
             dataForTable.push( {
                 PatientOrthancID  : patient,
                 ...answer[patient]
             })
         }
-        this.setState({dataForTable: dataForTable})
+        console.log(dataForTable)
+        return dataForTable
 }
 
-    handleClick(){
+    async handleClick(){
         //call API DELETE 
-        this.props.deleteList.forEach((content) => {
-            console.log("Will delete " + content.id + " from " + content.level + " level")
+        console.log(this.props.deleteList)
+        this.props.deleteList.forEach(async (patient) => {
+                let studyID = Object.keys(patient.studies)
+                studyID.forEach(async (id) => {
+                    console.log("will delete", id)
+                    //await apis.content.deleteStudies(id) //take a lot of time, need to pass by the back
+                    this.props.removePatientFromDeleteList(patient.row)
+                })
         })
-        this.data()
     }
 
-    removeContent(e){
-        console.log(this.state.removeRow)
-        switch (this.state.removeRow.level){
+    removeRow(row, level){
+        console.log(row)
+        switch (level){
             case 'patient':
-                this.props.removePatientFromDeleteList(this.state.removeRow.row)
+                this.props.removePatientFromDeleteList(row)
                 break
             case 'study':
-                this.props.removeStudyFromDeleteList(this.state.removeRow.row)
+                this.props.removeStudyFromDeleteList(row)
                 break
             default:
                 break
         }
-        e.stopPropagation()
-    }
-
-    setRemoveRow(row, level){
-        this.setState({removeRow: {row: row, level: level}})
     }
 
     
     render(){
-        const button = <button type="button" className="btn btn-danger" onClick={this.removeContent}>Remove</button>
         const popover = (
             <Popover id="popover-basic" >
                 <Popover.Title as="h3">Delete List</Popover.Title>
                 <Popover.Content>
-                    <TablePatientsWithNestedStudies patients={this.state.dataForTable} hiddenActionBouton={true} hiddenRemoveRow={false} buttonRemove={button} setRemoveRow={this.setRemoveRow} />
+                    <TablePatientsWithNestedStudies patients={this.data()} hiddenActionBouton={true} hiddenRemoveRow={false} removeRow={this.removeRow} />
+                    <button type="button" className="btn btn-danger" onClick={this.handleClick} >Delete</button>
                 </Popover.Content>
             </Popover>
         )
         return (
             <Fragment>
                 <OverlayTrigger trigger="click" placement="bottom" overlay={popover}   >
-                <button type="button" className="btn btn-danger" onClick={this.handleClick}  >
+                <button type="button" className="btn btn-danger" >
                     Delete <br/>
                     <span className="badge badge-light">{this.props.deleteList.length}</span>
                     <span className="sr-only">Delete List</span>

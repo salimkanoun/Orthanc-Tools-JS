@@ -37,10 +37,8 @@ class TableStudy extends Component {
         dataField: 'Remove', 
         text: 'Remove',
         hidden: this.props.hiddenRemoveRow,
-        formatter: (value, row, index) => {
-            this.props.setRemoveRow(row, 'study')
-            
-            return this.props.buttonRemove
+        formatter: (cell, row, index) => {
+            return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.removeRow(row, 'study')}}>Remove</button>
         }
     
     }]

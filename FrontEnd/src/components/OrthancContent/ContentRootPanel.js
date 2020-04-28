@@ -60,8 +60,6 @@ class ContentRootPanel extends Component {
   }
 
   traitementStudies(studies){
-    console.log(studies);
-    
       let responseMap = []
       studies.forEach(element => {
         let previewStudies = {}
@@ -101,12 +99,13 @@ class ContentRootPanel extends Component {
     mode: 'checkbox', 
     clickToExpand: true,
     onSelect: (row, isSelected) => this.handleRowSelect(row, isSelected),
-    onSelectAll: (isSelected, rows, e) => {
+    onSelectAll:  (isSelected, rows, e) => {
       rows.forEach((row) => this.handleRowSelect(row, isSelected))
     }
   }
 
   sendToDeleteList(){
+    console.log(this.state.listToDelete)
     if(this.state.listToDelete !== '')
       this.state.listToDelete.forEach(element => this.props.addToDeleteList(element)) //send listToDelete to the redux store
     else
@@ -115,24 +114,58 @@ class ContentRootPanel extends Component {
   }
   
   handleRowSelect = (row, isSelected) => {
-    let level = ''
-    let id = ''
     let studies = {}
-    let parentID = ''
-    if (row.PatientOrthancID !== undefined){
-      level = 'patients'
-      id = row.PatientOrthancID
-      studies = row.studies
+    console.log(row)
+    if (row.StudyOrthancID === undefined){
+        if (isSelected)
+          this.setState({listToDelete: [...this.state.listToDelete, {id: row.PatientOrthancID, PatientName: row.PatientName, PatientID: row.PatientID, studies: row.studies}]}) //add Patient on deleteList 
+        else 
+          this.setState({listToDelete: this.state.listToDelete.filter(obj => obj.id !== row.PatientOrthancID)})
+    } else {
+        if (isSelected){
+          studies = { [row.StudyOrthancID]: {
+            AccessionNumber: row.AccessionNumber,
+            StudyDate: row.StudyDate,
+            StudyDescription: row.StudyDescription,
+            StudyInstanceUID: row.StudyInstanceUID,
+            StudyTime: row.StudyTime
+          }}
+          if (this.state.listToDelete !== ''){
+            let find = false
+            this.state.listToDelete.forEach(element => {
+              if(element.id === row.PatientOrthancID){
+                  let newList = this.state.listToDelete
+                  let newStudies = {...element.studies, ...studies}
+                  console.log(newStudies)
+                  newList[newList.indexOf(element)].studies = newStudies
+                  this.setState({listToDelete: newList})
+                  find = true
+              }
+            })
+            if (!find)
+            this.setState({listToDelete: [...this.state.listToDelete, {id: row.PatientOrthancID, PatientName: row.PatientName, PatientID: row.PatientID, studies: studies}]})
+          } else {
+            this.setState({listToDelete: [{id: row.PatientOrthancID, PatientName: row.PatientName, PatientID: row.PatientID, studies: studies}]})
+          }
+        } else {
+          let newList = this.state.listToDelete
+          newList.forEach(element => {
+            if(element.id === row.PatientOrthancID){
+              let studiesID = Object.keys(element.studies)
+              let newStudies
+              studiesID.forEach(id => {
+                if (id !== row.StudyOrthancID){
+                  newStudies = {...newStudies, [id]: {...element.studies[id]}}
+                }
+              })
+              element.studies = newStudies
+            }
+          })
+          console.log(newList)
+          newList = newList.filter(obj => obj.studies !== undefined) //Enlève les patients sans studies
+          this.setState({listToDelete: newList})
+        }
     }
-    if (row.StudyOrthancID !== undefined){
-      level = 'studies'
-      id = row.StudyOrthancID
-      parentID = row.PatientOrthancID
-    }
-    if (isSelected)
-      this.setState({listToDelete: [...this.state.listToDelete, {level: level, id: id, studies: studies, parentID: parentID, row: row}]}) //ajoute l'id et le level au state 
-    else
-      this.setState({listToDelete: this.state.listToDelete.filter(obj => obj.id !== id)})
   }
 
    rowEventsStudies = {

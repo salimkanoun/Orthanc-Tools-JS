@@ -5,6 +5,9 @@ const initialState = {
 }
 
 export default function orthancContentReducer (state = initialState, action ) {
+  
+  console.log(action.payload)
+  console.log(state.deleteList)
     switch (action.type) {
         case ADD_DELETE_LIST:
           return {
@@ -17,8 +20,6 @@ export default function orthancContentReducer (state = initialState, action ) {
             deleteList: state.deleteList.filter(content => content.id !== action.payload.PatientOrthancID)
           }
         case REMOVE_STUDY_DELETE_LIST:
-          console.log(action.payload)
-          console.log(state.deleteList)
           let newList = state.deleteList
           state.deleteList.forEach(element => {
             if (element.id === action.payload.PatientOrthancID){
