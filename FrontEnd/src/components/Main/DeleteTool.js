@@ -9,6 +9,7 @@ import apis from '../../services/apis'
 //Ce composant sera a connecter au redux pour connaitre la longueur de la liste de delete 
 class DeleteTool extends Component {
 
+
     /*
     TODO :
     SK : Taille du popover resolue via style maxWith = 100%
@@ -29,17 +30,18 @@ class DeleteTool extends Component {
     data(){
         let answer = this.props.deleteList
         let dataForTable = [] //data sous forme de row pour la table
-        answer.forEach(patient => {
+        for (let patient in answer){
             dataForTable.push( {
-                PatientOrthancID  : patient.id,
-                ...patient
+                PatientOrthancID  : patient,
+                ...answer[patient]
             })
-        })
+        }
         return dataForTable
 }
 
     async handleClick(){
-        //call API DELETE 
+        //call API DELETE
+        console.log(this.data()) //J'affiche les datas ici pour voir comment est la deleteList 
         this.props.deleteList.forEach(async (patient) => {
                 let studyID = Object.keys(patient.studies)
                 studyID.forEach(async (id) => {
