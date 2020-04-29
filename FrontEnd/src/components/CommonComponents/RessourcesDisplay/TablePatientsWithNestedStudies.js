@@ -23,7 +23,7 @@ class TablePatientsWithNestedStudies extends Component {
                 })
             }
             return (
-                <TableStudy data={answer} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyleStudies} selectRow={this.props.selectRow} button={this.props.button} {...this.props} />
+                <TableStudy data={answer} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyleStudies} button={this.props.button} {...this.props} />
             )
         }, 
         parentClassName: (isExpanded, row, rowIndex) => {

@@ -11,21 +11,11 @@ import { addToDeleteList } from '../../actions/DeleteList'
 
 class ContentRootPanel extends Component {
 
-  /*
-
-  Il faut gérer les select, si un patient est select, toutes ses studies doivent alors être selected
-  Lorsqu'on click sur send to delete, il faudrait que la table entière se deselecte ? 
-  ou
-  Il faut que les element qui sont dans la liste des delete soient automatiquement selected et disabled => enable lorqu'ils sont pas dans la liste 
-
-  Lors de l'envoie vers la state global, il y a déjà une verification qui empeche les doublons dans la liste
-  
-  */
-
   state = {
     studies: [], 
     currentSelectedStudyId : "", 
-    listToDelete : '' //list will be send to deleteTool
+    listToDelete : '', //list will be send to deleteTool
+    selectedPatient: [] //list of all studyID of patient selected 
   } 
 
   constructor(props){
@@ -94,15 +84,6 @@ class ContentRootPanel extends Component {
 
   }
 
-  selectRow={
-    mode: 'checkbox', 
-    clickToExpand: true,
-    onSelect: (row, isSelected) => this.handleRowSelect(row, isSelected),
-    onSelectAll:  (isSelected, rows, e) => {
-      rows.forEach((row) => this.handleRowSelect(row, isSelected))
-    }
-  }
-
   sendToDeleteList(){
     if(this.state.listToDelete !== '')
       this.state.listToDelete.forEach(element => this.props.addToDeleteList(element)) //send listToDelete to the redux store
@@ -114,10 +95,15 @@ class ContentRootPanel extends Component {
   handleRowSelect = (row, isSelected) => {
     let studies = {}
     if (row.StudyOrthancID === undefined){
-        if (isSelected)
+      
+        if (isSelected){
+          this.setState({selectedPatient: [...this.state.selectedPatient, ...Object.keys(row.studies)]})
           this.setState({listToDelete: [...this.state.listToDelete, {id: row.PatientOrthancID, PatientName: row.PatientName, PatientID: row.PatientID, studies: row.studies}]}) //add Patient on deleteList 
-        else 
+        }else {
+          this.setState({selectedPatient: this.state.selectedPatient.filter(studyID => !Object.keys(row.studies).includes(studyID))})
           this.setState({listToDelete: this.state.listToDelete.filter(obj => obj.id !== row.PatientOrthancID)})
+        }
+        console.log(this.state.selectedPatient)
     } else {
         if (isSelected){
           studies = { [row.StudyOrthancID]: {
@@ -188,6 +174,15 @@ class ContentRootPanel extends Component {
   }
   
   render() {
+    const selectRow={
+      mode: 'checkbox', 
+      clickToExpand: true,
+      nonSelectable: this.state.selectedPatient,
+      onSelect: (row, isSelected) => this.handleRowSelect(row, isSelected),
+      onSelectAll:  (isSelected, rows, e) => {
+        rows.forEach((row) => this.handleRowSelect(row, isSelected))
+      }
+    }
       return (
       <Fragment>
         <div className='jumbotron'>
@@ -197,7 +192,8 @@ class ContentRootPanel extends Component {
               <div className='col-sm'>
                    <TablePatientsWithNestedStudies 
                     patients={this.state.studies} 
-                    selectRow={ this.selectRow } 
+                    selectRow={selectRow }
+                    selectedPatient={this.state.selectedPatient}
                     rowEventsStudies={ this.rowEventsStudies } 
                     onDeletePatient={this.onDeletePatient} 
                     onDeleteStudy={this.onDeleteStudy} 
