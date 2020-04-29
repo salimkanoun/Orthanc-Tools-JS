@@ -103,7 +103,6 @@ class ContentRootPanel extends Component {
           this.setState({selectedPatient: this.state.selectedPatient.filter(studyID => !Object.keys(row.studies).includes(studyID))})
           this.setState({listToDelete: this.state.listToDelete.filter(obj => obj.id !== row.PatientOrthancID)})
         }
-        console.log(this.state.selectedPatient)
     } else {
         if (isSelected){
           studies = { [row.StudyOrthancID]: {

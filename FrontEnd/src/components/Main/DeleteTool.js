@@ -26,7 +26,6 @@ class DeleteTool extends Component {
 
     data(){
         let answer = this.props.deleteList
-        console.log(this.props.deleteList)
         let dataForTable = [] //data sous forme de row pour la table
         answer.forEach(patient => {
             dataForTable.push( {
@@ -34,13 +33,11 @@ class DeleteTool extends Component {
                 ...patient
             })
         })
-        console.log(dataForTable)
         return dataForTable
 }
 
     async handleClick(){
         //call API DELETE 
-        console.log(this.props.deleteList)
         this.props.deleteList.forEach(async (patient) => {
                 let studyID = Object.keys(patient.studies)
                 studyID.forEach(async (id) => {
@@ -52,7 +49,6 @@ class DeleteTool extends Component {
     }
 
     removeRow(row, level){
-        console.log(row)
         switch (level){
             case 'patient':
                 this.props.removePatientFromDeleteList(row)
