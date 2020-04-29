@@ -11,9 +11,11 @@ class DeleteTool extends Component {
 
     /*
     TODO :
-    
-
-    =>Modifier la taille du popover, c'est moche, la table ne rentre pas
+    SK : Taille du popover resolue via style maxWith = 100%
+    J'ai l'impression qu'il manque l'Object "Overlay" ou on défini la méthode de sortie
+    Ce qui serait bien c'est que le composant se ferme lui meme quand il perd le focus
+    Faudra surement refactoriser cette classe, peut etre un component qui show les 3 bouttons Export / Anon / Delete 
+    aver leur chiffre du redux et les composant DeletePopover, AnonPopover dans des classes separés pour plus de lisibilité (l'equivalent du const)
 
     */
     
@@ -64,7 +66,7 @@ class DeleteTool extends Component {
     
     render(){
         const popover = (
-            <Popover id="popover-basic" >
+            <Popover id="popover-basic" style={ {maxWidth: "100%"} } >
                 <Popover.Title as="h3">Delete List</Popover.Title>
                 <Popover.Content>
                     <TablePatientsWithNestedStudies patients={this.data()} hiddenActionBouton={true} hiddenRemoveRow={false} removeRow={this.removeRow} />
@@ -74,12 +76,12 @@ class DeleteTool extends Component {
         )
         return (
             <Fragment>
-                <OverlayTrigger trigger="click" placement="bottom" overlay={popover}   >
-                <button type="button" className="btn btn-danger" >
-                    Delete <br/>
-                    <span className="badge badge-light">{this.props.deleteList.length}</span>
-                    <span className="sr-only">Delete List</span>
-                </button>
+                <OverlayTrigger trigger='click' placement="bottom-end" overlay={popover}   >
+                    <button type="button" className="btn btn-danger" >
+                        Delete <br/>
+                        <span className="badge badge-light">{this.props.deleteList.length}</span>
+                        <span className="sr-only">Delete List</span>
+                    </button>
                 </OverlayTrigger>
             </Fragment>
         )

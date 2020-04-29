@@ -6,7 +6,7 @@ import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/Tab
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 import { connect } from 'react-redux'
-import { addToDeleteList } from '../../actions/DeleteList'
+import { addStudyToDeleteList } from '../../actions/DeleteList'
 
 
 class ContentRootPanel extends Component {
@@ -72,11 +72,12 @@ class ContentRootPanel extends Component {
       
   }
 
+  //Rappelé par le dropdown lors du delete de Patietn sur Orthanc
   onDeletePatient(idDeleted){
 
 
   }
-
+  //rappelé par le dropdow lors du delete de study sur Orthanc
   onDeleteStudy(idDeleted){
     this.setState({
       currentSelectedStudyId : ''
@@ -86,7 +87,7 @@ class ContentRootPanel extends Component {
 
   sendToDeleteList(){
     if(this.state.listToDelete !== '')
-      this.state.listToDelete.forEach(element => this.props.addToDeleteList(element)) //send listToDelete to the redux store
+      this.state.listToDelete.forEach(element => this.props.addStudyToDeleteList(element)) //send listToDelete to the redux store
     else
       console.log("empty");
       
@@ -217,7 +218,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  addToDeleteList
+  addStudyToDeleteList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentRootPanel)
