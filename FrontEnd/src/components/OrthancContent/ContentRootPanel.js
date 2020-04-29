@@ -42,7 +42,6 @@ class ContentRootPanel extends Component {
     let studies = await apis.content.getContent(dataFrom)
     let hirachicalAnswer = this.traitementStudies(studies)
     let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
-    console.log(dataForPatientTable)
     this.setState({ studies: dataForPatientTable })
   }
 
@@ -105,7 +104,6 @@ class ContentRootPanel extends Component {
   }
 
   sendToDeleteList(){
-    console.log(this.state.listToDelete)
     if(this.state.listToDelete !== '')
       this.state.listToDelete.forEach(element => this.props.addToDeleteList(element)) //send listToDelete to the redux store
     else
@@ -115,7 +113,6 @@ class ContentRootPanel extends Component {
   
   handleRowSelect = (row, isSelected) => {
     let studies = {}
-    console.log(row)
     if (row.StudyOrthancID === undefined){
         if (isSelected)
           this.setState({listToDelete: [...this.state.listToDelete, {id: row.PatientOrthancID, PatientName: row.PatientName, PatientID: row.PatientID, studies: row.studies}]}) //add Patient on deleteList 
@@ -136,7 +133,6 @@ class ContentRootPanel extends Component {
               if(element.id === row.PatientOrthancID){
                   let newList = this.state.listToDelete
                   let newStudies = {...element.studies, ...studies}
-                  console.log(newStudies)
                   newList[newList.indexOf(element)].studies = newStudies
                   this.setState({listToDelete: newList})
                   find = true
@@ -161,7 +157,6 @@ class ContentRootPanel extends Component {
               element.studies = newStudies
             }
           })
-          console.log(newList)
           newList = newList.filter(obj => obj.studies !== undefined) //Enlève les patients sans studies
           this.setState({listToDelete: newList})
         }

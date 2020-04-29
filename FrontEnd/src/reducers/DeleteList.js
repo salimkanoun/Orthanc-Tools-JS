@@ -6,8 +6,6 @@ const initialState = {
 
 export default function orthancContentReducer (state = initialState, action ) {
   
-  console.log(action.payload)
-  console.log(state.deleteList)
     switch (action.type) {
         case ADD_DELETE_LIST:
           return {
@@ -17,21 +15,16 @@ export default function orthancContentReducer (state = initialState, action ) {
           }
         case REMOVE_PATIENT_DELETE_LIST:
           return {
-            deleteList: state.deleteList.filter(content => content.id !== action.payload.PatientOrthancID)
+            deleteList: state.deleteList.filter(content => content.id !== action.payload.id)
           }
         case REMOVE_STUDY_DELETE_LIST:
+          console.log(action.payload)
           let newList = state.deleteList
+          console.log(newList)
+          let newPatient = undefined
           state.deleteList.forEach(element => {
             if (element.id === action.payload.PatientOrthancID){
-              //Patient auquel appartient le study 
-              //si qu'un study et que c'est le même id => supprime le patient directement
-              
-              if (Object.keys(element.studies).length === 1 ){
-                if (element.studies[action.payload.StudyOrthancID] !== undefined){
-                  newList = state.deleteList.filter(content => content.id !== action.payload.PatientOrthancID)
-                }
-              }
-              else {     
+              if (Object.keys(element.studies).length > 1 ){ //Si c'est le seul study, le patient sera supprimé
                 //il faut enlever le study à la list des study du patient
                 let newStudies
                 let idStudies = Object.keys(element.studies)
@@ -40,15 +33,25 @@ export default function orthancContentReducer (state = initialState, action ) {
                     newStudies = {...newStudies, [id]: element.studies[id]}
                   }                
                 });
-                newList[newList.indexOf(element)].studies = newStudies
-                newList[newList.indexOf(element)].row.studies = newStudies
+                newPatient = newList[newList.indexOf(element)]
+                newPatient.studies = newStudies
+                
               }
           }
+          
           });
-        
-          console.log(newList)
-          return {deleteList: newList}
-        
+          if (newPatient !== undefined){
+            return {
+                    deleteList: [
+                      ...state.deleteList.filter(content => content.id !== action.payload.PatientOrthancID),
+                      {...newPatient}]
+                  }
+          }else{
+            return {
+              deleteList: [...state.deleteList.filter(content => content.id !== action.payload.PatientOrthancID)]
+            }
+          }
+          
         case DELETE_LIST:
           return //delete content of the list 
         default:

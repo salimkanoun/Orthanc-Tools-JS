@@ -12,15 +12,9 @@ class DeleteTool extends Component {
     /*
     TODO :
     
-    =>Souci avec les props par default dans tablePatient et TableStudy (props pour cacher les colonne non voulu) 
 
     =>Modifier la taille du popover, c'est moche, la table ne rentre pas
 
-    
-
-    >Ajouter un bouton pour confirmer le delete qui soit 
-    -boucle et delete via l'api 
-    -envoie un array des éléments à supprimer au back et le back se charge de la suppression
     */
     
     constructor(props){
@@ -32,13 +26,14 @@ class DeleteTool extends Component {
 
     data(){
         let answer = this.props.deleteList
+        console.log(this.props.deleteList)
         let dataForTable = [] //data sous forme de row pour la table
-        for(let patient in answer) {
+        answer.forEach(patient => {
             dataForTable.push( {
-                PatientOrthancID  : patient,
-                ...answer[patient]
+                PatientOrthancID  : patient.id,
+                ...patient
             })
-        }
+        })
         console.log(dataForTable)
         return dataForTable
 }
@@ -51,7 +46,7 @@ class DeleteTool extends Component {
                 studyID.forEach(async (id) => {
                     console.log("will delete", id)
                     //await apis.content.deleteStudies(id) //take a lot of time, need to pass by the back
-                    this.props.removePatientFromDeleteList(patient.row)
+                    this.props.removePatientFromDeleteList(patient)
                 })
         })
     }
