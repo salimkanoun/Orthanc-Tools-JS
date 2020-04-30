@@ -9,18 +9,20 @@ export default function deleteListReducer (state = initialState, action ) {
         case ADD_DELETE_LIST:
           let newList = [...state.deleteList]
           newList[action.payload.id] = {...action.payload}
-          console.log(newList)
-          return {deleteList: newList} //Ne change pas la taille donc ne met pas a jour le popover 
+          console.log(newList) //La liste ne garde pas les ancien élément
+          //Il y a qu'un seul patient dedans à chaque fois. 
+          //ça fonctionne quand je le transforme en object {} mais ça me génére des erreurs plus loin par que j'applique des méthodes spécifique aux array
+          return {deleteList: newList} 
         case REMOVE_PATIENT_DELETE_LIST:
           console.log(state.deleteList[action.payload.id])
           return {
-            deleteList: state.deleteList.splice(action.payload.id, 1)
+            deleteList: state.deleteList.splice(action.payload.id, 1) //fonctionne 
           }
         case REMOVE_STUDY_DELETE_LIST:
           if (Object.keys(state.deleteList[action.payload.PatientOrthancID].studies).length === 1){ // 1 study => delete patient
             console.log(state.deleteList.splice(action.payload.id, 1))
             return {
-              deleteList: state.deleteList.splice(action.payload.id, 1)
+              deleteList: state.deleteList.splice(action.payload.id, 1) //Fonctionne 
             }
           }else{
             let newStudies = {}
@@ -31,10 +33,8 @@ export default function deleteListReducer (state = initialState, action ) {
               }                
             });
             console.log(state.deleteList)
-            let newList = [...state.deleteList] //don't work 
-            console.log(newList)
+            let newList = [...state.deleteList] //renvoie du vide donc une erreur est générée à la ligne suivante quand je veux lui lire un propriété 
             newList[action.payload.PatientOrthancID].studies = newStudies
-            console.log(newList)
             return {
               deleteList: newList
             }

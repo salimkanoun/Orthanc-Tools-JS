@@ -8,7 +8,7 @@ import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/Tab
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 import { connect } from 'react-redux'
-import { addStudyToDeleteList } from '../../actions/DeleteList'
+import { addToDeleteList } from '../../actions/DeleteList'
 import { addOrthancContent } from '../../actions/OrthancContent'
 
 
@@ -88,70 +88,51 @@ class ContentRootPanel extends Component {
   }
 
   sendToDeleteList(){
+    
+    //envoie la liste des items à delete 
+    //On récupère tout les lignes des patients selectionné grace au donnée qui sont dans le store
+    //On récupère ensuite les lignes des studies selectionnées 
+    //On ajoute tout les patients dans la liste avec toutes leur studies
+    //Ensuite pour chaque study, on regarde si son patient référent est déjà dans la liste ou pas
+    //SI il est dedans on regarde si la study est déjà référencée dans le patient
+    //si elle ne l'est pas on la rajoute sinon on fait rien
+    //Si le patient référent n'a pas été trouvé on rajoute un nouveau patient. 
 
     let ids = this.child.current.getSelectedItems()
-    console.log("Id patient selected = ", ids)
-    ids.forEach(id => console.log("delete : ", this.props.orthancContent[id])) //Patient row to delete
-    if(this.state.listToDelete !== '')
-      this.state.listToDelete.forEach(element => this.props.addStudyToDeleteList(element)) //send listToDelete to the redux store
-    else
-      console.log("empty");
-      
+    let rowsPatient = []
+    ids.forEach(id => {rowsPatient.push({...this.props.orthancContent[id], PatientOrthancID: id}); console.log(this.props.orthancContent[id])}) //Patient row to delete
+    let rowsStudies = this.child.current.getSelectedStudies()
+    let toDelete = []
+    rowsPatient.forEach(row => {
+      console.log(row)
+      toDelete = [...toDelete, {id: row.PatientOrthancID, PatientName: row.PatientName, PatientID: row.PatientID, studies: row.studies}]
+    })
+    rowsStudies.forEach(study => {
+      let find=false
+      let studies = { [study.studyID]: {...study.row } }
+      toDelete.forEach(patient =>{
+        if (patient.id === study.row.PatientOrthancID){ //Si patient existant 
+          find=true
+          if (!Object.keys(patient.studies).includes(study.studyID)){ //si le study n'est pas déjà référencé dans le patient 
+            patient.studies = {...patient.studies, ...studies}
+          }
+        }
+      })
+      if(!find)
+        toDelete = [...toDelete, {id: study.row.PatientOrthancID, PatientName: study.row.PatientName, PatientID: study.row.PatientID, studies: {...studies}}]
+    })
+
+    toDelete.forEach(element => this.props.addToDeleteList(element)) //La liste evoyée est bien complète
   }
   
+
   handleRowSelect = (row, isSelected) => {
-    let studies = {}
     if (row.StudyOrthancID === undefined){
-      
         if (isSelected){
           this.setState({selectedPatient: [...this.state.selectedPatient, ...Object.keys(row.studies)]})
-          this.setState({listToDelete: [...this.state.listToDelete, {id: row.PatientOrthancID, PatientName: row.PatientName, PatientID: row.PatientID, studies: row.studies}]}) //add Patient on deleteList 
-        }else {
+         }else {
           this.setState({selectedPatient: this.state.selectedPatient.filter(studyID => !Object.keys(row.studies).includes(studyID))})
-          this.setState({listToDelete: this.state.listToDelete.filter(obj => obj.id !== row.PatientOrthancID)})
-        }
-    } else {
-        if (isSelected){
-          studies = { [row.StudyOrthancID]: {
-            AccessionNumber: row.AccessionNumber,
-            StudyDate: row.StudyDate,
-            StudyDescription: row.StudyDescription,
-            StudyInstanceUID: row.StudyInstanceUID,
-            StudyTime: row.StudyTime
-          }}
-          if (this.state.listToDelete !== ''){
-            let find = false
-            this.state.listToDelete.forEach(element => {
-              if(element.id === row.PatientOrthancID){
-                  let newList = this.state.listToDelete
-                  let newStudies = {...element.studies, ...studies}
-                  newList[newList.indexOf(element)].studies = newStudies
-                  this.setState({listToDelete: newList})
-                  find = true
-              }
-            })
-            if (!find)
-            this.setState({listToDelete: [...this.state.listToDelete, {id: row.PatientOrthancID, PatientName: row.PatientName, PatientID: row.PatientID, studies: studies}]})
-          } else {
-            this.setState({listToDelete: [{id: row.PatientOrthancID, PatientName: row.PatientName, PatientID: row.PatientID, studies: studies}]})
-          }
-        } else {
-          let newList = this.state.listToDelete
-          newList.forEach(element => {
-            if(element.id === row.PatientOrthancID){
-              let studiesID = Object.keys(element.studies)
-              let newStudies
-              studiesID.forEach(id => {
-                if (id !== row.StudyOrthancID){
-                  newStudies = {...newStudies, [id]: {...element.studies[id]}}
-                }
-              })
-              element.studies = newStudies
-            }
-          })
-          newList = newList.filter(obj => obj.studies !== undefined) //Enlève les patients sans studies
-          this.setState({listToDelete: newList})
-        }
+         }
     }
   }
 
@@ -193,6 +174,12 @@ class ContentRootPanel extends Component {
         rows.forEach((row) => this.handleRowSelect(row, isSelected))
       }
     }
+    const selectStudyRow={
+      mode: 'checkbox', 
+      clickToExpand: true,
+      nonSelectable: this.state.selectedPatient,
+      onSelect: (row, isSelected) => console.log(row),
+    }
       return (
       <Fragment>
         <div className='jumbotron'>
@@ -213,11 +200,13 @@ class ContentRootPanel extends Component {
                    <TablePatientsWithNestedStudies 
                     patients={this.prepareDataForTable()} 
                     selectRow={selectRow }
+                    selectStudyRow={selectStudyRow}
                     selectedPatient={this.state.selectedPatient}
                     rowEventsStudies={ this.rowEventsStudies } 
                     onDeletePatient={this.onDeletePatient} 
                     onDeleteStudy={this.onDeleteStudy} 
-                    rowStyleStudies={this.rowStyleStudies} 
+                    rowStyleStudies={this.rowStyleStudies}
+                    selectedID={this.state.selectedPatient}
                     ref={this.child}
                   />
               </div>
@@ -239,7 +228,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  addStudyToDeleteList,
+  addToDeleteList,
   addOrthancContent
 }
 

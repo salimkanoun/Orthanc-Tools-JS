@@ -42,15 +42,16 @@ class DeleteTool extends Component {
 
     async handleClick(){
         //call API DELETE
-        console.log(this.data()) //J'affiche les datas ici pour voir comment est la deleteList 
-        this.props.deleteList.forEach(async (patient) => {
-                let studyID = Object.keys(patient.studies)
-                studyID.forEach(async (id) => {
-                    console.log("will delete", id)
-                    //await apis.content.deleteStudies(id) //take a lot of time, need to pass by the back
-                    this.props.removePatientFromDeleteList(patient)
-                })
-        })
+        console.log(this.props.deleteList)
+        for (let patient in this.props.deleteList){
+            let studyID = Object.keys(this.props.deleteList[patient].studies)
+            studyID.forEach(id => {
+                console.log("will delete : ", id)
+                //await apis.content.deleteStudies(id) //take a lot of time, need to pass by the back
+                //this.props.removeStudyFromDeleteList(this.props.deleteList[patient].studies[id])
+            })
+                
+        }
     }
 
     removeRow(row, level){
@@ -77,6 +78,7 @@ class DeleteTool extends Component {
     }
     
     render(){
+        //Je ne me suis pas encore penché sur le popover
         const popover = (
             <Popover id="popover-basic" style={ {maxWidth: "100%"} } >
                 <Popover.Title as="h3">Delete List</Popover.Title>
