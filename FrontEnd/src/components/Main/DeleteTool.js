@@ -25,6 +25,7 @@ class DeleteTool extends Component {
         this.handleClick = this.handleClick.bind(this)
         this.data = this.data.bind(this)
         this.removeRow = this.removeRow.bind(this)
+        this.getNbStudies = this.getNbStudies.bind(this)
     }
 
     data(){
@@ -65,6 +66,15 @@ class DeleteTool extends Component {
         }
     }
 
+    getNbStudies(){
+        let nb = 0
+        console.log(this.props.deleteList)
+        for (let patient in this.props.deleteList){
+            nb = nb + Object.keys(this.props.deleteList[patient].studies).length
+        }
+        console.log(nb)
+        return nb
+    }
     
     render(){
         const popover = (
@@ -81,7 +91,7 @@ class DeleteTool extends Component {
                 <OverlayTrigger trigger='click' placement="bottom-end" overlay={popover}   >
                     <button type="button" className="btn btn-danger" >
                         Delete <br/>
-                        <span className="badge badge-light">{this.props.deleteList.length}</span>
+                        <span className="badge badge-light">{this.getNbStudies()}</span>
                         <span className="sr-only">Delete List</span>
                     </button>
                 </OverlayTrigger>

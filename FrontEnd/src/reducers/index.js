@@ -6,6 +6,7 @@ import ResultList from './ResultList'
 import DeleteList from './DeleteList'
 import Exportlist from './ExportList'
 import AnonList from './AnonList'
+import OrthancContent from './OrthancContent'
 
 export default combineReducers({
   OrthancTools,
@@ -14,5 +15,6 @@ export default combineReducers({
   ResultList,
   DeleteList, 
   Exportlist, 
-  AnonList
+  AnonList, 
+  OrthancContent
 })

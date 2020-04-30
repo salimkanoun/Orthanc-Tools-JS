@@ -1,21 +1,23 @@
-import React, { Fragment, Component } from 'react'
+import React, { Fragment, Component, createRef } from 'react'
 import SearchForm from './SearchForm'
 import apis from '../../services/apis'
+
+import Dropdown from 'react-bootstrap/Dropdown'
 
 import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 import { connect } from 'react-redux'
 import { addStudyToDeleteList } from '../../actions/DeleteList'
+import { addOrthancContent } from '../../actions/OrthancContent'
 
 
 class ContentRootPanel extends Component {
 
   state = {
-    studies: [], 
     currentSelectedStudyId : "", 
     listToDelete : '', //list will be send to deleteTool
-    selectedPatient: [] //list of all studyID of patient selected 
+    selectedPatient: [], //list of all studyID of patient selected 
   } 
 
   constructor(props){
@@ -25,18 +27,19 @@ class ContentRootPanel extends Component {
     this.onDeleteStudy = this.onDeleteStudy.bind(this)
     this.handleRowSelect = this.handleRowSelect.bind(this)
     this.sendToDeleteList = this.sendToDeleteList.bind(this)
+    this.child = createRef()
   }
 
 
   async sendSearch(dataFrom){
     let studies = await apis.content.getContent(dataFrom)
     let hirachicalAnswer = this.traitementStudies(studies)
-    let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
-    this.setState({ studies: dataForPatientTable })
+    this.props.addOrthancContent(hirachicalAnswer)
   }
 
 
-  prepareDataForTable(responseArray){
+  prepareDataForTable(){
+    let responseArray = this.props.orthancContent
     let answer = []
     for(let patient in responseArray) {
         answer.push( {
@@ -45,7 +48,6 @@ class ContentRootPanel extends Component {
         })
     }
     return answer
-
   }
 
   traitementStudies(studies){
@@ -86,6 +88,10 @@ class ContentRootPanel extends Component {
   }
 
   sendToDeleteList(){
+
+    let ids = this.child.current.getSelectedItems()
+    console.log("Id patient selected = ", ids)
+    ids.forEach(id => console.log("delete : ", this.props.orthancContent[id])) //Patient row to delete
     if(this.state.listToDelete !== '')
       this.state.listToDelete.forEach(element => this.props.addStudyToDeleteList(element)) //send listToDelete to the redux store
     else
@@ -172,6 +178,10 @@ class ContentRootPanel extends Component {
 
     return style;
   }
+
+  handleClick(e){
+    e.stopPropagation()
+  }
   
   render() {
     const selectRow={
@@ -187,17 +197,28 @@ class ContentRootPanel extends Component {
       <Fragment>
         <div className='jumbotron'>
           <SearchForm onSubmit={this.sendSearch} />
-          <input type='button' className='btn btn-danger mb-3' onClick={this.sendToDeleteList} value='To Delete List' />   
+          <Dropdown onClick={this.handleClick}>
+                <Dropdown.Toggle variant="warning" id="dropdown-basic"  >
+                    Send To
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <button className='dropdown-item bg-info' type='button' onClick={ this.sendToExportList } >Export List</button>
+                  <button className='dropdown-item bg-primary' type='button' onClick={ this.sendToAnonList } >Anonymize List</button>
+                  <button className='dropdown-item bg-danger' type='button' onClick={ this.sendToDeleteList } >Delete List</button>
+                </Dropdown.Menu>
+            </Dropdown>
           <div className='row'>
               <div className='col-sm'>
                    <TablePatientsWithNestedStudies 
-                    patients={this.state.studies} 
+                    patients={this.prepareDataForTable()} 
                     selectRow={selectRow }
                     selectedPatient={this.state.selectedPatient}
                     rowEventsStudies={ this.rowEventsStudies } 
                     onDeletePatient={this.onDeletePatient} 
                     onDeleteStudy={this.onDeleteStudy} 
                     rowStyleStudies={this.rowStyleStudies} 
+                    ref={this.child}
                   />
               </div>
               <div className='col-sm'>
@@ -213,12 +234,13 @@ class ContentRootPanel extends Component {
 
 const mapStateToProps = state => {
   return {
-    deleteList: state.deleteList
+    orthancContent: state.OrthancContent.orthancContent
   }
 }
 
 const mapDispatchToProps = {
-  addStudyToDeleteList
+  addStudyToDeleteList,
+  addOrthancContent
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentRootPanel)

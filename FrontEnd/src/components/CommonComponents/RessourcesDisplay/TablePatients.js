@@ -10,6 +10,11 @@ class TablePatients extends Component{
         hiddenActionBouton: false, 
         hiddenRemoveRow: true
     }
+
+    getSelectedItems(){
+        console.log(this.node)
+        return this.node.selectionContext.selected
+    }
     
     columns = [{
         dataField: 'PatientOrthancID', 
@@ -44,7 +49,7 @@ class TablePatients extends Component{
     render(){
         return (
             <Fragment>
-                <BootstrapTable keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} pagination={paginationFactory()} {...this.props}/>
+                <BootstrapTable ref={n => this.node = n} keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} pagination={paginationFactory()} {...this.props}/>
                 {this.props.button}
             </Fragment>
         )

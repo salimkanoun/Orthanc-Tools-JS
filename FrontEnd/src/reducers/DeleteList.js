@@ -4,11 +4,12 @@ const initialState = {
     deleteList: []
 }
 
-export default function orthancContentReducer (state = initialState, action ) {
+export default function deleteListReducer (state = initialState, action ) {
     switch (action.type) {
         case ADD_DELETE_LIST:
-          let newList = state.deleteList
+          let newList = [...state.deleteList]
           newList[action.payload.id] = {...action.payload}
+          console.log(newList)
           return {deleteList: newList} //Ne change pas la taille donc ne met pas a jour le popover 
         case REMOVE_PATIENT_DELETE_LIST:
           console.log(state.deleteList[action.payload.id])
@@ -16,24 +17,26 @@ export default function orthancContentReducer (state = initialState, action ) {
             deleteList: state.deleteList.splice(action.payload.id, 1)
           }
         case REMOVE_STUDY_DELETE_LIST:
-          newList = state.deleteList
-          if (Object.keys(newList[action.payload.PatientOrthancID].studies).length === 1){ // 1 study => delete patient
+          if (Object.keys(state.deleteList[action.payload.PatientOrthancID].studies).length === 1){ // 1 study => delete patient
             console.log(state.deleteList.splice(action.payload.id, 1))
             return {
               deleteList: state.deleteList.splice(action.payload.id, 1)
             }
           }else{
-            let newStudies
-            let idStudies = Object.keys(newList[action.payload.PatientOrthancID].studies)
+            let newStudies = {}
+            let idStudies = Object.keys(state.deleteList[action.payload.PatientOrthancID].studies)
             idStudies.forEach(id => {
               if (id !== action.payload.StudyOrthancID){
-                newStudies = {...newStudies, [id]: newList[action.payload.PatientOrthancID].studies[id]}
+                newStudies = {...newStudies, [id]: state.deleteList[action.payload.PatientOrthancID].studies[id]}
               }                
             });
+            console.log(state.deleteList)
+            let newList = [...state.deleteList] //don't work 
+            console.log(newList)
             newList[action.payload.PatientOrthancID].studies = newStudies
             console.log(newList)
             return {
-              deleteList: [...newList]
+              deleteList: newList
             }
           }
         case DELETE_LIST:
@@ -41,5 +44,4 @@ export default function orthancContentReducer (state = initialState, action ) {
         default:
             return state
     }
-    
   }

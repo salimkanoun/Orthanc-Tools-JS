@@ -10,6 +10,10 @@ class TableStudy extends Component {
         hiddenRemoveRow: true
     }
 
+    getSelectedItems(){
+        return this.node.selectionContext.selected
+    }
+
     columns = [{
         dataField: 'StudyOrthancID', 
         hidden: true
@@ -51,6 +55,7 @@ class TableStudy extends Component {
                     striped={true} 
                     columns={this.columns} 
                     data={this.props.data} 
+                    ref={ n => this.node = n }
                     {...this.props} 
                 />
                 {this.props.button}
