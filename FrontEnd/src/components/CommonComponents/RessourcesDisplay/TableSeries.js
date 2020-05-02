@@ -4,7 +4,13 @@ import ActionBouton from './ActionBouton'
 
 
 class TableSeries extends Component{
-
+    
+    static defaultProps = {
+        onDelete : function(id){
+            console.log('Deleted Series ID' + id)
+        }, 
+        hiddenActionBouton: false
+    }
     columns = [{
         dataField: 'SerieOrthancID', 
         hidden: true,
@@ -43,13 +49,6 @@ class TableSeries extends Component{
             />
         )
     }
-}
-
-TableSeries.props = {
-    onDelete : function(id){
-        console.log('Deleted Series ID' + id)
-    }, 
-    hiddenActionBouton: false
 }
 
 export default TableSeries

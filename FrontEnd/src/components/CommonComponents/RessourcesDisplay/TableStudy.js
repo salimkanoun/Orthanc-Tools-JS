@@ -3,6 +3,16 @@ import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
 
 class TableStudy extends Component {
+    
+
+    static defaultProps = {
+        hiddenActionBouton: false, 
+        hiddenRemoveRow: true
+    }
+
+    getSelectedItems(){
+        return this.node.selectionContext.selected
+    }
 
     columns = [{
         dataField: 'StudyOrthancID', 
@@ -31,7 +41,9 @@ class TableStudy extends Component {
         dataField: 'Remove', 
         text: 'Remove',
         hidden: this.props.hiddenRemoveRow,
-        formatter: () => this.props.buttonRemove
+        formatter: (cell, row, index) => {
+            return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.removeRow(row, 'study')}}>Remove</button>
+        }
     
     }]
 
@@ -43,6 +55,7 @@ class TableStudy extends Component {
                     striped={true} 
                     columns={this.columns} 
                     data={this.props.data} 
+                    ref={ n => this.node = n }
                     {...this.props} 
                 />
                 {this.props.button}
@@ -50,11 +63,6 @@ class TableStudy extends Component {
         )
     }
 
-}
-
-TableStudy.props = {
-    hiddenActionBouton: false, 
-    hiddenRemoveRow: true
 }
 
 export default TableStudy

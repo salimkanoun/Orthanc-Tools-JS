@@ -1,31 +1,23 @@
-import React, { Fragment, Component } from 'react'
+import React, { Fragment, Component, createRef } from 'react'
 import SearchForm from './SearchForm'
 import apis from '../../services/apis'
+
+import Dropdown from 'react-bootstrap/Dropdown'
 
 import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 import { connect } from 'react-redux'
-import { addContent, removeContent } from '../../actions/ContentList'
+import { addToDeleteList } from '../../actions/DeleteList'
+import { addOrthancContent } from '../../actions/OrthancContent'
 
 
 class ContentRootPanel extends Component {
 
-  /*
-
-  Il faut gérer les select, si un patient est select, toutes ses studies doivent alors être selected
-  Lorsqu'on click sur send to delete, il faudrait que la table entière se deselecte ? 
-  ou
-  Il faut que les element qui sont dans la liste des delete soient automatiquement selected et disabled => enable lorqu'ils sont pas dans la liste 
-
-  Lors de l'envoie vers la state global, il y a déjà une verification qui empeche les doublons dans la liste
-  
-  */
-
   state = {
-    studies: [], 
     currentSelectedStudyId : "", 
-    listToDelete : '' //list will be send to deleteTool
+    listToDelete : '', //list will be send to deleteTool
+    selectedPatient: [], //list of all studyID of patient selected 
   } 
 
   constructor(props){
@@ -35,18 +27,19 @@ class ContentRootPanel extends Component {
     this.onDeleteStudy = this.onDeleteStudy.bind(this)
     this.handleRowSelect = this.handleRowSelect.bind(this)
     this.sendToDeleteList = this.sendToDeleteList.bind(this)
+    this.child = createRef()
   }
 
 
   async sendSearch(dataFrom){
     let studies = await apis.content.getContent(dataFrom)
     let hirachicalAnswer = this.traitementStudies(studies)
-    let dataForPatientTable = this.prepareDataForTable(hirachicalAnswer)
-    this.setState({ studies: dataForPatientTable })
+    this.props.addOrthancContent(hirachicalAnswer)
   }
 
 
-  prepareDataForTable(responseArray){
+  prepareDataForTable(){
+    let responseArray = this.props.orthancContent
     let answer = []
     for(let patient in responseArray) {
         answer.push( {
@@ -55,32 +48,38 @@ class ContentRootPanel extends Component {
         })
     }
     return answer
-
   }
 
   traitementStudies(studies){
       let responseMap = []
       studies.forEach(element => {
-              responseMap[element.ParentPatient] = {
-                  ...element.PatientMainDicomTags, 
-                  studies: { 
-                          [element.ID]: {
-                              ...element.MainDicomTags
-                          }
-                      }
+        let previewStudies = {}
+        try {
+          previewStudies = responseMap[element.ParentPatient].studies
+        }
+        catch (error) { }
+          responseMap[element.ParentPatient] = {
+            ...element.PatientMainDicomTags, 
+            studies: {
+              ...previewStudies,
+              [element.ID]: {
+                  ...element.MainDicomTags
+              }
+            }
 
-              } 
+          } 
               
           })
       return responseMap
       
   }
 
+  //Rappelé par le dropdown lors du delete de Patietn sur Orthanc
   onDeletePatient(idDeleted){
 
 
   }
-
+  //rappelé par le dropdow lors du delete de study sur Orthanc
   onDeleteStudy(idDeleted){
     this.setState({
       currentSelectedStudyId : ''
@@ -88,42 +87,53 @@ class ContentRootPanel extends Component {
 
   }
 
-  selectRow={
-    mode: 'checkbox', 
-    clickToExpand: true,
-    onSelect: (row, isSelected) => this.handleRowSelect(row, isSelected),
-    onSelectAll: (isSelected, rows, e) => {
-      rows.forEach((row) => this.handleRowSelect(row, isSelected))
-    }
-  }
-
   sendToDeleteList(){
-    if(this.state.listToDelete !== '')
-      this.state.listToDelete.forEach(element => this.props.addContent(element)) //send listToDelete to the redux store
-    else
-      console.log("empty");
-      
+    
+    //envoie la liste des items à delete 
+    //On récupère tout les lignes des patients selectionné grace au donnée qui sont dans le store
+    //On récupère ensuite les lignes des studies selectionnées 
+    //On ajoute tout les patients dans la liste avec toutes leur studies
+    //Ensuite pour chaque study, on regarde si son patient référent est déjà dans la liste ou pas
+    //SI il est dedans on regarde si la study est déjà référencée dans le patient
+    //si elle ne l'est pas on la rajoute sinon on fait rien
+    //Si le patient référent n'a pas été trouvé on rajoute un nouveau patient. 
+
+    let ids = this.child.current.getSelectedItems()
+    let rowsPatient = []
+    ids.forEach(id => {rowsPatient.push({...this.props.orthancContent[id], PatientOrthancID: id}); console.log(this.props.orthancContent[id])}) //Patient row to delete
+    let rowsStudies = this.child.current.getSelectedStudies()
+    let toDelete = []
+    rowsPatient.forEach(row => {
+      console.log(row)
+      toDelete = [...toDelete, {id: row.PatientOrthancID, PatientName: row.PatientName, PatientID: row.PatientID, studies: row.studies}]
+    })
+    rowsStudies.forEach(study => {
+      let find=false
+      let studies = { [study.studyID]: {...study.row } }
+      toDelete.forEach(patient =>{
+        if (patient.id === study.row.PatientOrthancID){ //Si patient existant 
+          find=true
+          if (!Object.keys(patient.studies).includes(study.studyID)){ //si le study n'est pas déjà référencé dans le patient 
+            patient.studies = {...patient.studies, ...studies}
+          }
+        }
+      })
+      if(!find)
+        toDelete = [...toDelete, {id: study.row.PatientOrthancID, PatientName: study.row.PatientName, PatientID: study.row.PatientID, studies: {...studies}}]
+    })
+
+    toDelete.forEach(element => this.props.addToDeleteList(element)) //La liste evoyée est bien complète
   }
   
+
   handleRowSelect = (row, isSelected) => {
-    let level = ''
-    let id = ''
-    let studies = {}
-    let parentID = ''
-    if (row.PatientOrthancID !== undefined){
-      level = 'patients'
-      id = row.PatientOrthancID
-      studies = row.studies
+    if (row.StudyOrthancID === undefined){
+        if (isSelected){
+          this.setState({selectedPatient: [...this.state.selectedPatient, ...Object.keys(row.studies)]})
+         }else {
+          this.setState({selectedPatient: this.state.selectedPatient.filter(studyID => !Object.keys(row.studies).includes(studyID))})
+         }
     }
-    if (row.StudyOrthancID !== undefined){
-      level = 'studies'
-      id = row.StudyOrthancID
-      parentID = row.PatientOrthancID
-    }
-    if (isSelected)
-      this.setState({listToDelete: [...this.state.listToDelete, {level: level, id: id, studies: studies, parentID: parentID, row: row}]}) //ajoute l'id et le level au state 
-    else
-      this.setState({listToDelete: this.state.listToDelete.filter(obj => obj.id !== id)})
   }
 
    rowEventsStudies = {
@@ -149,22 +159,55 @@ class ContentRootPanel extends Component {
 
     return style;
   }
+
+  handleClick(e){
+    e.stopPropagation()
+  }
   
   render() {
+    const selectRow={
+      mode: 'checkbox', 
+      clickToExpand: true,
+      nonSelectable: this.state.selectedPatient,
+      onSelect: (row, isSelected) => this.handleRowSelect(row, isSelected),
+      onSelectAll:  (isSelected, rows, e) => {
+        rows.forEach((row) => this.handleRowSelect(row, isSelected))
+      }
+    }
+    const selectStudyRow={
+      mode: 'checkbox', 
+      clickToExpand: true,
+      nonSelectable: this.state.selectedPatient,
+      onSelect: (row, isSelected) => console.log(row),
+    }
       return (
       <Fragment>
         <div className='jumbotron'>
           <SearchForm onSubmit={this.sendSearch} />
-          <input type='button' className='btn btn-danger mb-3' onClick={this.sendToDeleteList} value='To Delete List' />   
+          <Dropdown onClick={this.handleClick}>
+                <Dropdown.Toggle variant="warning" id="dropdown-basic"  >
+                    Send To
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <button className='dropdown-item bg-info' type='button' onClick={ this.sendToExportList } >Export List</button>
+                  <button className='dropdown-item bg-primary' type='button' onClick={ this.sendToAnonList } >Anonymize List</button>
+                  <button className='dropdown-item bg-danger' type='button' onClick={ this.sendToDeleteList } >Delete List</button>
+                </Dropdown.Menu>
+            </Dropdown>
           <div className='row'>
               <div className='col-sm'>
                    <TablePatientsWithNestedStudies 
-                    patients={this.state.studies} 
-                    selectRow={ this.selectRow } 
+                    patients={this.prepareDataForTable()} 
+                    selectRow={selectRow }
+                    selectStudyRow={selectStudyRow}
+                    selectedPatient={this.state.selectedPatient}
                     rowEventsStudies={ this.rowEventsStudies } 
                     onDeletePatient={this.onDeletePatient} 
                     onDeleteStudy={this.onDeleteStudy} 
-                    rowStyleStudies={this.rowStyleStudies} 
+                    rowStyleStudies={this.rowStyleStudies}
+                    selectedID={this.state.selectedPatient}
+                    ref={this.child}
                   />
               </div>
               <div className='col-sm'>
@@ -180,13 +223,13 @@ class ContentRootPanel extends Component {
 
 const mapStateToProps = state => {
   return {
-    listContent: state.listContent
+    orthancContent: state.OrthancContent.orthancContent
   }
 }
 
 const mapDispatchToProps = {
-    addContent, 
-    removeContent
+  addToDeleteList,
+  addOrthancContent
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentRootPanel)

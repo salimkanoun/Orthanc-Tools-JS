@@ -3,98 +3,99 @@ import { connect } from 'react-redux'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 import Popover from 'react-bootstrap/Popover'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import { removePatientFromDeleteList, removeStudyFromDeleteList } from '../../actions/DeleteList'
+import apis from '../../services/apis'
 
 //Ce composant sera a connecter au redux pour connaitre la longueur de la liste de delete 
 class DeleteTool extends Component {
 
+
     /*
     TODO :
-    
-    =>Souci avec les props par default dans tablePatient et TableStudy (props pour cacher les colonne non voulu) 
+    SK : Taille du popover resolue via style maxWith = 100%
+    J'ai l'impression qu'il manque l'Object "Overlay" ou on défini la méthode de sortie
+    Ce qui serait bien c'est que le composant se ferme lui meme quand il perd le focus
+    Faudra surement refactoriser cette classe, peut etre un component qui show les 3 bouttons Export / Anon / Delete 
+    aver leur chiffre du redux et les composant DeletePopover, AnonPopover dans des classes separés pour plus de lisibilité (l'equivalent du const)
 
-    =>Modifier la taille du popover, c'est moche, la table ne rentre pas
-
-    =>Configurer le bouton (removeContent) pour récupérer les info de la ligne 
-
-    >Ajouter un bouton pour confirmer le delete qui soit 
-    -boucle et delete via l'api 
-    -envoie un array des éléments à supprimer au back et le back se charge de la suppression
     */
     
     constructor(props){
         super(props)
         this.handleClick = this.handleClick.bind(this)
         this.data = this.data.bind(this)
+        this.removeRow = this.removeRow.bind(this)
+        this.getNbStudies = this.getNbStudies.bind(this)
     }
 
-    state = {dataForTable: []}
-
     data(){
-        let answer = [] //data pour trier les study et les patients
+        let answer = this.props.deleteList
         let dataForTable = [] //data sous forme de row pour la table
-        
-        this.props.listContent.forEach(element => {
-            if (element.level === 'patients'){
-                answer[element.row.PatientOrthancID] = {...element.row}
-            }else{
-                //traitement si study 
-                answer[element.row.PatientOrthancID] = {
-                        PatientOrthancID: element.row.PatientOrthancID, 
-                        PatientID: element.row.PatientID, 
-                        PatientName: element.row.PatientName, 
-                        studies: {
-                            [element.row.StudyOrthancID]: {
-                                StudyDate: element.row.StudyDate, 
-                                StudyDescription: element.row.StudyDescription, 
-                                StudyInstanceUID: element.row.StudyInstanceUID,
-                                AccessionNumber: element.row.AccessionNumber, 
-                                StudyTime: element.row.StudyTime
-                            }
-                        }
-                    }
-            }
-        })
-        for(let patient in answer) {
+        for (let patient in answer){
             dataForTable.push( {
                 PatientOrthancID  : patient,
                 ...answer[patient]
             })
         }
-        this.setState({dataForTable: dataForTable})
+        return dataForTable
 }
 
-    handleClick(){
-        //call API DELETE 
-        this.props.listContent.forEach((content) => {
-            console.log("Will delete " + content.id + " from " + content.level + " level")
-        })
-        this.data()
+    async handleClick(){
+        //call API DELETE
+        console.log(this.props.deleteList)
+        for (let patient in this.props.deleteList){
+            let studyID = Object.keys(this.props.deleteList[patient].studies)
+            studyID.forEach(id => {
+                console.log("will delete : ", id)
+                //await apis.content.deleteStudies(id) //take a lot of time, need to pass by the back
+                //this.props.removeStudyFromDeleteList(this.props.deleteList[patient].studies[id])
+            })
+                
+        }
     }
 
-    removeContent(e){
-        console.log("remove ", e)
-        e.stopPropagation()
+    removeRow(row, level){
+        switch (level){
+            case 'patient':
+                this.props.removePatientFromDeleteList(row)
+                break
+            case 'study':
+                this.props.removeStudyFromDeleteList(row)
+                break
+            default:
+                break
+        }
     }
 
+    getNbStudies(){
+        let nb = 0
+        console.log(this.props.deleteList)
+        for (let patient in this.props.deleteList){
+            nb = nb + Object.keys(this.props.deleteList[patient].studies).length
+        }
+        console.log(nb)
+        return nb
+    }
     
     render(){
-        const button = <button type="button" className="btn btn-danger" onClick={this.removeContent}>Remove</button>
+        //Je ne me suis pas encore penché sur le popover
         const popover = (
-            <Popover id="popover-basic" >
+            <Popover id="popover-basic" style={ {maxWidth: "100%"} } >
                 <Popover.Title as="h3">Delete List</Popover.Title>
                 <Popover.Content>
-                    <TablePatientsWithNestedStudies patients={this.state.dataForTable} hiddenActionBouton={true} hiddenRemoveRow={false} buttonRemove={button}/>
+                    <TablePatientsWithNestedStudies patients={this.data()} hiddenActionBouton={true} hiddenRemoveRow={false} removeRow={this.removeRow} />
+                    <button type="button" className="btn btn-danger" onClick={this.handleClick} >Delete</button>
                 </Popover.Content>
             </Popover>
         )
         return (
             <Fragment>
-                <OverlayTrigger trigger="click" placement="bottom" overlay={popover}   >
-                <button type="button" className="btn btn-danger" onClick={this.handleClick}  >
-                    Delete <br/>
-                    <span className="badge badge-light">{this.props.listContent.length}</span>
-                    <span className="sr-only">Delete List</span>
-                </button>
+                <OverlayTrigger trigger='click' placement="bottom-end" overlay={popover}   >
+                    <button type="button" className="btn btn-danger" >
+                        Delete <br/>
+                        <span className="badge badge-light">{this.getNbStudies()}</span>
+                        <span className="sr-only">Delete List</span>
+                    </button>
                 </OverlayTrigger>
             </Fragment>
         )
@@ -103,8 +104,13 @@ class DeleteTool extends Component {
 
 const mapStateToProps = state => {
     return {
-        listContent: state.ContentList.listContent
+        deleteList: state.DeleteList.deleteList
     }
 }
 
-export default connect(mapStateToProps)(DeleteTool)
+const mapDispatchToProps = {
+    removePatientFromDeleteList, 
+    removeStudyFromDeleteList
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DeleteTool)

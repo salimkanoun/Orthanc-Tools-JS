@@ -13,6 +13,10 @@ class TableSeriesFillFromParent extends Component {
         this.onDelete=this.onDelete.bind(this)
     }
 
+    static defaultProps = {
+        onEmptySeries : function () {}
+    }
+
     onDelete(idDeleted){
 
         let newSeriesRows = this.state.series.filter((serie) =>{
@@ -62,10 +66,6 @@ class TableSeriesFillFromParent extends Component {
             <TableSeries series={this.state.series} onDelete={this.onDelete} {...this.props} />
         )
     }
-}
-
-TableSeriesFillFromParent.props ={
-    onEmptySeries : function () {}
 }
 
 export default TableSeriesFillFromParent
