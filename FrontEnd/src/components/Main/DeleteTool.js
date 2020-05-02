@@ -54,7 +54,8 @@ class DeleteTool extends Component {
     render(){
         return (
             //La position ne suit pas y a une histoire de Ref https://react-bootstrap.github.io/components/overlays/
-            <Popover id="popover-basic" style={ {maxWidth: "100%"} } >
+            //https://github.com/react-bootstrap/react-bootstrap/issues/2208
+            <Popover id="popover-basic" style={ {maxWidth: "100%"} } placement={this.props.placement} overlay={this.props.overlay} trigger={this.props.trigger}>
                 <Popover.Title as="h3">Delete List</Popover.Title>
                 <Popover.Content>
                     <TablePatientsWithNestedStudies patients={studyArrayToPatientArray(this.props.deleteList)} hiddenActionBouton={true} hiddenRemoveRow={false} removeRow={this.removeRow} />

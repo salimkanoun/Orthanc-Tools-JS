@@ -19,11 +19,13 @@ class ToolsPanel extends Component {
                 </div>
                 <div className="mr-1">
                     <OverlayTrigger trigger='click' placement="bottom" overlay={ <DeleteTool /> }   >
-                        <button type="button" className="btn btn-danger" >
-                            Delete <br/>
-                            <span className="badge badge-light">{this.props.deleteList.length}</span>
-                            <span className="sr-only">Delete List</span>
-                        </button>
+                        <div>
+                            <button type="button" className="btn btn-danger" >
+                                Delete <br/>
+                                <span className="badge badge-light">{this.props.deleteList.length}</span>
+                                <span className="sr-only">Delete List</span>
+                            </button>
+                        </div>
                     </OverlayTrigger>
                 </div>
             </div>
