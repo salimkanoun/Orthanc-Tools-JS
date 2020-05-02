@@ -29,8 +29,8 @@ class ExportTool extends Component {
 
 const mapStateToProps = state => {
     return {
-      listContent: state.ContentList.listContent
+      listContent: state.DeleteList.deleteList
     }
 }
 
-export default /*connect(mapStateToProps)*/(ExportTool)
+export default connect(mapStateToProps) (ExportTool)

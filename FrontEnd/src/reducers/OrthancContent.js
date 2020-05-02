@@ -7,7 +7,7 @@ const initialState = {
 export default function deleteListReducer (state = initialState, action ) {
     switch (action.type) {
         case ADD_ORTHANC_CONTENT:
-            return {orthancContent: action.payload}
+            return {orthancContent: action.payload }
         default:
             return state
     }

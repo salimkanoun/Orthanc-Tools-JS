@@ -1,27 +1,23 @@
 import { ADD_DELETE_LIST, REMOVE_PATIENT_DELETE_LIST, REMOVE_STUDY_DELETE_LIST, DELETE_LIST} from './actions-types'
 
 export function addToDeleteList(deleteList){
-    console.log('Delete List')
-    console.log(deleteList)
     return {
         type: ADD_DELETE_LIST, 
-        payload: {
-            ...deleteList
-        }
+        payload: deleteList
     }
 }
 
-export function removePatientFromDeleteList(patient){
+export function removePatientFromDeleteList(patientID){
     return {
         type: REMOVE_PATIENT_DELETE_LIST, 
-        payload: {...patient}
+        payload: patientID
     }
 }
 
-export function removeStudyFromDeleteList(study){
+export function removeStudyFromDeleteList(studyID){
     return{
         type: REMOVE_STUDY_DELETE_LIST,
-        payload: {...study}
+        payload: studyID
     }
 }
 

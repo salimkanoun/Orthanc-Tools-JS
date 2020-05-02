@@ -7,6 +7,8 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
+import {studyArrayToPatientArray} from '../../tools/processResponse'
+
 import { connect } from 'react-redux'
 import { addToDeleteList } from '../../actions/DeleteList'
 import { addOrthancContent } from '../../actions/OrthancContent'
@@ -29,44 +31,7 @@ class ContentRootPanel extends Component {
 
   async sendSearch(dataFrom){
     let studies = await apis.content.getContent(dataFrom)
-    let hirachicalAnswer = this.traitementStudies(studies)
-    this.props.addOrthancContent(hirachicalAnswer)
-  }
-
-  prepareDataForTable(){
-    let responseArray = this.props.orthancContent
-    let answer = []
-    for(let patient in responseArray) {
-        answer.push( {
-            PatientOrthancID  : patient,
-            ...responseArray[patient]
-        })
-    }
-    return answer
-  }
-
-  traitementStudies(studies){
-      let responseMap = []
-      studies.forEach(element => {
-        let previewStudies = {}
-        try {
-          previewStudies = responseMap[element.ParentPatient].studies
-        }
-        catch (error) { }
-          responseMap[element.ParentPatient] = {
-            ...element.PatientMainDicomTags, 
-            studies: {
-              ...previewStudies,
-              [element.ID]: {
-                  ...element.MainDicomTags
-              }
-            }
-
-          } 
-              
-        })
-      return responseMap
-      
+    this.props.addOrthancContent(studies)
   }
 
   //Rappelé par le dropdown lors du delete de Patietn sur Orthanc
@@ -80,13 +45,17 @@ class ContentRootPanel extends Component {
 
   sendToDeleteList(){
     let selectedIds = this.child.current.getSelectedRessources()
-
     let studiesOfSelectedPatients = []
 
     //Add all studies of selected patient
     selectedIds.selectedPatients.forEach(orthancPatientId => {
-      let patientsStudiesIdsArray = Object.keys(this.props.orthancContent[orthancPatientId]['studies'])
-      studiesOfSelectedPatients.push(...patientsStudiesIdsArray)
+      //loop the redux and add all studies that had one of the selected patient ID
+      let studyArray = this.props.orthancContent.filter(study => {
+        if(study.ParentPatient === orthancPatientId) return true
+        else return false
+      })
+      //Add to the global list of selected studies
+      studiesOfSelectedPatients.push(...studyArray)
     })
 
     //add selected level studies
@@ -94,29 +63,9 @@ class ContentRootPanel extends Component {
 
     //Get only unique study ids
     let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
-    //SImplifier le probleme en envoyant que le study UID au redux et laisser la table de delete fecth les data d'orthanc?
-    //Ou alors indexer en memoire tous les ID de study connus avec leur parent patient (la réponse brute d'orthanc) et boucler dessus
-    //SK Filtrer le state courrant en virant toutes les study non select et les patient ou l array des study =0
-    //PFFFF
-    /*
-    let newMapToSend = {}
-    for (let [patientID, patientObject] of Object.entries(this.props.orthancContent)) {
-      let studies = Object.entries(patientObject.studies)
-      console.log(studies)
-      let studyIntersection = studies.filter(studyID => uniqueSelectedOrthancStudyId.includes(studyID[0]))
-      console.log(studyIntersection)
-      if (studyIntersection.length > 0 ) newMapToSend[patientID] = {
-        ...patientObject,
-        studies : studyIntersection
-      }
-      
-    }
-    console.log(selectedIds)
-    console.log(uniqueSelectedOrthancStudyId)
-    console.log(newMapToSend)
-    /*
 
-    */
+    //Add selected list to reducer
+    this.props.addToDeleteList(uniqueSelectedOrthancStudyId)
   }
 
   rowStyleStudies = (row, rowIndex) => {
@@ -154,7 +103,7 @@ class ContentRootPanel extends Component {
           
               
               <TablePatientsWithNestedStudies 
-                    patients={this.prepareDataForTable()} 
+                    patients={studyArrayToPatientArray(this.props.orthancContent)} 
                     rowEventsStudies={ this.rowEventsStudies } 
                     onDeletePatient={this.onDeletePatient} 
                     onDeleteStudy={this.onDeleteStudy} 

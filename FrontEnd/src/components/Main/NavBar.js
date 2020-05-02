@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import AnonTool from './AnonTool'
-import ExportTool from './ExportTool'
-import DeleteTool from './DeleteTool'
+import ToolsPanel from './ToolsPanel'
 
 export default class NavBar extends Component {
 
@@ -29,19 +27,7 @@ export default class NavBar extends Component {
             <Link className='nav-link' to='/options'>Administration</Link>
           </li>
         </ul>
-        <div className="row">
-          <div className="mr-1">
-            {//<AnonTool />
-  }
-          </div>
-          <div className="mr-1">
-            {//<ExportTool />
-  }
-          </div>
-          <div className="mr-1">
-          <DeleteTool />
-          </div>
-        </div>
+        <ToolsPanel />
       </div>
     )
   }
