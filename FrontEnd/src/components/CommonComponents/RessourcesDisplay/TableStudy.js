@@ -54,8 +54,7 @@ class TableStudy extends Component {
                     keyField="StudyOrthancID" 
                     striped={true} 
                     columns={this.columns} 
-                    data={this.props.data} 
-                    ref={ n => this.node = n }
+                    data={this.props.data}
                     {...this.props} 
                 />
                 {this.props.button}
