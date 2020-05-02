@@ -94,10 +94,29 @@ class ContentRootPanel extends Component {
 
     //Get only unique study ids
     let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
-    
+    //SImplifier le probleme en envoyant que le study UID au redux et laisser la table de delete fecth les data d'orthanc?
+    //Ou alors indexer en memoire tous les ID de study connus avec leur parent patient (la réponse brute d'orthanc) et boucler dessus
     //SK Filtrer le state courrant en virant toutes les study non select et les patient ou l array des study =0
+    //PFFFF
+    /*
+    let newMapToSend = {}
+    for (let [patientID, patientObject] of Object.entries(this.props.orthancContent)) {
+      let studies = Object.entries(patientObject.studies)
+      console.log(studies)
+      let studyIntersection = studies.filter(studyID => uniqueSelectedOrthancStudyId.includes(studyID[0]))
+      console.log(studyIntersection)
+      if (studyIntersection.length > 0 ) newMapToSend[patientID] = {
+        ...patientObject,
+        studies : studyIntersection
+      }
+      
+    }
     console.log(selectedIds)
     console.log(uniqueSelectedOrthancStudyId)
+    console.log(newMapToSend)
+    /*
+
+    */
   }
 
   rowStyleStudies = (row, rowIndex) => {
