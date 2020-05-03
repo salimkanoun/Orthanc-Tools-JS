@@ -44,8 +44,7 @@ const Options = {
       },
       body: JSON.stringify(postData)
     }).then((answser) => {
-      if (answser.ok) answser.json()
-      else throw answser
+      if ( ! answser.ok) throw answser
     })
       .then((answer) => toastifySuccess('Updated'))
       .catch((error) => toastifyError('Failure'))
