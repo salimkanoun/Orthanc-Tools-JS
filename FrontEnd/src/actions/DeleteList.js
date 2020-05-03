@@ -1,4 +1,4 @@
-import { ADD_DELETE_LIST, REMOVE_PATIENT_DELETE_LIST, REMOVE_STUDY_DELETE_LIST, DELETE_LIST} from './actions-types'
+import { ADD_DELETE_LIST, REMOVE_PATIENT_DELETE_LIST, REMOVE_STUDY_DELETE_LIST, EMPTY_DELETE_LIST} from './actions-types'
 
 export function addToDeleteList(deleteList){
     return {
@@ -21,8 +21,8 @@ export function removeStudyFromDeleteList(studyID){
     }
 }
 
-export function deleteContent() {
+export function emptyDeleteList() {
     return {
-        type : DELETE_LIST,
+        type : EMPTY_DELETE_LIST,
     }
 }

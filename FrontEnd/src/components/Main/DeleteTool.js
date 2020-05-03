@@ -1,30 +1,25 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 import Popover from 'react-bootstrap/Popover'
-import { removePatientFromDeleteList, removeStudyFromDeleteList } from '../../actions/DeleteList'
+
+import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
+
+import { removePatientFromDeleteList, removeStudyFromDeleteList, emptyDeleteList } from '../../actions/DeleteList'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
 
 //Ce composant sera a connecter au redux pour connaitre la longueur de la liste de delete 
 class DeleteTool extends Component {
 
-    /*
-    TODO :
-    SK : Taille du popover resolue via style maxWith = 100%
-    J'ai l'impression qu'il manque l'Object "Overlay" ou on défini la méthode de sortie
-    Ce qui serait bien c'est que le composant se ferme lui meme quand il perd le focus
-    Faudra surement refactoriser cette classe, peut etre un component qui show les 3 bouttons Export / Anon / Delete 
-    aver leur chiffre du redux et les composant DeletePopover, AnonPopover dans des classes separés pour plus de lisibilité (l'equivalent du const)
-
-    */
-    
     constructor(props){
         super(props)
-        this.handleClick = this.handleClick.bind(this)
-        this.removeRow = this.removeRow.bind(this)
+        this.handleClickEmpty = this.handleClickEmpty.bind(this)
+        this.handleClickDelete = this.handleClickDelete.bind(this)
+        this.onDeletePatient = this.onDeletePatient.bind(this)
+        this.onDeleteStudy = this.onDeleteStudy.bind(this)
     }
 
-    async handleClick(){
+    //SK Ici laisser l'action au front et gérer un retour visuel, je m'occuperai du back
+    async handleClickDelete(){
         //call API DELETE
         console.log(this.props.deleteList)
         for (let patient in this.props.deleteList){
@@ -38,17 +33,18 @@ class DeleteTool extends Component {
         }
     }
 
-    removeRow(row, level){
-        switch (level){
-            case 'patient':
-                this.props.removePatientFromDeleteList(row)
-                break
-            case 'study':
-                this.props.removeStudyFromDeleteList(row)
-                break
-            default:
-                break
-        }
+    handleClickEmpty(){
+        this.props.emptyDeleteList()
+    }
+
+    //SK : Ici on avait deja defini des listener onDelete pour le dropdown, je les ai reutillise pour
+    //le boutton delete de la row
+    onDeletePatient(patientOrthancID){
+        this.props.removePatientFromDeleteList(patientOrthancID)
+    }
+
+    onDeleteStudy(studyOrthancID){
+        this.props.removeStudyFromDeleteList(studyOrthancID)
     }
     
     render(){
@@ -58,8 +54,13 @@ class DeleteTool extends Component {
             <Popover id="popover-basic" style={ {maxWidth: "100%"} } placement={this.props.placement} overlay={this.props.overlay} trigger={this.props.trigger}>
                 <Popover.Title as="h3">Delete List</Popover.Title>
                 <Popover.Content>
-                    <TablePatientsWithNestedStudies patients={studyArrayToPatientArray(this.props.deleteList)} hiddenActionBouton={true} hiddenRemoveRow={false} removeRow={this.removeRow} />
-                    <button type="button" className="btn btn-danger" onClick={this.handleClick} >Delete</button>
+                    <div className="float-right mb-3">
+                        <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
+                    </div>
+                    <TablePatientsWithNestedStudies patients={studyArrayToPatientArray(this.props.deleteList)} hiddenActionBouton={true} hiddenRemoveRow={false} onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
+                    <div className="text-center">
+                        <button type="button" className="btn btn-danger" onClick={this.handleClickDelete} >Delete List</button>
+                    </div>
                 </Popover.Content>
             </Popover>
         )
@@ -74,7 +75,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
     removePatientFromDeleteList, 
-    removeStudyFromDeleteList
+    removeStudyFromDeleteList,
+    emptyDeleteList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteTool)

@@ -1,4 +1,4 @@
-import { ADD_DELETE_LIST, REMOVE_PATIENT_DELETE_LIST, REMOVE_STUDY_DELETE_LIST, DELETE_LIST } from "../actions/actions-types"
+import { ADD_DELETE_LIST, REMOVE_PATIENT_DELETE_LIST, REMOVE_STUDY_DELETE_LIST, EMPTY_DELETE_LIST } from "../actions/actions-types"
 
 const initialState = {
     deleteList: []
@@ -17,22 +17,24 @@ export default function deleteListReducer (state = initialState, action ) {
           }
 
         case REMOVE_PATIENT_DELETE_LIST:
+          //Filter (remove) patient corresponding to payload ID
           let newSlipcedList = state.deleteList.filter(study =>{
-            return study.ParentPatient === action.payload.id
+            return study.ParentPatient !== action.payload
           })
           return {
             deleteList: newSlipcedList
           }
         
         case REMOVE_STUDY_DELETE_LIST:
+          //Filter study corresponding to studyID
           let newFilteredList = state.deleteList.filter(study =>{
-            return study.ID === action.payload.id
+            return study.ID !== action.payload
           })
           return {
             deleteList: newFilteredList
           }
 
-        case DELETE_LIST:
+        case EMPTY_DELETE_LIST:
           return {
             deleteList: []
           }
