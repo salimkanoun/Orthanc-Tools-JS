@@ -99,9 +99,8 @@ const ReverseProxy = {
         if(response.statusCode == 200)
           response.pipe(res)
       }).catch((error) => {
-        console.log(error.statusCode)
         console.log(error)
-        res.status(error.statusCode).send(error.body)
+        res.status(error.statusCode).send(error)
       })
   },
 

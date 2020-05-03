@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Uppy from '@uppy/core'
 import XHRUpload from '@uppy/xhr-upload'
 import { StatusBar,DragDrop } from '@uppy/react'
+import Modal from 'react-bootstrap/Modal'
 
 import TablePatientsWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudiesAndSeries'
 import apis from '../../services/apis'
@@ -12,14 +13,21 @@ export default class Import extends Component {
 
     state = {
         importedTree : {},
+        errors : [],
         seriesIdArray : [],
         studiesIdArray : [],
-        patientIdArray : []
+        patientIdArray : [],
+        showErrors : false
     }
 
     constructor(props){
 
         super(props)
+
+        this.onDeletePatient = this.onDeletePatient.bind(this)
+        this.onDeleteStudy = this.onDeleteStudy.bind(this)
+        this.onDeleteSeries = this.onDeleteSeries.bind(this)
+        this.handleShowErrorClick = this.handleShowErrorClick.bind(this)
         
         this.uppy = Uppy({
             autoProceed: true,
@@ -45,14 +53,32 @@ export default class Import extends Component {
         })
 
         this.uppy.on('upload-error', (file, error, response) => {
-            console.log('error with file:', file.id)
-            console.log('error message:', error)
+            console.log('error with file:', file)
+            console.log('error message:', response)
+            this.uppy.removeFile(file.id)
+            let info = JSON.parse(response.body.error)
+            this.addErrorToState(file.name, info.Details)
+            
+
           })
 
     }
 
     componentWillUnmount () {
         this.uppy.close()
+    }
+
+    addErrorToState(file, error){
+        let errors = this.state.errors
+        errors.push({
+            file : file,
+            error : error
+        })
+        this.setState({
+            errors : errors
+        })
+
+        console.log(this.state.errors)
     }
     
     async addUploadedFileToState(orthancAnswer){
@@ -157,23 +183,84 @@ export default class Import extends Component {
         return answer
     }
 
+    onDeletePatient(deletedStudyID){
+        let importedTree = this.state.importedTree
+        delete importedTree[deletedStudyID]
+        this.setState({
+            importedTree : importedTree
+        })
+    }
+
+    removeStudyForPatient(patientID, studyID){
+        let importedTree = this.state.importedTree
+        delete importedTree[patientID]['studies'][studyID]
+
+        if(importedTree[patientID]['studies'].lenght == 0 ) {
+            this.onDeletePatient(patientID)
+            return
+        }
+
+        this.setState({
+            importedTree : importedTree
+        })
+    }
+
+    onDeleteStudy(deletedStudyID){
+
+        for( let [patientID, details] in Object.entries(this.state.importedTree) ){
+            if ( details['studies'].includes(deletedStudyID)) {
+                this.removeStudyForPatient(patientID, deletedStudyID)
+                break
+            }
+        }
+    }
+
+    //SK A FAIRE
+    onDeleteSeries(){
+        
+    }
+
+    handleShowErrorClick(){
+        console.log('click')
+        this.setState({
+            showErrors : !this.state.showErrors
+        })
+        console.log(this.state)
+    }
+
     render(){
         return (
             <div className="jumbotron">
                 <div className="col mb-5">
-                 <DragDrop
-                    uppy={this.uppy}
-                    locale={{
-                        strings: {
-                            dropHereOr: 'Drop Dicom Folder',
-                            browse: 'browse'
-                        }
-                    }}
-                />
-                <StatusBar hideUploadButton={false} showProgressDetails={true} hideAfterFinish={false} uppy={this.uppy} />
+                    <DragDrop
+                        uppy={this.uppy}
+                        locale={{
+                            strings: {
+                                dropHereOr: 'Drop Dicom Folder',
+                                browse: 'browse'
+                            }
+                        }}
+                    />
+                    <StatusBar hideUploadButton={false} showProgressDetails={true} hideRetryButton={true} hideAfterFinish={false} uppy={this.uppy} />
+                    
+                    <div className="float-right">
+                        <input type="button" className="btn btn-warning" value="See Errors" onClick={this.handleShowErrorClick} />
+                    </div>
+
+                    <Modal show={this.state.showErrors} onHide={this.handleShowErrorClick}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Errors</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body> Errors Here</Modal.Body>
+                    </Modal>
+                
                 </div>
                 <div className="col">
-                    <TablePatientsWithNestedStudiesAndSeries patients = {treeToPatientArray(this.state.importedTree)}/>
+                    <TablePatientsWithNestedStudiesAndSeries 
+                        patients = {treeToPatientArray(this.state.importedTree)}
+                        onDeletePatient = {this.onDeletePatient}
+                        onDeleteStudy = {this.onDeleteStudy}
+                        onDeleteSeries = {this.onDeleteSeries} />
                 </div>
             </div>
 
