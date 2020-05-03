@@ -143,6 +143,7 @@ export default class Import extends Component {
 
     addSeriesToState(patientID, studyID, seriesID, mainDicomTags){
         let objectToAdd = []
+        mainDicomTags.Instances = "N/A"
         objectToAdd[seriesID] = mainDicomTags
         this.setState(state => {
             Object.assign(state['importedTree'][patientID]['studies'][studyID]['series'], objectToAdd);
