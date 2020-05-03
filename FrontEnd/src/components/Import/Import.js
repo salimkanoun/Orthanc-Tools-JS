@@ -104,6 +104,8 @@ export default class Import extends Component {
                 this.addStudyToState(orthancAnswer.ParentPatient, orthancAnswer.ParentStudy, studyDetails.MainDicomTags)
             }
 
+            
+
         }
         
         if(!isExistingSerie) {
@@ -111,7 +113,7 @@ export default class Import extends Component {
             this.addSeriesToState(orthancAnswer.ParentPatient, orthancAnswer.ParentStudy, orthancAnswer.ParentSeries,  seriesDetails.MainDicomTags)
         }
 
-        console.log(this.state)
+        console.log(this.state.importedTree)
 
     }
 
