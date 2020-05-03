@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
+
+import { StatusBar,DragDrop } from '@uppy/react'
 import Uppy from '@uppy/core'
 import XHRUpload from '@uppy/xhr-upload'
-import { StatusBar,DragDrop } from '@uppy/react'
+
 import Modal from 'react-bootstrap/Modal'
 
 import TablePatientsWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudiesAndSeries'
@@ -46,22 +48,16 @@ export default class Import extends Component {
           })
 
         this.uppy.on('upload-success', async (file, response) => {
-            console.log(response)
             if(response.body.ID !== undefined){
                 await this.addUploadedFileToState(response.body)
             }
-            
         })
 
         this.uppy.on('upload-error', (file, error, response) => {
-            console.log('error with file:', file)
-            console.log('error message:', response)
             this.uppy.removeFile(file.id)
             let info = JSON.parse(response.body.error)
             this.addErrorToState(file.id, file.name, info.Details)
-            
-
-          })
+        })
 
     }
 
@@ -69,12 +65,17 @@ export default class Import extends Component {
         this.uppy.close()
     }
 
-    addErrorToState(fileID, file, error){
+    /**
+     * add a failed import in error list
+     * @param {string} fileID 
+     * @param {string} file 
+     * @param {string} error 
+     */
+    addErrorToState(fileID, filename, error){
         let errors = this.state.errors
-
         errors.push({
             fileID : fileID,
-            filename : file,
+            filename : filename,
             error : error
         })
 
@@ -82,7 +83,6 @@ export default class Import extends Component {
             errors : errors
         })
 
-        console.log(this.state.errors)
     }
     
     async addUploadedFileToState(orthancAnswer){
@@ -118,9 +118,9 @@ export default class Import extends Component {
     }
 
     addPatientToState(patientID, mainDicomTags){
-        let objectToAdd = []
+        let objectToAdd = {}
         objectToAdd[patientID] = mainDicomTags
-        objectToAdd[patientID]['studies']=[]
+        objectToAdd[patientID]['studies']={}
         this.setState(state => {
                 Object.assign(state['importedTree'], objectToAdd)
                 state.patientIdArray.push(patientID)
@@ -130,9 +130,9 @@ export default class Import extends Component {
     }
 
     addStudyToState(patientID, studyID, mainDicomTags){
-        let objectToAdd = []
+        let objectToAdd = {}
         objectToAdd[studyID] = mainDicomTags
-        objectToAdd[studyID]['series'] = []
+        objectToAdd[studyID]['series'] = {}
         this.setState(state => {
             Object.assign(state['importedTree'][patientID].studies, objectToAdd)
             state.studiesIdArray.push(studyID)
@@ -153,6 +153,10 @@ export default class Import extends Component {
 
     }
 
+    /**
+     * check if patient is already known
+     * @param {string} patientID 
+     */
     isknownPatient(patientID){
         let answer  = this.state.patientIdArray.includes(patientID)
         if (! answer ) {
@@ -165,6 +169,10 @@ export default class Import extends Component {
         return answer
     }
 
+    /**
+     * check if study is already known
+     * @param {string} studyID 
+     */
     isKnownStudy(studyID){
         let answer = this.state.studiesIdArray.includes(studyID)
         if( ! answer ){
@@ -177,6 +185,10 @@ export default class Import extends Component {
         return answer
     }
 
+    /**
+     * check if series ID already known
+     * @param {string} serieID 
+     */
     isKnownSeries(serieID){
         let answer = this.state.seriesIdArray.includes(serieID)
         if (!answer) {
@@ -189,6 +201,10 @@ export default class Import extends Component {
         return answer
     }
 
+    /**
+     * Remove a patient from test
+     * @param {*} deletedStudyID 
+     */
     onDeletePatient(deletedStudyID){
         let importedTree = this.state.importedTree
         delete importedTree[deletedStudyID]
@@ -197,11 +213,17 @@ export default class Import extends Component {
         })
     }
 
+    /**
+     * Remove a study from a patient, 
+     * if last study, call the remove patient
+     * @param {string} patientID 
+     * @param {string} studyID 
+     */
     removeStudyForPatient(patientID, studyID){
         let importedTree = this.state.importedTree
         delete importedTree[patientID]['studies'][studyID]
 
-        if(importedTree[patientID]['studies'].lenght == 0 ) {
+        if(importedTree[patientID]['studies'].lenght === 0 ) {
             this.onDeletePatient(patientID)
             return
         }
@@ -210,28 +232,72 @@ export default class Import extends Component {
             importedTree : importedTree
         })
     }
-
+    /**
+     * Searches for the study deleted and triger the remove methode for study level
+     * @param {string} deletedStudyID 
+     */
     onDeleteStudy(deletedStudyID){
-
-        for( let [patientID, details] in Object.entries(this.state.importedTree) ){
-            if ( details['studies'].includes(deletedStudyID)) {
+        console.log(deletedStudyID)
+        console.log(this.state.importedTree)
+        for( let [patientID, details] of Object.entries(this.state.importedTree) ){
+            console.log(patientID)
+            console.log(details)
+            console.log(this.state.importedTree[patientID])
+            if ( deletedStudyID in details['studies'] ) {
                 this.removeStudyForPatient(patientID, deletedStudyID)
                 break
             }
         }
     }
 
-    //SK A FAIRE
-    onDeleteSeries(){
+    /**
+     * Remove a series for list, if last series call the remove study method
+     * @param {string} patientID 
+     * @param {string} studyID 
+     * @param {string} seriesID 
+     */
+    removeSeriesFromStudy(patientID, studyID, seriesID){
+
+        let importedTree = this.state.importedTree
+        delete importedTree[patientID]['studies'][studyID]['series'][seriesID]
+
+        if(importedTree[patientID]['studies'][studyID]['series'].lenght === 0 ) {
+            this.onDeleteStudy(studyID)
+            return
+        }
+
+        this.setState({
+            importedTree : importedTree
+        })
+
+    }
+
+    /**
+     * Searches Series ID in imported tree to remove it
+     * @param {String} deletedSeriesID 
+     */
+    onDeleteSeries(deletedSeriesID){
+
+        for( let [patientID, detailsPatient] of Object.entries(this.state.importedTree) ){
+            console.log(detailsPatient)
+            console.log(this.state.importedTree[patientID])
+            for( let [studyID, details ] in Object.entries(this.state.importedTree[patientID]['studies'])){
+                if ( deletedSeriesID in details['series'] ) {
+                    this.removeSeriesFromStudy(patientID, studyID, deletedSeriesID)
+                    break
+                }
+            }
+        }
         
     }
 
+    /**
+     * Trigger the display of the error table
+     */
     handleShowErrorClick(){
-        console.log('click')
         this.setState({
             showErrors : !this.state.showErrors
         })
-        console.log(this.state)
     }
 
     render(){
