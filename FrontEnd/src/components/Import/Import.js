@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import Uppy from '@uppy/core'
-import StatusBar from '@uppy/status-bar'
 import XHRUpload from '@uppy/xhr-upload'
-import { DragDrop } from '@uppy/react'
+import { StatusBar,DragDrop } from '@uppy/react'
 
 import TablePatientsWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudiesAndSeries'
 import apis from '../../services/apis'
+import {treeToPatientArray} from '../../tools/processResponse'
 
 //Ce composant sera a connecter au redux pour connaitre la longueur de la liste d'export
 export default class Import extends Component {
@@ -36,14 +36,6 @@ export default class Import extends Component {
             }
           })
 
-        this.uppy.use(StatusBar, {
-            id : 'statusBar',
-            target: 'body',
-            hideUploadButton: false,
-            showProgressDetails: true,
-            hideAfterFinish: false
-          })
-
         this.uppy.on('upload-success', async (file, response) => {
             console.log(response)
             if(response.body.ID !== undefined){
@@ -51,6 +43,11 @@ export default class Import extends Component {
             }
             
         })
+
+        this.uppy.on('upload-error', (file, error, response) => {
+            console.log('error with file:', file.id)
+            console.log('error message:', error)
+          })
 
     }
 
@@ -86,8 +83,6 @@ export default class Import extends Component {
 
         console.log(this.state)
 
-        return true
-
     }
 
     addPatientToState(patientID, mainDicomTags){
@@ -95,9 +90,9 @@ export default class Import extends Component {
         objectToAdd[patientID] = mainDicomTags
         objectToAdd[patientID]['studies']=[]
         this.setState(state => {
-                        Object.assign(state['importedTree'], objectToAdd)
-                        state.patientIdArray.push(patientID)
-                        return state
+                Object.assign(state['importedTree'], objectToAdd)
+                state.patientIdArray.push(patientID)
+                return state
             }
         )
     }
@@ -112,7 +107,6 @@ export default class Import extends Component {
             return state
             }
         )
-
     }
 
     addSeriesToState(patientID, studyID, seriesID, mainDicomTags){
@@ -136,7 +130,6 @@ export default class Import extends Component {
                 }
             )
         }
-
         return answer
     }
 
@@ -160,22 +153,10 @@ export default class Import extends Component {
                 return state
                 }
             )
-
         }
         return answer
     }
 
-    prepareDataToTable(){
-        let dataArray = []
-        for( let patient in this.state.importedTree){
-            dataArray.push({
-                patientOrthancID : patient,
-                ...this.state.importedTree[patient]
-            })
-        }
-        console.log(dataArray)
-        return dataArray
-    }
     render(){
         return (
             <div className="jumbotron">
@@ -189,9 +170,10 @@ export default class Import extends Component {
                         }
                     }}
                 />
+                <StatusBar hideUploadButton={false} showProgressDetails={true} hideAfterFinish={false} uppy={this.uppy} />
                 </div>
                 <div className="col">
-                <TablePatientsWithNestedStudiesAndSeries patients = {this.prepareDataToTable()}/>
+                    <TablePatientsWithNestedStudiesAndSeries patients = {treeToPatientArray(this.state.importedTree)}/>
                 </div>
             </div>
 
