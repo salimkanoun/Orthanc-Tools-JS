@@ -5,6 +5,7 @@ import { StatusBar,DragDrop } from '@uppy/react'
 import Modal from 'react-bootstrap/Modal'
 
 import TablePatientsWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudiesAndSeries'
+import TableImportError from './TableImportError'
 import apis from '../../services/apis'
 import {treeToPatientArray} from '../../tools/processResponse'
 
@@ -57,7 +58,7 @@ export default class Import extends Component {
             console.log('error message:', response)
             this.uppy.removeFile(file.id)
             let info = JSON.parse(response.body.error)
-            this.addErrorToState(file.name, info.Details)
+            this.addErrorToState(file.id, file.name, info.Details)
             
 
           })
@@ -68,12 +69,15 @@ export default class Import extends Component {
         this.uppy.close()
     }
 
-    addErrorToState(file, error){
+    addErrorToState(fileID, file, error){
         let errors = this.state.errors
+
         errors.push({
-            file : file,
+            fileID : fileID,
+            filename : file,
             error : error
         })
+
         this.setState({
             errors : errors
         })
@@ -251,7 +255,9 @@ export default class Import extends Component {
                         <Modal.Header closeButton>
                             <Modal.Title>Errors</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body> Errors Here</Modal.Body>
+                        <Modal.Body> 
+                            <TableImportError data={this.state.errors} />
+                        </Modal.Body>
                     </Modal>
                 
                 </div>
