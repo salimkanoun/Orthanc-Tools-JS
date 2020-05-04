@@ -68,8 +68,15 @@ class ContentRootPanel extends Component {
     this.props.addToDeleteList(uniqueSelectedOrthancStudyId)
   }
 
+  rowEventsStudies = {
+    onClick: (e, row, rowIndex) => {
+      this.setState({currentSelectedStudyId: row.StudyOrthancID})
+    }
+  }
+
   rowStyleStudies = (row, rowIndex) => {
     const style = {};
+    console.log(row)
     if (row.StudyOrthancID === this.state.currentSelectedStudyId){
       style.backgroundColor = 'rgba(255,153,51)'
     }
@@ -105,6 +112,7 @@ class ContentRootPanel extends Component {
               <TablePatientsWithNestedStudies 
                     patients={studyArrayToPatientArray(this.props.orthancContent)} 
                     rowEventsStudies={ this.rowEventsStudies } 
+                    rowStyle={ this.rowStyleStudies }
                     onDeletePatient={this.onDeletePatient} 
                     onDeleteStudy={this.onDeleteStudy} 
                     ref={this.child}

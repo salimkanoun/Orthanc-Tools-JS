@@ -35,6 +35,10 @@ class TablePatientsWithNestedStudies extends Component {
         return this.selection
     }
 
+    getCurrentSelectedStudyId(){
+        return 
+    }
+
     changeSelectedAction(level, id, selected){
         if(level === 'Patient'){
             if (selected) this.addIdToList(this.selection.selectedPatients, id)
@@ -88,7 +92,7 @@ class TablePatientsWithNestedStudies extends Component {
                 })
             }
             return (
-                <TableStudy {...this.props} data={answer} selectRow={this.selectRowStudies}  parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyleStudies}  />
+                <TableStudy {...this.props} data={answer} selectRow={this.selectRowStudies} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyle}  />
             )
         }, 
         parentClassName: (isExpanded, row, rowIndex) => {
@@ -103,7 +107,7 @@ class TablePatientsWithNestedStudies extends Component {
     
     render(){
         return(
-            <TablePatients ref={this.refPatient} studies={this.props.studies}  selectRow={this.selectRowPatients} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} rowStyle={this.rowStyle} rowEvents={this.rowEvents} {...this.props} />
+            <TablePatients ref={this.refPatient} studies={this.props.studies} selectRow={this.selectRowPatients} expandRow={this.expandRow} onDelete={this.props.onDeletePatient}  rowStyle={this.rowStyle} rowEvents={this.rowEvents} {...this.props} />
         )
     }
 }
