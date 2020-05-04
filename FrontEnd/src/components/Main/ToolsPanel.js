@@ -19,7 +19,7 @@ class ToolsPanel extends Component {
                     <ExportTool/>
                 </div>
                 <div className="mr-1">
-                    <OverlayTrigger trigger='click' placement="bottom" overlay={ <div><DeleteTool /></div> } >
+                    <DeleteTool target={this.ref} />
                         <div>
                             <button type="button" className="btn btn-danger" >
                                 Delete <br/>
@@ -27,7 +27,7 @@ class ToolsPanel extends Component {
                                 <span className="sr-only">Delete List</span>
                             </button>
                         </div>
-                    </OverlayTrigger>
+
                 </div>
             </div>
             

@@ -1,6 +1,7 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Popover from 'react-bootstrap/Popover'
+import Overlay from 'react-bootstrap/Overlay'
 
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
@@ -48,17 +49,24 @@ class DeleteTool extends Component {
     }
     
     render(){
+        console.log(this.props)
         return (
             //La position ne suit pas y a une histoire de Ref https://react-bootstrap.github.io/components/overlays/
             //https://github.com/react-bootstrap/react-bootstrap/issues/2208
-            <Popover placement={this.props.placement} style={{maxWidth: '100%', backgroundColor: 'white'}} overlay={this.props.overlay} trigger={this.props.trigger}>
-                <div className="float-right mb-3 bg-white">
-                    <h3>Delete List</h3>
-                    <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
-                    <TablePatientsWithNestedStudies patients={studyArrayToPatientArray(this.props.deleteList)} hiddenActionBouton={true} hiddenRemoveRow={false} onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
-                    <button type="button" className="btn btn-danger" onClick={this.handleClickDelete} >Delete List</button>
-                </div>
-            </Popover>
+            <Overlay show={true} placement="right" target={this.props.target}>
+                <Popover id="popover-basic" style={ { maxWidth : '900px'}} >
+                    <Popover.Title as="h3">Delete List</Popover.Title>
+                    <Popover.Content>
+                        <div className="float-right mb-3">
+                            <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
+                        </div>
+                        <TablePatientsWithNestedStudies patients={studyArrayToPatientArray(this.props.deleteList)} hiddenActionBouton={true} hiddenRemoveRow={false} onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
+                        <div className="text-center">
+                            <button type="button" className="btn btn-danger" onClick={this.handleClickDelete} >Delete List</button>
+                        </div>
+                    </Popover.Content>
+                </Popover>
+            </Overlay>
         )
     }
 }
