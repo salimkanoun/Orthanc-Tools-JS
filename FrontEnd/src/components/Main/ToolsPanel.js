@@ -9,6 +9,7 @@ import DeleteTool from './DeleteTool'
 class ToolsPanel extends Component {
 
     render(){
+        const ref = React.createRef()
         return (
             <div className="row">
                 <div className="mr-1">
@@ -18,7 +19,7 @@ class ToolsPanel extends Component {
                     <ExportTool/>
                 </div>
                 <div className="mr-1">
-                    <OverlayTrigger trigger='click' placement="bottom" overlay={ <DeleteTool /> }   >
+                    <OverlayTrigger trigger='click' placement="bottom" overlay={ <div><DeleteTool /></div> } >
                         <div>
                             <button type="button" className="btn btn-danger" >
                                 Delete <br/>

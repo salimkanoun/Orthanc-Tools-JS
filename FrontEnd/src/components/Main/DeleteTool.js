@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import Popover from 'react-bootstrap/Popover'
 
@@ -51,17 +51,13 @@ class DeleteTool extends Component {
         return (
             //La position ne suit pas y a une histoire de Ref https://react-bootstrap.github.io/components/overlays/
             //https://github.com/react-bootstrap/react-bootstrap/issues/2208
-            <Popover id="popover-basic" style={ {maxWidth: "100%"} } placement={this.props.placement} overlay={this.props.overlay} trigger={this.props.trigger}>
-                <Popover.Title as="h3">Delete List</Popover.Title>
-                <Popover.Content>
-                    <div className="float-right mb-3">
-                        <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
-                    </div>
+            <Popover placement={this.props.placement} style={{maxWidth: '100%', backgroundColor: 'white'}} overlay={this.props.overlay} trigger={this.props.trigger}>
+                <div className="float-right mb-3 bg-white">
+                    <h3>Delete List</h3>
+                    <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
                     <TablePatientsWithNestedStudies patients={studyArrayToPatientArray(this.props.deleteList)} hiddenActionBouton={true} hiddenRemoveRow={false} onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
-                    <div className="text-center">
-                        <button type="button" className="btn btn-danger" onClick={this.handleClickDelete} >Delete List</button>
-                    </div>
-                </Popover.Content>
+                    <button type="button" className="btn btn-danger" onClick={this.handleClickDelete} >Delete List</button>
+                </div>
             </Popover>
         )
     }
