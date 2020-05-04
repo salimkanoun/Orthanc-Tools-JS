@@ -45,6 +45,8 @@ class ContentRootPanel extends Component {
 
   sendToDeleteList(){
     let selectedIds = this.child.current.getSelectedRessources()
+    console.log(selectedIds);
+    
     let studiesOfSelectedPatients = []
 
     //Add all studies of selected patient
@@ -63,7 +65,7 @@ class ContentRootPanel extends Component {
 
     //Get only unique study ids
     let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
-
+    
     //Add selected list to reducer
     this.props.addToDeleteList(uniqueSelectedOrthancStudyId)
   }
@@ -76,7 +78,6 @@ class ContentRootPanel extends Component {
 
   rowStyleStudies = (row, rowIndex) => {
     const style = {};
-    console.log(row)
     if (row.StudyOrthancID === this.state.currentSelectedStudyId){
       style.backgroundColor = 'rgba(255,153,51)'
     }
@@ -114,7 +115,8 @@ class ContentRootPanel extends Component {
                     rowEventsStudies={ this.rowEventsStudies } 
                     rowStyle={ this.rowStyleStudies }
                     onDeletePatient={this.onDeletePatient} 
-                    onDeleteStudy={this.onDeleteStudy} 
+                    onDeleteStudy={this.onDeleteStudy}
+                    setSelection={true}
                     ref={this.child}
               />
             </div>

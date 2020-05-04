@@ -32,6 +32,7 @@ export function studyArrayToNestedData(studiesArray){
   }
 
   export function studyArrayToPatientArray(studiesArray){
+      console.log(studiesArray)
     let nestedData = studyArrayToNestedData(studiesArray)
     return treeToPatientArray(nestedData)
   }
