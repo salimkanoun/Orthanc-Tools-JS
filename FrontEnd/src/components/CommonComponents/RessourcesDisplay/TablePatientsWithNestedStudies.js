@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react'
+import React, { Component } from 'react'
 import TableStudy from './TableStudy'
 import TablePatients from './TablePatients'
 class TablePatientsWithNestedStudies extends Component {
@@ -10,11 +10,6 @@ class TablePatientsWithNestedStudies extends Component {
 
     static defaultProps = {
         setSelection: false
-    }
-
-    constructor(props){
-        super(props)
-        this.refPatient = createRef()
     }
     
     handleRowSelect(row, isSelected){
@@ -111,7 +106,7 @@ class TablePatientsWithNestedStudies extends Component {
     
     render(){
         return(
-            <TablePatients ref={this.refPatient} studies={this.props.studies} selectRow={this.props.setSelection ? this.selectRowPatients: undefined} expandRow={this.expandRow} onDelete={this.props.onDeletePatient}  rowStyle={this.rowStyle} rowEvents={this.rowEvents} {...this.props} />
+            <TablePatients studies={this.props.studies} selectRow={this.props.setSelection ? this.selectRowPatients: undefined} expandRow={this.expandRow} onDelete={this.props.onDeletePatient}  rowStyle={this.rowStyle} rowEvents={this.rowEvents} {...this.props} />
         )
     }
 }

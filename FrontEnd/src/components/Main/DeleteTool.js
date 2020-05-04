@@ -22,7 +22,6 @@ class DeleteTool extends Component {
     //SK Ici laisser l'action au front et gérer un retour visuel, je m'occuperai du back
     async handleClickDelete(){
         //call API DELETE
-        console.log(this.props.deleteList)
         for (let patient in this.props.deleteList){
             let studyID = Object.keys(this.props.deleteList[patient].studies)
             studyID.forEach(id => {
@@ -49,11 +48,10 @@ class DeleteTool extends Component {
     }
     
     render(){
-        console.log(this.props)
         return (
             //La position ne suit pas y a une histoire de Ref https://react-bootstrap.github.io/components/overlays/
             //https://github.com/react-bootstrap/react-bootstrap/issues/2208
-            <Overlay show={true} placement="right" target={this.props.target}>
+            <Overlay target={this.props.target} show={this.props.show} placement="bottom" >
                 <Popover id="popover-basic" style={ { maxWidth : '900px'}} >
                     <Popover.Title as="h3">Delete List</Popover.Title>
                     <Popover.Content>
