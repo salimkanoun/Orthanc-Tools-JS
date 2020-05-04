@@ -46,6 +46,7 @@ class ContentRootPanel extends Component {
   sendToDeleteList(){
     let selectedIds = this.child.current.getSelectedRessources()
     console.log(selectedIds);
+    console.log(this.props.orthancContent)
     
     let studiesOfSelectedPatients = []
 
@@ -61,12 +62,18 @@ class ContentRootPanel extends Component {
     })
 
     //add selected level studies
-    studiesOfSelectedPatients.push(...selectedIds.selectedStudies)
+    selectedIds.selectedStudies.forEach(element => {
+      this.props.orthancContent.forEach(study => {
+        if(element === study.ID)
+          studiesOfSelectedPatients.push(study)
+      });
+    });
 
     //Get only unique study ids
     let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
     
     //Add selected list to reducer
+    console.log(uniqueSelectedOrthancStudyId)
     this.props.addToDeleteList(uniqueSelectedOrthancStudyId)
   }
 
