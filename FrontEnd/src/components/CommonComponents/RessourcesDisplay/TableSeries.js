@@ -35,6 +35,14 @@ class TableSeries extends Component{
         text: 'Action',
         hidden: this.props.hiddenActionBouton,
         formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.SeriesOrthancID} onDelete={this.props.onDelete} />)
+    }, {
+        dataField: 'Remove', 
+        text: 'Remove',
+        hidden: this.props.hiddenRemoveRow,
+        formatter: (cell, row, index) => {
+            return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.onDelete(row.SeriesOrthancID)}}>Remove</button>
+        }
+    
     }]
 
 

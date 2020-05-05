@@ -8,7 +8,9 @@ import DeleteTool from './DeleteTool'
 class ToolsPanel extends Component {
 
     state = {
-        show: false
+        showDelete: false,
+        showExport: false,
+        showAnon: false
     }
 
     constructor(props){
@@ -17,30 +19,58 @@ class ToolsPanel extends Component {
     }
 
     handleClick(e){
-        this.setState({
-            show: !this.state.show
-        })
+        switch (e.target.id){
+            case 'delete':
+                this.setState({ 
+                    showDelete: !this.state.showDelete,
+                    showAnon: false, 
+                    showExport: false
+                })
+                break
+            case 'export':
+                this.setState({ 
+                    showExport: !this.state.showExport,
+                    showAnon: false, 
+                    showDelete: false
+                })
+                break
+            case 'anon':
+                this.setState({ 
+                    showAnon: !this.state.showAnon, 
+                    showDelete: false, 
+                    showExport: false
+                })
+                break
+            default:
+                break
+        }
+        
     }
 
     render(){
-        const ref = React.createRef()
+        const refExport = React.createRef()
+        //const refAnon = React.createRef()
+        const refDelete = React.createRef()
         return (
             <div className="row">
                 <div className="mr-1">
                     <AnonTool />
                 </div>
                 <div className="mr-1">
-                    <ExportTool/>
+                    <button id='export' ref={refExport} type="button" className="btn btn-primary" onClick={this.handleClick} >
+                        Export <br/>
+                        <span className="badge badge-light">{this.props.exportList.length}</span>
+                        <span className="sr-only">Export List</span>
+                    </button>
+                    <ExportTool target={refExport} show={this.state.showExport}/>
                 </div>
                 <div className="mr-1" >
-                    <div >
-                        <button ref={ref} type="button" className="btn btn-danger" onClick={this.handleClick}>
-                            Delete <br/>
-                            <span className="badge badge-light">{this.props.deleteList.length}</span>
-                            <span className="sr-only">Delete List</span>
-                        </button>
-                        <DeleteTool target={ref} show={this.state.show} />
-                    </div>
+                    <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onClick={this.handleClick}>
+                        Delete <br/>
+                        <span className="badge badge-light">{this.props.deleteList.length}</span>
+                        <span className="sr-only">Delete List</span>
+                    </button>
+                    <DeleteTool target={refDelete} show={this.state.showDelete} />
                 </div>
             </div>
         )
@@ -49,7 +79,8 @@ class ToolsPanel extends Component {
 
 const mapStateToProps = state => {
     return {
-        deleteList: state.DeleteList.deleteList
+        deleteList: state.DeleteList.deleteList,
+        exportList: state.ExportList.exportList
     }
 }
 

@@ -11,6 +11,7 @@ import {studyArrayToPatientArray} from '../../tools/processResponse'
 
 import { connect } from 'react-redux'
 import { addToDeleteList } from '../../actions/DeleteList'
+import { addToExportList } from '../../actions/ExportList'
 import { addOrthancContent } from '../../actions/OrthancContent'
 
 
@@ -26,6 +27,7 @@ class ContentRootPanel extends Component {
     this.onDeletePatient = this.onDeletePatient.bind(this)
     this.onDeleteStudy = this.onDeleteStudy.bind(this)
     this.sendToDeleteList = this.sendToDeleteList.bind(this)
+    this.sendToExportList = this.sendToExportList.bind(this)
     this.child = createRef()
   }
 
@@ -45,8 +47,6 @@ class ContentRootPanel extends Component {
 
   sendToDeleteList(){
     let selectedIds = this.child.current.getSelectedRessources()
-    console.log(selectedIds);
-    console.log(this.props.orthancContent)
     
     let studiesOfSelectedPatients = []
 
@@ -73,8 +73,28 @@ class ContentRootPanel extends Component {
     let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
     
     //Add selected list to reducer
-    console.log(uniqueSelectedOrthancStudyId)
     this.props.addToDeleteList(uniqueSelectedOrthancStudyId)
+  }
+
+  sendToExportList(){
+    let selectedIds = this.child.current.getSelectedRessources()
+    let studyIDs = []
+    selectedIds.selectedPatients.forEach(orthancPatientId => {
+      this.props.orthancContent.forEach(study => {
+        if (study.ParentPatient === orthancPatientId)
+          studyIDs.push(study.ID)
+      })
+    })
+    selectedIds.selectedStudies.forEach(studyID => {
+      if (!studyIDs.includes(studyID))
+        studyIDs.push(studyID)
+    })
+    //get series details
+    studyIDs.forEach(async (id) => {
+      let serieDetails = await apis.content.getSeriesDetails(id)
+      this.props.addToExportList(serieDetails)
+    })
+
   }
 
   rowEventsStudies = {
@@ -146,7 +166,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   addToDeleteList,
-  addOrthancContent
+  addOrthancContent, 
+  addToExportList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentRootPanel)
