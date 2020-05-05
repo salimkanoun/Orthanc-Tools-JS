@@ -34,6 +34,7 @@ export const EMPTY_DELETE_LIST = 'EMPTY_DELETE_LIST'
 
 //Orthanc Content actions
 export const ADD_ORTHANC_CONTENT = 'ADD_ORTHANC_CONTENT'
+export const REMOVE_ORTHANC_CONTENT = 'REMOVE_ORTHANC_CONTENT'
 
 //Anon Actions
 export const ANONYMIZE_CONTENT = 'ANONYMIZE_CONTENT'

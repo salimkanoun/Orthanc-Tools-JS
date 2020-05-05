@@ -6,10 +6,15 @@ import Overlay from 'react-bootstrap/Overlay'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 import { removePatientFromDeleteList, removeStudyFromDeleteList, emptyDeleteList } from '../../actions/DeleteList'
+import { removeOrthancContent } from '../../actions/OrthancContent'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
+import Modal from 'react-bootstrap/Modal'
+import apis from '../../services/apis'
 
 //Ce composant sera a connecter au redux pour connaitre la longueur de la liste de delete 
 class DeleteTool extends Component {
+
+    state = {show: false}
 
     constructor(props){
         super(props)
@@ -17,20 +22,28 @@ class DeleteTool extends Component {
         this.handleClickDelete = this.handleClickDelete.bind(this)
         this.onDeletePatient = this.onDeletePatient.bind(this)
         this.onDeleteStudy = this.onDeleteStudy.bind(this)
+        this.handleConfirm = this.handleConfirm.bind(this)
+    }
+
+    handleConfirm(){
+        this.setState({
+            show: !this.state.show
+        })
     }
 
     //SK Ici laisser l'action au front et gérer un retour visuel, je m'occuperai du back
-    async handleClickDelete(){
+     handleClickDelete(){
+        //close Modal
+        this.handleConfirm()
         //call API DELETE
-        for (let patient in this.props.deleteList){
-            let studyID = Object.keys(this.props.deleteList[patient].studies)
-            studyID.forEach(id => {
-                console.log("will delete : ", id)
-                //await apis.content.deleteStudies(id) //take a lot of time, need to pass by the back
-                //this.props.removeStudyFromDeleteList(this.props.deleteList[patient].studies[id])
-            })
-                
-        }
+        console.log(this.props.deleteList)
+        this.props.deleteList.forEach(async (study) => {
+            console.log("Will delete : ", study.ID)
+            //await apis.content.deleteStudies(study.ID) //take a lot of time, need to pass by the back
+            this.props.removeStudyFromDeleteList(study.ID)
+            this.props.removeOrthancContent(study.ID)
+           
+        });
     }
 
     handleClickEmpty(){
@@ -60,7 +73,17 @@ class DeleteTool extends Component {
                         </div>
                         <TablePatientsWithNestedStudies patients={studyArrayToPatientArray(this.props.deleteList)} hiddenActionBouton={true} hiddenRemoveRow={false} onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
                         <div className="text-center">
-                            <button type="button" className="btn btn-danger" onClick={this.handleClickDelete} >Delete List</button>
+                            <button type="button" className="btn btn-danger" onClick={this.handleConfirm} >Delete List</button>
+                            <Modal show={this.state.show} onHide={this.handleConfirm}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Confirm Delete</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>Are you sure to Delete the list</Modal.Body>
+                                <Modal.Footer>
+                                    <input type='button' className='btn btn-secondary' onClick={this.handleConfirm} value="Cancel" />
+                                    <input type='button' className='btn btn-danger' onClick={this.handleClickDelete} value="Delete" />
+                                </Modal.Footer>
+                            </Modal>
                         </div>
                     </Popover.Content>
                 </Popover>
@@ -78,7 +101,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     removePatientFromDeleteList, 
     removeStudyFromDeleteList,
-    emptyDeleteList
+    emptyDeleteList, 
+    removeOrthancContent
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteTool)
