@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import Overlay from 'react-bootstrap/Overlay'
 import Popover from 'react-bootstrap/Popover'
 
@@ -41,7 +42,7 @@ class ExportTool extends Component {
                         </div>
                         <TableStudiesWithNestedSeries data={seriesArrayToStudyArray(this.props.exportList, this.props.orthancContent)} hiddenRemoveRow={false} hiddenActionBouton={true} onDeleteStudy={this.onDeleteStudy} onDeleteSeries={this.onDeleteSeries} />
                         <div className="text-center">
-                            <button type='button' className='btn btn-primary' onClick={this.openExportTools} >Open Export Tools</button>
+                            <Link className='btn btn-primary' to='/OrthancContent/Export'>Open Export Tools</Link>
                         </div>
                     </Popover.Content>
                 </Popover>
