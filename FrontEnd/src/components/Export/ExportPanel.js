@@ -66,7 +66,7 @@ class ExportPanel extends Component {
         let namePeers = await apis.peers.getPeers()
         let items = []
         namePeers.map(name => {
-            items.push(<button id={name} key={name} className='dropdown-item bg-info' type='button' onClick={ this.handleClickPeer } >{name}</button>)
+            items.push(<button id={name} key={name} className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickPeer } >{name}</button>)
         })
         this.setState({Peers: items})
     }
@@ -75,7 +75,7 @@ class ExportPanel extends Component {
         let nameAets = await apis.aets.getAets()
         let items = []
         nameAets.map(name => {
-            items.push(<button id={name} key={name} className='dropdown-item bg-info' type='button' onClick={ this.handleClickModalities } >{name}</button>)
+            items.push(<button id={name} key={name} className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickModalities } >{name}</button>)
         })
         this.setState({AET: items})
     }
@@ -167,37 +167,46 @@ class ExportPanel extends Component {
                     </div>
                 </div>
                 <div className="row">
-                    
-                <Dropdown >
-                    <Dropdown.Toggle variant="success" id="dropdown-download" >
-                        Download
-                    </Dropdown.Toggle>
+                    <div className='col col-sm-auto'>
+                        <Dropdown >
+                            <Dropdown.Toggle variant="success" id="dropdown-download" >
+                                Download
+                            </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                        <button id='hirarchical' className='dropdown-item bg-info' type='button' onClick={ this.handleClickDownload } >Hirarchical</button>
-                        <button id='dicomdir' className='dropdown-item bg-info' type='button' onClick={ this.handleClickDownload }>Dicomdir</button>
-                    </Dropdown.Menu>
-                </Dropdown>
-                <Dropdown >
-                    <Dropdown.Toggle variant="success" id="dropdown-AET" >
-                        Send to Modalities
-                    </Dropdown.Toggle>
+                            <Dropdown.Menu >
+                                <button id='hirarchical' className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickDownload } >Hirarchical</button>
+                                <button id='dicomdir' className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickDownload }>Dicomdir</button>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                    <div className='col col-sm-auto'>
+                        <Dropdown >
+                            <Dropdown.Toggle variant="success" id="dropdown-AET" >
+                                Send to Modalities
+                            </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                        {this.state.AET}
-                    </Dropdown.Menu>
-                </Dropdown>
-                <Dropdown >
-                    <Dropdown.Toggle variant="success" id="dropdown-Peers" >
-                        Send to Peers
-                    </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                {this.state.AET}
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                    <div className='col col-sm-auto'>
+                        <Dropdown >
+                            <Dropdown.Toggle variant="success" id="dropdown-Peers" >
+                                Send to Peers
+                            </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                        {this.state.Peers}
-                    </Dropdown.Menu>
-                </Dropdown>
-                    <button type='button' className="btn btn-primary" onClick={this.handleClickFTP}>Send To FTP</button>
-                    <button type='button' className="btn btn-primary" onClick={this.handleClickWebDav}>Send To WebDav</button>
+                            <Dropdown.Menu>
+                                {this.state.Peers}
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                    <div className='col col-sm-auto'>
+                        <button type='button' className="btn btn-info" onClick={this.handleClickFTP}>Send To FTP</button>
+                    </div>
+                    <div className='col col-sm-auto'>
+                        <button type='button' className="btn btn-info" onClick={this.handleClickWebDav}>Send To WebDav</button>
+                    </div>
                 </div>
             </div>
         )
