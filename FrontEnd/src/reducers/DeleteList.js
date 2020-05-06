@@ -1,13 +1,44 @@
-import { DELETE_CONTENT } from "../actions/actions-types"
+import { ADD_DELETE_LIST, REMOVE_PATIENT_DELETE_LIST, REMOVE_STUDY_DELETE_LIST, EMPTY_DELETE_LIST } from "../actions/actions-types"
 
 const initialState = {
-    listContent: []
+    deleteList: []
 }
 
-export default function orthancContentReducer (state = initialState, action ) {
+export default function deleteListReducer (state = initialState, action ) {
     switch (action.type) {
-        case DELETE_CONTENT:
-          return //delete content of the list 
+
+        case ADD_DELETE_LIST:
+          let deleteArray = action.payload
+          //Add only id that are not already in the delete list
+          let newStudies = deleteArray.filter(id =>  ! state.deleteList.includes(id) )
+          let newIncresedList = [...state.deleteList, ...newStudies]
+          return {
+            deleteList : newIncresedList
+          }
+
+        case REMOVE_PATIENT_DELETE_LIST:
+          //Filter (remove) patient corresponding to payload ID
+          let newSlipcedList = state.deleteList.filter(study =>{
+            return study.ParentPatient !== action.payload
+          })
+          return {
+            deleteList: newSlipcedList
+          }
+        
+        case REMOVE_STUDY_DELETE_LIST:
+          //Filter study corresponding to studyID
+          let newFilteredList = state.deleteList.filter(study =>{
+            return study.ID !== action.payload
+          })
+          return {
+            deleteList: newFilteredList
+          }
+
+        case EMPTY_DELETE_LIST:
+          return {
+            deleteList: []
+          }
+
         default:
             return state
     }

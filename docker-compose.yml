@@ -49,6 +49,7 @@ services:
         volumes: ["orthancpacs:/var/lib/orthanc/db:Z"]
         environment:
             ORTHANC__NAME: "OrthancPacs"
+            ORTHANC__DICOM_MODALITIES_IN_DATABASE: "true"
             ORTHANC__REGISTERED_USERS: |
                     {"salim": "salim"}
 
