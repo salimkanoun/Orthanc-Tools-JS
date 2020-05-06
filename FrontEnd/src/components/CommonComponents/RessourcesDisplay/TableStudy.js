@@ -1,13 +1,18 @@
 import React, {Component, Fragment} from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
+import paginationFactory from 'react-bootstrap-table2-paginator'
 
 class TableStudy extends Component {
     
 
     static defaultProps = {
         hiddenActionBouton: false, 
-        hiddenRemoveRow: true
+        hiddenRemoveRow: true, 
+        pagination: false, 
+        hiddenName: true, 
+        hiddenID: true, 
+        hiddenAccessionNumber: false
     }
 
     getSelectedItems(){
@@ -17,6 +22,16 @@ class TableStudy extends Component {
     columns = [{
         dataField: 'StudyOrthancID', 
         hidden: true
+    }, {
+        dataField: 'PatientName', 
+        text: 'Patient Name', 
+        sort: true, 
+        hidden: this.props.hiddenName
+    }, {
+        dataField: 'PatientID', 
+        text: 'Patient ID', 
+        sort: true, 
+        hidden: this.props.hiddenID
     }, {
         dataField: 'StudyDate', 
         text: 'Study Date', 
@@ -28,7 +43,8 @@ class TableStudy extends Component {
     }, {
         dataField: 'AccessionNumber', 
         text: 'Accession Number',
-        sort: true
+        sort: true, 
+        hidden: this.props.hiddenAccessionNumber
     }, {
         dataField: 'Action', 
         text: 'Action', 
@@ -56,6 +72,7 @@ class TableStudy extends Component {
                     columns={this.columns} 
                     data={this.props.data}
                     {...this.props} 
+                    pagination={this.props.pagination ? paginationFactory() : undefined}
                 />
                 {this.props.button}
             </Fragment>

@@ -9,7 +9,8 @@ class TableSeries extends Component{
         onDelete : function(id){
             console.log('Deleted Series ID' + id)
         }, 
-        hiddenActionBouton: false
+        hiddenActionBouton: false, 
+        hiddenRemoveRow: true
     }
     columns = [{
         dataField: 'SeriesOrthancID', 
@@ -53,7 +54,8 @@ class TableSeries extends Component{
                 striped={true} 
                 data={this.props.series} 
                 columns={this.columns}
-                {...this.props} 
+                {...this.props}
+                pagination={undefined}
             />
         )
     }

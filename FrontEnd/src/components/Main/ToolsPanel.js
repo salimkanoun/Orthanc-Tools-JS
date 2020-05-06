@@ -16,6 +16,15 @@ class ToolsPanel extends Component {
     constructor(props){
         super(props)
         this.handleClick = this.handleClick.bind(this)
+        this.closePopovers = this.closePopovers.bind(this)
+    }
+
+    closePopovers(){
+        this.setState({ 
+            showAnon: false, 
+            showDelete: false, 
+            showExport: false
+        })
     }
 
     handleClick(e){
@@ -62,7 +71,7 @@ class ToolsPanel extends Component {
                         <span className="badge badge-light">{this.props.exportList.length}</span>
                         <span className="sr-only">Export List</span>
                     </button>
-                    <ExportTool target={refExport} show={this.state.showExport}/>
+                    <ExportTool target={refExport} show={this.state.showExport} onClick={this.closePopovers} />
                 </div>
                 <div className="mr-1" >
                     <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onClick={this.handleClick}>

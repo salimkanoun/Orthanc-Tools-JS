@@ -40,9 +40,16 @@ class ExportTool extends Component {
                         <div className="float-right mb-3">
                             <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
                         </div>
-                        <TableStudiesWithNestedSeries data={seriesArrayToStudyArray(this.props.exportList, this.props.orthancContent)} hiddenRemoveRow={false} hiddenActionBouton={true} onDeleteStudy={this.onDeleteStudy} onDeleteSeries={this.onDeleteSeries} />
+                        <TableStudiesWithNestedSeries 
+                            data={seriesArrayToStudyArray(this.props.exportList, this.props.orthancContent)} 
+                            hiddenRemoveRow={false} 
+                            hiddenAccessionNumber={true}
+                            hiddenActionBouton={true} 
+                            onDeleteStudy={this.onDeleteStudy} 
+                            onDeleteSeries={this.onDeleteSeries} 
+                            pagination={true} />
                         <div className="text-center">
-                            <Link className='btn btn-primary' to='/OrthancContent/Export'>Open Export Tools</Link>
+                            <Link className='btn btn-primary' to='/OrthancContent/Export' onClick={this.props.onClick}>Open Export Tools</Link>
                         </div>
                     </Popover.Content>
                 </Popover>

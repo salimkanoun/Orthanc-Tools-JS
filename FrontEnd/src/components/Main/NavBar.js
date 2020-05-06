@@ -18,6 +18,9 @@ export default class NavBar extends Component {
             <Link className='nav-link' to='/import'>Import</Link>
           </li>
           <li className='nav-item'>
+            <Link className='nav-link' to='/OrthancContent/Export'>Export</Link>
+          </li>
+          <li className='nav-item'>
             <Link className='nav-link' to='/query'>Query</Link>
           </li>
           <li className='nav-item'>

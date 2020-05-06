@@ -66,7 +66,11 @@ export function studyArrayToNestedData(studiesArray){
         //merge the new serie entry with the existing one for this study
         orthancContent.forEach(study => {
             if (study.ID === serie.ParentStudy){
-                responseMap[serie.ParentStudy] = {...study.MainDicomTags, ...responseMap[serie.ParentStudy]}
+                responseMap[serie.ParentStudy] = {
+                    ...study.MainDicomTags, 
+                    ...responseMap[serie.ParentStudy], 
+                    ...study.PatientMainDicomTags
+                }
             }
         })
     })

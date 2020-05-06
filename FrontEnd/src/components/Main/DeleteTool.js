@@ -39,7 +39,7 @@ class DeleteTool extends Component {
         console.log(this.props.deleteList)
         this.props.deleteList.forEach(async (study) => {
             console.log("Will delete : ", study.ID)
-            //await apis.content.deleteStudies(study.ID) //take a lot of time, need to pass by the back
+            await apis.content.deleteStudies(study.ID) //take a lot of time, need to pass by the back
             this.props.removeStudyFromDeleteList(study.ID)
             this.props.removeOrthancContent(study.ID)
            
