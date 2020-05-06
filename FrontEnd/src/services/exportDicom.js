@@ -1,5 +1,5 @@
 import { toastifyError } from './toastify'
-const download = require('download');
+import download from 'downloadjs'
 
 const exportDicom = {
 
@@ -19,7 +19,7 @@ const exportDicom = {
             if (!answer.ok) { throw answer }
             return (answer.blob())
           })
-          .then(blob => download(blob))
+          .then(blob => download(blob, 'dicom.zip'))
           .catch((error) => {
                 toastifyError(error)
             })
@@ -40,7 +40,7 @@ const exportDicom = {
         if (!answer.ok) { throw answer }
         return (answer.blob())
       })
-      .then(blob => download(blob))
+      .then(blob => download(blob, 'dicom.zip'))
       .catch((error) => {
             toastifyError(error)
         })
