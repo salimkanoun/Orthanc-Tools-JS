@@ -4,6 +4,12 @@ import TablePatients from './TablePatients'
 
 class TablePatientsWithNestedStudiesAndSeries extends Component {
 
+    static defaultProps = {
+        onDeletePatient : function (){},
+        onDeleteStudy : function(){},
+        onDeleteSeries : function(){}
+    }
+
     expandRow = {
         showExpandColumn: true,
         renderer: (row) => {
@@ -26,15 +32,9 @@ class TablePatientsWithNestedStudiesAndSeries extends Component {
     
     render(){
         return(
-            <TablePatients patients={this.props.patients} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} {...this.props} />
+            <TablePatients hiddenActionBouton= {true} patients={this.props.patients} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} {...this.props} />
         )
     }
-}
-
-TableStudiesWithNestedSeries.props = {
-    onDeletePatient : function (){},
-    onDeleteStudy : function(){},
-    onDeleteSeries : function(){}
 }
 
 export default TablePatientsWithNestedStudiesAndSeries

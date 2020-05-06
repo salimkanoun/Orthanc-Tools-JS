@@ -3,7 +3,11 @@ import TableSeries from './TableSeries'
 import TableStudy from './TableStudy'
 
 class TableStudiesWithNestedSeries extends Component {
-
+    
+    static defaultProps = {
+        onDeleteStudy : function(){},
+        onDeleteSeries : function(){}
+    }
     expandRow = {
         showExpandColumn: true,
         renderer: (row) => {
@@ -16,10 +20,16 @@ class TableStudiesWithNestedSeries extends Component {
                     ...series[serie]
                 })
             }
-    
             return (
-                <TableSeries data={answer} parentStudyId={row.StudyOrthancID} onDelete={ this.props.onDeleteSeries } />
+                <TableSeries {...this.props} data={answer} parentStudyId={row.StudyOrthancID} onDelete={ this.props.onDeleteSeries } />
             )
+        }, 
+        parentClassName: (isExpanded, row, rowIndex) => {
+            if(isExpanded){
+                return 'bg-info'
+            }else{
+                return ''
+            }
         }
                 
     }
@@ -29,11 +39,6 @@ class TableStudiesWithNestedSeries extends Component {
             <TableStudy studies={this.props.studies} expandRow={this.expandRow} onDelete={this.props.onDeleteStudy} {...this.props} />
         )
     }
-}
-
-TableStudiesWithNestedSeries.props = {
-    onDeleteStudy : function(){},
-    onDeleteSeries : function(){}
 }
 
 export default TableStudiesWithNestedSeries

@@ -89,6 +89,7 @@ router.get('/modalities*', [userAuthMidelware, userAdminMidelware], reverseProxy
 router.delete('/modalities/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 router.post('/modalities/:dicom/echo', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
 router.put('/modalities/:dicom/', [[userAuthMidelware, userAdminMidelware]], reverseProxyPut)
+router.post('/modalities/*/store',userAuthMidelware , reverseProxyPost )
 
 // Orthanc DicomWebRoutes
 router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet)
@@ -103,6 +104,7 @@ router.get('/peers*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 router.delete('/peers/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 router.get('/peers/:peer/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 router.put('/peers/:peer/', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
+router.post('/peers/*/store', userAuthMidelware , reverseProxyPost )
 
 //Orthanc reset route
 router.post('/tools/reset', [userAuthMidelware, userAdminMidelware], reverseProxyPost)

@@ -26,6 +26,7 @@ export default class OrthancSettings extends Component {
         this.handleShowShutdown = this.handleShowShutdown.bind(this)
         this.handleCloseRestart = this.handleCloseRestart.bind(this)
         this.handleCloseShutdown = this.handleCloseShutdown.bind(this)
+        this.changeListener = this.changeListener.bind(this)
     }
 
     /**
@@ -36,6 +37,8 @@ export default class OrthancSettings extends Component {
         this.setState(answer)
         let verbosity = await this.getVerbosity()
         this.setState({verbosity : verbosity})
+        this.getDefaultOption()
+        
     }
 
     //get current versoity in Orthanc log
@@ -55,7 +58,7 @@ export default class OrthancSettings extends Component {
         this.setState({
             [name]: value
         })
-
+        
     }
 
     /**
@@ -85,6 +88,7 @@ export default class OrthancSettings extends Component {
 
     changeListener(event){
         apis.options.setVerbosity(event.value)
+        this.setState({optionSelected: event})
     }
 
     //PopUp to confirm restart and shutdown action 
@@ -106,8 +110,18 @@ export default class OrthancSettings extends Component {
     verbosities = [
         { value: 'default', label: 'Default'},
         { value: 'verbose', label: 'Verbose'},
-        { value: 'trace', label: 'Trace'},
+        { value: 'trace', label: 'Trace'}
     ]
+
+    getDefaultOption(){
+        let index = -1
+        this.verbosities.forEach(element => {
+            if (element.value === this.state.verbosity) {
+                index = this.verbosities.indexOf(element)
+            }
+        })
+        this.setState({optionSelected: this.verbosities[index] })
+    }
 
     render() {
         return (
@@ -154,7 +168,7 @@ export default class OrthancSettings extends Component {
                         <label htmlFor="verbosity">Verbosity : </label>
                     </div>
                     <div className="col-sm">
-                        <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} value={this.state.verbosity}/>
+                        <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} value={this.state.optionSelected}/>
                     </div>
                 </div>
             </Fragment>

@@ -3,18 +3,18 @@ import OrthancTools from './OrthancTools'
 import ManualQuery from './ManualQuery'
 import QueryList from './QueryList'
 import ResultList from './ResultList'
-import ContentList from './ContentList'
 import DeleteList from './DeleteList'
-import Exportlist from './ExportList'
+import ExportList from './ExportList'
 import AnonList from './AnonList'
+import OrthancContent from './OrthancContent'
 
 export default combineReducers({
   OrthancTools,
   ManualQuery,
   QueryList,
-  ResultList, 
-  ContentList, 
+  ResultList,
   DeleteList, 
-  Exportlist, 
-  AnonList
+  ExportList, 
+  AnonList, 
+  OrthancContent
 })

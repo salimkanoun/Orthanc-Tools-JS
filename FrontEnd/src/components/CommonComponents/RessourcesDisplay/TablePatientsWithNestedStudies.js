@@ -3,8 +3,76 @@ import TableStudy from './TableStudy'
 import TablePatients from './TablePatients'
 class TablePatientsWithNestedStudies extends Component {
 
-    state = {
-        selectedPatientID : ''
+    selection = {
+        selectedPatients : [],
+        selectedStudies : []
+    }
+
+    static defaultProps = {
+        setSelection: false
+    }
+    
+    handleRowSelect(row, isSelected){
+        if (isSelected){
+            this.setState({selectedStudy: [...this.state.selectedStudy, {studyID: row.StudyOrthancID, row: row}]})
+        }else{
+            let newList = this.state.selectedStudy.filter(study => study.studyID !== row.StudyOrthancID)
+            this.setState({selectedStudy: newList})
+        }
+    }
+
+    addIdToList (selectionArray, id) {
+        selectionArray.push(id)
+    }
+
+    removeIdFromList(selectionArray, id){
+        var index = selectionArray.indexOf(id);
+        if (index !== -1) selectionArray.splice(index, 1);
+    }
+
+    getSelectedRessources(){
+        return this.selection
+    }
+
+    getCurrentSelectedStudyId(){
+        return 
+    }
+
+    changeSelectedAction(level, id, selected){
+        if(level === 'Patient'){
+            if (selected) this.addIdToList(this.selection.selectedPatients, id)
+            else this.removeIdFromList(this.selection.selectedPatients, id)
+        } else if (level === 'Study') {
+            if (selected) this.addIdToList(this.selection.selectedStudies, id)
+            else this.removeIdFromList(this.selection.selectedStudies, id)
+        }
+
+    }
+
+    selectRowPatients = {
+        mode: 'checkbox', 
+        clickToExpand: true,
+        onSelect: (row, isSelected) =>{
+            this.changeSelectedAction('Patient', row.PatientOrthancID, isSelected)
+        },
+        onSelectAll: (isSelected, rows, e) => {
+            rows.forEach(row =>{
+                this.changeSelectedAction('Patient', row.PatientOrthancID, isSelected)
+            })
+        }
+    }
+
+    selectRowStudies = {
+        mode: 'checkbox', 
+        clickToExpand: true,
+        onSelect: (row, isSelected) =>{
+            this.changeSelectedAction('Study', row.StudyOrthancID, isSelected)
+        },
+        onSelectAll: (isSelected, rows, e) => {
+            rows.forEach(row =>{
+                this.changeSelectedAction('Study', row.StudyOrthancID, isSelected)
+            })
+        }
     }
 
     expandRow = {
@@ -23,7 +91,7 @@ class TablePatientsWithNestedStudies extends Component {
                 })
             }
             return (
-                <TableStudy data={answer} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyleStudies} selectRow={this.props.selectRow} button={this.props.button} hiddenActionBouton={false} hiddenRemoveRow={true} {...this.props} />
+                <TableStudy {...this.props} data={answer} selectRow={this.props.setSelection ? this.selectRowStudies : undefined} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyle}  />
             )
         }, 
         parentClassName: (isExpanded, row, rowIndex) => {
@@ -38,7 +106,7 @@ class TablePatientsWithNestedStudies extends Component {
     
     render(){
         return(
-            <TablePatients  studies={this.props.studies} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} rowStyle={this.rowStyle} rowEvents={this.rowEvents} hiddenActionBouton={false} hiddenRemoveRow={true} {...this.props} />
+            <TablePatients studies={this.props.studies} selectRow={this.props.setSelection ? this.selectRowPatients: undefined} expandRow={this.expandRow} onDelete={this.props.onDeletePatient}  rowStyle={this.rowStyle} rowEvents={this.rowEvents} {...this.props} />
         )
     }
 }
