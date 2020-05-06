@@ -37,6 +37,9 @@ class ExportTool extends Component {
                 <Popover id='popover-export' style={ { maxWidth: '100%' } } >
                     <Popover.Title as='h3'>Export List</Popover.Title>
                     <Popover.Content>
+                        <div className="float-left">
+                            <Link className='btn btn-primary' to='/OrthancContent/Export' onClick={this.props.onClick}>Open Export Tools</Link>
+                        </div>
                         <div className="float-right mb-3">
                             <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
                         </div>
@@ -48,9 +51,6 @@ class ExportTool extends Component {
                             onDeleteStudy={this.onDeleteStudy} 
                             onDeleteSeries={this.onDeleteSeries} 
                             pagination={true} />
-                        <div className="text-center">
-                            <Link className='btn btn-primary' to='/OrthancContent/Export' onClick={this.props.onClick}>Open Export Tools</Link>
-                        </div>
                     </Popover.Content>
                 </Popover>
             </Overlay>

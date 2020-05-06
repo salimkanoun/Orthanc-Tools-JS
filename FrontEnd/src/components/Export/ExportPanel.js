@@ -65,7 +65,7 @@ class ExportPanel extends Component {
     async getItemsPeers(){
         let namePeers = await apis.peers.getPeers()
         let items = []
-        namePeers.map(name => {
+        namePeers.forEach(name => {
             items.push(<button id={name} key={name} className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickPeer } >{name}</button>)
         })
         this.setState({Peers: items})
@@ -74,7 +74,7 @@ class ExportPanel extends Component {
     async getItemsAET(){
         let nameAets = await apis.aets.getAets()
         let items = []
-        nameAets.map(name => {
+        nameAets.forEach(name => {
             items.push(<button id={name} key={name} className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickModalities } >{name}</button>)
         })
         this.setState({AET: items})
@@ -151,7 +151,8 @@ class ExportPanel extends Component {
                 <div className="row">
                     <div className="col-sm">
                         <TableStudy 
-                            ref={this.child} 
+                            ref={this.child}
+                            wrapperClasses="table-responsive"
                             data={this.getStudies()} 
                             rowEvents={this.rowEvents} 
                             rowStyle={this.rowStyle} 
@@ -162,12 +163,12 @@ class ExportPanel extends Component {
                             pagination={true} />
                     </div>
                     <div className="col-sm">
-                        <TableSeries data={this.getSeries()} hiddenActionBouton={true} hiddenRemoveRow={false} onDelete={this.removeSeries}/>
-                        <button type='button' className="btn btn-danger" onClick={this.removeStudy}>Remove Study</button>
+                        <TableSeries data={this.getSeries()} wrapperClasses="table-responsive" hiddenActionBouton={true} hiddenRemoveRow={false} onDelete={this.removeSeries}/>
+                        <button type='button' className="btn btn-danger float-right" onClick={this.removeStudy}>Remove Study</button>
                     </div>
                 </div>
-                <div className="row">
-                    <div className='col col-sm-auto'>
+                <div className="row text-center mt-5">
+                    <div className='col-sm'>
                         <Dropdown >
                             <Dropdown.Toggle variant="success" id="dropdown-download" >
                                 Download
@@ -179,7 +180,7 @@ class ExportPanel extends Component {
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
-                    <div className='col col-sm-auto'>
+                    <div className='col-sm'>
                         <Dropdown >
                             <Dropdown.Toggle variant="success" id="dropdown-AET" >
                                 Send to Modalities
@@ -190,7 +191,7 @@ class ExportPanel extends Component {
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
-                    <div className='col col-sm-auto'>
+                    <div className='col-sm'>
                         <Dropdown >
                             <Dropdown.Toggle variant="success" id="dropdown-Peers" >
                                 Send to Peers
@@ -201,10 +202,10 @@ class ExportPanel extends Component {
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
-                    <div className='col col-sm-auto'>
+                    <div className='col-sm'>
                         <button type='button' className="btn btn-info" onClick={this.handleClickFTP}>Send To FTP</button>
                     </div>
-                    <div className='col col-sm-auto'>
+                    <div className='col-sm'>
                         <button type='button' className="btn btn-info" onClick={this.handleClickWebDav}>Send To WebDav</button>
                     </div>
                 </div>

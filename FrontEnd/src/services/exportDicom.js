@@ -1,4 +1,5 @@
 import { toastifyError } from './toastify'
+const download = require('download');
 
 const exportDicom = {
 
@@ -10,11 +11,16 @@ const exportDicom = {
               Accept: 'application/json',
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(OrthancIDsArray)
+            body: JSON.stringify({
+              Synchronous : true,
+              Resources : OrthancIDsArray
+            })
           }).then((answer) => {
             if (!answer.ok) { throw answer }
-            return (answer.json())
-          }).catch((error) => {
+            return (answer.blob())
+          })
+          .then(blob => download(blob))
+          .catch((error) => {
                 toastifyError(error)
             })
     },
@@ -26,11 +32,16 @@ const exportDicom = {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(OrthancIDsArray)
+        body: JSON.stringify({
+          Synchronous : true,
+          Resources : OrthancIDsArray
+        })
       }).then((answer) => {
         if (!answer.ok) { throw answer }
-        return (answer.json())
-      }).catch((error) => {
+        return (answer.blob())
+      })
+      .then(blob => download(blob))
+      .catch((error) => {
             toastifyError(error)
         })
     }
