@@ -1,13 +1,18 @@
 import React, {Component, Fragment} from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
+import paginationFactory from 'react-bootstrap-table2-paginator'
 
 class TableStudy extends Component {
     
 
     static defaultProps = {
         hiddenActionBouton: false, 
-        hiddenRemoveRow: true
+        hiddenRemoveRow: true, 
+        pagination: false, 
+        hiddenName: true, 
+        hiddenID: true, 
+        hiddenAccessionNumber: false
     }
 
     getSelectedItems(){
@@ -17,6 +22,16 @@ class TableStudy extends Component {
     columns = [{
         dataField: 'StudyOrthancID', 
         hidden: true
+    }, {
+        dataField: 'PatientName', 
+        text: 'Patient Name', 
+        sort: true, 
+        hidden: this.props.hiddenName
+    }, {
+        dataField: 'PatientID', 
+        text: 'Patient ID', 
+        sort: true, 
+        hidden: this.props.hiddenID
     }, {
         dataField: 'StudyDate', 
         text: 'Study Date', 
@@ -28,7 +43,8 @@ class TableStudy extends Component {
     }, {
         dataField: 'AccessionNumber', 
         text: 'Accession Number',
-        sort: true
+        sort: true, 
+        hidden: this.props.hiddenAccessionNumber
     }, {
         dataField: 'Action', 
         text: 'Action', 
@@ -42,7 +58,7 @@ class TableStudy extends Component {
         text: 'Remove',
         hidden: this.props.hiddenRemoveRow,
         formatter: (cell, row, index) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.removeRow(row, 'study')}}>Remove</button>
+            return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.onDelete(row.StudyOrthancID)}}>Remove</button>
         }
     
     }]
@@ -54,9 +70,9 @@ class TableStudy extends Component {
                     keyField="StudyOrthancID" 
                     striped={true} 
                     columns={this.columns} 
-                    data={this.props.data} 
-                    ref={ n => this.node = n }
+                    data={this.props.data}
                     {...this.props} 
+                    pagination={this.props.pagination ? paginationFactory() : undefined}
                 />
                 {this.props.button}
             </Fragment>

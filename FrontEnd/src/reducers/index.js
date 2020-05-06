@@ -4,7 +4,7 @@ import ManualQuery from './ManualQuery'
 import QueryList from './QueryList'
 import ResultList from './ResultList'
 import DeleteList from './DeleteList'
-import Exportlist from './ExportList'
+import ExportList from './ExportList'
 import AnonList from './AnonList'
 import OrthancContent from './OrthancContent'
 
@@ -14,7 +14,7 @@ export default combineReducers({
   QueryList,
   ResultList,
   DeleteList, 
-  Exportlist, 
+  ExportList, 
   AnonList, 
   OrthancContent
 })

@@ -4,8 +4,8 @@ export default class Footer extends Component {
 
   render () {
         return (
-        <footer class="page-footer font-small bg-light">
-            <div class="footer-copyright text-center">Orthanc Tools JS: 0.0.8
+        <footer className="page-footer font-small bg-light">
+            <div className="footer-copyright text-center">Orthanc Tools JS: 0.0.9
             </div>
         </footer>
     )

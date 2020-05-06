@@ -14,8 +14,8 @@ RUN ls
 RUN npm install --only=prod
 
 EXPOSE 4000
-ENV OrthancAddress=http://localhost
-ENV OrthancPort=8042
-ENV OrthancUsername=
-ENV OrthancPassword=
+ENV OrthancAddress http://localhost
+ENV OrthancPort 8042
+ENV OrthancUsername orthanc
+ENV OrthancPassword orthanc
 CMD [ "npm", "start" ]

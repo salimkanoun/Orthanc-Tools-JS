@@ -1,36 +1,74 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
+import Overlay from 'react-bootstrap/Overlay'
+import Popover from 'react-bootstrap/Popover'
+
+import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/TableStudiesWithNestedSeries'
+
+import { seriesArrayToStudyArray } from '../../tools/processResponse'
+import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 
 //Ce composant sera a connecter au redux pour connaitre la longueur de la liste d'export
 class ExportTool extends Component {
 
     constructor(props){
         super(props)
-        this.handleClick = this.handleClick.bind(this)
+        this.handleClickEmpty = this.handleClickEmpty.bind(this)
+        this.onDeleteSeries = this.onDeleteSeries.bind(this)
+        this.onDeleteStudy = this.onDeleteStudy.bind(this)
     }
 
-    handleClick(){
-        //call API Export 
-        this.props.listContent.forEach((content) => {
-            console.log("Will export " + content.id + " from " + content.level + " level")
-        })
+    handleClickEmpty(){
+        this.props.emptyExportList()
+    }
+
+    onDeleteSeries(serieID){
+        this.props.removeSeriesFromExportList(serieID)
+    }
+
+    onDeleteStudy(studyID){
+        this.props.removeStudyFromExportList(studyID)
     }
 
     render(){
         return (
-            <button type="button" className="btn btn-primary" onClick={this.handleClick} >
-                Export <br/>
-                <span className="badge badge-light">{this.props.listContent.length}</span>
-                <span className="sr-only">Export List</span>
-            </button>
+            <Overlay target={this.props.target} show={this.props.show} placement='bottom' >
+                <Popover id='popover-export' style={ { maxWidth: '100%' } } >
+                    <Popover.Title as='h3'>Export List</Popover.Title>
+                    <Popover.Content>
+                        <div className="float-left">
+                            <Link className='btn btn-primary' to='/OrthancContent/Export' onClick={this.props.onClick}>Open Export Tools</Link>
+                        </div>
+                        <div className="float-right mb-3">
+                            <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
+                        </div>
+                        <TableStudiesWithNestedSeries 
+                            data={seriesArrayToStudyArray(this.props.exportList, this.props.orthancContent)} 
+                            hiddenRemoveRow={false} 
+                            hiddenAccessionNumber={true}
+                            hiddenActionBouton={true} 
+                            onDeleteStudy={this.onDeleteStudy} 
+                            onDeleteSeries={this.onDeleteSeries} 
+                            pagination={true} />
+                    </Popover.Content>
+                </Popover>
+            </Overlay>
         )
     }
 }
 
 const mapStateToProps = state => {
     return {
-      listContent: state.ContentList.listContent
+      exportList: state.ExportList.exportList, 
+      orthancContent: state.OrthancContent.orthancContent
     }
 }
 
-export default /*connect(mapStateToProps)*/(ExportTool)
+const mapDispatchToProps = {
+    emptyExportList, 
+    removeStudyFromExportList, 
+    removeSeriesFromExportList
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ExportTool)

@@ -20,10 +20,16 @@ class TableStudiesWithNestedSeries extends Component {
                     ...series[serie]
                 })
             }
-    
             return (
-                <TableSeries data={answer} parentStudyId={row.StudyOrthancID} onDelete={ this.props.onDeleteSeries } />
+                <TableSeries {...this.props} data={answer} parentStudyId={row.StudyOrthancID} onDelete={ this.props.onDeleteSeries } />
             )
+        }, 
+        parentClassName: (isExpanded, row, rowIndex) => {
+            if(isExpanded){
+                return 'bg-info'
+            }else{
+                return ''
+            }
         }
                 
     }

@@ -9,6 +9,7 @@
     "@uppy/status-bar": "^1.6.3",
     "@uppy/xhr-upload": "^1.5.8",
     "bootstrap": "^4.4.1",
+    "downloadjs": "^1.4.7",
     "moment": "^2.24.0",
     "papaparse": "^5.2.0",
     "react": "^16.13.1",

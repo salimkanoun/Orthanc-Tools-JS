@@ -2,6 +2,17 @@ import { toastifySuccess, toastifyError } from './toastify'
 
 const peers = {
 
+    getPeers(){
+        return fetch('/api/peers')
+            .then((answer) => {
+                if (!answer.ok) { throw answer }
+                return (answer.json())
+            })
+            .catch((error) => {
+                toastifyError(error)
+            })
+    },
+
     getPeersExpand(){
         return fetch('/api/peers?expand')
             .then((answer) => {
@@ -47,6 +58,22 @@ const peers = {
         }).then((response) => {
             toastifySuccess('Version ' + peerName + ' = ' + response.Version)
         }).catch(error => toastifyError('Echo ' + peerName + ' Error'))
+    }, 
+
+    storePeer(name, orthancIDsArray){
+        fetch ('/api/peers/' + name + '/store', {
+            method: 'POST', 
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orthancIDsArray)
+        }).then((answer) => {
+            if (!answer.ok) {throw answer}
+            return (answer.json())
+        }).catch(error => {
+            toastifyError(error)
+        })
     }
 }
 

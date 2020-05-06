@@ -1,26 +1,15 @@
-import React, { Component, createRef } from 'react'
+import React, { Component } from 'react'
 import TableStudy from './TableStudy'
 import TablePatients from './TablePatients'
 class TablePatientsWithNestedStudies extends Component {
 
-    state = {
-        selectedPatientID : '',
-        selectedStudy: []
+    selection = {
+        selectedPatients : [],
+        selectedStudies : []
     }
 
-    constructor(props){
-        super(props)
-        this.refPatient = createRef()
-        this.handleRowSelect = this.handleRowSelect.bind(this)
-        this.getSelectedStudies = this.getSelectedStudies.bind(this)
-    }
-
-    getSelectedItems(){
-        return this.refPatient.current.getSelectedItems()
-    }
-
-    getSelectedStudies(){
-        return this.state.selectedStudy
+    static defaultProps = {
+        setSelection: false
     }
     
     handleRowSelect(row, isSelected){
@@ -32,18 +21,63 @@ class TablePatientsWithNestedStudies extends Component {
         }
     }
 
-    expandRow = {
-        handleRowSelect: (row, isSelected) =>{
-            console.log(row)
+    addIdToList (selectionArray, id) {
+        selectionArray.push(id)
+    }
+
+    removeIdFromList(selectionArray, id){
+        var index = selectionArray.indexOf(id);
+        if (index !== -1) selectionArray.splice(index, 1);
+    }
+
+    getSelectedRessources(){
+        return this.selection
+    }
+
+    getCurrentSelectedStudyId(){
+        return 
+    }
+
+    changeSelectedAction(level, id, selected){
+        if(level === 'Patient'){
+            if (selected) this.addIdToList(this.selection.selectedPatients, id)
+            else this.removeIdFromList(this.selection.selectedPatients, id)
+        } else if (level === 'Study') {
+            if (selected) this.addIdToList(this.selection.selectedStudies, id)
+            else this.removeIdFromList(this.selection.selectedStudies, id)
+        }
+
+    }
+
+    selectRowPatients = {
+        mode: 'checkbox', 
+        clickToExpand: true,
+        onSelect: (row, isSelected) =>{
+            this.changeSelectedAction('Patient', row.PatientOrthancID, isSelected)
         },
+        onSelectAll: (isSelected, rows, e) => {
+            rows.forEach(row =>{
+                this.changeSelectedAction('Patient', row.PatientOrthancID, isSelected)
+            })
+        }
+    }
+
+    selectRowStudies = {
+        mode: 'checkbox', 
+        clickToExpand: true,
+        onSelect: (row, isSelected) =>{
+            this.changeSelectedAction('Study', row.StudyOrthancID, isSelected)
+        },
+        onSelectAll: (isSelected, rows, e) => {
+            rows.forEach(row =>{
+                this.changeSelectedAction('Study', row.StudyOrthancID, isSelected)
+            })
+        }
+    }
+
+    expandRow = {
         showExpandColumn: true,
         renderer: (row) => {
-            const selectRow={
-                mode: 'checkbox', 
-                clickToExpand: true,
-                nonSelectable: this.props.selectedID,
-                onSelect: this.handleRowSelect,
-              }
             //Flatenning the study array for the nested study table
             let studies = row.studies 
             let answer = []
@@ -57,7 +91,7 @@ class TablePatientsWithNestedStudies extends Component {
                 })
             }
             return (
-                <TableStudy {...this.props} data={answer} selectRow={selectRow}  parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyleStudies}  />
+                <TableStudy {...this.props} data={answer} selectRow={this.props.setSelection ? this.selectRowStudies : undefined} parentPatientId={ row.PatientOrthancID } onDelete={ this.props.onDeleteStudy } rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyle}  />
             )
         }, 
         parentClassName: (isExpanded, row, rowIndex) => {
@@ -72,7 +106,7 @@ class TablePatientsWithNestedStudies extends Component {
     
     render(){
         return(
-            <TablePatients ref={this.refPatient} studies={this.props.studies} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} rowStyle={this.rowStyle} rowEvents={this.rowEvents} {...this.props} />
+            <TablePatients studies={this.props.studies} selectRow={this.props.setSelection ? this.selectRowPatients: undefined} expandRow={this.expandRow} onDelete={this.props.onDeletePatient}  rowStyle={this.rowStyle} rowEvents={this.rowEvents} {...this.props} />
         )
     }
 }
