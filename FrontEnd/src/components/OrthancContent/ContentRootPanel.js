@@ -12,7 +12,7 @@ import {studyArrayToPatientArray} from '../../tools/processResponse'
 import { connect } from 'react-redux'
 import { addToDeleteList } from '../../actions/DeleteList'
 import { addToExportList } from '../../actions/ExportList'
-import { addOrthancContent } from '../../actions/OrthancContent'
+import { addOrthancContent, removeOrthancContent } from '../../actions/OrthancContent'
 
 
 class ContentRootPanel extends Component {
@@ -42,7 +42,7 @@ class ContentRootPanel extends Component {
   }
   //rappelé par le dropdow lors du delete de study sur Orthanc
   onDeleteStudy(idDeleted){
-
+    this.props.removeOrthancContent(idDeleted)
   }
 
   sendToDeleteList(){
@@ -148,7 +148,7 @@ class ContentRootPanel extends Component {
               />
             </div>
             <div className='col-sm'>
-                <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} />
+                <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onDeleteStudy={this.onDeleteStudy} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} />
             </div>
           </div>
         </div>
@@ -166,7 +166,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   addToDeleteList,
-  addOrthancContent, 
+  addOrthancContent,
+  removeOrthancContent,
   addToExportList
 }
 

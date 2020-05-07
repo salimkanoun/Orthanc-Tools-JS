@@ -34,8 +34,7 @@ class ActionBouton extends Component{
             default:
                 toastifyError("Wrong level")
         }
-
-        this.props.onDelete(orthancID)
+        this.props.onDelete(orthancID, this.props.parentID)
     }
 
     handleClick(e){
