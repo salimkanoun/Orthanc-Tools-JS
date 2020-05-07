@@ -33,7 +33,7 @@ class ExportTool extends Component {
 
     render(){
         return (
-            <Overlay target={this.props.target} show={this.props.show} placement='bottom' >
+            <Overlay target={this.props.target} show={this.props.show} placement='bottom' onHide={this.props.onClick} rootClose >
                 <Popover id='popover-export' style={ { maxWidth: '100%' } } >
                     <Popover.Title as='h3'>Export List</Popover.Title>
                     <Popover.Content>

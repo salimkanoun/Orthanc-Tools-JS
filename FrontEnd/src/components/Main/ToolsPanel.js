@@ -31,23 +31,17 @@ class ToolsPanel extends Component {
         switch (e.target.id){
             case 'delete':
                 this.setState({ 
-                    showDelete: !this.state.showDelete,
-                    showAnon: false, 
-                    showExport: false
+                    showDelete: !this.state.showDelete
                 })
                 break
             case 'export':
                 this.setState({ 
-                    showExport: !this.state.showExport,
-                    showAnon: false, 
-                    showDelete: false
+                    showExport: !this.state.showExport
                 })
                 break
             case 'anon':
                 this.setState({ 
-                    showAnon: !this.state.showAnon, 
-                    showDelete: false, 
-                    showExport: false
+                    showAnon: !this.state.showAnon
                 })
                 break
             default:
@@ -79,7 +73,7 @@ class ToolsPanel extends Component {
                         <span className="badge badge-light">{this.props.deleteList.length}</span>
                         <span className="sr-only">Delete List</span>
                     </button>
-                    <DeleteTool target={refDelete} show={this.state.showDelete} />
+                    <DeleteTool target={refDelete} show={this.state.showDelete} onHide={this.closePopovers} />
                 </div>
             </div>
         )
