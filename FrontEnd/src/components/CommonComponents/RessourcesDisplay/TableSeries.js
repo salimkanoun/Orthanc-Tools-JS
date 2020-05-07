@@ -13,7 +13,7 @@ class TableSeries extends Component{
         hiddenRemoveRow: true
     }
     columns = [{
-        dataField: 'SeriesOrthancID', 
+        dataField: 'SerieOrthancID', 
         hidden: true,
     }, {
         dataField: 'SeriesDescription', 
@@ -48,9 +48,10 @@ class TableSeries extends Component{
 
 
     render(){
+        console.log(this.props.series)
         return (
             <BootstrapTable 
-                keyField="SeriesOrthancID" 
+                keyField="SerieOrthancID" 
                 striped={true} 
                 data={this.props.series} 
                 columns={this.columns}
