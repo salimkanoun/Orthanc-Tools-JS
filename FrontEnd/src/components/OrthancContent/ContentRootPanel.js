@@ -12,6 +12,7 @@ import {studyArrayToPatientArray} from '../../tools/processResponse'
 import { connect } from 'react-redux'
 import { addToDeleteList } from '../../actions/DeleteList'
 import { addToExportList } from '../../actions/ExportList'
+import { addToAnonList } from '../../actions/AnonList'
 import { addOrthancContent, removeOrthancContent } from '../../actions/OrthancContent'
 
 
@@ -28,6 +29,8 @@ class ContentRootPanel extends Component {
     this.onDeleteStudy = this.onDeleteStudy.bind(this)
     this.sendToDeleteList = this.sendToDeleteList.bind(this)
     this.sendToExportList = this.sendToExportList.bind(this)
+    this.sendToAnonList = this.sendToAnonList.bind(this)
+    this.getStudySelectedDetails = this.getStudySelectedDetails.bind(this)
     this.child = createRef()
   }
 
@@ -45,35 +48,46 @@ class ContentRootPanel extends Component {
     this.props.removeOrthancContent(idDeleted)
   }
 
-  sendToDeleteList(){
+  /**
+   * return all study details
+   * of selected items
+   */
+  getStudySelectedDetails(){
     let selectedIds = this.child.current.getSelectedRessources()
-    
-    let studiesOfSelectedPatients = []
+        
+        let studiesOfSelectedPatients = []
 
-    //Add all studies of selected patient
-    selectedIds.selectedPatients.forEach(orthancPatientId => {
-      //loop the redux and add all studies that had one of the selected patient ID
-      let studyArray = this.props.orthancContent.filter(study => {
-        if(study.ParentPatient === orthancPatientId) return true
-        else return false
-      })
-      //Add to the global list of selected studies
-      studiesOfSelectedPatients.push(...studyArray)
-    })
+        //Add all studies of selected patient
+        selectedIds.selectedPatients.forEach(orthancPatientId => {
+          //loop the redux and add all studies that had one of the selected patient ID
+          let studyArray = this.props.orthancContent.filter(study => {
+            if(study.ParentPatient === orthancPatientId) return true
+            else return false
+          })
+          //Add to the global list of selected studies
+          studiesOfSelectedPatients.push(...studyArray)
+        })
 
-    //add selected level studies
-    selectedIds.selectedStudies.forEach(element => {
-      this.props.orthancContent.forEach(study => {
-        if(element === study.ID)
-          studiesOfSelectedPatients.push(study)
-      });
-    });
+        //add selected level studies
+        selectedIds.selectedStudies.forEach(element => {
+          this.props.orthancContent.forEach(study => {
+            if(element === study.ID)
+              studiesOfSelectedPatients.push(study)
+          });
+        });
 
-    //Get only unique study ids
-    let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
-    
-    //Add selected list to reducer
-    this.props.addToDeleteList(uniqueSelectedOrthancStudyId)
+        //Get only unique study ids
+        let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
+
+        return uniqueSelectedOrthancStudyId
+  }
+
+  sendToDeleteList(){
+    this.props.addToDeleteList(this.getStudySelectedDetails())
+  }
+
+  sendToAnonList(){
+    this.props.addToAnonList(this.getStudySelectedDetails())
   }
 
   sendToExportList(){
@@ -166,6 +180,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   addToDeleteList,
+  addToAnonList,
   addOrthancContent,
   removeOrthancContent,
   addToExportList

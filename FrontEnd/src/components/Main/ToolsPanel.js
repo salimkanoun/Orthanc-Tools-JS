@@ -61,12 +61,17 @@ class ToolsPanel extends Component {
 
     render(){
         const refExport = React.createRef()
-        //const refAnon = React.createRef()
+        const refAnon = React.createRef()
         const refDelete = React.createRef()
         return (
             <div className="row">
                 <div className="mr-1">
-                    <AnonTool />
+                <button id='anon' ref={refAnon} type="button" className="btn btn-primary" onClick={this.handleClick} >
+                    Anonymize <br/>
+                    <span className="badge badge-light">{this.props.anonList.length}</span>
+                    <span className="sr-only">Anonymization List</span>
+                </button>
+                <AnonTool target={refAnon} show={this.state.showAnon} onClick={this.closePopovers} />
                 </div>
                 <div className="mr-1">
                     <button id='export' ref={refExport} type="button" className="btn btn-primary" onClick={this.handleClick} >
@@ -92,7 +97,8 @@ class ToolsPanel extends Component {
 const mapStateToProps = state => {
     return {
         deleteList: state.DeleteList.deleteList,
-        exportList: state.ExportList.exportList
+        exportList: state.ExportList.exportList, 
+        anonList: state.AnonList.anonList
     }
 }
 
