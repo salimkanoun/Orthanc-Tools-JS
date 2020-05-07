@@ -47,7 +47,9 @@ class ExportTool extends Component {
                             data={seriesArrayToStudyArray(this.props.exportList, this.props.orthancContent)} 
                             hiddenRemoveRow={false} 
                             hiddenAccessionNumber={true}
-                            hiddenActionBouton={true} 
+                            hiddenActionBouton={true}
+                            hiddenName={false}
+                            hiddenID={false}
                             onDeleteStudy={this.onDeleteStudy} 
                             onDeleteSeries={this.onDeleteSeries} 
                             pagination={true} />
