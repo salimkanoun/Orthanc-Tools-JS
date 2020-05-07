@@ -20,7 +20,7 @@ class TableSeriesFillFromParent extends Component {
     onDelete(idDeleted, parentID){
 
         let newSeriesRows = this.state.series.filter((serie) =>{
-            return serie.SerieOrthancID !== idDeleted
+            return serie.SeriesOrthancID !== idDeleted
         })
 
         this.setState({
@@ -51,7 +51,7 @@ class TableSeriesFillFromParent extends Component {
         seriesAnswer.forEach( (serie) => {
             seriesData.push({
                 StudyID: studyID, 
-                SerieOrthancID : serie.ID,
+                SeriesOrthancID : serie.ID,
                 Instances : serie.Instances.length,
                 ...serie.MainDicomTags
             })

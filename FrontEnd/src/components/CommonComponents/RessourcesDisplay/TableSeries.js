@@ -13,7 +13,7 @@ class TableSeries extends Component{
         hiddenRemoveRow: true
     }
     columns = [{
-        dataField: 'SerieOrthancID', 
+        dataField: 'SeriesOrthancID', 
         hidden: true,
     }, {
         dataField: 'SeriesDescription', 
@@ -35,7 +35,7 @@ class TableSeries extends Component{
         dataField: 'Action', 
         text: 'Action',
         hidden: this.props.hiddenActionBouton,
-        formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.SerieOrthancID} parentID={row.StudyID} onDelete={this.props.onDelete} />)
+        formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.SeriesOrthancID} parentID={row.StudyID} onDelete={this.props.onDelete} />)
     }, {
         dataField: 'Remove', 
         text: 'Remove',
@@ -48,10 +48,9 @@ class TableSeries extends Component{
 
 
     render(){
-        console.log(this.props.series)
         return (
             <BootstrapTable 
-                keyField="SerieOrthancID" 
+                keyField="SeriesOrthancID" 
                 striped={true} 
                 data={this.props.series} 
                 columns={this.columns}

@@ -50,6 +50,15 @@ class ToolsPanel extends Component {
         
     }
 
+    getNBStudy(){
+        let studyIDs = []
+        this.props.exportList.forEach(study => {
+            if (!studyIDs.includes(study.ParentStudy))
+                studyIDs.push(study.ParentStudy)
+        })
+        return studyIDs.length
+    }
+
     render(){
         const refExport = React.createRef()
         //const refAnon = React.createRef()
@@ -62,15 +71,15 @@ class ToolsPanel extends Component {
                 <div className="mr-1">
                     <button id='export' ref={refExport} type="button" className="btn btn-primary" onClick={this.handleClick} >
                         Export <br/>
-                        <span className="badge badge-light">{this.props.exportList.length}</span>
+                        <span className="badge badge-light">{this.getNBStudy()}</span>
                         <span className="sr-only">Export List</span>
                     </button>
-                    <ExportTool target={refExport} show={this.state.showExport} onClick={this.closePopovers} />
+                    <ExportTool  target={refExport} show={this.state.showExport} onClick={this.closePopovers} />
                 </div>
                 <div className="mr-1" >
                     <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onClick={this.handleClick}>
                         Delete <br/>
-                        <span className="badge badge-light">{this.props.deleteList.length}</span>
+                        <span className="badge badge-light">{(this.props.deleteList.length)}</span>
                         <span className="sr-only">Delete List</span>
                     </button>
                     <DeleteTool target={refDelete} show={this.state.showDelete} onHide={this.closePopovers} />
