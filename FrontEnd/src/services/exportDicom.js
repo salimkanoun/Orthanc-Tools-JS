@@ -30,7 +30,10 @@ const exportDicom = {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(OrthancIDsArray)
+        body: JSON.stringify({
+          Synchronous : false,
+          Resources : OrthancIDsArray
+        })
       }).then((answer) => {
         if (!answer.ok) { throw answer }
         return (answer.json())

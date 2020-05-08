@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import Dropdown from "react-bootstrap/Dropdown"
+import DropdownButton from "react-bootstrap/DropdownButton"
 
 import apis from '../../services/apis'
 import MonitorJob from '../../tools/MonitorJob'
@@ -7,7 +8,8 @@ import MonitorJob from '../../tools/MonitorJob'
 export default class DownloadDropdown extends Component{
 
     state = {
-        buttonText : "Download"
+        buttonText : "Download",
+        disabled : false
     }
 
     constructor(props){
@@ -17,19 +19,22 @@ export default class DownloadDropdown extends Component{
 
     updateProgress (progress){
         this.setState({
-            buttonText : "Preparing Zip "+ progress + "%"
+            buttonText : "Preparing Zip "+ progress + "%",
+            disabled : true
         })
     }
 
     setStatusDownloading(){
         this.setState({
-            buttonText : "Downloading"
+            buttonText : "Downloading",
+            disabled : true
         })
     }
 
     resetProgress(){
         this.setState({
-            buttonText : "Download"
+            buttonText : "Download",
+            disabled : false
         })
     }
 
@@ -69,17 +74,19 @@ export default class DownloadDropdown extends Component{
     }
 
     render(){
-        return (
-            <Dropdown >
-                <Dropdown.Toggle variant="success" id="dropdown-download" >
-                    {this.state.buttonText}
-                </Dropdown.Toggle>
 
-                <Dropdown.Menu >
-                    <button id='hirarchical' className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickDownload } >Hirarchical</button>
-                    <button id='dicomdir' className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickDownload }>Dicomdir</button>
-                </Dropdown.Menu>
-            </Dropdown>
+        return (
+            <DropdownButton variant="success" disabled={this.state.disabled} title = {this.state.buttonText}>
+                <Dropdown.Item id='hirarchical' onClick={ this.handleClickDownload }>
+                    Hirarchical
+                </Dropdown.Item>
+                <Dropdown.Item id='dicomdir' onClick={ this.handleClickDownload }>
+                    Dicomdir
+                </Dropdown.Item>
+                
+            </DropdownButton>
         )
     }
+
+
 }

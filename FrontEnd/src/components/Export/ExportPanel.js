@@ -10,6 +10,7 @@ import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 import Dropdown from "react-bootstrap/Dropdown"
 import DownloadDropdown from "./DownloadDropdown"
+import SendAetDropdown from "./SendAetDropdown"
 
 
 
@@ -17,8 +18,8 @@ class ExportPanel extends Component {
     
     state={
         currentStudy: '', 
-        AET: [],
-        Peers: []
+        aets: [],
+        peers: []
     }
 
     constructor(props){
@@ -32,10 +33,14 @@ class ExportPanel extends Component {
         this.handleClickModalities = this.handleClickModalities.bind(this)
         this.child = React.createRef()
     }
-
-    async componentWillMount(){
-        this.getItemsAET()
-        this.getItemsPeers()
+    
+    async componentDidMount(){
+        let aets = await apis.aets.getAets()
+        let peers = await apis.peers.getPeers()
+        this.setState({
+            aets: aets,
+            peers: peers
+        })
     }
 
     getExportIDArray(){
@@ -88,15 +93,6 @@ class ExportPanel extends Component {
             items.push(<button id={name} key={name} className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickPeer } >{name}</button>)
         })
         this.setState({Peers: items})
-    }
-
-    async getItemsAET(){
-        let nameAets = await apis.aets.getAets()
-        let items = []
-        nameAets.forEach(name => {
-            items.push(<button id={name} key={name} className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickModalities } >{name}</button>)
-        })
-        this.setState({AET: items})
     }
 
     async handleClickModalities(e){
@@ -191,15 +187,7 @@ class ExportPanel extends Component {
                         <DownloadDropdown exportIds={this.getExportIDArray()} />
                     </div>
                     <div className='col-sm'>
-                        <Dropdown >
-                            <Dropdown.Toggle variant="success" id="dropdown-AET" >
-                                Send to Modalities
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                                {this.state.AET}
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <SendAetDropdown aets={this.state.aets} exportIds={this.getExportIDArray()} />
                     </div>
                     <div className='col-sm'>
                         <Dropdown >
