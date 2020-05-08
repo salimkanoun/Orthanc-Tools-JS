@@ -11,6 +11,7 @@ import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList 
 import Dropdown from "react-bootstrap/Dropdown"
 import DownloadDropdown from "./DownloadDropdown"
 import SendAetDropdown from "./SendAetDropdown"
+import SendPeerDropdown from "./SendPeerDropdown"
 
 
 
@@ -190,21 +191,13 @@ class ExportPanel extends Component {
                         <SendAetDropdown aets={this.state.aets} exportIds={this.getExportIDArray()} />
                     </div>
                     <div className='col-sm'>
-                        <Dropdown >
-                            <Dropdown.Toggle variant="success" id="dropdown-Peers" >
-                                Send to Peers
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                                {this.state.Peers}
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <SendPeerDropdown peers={this.state.peers} exportIds={this.getExportIDArray()}/>
                     </div>
                     <div className='col-sm'>
-                        <button type='button' className="btn btn-info" onClick={this.handleClickFTP}>Send To FTP</button>
+                        <button type='button' className="btn btn-info" onClick={this.handleClickFTP} disabled>Send To FTP</button>
                     </div>
                     <div className='col-sm'>
-                        <button type='button' className="btn btn-info" onClick={this.handleClickWebDav}>Send To WebDav</button>
+                        <button type='button' className="btn btn-info" onClick={this.handleClickWebDav} disabled>Send To WebDav</button>
                     </div>
                 </div>
             </div>
