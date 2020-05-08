@@ -26,7 +26,7 @@ export default class MonitorJob {
     }
 
     cancelJob(){
-        //SK AAJOUTER ICI APPEL POUR ARRETER LE JOB
+        apis.jobs.cancelJob(this.jobID)
         this.stopMonitoringJob()
     }
 

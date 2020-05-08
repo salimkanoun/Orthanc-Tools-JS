@@ -7,7 +7,7 @@ const exportDicom = {
         return fetch('/api/tools/create-archive/', {
             method: 'POST',
             headers: {
-              Accept: 'application/zip',
+              Accept: 'application/json',
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
@@ -27,7 +27,7 @@ const exportDicom = {
       return fetch('/api/tools/create-media-extended/', {
         method: 'POST',
         headers: {
-          Accept: 'application/zip',
+          Accept: 'application/json',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(OrthancIDsArray)
@@ -44,7 +44,7 @@ const exportDicom = {
         .then(answer => answer.blob() )
         .then( blob =>{ download(blob, "dicom.zip")})
     }
-    
+
 }
 
 export default exportDicom

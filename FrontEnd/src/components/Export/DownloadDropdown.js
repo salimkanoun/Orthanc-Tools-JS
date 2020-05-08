@@ -46,12 +46,10 @@ export default class DownloadDropdown extends Component{
         let jobMonitoring = new MonitorJob(jobAnswer.ID)
         let self = this
         jobMonitoring.onUpdate(function (progress) {
-            console.log(progress)
             self.updateProgress(progress)
         })
 
         jobMonitoring.onFinish(async function (state){
-            console.log(state)
             if(state === MonitorJob.Success){
                 self.setStatusDownloading()
                 await apis.exportDicom.downloadZip(jobAnswer.ID)
@@ -60,8 +58,6 @@ export default class DownloadDropdown extends Component{
                 console.log('failure')
                 this.resetProgress()
             }
-            
-            
         })
 
         jobMonitoring.startMonitoringJob()
