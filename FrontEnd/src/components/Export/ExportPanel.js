@@ -4,10 +4,12 @@ import { connect } from "react-redux"
 import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy'
 import TableSeries from '../CommonComponents/RessourcesDisplay/TableSeries'
 import apis from '../../services/apis'
+import MonitorJob from '../../tools/MonitorJob'
 
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 import Dropdown from "react-bootstrap/Dropdown"
+import DownloadDropdown from "./DownloadDropdown"
 
 
 
@@ -36,6 +38,14 @@ class ExportPanel extends Component {
         this.getItemsPeers()
     }
 
+    getExportIDArray(){
+        let ids = []
+        this.props.exportList.forEach(serie => {
+            ids.push(serie.ID)
+        })
+        return ids
+    }
+
     async handleClickDownload(e){
        let Ids = []
        this.props.exportList.forEach(serie => {
@@ -43,7 +53,16 @@ class ExportPanel extends Component {
        })
        switch (e.currentTarget.id){
            case 'hirarchical':
-               await apis.exportDicom.exportHirachicalDicoms(Ids)
+                let jobAnswer = await apis.exportDicom.exportHirachicalDicoms(Ids)
+                let jobMonitoring = new MonitorJob(jobAnswer.ID)
+                jobMonitoring.onUpdate(function (progress) {
+                    console.log(progress)
+                })
+                jobMonitoring.onFinish(function (state){
+                    console.log(state)
+                })
+                jobMonitoring.startMonitoringJob()
+                console.log('fin if')
                break
             case 'dicomdir':
                 await apis.exportDicom.exportDicomDirDicoms(Ids)
@@ -169,16 +188,7 @@ class ExportPanel extends Component {
                 </div>
                 <div className="row text-center mt-5">
                     <div className='col-sm'>
-                        <Dropdown >
-                            <Dropdown.Toggle variant="success" id="dropdown-download" >
-                                Download
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu >
-                                <button id='hirarchical' className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickDownload } >Hirarchical</button>
-                                <button id='dicomdir' className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickDownload }>Dicomdir</button>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <DownloadDropdown exportIds={this.getExportIDArray()} />
                     </div>
                     <div className='col-sm'>
                         <Dropdown >

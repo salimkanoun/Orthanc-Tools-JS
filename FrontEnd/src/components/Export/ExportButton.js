@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import MonitorJob from '../../tools/MonitorJob'
 import apis from '../../services/apis'
 
 /**
@@ -24,8 +25,18 @@ export default class ExportButton extends Component {
   async doExport() {
 
     if (this.props.exportType === ExportButton.HIRACHICAL) {
-
-      apis.exportDicom.exportHirachicalDicoms(this.props.orthancIds)
+      console.log('ici hierachique')
+      let jobAnswer = await apis.exportDicom.exportHirachicalDicoms(this.props.orthancIds)
+      console.log('ici post api')
+      console.log(jobAnswer)
+      let jobMonitoring = new MonitorJob(jobAnswer.ID)
+      jobMonitoring.onUpdate(function (progress){
+        console.log(progress)
+      })
+      jobMonitoring.onFinish(function (state){
+        console.log(state)
+      })
+      console.log('fin if')
 
     } else if (this.props.exportType === ExportButton.DICOMDIR) {
 
