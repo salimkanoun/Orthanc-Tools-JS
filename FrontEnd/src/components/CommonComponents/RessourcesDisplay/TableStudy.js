@@ -26,7 +26,11 @@ class TableStudy extends Component {
         dataField: 'PatientName', 
         text: 'Patient Name', 
         sort: true, 
-        hidden: this.props.hiddenName
+        hidden: this.props.hiddenName,
+        style: {
+            maxWidth: '50px'
+        }, 
+        title: (cell, row, rowIndex, colIndex) => row.PatientName
     }, {
         dataField: 'PatientID', 
         text: 'Patient ID', 
@@ -39,7 +43,11 @@ class TableStudy extends Component {
     }, {
         dataField: 'StudyDescription', 
         text: 'Description',
-        sort: true
+        sort: true,
+        style: {
+            maxWidth: '50px'
+        }, 
+        title: (cell, row, rowIndex, colIndex) => row.StudyDescription
     }, {
         dataField: 'AccessionNumber', 
         text: 'Accession Number',

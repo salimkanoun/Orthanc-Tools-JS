@@ -22,7 +22,7 @@ class TablePatients extends Component{
     }, {
         dataField: 'PatientName', 
         text: 'Patient Name', 
-        sort: true,
+        sort: true
     }, {
         dataField: 'PatientID', 
         text: 'Patient ID', 

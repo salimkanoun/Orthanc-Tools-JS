@@ -304,6 +304,7 @@ export default class Import extends Component {
     render(){
         return (
             <div className="jumbotron">
+                <h2 className="col card-title">Import Dicom Files</h2>
                 <div className="col mb-5">
                     <DragDrop
                         uppy={this.uppy}

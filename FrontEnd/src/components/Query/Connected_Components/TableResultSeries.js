@@ -50,11 +50,6 @@ class TableResultSeries extends Component {
 
     }
 
-    selectRow = {
-        mode: 'checkbox',
-        clickToSelect: true
-    };
-
     columns = [{
         dataField: 'key',
         hidden: true
@@ -117,7 +112,7 @@ class TableResultSeries extends Component {
             >{
                     props => (
                         <React.Fragment>
-                            <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} selectRow={this.selectRow} bordered={ false } />
+                            <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} bordered={ false } />
                         </React.Fragment>
                     )
                 }

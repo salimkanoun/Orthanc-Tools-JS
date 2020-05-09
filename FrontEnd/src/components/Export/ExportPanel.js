@@ -3,20 +3,20 @@ import { connect } from "react-redux"
 
 import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy'
 import TableSeries from '../CommonComponents/RessourcesDisplay/TableSeries'
-import apis from '../../services/apis'
+import DownloadDropdown from "./DownloadDropdown"
+import SendAetDropdown from "./SendAetDropdown"
+import SendPeerDropdown from "./SendPeerDropdown"
 
+import apis from '../../services/apis'
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
-import Dropdown from "react-bootstrap/Dropdown"
-
-
 
 class ExportPanel extends Component {
     
     state={
         currentStudy: '', 
-        AET: [],
-        Peers: []
+        aets: [],
+        peers: []
     }
 
     constructor(props){
@@ -25,67 +25,24 @@ class ExportPanel extends Component {
         this.emptyList = this.emptyList.bind(this)
         this.removeSeries = this.removeSeries.bind(this)
         this.removeStudy = this.removeStudy.bind(this)
-        this.handleClickDownload = this.handleClickDownload.bind(this)
-        this.handleClickPeer = this.handleClickPeer.bind(this)
-        this.handleClickModalities = this.handleClickModalities.bind(this)
         this.child = React.createRef()
     }
-
-    async componentWillMount(){
-        this.getItemsAET()
-        this.getItemsPeers()
+    
+    async componentDidMount(){
+        let aets = await apis.aets.getAets()
+        let peers = await apis.peers.getPeers()
+        this.setState({
+            aets: aets,
+            peers: peers
+        })
     }
 
-    async handleClickDownload(e){
-       let Ids = []
-       this.props.exportList.forEach(serie => {
-           Ids.push(serie.ID)
-       })
-       switch (e.currentTarget.id){
-           case 'hirarchical':
-               await apis.exportDicom.exportHirachicalDicoms(Ids)
-               break
-            case 'dicomdir':
-                await apis.exportDicom.exportDicomDirDicoms(Ids)
-                break
-            default: 
-                break
-       }
-    }
-
-    async handleClickPeer(e){
-        console.log(e.currentTarget.id)
-        let Ids = []
+    getExportIDArray(){
+        let ids = []
         this.props.exportList.forEach(serie => {
-            Ids.push(serie.ID)
+            ids.push(serie.ID)
         })
-        await apis.peers.storePeer(e.currentTarget.id, Ids)
-    }
-
-    async getItemsPeers(){
-        let namePeers = await apis.peers.getPeers()
-        let items = []
-        namePeers.forEach(name => {
-            items.push(<button id={name} key={name} className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickPeer } >{name}</button>)
-        })
-        this.setState({Peers: items})
-    }
-
-    async getItemsAET(){
-        let nameAets = await apis.aets.getAets()
-        let items = []
-        nameAets.forEach(name => {
-            items.push(<button id={name} key={name} className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickModalities } >{name}</button>)
-        })
-        this.setState({AET: items})
-    }
-
-    async handleClickModalities(e){
-        let Ids = []
-        this.props.exportList.forEach(serie => {
-            Ids.push(serie.ID)
-        })
-        await apis.aets.storeAET(e.currentTarget.id, Ids)
+        return ids
     }
 
     handleClickFTP(){
@@ -145,9 +102,10 @@ class ExportPanel extends Component {
     }
 
     render() {
+        let idArray = this.getExportIDArray()
         return (
             <div className="jumbotron">
-                <button type='button' className="btn btn-warning" onClick={this.emptyList}>Empty</button>
+                <h2 className="card-title mb-3">Export</h2>
                 <div className="row">
                     <div className="col-sm">
                         <TableStudy 
@@ -161,7 +119,9 @@ class ExportPanel extends Component {
                             hiddenName={false}
                             hiddenID={false}
                             pagination={true} />
+                            <button type='button' className="btn btn-warning float-right" onClick={this.emptyList}>Empty List</button>
                     </div>
+
                     <div className="col-sm">
                         <TableSeries data={this.getSeries()} wrapperClasses="table-responsive" hiddenActionBouton={true} hiddenRemoveRow={false} onDelete={this.removeSeries}/>
                         <button type='button' className="btn btn-danger float-right" onClick={this.removeStudy}>Remove Study</button>
@@ -169,44 +129,19 @@ class ExportPanel extends Component {
                 </div>
                 <div className="row text-center mt-5">
                     <div className='col-sm'>
-                        <Dropdown >
-                            <Dropdown.Toggle variant="success" id="dropdown-download" >
-                                Download
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu >
-                                <button id='hirarchical' className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickDownload } >Hirarchical</button>
-                                <button id='dicomdir' className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickDownload }>Dicomdir</button>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <DownloadDropdown exportIds={idArray} />
                     </div>
                     <div className='col-sm'>
-                        <Dropdown >
-                            <Dropdown.Toggle variant="success" id="dropdown-AET" >
-                                Send to Modalities
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                                {this.state.AET}
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <SendAetDropdown aets={this.state.aets} exportIds={idArray} />
                     </div>
                     <div className='col-sm'>
-                        <Dropdown >
-                            <Dropdown.Toggle variant="success" id="dropdown-Peers" >
-                                Send to Peers
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                                {this.state.Peers}
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray}/>
                     </div>
                     <div className='col-sm'>
-                        <button type='button' className="btn btn-info" onClick={this.handleClickFTP}>Send To FTP</button>
+                        <button type='button' className="btn btn-info" onClick={this.handleClickFTP} disabled>Send To FTP</button>
                     </div>
                     <div className='col-sm'>
-                        <button type='button' className="btn btn-info" onClick={this.handleClickWebDav}>Send To WebDav</button>
+                        <button type='button' className="btn btn-info" onClick={this.handleClickWebDav} disabled>Send To WebDav</button>
                     </div>
                 </div>
             </div>

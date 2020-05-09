@@ -17,10 +17,10 @@ class TableSeriesFillFromParent extends Component {
         onEmptySeries : function () {}
     }
 
-    onDelete(idDeleted){
+    onDelete(idDeleted, parentID){
 
         let newSeriesRows = this.state.series.filter((serie) =>{
-            return serie.SerieOrthancID !== idDeleted
+            return serie.SeriesOrthancID !== idDeleted
         })
 
         this.setState({
@@ -28,6 +28,7 @@ class TableSeriesFillFromParent extends Component {
         })
         if(this.state.series.length ===0){
             this.props.onEmptySeries()
+            this.props.onDeleteStudy(parentID)
         }
 
     }
@@ -49,7 +50,8 @@ class TableSeriesFillFromParent extends Component {
         let seriesData = []
         seriesAnswer.forEach( (serie) => {
             seriesData.push({
-                SerieOrthancID : serie.ID,
+                StudyID: studyID, 
+                SeriesOrthancID : serie.ID,
                 Instances : serie.Instances.length,
                 ...serie.MainDicomTags
             })

@@ -70,13 +70,16 @@ const aets = {
   }, 
 
   storeAET( name, orthancIDsArray){
-    fetch ('/api/modalities/' + name + '/store', {
+    return fetch ('/api/modalities/' + name + '/store', {
       method: 'POST', 
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(orthancIDsArray)
+      body: JSON.stringify({
+        Synchronous : false,
+        Resources : orthancIDsArray
+        })
       }).then((answer) => {
           if (!answer.ok) {throw answer}
           return (answer.json())
