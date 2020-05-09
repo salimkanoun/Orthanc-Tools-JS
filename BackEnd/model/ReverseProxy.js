@@ -36,7 +36,7 @@ const ReverseProxy = {
         },
         headers: {
           'Content-Type': 'application/json',
-          'Content-Length': data.length
+          'Content-Length': JSON.stringify(data).length
         },
         body: JSON.stringify(data)
       }

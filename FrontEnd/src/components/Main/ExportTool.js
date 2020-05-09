@@ -17,6 +17,7 @@ class ExportTool extends Component {
         this.handleClickEmpty = this.handleClickEmpty.bind(this)
         this.onDeleteSeries = this.onDeleteSeries.bind(this)
         this.onDeleteStudy = this.onDeleteStudy.bind(this)
+        this.getNbStudy = this.getNbStudy.bind(this)
     }
 
     handleClickEmpty(){
@@ -31,9 +32,13 @@ class ExportTool extends Component {
         this.props.removeStudyFromExportList(studyID)
     }
 
+    getNbStudy(){
+        return seriesArrayToStudyArray(this.props.exportList, this.props.orthancContent).lenght
+    }
+
     render(){
         return (
-            <Overlay target={this.props.target} show={this.props.show} placement='bottom' >
+            <Overlay target={this.props.target} show={this.props.show} placement='left' onHide={this.props.onClick} rootClose >
                 <Popover id='popover-export' style={ { maxWidth: '100%' } } >
                     <Popover.Title as='h3'>Export List</Popover.Title>
                     <Popover.Content>
@@ -47,7 +52,9 @@ class ExportTool extends Component {
                             data={seriesArrayToStudyArray(this.props.exportList, this.props.orthancContent)} 
                             hiddenRemoveRow={false} 
                             hiddenAccessionNumber={true}
-                            hiddenActionBouton={true} 
+                            hiddenActionBouton={true}
+                            hiddenName={false}
+                            hiddenID={false}
                             onDeleteStudy={this.onDeleteStudy} 
                             onDeleteSeries={this.onDeleteSeries} 
                             pagination={true} />

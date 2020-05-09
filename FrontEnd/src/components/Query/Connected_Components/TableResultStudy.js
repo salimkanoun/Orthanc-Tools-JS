@@ -6,7 +6,6 @@ import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-fi
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
-import ExportButton from '../../Export/ExportButton';
 import TableResultSeries from './TableResultSeries'
 import RetrieveButton from '../Components/RetrieveButton';
 
@@ -70,15 +69,7 @@ class TableResult extends Component {
         dataField : 'retrieve',
         text: 'Retrieve',
         formatter : this.retrieveButton
-    }, {
-        dataField : 'export',
-        text : 'export',
-        formatter : this.exportButton
     }];
-
-    exportButton(cell, row, rowIndex) {
-        return (<ExportButton exportType={ExportButton.HIRACHICAL} orthancIds={ [row.studyOrthancID] }/>)
-    }
 
     retrieveButton(cell, row, rowIndex){
         return (<RetrieveButton queryAet={row.originAET} uid={row.studyInstanceUID} level={RetrieveButton.Study} />)

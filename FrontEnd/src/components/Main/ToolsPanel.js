@@ -31,23 +31,17 @@ class ToolsPanel extends Component {
         switch (e.target.id){
             case 'delete':
                 this.setState({ 
-                    showDelete: !this.state.showDelete,
-                    showAnon: false, 
-                    showExport: false
+                    showDelete: !this.state.showDelete
                 })
                 break
             case 'export':
                 this.setState({ 
-                    showExport: !this.state.showExport,
-                    showAnon: false, 
-                    showDelete: false
+                    showExport: !this.state.showExport
                 })
                 break
             case 'anon':
                 this.setState({ 
-                    showAnon: !this.state.showAnon, 
-                    showDelete: false, 
-                    showExport: false
+                    showAnon: !this.state.showAnon
                 })
                 break
             default:
@@ -56,30 +50,44 @@ class ToolsPanel extends Component {
         
     }
 
+    getNBStudy(){
+        let studyIDs = []
+        this.props.exportList.forEach(study => {
+            if (!studyIDs.includes(study.ParentStudy))
+                studyIDs.push(study.ParentStudy)
+        })
+        return studyIDs.length
+    }
+
     render(){
         const refExport = React.createRef()
-        //const refAnon = React.createRef()
+        const refAnon = React.createRef()
         const refDelete = React.createRef()
         return (
             <div className="row">
                 <div className="mr-1">
-                    <AnonTool />
+                <button id='anon' ref={refAnon} type="button" className="btn btn-primary" onClick={this.handleClick} >
+                    Anonymize <br/>
+                    <span className="badge badge-light">{this.props.anonList.length}</span>
+                    <span className="sr-only">Anonymization List</span>
+                </button>
+                <AnonTool target={refAnon} show={this.state.showAnon} onClick={this.closePopovers} />
                 </div>
                 <div className="mr-1">
                     <button id='export' ref={refExport} type="button" className="btn btn-primary" onClick={this.handleClick} >
                         Export <br/>
-                        <span className="badge badge-light">{this.props.exportList.length}</span>
+                        <span className="badge badge-light">{this.getNBStudy()}</span>
                         <span className="sr-only">Export List</span>
                     </button>
-                    <ExportTool target={refExport} show={this.state.showExport} onClick={this.closePopovers} />
+                    <ExportTool  target={refExport} show={this.state.showExport} onClick={this.closePopovers} />
                 </div>
                 <div className="mr-1" >
                     <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onClick={this.handleClick}>
                         Delete <br/>
-                        <span className="badge badge-light">{this.props.deleteList.length}</span>
+                        <span className="badge badge-light">{(this.props.deleteList.length)}</span>
                         <span className="sr-only">Delete List</span>
                     </button>
-                    <DeleteTool target={refDelete} show={this.state.showDelete} />
+                    <DeleteTool target={refDelete} show={this.state.showDelete} onHide={this.closePopovers} />
                 </div>
             </div>
         )
@@ -89,7 +97,8 @@ class ToolsPanel extends Component {
 const mapStateToProps = state => {
     return {
         deleteList: state.DeleteList.deleteList,
-        exportList: state.ExportList.exportList
+        exportList: state.ExportList.exportList, 
+        anonList: state.AnonList.anonList
     }
 }
 
