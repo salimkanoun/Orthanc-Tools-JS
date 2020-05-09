@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import Dropdown from "react-bootstrap/Dropdown"
 import ButtonGroup from "react-bootstrap/ButtonGroup"
 import Button from "react-bootstrap/Button"
 
+import { addToDeleteList } from '../../../actions/DeleteList'
+import { addToExportList } from '../../../actions/ExportList'
+import { addToAnonList } from '../../../actions/AnonList'
+
 import MonitorJob from '../../../tools/MonitorJob'
 import apis from '../../../services/apis'
 
-export default class RetrieveButton extends Component {
+class RetrieveButton extends Component {
 
   state = {
     status: 'Retrieve'
@@ -16,25 +21,38 @@ export default class RetrieveButton extends Component {
     super(props)
     this.doRetrieve = this.doRetrieve.bind(this)
     this.handleDropdownClick = this.handleDropdownClick.bind(this)
+    this.toExport = this.toExport.bind(this)
   }
 
-  getClassFromStatus() {
-    if (this.state.status === 'Retrieve') return 'btn btn-info btn-large'
-    else if (this.state.status === MonitorJob.Pending ) return 'btn btn-warning btn-large'
-    else if (this.state.status === MonitorJob.Success ) return 'btn btn-success btn-large'
-    else if (this.state.status === MonitorJob.Failure ) return 'btn btn-error btn-large'
+  getVariant() {
+    if (this.state.status === 'Retrieve') return 'info'
+    else if (this.state.status === MonitorJob.Pending ) return 'warning'
+    else if (this.state.status === MonitorJob.Success ) return 'success'
+    else if (this.state.status === MonitorJob.Failure ) return 'error'
+  }
+
+  async toExport(){
+    if(this.resultAnswer === undefined) return
+    let seriesDetails
+    if( this.props.level ===  RetrieveButton.Study ){
+        seriesDetails = await apis.content.getSeriesDetails(this.resultAnswer['ID'])
+        console.log(seriesDetails)
+    } else if ( this.props.level === RetrieveButton.Series ){
+      seriesDetails = this.resultAnswer
+    }
+    
+    this.props.addToExportList(seriesDetails)
   }
 
   render() {
-    const classNameValue = this.getClassFromStatus()
     return (
       <Dropdown as={ButtonGroup} onClick={this.handleDropdownClick} >
-        <Button variant="success" onClick={this.doRetrieve} >{this.state.status}</Button>
+        <Button variant={this.getVariant()} onClick={this.doRetrieve} >{this.state.status}</Button>
 
         <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
 
         <Dropdown.Menu>
-          <Dropdown.Item >To Export</Dropdown.Item>
+          <Dropdown.Item onClick={this.toExport}>To Export</Dropdown.Item>
           <Dropdown.Item >To Anon</Dropdown.Item>
           <Dropdown.Item >To Delete</Dropdown.Item>
         </Dropdown.Menu>
@@ -113,11 +131,22 @@ export default class RetrieveButton extends Component {
 
     let searchContent = await apis.content.getContent(contentSearch)
     console.log(searchContent)
-    return searchContent[0]['ID']
+    this.resultAnswer = searchContent[0]
     
   }
 
 }
 
+
+const mapDispatchToProps = {
+  addToDeleteList,
+  addToAnonList,
+  addToExportList
+}
+
 RetrieveButton.Study = 0
 RetrieveButton.Series = 1
+
+export default connect(null, mapDispatchToProps)(RetrieveButton)
+
+

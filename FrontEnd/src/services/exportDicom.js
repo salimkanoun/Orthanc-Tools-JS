@@ -45,7 +45,7 @@ const exportDicom = {
     downloadZip(jobID){
       return fetch('/api/jobs/'+jobID+'/archive')
         .then(answer => answer.blob() )
-        .then( blob =>{ download(blob, "dicom.zip")})
+        .then( blob =>{ download(blob, jobID+".zip")})
     }
 
 }
