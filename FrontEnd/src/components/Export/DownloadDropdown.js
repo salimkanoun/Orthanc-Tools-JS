@@ -15,6 +15,7 @@ export default class DownloadDropdown extends Component{
     constructor(props){
         super(props)
         this.handleClickDownload = this.handleClickDownload.bind(this)
+        this.handleRootClick = this.handleRootClick.bind(this)
     }
 
     updateProgress (progress){
@@ -38,7 +39,12 @@ export default class DownloadDropdown extends Component{
         })
     }
 
+    handleRootClick(e){
+        e.stopPropagation()
+    }
+
     async handleClickDownload(e){
+        e.stopPropagation()
 
         let jobAnswer
 
@@ -76,7 +82,7 @@ export default class DownloadDropdown extends Component{
     render(){
 
         return (
-            <DropdownButton variant="success" disabled={this.state.disabled} title = {this.state.buttonText}>
+            <DropdownButton onClick={this.handleRootClick} variant="success" disabled={this.state.disabled} title = {this.state.buttonText}>
                 <Dropdown.Item id='hirarchical' onClick={ this.handleClickDownload }>
                     Hirarchical
                 </Dropdown.Item>

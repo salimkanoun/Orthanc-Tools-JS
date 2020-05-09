@@ -41,7 +41,8 @@ export default class RetrieveButton extends Component {
     if(this.monitorJob !== undefined) this.monitorJob.stopMonitoringJob()
   }
 
-  async doRetrieve() {
+  async doRetrieve(e) {
+    e.stopPropagation()
 
     let level = this.props.level
     let uid = this.props.uid
@@ -63,6 +64,7 @@ export default class RetrieveButton extends Component {
     let monitorJob = new MonitorJob(jobID)
 
     let self = this
+
     monitorJob.onUpdate(function(progress){
       self.setState({
         status: MonitorJob.Pending
@@ -73,12 +75,36 @@ export default class RetrieveButton extends Component {
       self.setState({
         status: status
       })
-
+      if(status === MonitorJob.Success){
+        self.getOrthancIDbyStudyUID()
+      }
     })
 
     monitorJob.startMonitoringJob()
     this.monitorJob = monitorJob
 
+  }
+
+  async getOrthancIDbyStudyUID(){
+    let contentSearch = {
+      CaseSensitive: false,
+      Expand: true, 
+      Query: {
+      }
+    }
+
+    if( this.props.level ===  RetrieveButton.Study ){
+      contentSearch.Query.StudyInstanceUID = this.props.uid
+      contentSearch.Level = 'Study'
+    } else if ( this.props.level === RetrieveButton.Series ){
+      contentSearch.Level = 'Series'
+      contentSearch.Query.SeriesInstanceUID = this.props.uid
+    }
+
+    let searchContent = await apis.content.getContent(contentSearch)
+    console.log(searchContent)
+    return searchContent[0]['ID']
+    
   }
 
 }

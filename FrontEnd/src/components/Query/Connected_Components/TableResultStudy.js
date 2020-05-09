@@ -6,7 +6,6 @@ import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-fi
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 
-import DownloadDropdown from '../../Export/DownloadDropdown';
 import TableResultSeries from './TableResultSeries'
 import RetrieveButton from '../Components/RetrieveButton';
 
@@ -70,15 +69,7 @@ class TableResult extends Component {
         dataField : 'retrieve',
         text: 'Retrieve',
         formatter : this.retrieveButton
-    }, {
-        dataField : 'export',
-        text : 'Download',
-        formatter : this.downloadDropdown
     }];
-
-    downloadDropdown(cell, row, rowIndex) {
-        return (<DownloadDropdown exportIds={ [row.studyOrthancID] }/>)
-    }
 
     retrieveButton(cell, row, rowIndex){
         return (<RetrieveButton queryAet={row.originAET} uid={row.studyInstanceUID} level={RetrieveButton.Study} />)
