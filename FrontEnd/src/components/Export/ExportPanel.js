@@ -3,17 +3,13 @@ import { connect } from "react-redux"
 
 import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy'
 import TableSeries from '../CommonComponents/RessourcesDisplay/TableSeries'
-import apis from '../../services/apis'
-import MonitorJob from '../../tools/MonitorJob'
-
-import { seriesArrayToStudyArray } from '../../tools/processResponse'
-import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
-import Dropdown from "react-bootstrap/Dropdown"
 import DownloadDropdown from "./DownloadDropdown"
 import SendAetDropdown from "./SendAetDropdown"
 import SendPeerDropdown from "./SendPeerDropdown"
 
-
+import apis from '../../services/apis'
+import { seriesArrayToStudyArray } from '../../tools/processResponse'
+import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 
 class ExportPanel extends Component {
     
@@ -29,9 +25,6 @@ class ExportPanel extends Component {
         this.emptyList = this.emptyList.bind(this)
         this.removeSeries = this.removeSeries.bind(this)
         this.removeStudy = this.removeStudy.bind(this)
-        this.handleClickDownload = this.handleClickDownload.bind(this)
-        this.handleClickPeer = this.handleClickPeer.bind(this)
-        this.handleClickModalities = this.handleClickModalities.bind(this)
         this.child = React.createRef()
     }
     
@@ -50,58 +43,6 @@ class ExportPanel extends Component {
             ids.push(serie.ID)
         })
         return ids
-    }
-
-    async handleClickDownload(e){
-       let Ids = []
-       this.props.exportList.forEach(serie => {
-           Ids.push(serie.ID)
-       })
-       switch (e.currentTarget.id){
-           case 'hirarchical':
-                let jobAnswer = await apis.exportDicom.exportHirachicalDicoms(Ids)
-                let jobMonitoring = new MonitorJob(jobAnswer.ID)
-                jobMonitoring.onUpdate(function (progress) {
-                    console.log(progress)
-                })
-                jobMonitoring.onFinish(function (state){
-                    console.log(state)
-                })
-                jobMonitoring.startMonitoringJob()
-                console.log('fin if')
-               break
-            case 'dicomdir':
-                await apis.exportDicom.exportDicomDirDicoms(Ids)
-                break
-            default: 
-                break
-       }
-    }
-
-    async handleClickPeer(e){
-        console.log(e.currentTarget.id)
-        let Ids = []
-        this.props.exportList.forEach(serie => {
-            Ids.push(serie.ID)
-        })
-        await apis.peers.storePeer(e.currentTarget.id, Ids)
-    }
-
-    async getItemsPeers(){
-        let namePeers = await apis.peers.getPeers()
-        let items = []
-        namePeers.forEach(name => {
-            items.push(<button id={name} key={name} className='dropdown-item btn bg-info' type='button' onClick={ this.handleClickPeer } >{name}</button>)
-        })
-        this.setState({Peers: items})
-    }
-
-    async handleClickModalities(e){
-        let Ids = []
-        this.props.exportList.forEach(serie => {
-            Ids.push(serie.ID)
-        })
-        await apis.aets.storeAET(e.currentTarget.id, Ids)
     }
 
     handleClickFTP(){
@@ -161,9 +102,10 @@ class ExportPanel extends Component {
     }
 
     render() {
+        let idArray = this.getExportIDArray()
         return (
             <div className="jumbotron">
-                <button type='button' className="btn btn-warning" onClick={this.emptyList}>Empty</button>
+                <h2 className="card-title mb-3">Export</h2>
                 <div className="row">
                     <div className="col-sm">
                         <TableStudy 
@@ -177,7 +119,9 @@ class ExportPanel extends Component {
                             hiddenName={false}
                             hiddenID={false}
                             pagination={true} />
+                            <button type='button' className="btn btn-warning float-right" onClick={this.emptyList}>Empty List</button>
                     </div>
+
                     <div className="col-sm">
                         <TableSeries data={this.getSeries()} wrapperClasses="table-responsive" hiddenActionBouton={true} hiddenRemoveRow={false} onDelete={this.removeSeries}/>
                         <button type='button' className="btn btn-danger float-right" onClick={this.removeStudy}>Remove Study</button>
@@ -185,13 +129,13 @@ class ExportPanel extends Component {
                 </div>
                 <div className="row text-center mt-5">
                     <div className='col-sm'>
-                        <DownloadDropdown exportIds={this.getExportIDArray()} />
+                        <DownloadDropdown exportIds={idArray} />
                     </div>
                     <div className='col-sm'>
-                        <SendAetDropdown aets={this.state.aets} exportIds={this.getExportIDArray()} />
+                        <SendAetDropdown aets={this.state.aets} exportIds={idArray} />
                     </div>
                     <div className='col-sm'>
-                        <SendPeerDropdown peers={this.state.peers} exportIds={this.getExportIDArray()}/>
+                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray}/>
                     </div>
                     <div className='col-sm'>
                         <button type='button' className="btn btn-info" onClick={this.handleClickFTP} disabled>Send To FTP</button>

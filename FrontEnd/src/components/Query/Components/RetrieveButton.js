@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+
+import MonitorJob from '../../../tools/MonitorJob'
 import apis from '../../../services/apis'
 
 /**
@@ -13,7 +15,7 @@ import apis from '../../../services/apis'
 export default class RetrieveButton extends Component {
 
   state = {
-    status: 'Idle'
+    status: 'Retrieve'
   }
 
   constructor(props) {
@@ -22,17 +24,21 @@ export default class RetrieveButton extends Component {
   }
 
   getClassFromStatus() {
-    if (this.state.status === 'Idle') return 'btn btn-info btn-large'
-    else if (this.state.status === RetrieveButton.Pending ) return 'btn btn-warning btn-large'
-    else if (this.state.status === RetrieveButton.Success ) return 'btn btn-success btn-large'
-    else if (this.state.status === RetrieveButton.Failure ) return 'btn btn-error btn-large'
+    if (this.state.status === 'Retrieve') return 'btn btn-info btn-large'
+    else if (this.state.status === MonitorJob.Pending ) return 'btn btn-warning btn-large'
+    else if (this.state.status === MonitorJob.Success ) return 'btn btn-success btn-large'
+    else if (this.state.status === MonitorJob.Failure ) return 'btn btn-error btn-large'
   }
 
   render() {
     const classNameValue = this.getClassFromStatus()
     return (<div className='col-sm'>
-      <input type='button' className={classNameValue} onClick={this.doRetrieve} value='Retrieve' />
+      <input type='button' className={classNameValue} onClick={this.doRetrieve} value={this.state.status} />
     </div>)
+  }
+
+  componentWillUnmount(){
+    if(this.monitorJob !== undefined) this.monitorJob.stopMonitoringJob()
   }
 
   async doRetrieve() {
@@ -40,10 +46,6 @@ export default class RetrieveButton extends Component {
     let level = this.props.level
     let uid = this.props.uid
     let queryAet = this.props.queryAet
-
-    this.setState({
-      status: RetrieveButton.Pending
-    })
 
     const postData = {}
 
@@ -56,42 +58,26 @@ export default class RetrieveButton extends Component {
       postData.aet = queryAet
     }
 
-    let jobUID = await apis.retrieve.retrieveByUID(postData)
+    let jobID = await apis.retrieve.retrieveByUID(postData)
 
-    this.startMonitoringJob(jobUID)
-  }
+    let monitorJob = new MonitorJob(jobID)
 
-  /**
-   * Start monitoring of job by looping on jobMonitoring every 2 seconds
-   * @param {string} jobUID 
-   */
-  startMonitoringJob(jobUID) {
-    this.intervalChcker = setInterval(() => this.jobMonitoring(jobUID), 2000)
-  }
-
-  /**
-   * End the monitoring loop
-   */
-  stopMonitoringJob() {
-    clearInterval(this.intervalChcker)
-  }
-
-  /**
-   * Check the job progression, when job finished, stop the monitoring loop
-   * @param {string} jobUID 
-   */
-  async jobMonitoring(jobUID) {
-
-    const jobData = await apis.jobs.getJobInfos(jobUID)
-    const currentStatus = jobData.State
-
-    this.setState({
-      status: currentStatus
+    let self = this
+    monitorJob.onUpdate(function(progress){
+      self.setState({
+        status: MonitorJob.Pending
+      })
     })
 
-    if (currentStatus === RetrieveButton.Success || currentStatus === RetrieveButton.Failure ) {
-      this.stopMonitoringJob()
-    }
+    monitorJob.onFinish(function(status){
+      self.setState({
+        status: status
+      })
+
+    })
+
+    monitorJob.startMonitoringJob()
+    this.monitorJob = monitorJob
 
   }
 
@@ -99,7 +85,3 @@ export default class RetrieveButton extends Component {
 
 RetrieveButton.Study = 0
 RetrieveButton.Series = 1
-
-RetrieveButton.Success = 'Success'
-RetrieveButton.Failure = 'Failure'
-RetrieveButton.Pending = 'Pending'

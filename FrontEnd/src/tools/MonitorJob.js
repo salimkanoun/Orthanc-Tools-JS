@@ -2,7 +2,7 @@ import apis from '../services/apis'
 
 export default class MonitorJob {
 
-    constructor(jobID, interval=2000){
+    constructor(jobID, interval=1000){
         this.jobID = jobID
         this.interval = interval
         this.finishCallback = function(status){}
