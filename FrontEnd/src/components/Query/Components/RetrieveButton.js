@@ -1,17 +1,11 @@
 import React, { Component } from 'react'
+import Dropdown from "react-bootstrap/Dropdown"
+import ButtonGroup from "react-bootstrap/ButtonGroup"
+import Button from "react-bootstrap/Button"
 
 import MonitorJob from '../../../tools/MonitorJob'
 import apis from '../../../services/apis'
 
-/**
- * Retrieve Button
- * Click starts the retrieve process of a ressource (study or series identified by UID)
- * Color of button change with retrieve status (embedded monitoring of job retrieve)
- * Props : 
- *  level (see static variable)
- *  uid (series ou study instance uid)
- *  queryAet (source of retrieve)
- */
 export default class RetrieveButton extends Component {
 
   state = {
@@ -21,6 +15,7 @@ export default class RetrieveButton extends Component {
   constructor(props) {
     super(props)
     this.doRetrieve = this.doRetrieve.bind(this)
+    this.handleDropdownClick = this.handleDropdownClick.bind(this)
   }
 
   getClassFromStatus() {
@@ -32,9 +27,19 @@ export default class RetrieveButton extends Component {
 
   render() {
     const classNameValue = this.getClassFromStatus()
-    return (<div className='col-sm'>
-      <input type='button' className={classNameValue} onClick={this.doRetrieve} value={this.state.status} />
-    </div>)
+    return (
+      <Dropdown as={ButtonGroup} onClick={this.handleDropdownClick} >
+        <Button variant="success" onClick={this.doRetrieve} >{this.state.status}</Button>
+
+        <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
+
+        <Dropdown.Menu>
+          <Dropdown.Item >To Export</Dropdown.Item>
+          <Dropdown.Item >To Anon</Dropdown.Item>
+          <Dropdown.Item >To Delete</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    )
   }
 
   componentWillUnmount(){
@@ -82,6 +87,11 @@ export default class RetrieveButton extends Component {
 
     monitorJob.startMonitoringJob()
     this.monitorJob = monitorJob
+
+  }
+
+  handleDropdownClick(e){
+    e.stopPropagation()
 
   }
 
