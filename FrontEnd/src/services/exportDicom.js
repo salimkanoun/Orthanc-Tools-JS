@@ -4,7 +4,6 @@ import download from 'downloadjs'
 const exportDicom = {
 
     exportHirachicalDicoms(OrthancIDsArray){
-
         return fetch('/api/tools/create-archive/', {
             method: 'POST',
             headers: {
@@ -12,17 +11,16 @@ const exportDicom = {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              Synchronous : true,
+              Synchronous : false,
               Resources : OrthancIDsArray
             })
           }).then((answer) => {
             if (!answer.ok) { throw answer }
-            return (answer.blob())
+            return answer.json()
           })
-          .then(blob => download(blob, 'dicom.zip'))
           .catch((error) => {
                 toastifyError(error)
-            })
+          })
     },
 
     exportDicomDirDicoms( OrthancIDsArray ){
@@ -33,18 +31,23 @@ const exportDicom = {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          Synchronous : true,
+          Synchronous : false,
           Resources : OrthancIDsArray
         })
       }).then((answer) => {
         if (!answer.ok) { throw answer }
-        return (answer.blob())
-      })
-      .then(blob => download(blob, 'dicom.zip'))
-      .catch((error) => {
+        return (answer.json())
+      }).catch((error) => {
             toastifyError(error)
-        })
+      })
+    },
+
+    downloadZip(jobID){
+      return fetch('/api/jobs/'+jobID+'/archive')
+        .then(answer => answer.blob() )
+        .then( blob =>{ download(blob, jobID+".zip")})
     }
+
 }
 
 export default exportDicom

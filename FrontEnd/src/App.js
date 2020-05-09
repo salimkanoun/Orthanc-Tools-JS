@@ -16,6 +16,7 @@ import Import from './components/Import/Import'
 import ContentRootPanel from './components/OrthancContent/ContentRootPanel'
 import Footer from './components/Main/Footer'
 import ExportPanel from './components/Export/ExportPanel'
+import AnonPanel from './components/Anon/AnonPanel'
 
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -56,7 +57,8 @@ function App () {
         <Route exact path='/options' component={AdminRootPanel} />
         <Route exact path='/OrthancContent' component={ContentRootPanel} />
         <Route exact path='/robot/:username' component={RobotView} />
-        <Route exact path='/OrthancContent/Export' component={ExportPanel} /> 
+        <Route exact path='/OrthancContent/Export' component={ExportPanel} />
+        <Route exact path='/OrthancContent/Anon' component={AnonPanel} /> 
       </Switch>
       <Footer/>
     </>

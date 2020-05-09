@@ -1,49 +1,75 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import Dropdown from "react-bootstrap/Dropdown"
+import ButtonGroup from "react-bootstrap/ButtonGroup"
+import Button from "react-bootstrap/Button"
+
+import { addToDeleteList } from '../../../actions/DeleteList'
+import { addToExportList } from '../../../actions/ExportList'
+import { addToAnonList } from '../../../actions/AnonList'
+
+import MonitorJob from '../../../tools/MonitorJob'
 import apis from '../../../services/apis'
 
-/**
- * Retrieve Button
- * Click starts the retrieve process of a ressource (study or series identified by UID)
- * Color of button change with retrieve status (embedded monitoring of job retrieve)
- * Props : 
- *  level (see static variable)
- *  uid (series ou study instance uid)
- *  queryAet (source of retrieve)
- */
-export default class RetrieveButton extends Component {
+class RetrieveButton extends Component {
 
   state = {
-    status: 'Idle'
+    status: 'Retrieve'
   }
 
   constructor(props) {
     super(props)
     this.doRetrieve = this.doRetrieve.bind(this)
+    this.handleDropdownClick = this.handleDropdownClick.bind(this)
+    this.toExport = this.toExport.bind(this)
   }
 
-  getClassFromStatus() {
-    if (this.state.status === 'Idle') return 'btn btn-info btn-large'
-    else if (this.state.status === RetrieveButton.Pending ) return 'btn btn-warning btn-large'
-    else if (this.state.status === RetrieveButton.Success ) return 'btn btn-success btn-large'
-    else if (this.state.status === RetrieveButton.Failure ) return 'btn btn-error btn-large'
+  getVariant() {
+    if (this.state.status === 'Retrieve') return 'info'
+    else if (this.state.status === MonitorJob.Pending ) return 'warning'
+    else if (this.state.status === MonitorJob.Success ) return 'success'
+    else if (this.state.status === MonitorJob.Failure ) return 'error'
+  }
+
+  async toExport(){
+    if(this.resultAnswer === undefined) return
+    let seriesDetails
+    if( this.props.level ===  RetrieveButton.Study ){
+        seriesDetails = await apis.content.getSeriesDetails(this.resultAnswer['ID'])
+        console.log(seriesDetails)
+    } else if ( this.props.level === RetrieveButton.Series ){
+      seriesDetails = this.resultAnswer
+    }
+    
+    this.props.addToExportList(seriesDetails)
   }
 
   render() {
-    const classNameValue = this.getClassFromStatus()
-    return (<div className='col-sm'>
-      <input type='button' className={classNameValue} onClick={this.doRetrieve} value='Retrieve' />
-    </div>)
+    return (
+      <Dropdown as={ButtonGroup} onClick={this.handleDropdownClick} >
+        <Button variant={this.getVariant()} onClick={this.doRetrieve} >{this.state.status}</Button>
+
+        <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
+
+        <Dropdown.Menu>
+          <Dropdown.Item onClick={this.toExport}>To Export</Dropdown.Item>
+          <Dropdown.Item >To Anon</Dropdown.Item>
+          <Dropdown.Item >To Delete</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    )
   }
 
-  async doRetrieve() {
+  componentWillUnmount(){
+    if(this.monitorJob !== undefined) this.monitorJob.stopMonitoringJob()
+  }
+
+  async doRetrieve(e) {
+    e.stopPropagation()
 
     let level = this.props.level
     let uid = this.props.uid
     let queryAet = this.props.queryAet
-
-    this.setState({
-      status: RetrieveButton.Pending
-    })
 
     const postData = {}
 
@@ -56,50 +82,71 @@ export default class RetrieveButton extends Component {
       postData.aet = queryAet
     }
 
-    let jobUID = await apis.retrieve.retrieveByUID(postData)
+    let jobID = await apis.retrieve.retrieveByUID(postData)
 
-    this.startMonitoringJob(jobUID)
-  }
+    let monitorJob = new MonitorJob(jobID)
 
-  /**
-   * Start monitoring of job by looping on jobMonitoring every 2 seconds
-   * @param {string} jobUID 
-   */
-  startMonitoringJob(jobUID) {
-    this.intervalChcker = setInterval(() => this.jobMonitoring(jobUID), 2000)
-  }
+    let self = this
 
-  /**
-   * End the monitoring loop
-   */
-  stopMonitoringJob() {
-    clearInterval(this.intervalChcker)
-  }
-
-  /**
-   * Check the job progression, when job finished, stop the monitoring loop
-   * @param {string} jobUID 
-   */
-  async jobMonitoring(jobUID) {
-
-    const jobData = await apis.jobs.getJobInfos(jobUID)
-    const currentStatus = jobData.State
-
-    this.setState({
-      status: currentStatus
+    monitorJob.onUpdate(function(progress){
+      self.setState({
+        status: MonitorJob.Pending
+      })
     })
 
-    if (currentStatus === RetrieveButton.Success || currentStatus === RetrieveButton.Failure ) {
-      this.stopMonitoringJob()
-    }
+    monitorJob.onFinish(function(status){
+      self.setState({
+        status: status
+      })
+      if(status === MonitorJob.Success){
+        self.getOrthancIDbyStudyUID()
+      }
+    })
+
+    monitorJob.startMonitoringJob()
+    this.monitorJob = monitorJob
 
   }
 
+  handleDropdownClick(e){
+    e.stopPropagation()
+
+  }
+
+  async getOrthancIDbyStudyUID(){
+    let contentSearch = {
+      CaseSensitive: false,
+      Expand: true, 
+      Query: {
+      }
+    }
+
+    if( this.props.level ===  RetrieveButton.Study ){
+      contentSearch.Query.StudyInstanceUID = this.props.uid
+      contentSearch.Level = 'Study'
+    } else if ( this.props.level === RetrieveButton.Series ){
+      contentSearch.Level = 'Series'
+      contentSearch.Query.SeriesInstanceUID = this.props.uid
+    }
+
+    let searchContent = await apis.content.getContent(contentSearch)
+    console.log(searchContent)
+    this.resultAnswer = searchContent[0]
+    
+  }
+
+}
+
+
+const mapDispatchToProps = {
+  addToDeleteList,
+  addToAnonList,
+  addToExportList
 }
 
 RetrieveButton.Study = 0
 RetrieveButton.Series = 1
 
-RetrieveButton.Success = 'Success'
-RetrieveButton.Failure = 'Failure'
-RetrieveButton.Pending = 'Pending'
+export default connect(null, mapDispatchToProps)(RetrieveButton)
+
+
