@@ -1,9 +1,12 @@
 import { ADD_EXPORT_CONTENT, EMPTY_EXPORT_LIST, REMOVE_SERIES_EXPORT_LIST, REMOVE_STUDY_EXPORT_LIST } from './actions-types'
 
-export function addToExportList(exportList){
+export function addToExportList(seriesArray, studiesArray){
     return {
         type : ADD_EXPORT_CONTENT,
-        payload: exportList
+        payload: {
+            series: seriesArray, 
+            studies: studiesArray
+        }
     }
 }
 

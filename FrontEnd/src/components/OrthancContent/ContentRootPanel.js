@@ -90,7 +90,7 @@ class ContentRootPanel extends Component {
     this.props.addToAnonList(this.getStudySelectedDetails())
   }
 
-  sendToExportList(){
+  async sendToExportList(){
     let selectedIds = this.child.current.getSelectedRessources()
     let studyIDs = []
     selectedIds.selectedPatients.forEach(orthancPatientId => {
@@ -104,10 +104,13 @@ class ContentRootPanel extends Component {
         studyIDs.push(studyID)
     })
     //get series details
-    studyIDs.forEach(async (id) => {
-      let serieDetails = await apis.content.getSeriesDetails(id)
-      this.props.addToExportList(serieDetails)
-    })
+    let serieDetails = []
+    for(let i in studyIDs) {
+      let series = await apis.content.getSeriesDetails(studyIDs[i])
+      serieDetails.push(...series)
+    }
+    
+    this.props.addToExportList(serieDetails, this.getStudySelectedDetails()) //send series details and study details
 
   }
 

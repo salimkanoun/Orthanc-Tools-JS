@@ -50,15 +50,6 @@ class ToolsPanel extends Component {
         
     }
 
-    getNBStudy(){
-        let studyIDs = []
-        this.props.exportList.forEach(study => {
-            if (!studyIDs.includes(study.ParentStudy))
-                studyIDs.push(study.ParentStudy)
-        })
-        return studyIDs.length
-    }
-
     render(){
         const refExport = React.createRef()
         const refAnon = React.createRef()
@@ -75,7 +66,7 @@ class ToolsPanel extends Component {
                 <div className="mr-1">
                     <button id='export' ref={refExport} type="button" className="btn btn-primary" onClick={this.handleClick} >
                         Export <br/>
-                        <span className="badge badge-light" onClick={() => this.setState({showExport: !this.state.showExport})}>{this.getNBStudy()}</span>
+                        <span className="badge badge-light" onClick={() => this.setState({showExport: !this.state.showExport})}>{this.props.studyArray.length}</span>
                     </button>
                     <ExportTool  target={refExport} show={this.state.showExport} onHide={this.closePopovers} />
                 </div>
@@ -94,7 +85,7 @@ class ToolsPanel extends Component {
 const mapStateToProps = state => {
     return {
         deleteList: state.DeleteList.deleteList,
-        exportList: state.ExportList.exportList, 
+        studyArray: state.ExportList.studyArray,
         anonList: state.AnonList.anonList
     }
 }
