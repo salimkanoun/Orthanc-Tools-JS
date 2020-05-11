@@ -12,7 +12,8 @@ class TableStudy extends Component {
         pagination: false, 
         hiddenName: true, 
         hiddenID: true, 
-        hiddenAccessionNumber: false
+        hiddenAccessionNumber: false, 
+        editable: false
     }
 
     getSelectedItems(){
@@ -30,16 +31,19 @@ class TableStudy extends Component {
         style: {
             maxWidth: '50px'
         }, 
-        title: (cell, row, rowIndex, colIndex) => row.PatientName
+        title: (cell, row, rowIndex, colIndex) => row.PatientName, 
+        editable: false
     }, {
         dataField: 'PatientID', 
         text: 'Patient ID', 
         sort: true, 
-        hidden: this.props.hiddenID
+        hidden: this.props.hiddenID, 
+        editable: false
     }, {
         dataField: 'StudyDate', 
         text: 'Study Date', 
-        sort: true
+        sort: true, 
+        editable: false
     }, {
         dataField: 'StudyDescription', 
         text: 'Description',
@@ -47,12 +51,14 @@ class TableStudy extends Component {
         style: {
             maxWidth: '50px'
         }, 
-        title: (cell, row, rowIndex, colIndex) => row.StudyDescription
+        title: (cell, row, rowIndex, colIndex) => row.StudyDescription, 
+        editable: this.props.editable
     }, {
         dataField: 'AccessionNumber', 
         text: 'Accession Number',
         sort: true, 
-        hidden: this.props.hiddenAccessionNumber
+        hidden: this.props.hiddenAccessionNumber, 
+        editable: false
     }, {
         dataField: 'Action', 
         text: 'Action', 
@@ -60,14 +66,16 @@ class TableStudy extends Component {
         formatter:  ( (value, row, index) => 
             <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} />
         ),
-        clickToSelect: false
+        clickToSelect: false, 
+        editable: false
     }, {
         dataField: 'Remove', 
         text: 'Remove',
         hidden: this.props.hiddenRemoveRow,
         formatter: (cell, row, index) => {
             return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.onDelete(row.StudyOrthancID)}}>Remove</button>
-        }
+        }, 
+        editable: false
     
     }]
 

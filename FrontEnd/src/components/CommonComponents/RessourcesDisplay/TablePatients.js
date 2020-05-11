@@ -8,7 +8,11 @@ class TablePatients extends Component{
     static defaultProps = {
         onDelete : function(id){console.log('Deleted Patient ID '+id)},
         hiddenActionBouton: false, 
-        hiddenRemoveRow: true
+        hiddenRemoveRow: true, 
+        textNameColumn: 'Patient Name', 
+        textIDColumn: 'Patient ID', 
+        hiddenNewName: true, 
+        hiddenNewID: true
     }
 
     getSelectedItems(){
@@ -21,12 +25,24 @@ class TablePatients extends Component{
         hidden: true
     }, {
         dataField: 'PatientName', 
-        text: 'Patient Name', 
-        sort: true
+        text: this.props.textNameColumn, 
+        sort: true, 
+        editable: false
     }, {
         dataField: 'PatientID', 
-        text: 'Patient ID', 
+        text: this.props.textIDColumn, 
         sort: true, 
+        editable: false
+    }, {
+        dataField: 'newPatientName', 
+        text: 'New Name', 
+        editable: true,
+        hidden: this.props.hiddenNewName
+    }, {
+        dataField: 'newPatientID', 
+        text: 'New ID', 
+        editable: true, 
+        hidden: this.props.hiddenNewID
     }, {
         dataField: 'Action', 
         text: 'Action',
