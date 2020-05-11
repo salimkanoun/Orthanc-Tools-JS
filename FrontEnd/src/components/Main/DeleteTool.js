@@ -71,7 +71,13 @@ class DeleteTool extends Component {
                         <div className="float-right mb-3">
                             <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
                         </div>
-                        <TablePatientsWithNestedStudies patients={studyArrayToPatientArray(this.props.deleteList)} hiddenActionBouton={true} hiddenRemoveRow={false} onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
+                        <TablePatientsWithNestedStudies 
+                            patients={studyArrayToPatientArray(this.props.deleteList)} 
+                            hiddenActionBouton={true} 
+                            hiddenRemoveRow={false} 
+                            onDeletePatient={this.onDeletePatient} 
+                            onDeleteStudy={this.onDeleteStudy}
+                            wrapperClasses="table-responsive" />
                         <div className="text-center">
                             <button type="button" className="btn btn-danger" onClick={this.handleConfirm} >Delete List</button>
                             <Modal show={this.state.show} onHide={this.handleConfirm}>

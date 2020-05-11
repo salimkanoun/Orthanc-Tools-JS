@@ -52,7 +52,8 @@ class ExportTool extends Component {
                             hiddenID={false}
                             onDeleteStudy={this.onDeleteStudy} 
                             onDeleteSeries={this.onDeleteSeries} 
-                            pagination={true} />
+                            pagination={true}
+                            wrapperClasses="table-responsive" />
                     </Popover.Content>
                 </Popover>
             </Overlay>

@@ -57,11 +57,11 @@ class ToolsPanel extends Component {
         return (
             <div className="row">
                 <div className="mr-1">
-                <button id='anon' ref={refAnon} type="button" className="btn btn-primary" onClick={this.handleClick} >
-                    Anonymize <br/>
-                    <span className="badge badge-light" onClick={() => this.setState({showAnon: !this.state.showAnon})}>{this.props.anonList.length}</span>
-                </button>
-                <AnonTool target={refAnon} show={this.state.showAnon} onHide={this.closePopovers} />
+                    <button id='anon' ref={refAnon} type="button" className="btn btn-primary" onClick={this.handleClick} >
+                        Anonymize <br/>
+                        <span className="badge badge-light" onClick={() => this.setState({showAnon: !this.state.showAnon})}>{this.props.anonList.length}</span>
+                    </button>
+                    <AnonTool target={refAnon} show={this.state.showAnon} onHide={this.closePopovers} />
                 </div>
                 <div className="mr-1">
                     <button id='export' ref={refExport} type="button" className="btn btn-primary" onClick={this.handleClick} >
