@@ -38,11 +38,11 @@ class ExportTool extends Component {
 
     render(){
         return (
-            <Overlay target={this.props.target} show={this.props.show} placement='left' onHide={this.props.onClick} rootClose >
+            <Overlay target={this.props.target} show={this.props.show} placement='left' onHide={this.props.onHide} rootClose >
                 <Popover id='popover-export' style={ { maxWidth: '100%' } } >
                     <Popover.Title as='h3'>Export List</Popover.Title>
                     <Popover.Content>
-                        <div className="float-left">
+                        <div className="float-left mb-3">
                             <Link className='btn btn-primary' to='/OrthancContent/Export' onClick={this.props.onClick}>Open Export Tools</Link>
                         </div>
                         <div className="float-right mb-3">

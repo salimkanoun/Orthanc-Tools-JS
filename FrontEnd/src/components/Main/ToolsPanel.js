@@ -68,24 +68,21 @@ class ToolsPanel extends Component {
                 <div className="mr-1">
                 <button id='anon' ref={refAnon} type="button" className="btn btn-primary" onClick={this.handleClick} >
                     Anonymize <br/>
-                    <span className="badge badge-light">{this.props.anonList.length}</span>
-                    <span className="sr-only">Anonymization List</span>
+                    <span className="badge badge-light" onClick={() => this.setState({showAnon: !this.state.showAnon})}>{this.props.anonList.length}</span>
                 </button>
-                <AnonTool target={refAnon} show={this.state.showAnon} onClick={this.closePopovers} />
+                <AnonTool target={refAnon} show={this.state.showAnon} onHide={this.closePopovers} />
                 </div>
                 <div className="mr-1">
                     <button id='export' ref={refExport} type="button" className="btn btn-primary" onClick={this.handleClick} >
                         Export <br/>
-                        <span className="badge badge-light">{this.getNBStudy()}</span>
-                        <span className="sr-only">Export List</span>
+                        <span className="badge badge-light" onClick={() => this.setState({showExport: !this.state.showExport})}>{this.getNBStudy()}</span>
                     </button>
-                    <ExportTool  target={refExport} show={this.state.showExport} onClick={this.closePopovers} />
+                    <ExportTool  target={refExport} show={this.state.showExport} onHide={this.closePopovers} />
                 </div>
                 <div className="mr-1" >
                     <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onClick={this.handleClick}>
                         Delete <br/>
-                        <span className="badge badge-light">{(this.props.deleteList.length)}</span>
-                        <span className="sr-only">Delete List</span>
+                        <span className="badge badge-light" onClick={() => this.setState({showDelete: !this.state.showDelete})} >{(this.props.deleteList.length)}</span>
                     </button>
                     <DeleteTool target={refDelete} show={this.state.showDelete} onHide={this.closePopovers} />
                 </div>
