@@ -81,7 +81,8 @@ router.get('/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 router.post('/instances', [userAuthMidelware], reverseProxyPostUploadDicom)
 
 // Orthanc Job API
-router.get('/jobs/*', userAuthMidelware, reverseProxyGet)
+router.get('/jobs*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.post('/jobs/*/cancel', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
 
 // Orthanc Aets Routes
 router.get('/modalities', userAuthMidelware, reverseProxyGet)
