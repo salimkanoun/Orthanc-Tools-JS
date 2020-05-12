@@ -52,7 +52,13 @@ class TableStudy extends Component {
             maxWidth: '50px'
         }, 
         title: (cell, row, rowIndex, colIndex) => row.StudyDescription, 
-        editable: this.props.editable
+        editable: false
+    }, {
+        dataField: 'newStudyDescription', 
+        text: 'New Description', 
+        sort: true, 
+        editable: this.props.editable, 
+        hidden: !this.props.editable
     }, {
         dataField: 'AccessionNumber', 
         text: 'Accession Number',

@@ -1,4 +1,4 @@
-import {  ANONYMIZE_CONTENT, ADD_ANON_LIST, EMPTY_ANON_LIST, REMOVE_PATIENT_ANON_LIST, REMOVE_STUDY_ANON_LIST } from './actions-types'
+import {  ANONYMIZE_CONTENT, ADD_ANON_LIST, EMPTY_ANON_LIST, REMOVE_PATIENT_ANON_LIST, REMOVE_STUDY_ANON_LIST, SAVE_NEW_VALUES } from './actions-types'
 
 
 export function anonymizeContent(){
@@ -31,5 +31,16 @@ export function removeStudyFromAnonList(studyOrhancID){
     return {
         type: REMOVE_STUDY_ANON_LIST, 
         payload: studyOrhancID
+    }
+}
+
+export function saveNewValues(ID, column, newValue){
+    return {
+        type: SAVE_NEW_VALUES, 
+        payload: {
+            id : ID, 
+            column: column, 
+            newValue: newValue
+        }
     }
 }
