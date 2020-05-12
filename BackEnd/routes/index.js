@@ -8,6 +8,7 @@ const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, dele
 const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
+const { anonymizeStudy } = require('../controllers/anonymize')
 
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
@@ -125,5 +126,8 @@ router.get('/series/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet
 router.delete('/patients/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 router.delete('/studies/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 router.delete('/series/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
+
+//Anonymize simplified API
+router.post('/anonymize', anonymizeStudy)
 
 module.exports = router

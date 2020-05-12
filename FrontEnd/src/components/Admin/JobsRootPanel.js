@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import apis from "../../services/apis";
@@ -93,7 +93,7 @@ class JobsRootPanel extends Component {
 
     render() {
         return (
-            <div className='jumbotron'>
+            <Fragment>
                 <h2 className="card-title">Jobs</h2>
                 <Modal show={this.state.showDetail} onHide={() => this.setState({showDetail: false})}>
                     <Modal.Header closeButton>
@@ -107,7 +107,7 @@ class JobsRootPanel extends Component {
                     </Modal.Footer>
                 </Modal>
                 <BootstrapTable keyField='ID' striped={true} data={this.state.rows} columns={this.column} pagination={paginationFactory()}/>
-            </div>
+            </Fragment>
         );
     }
 }

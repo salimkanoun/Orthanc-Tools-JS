@@ -125,8 +125,7 @@ class AnonPanel extends Component {
             <div className='jumbotron'>
                 <h2 className='card-title mb-3'>Anonymize</h2>
                 <div className="row">
-                    <div className="col-sm">
-                        <button type='button' className="btn btn-warning float-left" onClick={this.emptyList}>Empty List</button>
+                    <div className="col-sm mb-3">
                         <TablePatient 
                             data={this.getPatients()} 
                             rowEvents={this.rowEvents} 
@@ -144,6 +143,7 @@ class AnonPanel extends Component {
                             }) }
                             rowStyle={this.rowStyle} 
                             onDelete={this.removePatient} />
+                            <button type='button' className="btn btn-warning float-right" onClick={this.emptyList}>Empty List</button>
                     </div>
                     <div className="col-sm">
                         <TableStudy 
