@@ -6,15 +6,16 @@ import Select from 'react-select'
 import TablePatient from '../CommonComponents/RessourcesDisplay/TablePatients'
 import TableStudy from "../CommonComponents/RessourcesDisplay/TableStudy"
 
-import { emptyAnonList, removePatientFromAnonList, removeStudyFromAnonList, saveNewValues } from '../../actions/AnonList'
+import { emptyAnonList, removePatientFromAnonList, removeStudyFromAnonList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
+import apis from "../../services/apis"
 
 
 class AnonPanel extends Component {
 
     state = { 
         currentPatient: '', 
-        profile: 'default'
+        prefix: ''
     }
 
 
@@ -26,10 +27,12 @@ class AnonPanel extends Component {
         this.saveNewValues = this.saveNewValues.bind(this)
         this.anonymize = this.anonymize.bind(this)
         this.changeProfile = this.changeProfile.bind(this)
+        this.handleChange = this.handleChange.bind(this)
+        this.autoFill = this.autoFill.bind(this)
     }
 
     changeProfile(event){
-        this.setState({profile: event.value})
+        this.props.saveProfile(event.value)
     }
 
     removePatient(patientID){
@@ -84,46 +87,83 @@ class AnonPanel extends Component {
                 studies.push({
                     StudyOrthancID: study.ID, 
                     ...study.MainDicomTags, 
-                    newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : ''
+                    newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '', 
+                    newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
                 })
             }
         })
         return studies
     }
 
-    anonymize(){
+    async anonymize(){
         let listToAnonymize = []
         this.props.anonList.forEach(element => {
             let payload = {
                 OrthancStudyID: element.ID, 
-                profile: this.state.profile
+                profile: this.props.profile
             }
             if ((element.PatientMainDicomTags.newPatientName && element.PatientMainDicomTags.newPatientName !== '' )||
                 (element.PatientMainDicomTags.newPatientID && element.PatientMainDicomTags.newPatientID !== '') ||
-                (element.MainDicomTags.newStudyDescription && element.MainDicomTags.newStudyDescription !== '')){
+                (element.MainDicomTags.newStudyDescription && element.MainDicomTags.newStudyDescription !== '') ||
+                (element.MainDicomTags.newAccessionNumber && element.MainDicomTags.newAccessionNumber !== '')){
                 
                     payload = {
                         ...payload, 
                         Name: element.PatientMainDicomTags.newPatientName && element.PatientMainDicomTags.newPatientName !== '' ? element.PatientMainDicomTags.newPatientName : element.PatientMainDicomTags.PatientName, 
                         ID: element.PatientMainDicomTags.newPatientID && element.PatientMainDicomTags.newPatientID !== '' ? element.PatientMainDicomTags.newPatientID : element.PatientMainDicomTags.PatientID, 
-                        StudyDescription: element.MainDicomTags.newStudyDescription && element.MainDicomTags.newStudyDescription !== '' ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription
+                        StudyDescription: element.MainDicomTags.newStudyDescription && element.MainDicomTags.newStudyDescription !== '' ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
+                        AccessionNumber: element.MainDicomTags.newAccessionNumber && element.MainDicomTags.newAccessionNumber !== '' ? element.MainDicomTags.newAccessionNumber : element.MainDicomTags.AccessionNumber
                     }
             }
             if (Object.keys(payload).length > 2)
                 listToAnonymize.push(payload)
         })
         console.log('List à anonymiser : \n', listToAnonymize)
+        let jobID = []
+        for (let i in listToAnonymize){
+            let study = listToAnonymize[i]
+            console.log(study)
+            let rep = await apis.anon.anonymize(study.OrthancStudyID, study.profile, study.AccessionNumber, study.Name, study.ID, study.StudyDescription)
+            jobID.push(rep)
+        }
+        console.log('Jobs ID : ', jobID)
     }
 
+    getProfileSelected(){
+        let index = -1
+        this.option.forEach(element => {
+            if (element.value === this.props.profile){
+                index = this.option.indexOf(element)
+            }
+        })
+        return this.option[index]
+    }
 
-    render() {
-        const option = [
+    handleChange(event){
+        this.setState({prefix: event.target.value})
+    }
+
+    autoFill(){
+        this.props.autoFill(this.state.prefix)
+    }
+
+    option = [
             {value: 'default', label: 'Default'}, 
             {value: 'full', label: 'Full'}
         ]
+
+    render() {
         return (
             <div className='jumbotron'>
                 <h2 className='card-title mb-3'>Anonymize</h2>
+                <div className="row">
+                    <div className='col-2'>
+                        <input type='text' name='prefix' id='prefix' className='form-control' placeholder='prefix' onChange={this.handleChange} />
+                    </div>
+                    <div className='col-sm'>
+                        <button type='button' className='btn btn-warning' onClick={this.autoFill}>AutoFill</button>
+                    </div>
+                </div>
                 <div className="row">
                     <div className="col-sm mb-3">
                         <TablePatient 
@@ -162,8 +202,11 @@ class AnonPanel extends Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-sm" >
-                        <Select name='profile' single options={option} onChange={this.changeProfile} placeholder='Profile' defaultValue={option[0]} />  
+                    <div className="col-auto" >
+                        <label htmlFor='profile'>Anon Profile : </label>
+                    </div>
+                    <div className="col-2" >
+                        <Select name='profile' single options={this.option} onChange={this.changeProfile} placeholder='Profile' value={this.getProfileSelected()} />  
                     </div>
                     <div className="col-sm">
                         <button className='btn btn-primary' type='button' onClick={this.anonymize} >Anonymize</button> 
@@ -176,14 +219,17 @@ class AnonPanel extends Component {
 
 const mapStateToProps = state => {
     return { 
-        anonList: state.AnonList.anonList
+        anonList: state.AnonList.anonList, 
+        profile: state.AnonList.profile
     }
 }
 const mapDispatchToProps = {
     emptyAnonList, 
     removePatientFromAnonList, 
     removeStudyFromAnonList, 
-    saveNewValues
+    saveNewValues, 
+    saveProfile, 
+    autoFill
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AnonPanel)

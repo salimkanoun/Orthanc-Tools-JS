@@ -8,6 +8,7 @@ import exportDicom from './exportDicom'
 import authentication from './authentication'
 import peers from './peers'
 import content from './content'
+import anon from './anon'
 
 export default {
   aets,
@@ -19,5 +20,6 @@ export default {
   exportDicom,
   authentication, 
   peers, 
-  content
+  content, 
+  anon
 }

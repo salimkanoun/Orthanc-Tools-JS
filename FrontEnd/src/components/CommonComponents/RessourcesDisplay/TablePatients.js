@@ -57,7 +57,8 @@ class TablePatients extends Component{
         hidden: this.props.hiddenRemoveRow,
         formatter: (cell, row, index) => {
             return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.onDelete(row.PatientOrthancID)}}>Remove</button>
-        }
+        }, 
+        editable: false
     
     }]
 

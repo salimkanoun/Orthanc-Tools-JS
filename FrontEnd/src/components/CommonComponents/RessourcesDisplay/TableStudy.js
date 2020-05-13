@@ -66,6 +66,12 @@ class TableStudy extends Component {
         hidden: this.props.hiddenAccessionNumber, 
         editable: false
     }, {
+        dataField: 'newAccessionNumber', 
+        text: 'New Accession Number',
+        sort: true, 
+        editable: this.props.editable, 
+        hidden: !this.props.editable
+    }, {
         dataField: 'Action', 
         text: 'Action', 
         hidden: this.props.hiddenActionBouton,
