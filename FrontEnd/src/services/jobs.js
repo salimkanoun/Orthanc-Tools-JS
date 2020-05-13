@@ -30,7 +30,7 @@ const jobs = {
     },
 
     cancelJob(jobId){
-      return fetch('/api/jobs/' + jobId, + '/cancel', {
+      return fetch('/api/jobs/' + jobId + '/cancel', {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -47,7 +47,7 @@ const jobs = {
     }, 
 
     pauseJob(jobId){
-      return fetch('/api/jobs/' + jobId, + '/pause', {
+      return fetch('/api/jobs/' + jobId + '/pause', {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -63,7 +63,7 @@ const jobs = {
     }, 
 
     resumbitJob(jobId){
-      return fetch('/api/jobs/' + jobId, + '/resubmit', {
+      return fetch('/api/jobs/' + jobId + '/resubmit', {
           method: 'POST',
           headers: {
             Accept: 'application/json',
@@ -79,7 +79,7 @@ const jobs = {
     }, 
 
     resumeJob(jobId){
-      return fetch('/api/jobs/' + jobId, + '/resume', {
+      return fetch('/api/jobs/' + jobId + '/resume', {
           method: 'POST',
           headers: {
             Accept: 'application/json',

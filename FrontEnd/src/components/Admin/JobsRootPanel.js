@@ -35,13 +35,7 @@ class JobsRootPanel extends Component {
                 ...data[id]
             })
         }
-        console.log(rows)
         this.setState({rows: rows})
-    }
-
-    getDetails(){
-        let str = JSON.stringify(this.state.data[this.state.currentID], null, 2)
-        return str
     }
 
     dropDown(id){
@@ -60,6 +54,39 @@ class JobsRootPanel extends Component {
             </Dropdown>
         )
     }
+
+    columnDetails = [
+        {
+            dataField: 'ID', 
+            hidden: true
+        }, {
+            dataField: 'ErrorCode', 
+            text: 'Error Code'
+        }, 
+        {
+            dataField: 'ErrorDescription', 
+            text: 'Error Description'
+        }, {
+            dataField: 'Priority', 
+            text: 'Priority'
+        }, {
+            dataField: 'Type', 
+            text: 'Type'
+        }, {
+            dataField: 'EffectiveRuntime', 
+            text: 'Effective Runtime'
+        }, {
+            dataField: 'Content', 
+            text: 'Details', 
+            formatter: (cell, row, index) => {
+                return (
+                    <pre>
+                        {JSON.stringify(row.Content , null, 2)}
+                    </pre>
+                )
+            }
+        }
+    ]
 
     column = [
         {
@@ -95,12 +122,14 @@ class JobsRootPanel extends Component {
         return (
             <Fragment>
                 <h2 className="card-title">Jobs</h2>
-                <Modal show={this.state.showDetail} onHide={() => this.setState({showDetail: false})}>
+                <Modal show={this.state.showDetail} onHide={() => this.setState({showDetail: false})} size='xl'>
                     <Modal.Header closeButton>
                         <Modal.Title>Job Details</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {this.getDetails()} {/*A modifier et rajouter une table*/}
+                        {
+                            <BootstrapTable keyField='ID' data={[this.state.data[this.state.currentID]]} columns={this.columnDetails} striped={true} wrapperClasses="table-responsive" />
+                        }
                     </Modal.Body>
                     <Modal.Footer>
                         <button type='button' className='btn btn-primary' onClick={()=>this.setState({showDetail: false})}>Close</button>
