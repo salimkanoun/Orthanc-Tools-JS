@@ -148,22 +148,15 @@ class AnonPanel extends Component {
     }
 
     option = [
-            {value: 'default', label: 'Default'}, 
-            {value: 'full', label: 'Full'}
+            {value: 'Default', label: 'Default'}, 
+            {value: 'Full', label: 'Full'}
         ]
 
     render() {
         return (
             <div className='jumbotron'>
                 <h2 className='card-title mb-3'>Anonymize</h2>
-                <div className="row">
-                    <div className='col-2'>
-                        <input type='text' name='prefix' id='prefix' className='form-control' placeholder='prefix' onChange={this.handleChange} />
-                    </div>
-                    <div className='col-sm'>
-                        <button type='button' className='btn btn-warning' onClick={this.autoFill}>AutoFill</button>
-                    </div>
-                </div>
+                
                 <div className="row">
                     <div className="col-sm mb-3">
                         <TablePatient 
@@ -183,7 +176,6 @@ class AnonPanel extends Component {
                             }) }
                             rowStyle={this.rowStyle} 
                             onDelete={this.removePatient} />
-                            <button type='button' className="btn btn-warning float-right" onClick={this.emptyList}>Empty List</button>
                     </div>
                     <div className="col-sm">
                         <TableStudy 
@@ -200,6 +192,18 @@ class AnonPanel extends Component {
                             }) }
                         />
                     </div>
+                </div>
+                <div className="row mb-3">
+                    <div className='col-sm'>
+                        <input type='text' name='prefix' id='prefix' className='form-control' placeholder='prefix' onChange={this.handleChange} />
+                    </div>
+                    <div className='col-sm'>
+                        <button type='button' className='btn btn-warning mr-3' onClick={this.autoFill}>AutoFill</button>
+                        <button type='button' className="btn btn-warning" onClick={this.emptyList}>Empty List</button>
+                    
+                    </div>
+                    <div className='col-sm'>
+                        </div>
                 </div>
                 <div className="row">
                     <div className="col-auto" >
