@@ -7,19 +7,36 @@ import Modal from "react-bootstrap/Modal";
 
 
 class JobsRootPanel extends Component {
+
     constructor(props) {
         super(props);
         this.getJobs = this.getJobs.bind(this)
-        this.state = { 
-            data: [], 
-            rows: [], 
-            showDetail: false, 
-            currentID: ''
-        }
+        this.startRefreshMonitoring = this.startRefreshMonitoring.bind(this)
+        this.stopRefreshMonitoring = this.stopRefreshMonitoring.bind(this)
     }
 
-    componentWillMount(){
+    state = { 
+        data: [], 
+        rows: [], 
+        showDetail: false, 
+        currentID: ''
+    }
+
+    componentDidMount(){
         this.getJobs()
+        this.startRefreshMonitoring()
+    }
+
+    componentWillUnmount(){
+        this.stopRefreshMonitoring()
+    }
+
+    startRefreshMonitoring(){
+        this.intervalChcker = setInterval(() => {this.getJobs()}, 2000)
+    }
+
+    stopRefreshMonitoring () {
+        clearInterval(this.intervalChcker)
     }
 
     async getJobs(){
@@ -45,11 +62,10 @@ class JobsRootPanel extends Component {
                     Actions
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    {/*Les APIS ne s'éxécute pas*/}
-                    <button className='dropdown-item bg-danger' onClick={async () => await apis.jobs.cancelJob(id)}>Cancel</button> 
-                    <button className='dropdown-item bg-warning' onClick={async () => await apis.jobs.pauseJob(id)}>Pause</button>
-                    <button className='dropdown-item bg-primary' onClick={async () => await apis.jobs.resumbitJob(id)}>Resumbit</button>
-                    <button className='dropdown-item bg-info' onClick={async () => await apis.jobs.resumeJob(id)}>Resume</button>
+                    <button className='dropdown-item bg-danger' onClick={async () => {await apis.jobs.cancelJob(id); this.getJobs()}}>Cancel</button> 
+                    <button className='dropdown-item bg-warning' onClick={async () => {await apis.jobs.pauseJob(id); this.getJobs()}}>Pause</button>
+                    <button className='dropdown-item bg-primary' onClick={async () => {await apis.jobs.resumbitJob(id); this.getJobs()}}>Resumbit</button>
+                    <button className='dropdown-item bg-info' onClick={async () => {await apis.jobs.resumeJob(id); this.getJobs()}}>Resume</button>
                 </Dropdown.Menu>
             </Dropdown>
         )

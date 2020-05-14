@@ -41,7 +41,7 @@ const jobs = {
         if (!answer.ok) { throw answer }
         toastifySuccess('Job Cancelled')
       }).catch(error => {
-        toastifyError(error)
+        toastifyError('error')
       })
       
     }, 
@@ -58,7 +58,7 @@ const jobs = {
           if (!answer.ok) { throw answer }
           toastifySuccess('Job paused')
         }).catch(error => {
-          toastifyError(error)
+          toastifyError('error')
         })
     }, 
 
@@ -74,7 +74,7 @@ const jobs = {
           if (!answer.ok) { throw answer }
           toastifySuccess('Job resubmited')
         }).catch(error => {
-          toastifyError(error)
+          toastifyError('error')
         })
     }, 
 
@@ -90,7 +90,7 @@ const jobs = {
           if (!answer.ok) { throw answer }
           toastifySuccess('Job resumed')
         }).catch(error => {
-          toastifyError(error)
+          toastifyError('error')
         })
     }, 
 }
