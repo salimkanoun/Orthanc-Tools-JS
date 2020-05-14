@@ -1,7 +1,7 @@
 import { ANONYMIZE_CONTENT, ADD_ANON_LIST, EMPTY_ANON_LIST, REMOVE_STUDY_ANON_LIST, REMOVE_PATIENT_ANON_LIST, SAVE_NEW_VALUES, SAVE_ANON_PROFILE, AUTOFILL } from "../actions/actions-types"
 const initialState = {
     anonList: [], 
-    profile: 'default'
+    profile: 'Default'
 }
 /**
  * TODO
