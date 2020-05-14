@@ -5,17 +5,23 @@ import Select from 'react-select'
 
 import TablePatient from '../CommonComponents/RessourcesDisplay/TablePatients'
 import TableStudy from "../CommonComponents/RessourcesDisplay/TableStudy"
+import MonitorJob from '../../tools/MonitorJob'
+import apis from "../../services/apis"
 
 import { emptyAnonList, removePatientFromAnonList, removeStudyFromAnonList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
-import apis from "../../services/apis"
 
 
 class AnonPanel extends Component {
 
     state = { 
         currentPatient: '', 
-        prefix: ''
+        prefix: '', 
+        listToAnonymize: [],
+        progress: {
+            nb: 0,
+            progress: 0
+        }
     }
 
 
@@ -30,6 +36,16 @@ class AnonPanel extends Component {
         this.handleChange = this.handleChange.bind(this)
         this.autoFill = this.autoFill.bind(this)
     }
+
+    updateProgress(progress, i){
+        this.setState({
+            progress: {
+                nb: i, 
+                progress: progress
+            }
+        })
+    }
+
 
     changeProfile(event){
         this.props.saveProfile(event.value)
@@ -96,6 +112,9 @@ class AnonPanel extends Component {
     }
 
     async anonymize(){
+        this.setState({
+            monitors: []
+        })
         let listToAnonymize = []
         this.props.anonList.forEach(element => {
             let payload = {
@@ -119,14 +138,36 @@ class AnonPanel extends Component {
                 listToAnonymize.push(payload)
         })
         console.log('List à anonymiser : \n', listToAnonymize)
-        let jobID = []
         for (let i in listToAnonymize){
             let study = listToAnonymize[i]
             console.log(study)
-            let rep = await apis.anon.anonymize(study.OrthancStudyID, study.profile, study.AccessionNumber, study.Name, study.ID, study.StudyDescription)
-            jobID.push(rep)
+            let id = await apis.anon.anonymize(study.OrthancStudyID, study.profile, study.AccessionNumber, study.Name, study.ID, study.StudyDescription)
+
+            let jobMonitoring = new MonitorJob(id)
+            let self = this
+            
+            jobMonitoring.onUpdate(function (progress) {
+                self.updateProgress(progress, i)
+            })
+    
+            jobMonitoring.onFinish(function (state) {
+                if (state === MonitorJob.Success){
+                    console.log("finish ", i)
+                } else if (state === MonitorJob.Failure){
+                    console.log("Failure ", i)
+                }
+                
+            })
+
+            jobMonitoring.startMonitoringJob()
+            this.job = jobMonitoring
+
+            
         }
-        console.log('Jobs ID : ', jobID)
+    }
+
+    componentWillUnmount() {
+        if (this.job !== undefined) this.job.cancelJob()
     }
 
     getProfileSelected(){
@@ -218,6 +259,7 @@ class AnonPanel extends Component {
                         <button className='btn btn-primary' type='button' onClick={this.anonymize} >Anonymize</button> 
                     </div>
                 </div>
+                <label htmlFor='progress' key={this.state.progress.i} >progress: job n°{this.state.progress.nb} : {this.state.progress.progress}%</label>
             </div>
         );
     }
