@@ -1,25 +1,22 @@
 import React, { Component, Fragment } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
-import apis from "../../services/apis";
 import Dropdown from "react-bootstrap/Dropdown";
 import Modal from "react-bootstrap/Modal";
 
+import apis from "../../services/apis";
 
 class JobsRootPanel extends Component {
 
     constructor(props) {
         super(props);
         this.getJobs = this.getJobs.bind(this)
-        this.startRefreshMonitoring = this.startRefreshMonitoring.bind(this)
-        this.stopRefreshMonitoring = this.stopRefreshMonitoring.bind(this)
     }
 
     state = { 
-        data: [], 
         rows: [], 
         showDetail: false, 
-        currentID: ''
+        currentRowIndex: ''
     }
 
     componentDidMount(){
@@ -40,18 +37,15 @@ class JobsRootPanel extends Component {
     }
 
     async getJobs(){
-        let ID = await apis.jobs.getJobsID()
-        let data = []
-        for (let i in ID){
-            data[ID[i]] = await apis.jobs.getJobInfos(ID[i])
-        }
-        this.setState({data: data})
-        let rows = []
-        for (let id in data){
+        let jobsDetails = await apis.jobs.getJobs()
+
+        let rows=[]
+        jobsDetails.forEach(jobDetails => {
             rows.push({
-                ...data[id]
+                ...jobDetails
             })
-        }
+        })
+
         this.setState({rows: rows})
     }
 
@@ -121,7 +115,7 @@ class JobsRootPanel extends Component {
             dataField: 'Details', 
             text: 'Details', 
             formatter: ( (value, row, index) => {
-                return <button className='btn btn-info' type='button' onClick={() => this.setState({showDetail: true, currentID: row.ID})}>Details</button>
+                return <button className='btn btn-info' type='button' onClick={() => this.setState({showDetail: true, currentRowIndex: index})}>Details</button>
             })
         }, {
             dataField: 'Actions', 
@@ -132,8 +126,6 @@ class JobsRootPanel extends Component {
         }
     ]
 
-
-
     render() {
         return (
             <Fragment>
@@ -143,15 +135,29 @@ class JobsRootPanel extends Component {
                         <Modal.Title>Job Details</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {
-                            <BootstrapTable keyField='ID' data={[this.state.data[this.state.currentID]]} columns={this.columnDetails} striped={true} wrapperClasses="table-responsive" />
-                        }
+                        <BootstrapTable 
+                            keyField='ID' 
+                            data={[this.state.rows[this.state.currentRowIndex]]} 
+                            columns={this.columnDetails} 
+                            striped={true} 
+                            wrapperClasses="table-responsive" 
+                        />
                     </Modal.Body>
                     <Modal.Footer>
-                        <button type='button' className='btn btn-primary' onClick={()=>this.setState({showDetail: false})}>Close</button>
+                        <button type='button' 
+                        className='btn btn-primary' 
+                        onClick={()=>this.setState({showDetail: false})}>
+                            Close
+                        </button>
                     </Modal.Footer>
                 </Modal>
-                <BootstrapTable keyField='ID' striped={true} data={this.state.rows} columns={this.column} pagination={paginationFactory()}/>
+                <BootstrapTable 
+                    keyField='ID' 
+                    striped={true} 
+                    data={this.state.rows} 
+                    columns={this.column} 
+                    pagination={paginationFactory()}
+                />
             </Fragment>
         );
     }

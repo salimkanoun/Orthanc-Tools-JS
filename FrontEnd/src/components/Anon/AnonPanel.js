@@ -211,7 +211,8 @@ class AnonPanel extends Component {
                             hiddenNewID={false} 
                             cellEdit={ cellEditFactory({ 
                                 blurToSave: true,
-                                mode: 'dbclick', 
+                                autoSelectText: true,
+                                mode: 'click', 
                                 afterSaveCell: (oldValue, newValue, row, column) => {
                                     this.saveNewValues(row.PatientOrthancID, column.dataField, newValue)
                                 }
@@ -228,7 +229,8 @@ class AnonPanel extends Component {
                             editable={true}
                             cellEdit={ cellEditFactory({ 
                                 blurToSave: true,
-                                mode: 'dbclick', 
+                                autoSelectText: true,
+                                mode: 'click',
                                 afterSaveCell: (oldValue, newValue, row, column) => {
                                     this.saveNewValues(row.StudyOrthancID, column.dataField, newValue)
                                 }

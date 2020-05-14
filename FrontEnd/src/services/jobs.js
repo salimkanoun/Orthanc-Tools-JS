@@ -2,8 +2,8 @@ import { toastifyError, toastifySuccess } from './toastify'
 
 const jobs = {
 
-    getJobsID(){
-      return fetch('/api/jobs', {
+    getJobs(){
+      return fetch('/api/jobs?expand', {
         method: 'GET'
       }).then((answer) => {
         if (!answer.ok) { throw answer }
@@ -11,22 +11,6 @@ const jobs = {
       }).catch(error => {
         toastifyError(error)
       })
-    },
-
-    getJobInfos(jobId){
-        return fetch('/api/jobs/' + jobId, {
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-            }
-          }).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return answer.json()
-          }).catch(error => {
-            toastifyError(error)
-          })
-
     },
 
     cancelJob(jobId){
