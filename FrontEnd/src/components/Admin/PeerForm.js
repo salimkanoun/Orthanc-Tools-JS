@@ -4,7 +4,6 @@ import apis from '../../services/apis'
 /**
  * Form to declare or modify an Orthanc Peer
  */
-
 export default class PeerForm extends Component{
 
     constructor(props){
@@ -39,10 +38,8 @@ export default class PeerForm extends Component{
             Password: this.state.password
         }
         
-        
         await apis.peers.updatePeer(this.state.name, putData)
         
-
         this.props.refreshPeerData()
     }
 

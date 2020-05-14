@@ -283,7 +283,7 @@ class Orthanc {
      * @param {string} newPatientName
      * @param {string} newStudyDescription
      */
-  buildAnonQuery (profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription) {
+  buildAnonQuery (profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription, synchronous) {
     const tagObjectArray = []
     let date
     let body
@@ -354,6 +354,7 @@ class Orthanc {
     const anonParameters = {
       KeepPrivateTags: false,
       Force: true,
+      Synchronous : synchronous,
       Keep: [],
       Replace: {}
     }
@@ -371,8 +372,8 @@ class Orthanc {
     return anonParameters
   }
 
-  async makeAnon (level, orthancID, profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription) {
-    let postData = this.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription);
+  async makeAnon (level, orthancID, profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription, synchronous) {
+    let postData = this.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription, synchronous);
     const answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID + '/anonymize', 'POST', postData )
     return answer
   }
