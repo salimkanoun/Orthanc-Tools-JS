@@ -3,9 +3,8 @@ import {
   Switch,
   Route
 } from 'react-router-dom'
-import './style.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import Helmet from 'react-helmet'
+import { toast } from 'react-toastify'
 
 import Query from './components/Query/Components/Query'
 import AutoQueryRoot from './components/AutoQuery/Component/AutoQueryRoot'
@@ -17,18 +16,21 @@ import ContentRootPanel from './components/OrthancContent/ContentRootPanel'
 import Footer from './components/Main/Footer'
 import ExportPanel from './components/Export/ExportPanel'
 import AnonPanel from './components/Anon/AnonPanel'
-
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
 import NavBar from './components/Main/NavBar'
 
-//Css for boostrap table
+//CSS Boostrap
+import 'bootstrap/dist/css/bootstrap.min.css'
+//CSS Toastify
+import 'react-toastify/dist/ReactToastify.css'
+//Css for Boostrap table
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 //Css for uppy
 import '@uppy/core/dist/style.css'
 import '@uppy/drag-drop/dist/style.css'
 import '@uppy/status-bar/dist/style.css'
+//Custom CSS
+import './style.css'
 
 // Configuring Toastify params that will be used all over the app
 toast.configure({

@@ -28,9 +28,6 @@ class TableStudy extends Component {
         text: 'Patient Name', 
         sort: true, 
         hidden: this.props.hiddenName,
-        style: {
-            maxWidth: '50px'
-        }, 
         title: (cell, row, rowIndex, colIndex) => row.PatientName, 
         editable: false
     }, {
@@ -48,9 +45,6 @@ class TableStudy extends Component {
         dataField: 'StudyDescription', 
         text: 'Description',
         sort: true,
-        style: {
-            maxWidth: '50px'
-        }, 
         title: (cell, row, rowIndex, colIndex) => row.StudyDescription, 
         editable: false
     }, {
