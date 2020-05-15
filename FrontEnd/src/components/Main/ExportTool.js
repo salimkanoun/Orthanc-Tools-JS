@@ -44,7 +44,7 @@ class ExportTool extends Component {
                             <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
                         </div>
                         <TableStudiesWithNestedSeries 
-                            data={seriesArrayToStudyArray(this.props.exportList, this.props.studyArray)} 
+                            data={seriesArrayToStudyArray(this.props.seriesArray, this.props.studyArray)} 
                             hiddenRemoveRow={false} 
                             hiddenAccessionNumber={true}
                             hiddenActionBouton={true}
@@ -63,8 +63,8 @@ class ExportTool extends Component {
 
 const mapStateToProps = state => {
     return {
-      exportList: state.ExportList.exportList,
-      studyArray: state.ExportList.studyArray
+        seriesArray: state.ExportList.seriesArray,
+        studyArray: state.ExportList.studyArray
     }
 }
 

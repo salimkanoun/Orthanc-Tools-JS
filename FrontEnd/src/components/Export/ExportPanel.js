@@ -39,7 +39,7 @@ class ExportPanel extends Component {
 
     getExportIDArray(){
         let ids = []
-        this.props.exportList.exportList.forEach(serie => {
+        this.props.exportList.seriesArray.forEach(serie => {
             ids.push(serie.ID)
         })
         return ids
@@ -82,7 +82,7 @@ class ExportPanel extends Component {
     }
 
     getStudies(){
-        let list = seriesArrayToStudyArray(this.props.exportList.exportList, this.props.exportList.studyArray)
+        let list = seriesArrayToStudyArray(this.props.exportList.seriesArray, this.props.exportList.studyArray)
         return list
     }
 
@@ -90,7 +90,7 @@ class ExportPanel extends Component {
         
         let studies = []
         
-        this.props.exportList.exportList.forEach(serie => {
+        this.props.exportList.seriesArray.forEach(serie => {
             if (serie.ParentStudy === this.state.currentStudy){
                 studies.push({
                     ...serie.MainDicomTags,
