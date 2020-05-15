@@ -1,11 +1,7 @@
-import {  ANONYMIZE_CONTENT, ADD_ANON_LIST, EMPTY_ANON_LIST, REMOVE_PATIENT_ANON_LIST, REMOVE_STUDY_ANON_LIST, SAVE_NEW_VALUES, SAVE_ANON_PROFILE, AUTOFILL } from './actions-types'
+import {  ADD_ANON_LIST, EMPTY_ANON_LIST, REMOVE_PATIENT_ANON_LIST, REMOVE_STUDY_ANON_LIST, SAVE_NEW_VALUES, SAVE_ANON_PROFILE, AUTOFILL, ADD_ANONYMIZED_LIST, EMPTY_ANONYMIZED_LIST, REMOVE_STUDY_ANONYMIZED_LIST } from './actions-types'
 
 
-export function anonymizeContent(){
-    return {
-        type : ANONYMIZE_CONTENT
-    }
-}
+
 
 export function addToAnonList(anonList){
     return {
@@ -14,9 +10,22 @@ export function addToAnonList(anonList){
     }
 }
 
+export function addToAnonymizedList(anonList){
+    return {
+        type: ADD_ANONYMIZED_LIST, 
+        payload: anonList
+    }
+}
+
 export function emptyAnonList(){
     return {
         type: EMPTY_ANON_LIST
+    }
+}
+
+export function emptyAnonymizedList(){
+    return {
+        type: EMPTY_ANONYMIZED_LIST
     }
 }
 
@@ -30,6 +39,13 @@ export function removePatientFromAnonList(patientOrthancID){
 export function removeStudyFromAnonList(studyOrhancID){
     return {
         type: REMOVE_STUDY_ANON_LIST, 
+        payload: studyOrhancID
+    }
+}
+
+export function removeStudyFromAnonymizedList(studyOrhancID){
+    return {
+        type: REMOVE_STUDY_ANONYMIZED_LIST, 
         payload: studyOrhancID
     }
 }
