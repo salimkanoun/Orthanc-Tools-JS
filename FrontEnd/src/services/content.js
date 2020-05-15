@@ -34,7 +34,7 @@ const query  = {
     },
 
     getStudiesDetails(ID){
-        return fetch('api/studies/' + ID, {
+        return fetch('/api/studies/' + ID, {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
