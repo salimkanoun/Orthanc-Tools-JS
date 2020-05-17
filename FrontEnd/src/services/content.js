@@ -19,7 +19,7 @@ const query  = {
     },
 
     getPatientsDetails(ID){
-        return fetch('/api/patients/' + ID, {
+        return fetch('/api/patients/' + ID + '?expand', {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
@@ -34,7 +34,7 @@ const query  = {
     },
 
     getStudiesDetails(ID){
-        return fetch('/api/studies/' + ID, {
+        return fetch('/api/studies/' + ID+ '?expand', {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
@@ -67,9 +67,8 @@ const query  = {
         })
     },
 
-    getSeriesParentDetails(seriesID, parentLevel){
-
-        return fetch('/api/series/' + seriesID + '/'+parentLevel+'?expand', {
+    getSeriesDetailsByID(serieID){
+        return fetch('/api/series/' + serieID + '?expand', {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
@@ -81,7 +80,6 @@ const query  = {
         }).catch((error) => {
             toastifyError(error)
         })
-
     },
 
     deletePatient(ID){
