@@ -57,10 +57,10 @@ function App () {
         <Route exact path='/query' component={Query} />
         <Route exact path='/auto-query' component={AutoQueryRoot} />
         <Route exact path='/options' component={AdminRootPanel} />
-        <Route exact path='/OrthancContent' component={ContentRootPanel} />
+        <Route exact path='/orthanc-content' component={ContentRootPanel} />
         <Route exact path='/robot/:username' component={RobotView} />
-        <Route exact path='/OrthancContent/Export' component={ExportPanel} />
-        <Route exact path='/OrthancContent/Anon' component={AnonPanel} /> 
+        <Route exact path='/export' component={ExportPanel} />
+        <Route exact path='/anonymize' component={AnonPanel} /> 
       </Switch>
       <Footer/>
     </>

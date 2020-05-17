@@ -10,6 +10,7 @@ const peers = {
             })
             .catch((error) => {
                 toastifyError(error)
+                return []
             })
     },
 
