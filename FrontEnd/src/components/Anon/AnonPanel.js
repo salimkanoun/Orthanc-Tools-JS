@@ -37,6 +37,7 @@ class AnonPanel extends Component {
         this.handleChange = this.handleChange.bind(this)
         this.autoFill = this.autoFill.bind(this)
         this.deleteList = this.deleteList.bind(this)
+        this.exportList = this.exportList.bind(this)
     }
 
     updateProgress(progress, i){
@@ -340,7 +341,7 @@ class AnonPanel extends Component {
                 <div className='jumbotron' hidden={this.props.anonymizedList && this.props.anonymizedList.length === 0}>
                     <h2 className='card-title mb-3'>Anonymized studies</h2>
                     <div className='row'>
-                        <div className='col-sm'>
+                        <div className='col-sm mb-3'>
                             <button type='button' className="btn btn-warning float-right" onClick={this.emptyAnonymizedList}>Empty List</button>
                             <TableStudy
                                 {...this.props.baseProps}
@@ -355,13 +356,9 @@ class AnonPanel extends Component {
                                 />
                         </div>
                     </div>
-                    <div className='row'>
-                        <div className='col-sm'>
-                            <button type='button' className='btn btn-primary' onClick={this.exportList} >to Export List</button>
-                        </div>
-                        <div className='col-sm'>
-                            <button type='button' className='btn btn-danger' onClick={this.deleteList} >to Delete List</button>
-                        </div>
+                    <div className='text-center'>
+                        <button type='button' className='btn btn-primary mr-3' onClick={this.exportList} >To Export List</button>
+                        <button type='button' className='btn btn-danger' onClick={this.deleteList} >To Delete List</button>
                     </div>
                 </div>
             </Fragment>)
