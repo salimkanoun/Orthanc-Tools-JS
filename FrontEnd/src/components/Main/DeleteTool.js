@@ -27,9 +27,7 @@ class DeleteTool extends Component {
 
     handleConfirm(){
         this.props.onHide()
-        this.setState({
-            show: !this.state.show
-        })
+        this.props.setConfirm()
     }
 
     //SK Ici laisser l'action au front et gérer un retour visuel, je m'occuperai du back
@@ -37,7 +35,6 @@ class DeleteTool extends Component {
         //close Modal
         this.handleConfirm()
         //call API DELETE
-        console.log(this.props.deleteList)
         this.props.deleteList.forEach(async (study) => {
             console.log("Will delete : ", study.ID)
             await apis.content.deleteStudies(study.ID) //take a lot of time, need to pass by the back
@@ -84,7 +81,7 @@ class DeleteTool extends Component {
                         </Popover.Content>
                     </Popover>
                 </Overlay>
-                <Modal show={this.state.show} onHide={this.handleConfirm}>
+                <Modal show={this.props.confirmDelete} onHide={this.handleConfirm}>
                     <Modal.Header closeButton>
                         <Modal.Title>Confirm Delete</Modal.Title>
                     </Modal.Header>

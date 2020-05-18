@@ -112,6 +112,7 @@ class TableStudy extends Component {
                 exportCSV
             >
                 {props => (<Fragment>
+                <ExportCSVButton className='btn btn-info float-right mr-3' hidden={this.props.hiddenCSV} { ...props.csvProps } >To CSV</ExportCSVButton>
                 <BootstrapTable
                     {...this.props}
                     {...props.baseProps}
@@ -119,7 +120,7 @@ class TableStudy extends Component {
                     pagination={this.props.pagination ? paginationFactory() : undefined}
                 />
                 {this.props.button}
-                <ExportCSVButton className='btn btn-info' hidden={this.props.hiddenCSV} { ...props.csvProps } >to CSV</ExportCSVButton>
+                
             </Fragment>)}
             </ToolkitProvider>
             
