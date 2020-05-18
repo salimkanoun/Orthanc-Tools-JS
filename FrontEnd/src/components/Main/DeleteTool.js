@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import Popover from 'react-bootstrap/Popover'
 import Overlay from 'react-bootstrap/Overlay'
@@ -26,6 +26,7 @@ class DeleteTool extends Component {
     }
 
     handleConfirm(){
+        this.props.onHide()
         this.setState({
             show: !this.state.show
         })
@@ -62,38 +63,39 @@ class DeleteTool extends Component {
     
     render(){
         return (
-            //La position ne suit pas y a une histoire de Ref https://react-bootstrap.github.io/components/overlays/
-            //https://github.com/react-bootstrap/react-bootstrap/issues/2208
-            <Overlay target={this.props.target} show={this.props.show} placement="left" onHide={this.props.onHide} rootClose >
-                <Popover id="popover-basic" style={ { maxWidth : '100%' }} >
-                    <Popover.Title as="h3">Delete List</Popover.Title>
-                    <Popover.Content>
-                        <div className="float-right mb-3">
-                            <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
-                        </div>
-                        <TablePatientsWithNestedStudies 
-                            patients={studyArrayToPatientArray(this.props.deleteList)} 
-                            hiddenActionBouton={true} 
-                            hiddenRemoveRow={false} 
-                            onDeletePatient={this.onDeletePatient} 
-                            onDeleteStudy={this.onDeleteStudy}
-                            wrapperClasses="table-responsive" />
-                        <div className="text-center">
-                            <button type="button" className="btn btn-danger" onClick={this.handleConfirm} >Delete List</button>
-                            <Modal show={this.state.show} onHide={this.handleConfirm}>
-                                <Modal.Header closeButton>
-                                    <Modal.Title>Confirm Delete</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>Are you sure to Delete the list</Modal.Body>
-                                <Modal.Footer>
-                                    <input type='button' className='btn btn-secondary' onClick={this.handleConfirm} value="Cancel" />
-                                    <input type='button' className='btn btn-danger' onClick={this.handleClickDelete} value="Delete" />
-                                </Modal.Footer>
-                            </Modal>
-                        </div>
-                    </Popover.Content>
-                </Popover>
-            </Overlay>
+            <Fragment>
+                <Overlay target={this.props.target} show={this.props.show} placement="left" onHide={this.props.onHide} rootClose >
+                    <Popover id="popover-basic" style={ { maxWidth : '100%' }} >
+                        <Popover.Title as="h3">Delete List</Popover.Title>
+                        <Popover.Content>
+                            <div className="float-right mb-3">
+                                <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
+                            </div>
+                            <TablePatientsWithNestedStudies 
+                                patients={studyArrayToPatientArray(this.props.deleteList)} 
+                                hiddenActionBouton={true} 
+                                hiddenRemoveRow={false} 
+                                onDeletePatient={this.onDeletePatient} 
+                                onDeleteStudy={this.onDeleteStudy}
+                                wrapperClasses="table-responsive" />
+                            <div className="text-center">
+                                <button type="button" className="btn btn-danger" onClick={this.handleConfirm} >Delete List</button>
+                            </div>
+                        </Popover.Content>
+                    </Popover>
+                </Overlay>
+                <Modal show={this.state.show} onHide={this.handleConfirm}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirm Delete</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Are you sure to Delete the list</Modal.Body>
+                    <Modal.Footer>
+                        <input type='button' className='btn btn-secondary' onClick={this.handleConfirm} value="Cancel" />
+                        <input type='button' className='btn btn-danger' onClick={this.handleClickDelete} value="Delete" />
+                    </Modal.Footer>
+                </Modal>
+            </Fragment>
+            
         )
     }
 }
