@@ -3,7 +3,7 @@ import { toastifyError } from "./toastify";
 const query  = {
 
     getContent(contentSerch){
-        return fetch('api/tools/find', {
+        return fetch('/api/tools/find', {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
@@ -19,7 +19,7 @@ const query  = {
     },
 
     getPatientsDetails(ID){
-        return fetch('api/patients/' + ID, {
+        return fetch('/api/patients/' + ID + '?expand', {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
@@ -34,7 +34,7 @@ const query  = {
     },
 
     getStudiesDetails(ID){
-        return fetch('api/studies/' + ID, {
+        return fetch('/api/studies/' + ID+ '?expand', {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
@@ -53,7 +53,7 @@ const query  = {
      * @param {string} studyID 
      */
     getSeriesDetails(studyID){
-        return fetch('api/studies/' + studyID + '/series?expand', {
+        return fetch('/api/studies/' + studyID + '/series?expand', {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
@@ -67,9 +67,8 @@ const query  = {
         })
     },
 
-    getSeriesParentDetails(seriesID, parentLevel){
-
-        return fetch('api/series/' + seriesID + '/'+parentLevel+'?expand', {
+    getSeriesDetailsByID(serieID){
+        return fetch('/api/series/' + serieID + '?expand', {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
@@ -81,11 +80,10 @@ const query  = {
         }).catch((error) => {
             toastifyError(error)
         })
-
     },
 
     deletePatient(ID){
-        return fetch('api/patients/' + ID, {
+        return fetch('/api/patients/' + ID, {
             method: 'DELETE'
         }).then((answer) => {
             if (!answer.ok) {throw answer}
@@ -97,7 +95,7 @@ const query  = {
     },
 
     deleteStudies(ID){
-        return fetch('api/studies/' + ID, {
+        return fetch('/api/studies/' + ID, {
             method: 'DELETE'
         }).then((answer) => {
             if (!answer.ok) {throw answer}
@@ -109,7 +107,7 @@ const query  = {
     },
 
     deleteSeries(ID){
-        return fetch('api/series/' + ID, {
+        return fetch('/api/series/' + ID, {
             method: 'DELETE'
         }).then((answer) => {
             if (!answer.ok) {throw answer}

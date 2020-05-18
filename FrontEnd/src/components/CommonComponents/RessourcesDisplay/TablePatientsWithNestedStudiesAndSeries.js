@@ -24,7 +24,7 @@ class TablePatientsWithNestedStudiesAndSeries extends Component {
             }
     
             return (
-                <TableStudiesWithNestedSeries data={answer} parentPatientId={row.PatientOrthancID} onDeleteStudy={ this.props.onDeleteStudy } onDeleteSeries={ this.props.onDeleteSeries } />
+                <TableStudiesWithNestedSeries data={answer} hiddenActionBouton = {true} parentPatientId={row.PatientOrthancID} onDeleteStudy={ this.props.onDeleteStudy } onDeleteSeries={ this.props.onDeleteSeries } />
             )
         }
                 
@@ -32,7 +32,7 @@ class TablePatientsWithNestedStudiesAndSeries extends Component {
     
     render(){
         return(
-            <TablePatients hiddenActionBouton= {true} patients={this.props.patients} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} {...this.props} />
+            <TablePatients hiddenActionBouton={true} patients={this.props.patients} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} {...this.props} />
         )
     }
 }

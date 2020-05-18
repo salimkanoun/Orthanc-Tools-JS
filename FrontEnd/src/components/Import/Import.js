@@ -15,21 +15,18 @@ import {treeToPatientArray} from '../../tools/processResponse'
 export default class Import extends Component {
 
     state = {
-        importedTree : {},
         errors : [],
-        seriesIdArray : [],
-        studiesIdArray : [],
-        patientIdArray : [],
+        patientsObjects : {},
+        studiesObjects : {},
+        seriesObjects : {},
         showErrors : false
     }
+
+    currentTree = {}
 
     constructor(props){
 
         super(props)
-
-        this.onDeletePatient = this.onDeletePatient.bind(this)
-        this.onDeleteStudy = this.onDeleteStudy.bind(this)
-        this.onDeleteSeries = this.onDeleteSeries.bind(this)
         this.handleShowErrorClick = this.handleShowErrorClick.bind(this)
         
         this.uppy = Uppy({
@@ -45,7 +42,7 @@ export default class Import extends Component {
                 'Content-Type' : 'application/dicom',
                 'Accept': 'application/json'
             }
-          })
+        })
 
         this.uppy.on('upload-success', async (file, response) => {
             if(response.body.ID !== undefined){
@@ -87,119 +84,102 @@ export default class Import extends Component {
     
     async addUploadedFileToState(orthancAnswer){
         let isExistingSerie = this.isKnownSeries(orthancAnswer.ParentSeries)
-        if (isExistingSerie) return
+        console.log(isExistingSerie)
+        if ( isExistingSerie )  {
+            this.setState(state => {
+                console.log(state.seriesObjects[orthancAnswer.ParentSeries]['Instances']) 
+                state.seriesObjects[orthancAnswer.ParentSeries]['Instances'] ++
+                return state
+            } )
+            return
+        }
 
-        let isExistingPatient = this.isknownPatient(orthancAnswer.ParentPatient)
         let isExistingStudy = this.isKnownStudy(orthancAnswer.ParentStudy)
 
-        if(!isExistingStudy || !isExistingPatient){
-
-            let studyDetails = await apis.content.getSeriesParentDetails(orthancAnswer.ParentSeries, 'study')
-
-            if(!isExistingPatient){
-                this.addPatientToState(orthancAnswer.ParentPatient, studyDetails.PatientMainDicomTags)
-            }
-
-            if(!isExistingStudy){
-                this.addStudyToState(orthancAnswer.ParentPatient, orthancAnswer.ParentStudy, studyDetails.MainDicomTags)
-            }
-
-            
-
+        if(!isExistingStudy){
+            let studyDetails = await apis.content.getStudiesDetails(orthancAnswer.ParentStudy)
+            this.addStudyToState(studyDetails)
         }
         
-        if(!isExistingSerie) {
-            let seriesDetails = await apis.content.getSeriesParentDetails(orthancAnswer.ParentSeries, '')
-            this.addSeriesToState(orthancAnswer.ParentPatient, orthancAnswer.ParentStudy, orthancAnswer.ParentSeries,  seriesDetails.MainDicomTags)
-        }
+        let seriesDetails = await apis.content.getSeriesDetailsByID(orthancAnswer.ParentSeries)
+        this.addSeriesToState(seriesDetails)
 
-        console.log(this.state.importedTree)
+        console.log(this.state)
 
     }
 
-    addPatientToState(patientID, mainDicomTags){
-        let objectToAdd = {}
-        objectToAdd[patientID] = mainDicomTags
-        objectToAdd[patientID]['studies']={}
-        this.setState(state => {
-                Object.assign(state['importedTree'], objectToAdd)
-                state.patientIdArray.push(patientID)
-                return state
-            }
-        )
-    }
-
-    addStudyToState(patientID, studyID, mainDicomTags){
-        let objectToAdd = {}
-        objectToAdd[studyID] = mainDicomTags
-        objectToAdd[studyID]['series'] = {}
-        this.setState(state => {
-            Object.assign(state['importedTree'][patientID].studies, objectToAdd)
-            state.studiesIdArray.push(studyID)
+    addStudyToState(studyDetails){
+        this.setState( state => {
+            state.studiesObjects[studyDetails.ID] = studyDetails
+            state.patientsObjects[studyDetails.ParentPatient] = studyDetails.PatientMainDicomTags
             return state
-            }
-        )
+        })
     }
 
-    addSeriesToState(patientID, studyID, seriesID, mainDicomTags){
-        let objectToAdd = []
-        mainDicomTags.Instances = "N/A"
-        objectToAdd[seriesID] = mainDicomTags
-        this.setState(state => {
-            Object.assign(state['importedTree'][patientID]['studies'][studyID]['series'], objectToAdd);
-            state.seriesIdArray.push(seriesID)
+    addSeriesToState(seriesDetails){
+        this.setState( state => {
+            state.seriesObjects[seriesDetails.ID] = {
+                ...seriesDetails,
+                Instances : 1
+            }
             return state
-            }
-        )
-
+        })
     }
 
-    /**
-     * check if patient is already known
-     * @param {string} patientID 
-     */
-    isknownPatient(patientID){
-        let answer  = this.state.patientIdArray.includes(patientID)
-        if (! answer ) {
-            this.setState(state => {
-                state.patientIdArray.push(patientID)
-                return state
+    buildImportTree(){
+        let importedSeries = this.state.seriesObjects
+        let importedTree = {}
+
+        function addNewPatient(patientID, patientDetails){
+            if( ! Object.keys(importedTree).includes(patientID) ) {
+                importedTree[patientID] = {
+                    PatientOrthancID : patientID,
+                    ...patientDetails,
+                    studies : {}
                 }
-            )
+            }
         }
-        return answer
+
+        function addNewStudy(studyID, studyDetails){
+            if( ! Object.keys(importedTree[studyDetails.ParentPatient]['studies']).includes(studyID) ) {
+                importedTree[studyDetails.ParentPatient]['studies'][studyID] = {
+                    ...studyDetails["MainDicomTags"],
+                    series : {}
+                }
+            }
+
+        }
+
+        for(let seriesID of Object.keys(importedSeries)){
+            let series = this.state.seriesObjects[seriesID]
+            let studyDetails = this.state.studiesObjects[series.ParentStudy]
+            let patientDetails = this.state.patientsObjects[studyDetails.ParentPatient]
+            addNewPatient(studyDetails.ParentPatient, patientDetails)
+            addNewStudy(series.ParentStudy, studyDetails)
+            importedTree[studyDetails.ParentPatient]['studies'][series.ParentStudy]['series'][series.ID]={
+                ...series["MainDicomTags"],
+                Instances : series['Instances']
+            }
+        }
+
+        this.currentTree = importedTree
+
+        let resultArray = treeToPatientArray(importedTree)
+
+        return resultArray
+
     }
 
     /**
      * check if study is already known
      * @param {string} studyID 
      */
-    isKnownStudy(studyID){
-        let answer = this.state.studiesIdArray.includes(studyID)
-        if( ! answer ){
-            this.setState(state => {
-                state.studiesIdArray.push(studyID)
-                return state
-                }
-            )
-        }
-        return answer
+    isKnownStudy( studyID ) {
+        return Object.keys(this.state.studiesObjects).includes(studyID)
     }
-
-    /**
-     * check if series ID already known
-     * @param {string} serieID 
-     */
-    isKnownSeries(serieID){
-        let answer = this.state.seriesIdArray.includes(serieID)
-        if (!answer) {
-            this.setState(state => {
-                state.seriesIdArray.push(serieID)
-                return state
-                }
-            )
-        }
-        return answer
+    
+    isKnownSeries ( seriesID ) {
+        return Object.keys(this.state.seriesObjects).includes(seriesID)
     }
 
     /**
@@ -207,69 +187,9 @@ export default class Import extends Component {
      * @param {*} deletedStudyID 
      */
     onDeletePatient(deletedStudyID){
-        let importedTree = this.state.importedTree
-        delete importedTree[deletedStudyID]
-        this.setState({
-            importedTree : importedTree
-        })
-    }
-
-    /**
-     * Remove a study from a patient, 
-     * if last study, call the remove patient
-     * @param {string} patientID 
-     * @param {string} studyID 
-     */
-    removeStudyForPatient(patientID, studyID){
-        let importedTree = this.state.importedTree
-        delete importedTree[patientID]['studies'][studyID]
-
-        if(importedTree[patientID]['studies'].lenght === 0 ) {
-            this.onDeletePatient(patientID)
-            return
-        }
-
-        this.setState({
-            importedTree : importedTree
-        })
-    }
-    /**
-     * Searches for the study deleted and triger the remove methode for study level
-     * @param {string} deletedStudyID 
-     */
-    onDeleteStudy(deletedStudyID){
-        console.log(deletedStudyID)
-        console.log(this.state.importedTree)
-        for( let [patientID, details] of Object.entries(this.state.importedTree) ){
-            console.log(patientID)
-            console.log(details)
-            console.log(this.state.importedTree[patientID])
-            if ( deletedStudyID in details['studies'] ) {
-                this.removeStudyForPatient(patientID, deletedStudyID)
-                break
-            }
-        }
-    }
-
-    /**
-     * Remove a series for list, if last series call the remove study method
-     * @param {string} patientID 
-     * @param {string} studyID 
-     * @param {string} seriesID 
-     */
-    removeSeriesFromStudy(patientID, studyID, seriesID){
-
-        let importedTree = this.state.importedTree
-        delete importedTree[patientID]['studies'][studyID]['series'][seriesID]
-
-        if(importedTree[patientID]['studies'][studyID]['series'].lenght === 0 ) {
-            this.onDeleteStudy(studyID)
-            return
-        }
-
-        this.setState({
-            importedTree : importedTree
-        })
+        //surement mieux de passer par l'API pour get les series de ce patient et l'enlever des imported series
+        //Mais supprime tout le contenu d'orthanc et pas suelement les importé
+        //Ou alors aller vers un dropdown spécial ?
 
     }
 
@@ -278,17 +198,6 @@ export default class Import extends Component {
      * @param {String} deletedSeriesID 
      */
     onDeleteSeries(deletedSeriesID){
-
-        for( let [patientID, detailsPatient] of Object.entries(this.state.importedTree) ){
-            console.log(detailsPatient)
-            console.log(this.state.importedTree[patientID])
-            for( let [studyID, details ] in Object.entries(this.state.importedTree[patientID]['studies'])){
-                if ( deletedSeriesID in details['series'] ) {
-                    this.removeSeriesFromStudy(patientID, studyID, deletedSeriesID)
-                    break
-                }
-            }
-        }
         
     }
 
@@ -318,7 +227,7 @@ export default class Import extends Component {
                     <StatusBar hideUploadButton={false} showProgressDetails={true} hideRetryButton={true} hideAfterFinish={false} uppy={this.uppy} />
                     
                     <div className="float-right">
-                        <input type="button" className="btn btn-warning" value="See Errors" onClick={this.handleShowErrorClick} />
+                        <input type="button" className="btn btn-warning" value={"See Errors ("+this.state.errors.length+")"} onClick={this.handleShowErrorClick} />
                     </div>
 
                     <Modal show={this.state.showErrors} onHide={this.handleShowErrorClick}>
@@ -333,10 +242,8 @@ export default class Import extends Component {
                 </div>
                 <div className="col">
                     <TablePatientsWithNestedStudiesAndSeries 
-                        patients = {treeToPatientArray(this.state.importedTree)}
-                        onDeletePatient = {this.onDeletePatient}
-                        onDeleteStudy = {this.onDeleteStudy}
-                        onDeleteSeries = {this.onDeleteSeries} />
+                        patients = {this.buildImportTree()}
+                    />
                 </div>
             </div>
 

@@ -17,7 +17,6 @@ class ExportTool extends Component {
         this.handleClickEmpty = this.handleClickEmpty.bind(this)
         this.onDeleteSeries = this.onDeleteSeries.bind(this)
         this.onDeleteStudy = this.onDeleteStudy.bind(this)
-        this.getNbStudy = this.getNbStudy.bind(this)
     }
 
     handleClickEmpty(){
@@ -32,24 +31,20 @@ class ExportTool extends Component {
         this.props.removeStudyFromExportList(studyID)
     }
 
-    getNbStudy(){
-        return seriesArrayToStudyArray(this.props.exportList, this.props.orthancContent).lenght
-    }
-
     render(){
         return (
-            <Overlay target={this.props.target} show={this.props.show} placement='left' onHide={this.props.onClick} rootClose >
+            <Overlay target={this.props.target} show={this.props.show} placement='left' onHide={this.props.onHide} rootClose >
                 <Popover id='popover-export' style={ { maxWidth: '100%' } } >
                     <Popover.Title as='h3'>Export List</Popover.Title>
                     <Popover.Content>
-                        <div className="float-left">
-                            <Link className='btn btn-primary' to='/OrthancContent/Export' onClick={this.props.onClick}>Open Export Tools</Link>
+                        <div className="float-left mb-3">
+                            <Link className='btn btn-primary' to='/export' onClick={this.props.onHide}>Open Export Tools</Link>
                         </div>
                         <div className="float-right mb-3">
                             <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
                         </div>
                         <TableStudiesWithNestedSeries 
-                            data={seriesArrayToStudyArray(this.props.exportList, this.props.orthancContent)} 
+                            data={seriesArrayToStudyArray(this.props.seriesArray, this.props.studyArray)} 
                             hiddenRemoveRow={false} 
                             hiddenAccessionNumber={true}
                             hiddenActionBouton={true}
@@ -57,7 +52,8 @@ class ExportTool extends Component {
                             hiddenID={false}
                             onDeleteStudy={this.onDeleteStudy} 
                             onDeleteSeries={this.onDeleteSeries} 
-                            pagination={true} />
+                            pagination={true}
+                            wrapperClasses="table-responsive" />
                     </Popover.Content>
                 </Popover>
             </Overlay>
@@ -67,8 +63,8 @@ class ExportTool extends Component {
 
 const mapStateToProps = state => {
     return {
-      exportList: state.ExportList.exportList, 
-      orthancContent: state.OrthancContent.orthancContent
+        seriesArray: state.ExportList.seriesArray,
+        studyArray: state.ExportList.studyArray
     }
 }
 

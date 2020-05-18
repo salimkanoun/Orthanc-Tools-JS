@@ -8,6 +8,7 @@ const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, dele
 const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
+const { anonymizeStudy } = require('../controllers/anonymize')
 
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
@@ -81,7 +82,8 @@ router.get('/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 router.post('/instances', [userAuthMidelware], reverseProxyPostUploadDicom)
 
 // Orthanc Job API
-router.get('/jobs/*', userAuthMidelware, reverseProxyGet)
+router.get('/jobs*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.post('/jobs/*/*', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
 
 // Orthanc Aets Routes
 router.get('/modalities', userAuthMidelware, reverseProxyGet)
@@ -124,5 +126,8 @@ router.get('/series/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet
 router.delete('/patients/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 router.delete('/studies/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 router.delete('/series/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
+
+//Anonymize simplified API
+router.post('/anonymize', anonymizeStudy)
 
 module.exports = router

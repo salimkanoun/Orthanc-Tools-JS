@@ -4,7 +4,6 @@ import Dropdown from "react-bootstrap/Dropdown"
 import ButtonGroup from "react-bootstrap/ButtonGroup"
 import Button from "react-bootstrap/Button"
 
-import { addToDeleteList } from '../../../actions/DeleteList'
 import { addToExportList } from '../../../actions/ExportList'
 import { addToAnonList } from '../../../actions/AnonList'
 
@@ -22,6 +21,7 @@ class RetrieveButton extends Component {
     this.doRetrieve = this.doRetrieve.bind(this)
     this.handleDropdownClick = this.handleDropdownClick.bind(this)
     this.toExport = this.toExport.bind(this)
+    this.toAnon = this.toAnon.bind(this)
   }
 
   getVariant() {
@@ -31,17 +31,36 @@ class RetrieveButton extends Component {
     else if (this.state.status === MonitorJob.Failure ) return 'error'
   }
 
+  async toAnon(){
+    if(this.resultAnswer === undefined) return
+    let studyDetails = []
+    if( this.props.level ===  RetrieveButton.Study ){
+      studyDetails.push(this.resultAnswer)
+    } else if ( this.props.level === RetrieveButton.Series ){
+      let retrievedStudy = await apis.content.getStudiesDetails(this.resultAnswer.ParentStudy)
+      studyDetails.push(retrievedStudy)
+    }
+    this.props.addToAnonList(studyDetails)
+
+  }
+
   async toExport(){
     if(this.resultAnswer === undefined) return
-    let seriesDetails
+
+    let seriesDetails = []
+    let studyDetails =[]
     if( this.props.level ===  RetrieveButton.Study ){
-        seriesDetails = await apis.content.getSeriesDetails(this.resultAnswer['ID'])
-        console.log(seriesDetails)
+        let retrievedSeries = await apis.content.getSeriesDetails(this.resultAnswer['ID'])
+        seriesDetails = retrievedSeries
+        studyDetails.push(this.resultAnswer)
     } else if ( this.props.level === RetrieveButton.Series ){
-      seriesDetails = this.resultAnswer
+      seriesDetails = [this.resultAnswer]
+      let retrievedStudy = await apis.content.getStudiesDetails(this.resultAnswer.ParentStudy)
+      studyDetails.push(retrievedStudy)
     }
     
-    this.props.addToExportList(seriesDetails)
+    this.props.addToExportList(seriesDetails,studyDetails)
+    
   }
 
   render() {
@@ -52,9 +71,8 @@ class RetrieveButton extends Component {
         <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
 
         <Dropdown.Menu>
-          <Dropdown.Item onClick={this.toExport}>To Export</Dropdown.Item>
-          <Dropdown.Item >To Anon</Dropdown.Item>
-          <Dropdown.Item >To Delete</Dropdown.Item>
+          <Dropdown.Item onClick={this.toExport} disabled = {this.state.status !== MonitorJob.Success}>To Export</Dropdown.Item>
+          <Dropdown.Item onClick={this.toAnon} disabled = {this.state.status !== MonitorJob.Success} >To Anon</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     )
@@ -114,6 +132,7 @@ class RetrieveButton extends Component {
   }
 
   async getOrthancIDbyStudyUID(){
+
     let contentSearch = {
       CaseSensitive: false,
       Expand: true, 
@@ -130,16 +149,13 @@ class RetrieveButton extends Component {
     }
 
     let searchContent = await apis.content.getContent(contentSearch)
-    console.log(searchContent)
     this.resultAnswer = searchContent[0]
     
   }
 
 }
 
-
 const mapDispatchToProps = {
-  addToDeleteList,
   addToAnonList,
   addToExportList
 }

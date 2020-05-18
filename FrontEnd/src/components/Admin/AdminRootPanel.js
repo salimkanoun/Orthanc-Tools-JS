@@ -3,6 +3,7 @@ import OrthancSettings from './OrthancSettings'
 import AetRootPanel from './AetRootPanel'
 import AutoRetrieveRootPanel from './AutoRetrieveRootPanel'
 import PeerRootPanel from './PeerRootPanel'
+import JobsRootPanel from './JobsRootPanel'
 
 /**
  * Root Panel of Admin route
@@ -25,6 +26,8 @@ const AdminPanel = () => {
         return (<PeerRootPanel />)
       case 'Robots' :
         return (<AutoRetrieveRootPanel />)
+      case 'Jobs' :
+        return (<JobsRootPanel />)
       default :
         return ([])
     }
@@ -39,6 +42,7 @@ const AdminPanel = () => {
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Aets' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Robots' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Jobs' />
           </div>
         </div>
         <div className='col-sm'>

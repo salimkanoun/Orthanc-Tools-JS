@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 import { addToDeleteList } from '../../actions/DeleteList'
 import { addToExportList } from '../../actions/ExportList'
 import { addToAnonList } from '../../actions/AnonList'
-import { addOrthancContent, removeOrthancContent } from '../../actions/OrthancContent'
+import { addOrthancContent, removeOrthancContentStudy, removeOrthancContentPatient } from '../../actions/OrthancContent'
 
 
 class ContentRootPanel extends Component {
@@ -41,11 +41,13 @@ class ContentRootPanel extends Component {
 
   //Rappelé par le dropdown lors du delete de Patietn sur Orthanc
   onDeletePatient(idDeleted){
-
+    this.props.removeOrthancContentPatient(idDeleted)
+    this.setState({currentSelectedStudyId: ''})
   }
   //rappelé par le dropdow lors du delete de study sur Orthanc
   onDeleteStudy(idDeleted){
-    this.props.removeOrthancContent(idDeleted)
+    this.props.removeOrthancContentStudy(idDeleted)
+    this.setState({currentSelectedStudyId: ''})
   }
 
   /**
@@ -90,7 +92,7 @@ class ContentRootPanel extends Component {
     this.props.addToAnonList(this.getStudySelectedDetails())
   }
 
-  sendToExportList(){
+  async sendToExportList(){
     let selectedIds = this.child.current.getSelectedRessources()
     let studyIDs = []
     selectedIds.selectedPatients.forEach(orthancPatientId => {
@@ -104,10 +106,13 @@ class ContentRootPanel extends Component {
         studyIDs.push(studyID)
     })
     //get series details
-    studyIDs.forEach(async (id) => {
-      let serieDetails = await apis.content.getSeriesDetails(id)
-      this.props.addToExportList(serieDetails)
-    })
+    let serieDetails = []
+    for(let i in studyIDs) {
+      let series = await apis.content.getSeriesDetails(studyIDs[i])
+      serieDetails.push(...series)
+    }
+    
+    this.props.addToExportList(serieDetails, this.getStudySelectedDetails()) //send series details and study details
 
   }
 
@@ -182,7 +187,8 @@ const mapDispatchToProps = {
   addToDeleteList,
   addToAnonList,
   addOrthancContent,
-  removeOrthancContent,
+  removeOrthancContentStudy,
+  removeOrthancContentPatient,
   addToExportList
 }
 

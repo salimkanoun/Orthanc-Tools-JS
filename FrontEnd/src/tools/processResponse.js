@@ -49,7 +49,7 @@ export function studyArrayToNestedData(studiesArray){
     return answer
   }
 
-  export function seriesArrayToNestedData(seriesArray, orthancContent){
+  export function seriesArrayToNestedData(seriesArray, studyDetails){
     let responseMap = []
     //create study key for each study
     seriesArray.forEach(serie => {
@@ -64,7 +64,7 @@ export function studyArrayToNestedData(studiesArray){
             Instances: serie.Instances.length
         }
         //merge the new serie entry with the existing one for this study
-        orthancContent.forEach(study => {
+        studyDetails.forEach(study => {
             if (study.ID === serie.ParentStudy){
                 responseMap[serie.ParentStudy] = {
                     ...study.MainDicomTags, 
@@ -78,8 +78,12 @@ export function studyArrayToNestedData(studiesArray){
     return responseMap
   }
 
-
-  export function seriesArrayToStudyArray(seriesArray, orthancContent){
-    let nestedData = seriesArrayToNestedData(seriesArray, orthancContent)
+  /**
+   * 
+   * @param {array} seriesArray series Details 
+   * @param {array} studyArray study Details
+   */
+  export function seriesArrayToStudyArray(seriesArray, studyArray){
+    let nestedData = seriesArrayToNestedData(seriesArray, studyArray)
     return treeToStudyArray(nestedData)
   }

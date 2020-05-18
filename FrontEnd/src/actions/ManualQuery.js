@@ -3,9 +3,7 @@ import { SET_MANUAL_QUERY_RETRIEVE_STATUS_SERIES, ADD_MANUAL_QUERY_RESULT_TO_LIS
 export function addManualQueryStudyResult (resultData) {
   return {
     type: ADD_MANUAL_QUERY_RESULT_TO_LIST,
-    payload: {
-      ...resultData
-    }
+    payload: resultData
   }
 }
 

@@ -8,19 +8,19 @@ export default function manualQueryReducer (state = initialState, action) {
   switch (action.type) {
 
     case ADD_MANUAL_QUERY_RESULT_TO_LIST:
-      let maxKey = Math.max.apply(Math, state.manualQueryResults.map(function (query) { return query.key }))
-      maxKey = Math.max(0, maxKey)
-      //SK
-      let newResults = state.manualQueryResults.slice()
-      newResults.push({
-        key: (maxKey + 1),
-        isRetrieved: false,
-        ...action.payload,
-        studyOrthancID : '',
-        seriesDetails: []
+      let answers = action.payload
+      let newResults = []
+      answers.forEach(answer =>{
+        newResults.push({
+          key: Math.random(),
+          isRetrieved: false,
+          ...answer,
+          studyOrthancID : '',
+          seriesDetails: []
+        })
       })
+
       return {
-        ...state,
         manualQueryResults: newResults
       }
 

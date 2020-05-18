@@ -46,12 +46,19 @@ class AnonTool extends Component {
                     <Popover.Title as="h3">Anon List</Popover.Title>
                     <Popover.Content>
                         <div className="float-left">
-                            <Link className='btn btn-primary' to='/OrthancContent/Anon' onClick={this.props.onClick}>Open Export Tools</Link>
+                            <Link className='btn btn-primary' to='/anonymize' onClick={this.props.onHide}>Open Anon Tools</Link>
                         </div>
                         <div className="float-right mb-3">
                             <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
                         </div>
-                        <TablePatientsWithNestedStudies patients={studyArrayToPatientArray(this.props.anonList)} hiddenActionBouton={true} hiddenRemoveRow={false} onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
+                        <TablePatientsWithNestedStudies 
+                            patients={studyArrayToPatientArray(this.props.anonList)} 
+                            hiddenActionBouton={true} 
+                            hiddenRemoveRow={false} 
+                            onDeletePatient={this.onDeletePatient} 
+                            onDeleteStudy={this.onDeleteStudy} 
+                            wrapperClasses="table-responsive"
+                            />
                     </Popover.Content>
                 </Popover>
             </Overlay>
