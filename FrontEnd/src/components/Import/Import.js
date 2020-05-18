@@ -93,27 +93,27 @@ export default class Import extends Component {
 
         if(!isExistingStudy){
             let studyDetails = await apis.content.getStudiesDetails(orthancAnswer.ParentStudy)
-            this.addStudyToState(orthancAnswer.ParentPatient, studyDetails)
+            this.addStudyToState(studyDetails)
         }
         
         let seriesDetails = await apis.content.getSeriesDetailsByID(orthancAnswer.ParentSeries)
-        this.addSeriesToState(orthancAnswer.ParentSeries, seriesDetails)
+        this.addSeriesToState(seriesDetails)
 
         console.log(this.state)
 
     }
 
-    addStudyToState(studyID, studyDetails){
+    addStudyToState(studyDetails){
         this.setState( state => {
-            state.studiesObjects[studyID] = studyDetails
+            state.studiesObjects[studyDetails.ID] = studyDetails
             state.patientsObjects[studyDetails.ParentPatient] = studyDetails.PatientMainDicomTags
             return state
         })
     }
 
-    addSeriesToState(seriesID, seriesDetails){
+    addSeriesToState(seriesDetails){
         this.setState( state => {
-            state.seriesObjects[seriesID] = seriesDetails
+            state.seriesObjects[seriesDetails.ID] = seriesDetails
             return state
         })
     }
@@ -149,7 +149,7 @@ export default class Import extends Component {
             let patientDetails = this.state.patientsObjects[studyDetails.ParentPatient]
             addNewPatient(patientDetails)
             addNewStudy(studyDetails)
-            importedTree[studyDetails.ParentPatient]['studies'][studyDetails.ID]['series'][series.id]=series
+            importedTree[studyDetails.ParentPatient]['studies'][studyDetails.ID]['series'][series.ID]=series
         }
 
         console.log(importedTree)
@@ -162,11 +162,11 @@ export default class Import extends Component {
      * check if study is already known
      * @param {string} studyID 
      */
-    isKnownStudy(studyID){
+    isKnownStudy( studyID ) {
         return ( studyID in Object.keys(this.state.studiesObjects) )
     }
     
-    isKnownSeries(seriesID){
+    isKnownSeries ( seriesID ) {
         return ( seriesID in Object.keys(this.state.seriesObjects) )
     }
 

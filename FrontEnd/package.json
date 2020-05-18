@@ -9,7 +9,6 @@
     "@uppy/status-bar": "^1.6.3",
     "@uppy/xhr-upload": "^1.5.8",
     "bootstrap": "^4.4.1",
-    "downloadjs": "^1.4.7",
     "moment": "^2.24.0",
     "papaparse": "^5.2.0",
     "react": "^16.13.1",
@@ -29,7 +28,8 @@
     "react-select": "^3.1.0",
     "react-toastify": "^5.5.0",
     "redux": "^4.0.5",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "streamsaver": "^2.0.4"
   },
   "scripts": {
     "start": "react-scripts start",
