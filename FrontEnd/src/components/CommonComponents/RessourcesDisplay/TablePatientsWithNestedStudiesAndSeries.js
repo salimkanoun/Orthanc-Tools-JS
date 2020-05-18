@@ -32,7 +32,7 @@ class TablePatientsWithNestedStudiesAndSeries extends Component {
     
     render(){
         return(
-            <TablePatients hiddenActionBouton= {true} patients={this.props.patients} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} {...this.props} />
+            <TablePatients hiddenActionBouton={true} patients={this.props.patients} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} {...this.props} />
         )
     }
 }

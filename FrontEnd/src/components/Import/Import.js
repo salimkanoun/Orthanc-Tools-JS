@@ -22,6 +22,8 @@ export default class Import extends Component {
         showErrors : false
     }
 
+    currentTree = {}
+
     constructor(props){
 
         super(props)
@@ -87,7 +89,14 @@ export default class Import extends Component {
     async addUploadedFileToState(orthancAnswer){
         let isExistingSerie = this.isKnownSeries(orthancAnswer.ParentSeries)
         console.log(isExistingSerie)
-        if ( isExistingSerie ) return
+        if ( isExistingSerie )  {
+            this.setState(state => {
+                console.log(state.seriesObjects[orthancAnswer.ParentSeries]['Instances']) 
+                state.seriesObjects[orthancAnswer.ParentSeries]['Instances'] ++
+                return state
+            } )
+            return
+        }
 
         let isExistingStudy = this.isKnownStudy(orthancAnswer.ParentStudy)
 
@@ -113,48 +122,55 @@ export default class Import extends Component {
 
     addSeriesToState(seriesDetails){
         this.setState( state => {
-            state.seriesObjects[seriesDetails.ID] = seriesDetails
+            state.seriesObjects[seriesDetails.ID] = {
+                ...seriesDetails,
+                Instances : 1
+            }
             return state
         })
     }
 
     buildImportTree(){
         let importedSeries = this.state.seriesObjects
-        let importedTree = []
-        console.log(this.state)
+        let importedTree = {}
 
-        function addNewPatient(patientDetails){
-            if( ( patientDetails.ID in Object.keys(importedTree) ) === false ){
-                importedTree[patientDetails.ID] = {
+        function addNewPatient(patientID, patientDetails){
+            if( ( patientID in Object.keys(importedTree) ) === false ){
+                importedTree[patientID] = {
+                    PatientOrthancID : patientID,
                     ...patientDetails,
                     studies : {}
                 }
             }
         }
 
-        function addNewStudy(studyDetails){
-            if( (studyDetails.ID in Object.keys(importedTree[studyDetails.ParentPatient]) ) === false ){
-                importedTree[studyDetails.ParentPatient][studyDetails.ID] = {
-                    ...studyDetails,
-                    series : []
+        function addNewStudy(studyID, studyDetails){
+            if( (studyID in Object.keys(importedTree[studyDetails.ParentPatient]['studies']) ) === false ){
+                importedTree[studyDetails.ParentPatient]['studies'][studyID] = {
+                    ...studyDetails["MainDicomTags"],
+                    series : {}
                 }
             }
 
         }
+
         for(let seriesID of Object.keys(importedSeries)){
             let series = this.state.seriesObjects[seriesID]
-            console.log(series)
             let studyDetails = this.state.studiesObjects[series.ParentStudy]
-            console.log(studyDetails)
             let patientDetails = this.state.patientsObjects[studyDetails.ParentPatient]
-            addNewPatient(patientDetails)
-            addNewStudy(studyDetails)
-            importedTree[studyDetails.ParentPatient]['studies'][studyDetails.ID]['series'][series.ID]=series
+            addNewPatient(studyDetails.ParentPatient, patientDetails)
+            addNewStudy(series.ParentStudy, studyDetails)
+            importedTree[studyDetails.ParentPatient]['studies'][series.ParentStudy]['series'][series.ID]={
+                ...series["MainDicomTags"],
+                Instances : series['Instances']
+            }
         }
 
-        console.log(importedTree)
+        this.currentTree = importedTree
 
-        return importedTree
+        let resultArray = treeToPatientArray(importedTree)
+
+        return resultArray
 
     }
 
@@ -163,25 +179,22 @@ export default class Import extends Component {
      * @param {string} studyID 
      */
     isKnownStudy( studyID ) {
-        return ( studyID in Object.keys(this.state.studiesObjects) )
+        return Object.keys(this.state.studiesObjects).includes(studyID)
     }
     
     isKnownSeries ( seriesID ) {
-        return ( seriesID in Object.keys(this.state.seriesObjects) )
+        return Object.keys(this.state.seriesObjects).includes(seriesID)
     }
-
-
 
     /**
      * Remove a patient from test
      * @param {*} deletedStudyID 
      */
     onDeletePatient(deletedStudyID){
-        let importedTree = this.state.importedTree
-        delete importedTree[deletedStudyID]
-        this.setState({
-            importedTree : importedTree
-        })
+        //surement mieux de passer par l'API pour get les series de ce patient et l'enlever des imported series
+        //Mais supprime tout le contenu d'orthanc et pas suelement les importé
+        //Ou alors aller vers un dropdown spécial ?
+
     }
 
     /**
@@ -191,34 +204,14 @@ export default class Import extends Component {
      * @param {string} studyID 
      */
     removeStudyForPatient(patientID, studyID){
-        let importedTree = this.state.importedTree
-        delete importedTree[patientID]['studies'][studyID]
 
-        if(importedTree[patientID]['studies'].lenght === 0 ) {
-            this.onDeletePatient(patientID)
-            return
-        }
-
-        this.setState({
-            importedTree : importedTree
-        })
     }
     /**
      * Searches for the study deleted and triger the remove methode for study level
      * @param {string} deletedStudyID 
      */
     onDeleteStudy(deletedStudyID){
-        console.log(deletedStudyID)
-        console.log(this.state.importedTree)
-        for( let [patientID, details] of Object.entries(this.state.importedTree) ){
-            console.log(patientID)
-            console.log(details)
-            console.log(this.state.importedTree[patientID])
-            if ( deletedStudyID in details['studies'] ) {
-                this.removeStudyForPatient(patientID, deletedStudyID)
-                break
-            }
-        }
+
     }
 
     /**
@@ -229,18 +222,6 @@ export default class Import extends Component {
      */
     removeSeriesFromStudy(patientID, studyID, seriesID){
 
-        let importedTree = this.state.importedTree
-        delete importedTree[patientID]['studies'][studyID]['series'][seriesID]
-
-        if(importedTree[patientID]['studies'][studyID]['series'].lenght === 0 ) {
-            this.onDeleteStudy(studyID)
-            return
-        }
-
-        this.setState({
-            importedTree : importedTree
-        })
-
     }
 
     /**
@@ -248,17 +229,6 @@ export default class Import extends Component {
      * @param {String} deletedSeriesID 
      */
     onDeleteSeries(deletedSeriesID){
-
-        for( let [patientID, detailsPatient] of Object.entries(this.state.importedTree) ){
-            console.log(detailsPatient)
-            console.log(this.state.importedTree[patientID])
-            for( let [studyID, details ] in Object.entries(this.state.importedTree[patientID]['studies'])){
-                if ( deletedSeriesID in details['series'] ) {
-                    this.removeSeriesFromStudy(patientID, studyID, deletedSeriesID)
-                    break
-                }
-            }
-        }
         
     }
 
@@ -288,7 +258,7 @@ export default class Import extends Component {
                     <StatusBar hideUploadButton={false} showProgressDetails={true} hideRetryButton={true} hideAfterFinish={false} uppy={this.uppy} />
                     
                     <div className="float-right">
-                        <input type="button" className="btn btn-warning" value="See Errors" onClick={this.handleShowErrorClick} />
+                        <input type="button" className="btn btn-warning" value={"See Errors ("+this.state.errors.length+")"} onClick={this.handleShowErrorClick} />
                     </div>
 
                     <Modal show={this.state.showErrors} onHide={this.handleShowErrorClick}>
