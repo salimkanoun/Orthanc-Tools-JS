@@ -12,7 +12,8 @@ class TablePatients extends Component{
         textNameColumn: 'Patient Name', 
         textIDColumn: 'Patient ID', 
         hiddenNewName: true, 
-        hiddenNewID: true
+        hiddenNewID: true,
+        modify: false
     }
 
     getSelectedItems(){
@@ -27,12 +28,12 @@ class TablePatients extends Component{
         dataField: 'PatientName', 
         text: this.props.textNameColumn, 
         sort: true, 
-        editable: false
+        editable: this.props.modify
     }, {
         dataField: 'PatientID', 
         text: this.props.textIDColumn, 
         sort: true, 
-        editable: false
+        editable: this.props.modify
     }, {
         dataField: 'newPatientName', 
         text: 'New Name', 
@@ -48,7 +49,7 @@ class TablePatients extends Component{
         text: 'Action',
         hidden: this.props.hiddenActionBouton,
         formatter: ( (value, row, index) => {
-            return <ActionBouton level='patient' orthancID={row.PatientOrthancID} onDelete={this.props.onDelete} />
+            return <ActionBouton level='patient' orthancID={row.PatientOrthancID} onDelete={this.props.onDelete} onModify={this.props.onModify} row={row} />
         })
     
     }, {

@@ -17,7 +17,8 @@ class TableStudy extends Component {
         hiddenID: true, 
         hiddenAccessionNumber: false, 
         editable: false, 
-        hiddenCSV: true
+        hiddenCSV: true, 
+        modify: false
     }
 
     getSelectedItems(){
@@ -54,13 +55,13 @@ class TableStudy extends Component {
         dataField: 'StudyDate', 
         text: 'Study Date', 
         sort: true, 
-        editable: false
+        editable: this.props.modify
     }, {
         dataField: 'StudyDescription', 
         text: 'Description',
         sort: true,
         title: (cell, row, rowIndex, colIndex) => row.StudyDescription, 
-        editable: false
+        editable: this.props.modify
     }, {
         dataField: 'newStudyDescription', 
         text: 'New Description', 
@@ -73,7 +74,7 @@ class TableStudy extends Component {
         text: 'Accession Number',
         sort: true, 
         hidden: this.props.hiddenAccessionNumber, 
-        editable: false
+        editable: this.props.modify
     }, {
         dataField: 'newAccessionNumber', 
         text: 'New Accession Number',
@@ -86,7 +87,7 @@ class TableStudy extends Component {
         text: 'Action', 
         hidden: this.props.hiddenActionBouton,
         formatter:  ( (value, row, index) => 
-            <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} />
+            <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} row={row}/>
         ),
         clickToSelect: false, 
         editable: false, 
@@ -96,7 +97,7 @@ class TableStudy extends Component {
         text: 'Remove',
         hidden: this.props.hiddenRemoveRow,
         formatter: (cell, row, index) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.onDelete(row.StudyOrthancID)}}>Remove</button>
+            return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.onDelete(row.StudyOrthancID)}} >Remove</button>
         }, 
         editable: false, 
         csvExport: false
