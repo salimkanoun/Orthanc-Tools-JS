@@ -6,7 +6,7 @@ import Overlay from 'react-bootstrap/Overlay'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 import { removePatientFromDeleteList, removeStudyFromDeleteList, emptyDeleteList } from '../../actions/DeleteList'
-import { removeOrthancContent } from '../../actions/OrthancContent'
+import { removeOrthancContentStudy } from '../../actions/OrthancContent'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
 import Modal from 'react-bootstrap/Modal'
 import apis from '../../services/apis'
@@ -42,7 +42,7 @@ class DeleteTool extends Component {
             console.log("Will delete : ", study.ID)
             await apis.content.deleteStudies(study.ID) //take a lot of time, need to pass by the back
             this.props.removeStudyFromDeleteList(study.ID)
-            this.props.removeOrthancContent(study.ID)
+            this.props.removeOrthancContentStudy(study.ID)
            
         });
     }
@@ -110,7 +110,7 @@ const mapDispatchToProps = {
     removePatientFromDeleteList, 
     removeStudyFromDeleteList,
     emptyDeleteList, 
-    removeOrthancContent
+    removeOrthancContentStudy
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteTool)

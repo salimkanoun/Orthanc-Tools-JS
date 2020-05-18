@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 import { addToDeleteList } from '../../actions/DeleteList'
 import { addToExportList } from '../../actions/ExportList'
 import { addToAnonList } from '../../actions/AnonList'
-import { addOrthancContent, removeOrthancContent } from '../../actions/OrthancContent'
+import { addOrthancContent, removeOrthancContentStudy, removeOrthancContentPatient } from '../../actions/OrthancContent'
 
 
 class ContentRootPanel extends Component {
@@ -41,11 +41,13 @@ class ContentRootPanel extends Component {
 
   //Rappelé par le dropdown lors du delete de Patietn sur Orthanc
   onDeletePatient(idDeleted){
-
+    this.props.removeOrthancContentPatient(idDeleted)
+    this.setState({currentSelectedStudyId: ''})
   }
   //rappelé par le dropdow lors du delete de study sur Orthanc
   onDeleteStudy(idDeleted){
-    this.props.removeOrthancContent(idDeleted)
+    this.props.removeOrthancContentStudy(idDeleted)
+    this.setState({currentSelectedStudyId: ''})
   }
 
   /**
@@ -185,7 +187,8 @@ const mapDispatchToProps = {
   addToDeleteList,
   addToAnonList,
   addOrthancContent,
-  removeOrthancContent,
+  removeOrthancContentStudy,
+  removeOrthancContentPatient,
   addToExportList
 }
 
