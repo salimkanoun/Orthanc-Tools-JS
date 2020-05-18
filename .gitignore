@@ -8,3 +8,4 @@ BackEnd/data/log/*
 FrontEnd/build
 FrontEnd/node_modules
 
+BackEnd/data/export_dicom/salim_cggf.zip
