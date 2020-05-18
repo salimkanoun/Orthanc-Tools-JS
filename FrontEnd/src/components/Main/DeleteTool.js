@@ -65,13 +65,19 @@ class DeleteTool extends Component {
             //La position ne suit pas y a une histoire de Ref https://react-bootstrap.github.io/components/overlays/
             //https://github.com/react-bootstrap/react-bootstrap/issues/2208
             <Overlay target={this.props.target} show={this.props.show} placement="left" onHide={this.props.onHide} rootClose >
-                <Popover id="popover-basic" style={ { maxWidth : '100%'}} >
+                <Popover id="popover-basic" style={ { maxWidth : '100%' }} >
                     <Popover.Title as="h3">Delete List</Popover.Title>
                     <Popover.Content>
                         <div className="float-right mb-3">
                             <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
                         </div>
-                        <TablePatientsWithNestedStudies patients={studyArrayToPatientArray(this.props.deleteList)} hiddenActionBouton={true} hiddenRemoveRow={false} onDeletePatient={this.onDeletePatient} onDeleteStudy={this.onDeleteStudy} />
+                        <TablePatientsWithNestedStudies 
+                            patients={studyArrayToPatientArray(this.props.deleteList)} 
+                            hiddenActionBouton={true} 
+                            hiddenRemoveRow={false} 
+                            onDeletePatient={this.onDeletePatient} 
+                            onDeleteStudy={this.onDeleteStudy}
+                            wrapperClasses="table-responsive" />
                         <div className="text-center">
                             <button type="button" className="btn btn-danger" onClick={this.handleConfirm} >Delete List</button>
                             <Modal show={this.state.show} onHide={this.handleConfirm}>

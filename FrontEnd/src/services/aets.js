@@ -10,6 +10,7 @@ const aets = {
       })
       .catch((error) => {
         toastifyError(error)
+        return []
       })
   },
 

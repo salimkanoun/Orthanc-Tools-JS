@@ -67,8 +67,9 @@ export default class DownloadDropdown extends Component{
                 self.resetProgress()
             }else if (state === MonitorJob.Failure){
                 console.log('failure')
-                this.resetProgress()
+                self.resetProgress()
             }
+            self.job = undefined
         })
 
         jobMonitoring.startMonitoringJob()

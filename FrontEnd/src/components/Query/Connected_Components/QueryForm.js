@@ -72,9 +72,8 @@ class QueryForm extends Component {
     
     let queryAnswer = await apis.query.dicomQuery(aet,queryPost)
     let answers = await apis.query.retrieveAnswer(queryAnswer['ID'])
-    answers.forEach((answer)=> {
-      this.props.addManualQueryStudyResult(answer)
-    })
+    this.props.addManualQueryStudyResult(answers)
+
     
   }
 

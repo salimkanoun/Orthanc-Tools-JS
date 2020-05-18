@@ -15,11 +15,10 @@ import {treeToPatientArray} from '../../tools/processResponse'
 export default class Import extends Component {
 
     state = {
-        importedTree : {},
         errors : [],
-        seriesIdArray : [],
-        studiesIdArray : [],
-        patientIdArray : [],
+        patientsObjects : {},
+        studiesObjects : {},
+        seriesObjects : {},
         showErrors : false
     }
 
@@ -45,7 +44,7 @@ export default class Import extends Component {
                 'Content-Type' : 'application/dicom',
                 'Accept': 'application/json'
             }
-          })
+        })
 
         this.uppy.on('upload-success', async (file, response) => {
             if(response.body.ID !== undefined){
@@ -87,120 +86,91 @@ export default class Import extends Component {
     
     async addUploadedFileToState(orthancAnswer){
         let isExistingSerie = this.isKnownSeries(orthancAnswer.ParentSeries)
-        if (isExistingSerie) return
+        console.log(isExistingSerie)
+        if ( isExistingSerie ) return
 
-        let isExistingPatient = this.isknownPatient(orthancAnswer.ParentPatient)
         let isExistingStudy = this.isKnownStudy(orthancAnswer.ParentStudy)
 
-        if(!isExistingStudy || !isExistingPatient){
-
-            let studyDetails = await apis.content.getSeriesParentDetails(orthancAnswer.ParentSeries, 'study')
-
-            if(!isExistingPatient){
-                this.addPatientToState(orthancAnswer.ParentPatient, studyDetails.PatientMainDicomTags)
-            }
-
-            if(!isExistingStudy){
-                this.addStudyToState(orthancAnswer.ParentPatient, orthancAnswer.ParentStudy, studyDetails.MainDicomTags)
-            }
-
-            
-
+        if(!isExistingStudy){
+            let studyDetails = await apis.content.getStudiesDetails(orthancAnswer.ParentStudy)
+            this.addStudyToState(studyDetails)
         }
         
-        if(!isExistingSerie) {
-            let seriesDetails = await apis.content.getSeriesParentDetails(orthancAnswer.ParentSeries, '')
-            this.addSeriesToState(orthancAnswer.ParentPatient, orthancAnswer.ParentStudy, orthancAnswer.ParentSeries,  seriesDetails.MainDicomTags)
-        }
+        let seriesDetails = await apis.content.getSeriesDetailsByID(orthancAnswer.ParentSeries)
+        this.addSeriesToState(seriesDetails)
 
-        console.log(this.state.importedTree)
+        console.log(this.state)
 
     }
 
-    addPatientToState(patientID, mainDicomTags){
-        let objectToAdd = {}
-        objectToAdd[patientID] = mainDicomTags
-        objectToAdd[patientID]['studies']={}
-        this.setState(state => {
-                Object.assign(state['importedTree'], objectToAdd)
-                state.patientIdArray.push(patientID)
-                return state
-            }
-        )
-    }
-
-    addStudyToState(patientID, studyID, mainDicomTags){
-        let objectToAdd = {}
-        objectToAdd[studyID] = mainDicomTags
-        objectToAdd[studyID]['series'] = {}
-        this.setState(state => {
-            Object.assign(state['importedTree'][patientID].studies, objectToAdd)
-            state.studiesIdArray.push(studyID)
+    addStudyToState(studyDetails){
+        this.setState( state => {
+            state.studiesObjects[studyDetails.ID] = studyDetails
+            state.patientsObjects[studyDetails.ParentPatient] = studyDetails.PatientMainDicomTags
             return state
-            }
-        )
+        })
     }
 
-    addSeriesToState(patientID, studyID, seriesID, mainDicomTags){
-        let objectToAdd = []
-        mainDicomTags.Instances = "N/A"
-        objectToAdd[seriesID] = mainDicomTags
-        this.setState(state => {
-            Object.assign(state['importedTree'][patientID]['studies'][studyID]['series'], objectToAdd);
-            state.seriesIdArray.push(seriesID)
+    addSeriesToState(seriesDetails){
+        this.setState( state => {
+            state.seriesObjects[seriesDetails.ID] = seriesDetails
             return state
-            }
-        )
-
+        })
     }
 
-    /**
-     * check if patient is already known
-     * @param {string} patientID 
-     */
-    isknownPatient(patientID){
-        let answer  = this.state.patientIdArray.includes(patientID)
-        if (! answer ) {
-            this.setState(state => {
-                state.patientIdArray.push(patientID)
-                return state
+    buildImportTree(){
+        let importedSeries = this.state.seriesObjects
+        let importedTree = []
+        console.log(this.state)
+
+        function addNewPatient(patientDetails){
+            if( ( patientDetails.ID in Object.keys(importedTree) ) === false ){
+                importedTree[patientDetails.ID] = {
+                    ...patientDetails,
+                    studies : {}
                 }
-            )
+            }
         }
-        return answer
+
+        function addNewStudy(studyDetails){
+            if( (studyDetails.ID in Object.keys(importedTree[studyDetails.ParentPatient]) ) === false ){
+                importedTree[studyDetails.ParentPatient][studyDetails.ID] = {
+                    ...studyDetails,
+                    series : []
+                }
+            }
+
+        }
+        for(let seriesID of Object.keys(importedSeries)){
+            let series = this.state.seriesObjects[seriesID]
+            console.log(series)
+            let studyDetails = this.state.studiesObjects[series.ParentStudy]
+            console.log(studyDetails)
+            let patientDetails = this.state.patientsObjects[studyDetails.ParentPatient]
+            addNewPatient(patientDetails)
+            addNewStudy(studyDetails)
+            importedTree[studyDetails.ParentPatient]['studies'][studyDetails.ID]['series'][series.ID]=series
+        }
+
+        console.log(importedTree)
+
+        return importedTree
+
     }
 
     /**
      * check if study is already known
      * @param {string} studyID 
      */
-    isKnownStudy(studyID){
-        let answer = this.state.studiesIdArray.includes(studyID)
-        if( ! answer ){
-            this.setState(state => {
-                state.studiesIdArray.push(studyID)
-                return state
-                }
-            )
-        }
-        return answer
+    isKnownStudy( studyID ) {
+        return ( studyID in Object.keys(this.state.studiesObjects) )
+    }
+    
+    isKnownSeries ( seriesID ) {
+        return ( seriesID in Object.keys(this.state.seriesObjects) )
     }
 
-    /**
-     * check if series ID already known
-     * @param {string} serieID 
-     */
-    isKnownSeries(serieID){
-        let answer = this.state.seriesIdArray.includes(serieID)
-        if (!answer) {
-            this.setState(state => {
-                state.seriesIdArray.push(serieID)
-                return state
-                }
-            )
-        }
-        return answer
-    }
+
 
     /**
      * Remove a patient from test
@@ -333,7 +303,7 @@ export default class Import extends Component {
                 </div>
                 <div className="col">
                     <TablePatientsWithNestedStudiesAndSeries 
-                        patients = {treeToPatientArray(this.state.importedTree)}
+                        patients = {this.buildImportTree()}
                         onDeletePatient = {this.onDeletePatient}
                         onDeleteStudy = {this.onDeleteStudy}
                         onDeleteSeries = {this.onDeleteSeries} />

@@ -34,16 +34,10 @@ export default class OrthancSettings extends Component {
      */
     async componentDidMount(){
         let answer = await apis.options.getOrthancServer()
-        this.setState(answer)
-        let verbosity = await this.getVerbosity()
-        this.setState({verbosity : verbosity})
+        let verbosity = await apis.options.getVerbosity()
+        this.setState({verbosity : verbosity, ...answer})
         this.getDefaultOption()
         
-    }
-
-    //get current versoity in Orthanc log
-    getVerbosity(){
-        return apis.options.getVerbosity()
     }
 
     /**
@@ -104,8 +98,6 @@ export default class OrthancSettings extends Component {
     handleShowShutdown(){
         this.setState({showShutdown: true})
     }
-
-    
 
     verbosities = [
         { value: 'default', label: 'Default'},
