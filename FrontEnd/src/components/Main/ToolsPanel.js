@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import AnonTool from './AnonTool'
 import ExportTool from './ExportTool'
@@ -15,7 +16,6 @@ class ToolsPanel extends Component {
 
     constructor(props){
         super(props)
-        this.handleClick = this.handleClick.bind(this)
         this.closePopovers = this.closePopovers.bind(this)
     }
 
@@ -27,29 +27,6 @@ class ToolsPanel extends Component {
         })
     }
 
-    handleClick(e){
-        switch (e.target.id){
-            case 'delete':
-                this.setState({ 
-                    showDelete: !this.state.showDelete
-                })
-                break
-            case 'export':
-                this.setState({ 
-                    showExport: !this.state.showExport
-                })
-                break
-            case 'anon':
-                this.setState({ 
-                    showAnon: !this.state.showAnon
-                })
-                break
-            default:
-                break
-        }
-        
-    }
-
     render(){
         const refExport = React.createRef()
         const refAnon = React.createRef()
@@ -57,23 +34,23 @@ class ToolsPanel extends Component {
         return (
             <div className="row">
                 <div className="mr-1">
-                    <button id='anon' ref={refAnon} type="button" className="btn btn-primary" onClick={this.handleClick} >
+                    <Link id='anon' ref={refAnon} type="button" className="btn btn-primary" onMouseOver={() => this.setState({showAnon: true, showDelete: false, showExport: false})} to='/anonymize'>
                         Anonymize <br/>
-                        <span className="badge badge-light" onClick={() => this.setState({showAnon: !this.state.showAnon})}>{this.props.anonList.length}</span>
-                    </button>
+                        <span className="badge badge-light" onMouseOver={() => this.setState({showAnon: true, showDelete: false, showExport: false})}>{this.props.anonList.length}</span>
+                    </Link>
                     <AnonTool target={refAnon} show={this.state.showAnon} onHide={this.closePopovers} />
                 </div>
                 <div className="mr-1">
-                    <button id='export' ref={refExport} type="button" className="btn btn-primary" onClick={this.handleClick} >
+                    <Link id='export' ref={refExport} type="button" className="btn btn-primary" onMouseOver={() => this.setState({showAnon: false, showDelete: false, showExport: true})} to='/export' >
                         Export <br/>
-                        <span className="badge badge-light" onClick={() => this.setState({showExport: !this.state.showExport})}>{this.props.studyArray.length}</span>
-                    </button>
+                        <span className="badge badge-light" onMouseOver={() => this.setState({showAnon: false, showDelete: false, showExport: true})}>{this.props.studyArray.length}</span>
+                    </Link>
                     <ExportTool  target={refExport} show={this.state.showExport} onHide={this.closePopovers} />
                 </div>
                 <div className="mr-1" >
-                    <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onClick={this.handleClick}>
+                    <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onMouseOver={() => this.setState({showAnon: false, showDelete: true, showExport: false})} >
                         Delete <br/>
-                        <span className="badge badge-light" onClick={() => this.setState({showDelete: !this.state.showDelete})} >{(this.props.deleteList.length)}</span>
+                        <span className="badge badge-light" onMouseOver={() => this.setState({showAnon: false, showDelete: true, showExport: false})} >{(this.props.deleteList.length)}</span>
                     </button>
                     <DeleteTool target={refDelete} show={this.state.showDelete} onHide={this.closePopovers} />
                 </div>

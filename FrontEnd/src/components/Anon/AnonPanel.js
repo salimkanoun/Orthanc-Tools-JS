@@ -11,6 +11,7 @@ import apis from "../../services/apis"
 import { addToAnonymizedList, emptyAnonList, emptyAnonymizedList, removePatientFromAnonList, removeStudyFromAnonList, removeStudyFromAnonymizedList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
 import { addToDeleteList } from '../../actions/DeleteList'
+import { addToExportList } from '../../actions/ExportList'
 
 
 class AnonPanel extends Component {
@@ -143,6 +144,7 @@ class AnonPanel extends Component {
                 StudyOrthancID: study.ID, 
                 ...study.MainDicomTags, 
                 ...study.PatientMainDicomTags,
+                AnonymizedFrom: study.AnonymizedFrom,
                 newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '', 
                 newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
             })
@@ -242,22 +244,24 @@ class AnonPanel extends Component {
         this.props.autoFill(this.state.prefix)
     }
 
-    exportList(){
-        alert('not implemented yet')
+    async exportList(){
+        let seriesArray = []
+        for (let study in this.props.anonymizedList){
+            for (let serie in this.props.anonymizedList[study].Series){
+                seriesArray.push(await apis.content.getSeriesDetailsByID(this.props.anonymizedList[study].Series[serie]))
+            }
+        }
+        this.props.addToExportList(seriesArray, this.props.anonymizedList)
     }
 
     deleteList(){
         this.props.addToDeleteList(this.props.anonymizedList)
     }
 
-    exportCSV(){
-        alert('not implemented yet')
-    }
-
     option = [
-            {value: 'Default', label: 'Default'}, 
-            {value: 'Full', label: 'Full'}
-        ]
+        {value: 'Default', label: 'Default'}, 
+        {value: 'Full', label: 'Full'}
+    ]
 
     render() {
         return (
@@ -338,30 +342,30 @@ class AnonPanel extends Component {
                     <div className='row'>
                         <div className='col-sm'>
                             <button type='button' className="btn btn-warning float-right" onClick={this.emptyAnonymizedList}>Empty List</button>
-                            <TableStudy 
+                            <TableStudy
+                                {...this.props.baseProps}
                                 data={this.getStudiesAnonymized()}
                                 hiddenActionBouton={true} 
                                 hiddenRemoveRow={false} 
                                 onDelete={this.removeStudyAnonymized}
                                 hiddenName={false}
                                 hiddenID={false}
-                                pagination={true} />
+                                pagination={true}
+                                hiddenCSV={false}
+                                />
                         </div>
                     </div>
                     <div className='row'>
                         <div className='col-sm'>
-                            <button type='button' className='btn btn-info' onClick={this.exportList} >to Export List</button>
+                            <button type='button' className='btn btn-primary' onClick={this.exportList} >to Export List</button>
                         </div>
                         <div className='col-sm'>
                             <button type='button' className='btn btn-danger' onClick={this.deleteList} >to Delete List</button>
                         </div>
-                        <div className='col-sm'>
-                            <button type='button' className='btn btn-info' onClick={this.exportCSV} >to CSV</button>
-                        </div>
                     </div>
                 </div>
-            </Fragment>
-        );
+            </Fragment>)
+            
     }
 }
 
@@ -382,7 +386,8 @@ const mapDispatchToProps = {
     saveNewValues, 
     saveProfile, 
     autoFill, 
-    addToDeleteList
+    addToDeleteList, 
+    addToExportList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AnonPanel)
