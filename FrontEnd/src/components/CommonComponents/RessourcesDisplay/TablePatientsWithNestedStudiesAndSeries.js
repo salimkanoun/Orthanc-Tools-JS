@@ -24,7 +24,7 @@ class TablePatientsWithNestedStudiesAndSeries extends Component {
             }
     
             return (
-                <TableStudiesWithNestedSeries data={answer} parentPatientId={row.PatientOrthancID} onDeleteStudy={ this.props.onDeleteStudy } onDeleteSeries={ this.props.onDeleteSeries } />
+                <TableStudiesWithNestedSeries data={answer} hiddenActionBouton = {true} parentPatientId={row.PatientOrthancID} onDeleteStudy={ this.props.onDeleteStudy } onDeleteSeries={ this.props.onDeleteSeries } />
             )
         }
                 

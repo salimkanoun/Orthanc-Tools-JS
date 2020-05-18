@@ -27,10 +27,6 @@ export default class Import extends Component {
     constructor(props){
 
         super(props)
-
-        this.onDeletePatient = this.onDeletePatient.bind(this)
-        this.onDeleteStudy = this.onDeleteStudy.bind(this)
-        this.onDeleteSeries = this.onDeleteSeries.bind(this)
         this.handleShowErrorClick = this.handleShowErrorClick.bind(this)
         
         this.uppy = Uppy({
@@ -135,7 +131,7 @@ export default class Import extends Component {
         let importedTree = {}
 
         function addNewPatient(patientID, patientDetails){
-            if( ( patientID in Object.keys(importedTree) ) === false ){
+            if( ! Object.keys(importedTree).includes(patientID) ) {
                 importedTree[patientID] = {
                     PatientOrthancID : patientID,
                     ...patientDetails,
@@ -145,7 +141,7 @@ export default class Import extends Component {
         }
 
         function addNewStudy(studyID, studyDetails){
-            if( (studyID in Object.keys(importedTree[studyDetails.ParentPatient]['studies']) ) === false ){
+            if( ! Object.keys(importedTree[studyDetails.ParentPatient]['studies']).includes(studyID) ) {
                 importedTree[studyDetails.ParentPatient]['studies'][studyID] = {
                     ...studyDetails["MainDicomTags"],
                     series : {}
@@ -194,33 +190,6 @@ export default class Import extends Component {
         //surement mieux de passer par l'API pour get les series de ce patient et l'enlever des imported series
         //Mais supprime tout le contenu d'orthanc et pas suelement les importé
         //Ou alors aller vers un dropdown spécial ?
-
-    }
-
-    /**
-     * Remove a study from a patient, 
-     * if last study, call the remove patient
-     * @param {string} patientID 
-     * @param {string} studyID 
-     */
-    removeStudyForPatient(patientID, studyID){
-
-    }
-    /**
-     * Searches for the study deleted and triger the remove methode for study level
-     * @param {string} deletedStudyID 
-     */
-    onDeleteStudy(deletedStudyID){
-
-    }
-
-    /**
-     * Remove a series for list, if last series call the remove study method
-     * @param {string} patientID 
-     * @param {string} studyID 
-     * @param {string} seriesID 
-     */
-    removeSeriesFromStudy(patientID, studyID, seriesID){
 
     }
 
@@ -274,9 +243,7 @@ export default class Import extends Component {
                 <div className="col">
                     <TablePatientsWithNestedStudiesAndSeries 
                         patients = {this.buildImportTree()}
-                        onDeletePatient = {this.onDeletePatient}
-                        onDeleteStudy = {this.onDeleteStudy}
-                        onDeleteSeries = {this.onDeleteSeries} />
+                    />
                 </div>
             </div>
 
