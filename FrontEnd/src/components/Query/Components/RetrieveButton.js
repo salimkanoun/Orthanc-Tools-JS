@@ -71,8 +71,8 @@ class RetrieveButton extends Component {
         <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
 
         <Dropdown.Menu>
-          <Dropdown.Item onClick={this.toExport}>To Export</Dropdown.Item>
-          <Dropdown.Item onClick={this.toAnon}>To Anon</Dropdown.Item>
+          <Dropdown.Item onClick={this.toExport} disabled = {this.state.status !== MonitorJob.Success}>To Export</Dropdown.Item>
+          <Dropdown.Item onClick={this.toAnon} disabled = {this.state.status !== MonitorJob.Success} >To Anon</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>
     )

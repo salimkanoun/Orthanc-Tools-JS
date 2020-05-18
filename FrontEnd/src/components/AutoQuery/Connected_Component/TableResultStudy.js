@@ -6,7 +6,7 @@ import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-fi
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
-import { emptyResultsTable } from '../../../actions/TableResult'
+import { emptyResultsTable, removeResult } from '../../../actions/TableResult'
 
 import CreateRobot from '../Component/CreateRobot'
 import TableResultSeries from './TableResultSeries'
@@ -31,11 +31,6 @@ class TableResultStudy extends Component {
 
     emptyTable() {
         this.props.emptyResultsTable()
-    }
-
-    selectRow = {
-        mode: 'checkbox',
-        clickToSelect: true
     }
 
     columns = [{
@@ -99,13 +94,25 @@ class TableResultStudy extends Component {
     }, {
         dataField: 'numberOfSeriesRelatedInstances',
         text: 'Instances'
-    }];
+    }]; 
+    
+    selectRowSeries = {
+        mode: 'checkbox',
+        hideSelectAll : true,
+        clickToSelect: true
+    }
+
+    selectRowStudies = {
+        mode: 'checkbox',
+        hideSelectAll : true,
+        clickToSelect: true
+    }
 
     expandRow = {
         showExpandColumn: true,
         renderer: (row) => {
             return (
-                <TableResultSeries rowData={row}></TableResultSeries>
+                <TableResultSeries rowData={row} selectRow={this.selectRowSeries} ></TableResultSeries>
             )
         }
     }
@@ -126,11 +133,11 @@ class TableResultStudy extends Component {
                                     <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
                                     <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                                     <div className="mt-5">
-                                        <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} expandRow={this.expandRow} >
+                                        <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRowStudies} pagination={paginationFactory()} expandRow={this.expandRow} >
                                         </BootstrapTable>
                                     </div>
                                 </div>
-                                <CreateRobot resultArray={this.props.results}></CreateRobot>
+                                <CreateRobot resultArray={this.props.results} switchTab = {this.props.switchTab} ></CreateRobot>
                             </div>
                         </React.Fragment>
                     )
@@ -148,7 +155,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-    emptyResultsTable
+    emptyResultsTable,
+    removeResult
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableResultStudy);

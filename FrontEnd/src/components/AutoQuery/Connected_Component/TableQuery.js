@@ -15,12 +15,11 @@ import CsvLoader from './CsvLoader'
 import SelectModalities from '../../CommonComponents/SearchForm/SelectModalities';
 
 import apis from '../../../services/apis';
+import AutoQueryRoot from '../Component/AutoQueryRoot';
 
 const { ExportCSVButton } = CSVExport;
 
 class TableQuery extends Component {
-
-  
 
   constructor(props) {
     super(props)
@@ -56,8 +55,6 @@ class TableQuery extends Component {
       </div>
     );
   }
-
-
 
   selectRow = {
     mode: 'checkbox'
@@ -177,6 +174,7 @@ class TableQuery extends Component {
   async query() {
 
     let data = this.node.props.data
+    //SK ICI GERER LA PROGRESSION ET LA FIN FAIRE SWITCH DE TAB
     for (const query of data) {
       //For each line make dicom query and return results
       let answeredResults = await this.makeDicomQuery(query)
@@ -186,6 +184,9 @@ class TableQuery extends Component {
       })
 
     }
+    
+    this.props.switchTab(AutoQueryRoot.Results)
+
   }
 
   async makeDicomQuery(queryParams) {

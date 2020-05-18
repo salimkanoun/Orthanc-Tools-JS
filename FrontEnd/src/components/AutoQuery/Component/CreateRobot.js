@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import apis from '../../../services/apis'
+import AutoQueryRoot from './AutoQueryRoot'
 
 /**
  * Create Robot button with create robot API action call
@@ -19,7 +20,7 @@ export default class CreateRobot extends Component {
   /**
    * Take array of retrieve from Redux and build a retrieve Array to send to API
    */
-  createRobot () {
+  async createRobot () {
     const results = this.props.resultArray
     const retrieveArray = []
 
@@ -39,7 +40,10 @@ export default class CreateRobot extends Component {
     })
 
     //Send the retrieve array to back end
-    apis.queryRobot.createRobot(this.state.projectName, retrieveArray)
+    await apis.queryRobot.createRobot(this.state.projectName, retrieveArray)
+
+    this.props.switchTab(AutoQueryRoot.MyRobot)
+
 
   }
 
