@@ -9,18 +9,19 @@ import RobotView from './RobotView'
  * Using Hooks
  */
 function AutoQueryRoot () {
+
   const [currentMainTab, setCurrentMainTab] = useState('Query')
 
   function getComponentToDisplay () {
     let component = null
     switch(currentMainTab) { 
-      case 'Query':
-        component = <TableQuery />
+      case AutoQueryRoot.Query:
+        component = <TableQuery switchTab={switchTab} />
         break
-      case 'Results':
-        component = <TableResultStudy />
+      case AutoQueryRoot.Results:
+        component = <TableResultStudy switchTab={switchTab} />
         break
-      case 'MyRobot':
+      case AutoQueryRoot.MyRobot:
         component = <RobotView username="salim" />
         break
       default : 
@@ -28,6 +29,10 @@ function AutoQueryRoot () {
     }
 
     return component
+  }
+
+  function switchTab(tabName) {
+    setCurrentMainTab(tabName)
   }
 
   return (
@@ -51,5 +56,9 @@ function AutoQueryRoot () {
     </>
   )
 }
+
+AutoQueryRoot.Query = 'Query'
+AutoQueryRoot.Results = 'Results'
+AutoQueryRoot.MyRobot = 'MyRobot'
 
 export default AutoQueryRoot
