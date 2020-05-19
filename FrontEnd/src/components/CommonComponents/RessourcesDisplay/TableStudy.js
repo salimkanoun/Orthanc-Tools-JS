@@ -17,8 +17,7 @@ class TableStudy extends Component {
         hiddenID: true, 
         hiddenAccessionNumber: false, 
         editable: false, 
-        hiddenCSV: true, 
-        modify: false
+        hiddenCSV: true,
     }
 
     getSelectedItems(){
@@ -55,13 +54,13 @@ class TableStudy extends Component {
         dataField: 'StudyDate', 
         text: 'Study Date', 
         sort: true, 
-        editable: this.props.modify
+        editable: false
     }, {
         dataField: 'StudyDescription', 
         text: 'Description',
         sort: true,
         title: (cell, row, rowIndex, colIndex) => row.StudyDescription, 
-        editable: this.props.modify
+        editable: false
     }, {
         dataField: 'newStudyDescription', 
         text: 'New Description', 
@@ -74,7 +73,7 @@ class TableStudy extends Component {
         text: 'Accession Number',
         sort: true, 
         hidden: this.props.hiddenAccessionNumber, 
-        editable: this.props.modify
+        editable: false
     }, {
         dataField: 'newAccessionNumber', 
         text: 'New Accession Number',
@@ -87,7 +86,7 @@ class TableStudy extends Component {
         text: 'Action', 
         hidden: this.props.hiddenActionBouton,
         formatter:  ( (value, row, index) => 
-            <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} row={row}/>
+            <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} row={row} refresh={this.props.refresh}/>
         ),
         clickToSelect: false, 
         editable: false, 

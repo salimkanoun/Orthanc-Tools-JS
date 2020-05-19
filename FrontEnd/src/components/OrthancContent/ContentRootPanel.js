@@ -32,11 +32,29 @@ class ContentRootPanel extends Component {
     this.sendToAnonList = this.sendToAnonList.bind(this)
     this.getStudySelectedDetails = this.getStudySelectedDetails.bind(this)
     this.child = createRef()
+    this.refreshSerie = this.refreshSerie.bind(this)
   }
 
   async sendSearch(dataFrom){
-    let studies = await apis.content.getContent(dataFrom)
+    let studies
+    if (dataFrom){
+      studies = await apis.content.getContent(dataFrom)
+      this.setState({dataFrom: dataFrom})
+    } else {
+      studies = await apis.content.getContent(this.state.dataFrom)
+    }
+    
     this.props.addOrthancContent(studies)
+  }
+
+  refreshSerie(){
+    let id = this.state.currentSelectedStudyId
+    this.setState({
+      currentSelectedStudyId: ''
+    })
+    this.setState({
+      currentSelectedStudyId: id
+    })
   }
 
   //Rappelé par le dropdown lors du delete de Patietn sur Orthanc
@@ -164,10 +182,11 @@ class ContentRootPanel extends Component {
                     onDeleteStudy={this.onDeleteStudy}
                     setSelection={true}
                     ref={this.child}
+                    refresh={this.sendSearch}
               />
             </div>
             <div className='col-sm'>
-                <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onDeleteStudy={this.onDeleteStudy} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} />
+                <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onDeleteStudy={this.onDeleteStudy} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} refreshSerie={this.refreshSerie} />
             </div>
           </div>
         </div>

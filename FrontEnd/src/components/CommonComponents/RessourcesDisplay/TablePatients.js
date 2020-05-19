@@ -13,7 +13,7 @@ class TablePatients extends Component{
         textIDColumn: 'Patient ID', 
         hiddenNewName: true, 
         hiddenNewID: true,
-        modify: false
+        pagination: true
     }
 
     getSelectedItems(){
@@ -28,12 +28,12 @@ class TablePatients extends Component{
         dataField: 'PatientName', 
         text: this.props.textNameColumn, 
         sort: true, 
-        editable: this.props.modify
+        editable: false
     }, {
         dataField: 'PatientID', 
         text: this.props.textIDColumn, 
         sort: true, 
-        editable: this.props.modify
+        editable: false
     }, {
         dataField: 'newPatientName', 
         text: 'New Name', 
@@ -49,7 +49,7 @@ class TablePatients extends Component{
         text: 'Action',
         hidden: this.props.hiddenActionBouton,
         formatter: ( (value, row, index) => {
-            return <ActionBouton level='patient' orthancID={row.PatientOrthancID} onDelete={this.props.onDelete} onModify={this.props.onModify} row={row} />
+            return <ActionBouton level='patient' orthancID={row.PatientOrthancID} onDelete={this.props.onDelete} onModify={this.props.onModify} row={row} refresh={this.props.refresh}/>
         })
     
     }, {
@@ -57,7 +57,7 @@ class TablePatients extends Component{
         text: 'Remove',
         hidden: this.props.hiddenRemoveRow,
         formatter: (cell, row, index) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.onDelete(row.PatientOrthancID)}}>Remove</button>
+            return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.onDelete(row.PatientOrthancID)}} >Remove</button>
         }, 
         editable: false
     
@@ -67,7 +67,7 @@ class TablePatients extends Component{
     render(){
         return (
             <Fragment>
-                <BootstrapTable ref={n => this.node = n} keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} pagination={paginationFactory()} {...this.props}/>
+                <BootstrapTable ref={n => this.node = n} keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} {...this.props} pagination={this.props.pagination ? paginationFactory() : undefined} />
                 {this.props.button}
             </Fragment>
         )
