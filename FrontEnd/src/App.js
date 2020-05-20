@@ -17,6 +17,7 @@ import Footer from './components/Main/Footer'
 import ExportPanel from './components/Export/ExportPanel'
 import AnonPanel from './components/Anon/AnonPanel'
 import NavBar from './components/Main/NavBar'
+import Metadata from './components/Metadata/Metadata'
 
 //CSS Boostrap
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -61,6 +62,7 @@ function App () {
         <Route exact path='/robot/:username' component={RobotView} />
         <Route exact path='/export' component={ExportPanel} />
         <Route exact path='/anonymize' component={AnonPanel} /> 
+        <Route exact path='/metadata' component={Metadata} /> 
       </Switch>
       <Footer/>
     </>

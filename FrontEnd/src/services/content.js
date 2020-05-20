@@ -82,6 +82,36 @@ const query  = {
         })
     },
 
+    getSeriesInstances(serieID){
+        return fetch('/api/series/' + serieID + '/instances', {
+            method: 'GET', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            if (!response.ok) {throw response}
+            return response.json()
+        }).catch((error) => {
+            toastifyError(error)
+        })
+    },
+
+    getInstances(instanceID){
+        return fetch('/api/instances/' + instanceID + '/tags?simplify', {
+            method: 'GET', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            if (!response.ok) {throw response}
+            return response.json()
+        }).catch((error) => {
+            toastifyError(error)
+        })
+    },
+
     deletePatient(ID){
         return fetch('/api/patients/' + ID, {
             method: 'DELETE'

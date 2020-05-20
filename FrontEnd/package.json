@@ -4,6 +4,9 @@
   "proxy": "http://localhost:4000",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.9.14",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.53",
     "@uppy/core": "^1.10.2",
     "@uppy/react": "^1.6.3",
     "@uppy/status-bar": "^1.6.3",
