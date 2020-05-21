@@ -38,7 +38,7 @@ class ExportTool extends Component {
                     <Popover.Title as='h3'>Export List</Popover.Title>
                     <Popover.Content>
                         <div className="float-left mb-3">
-                            <Link className='btn btn-primary' to='/OrthancContent/Export' onClick={this.props.onHide}>Open Export Tools</Link>
+                            <Link className='btn btn-primary' to='/export' onClick={this.props.onHide}>Open Export Tools</Link>
                         </div>
                         <div className="float-right mb-3">
                             <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import TableQuery from '../Connected_Component/TableQuery'
-import TableResultStudy from '../Connected_Component/TableResultStudy'
+import Results from './Results'
 import RobotView from './RobotView'
 
 /**
@@ -9,18 +9,19 @@ import RobotView from './RobotView'
  * Using Hooks
  */
 function AutoQueryRoot () {
+
   const [currentMainTab, setCurrentMainTab] = useState('Query')
 
   function getComponentToDisplay () {
     let component = null
     switch(currentMainTab) { 
-      case 'Query':
-        component = <TableQuery />
+      case AutoQueryRoot.Query:
+        component = <TableQuery switchTab={switchTab} />
         break
-      case 'Results':
-        component = <TableResultStudy />
+      case AutoQueryRoot.Results:
+        component = <Results switchTab={switchTab} />
         break
-      case 'MyRobot':
+      case AutoQueryRoot.MyRobot:
         component = <RobotView username="salim" />
         break
       default : 
@@ -30,26 +31,34 @@ function AutoQueryRoot () {
     return component
   }
 
+  function switchTab(tabName) {
+    setCurrentMainTab(tabName)
+  }
+
   return (
     <>
       <div id='navBar' className='mb-5'>
         <ul className='nav nav-pills nav-fill'>
           <li className='nav-item'>
-            <button className={currentMainTab === 'Query' ? 'col nav-link active link-button' : ' col nav-link link-button'} onClick={() => setCurrentMainTab('Query')}>Auto Query</button>
+            <button className={currentMainTab === 'Query' ? 'col nav-link active link-button' : ' col nav-link link-button'} onClick={() => setCurrentMainTab('Query')}>Query List</button>
           </li>
           <li className='nav-item'>
-            <button className={currentMainTab === 'Results' ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab('Results')}>Result answers</button>
+            <button className={currentMainTab === 'Results' ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab('Results')}>Results</button>
           </li>
           <li className='nav-item'>
-            <button className={currentMainTab === 'MyRobot' ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab('MyRobot')}>My Robot</button>
+            <button className={currentMainTab === 'MyRobot' ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab('MyRobot')}>My Retrieve Robot</button>
           </li>
         </ul>
       </div>
-      <div>
+      <div className="jumbotron">
         {getComponentToDisplay()}
       </div>
     </>
   )
 }
+
+AutoQueryRoot.Query = 'Query'
+AutoQueryRoot.Results = 'Results'
+AutoQueryRoot.MyRobot = 'MyRobot'
 
 export default AutoQueryRoot

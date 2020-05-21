@@ -1,5 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import apis from '../../../services/apis'
+import AutoQueryRoot from './AutoQueryRoot'
 
 /**
  * Create Robot button with create robot API action call
@@ -19,7 +20,7 @@ export default class CreateRobot extends Component {
   /**
    * Take array of retrieve from Redux and build a retrieve Array to send to API
    */
-  createRobot () {
+  async createRobot () {
     const results = this.props.resultArray
     const retrieveArray = []
 
@@ -39,7 +40,10 @@ export default class CreateRobot extends Component {
     })
 
     //Send the retrieve array to back end
-    apis.queryRobot.createRobot(this.state.projectName, retrieveArray)
+    await apis.queryRobot.createRobot(this.state.projectName, retrieveArray)
+
+    this.props.switchTab(AutoQueryRoot.MyRobot)
+
 
   }
 
@@ -60,13 +64,18 @@ export default class CreateRobot extends Component {
 
   render () {
     return (
-      <div className='container'>
-        <div className='row float-right'>
-          Project Name :
-          <input type='text' name='projectName' value={this.state.value} onChange={this.handleChange} />
-          <input type='button' className='btn btn-success' onClick={this.createRobot} value='Create Robot' />
-        </div>
-      </div>
+        <Fragment>
+          <div class="form-group row">
+            <label>Project Name :</label>
+            <div className="col">
+              <input type='text' className="form-control" name='projectName' value={this.state.value} onChange={this.handleChange} />
+            </div>
+            <div className="col">
+              <input type='button' className='btn btn-success' onClick={this.createRobot} value='Create Robot' />
+            
+            </div>
+          </div>
+        </Fragment>
     )
   }
   

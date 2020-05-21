@@ -1,4 +1,4 @@
-import { ADD_ORTHANC_CONTENT, REMOVE_ORTHANC_CONTENT} from './actions-types'
+import { ADD_ORTHANC_CONTENT, REMOVE_ORTHANC_CONTENT_PATIENT, REMOVE_ORTHANC_CONTENT_STUDY} from './actions-types'
 
 export function addOrthancContent(orthanctudyArray){
     return {
@@ -7,9 +7,16 @@ export function addOrthancContent(orthanctudyArray){
     }
 }
 
-export function removeOrthancContent(orthancStudyID){
+export function removeOrthancContentStudy(orthancStudyID){
     return {
-        type: REMOVE_ORTHANC_CONTENT, 
+        type: REMOVE_ORTHANC_CONTENT_STUDY, 
         payload: orthancStudyID
+    }
+}
+
+export function removeOrthancContentPatient(OrthancPatientID){
+    return {
+        type: REMOVE_ORTHANC_CONTENT_PATIENT, 
+        payload: OrthancPatientID
     }
 }

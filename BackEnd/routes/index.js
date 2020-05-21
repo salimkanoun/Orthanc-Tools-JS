@@ -121,11 +121,15 @@ router.put('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseP
 //Orthanc content
 router.post('/tools/find',  [userAuthMidelware, userAdminMidelware], reverseProxyPost )
 router.get('/patients/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.post('/patients/*/modify', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
 router.get('/studies/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.post('/studies/*/modify', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
 router.get('/series/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.post('/series/*/modify', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
 router.delete('/patients/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 router.delete('/studies/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 router.delete('/series/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
+router.get('/instances/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 
 //Anonymize simplified API
 router.post('/anonymize', anonymizeStudy)

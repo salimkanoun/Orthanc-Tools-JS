@@ -8,9 +8,10 @@ import TableStudy from "../CommonComponents/RessourcesDisplay/TableStudy"
 import MonitorJob from '../../tools/MonitorJob'
 import apis from "../../services/apis"
 
-import { addToAnonymizedList, emptyAnonList, emptyAnonymizedList, removePatientFromAnonList, removeStudyFromAnonList, removeStudyFromAnonymizedList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
-import {studyArrayToPatientArray} from '../../tools/processResponse'
-import { addToDeleteList } from '../../actions/DeleteList'
+import { addToAnonymizedList, emptyAnonymizeList, emptyAnonymizedList, removePatientFromAnonList, removeStudyFromAnonList, removeStudyFromAnonymizedList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
+import { studyArrayToPatientArray } from '../../tools/processResponse'
+import { addStudiesToDeleteList } from '../../actions/DeleteList'
+import { addStudiesToExportList } from '../../actions/ExportList'
 
 
 class AnonPanel extends Component {
@@ -36,6 +37,7 @@ class AnonPanel extends Component {
         this.handleChange = this.handleChange.bind(this)
         this.autoFill = this.autoFill.bind(this)
         this.deleteList = this.deleteList.bind(this)
+        this.exportList = this.exportList.bind(this)
     }
 
     updateProgress(progress, i){
@@ -143,6 +145,7 @@ class AnonPanel extends Component {
                 StudyOrthancID: study.ID, 
                 ...study.MainDicomTags, 
                 ...study.PatientMainDicomTags,
+                AnonymizedFrom: study.AnonymizedFrom,
                 newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '', 
                 newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
             })
@@ -242,22 +245,18 @@ class AnonPanel extends Component {
         this.props.autoFill(this.state.prefix)
     }
 
-    exportList(){
-        alert('not implemented yet')
+    async exportList(){
+        this.props.addStudiesToExportList(this.props.anonymizedList)
     }
 
     deleteList(){
-        this.props.addToDeleteList(this.props.anonymizedList)
-    }
-
-    exportCSV(){
-        alert('not implemented yet')
+        this.props.addStudiesToDeleteList(this.props.anonymizedList)
     }
 
     option = [
-            {value: 'Default', label: 'Default'}, 
-            {value: 'Full', label: 'Full'}
-        ]
+        {value: 'Default', label: 'Default'}, 
+        {value: 'Full', label: 'Full'}
+    ]
 
     render() {
         return (
@@ -336,32 +335,28 @@ class AnonPanel extends Component {
                 <div className='jumbotron' hidden={this.props.anonymizedList && this.props.anonymizedList.length === 0}>
                     <h2 className='card-title mb-3'>Anonymized studies</h2>
                     <div className='row'>
-                        <div className='col-sm'>
+                        <div className='col-sm mb-3'>
                             <button type='button' className="btn btn-warning float-right" onClick={this.emptyAnonymizedList}>Empty List</button>
-                            <TableStudy 
+                            <TableStudy
+                                {...this.props.baseProps}
                                 data={this.getStudiesAnonymized()}
                                 hiddenActionBouton={true} 
                                 hiddenRemoveRow={false} 
                                 onDelete={this.removeStudyAnonymized}
                                 hiddenName={false}
                                 hiddenID={false}
-                                pagination={true} />
+                                pagination={true}
+                                hiddenCSV={false}
+                                />
                         </div>
                     </div>
-                    <div className='row'>
-                        <div className='col-sm'>
-                            <button type='button' className='btn btn-info' onClick={this.exportList} >to Export List</button>
-                        </div>
-                        <div className='col-sm'>
-                            <button type='button' className='btn btn-danger' onClick={this.deleteList} >to Delete List</button>
-                        </div>
-                        <div className='col-sm'>
-                            <button type='button' className='btn btn-info' onClick={this.exportCSV} >to CSV</button>
-                        </div>
+                    <div className='text-center'>
+                        <button type='button' className='btn btn-primary mr-3' onClick={this.exportList} >To Export List</button>
+                        <button type='button' className='btn btn-danger' onClick={this.deleteList} >To Delete List</button>
                     </div>
                 </div>
-            </Fragment>
-        );
+            </Fragment>)
+            
     }
 }
 
@@ -374,7 +369,7 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = {
     addToAnonymizedList,
-    emptyAnonList, 
+    emptyAnonymizeList, 
     emptyAnonymizedList,
     removePatientFromAnonList, 
     removeStudyFromAnonList,
@@ -382,7 +377,8 @@ const mapDispatchToProps = {
     saveNewValues, 
     saveProfile, 
     autoFill, 
-    addToDeleteList
+    addStudiesToDeleteList, 
+    addStudiesToExportList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AnonPanel)

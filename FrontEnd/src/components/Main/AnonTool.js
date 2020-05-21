@@ -7,7 +7,7 @@ import Popover from 'react-bootstrap/Popover'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 import {studyArrayToPatientArray} from '../../tools/processResponse'
-import { emptyAnonList, removePatientFromAnonList, removeStudyFromAnonList } from '../../actions/AnonList'
+import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList } from '../../actions/AnonList'
 
 
 class AnonTool extends Component {
@@ -29,7 +29,7 @@ class AnonTool extends Component {
     }
 
     handleClickEmpty(){
-        this.props.emptyAnonList()
+        this.props.emptyAnonymizeList()
     }
 
     handleClick(){
@@ -46,7 +46,7 @@ class AnonTool extends Component {
                     <Popover.Title as="h3">Anon List</Popover.Title>
                     <Popover.Content>
                         <div className="float-left">
-                            <Link className='btn btn-primary' to='/OrthancContent/Anon' onClick={this.props.onHide}>Open Anon Tools</Link>
+                            <Link className='btn btn-primary' to='/anonymize' onClick={this.props.onHide}>Open Anon Tools</Link>
                         </div>
                         <div className="float-right mb-3">
                             <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
@@ -74,7 +74,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-    emptyAnonList,
+    emptyAnonymizeList,
     removePatientFromAnonList, 
     removeStudyFromAnonList,
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import AnonTool from './AnonTool'
 import ExportTool from './ExportTool'
@@ -8,47 +9,28 @@ import DeleteTool from './DeleteTool'
 class ToolsPanel extends Component {
 
     state = {
-        showDelete: false,
-        showExport: false,
-        showAnon: false
+        show: '',
+        confirmDelete: false
     }
 
     constructor(props){
         super(props)
-        this.handleClick = this.handleClick.bind(this)
         this.closePopovers = this.closePopovers.bind(this)
+        this.setConfirmDelete = this.setConfirmDelete.bind(this)
     }
 
     closePopovers(){
-        this.setState({ 
-            showAnon: false, 
-            showDelete: false, 
-            showExport: false
+        this.setState({
+            show : ''
         })
     }
 
-    handleClick(e){
-        switch (e.target.id){
-            case 'delete':
-                this.setState({ 
-                    showDelete: !this.state.showDelete
-                })
-                break
-            case 'export':
-                this.setState({ 
-                    showExport: !this.state.showExport
-                })
-                break
-            case 'anon':
-                this.setState({ 
-                    showAnon: !this.state.showAnon
-                })
-                break
-            default:
-                break
-        }
-        
+    setConfirmDelete(){
+        this.setState({
+            confirmDelete: !this.state.confirmDelete
+        })
     }
+
 
     render(){
         const refExport = React.createRef()
@@ -57,25 +39,25 @@ class ToolsPanel extends Component {
         return (
             <div className="row">
                 <div className="mr-1">
-                    <button id='anon' ref={refAnon} type="button" className="btn btn-primary" onClick={this.handleClick} >
+                    <Link id='anon' ref={refAnon} type="button" className="btn btn-primary" onMouseOver={() => this.setState({show: 'anon'})} to='/anonymize'>
                         Anonymize <br/>
-                        <span className="badge badge-light" onClick={() => this.setState({showAnon: !this.state.showAnon})}>{this.props.anonList.length}</span>
-                    </button>
-                    <AnonTool target={refAnon} show={this.state.showAnon} onHide={this.closePopovers} />
+                        <span className="badge badge-light" onMouseOver={() => this.setState({show: 'anon'})}>{this.props.anonList.length}</span>
+                    </Link>
+                    <AnonTool target={refAnon} show={this.state.show === 'anon' ? true : false} onHide={this.closePopovers} />
                 </div>
                 <div className="mr-1">
-                    <button id='export' ref={refExport} type="button" className="btn btn-primary" onClick={this.handleClick} >
+                    <Link id='export' ref={refExport} type="button" className="btn btn-primary" onMouseOver={() => this.setState({show: 'export'})} to='/export' >
                         Export <br/>
-                        <span className="badge badge-light" onClick={() => this.setState({showExport: !this.state.showExport})}>{this.props.studyArray.length}</span>
-                    </button>
-                    <ExportTool  target={refExport} show={this.state.showExport} onHide={this.closePopovers} />
+                        <span className="badge badge-light" onMouseOver={() => this.setState({show: 'export'})}>{this.props.studyArray.length}</span>
+                    </Link>
+                    <ExportTool  target={refExport} show={this.state.show === 'export' ? true : false} onHide={this.closePopovers} />
                 </div>
                 <div className="mr-1" >
-                    <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onClick={this.handleClick}>
+                    <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onMouseOver={() => this.setState({show: 'delete'})} onClick={() => this.setState({confirmDelete: true})} >
                         Delete <br/>
-                        <span className="badge badge-light" onClick={() => this.setState({showDelete: !this.state.showDelete})} >{(this.props.deleteList.length)}</span>
+                        <span className="badge badge-light" onMouseOver={() => this.setState({show: 'delete'})} >{(this.props.deleteList.length)}</span>
                     </button>
-                    <DeleteTool target={refDelete} show={this.state.showDelete} onHide={this.closePopovers} />
+                    <DeleteTool target={refDelete} show={this.state.show === 'delete' ? true : false} onHide={this.closePopovers} confirmDelete={this.state.confirmDelete} setConfirm={this.setConfirmDelete} />
                 </div>
             </div>
         )

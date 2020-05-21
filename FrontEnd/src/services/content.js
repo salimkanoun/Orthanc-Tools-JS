@@ -1,4 +1,4 @@
-import { toastifyError } from "./toastify";
+import { toastifyError, toastifySuccess } from "./toastify";
 
 const query  = {
 
@@ -19,7 +19,7 @@ const query  = {
     },
 
     getPatientsDetails(ID){
-        return fetch('/api/patients/' + ID, {
+        return fetch('/api/patients/' + ID + '?expand', {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
@@ -34,7 +34,7 @@ const query  = {
     },
 
     getStudiesDetails(ID){
-        return fetch('/api/studies/' + ID, {
+        return fetch('/api/studies/' + ID+ '?expand', {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
@@ -67,9 +67,8 @@ const query  = {
         })
     },
 
-    getSeriesParentDetails(seriesID, parentLevel){
-
-        return fetch('/api/series/' + seriesID + '/'+parentLevel+'?expand', {
+    getSeriesDetailsByID(serieID){
+        return fetch('/api/series/' + serieID + '?expand', {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
@@ -81,7 +80,36 @@ const query  = {
         }).catch((error) => {
             toastifyError(error)
         })
+    },
 
+    getSeriesInstances(serieID){
+        return fetch('/api/series/' + serieID + '/instances', {
+            method: 'GET', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            if (!response.ok) {throw response}
+            return response.json()
+        }).catch((error) => {
+            toastifyError(error)
+        })
+    },
+
+    getInstances(instanceID){
+        return fetch('/api/instances/' + instanceID + '/tags?simplify', {
+            method: 'GET', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }).then((response) => {
+            if (!response.ok) {throw response}
+            return response.json()
+        }).catch((error) => {
+            toastifyError(error)
+        })
     },
 
     deletePatient(ID){
@@ -118,6 +146,58 @@ const query  = {
             toastifyError(error)
         })
 
+    },
+
+    
+    modifyPatients(ID, replace, remove, removePrivateTags){
+        return fetch('/api/patients/' + ID + '/modify', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true})
+        }).then((answer) => {
+            if (!answer.ok) {throw answer}
+            toastifySuccess('Patient have been modified')
+            return (answer.json())
+        }).catch((error) => {
+            console.log(error)
+        })
+    },
+
+    modifyStudy(ID, replace, remove, removePrivateTags){
+        return fetch('/api/studies/' + ID + '/modify', {
+            method: 'POST', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true})
+        }).then((answer) => {
+            if (!answer.ok) {throw answer}
+            toastifySuccess('Study have been modified')
+            return (answer.json())
+        }).catch((error) => {
+            console.log(error)
+        })
+    },
+
+    modifySeries(ID, replace, remove, removePrivateTags){
+        return fetch('/api/series/' + ID + '/modify', {
+            method: 'POST', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true})
+        }).then((answer) => {
+            if (!answer.ok) {throw answer}
+            toastifySuccess('Serie have been modified')
+            return (answer.json())
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 }
 
