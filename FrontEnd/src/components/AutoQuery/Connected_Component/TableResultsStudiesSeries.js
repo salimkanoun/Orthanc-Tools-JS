@@ -1,35 +1,45 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux'
+import {toast} from 'react-toastify'
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter, dateFilter, numberFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
 import { addSeriesDetails } from '../../../actions/TableResult'
 import apis from '../../../services/apis';
 
-
 /**
- * Generate Boostrap Table with Series related data
- * Will be nested in Result query Table
+ * Show Series details of studies results
  */
 class TableResultsStudiesSeries extends Component {
 
     constructor(props){
         super(props)
         this.buildResultsSeriesArray = this.buildResultsSeriesArray.bind(this)
+        this.removeRow = this.removeRow.bind(this)
     }
 
     async componentDidMount(){
-        console.log(this.props)
-        //Load All series details of studies answers
-        for (let studyResults of this.props.results) {
-            console.log(studyResults)
-            if (studyResults['seriesDetails'].length === 0 ){
+        //List studies for each series details are missing
+        let emptyResultArray = this.props.results.filter(studyResults =>{
+            return studyResults['seriesDetails'].length === 0
+        })
+        
+        if(emptyResultArray.length>0){
+            const id = toast.info('Starting Series Fetching');
+            let i = 0
+            //Load All series details of studies answers
+            for (let studyResults of emptyResultArray) {
+                toast.update(id, {
+                    render : 'Fetching series for '+(i++)+'/'+(this.props.results.length)
+                });
                 await this.getSeriesDetails(studyResults.studyInstanceUID, studyResults.originAET)
-            } 
+            }
         }
+
+
     }
 
     async getSeriesDetails(studyUID, aet){
@@ -122,7 +132,7 @@ class TableResultsStudiesSeries extends Component {
     }, {
         dataField: 'numberOfSeriesRelatedInstances',
         text: 'Instances',
-        filter: textFilter()
+        filter: numberFilter()
     }, {
         dataField: 'originAET',
         text: 'AET',
@@ -131,7 +141,6 @@ class TableResultsStudiesSeries extends Component {
 
     buildResultsSeriesArray(){
         let seriesLines = []
-        console.log(this.props.results)
         this.props.results.forEach(study => {
             study['seriesDetails'].forEach(seriesDetails => {
                 seriesLines.push({
@@ -139,13 +148,9 @@ class TableResultsStudiesSeries extends Component {
                 ...seriesDetails
                 })
             })
-           
         });
 
-        console.log(seriesLines)
-
         return seriesLines
-
     }
 
     selectRowSeries = {
@@ -153,20 +158,29 @@ class TableResultsStudiesSeries extends Component {
         clickToSelect: true
     }
 
+    removeRow() {
+        let selectedKeyRow = this.node.selectionContext.selected
+        //SK REDUX A FAIRE
+        this.node.selectionContext.selected = []
+    }
+
     render() {
         let rows = this.buildResultsSeriesArray()
         return (
-            <ToolkitProvider
-                keyField="key"
-                data={rows}
-                columns={this.columns}
-            >{
+            <Fragment>
+                <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
+                <ToolkitProvider
+                    keyField="key"
+                    data={rows}
+                    columns={this.columns}
+                >{
                     props => (
-                            <BootstrapTable ref={n => this.node = n} {...props.baseProps} selectRow = {this.selectRowSeries} striped={true} bordered={ false } filter={filterFactory()} pagination={paginationFactory()} />
+                        <BootstrapTable ref={n => this.node = n} {...props.baseProps} wrapperClasses="table-responsive" selectRow = {this.selectRowSeries} striped={true} bordered={ false } filter={filterFactory()} pagination={paginationFactory()} />
 
                     )
                 }
-            </ToolkitProvider>
+                </ToolkitProvider>
+            </Fragment>
         )
     }
 
