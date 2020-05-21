@@ -1,12 +1,22 @@
 import React, {Component} from 'react'
+import { makeStyles } from '@material-ui/core/styles';
 import {TreeView, TreeItem} from '@material-ui/lab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 
 import apis from '../../services/apis'
 
+
+
 class Metadata extends Component {
 
+    useStyles = makeStyles({
+        root: {
+          height: 110,
+          flexGrow: 1,
+          maxWidth: 400,
+        },
+    });
 
     constructor(props){
         super(props)
@@ -21,7 +31,7 @@ class Metadata extends Component {
     }
 
     async componentDidMount() {
-        let serieId = ''
+        let serieId = '00c3c1e5-987fc672-8caac34a-9b34296a-d1cc5dc3'
         if (serieId === '')
             alert('need to put an serieID in Metadata.js line 24')
         let array = await apis.content.getSeriesInstances(serieId) 
@@ -107,6 +117,8 @@ class Metadata extends Component {
                 <label htmlFor='compteur' className='bg-info text-center' >{(this.state.currentKey) + '/' + this.state.InstancesArray.length}</label>
                 <button type='button' className='btn btn-primary float-right mb-5' onClick={this.nextInstances} disabled={this.state.currentKey + 1 === this.state.InstancesArray.length}>Next Instances</button>
                 <TreeView 
+                    className={this.useStyles.root}
+                    defaultExpanded={['root']}
                     defaultCollapseIcon={<ExpandMoreIcon />}
                     defaultExpandIcon={<ChevronRightIcon />}>
                         {this.renderTree(this.state.data)}

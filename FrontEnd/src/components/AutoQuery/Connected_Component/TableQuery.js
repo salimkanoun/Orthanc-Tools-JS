@@ -147,7 +147,6 @@ class TableQuery extends Component {
       >{
           props => (
             <React.Fragment>
-              <div className="jumbotron" style={this.props.style}>
                 <div>
                   <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
                   <input type="button" className="btn btn-success m-2" value="Add" onClick={this.props.addRow} />
@@ -162,7 +161,6 @@ class TableQuery extends Component {
                 <div className="text-center">
                   <input type="button" className="btn btn-primary" value="Query" onClick={this.query} />
                 </div>
-              </div>
 
             </React.Fragment>
           )

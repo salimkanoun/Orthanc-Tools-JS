@@ -8,8 +8,6 @@ import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
 import { emptyResultsTable, removeResult } from '../../../actions/TableResult'
 
-import CreateRobot from '../Component/CreateRobot'
-import TableResultSeries from './TableResultSeries'
 
 const { ExportCSVButton } = CSVExport;
 /**
@@ -95,26 +93,10 @@ class TableResultStudy extends Component {
         dataField: 'numberOfSeriesRelatedInstances',
         text: 'Instances'
     }]; 
-    
-    selectRowSeries = {
-        mode: 'checkbox',
-        hideSelectAll : true,
-        clickToSelect: true
-    }
 
     selectRowStudies = {
         mode: 'checkbox',
-        hideSelectAll : true,
         clickToSelect: true
-    }
-
-    expandRow = {
-        showExpandColumn: true,
-        renderer: (row) => {
-            return (
-                <TableResultSeries rowData={row} selectRow={this.selectRowSeries} ></TableResultSeries>
-            )
-        }
     }
 
     render() {
@@ -127,17 +109,14 @@ class TableResultStudy extends Component {
             >{
                     props => (
                         <React.Fragment>
-                            <div className="jumbotron" style={this.props.style}>
-                                <div>
-                                    <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
-                                    <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
-                                    <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
-                                    <div className="mt-5">
-                                        <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRowStudies} pagination={paginationFactory()} expandRow={this.expandRow} >
-                                        </BootstrapTable>
-                                    </div>
+                            <div>
+                                <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
+                                <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
+                                <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
+                                <div className="mt-5">
+                                    <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRowStudies} pagination={paginationFactory()} >
+                                    </BootstrapTable>
                                 </div>
-                                <CreateRobot resultArray={this.props.results} switchTab = {this.props.switchTab} ></CreateRobot>
                             </div>
                         </React.Fragment>
                     )

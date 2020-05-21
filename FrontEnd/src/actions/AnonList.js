@@ -14,7 +14,7 @@ export function addToAnonymizedList(anonList){
     }
 }
 
-export function emptyAnonList(){
+export function emptyAnonymizeList(){
     return {
         type: EMPTY_ANON_LIST
     }

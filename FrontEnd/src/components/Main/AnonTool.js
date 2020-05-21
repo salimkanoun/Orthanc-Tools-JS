@@ -7,7 +7,7 @@ import Popover from 'react-bootstrap/Popover'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 import {studyArrayToPatientArray} from '../../tools/processResponse'
-import { emptyAnonList, removePatientFromAnonList, removeStudyFromAnonList } from '../../actions/AnonList'
+import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList } from '../../actions/AnonList'
 
 
 class AnonTool extends Component {
@@ -29,7 +29,7 @@ class AnonTool extends Component {
     }
 
     handleClickEmpty(){
-        this.props.emptyAnonList()
+        this.props.emptyAnonymizeList()
     }
 
     handleClick(){
@@ -74,7 +74,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-    emptyAnonList,
+    emptyAnonymizeList,
     removePatientFromAnonList, 
     removeStudyFromAnonList,
 }

@@ -15,7 +15,7 @@ import Import from './components/Import/Import'
 import ContentRootPanel from './components/OrthancContent/ContentRootPanel'
 import Footer from './components/Main/Footer'
 import ExportPanel from './components/Export/ExportPanel'
-import AnonPanel from './components/Anon/AnonPanel'
+import AnonPanel from './components/Anonymize/AnonPanel'
 import NavBar from './components/Main/NavBar'
 import Metadata from './components/Metadata/Metadata'
 

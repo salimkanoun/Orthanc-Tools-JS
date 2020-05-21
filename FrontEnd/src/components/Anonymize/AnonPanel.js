@@ -8,8 +8,8 @@ import TableStudy from "../CommonComponents/RessourcesDisplay/TableStudy"
 import MonitorJob from '../../tools/MonitorJob'
 import apis from "../../services/apis"
 
-import { addToAnonymizedList, emptyAnonList, emptyAnonymizedList, removePatientFromAnonList, removeStudyFromAnonList, removeStudyFromAnonymizedList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
-import {studyArrayToPatientArray} from '../../tools/processResponse'
+import { addToAnonymizedList, emptyAnonymizeList, emptyAnonymizedList, removePatientFromAnonList, removeStudyFromAnonList, removeStudyFromAnonymizedList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
+import { studyArrayToPatientArray } from '../../tools/processResponse'
 import { addStudiesToDeleteList } from '../../actions/DeleteList'
 import { addStudiesToExportList } from '../../actions/ExportList'
 
@@ -369,7 +369,7 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = {
     addToAnonymizedList,
-    emptyAnonList, 
+    emptyAnonymizeList, 
     emptyAnonymizedList,
     removePatientFromAnonList, 
     removeStudyFromAnonList,

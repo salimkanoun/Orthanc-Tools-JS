@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import TableQuery from '../Connected_Component/TableQuery'
-import TableResultStudy from '../Connected_Component/TableResultStudy'
+import Results from './Results'
 import RobotView from './RobotView'
 
 /**
@@ -19,7 +19,7 @@ function AutoQueryRoot () {
         component = <TableQuery switchTab={switchTab} />
         break
       case AutoQueryRoot.Results:
-        component = <TableResultStudy switchTab={switchTab} />
+        component = <Results switchTab={switchTab} />
         break
       case AutoQueryRoot.MyRobot:
         component = <RobotView username="salim" />
@@ -50,7 +50,7 @@ function AutoQueryRoot () {
           </li>
         </ul>
       </div>
-      <div>
+      <div className="jumbotron">
         {getComponentToDisplay()}
       </div>
     </>
