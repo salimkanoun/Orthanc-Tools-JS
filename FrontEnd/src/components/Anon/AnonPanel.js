@@ -10,7 +10,7 @@ import apis from "../../services/apis"
 
 import { addToAnonymizedList, emptyAnonList, emptyAnonymizedList, removePatientFromAnonList, removeStudyFromAnonList, removeStudyFromAnonymizedList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
-import { addToDeleteList } from '../../actions/DeleteList'
+import { addStudiesToDeleteList } from '../../actions/DeleteList'
 import { addStudiesToExportList } from '../../actions/ExportList'
 
 
@@ -250,7 +250,7 @@ class AnonPanel extends Component {
     }
 
     deleteList(){
-        this.props.addToDeleteList(this.props.anonymizedList)
+        this.props.addStudiesToDeleteList(this.props.anonymizedList)
     }
 
     option = [
@@ -377,7 +377,7 @@ const mapDispatchToProps = {
     saveNewValues, 
     saveProfile, 
     autoFill, 
-    addToDeleteList, 
+    addStudiesToDeleteList, 
     addStudiesToExportList
 }
 

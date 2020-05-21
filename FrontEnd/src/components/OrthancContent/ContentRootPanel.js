@@ -10,9 +10,9 @@ import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDispla
 import {studyArrayToPatientArray, treeToStudyArray} from '../../tools/processResponse'
 
 import { connect } from 'react-redux'
-import { addToDeleteList } from '../../actions/DeleteList'
+import { addStudiesToDeleteList } from '../../actions/DeleteList'
 import { addStudiesToExportList } from '../../actions/ExportList'
-import { addToAnonList } from '../../actions/AnonList'
+import { addStudiesToAnonList } from '../../actions/AnonList'
 import { addOrthancContent, removeOrthancContentStudy, removeOrthancContentPatient } from '../../actions/OrthancContent'
 
 
@@ -103,11 +103,11 @@ class ContentRootPanel extends Component {
   }
 
   sendToDeleteList(){
-    this.props.addToDeleteList(this.getStudySelectedDetails())
+    this.props.addStudiesToDeleteList(this.getStudySelectedDetails())
   }
 
   sendToAnonList(){
-    this.props.addToAnonList(this.getStudySelectedDetails())
+    this.props.addStudiesToAnonList(this.getStudySelectedDetails())
   }
 
   async sendToExportList(){
@@ -186,8 +186,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-  addToDeleteList,
-  addToAnonList,
+  addStudiesToDeleteList,
+  addStudiesToAnonList,
   addOrthancContent,
   removeOrthancContentStudy,
   removeOrthancContentPatient,

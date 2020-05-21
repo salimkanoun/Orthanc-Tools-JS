@@ -1,12 +1,9 @@
 import {  ADD_ANON_LIST, EMPTY_ANON_LIST, REMOVE_PATIENT_ANON_LIST, REMOVE_STUDY_ANON_LIST, SAVE_NEW_VALUES, SAVE_ANON_PROFILE, AUTOFILL, ADD_ANONYMIZED_LIST, EMPTY_ANONYMIZED_LIST, REMOVE_STUDY_ANONYMIZED_LIST } from './actions-types'
 
-
-
-
-export function addToAnonList(anonList){
+export function addStudiesToAnonList(studiesArray){
     return {
         type: ADD_ANON_LIST, 
-        payload: anonList
+        payload: studiesArray
     }
 }
 

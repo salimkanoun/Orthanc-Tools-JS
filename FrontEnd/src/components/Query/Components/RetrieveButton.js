@@ -5,7 +5,7 @@ import ButtonGroup from "react-bootstrap/ButtonGroup"
 import Button from "react-bootstrap/Button"
 
 import { addToExportList } from '../../../actions/ExportList'
-import { addToAnonList } from '../../../actions/AnonList'
+import { addStudiesToAnonList } from '../../../actions/AnonList'
 
 import MonitorJob from '../../../tools/MonitorJob'
 import apis from '../../../services/apis'
@@ -40,7 +40,7 @@ class RetrieveButton extends Component {
       let retrievedStudy = await apis.content.getStudiesDetails(this.resultAnswer.ParentStudy)
       studyDetails.push(retrievedStudy)
     }
-    this.props.addToAnonList(studyDetails)
+    this.props.addStudiesToAnonList(studyDetails)
 
   }
 
@@ -156,7 +156,7 @@ class RetrieveButton extends Component {
 }
 
 const mapDispatchToProps = {
-  addToAnonList,
+  addStudiesToAnonList,
   addToExportList
 }
 

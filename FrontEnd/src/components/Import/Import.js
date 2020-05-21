@@ -13,8 +13,8 @@ import apis from '../../services/apis'
 import {treeToPatientArray, treeToStudyArray} from '../../tools/processResponse'
 
 import {addStudiesToExportList} from '../../actions/ExportList'
-import {addToDeleteList} from '../../actions/DeleteList'
-import {addToAnonList} from '../../actions/AnonList'
+import {addStudiesToDeleteList} from '../../actions/DeleteList'
+import {addStudiesToAnonList} from '../../actions/AnonList'
 
 class Import extends Component {
 
@@ -34,6 +34,7 @@ class Import extends Component {
         this.handleShowErrorClick = this.handleShowErrorClick.bind(this)
         this.sendImportedToAnon = this.sendImportedToAnon.bind(this)
         this.sendImportedToExport = this.sendImportedToExport.bind(this)
+        this.sendImportedToDelete = this.sendImportedToDelete.bind(this)
         
         this.uppy = Uppy({
             autoProceed: true,
@@ -191,7 +192,11 @@ class Import extends Component {
     }
 
     sendImportedToAnon(){
+        this.props.addStudiesToAnonList(treeToStudyArray(this.state.studiesObjects))
+    }
 
+    sendImportedToDelete(){
+        this.props.addStudiesToDeleteList(treeToStudyArray(this.state.studiesObjects))
     }
 
     /**
@@ -246,7 +251,7 @@ class Import extends Component {
                         <input type="button" className="btn btn-info" value="To Export" onClick ={this.sendImportedToExport}/>
                     </div>
                     <div className="col">
-                        <input type="button" className="btn btn-warning" value="To Delete" />
+                        <input type="button" className="btn btn-warning" value="To Delete" onClick ={this.sendImportedToDelete} />
                     </div>
                 </div>
             </div>
@@ -257,8 +262,8 @@ class Import extends Component {
 
 const mapDispatchToProps = {
     addStudiesToExportList,
-    addToDeleteList,
-    addToAnonList
+    addStudiesToDeleteList,
+    addStudiesToAnonList
 
 
 }
