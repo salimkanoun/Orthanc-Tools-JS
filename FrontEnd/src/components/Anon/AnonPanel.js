@@ -11,7 +11,7 @@ import apis from "../../services/apis"
 import { addToAnonymizedList, emptyAnonList, emptyAnonymizedList, removePatientFromAnonList, removeStudyFromAnonList, removeStudyFromAnonymizedList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
 import { addToDeleteList } from '../../actions/DeleteList'
-import { addToExportList } from '../../actions/ExportList'
+import { addStudiesToExportList } from '../../actions/ExportList'
 
 
 class AnonPanel extends Component {
@@ -246,13 +246,7 @@ class AnonPanel extends Component {
     }
 
     async exportList(){
-        let seriesArray = []
-        for (let study in this.props.anonymizedList){
-            for (let serie in this.props.anonymizedList[study].Series){
-                seriesArray.push(await apis.content.getSeriesDetailsByID(this.props.anonymizedList[study].Series[serie]))
-            }
-        }
-        this.props.addToExportList(seriesArray, this.props.anonymizedList)
+        this.props.addStudiesToExportList(this.props.anonymizedList)
     }
 
     deleteList(){
@@ -384,7 +378,7 @@ const mapDispatchToProps = {
     saveProfile, 
     autoFill, 
     addToDeleteList, 
-    addToExportList
+    addStudiesToExportList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AnonPanel)

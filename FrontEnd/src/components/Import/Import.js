@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from "react-redux"
 
 import { StatusBar,DragDrop } from '@uppy/react'
 import Uppy from '@uppy/core'
@@ -9,10 +10,13 @@ import Modal from 'react-bootstrap/Modal'
 import TablePatientsWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudiesAndSeries'
 import TableImportError from './TableImportError'
 import apis from '../../services/apis'
-import {treeToPatientArray} from '../../tools/processResponse'
+import {treeToPatientArray, treeToStudyArray} from '../../tools/processResponse'
 
-//Ce composant sera a connecter au redux pour connaitre la longueur de la liste d'export
-export default class Import extends Component {
+import {addStudiesToExportList} from '../../actions/ExportList'
+import {addToDeleteList} from '../../actions/DeleteList'
+import {addToAnonList} from '../../actions/AnonList'
+
+class Import extends Component {
 
     state = {
         errors : [],
@@ -28,6 +32,8 @@ export default class Import extends Component {
 
         super(props)
         this.handleShowErrorClick = this.handleShowErrorClick.bind(this)
+        this.sendImportedToAnon = this.sendImportedToAnon.bind(this)
+        this.sendImportedToExport = this.sendImportedToExport.bind(this)
         
         this.uppy = Uppy({
             autoProceed: true,
@@ -103,8 +109,6 @@ export default class Import extends Component {
         
         let seriesDetails = await apis.content.getSeriesDetailsByID(orthancAnswer.ParentSeries)
         this.addSeriesToState(seriesDetails)
-
-        console.log(this.state)
 
     }
 
@@ -182,23 +186,12 @@ export default class Import extends Component {
         return Object.keys(this.state.seriesObjects).includes(seriesID)
     }
 
-    /**
-     * Remove a patient from test
-     * @param {*} deletedStudyID 
-     */
-    onDeletePatient(deletedStudyID){
-        //surement mieux de passer par l'API pour get les series de ce patient et l'enlever des imported series
-        //Mais supprime tout le contenu d'orthanc et pas suelement les importé
-        //Ou alors aller vers un dropdown spécial ?
-
+    sendImportedToExport() {
+        this.props.addStudiesToExportList(treeToStudyArray(this.state.studiesObjects))
     }
 
-    /**
-     * Searches Series ID in imported tree to remove it
-     * @param {String} deletedSeriesID 
-     */
-    onDeleteSeries(deletedSeriesID){
-        
+    sendImportedToAnon(){
+
     }
 
     /**
@@ -245,8 +238,29 @@ export default class Import extends Component {
                         patients = {this.buildImportTree()}
                     />
                 </div>
+                <div className="row text-center mt-3">
+                    <div className="col">
+                        <input type="button" className="btn btn-info" value="To Anonymize" onClick={this.sendImportedToAnon} />
+                    </div>
+                    <div className="col">
+                        <input type="button" className="btn btn-info" value="To Export" onClick ={this.sendImportedToExport}/>
+                    </div>
+                    <div className="col">
+                        <input type="button" className="btn btn-warning" value="To Delete" />
+                    </div>
+                </div>
             </div>
 
         )
     }
 }
+
+const mapDispatchToProps = {
+    addStudiesToExportList,
+    addToDeleteList,
+    addToAnonList
+
+
+}
+
+export default connect(null, mapDispatchToProps)(Import)

@@ -36,7 +36,7 @@ class ActionBouton extends Component{
     async modify(){
         switch(this.props.level){
             case 'patient':
-                if (!this.state.modification.PatientID || this.state.modification.PtientID === '')
+                if (!this.state.modification.PatientID || this.state.modification.PatientID === '')
                     alert('PatientID can\'t be empty or the same as before!')
                 else {
                     await apis.content.modifyPatients(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
@@ -106,6 +106,10 @@ class ActionBouton extends Component{
         mode: 'checkbox', 
         style: {background: 'red'}, 
         nonSelectable: ['PatientID', 'SeriesTime', 'SeriesDate', 'Modality', 'StudyDate', 'StudyTime'], 
+        selectionRenderer: ({ mode, checked, disabled }) => {
+            if (disabled) return 'Mendatory'
+            else return <input type = 'checkbox'/>
+        },
         selectColumnPosition: 'right', 
         selectionHeaderRenderer: () => {return 'Delete'}
     }

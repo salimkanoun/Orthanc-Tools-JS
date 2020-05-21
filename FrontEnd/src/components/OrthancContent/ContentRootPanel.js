@@ -7,11 +7,11 @@ import Dropdown from 'react-bootstrap/Dropdown'
 import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
-import {studyArrayToPatientArray} from '../../tools/processResponse'
+import {studyArrayToPatientArray, treeToStudyArray} from '../../tools/processResponse'
 
 import { connect } from 'react-redux'
 import { addToDeleteList } from '../../actions/DeleteList'
-import { addToExportList } from '../../actions/ExportList'
+import { addStudiesToExportList } from '../../actions/ExportList'
 import { addToAnonList } from '../../actions/AnonList'
 import { addOrthancContent, removeOrthancContentStudy, removeOrthancContentPatient } from '../../actions/OrthancContent'
 
@@ -111,27 +111,10 @@ class ContentRootPanel extends Component {
   }
 
   async sendToExportList(){
-    let selectedIds = this.child.current.getSelectedRessources()
-    let studyIDs = []
-    selectedIds.selectedPatients.forEach(orthancPatientId => {
-      this.props.orthancContent.forEach(study => {
-        if (study.ParentPatient === orthancPatientId)
-          studyIDs.push(study.ID)
-      })
-    })
-    selectedIds.selectedStudies.forEach(studyID => {
-      if (!studyIDs.includes(studyID))
-        studyIDs.push(studyID)
-    })
-    //get series details
-    let serieDetails = []
-    for(let i in studyIDs) {
-      let series = await apis.content.getSeriesDetails(studyIDs[i])
-      serieDetails.push(...series)
-    }
-    
-    this.props.addToExportList(serieDetails, this.getStudySelectedDetails()) //send series details and study details
-
+    //Get selected studies array
+    let selectedStudiesArray = treeToStudyArray(this.getStudySelectedDetails())
+    //Send it to redux
+    this.props.addStudiesToExportList(selectedStudiesArray) 
   }
 
   rowEventsStudies = {
@@ -208,7 +191,7 @@ const mapDispatchToProps = {
   addOrthancContent,
   removeOrthancContentStudy,
   removeOrthancContentPatient,
-  addToExportList
+  addStudiesToExportList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContentRootPanel)
