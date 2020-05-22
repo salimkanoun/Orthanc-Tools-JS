@@ -18,6 +18,7 @@ class TableStudy extends Component {
         hiddenAccessionNumber: false, 
         editable: false, 
         hiddenCSV: true,
+        hiddenAnonymized: true
     }
 
     getSelectedItems(){
@@ -100,7 +101,15 @@ class TableStudy extends Component {
         }, 
         editable: false, 
         csvExport: false
-    
+    }, {
+        dataField : 'Anonymized',
+        text: 'Anonymized ?',
+        style: (cell, row, index) => {return {backgroundColor: row.AnonymizedFrom ? 'green' : 'red'}},
+        formatter: (cell, row, index) => {
+            return row.AnonymizedFrom ? 'YES' : 'NO'
+        },
+        hidden: this.props.hiddenAnonymized, 
+        csvExport: false
     }]
 
     render() {

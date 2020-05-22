@@ -69,7 +69,8 @@ export function studyArrayToNestedData(studiesArray){
                 responseMap[serie.ParentStudy] = {
                     ...study.MainDicomTags, 
                     ...responseMap[serie.ParentStudy], 
-                    ...study.PatientMainDicomTags
+                    ...study.PatientMainDicomTags, 
+                    AnonymizedFrom: study.AnonymizedFrom
                 }
             }
         })
