@@ -26,9 +26,6 @@ export default class NavBar extends Component {
           <li className='nav-item'>
             <Link className='nav-link' to='/options'>Administration</Link>
           </li>
-          <li className='nav-item'>
-            <Link className='nav-link' to='/metadata'>Metadata</Link>
-          </li>
         </ul>
         <ToolsPanel />
       </div>
