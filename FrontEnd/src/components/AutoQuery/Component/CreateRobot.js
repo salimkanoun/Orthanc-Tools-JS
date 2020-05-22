@@ -65,7 +65,7 @@ export default class CreateRobot extends Component {
   render () {
     return (
         <Fragment>
-          <div class="form-group row">
+          <div className="form-group row">
             <label>Project Name :</label>
             <div className="col">
               <input type='text' className="form-control" name='projectName' value={this.state.value} onChange={this.handleChange} />

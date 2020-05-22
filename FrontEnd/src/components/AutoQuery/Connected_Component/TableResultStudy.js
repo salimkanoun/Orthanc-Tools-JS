@@ -31,11 +31,7 @@ class TableResultStudy extends Component {
         this.props.emptyResultsTable()
     }
 
-    columns = [{
-        dataField: 'number',
-        hidden: true,
-        csvExport: false
-    }, {
+    columns = [ {
         dataField: 'level',
         hidden: true,
         csvExport: false
@@ -99,11 +95,21 @@ class TableResultStudy extends Component {
         clickToSelect: true
     }
 
+    buildRowArray(){
+        let rows = []
+        for(const studyUID of Object.keys(this.props.results)){
+            rows.push({
+                ...this.props.results[studyUID]
+            })
+        }
+        return rows
+    }
+
     render() {
         return (
             <ToolkitProvider
-                keyField="key"
-                data={this.props.results}
+                keyField="studyInstanceUID"
+                data={this.buildRowArray()}
                 columns={this.columns}
                 exportCSV={{ onlyExportSelection: false, exportAll: true }}
             >{

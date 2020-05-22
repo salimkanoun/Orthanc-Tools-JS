@@ -23,9 +23,13 @@ class TableResultsStudiesSeries extends Component {
 
     async componentDidMount(){
         //List studies for each series details are missing
-        let emptyResultArray = this.props.results.filter(studyResults =>{
-            return studyResults['seriesDetails'].length === 0
-        })
+        let emptyResultArray = []
+
+        //SK A REVOIR
+        
+        for(let studyUID of Object.keys(this.props.results)){
+            emptyResultArray.push(this.props.results[studyUID])
+        }
         
         if(emptyResultArray.length>0){
             const id = toast.info('Starting Series Fetching');
@@ -66,10 +70,6 @@ class TableResultsStudiesSeries extends Component {
     }
 
     columns = [{
-        dataField: 'key',
-        hidden: true,
-        csvExport: false
-    },{
         dataField: 'level',
         hidden: true,
         csvExport: false
@@ -111,11 +111,11 @@ class TableResultsStudiesSeries extends Component {
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'serieInstanceUID',
+        dataField: 'seriesInstanceUID',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'serieDescription',
+        dataField: 'seriesDescription',
         text: 'Serie Description',
         sort: true,
         filter: textFilter()
@@ -125,7 +125,7 @@ class TableResultsStudiesSeries extends Component {
         sort: true,
         filter: textFilter()
     }, {
-        dataField: 'serieNumber',
+        dataField: 'seriesNumber',
         text: 'Serie Number',
         sort: true,
         filter: textFilter()
@@ -141,14 +141,13 @@ class TableResultsStudiesSeries extends Component {
 
     buildResultsSeriesArray(){
         let seriesLines = []
-        this.props.results.forEach(study => {
-            study['seriesDetails'].forEach(seriesDetails => {
-                seriesLines.push({
-                ...study,
-                ...seriesDetails
-                })
+        for(let seriesUID of Object.keys(this.props.resultsSeries)){
+            seriesLines.push({
+                ...this.props.results[this.props.resultsSeries[seriesUID]['studyInstanceUID']],
+                ...this.props.resultsSeries[seriesUID],
+
             })
-        });
+        }
 
         return seriesLines
     }
@@ -170,7 +169,7 @@ class TableResultsStudiesSeries extends Component {
             <Fragment>
                 <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
                 <ToolkitProvider
-                    keyField="key"
+                    keyField="seriesInstanceUID"
                     data={rows}
                     columns={this.columns}
                 >{
@@ -188,7 +187,8 @@ class TableResultsStudiesSeries extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        results: state.AutoRetrieveResultList.results
+        results : state.AutoRetrieveResultList.results,
+        resultsSeries: state.AutoRetrieveResultList.resultsSeries
     }
 }
 
