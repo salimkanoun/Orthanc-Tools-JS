@@ -58,12 +58,28 @@ export default function retrieveListReducer (state = initialState, action) {
       }
 
     case AQ_REMOVE_SERIES_RESULT :
+      //SK ICI A REVOIR
+      let seriesUIDToDelete = action.payload
+      let resultSeriesCopy2 = {...state.seriesDetails}
+      seriesUIDToDelete.forEach(seriesUID => {
+        delete resultSeriesCopy2[seriesUID]
+      })
       
-      let resultSeriesCopy2 = {...seriesDetails}
-      delete resultSeriesCopy2[action.payload.seriesInstanceUID]
+      let studyUIDArray = Object.keys(state.results)
+      let remainingStudyUIDInSeries = []
+      for(let seriesUID of Object.keys(state.resultsSeries)){
+          remainingStudyUIDInSeries.push(state.resultsSeries[seriesUID]['studyInstanceUID'])    
+      } 
+
+      let resultStudiesCopy = {...state.results}
+      let studiesUIDToRemove = studyUIDArray.filter(studyUID => !remainingStudyUIDInSeries.includes(studyUID));
+      studiesUIDToRemove.forEach(studyUID =>{
+          delete resultStudiesCopy[studyUID]
+      })
 
       return {
         ...state,
+        results : resultStudiesCopy,
         resultsSeries: resultSeriesCopy2
       }
 

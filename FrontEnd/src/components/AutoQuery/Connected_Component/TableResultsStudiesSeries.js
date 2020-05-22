@@ -7,7 +7,7 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import filterFactory, { textFilter, dateFilter, numberFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
-import { addSeriesDetails } from '../../../actions/TableResult'
+import { addSeriesDetails, removeSeriesResult } from '../../../actions/TableResult'
 import apis from '../../../services/apis';
 
 /**
@@ -26,18 +26,24 @@ class TableResultsStudiesSeries extends Component {
         let emptyResultArray = []
 
         //SK A REVOIR
+        let studyUIDToQuery = Object.keys(this.props.results)
+        let availableStudyUID = []
+        for(let seriesUID of Object.keys(this.props.resultsSeries)){
+            availableStudyUID.push(this.props.resultsSeries[seriesUID]['studyInstanceUID'])    
+        } 
+
+        studyUIDToQuery.forEach (studyUID =>{
+            if( ! availableStudyUID.includes(studyUID)) emptyResultArray.push(this.props.results[studyUID])
+        })
         
-        for(let studyUID of Object.keys(this.props.results)){
-            emptyResultArray.push(this.props.results[studyUID])
-        }
-        
+
         if(emptyResultArray.length>0){
             const id = toast.info('Starting Series Fetching');
             let i = 1
             //Load All series details of studies answers
             for (let studyResults of emptyResultArray) {
                 toast.update(id, {
-                    render : 'Fetching series for '+(i++)+'/'+(this.props.results.length)
+                    render : 'Fetching series for '+(i++)+'/'+(emptyResultArray.length)
                 });
                 await this.getSeriesDetails(studyResults.studyInstanceUID, studyResults.originAET)
             }
@@ -159,7 +165,8 @@ class TableResultsStudiesSeries extends Component {
 
     removeRow() {
         let selectedKeyRow = this.node.selectionContext.selected
-        //SK REDUX A FAIRE
+        console.log(selectedKeyRow)
+        this.props.removeSeriesResult(selectedKeyRow)
         this.node.selectionContext.selected = []
     }
 
@@ -193,7 +200,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
-    addSeriesDetails
+    addSeriesDetails,
+    removeSeriesResult
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableResultsStudiesSeries);
