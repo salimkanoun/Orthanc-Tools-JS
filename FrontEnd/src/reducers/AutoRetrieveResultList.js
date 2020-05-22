@@ -1,4 +1,4 @@
-import { SET_RETRIEVE_STATUS_SERIES, REMOVE_RESULT, ADD_RESULT_TO_LIST, SET_RETRIVE_STATUS_STUDY, EMPTY_RESULTS, ADD_SERIES_DETAILS } from '../actions/actions-types'
+import { AQ_REMOVE_STUDY_RESULT, AQ_ADD_STUDY_RESULT, AQ_EMPTY_RESULTS, AQ_ADD_SERIES_DETAILS } from '../actions/actions-types'
 
 const initialState = {
   results: []
@@ -6,7 +6,8 @@ const initialState = {
 
 export default function retrieveListReducer (state = initialState, action) {
   switch (action.type) {
-    case REMOVE_RESULT :
+    
+    case AQ_REMOVE_STUDY_RESULT :
       const removedLines = action.payload
       const newResults = state.results.filter(function (results) {
         return !removedLines.includes(results.key)
@@ -15,7 +16,8 @@ export default function retrieveListReducer (state = initialState, action) {
         ...state,
         results: newResults
       }
-    case ADD_RESULT_TO_LIST:
+
+    case AQ_ADD_STUDY_RESULT:
       let maxKey = Math.max.apply(Math, state.results.map(function (query) { return query.key }))
       maxKey = Math.max(0, maxKey)
       let resultsCopy = [...state.results]
@@ -29,40 +31,14 @@ export default function retrieveListReducer (state = initialState, action) {
         ...state,
         results : resultsCopy
       }
-    case SET_RETRIVE_STATUS_STUDY:
-      for (const i in state.results) {
-        if (state.results[i].key === action.payload.key) {
-          state.results[i].isRetrieved = action.payload.isRetrieved
-          break
-        }
-      }
-      let resultsCopy2 = [...state.results]
-      return {
-        ...state,
-        results : resultsCopy2
-      }
-    case SET_RETRIEVE_STATUS_SERIES:
-      const newResultArray = state.results.map((studyData) => {
-        if (studyData.studyInstanceUID === action.payload.row.studyInstanceUID) {
-          studyData.seriesDetails.forEach((serieDetails) => {
-            if (serieDetails.serieInstanceUID === action.payload.row.serieInstanceUID) {
-              serieDetails.isRetrieved = true
-            }
-          })
-        }
-        return studyData
-      })
-      return {
-        ...state,
-        results: newResultArray
-      }
-    case EMPTY_RESULTS :
+
+    case AQ_EMPTY_RESULTS :
       return {
         ...state,
         results: []
       }
 
-    case ADD_SERIES_DETAILS :
+    case AQ_ADD_SERIES_DETAILS :
       const seriesDetails = action.payload.seriesDetails
       seriesDetails.forEach((serieItem) => {
         serieItem.isRetrieved = false

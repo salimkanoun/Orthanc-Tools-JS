@@ -1,44 +1,30 @@
-import { REMOVE_RESULT, ADD_RESULT_TO_LIST, SET_RETRIVE_STATUS_STUDY, EMPTY_RESULTS, ADD_SERIES_DETAILS, SET_RETRIEVE_STATUS_SERIES } from './actions-types'
+import { AQ_REMOVE_STUDY_RESULT, AQ_ADD_STUDY_RESULT, AQ_EMPTY_RESULTS, AQ_ADD_SERIES_DETAILS } from './actions-types'
 
 export function removeResult (lineNumber) {
   return {
-    type: REMOVE_RESULT,
+    type: AQ_REMOVE_STUDY_RESULT,
     payload: lineNumber
   }
 }
 
 export function addStudyResult (resultData) {
   return {
-    type: ADD_RESULT_TO_LIST,
+    type: AQ_ADD_STUDY_RESULT,
     payload: {
       ...resultData
     }
   }
 }
 
-export function setRetrieveStatus (row, isRetrieved) {
-  if (row.level === 'STUDY') {
-    return {
-      type: SET_RETRIVE_STATUS_STUDY,
-      payload: { key: row.key, isRetrieved: isRetrieved }
-    }
-  } else if (row.level === 'SERIES') {
-    return {
-      type: SET_RETRIEVE_STATUS_SERIES,
-      payload: { row: row, isRetrieved: isRetrieved }
-    }
-  }
-}
-
 export function emptyResultsTable () {
   return {
-    type: EMPTY_RESULTS
+    type: AQ_EMPTY_RESULTS
   }
 }
 
 export function addSeriesDetails (seriesDetails, studyInstanceUID) {
   return {
-    type: ADD_SERIES_DETAILS,
+    type: AQ_ADD_SERIES_DETAILS,
     payload: { seriesDetails, studyInstanceUID }
   }
 }

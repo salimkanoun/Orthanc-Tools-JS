@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux'
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
@@ -29,7 +29,7 @@ class TableResultsStudiesSeries extends Component {
         
         if(emptyResultArray.length>0){
             const id = toast.info('Starting Series Fetching');
-            let i = 0
+            let i = 1
             //Load All series details of studies answers
             for (let studyResults of emptyResultArray) {
                 toast.update(id, {
@@ -188,7 +188,7 @@ class TableResultsStudiesSeries extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        results: state.ResultList.results
+        results: state.AutoRetrieveResultList.results
     }
 }
 

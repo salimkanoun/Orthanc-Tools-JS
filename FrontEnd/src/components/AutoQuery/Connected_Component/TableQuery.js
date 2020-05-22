@@ -227,7 +227,7 @@ class TableQuery extends Component {
 const mapStateToProps = (state) => {
   return {
     aets: state.OrthancTools.OrthancAets,
-    queries: state.QueryList.queries
+    queries: state.AutoRetrieveQueryList.queries
   }
 }
 

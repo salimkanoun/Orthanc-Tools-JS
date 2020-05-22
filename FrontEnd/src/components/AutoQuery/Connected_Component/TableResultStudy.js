@@ -129,7 +129,7 @@ class TableResultStudy extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        results: state.ResultList.results
+        results: state.AutoRetrieveResultList.results
     }
 }
 
