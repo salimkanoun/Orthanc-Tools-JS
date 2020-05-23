@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import TableQuery from '../Connected_Component/TableQuery'
-import Results from './Results'
+import Results from '../Connected_Component/Results'
 import RobotView from './RobotView'
 
 /**

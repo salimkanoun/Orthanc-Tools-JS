@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import { toast } from 'react-toastify'
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
@@ -170,12 +171,19 @@ class TableQuery extends Component {
   }
 
   async query() {
-
     let data = this.node.props.data
+    const id = toast.info('Starting Studies Queries');
+    let i = 0
+    console.log(data)
     //SK ICI GERER LA PROGRESSION ET LA FIN FAIRE SWITCH DE TAB
     for (const query of data) {
+      i++
+
       //For each line make dicom query and return results
       let answeredResults = await this.makeDicomQuery(query)
+      toast.update(id, {
+        render : 'Queried study '+i+'/'+data.length
+      });
       //For each results, fill the result table through Redux
       answeredResults.forEach((answer) => {
         this.props.addStudyResult(answer)
@@ -227,7 +235,7 @@ class TableQuery extends Component {
 const mapStateToProps = (state) => {
   return {
     aets: state.OrthancTools.OrthancAets,
-    queries: state.QueryList.queries
+    queries: state.AutoRetrieveQueryList.queries
   }
 }
 

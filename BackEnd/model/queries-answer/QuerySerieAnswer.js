@@ -4,10 +4,10 @@ class QuerySerieAnswer extends OrthancQueryAnswers {
   constructor (answerId, answerNumber, level, studyUID, seriesUID, modality, seriesDescription, seriesNumber, originAET, numberOfSeriesRelatedInstances) {
     super(answerId, answerNumber, level, originAET, numberOfSeriesRelatedInstances)
     this.studyInstanceUID = studyUID
-    this.serieInstanceUID = seriesUID
+    this.seriesInstanceUID = seriesUID
     this.modality = modality
-    this.serieDescription = seriesDescription
-    this.serieNumber = seriesNumber
+    this.seriesDescription = seriesDescription
+    this.seriesNumber = seriesNumber
   }
 }
 

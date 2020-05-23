@@ -61,7 +61,7 @@ class Orthanc {
     }
   }
 
-  buildSerieDicomQuery (studyUID = '', modality = '', protocolName = '', seriesDescription = '', seriesNumber = '', seriesInstanceUID = '') {
+  buildSeriesDicomQuery (studyUID = '', modality = '', protocolName = '', seriesDescription = '', seriesNumber = '', seriesInstanceUID = '') {
     this.preparedQuery = {
       Level: 'Series',
       Query: {
