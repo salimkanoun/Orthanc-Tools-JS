@@ -51,8 +51,8 @@ class RetrieveItem {
     const answerDetails = await orthancObject.makeDicomQuery(this.queryAnswer.aet)
 
     const answer = answerDetails[0]
-    const retrieveAnswer = await this.orthancObject.makeRetrieve(answer.answerId, answer.answerNumber, this.aetDestination, true)
-    const orthancResults = await this.orthancObject.findInOrthancByUid(retrieveAnswer.Query[0]['0020,000d'])
+    const retrieveAnswer = await orthancObject.makeRetrieve(answer.answerId, answer.answerNumber, this.aetDestination, true)
+    const orthancResults = await orthancObject.findInOrthancByUid(retrieveAnswer.Query[0]['0020,000d'])
     if (orthancResults.length === 1) {
       this.setStatus(RetrieveItem.STATUS_RETRIEVED)
       this.setRetrievedOrthancId(orthancResults[0].ID)
