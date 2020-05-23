@@ -104,9 +104,10 @@ class TableStudy extends Component {
     }, {
         dataField : 'Anonymized',
         text: 'Anonymized ?',
-        style: (cell, row, index) => {return {backgroundColor: row.AnonymizedFrom ? 'green' : 'red'}},
+        style: (cell, row, index) => {return {color: row.AnonymizedFrom ? 'green' : 'red'}},
+        classes: 'text-center',
         formatter: (cell, row, index) => {
-            return row.AnonymizedFrom ? 'YES' : 'NO'
+            return row.AnonymizedFrom ? 'Yes' : 'No'
         },
         hidden: this.props.hiddenAnonymized, 
         csvExport: false
