@@ -15,7 +15,7 @@ class QueryStudyAnswer extends OrthancQueryAnswer {
     numberOfStudyRelatedSeries,
     numberOfStudyRelatedInstances
   ) {
-    super(answerId, answerNumber, level, originAET, numberOfStudyRelatedInstances)
+    super(answerId, answerNumber, OrthancQueryAnswer.LEVEL_STUDY , originAET, numberOfStudyRelatedInstances)
     this.patientName = patientName
     this.patientID = patientID
     this.accessionNumber = accessionNumber

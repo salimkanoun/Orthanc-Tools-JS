@@ -1,3 +1,5 @@
+const OrthancQueryAnswer = require('./queries-answer/OrthancQueryAnswer')
+
 class RetrieveItem {
 
   constructor (queryAnswer) {
@@ -15,19 +17,19 @@ class RetrieveItem {
 
     if(this.queryAnswer.level === OrthancQueryAnswer.LEVEL_STUDY){    
         orthancObject.buildStudyDicomQuery('', '', '', '', '', '', this.queryAnswer.studyInstanceUID)
-    }else if(this.queryAnswer.level === OrthancQueryAnswer.LEVEL_STUDY){
+    }else if(this.queryAnswer.level === OrthancQueryAnswer.LEVEL_SERIES){
         orthancObject.buildSeriesDicomQuery(this.queryAnswer.studyInstanceUID, '', '', '', '', this.queryAnswer.seriesInstanceUID)
     }
    
-    const answerDetails = await this.orthancObject.makeDicomQuery(this.queryAnswer.aet)
+    const answerDetails = await orthancObject.makeDicomQuery(this.queryAnswer.aet)
 
     if (answerDetails.length === 1) {
       this.setValidated()
-      this.setNumberOfSeries(answerDetails[0].numberOfStudyRelatedSeries)
-      this.setNumberOfInstances(answerDetails[0].numberOfSeriesRelatedInstances)
       return true
+
     }else{
       return false
+
     }
 
   }
@@ -42,10 +44,9 @@ class RetrieveItem {
 
     if(this.queryAnswer.level === OrthancQueryAnswer.LEVEL_STUDY){    
       orthancObject.buildStudyDicomQuery('', '', '', '', '', '', this.queryAnswer.studyInstanceUID)
-    }else if(this.queryAnswer.level === OrthancQueryAnswer.LEVEL_STUDY){
+    }else if(this.queryAnswer.level === OrthancQueryAnswer.LEVEL_SERIES){
         orthancObject.buildSeriesDicomQuery(this.queryAnswer.studyInstanceUID, '', '', '', '', this.queryAnswer.seriesInstanceUID)
     }
-
 
     const answerDetails = await orthancObject.makeDicomQuery(this.queryAnswer.aet)
 
@@ -63,14 +64,6 @@ class RetrieveItem {
 
   setValidated () {
     this.validated = true
-  }
-
-  setNumberOfInstances (number) {
-    this.numberOfInstances = parseInt(number)
-  }
-
-  getNumberOfInstances () {
-    return this.numberOfInstances
   }
 
   setRetrievedOrthancId (orthancId) {
@@ -95,7 +88,7 @@ class RetrieveItem {
       ...this.queryAnswer,
       validated : this.validated,
       retrievedOrthancId : this.retrievedOrthancId,
-      status: this.status
+      status: this.status, 
     }
   }
 

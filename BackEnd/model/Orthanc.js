@@ -1,6 +1,6 @@
 const fs = require('fs')
 const QueryStudyAnswer = require('./queries-answer/QueryStudyAnswer')
-const QuerySerieAnswer = require('./queries-answer/QuerySerieAnswer')
+const QuerySerieAnswer = require('./queries-answer/QuerySeriesAnswer')
 const TagAnon = require('./TagAnon')
 const ReverseProxy = require('./ReverseProxy')
 
