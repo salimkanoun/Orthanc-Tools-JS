@@ -1,4 +1,4 @@
-class QuerySerieAnswer {
+class OrthancQueryAnswer {
   constructor (answerId, answerNumber, level, originAET, numberOfSeriesRelatedInstances) {
     this.answerId = answerId
     this.answerNumber = answerNumber
@@ -8,4 +8,7 @@ class QuerySerieAnswer {
   }
 }
 
-module.exports = QuerySerieAnswer
+OrthancQueryAnswer.LEVEL_SERIES = 'series'
+OrthancQueryAnswer.LEVEL_STUDY ='study'
+
+module.exports = OrthancQueryAnswer

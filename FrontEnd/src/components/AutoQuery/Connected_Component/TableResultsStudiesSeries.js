@@ -24,8 +24,6 @@ class TableResultsStudiesSeries extends Component {
     async componentDidMount(){
         //List studies for each series details are missing
         let emptyResultArray = []
-
-        //SK A REVOIR
         let studyUIDToQuery = Object.keys(this.props.results)
         let availableStudyUID = []
         for(let seriesUID of Object.keys(this.props.resultsSeries)){
@@ -39,13 +37,14 @@ class TableResultsStudiesSeries extends Component {
 
         if(emptyResultArray.length>0){
             const id = toast.info('Starting Series Fetching');
-            let i = 1
+            let i = 0
             //Load All series details of studies answers
             for (let studyResults of emptyResultArray) {
-                toast.update(id, {
-                    render : 'Fetching series for '+(i++)+'/'+(emptyResultArray.length)
-                });
+                i++
                 await this.getSeriesDetails(studyResults.studyInstanceUID, studyResults.originAET)
+                toast.update(id, {
+                    render : 'Queried series '+i+'/'+(emptyResultArray.length)
+                });
             }
         }
 

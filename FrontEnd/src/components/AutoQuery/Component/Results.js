@@ -1,4 +1,6 @@
 import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux'
+
 import TableResultsStudiesSeries from '../Connected_Component/TableResultsStudiesSeries'
 import TableResultStudy from '../Connected_Component/TableResultStudy'
 
@@ -6,7 +8,7 @@ import TableResultStudy from '../Connected_Component/TableResultStudy'
 import CreateRobot from '../Component/CreateRobot'
 
 
-export default class Results extends Component {
+class Results extends Component {
 
     state = {
         seriesView : false
@@ -23,6 +25,23 @@ export default class Results extends Component {
         })
     }
 
+    buildArrayRetrieve(){
+
+        let resultObject= this.props.results
+
+        if ( Object.keys(this.props.resultsSeries)>0 ) {
+            resultObject = this.props.resultsSeries
+        }
+
+        let retrieveArray =[]
+        for(let retrieveItemUID of Object.keys(resultObject)){
+            retrieveArray.push( {...resultObject[retrieveItemUID]} )
+        }
+
+        return retrieveArray 
+        
+    }
+
     render() {
         return (
             <Fragment>
@@ -33,10 +52,19 @@ export default class Results extends Component {
                     { this.state.seriesView === true ? <TableResultsStudiesSeries /> : <TableResultStudy /> }
                 </div>
                 <div className="text-center">
-                    <CreateRobot resultArray={this.props.results} switchTab = {this.props.switchTab} ></CreateRobot>
+                    <CreateRobot resultArray={this.buildArrayRetrieve()} switchTab = {this.props.switchTab} ></CreateRobot>
                 </div>
             </Fragment>
         )
     }
 
 }
+
+const mapStateToProps = (state) => {
+    return {
+        results : state.AutoRetrieveResultList.results,
+        resultsSeries: state.AutoRetrieveResultList.resultsSeries
+    }
+}
+
+export default connect(mapStateToProps, null)(Results);

@@ -1,31 +1,68 @@
 class RetrieveItem {
-  constructor (level, patientName, patientId, studyDate, modality, studyDescription, accessionNb, studyInstanceUID, aet) {
-    this.level = level
-    this.patientName = patientName
-    this.patientId = patientId
-    this.studyDate = studyDate
-    this.modality = modality
-    this.studyDescription = studyDescription
-    this.accessionNb = accessionNb
-    this.studyInstanceUID = studyInstanceUID
-    this.aet = aet
+
+  constructor (queryAnswer) {
+    this.queryAnswer = queryAnswer
     this.validated = false
-    this.numberOfSeries = 0
-    this.numberOfInstances = 0
     this.status = RetrieveItem.STATUS_IDLE
     this.retrievedOrthancId = null
   }
 
+  getQueryAnswer(){
+    return this.queryAnswer
+  }
+
+  async validateRetrieveItem(orthancObject){
+
+    if(this.queryAnswer.level === OrthancQueryAnswer.LEVEL_STUDY){    
+        orthancObject.buildStudyDicomQuery('', '', '', '', '', '', this.queryAnswer.studyInstanceUID)
+    }else if(this.queryAnswer.level === OrthancQueryAnswer.LEVEL_STUDY){
+        orthancObject.buildSeriesDicomQuery(this.queryAnswer.studyInstanceUID, '', '', '', '', this.queryAnswer.seriesInstanceUID)
+    }
+   
+    const answerDetails = await this.orthancObject.makeDicomQuery(this.queryAnswer.aet)
+
+    if (answerDetails.length === 1) {
+      this.setValidated()
+      this.setNumberOfSeries(answerDetails[0].numberOfStudyRelatedSeries)
+      this.setNumberOfInstances(answerDetails[0].numberOfSeriesRelatedInstances)
+      return true
+    }else{
+      return false
+    }
+
+  }
+
+  async doRetrieveItem(orthancObject){
+
+    if(!this.validated){
+      throw "Non Validated Item"
+    }
+    
+    this.setStatus(RetrieveItem.STATUS_RETRIVING)
+
+    if(this.queryAnswer.level === OrthancQueryAnswer.LEVEL_STUDY){    
+      orthancObject.buildStudyDicomQuery('', '', '', '', '', '', this.queryAnswer.studyInstanceUID)
+    }else if(this.queryAnswer.level === OrthancQueryAnswer.LEVEL_STUDY){
+        orthancObject.buildSeriesDicomQuery(this.queryAnswer.studyInstanceUID, '', '', '', '', this.queryAnswer.seriesInstanceUID)
+    }
+
+
+    const answerDetails = await orthancObject.makeDicomQuery(this.queryAnswer.aet)
+
+    const answer = answerDetails[0]
+    const retrieveAnswer = await this.orthancObject.makeRetrieve(answer.answerId, answer.answerNumber, this.aetDestination, true)
+    const orthancResults = await this.orthancObject.findInOrthancByUid(retrieveAnswer.Query[0]['0020,000d'])
+    if (orthancResults.length === 1) {
+      this.setStatus(RetrieveItem.STATUS_RETRIEVED)
+      this.setRetrievedOrthancId(orthancResults[0].ID)
+    } else {
+      this.setStatus(RetrieveItem.STATUS_FAILURE)
+    }
+
+  }
+
   setValidated () {
     this.validated = true
-  }
-
-  setNumberOfSeries (number) {
-    this.numberOfSeries = parseInt(number)
-  }
-
-  getNumberOfSeries () {
-    return this.numberOfSeries
   }
 
   setNumberOfInstances (number) {
@@ -55,21 +92,13 @@ class RetrieveItem {
   toJSON () {
     return {
       level: this.level,
-      patientName: this.patientName,
-      patientId: this.patientId,
-      studyDate: this.studyDate,
-      modality: this.modality,
-      studyDescription: this.studyDescription,
-      accessionNb: this.accessionNb,
-      studyInstanceUID: this.studyInstanceUID,
-      numberOfSeries: this.numberOfSeries,
-      numberOfInstances: this.numberOfInstances,
+      ...this.queryAnswer,
       validated : this.validated,
-      aet: this.aet,
       retrievedOrthancId : this.retrievedOrthancId,
       status: this.status
     }
   }
+
 }
 
 RetrieveItem.STATUS_IDLE = 'Idle'
