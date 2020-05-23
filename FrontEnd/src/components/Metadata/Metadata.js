@@ -31,10 +31,7 @@ class Metadata extends Component {
     }
 
     async componentDidMount() {
-        let serieId = '00c3c1e5-987fc672-8caac34a-9b34296a-d1cc5dc3'
-        if (serieId === '')
-            alert('need to put an serieID in Metadata.js line 24')
-        let array = await apis.content.getSeriesInstances(serieId) 
+        let array = await apis.content.getSeriesInstances(this.props.serieID) 
         let id = []
         array.forEach(element => id.push(element.ID))
         this.setState({
@@ -55,7 +52,7 @@ class Metadata extends Component {
 
     async data(){
         let data = await apis.content.getInstances(this.state.InstancesArray[this.state.currentKey])
-        console.log('data récupérer : ', data)
+        console.log('data récupérer : (', this.state.InstancesArray[this.state.currentKey], ') ', data)
         let prepare = this.prepareData(data)
         this.setState({data: prepare})
         return prepare
@@ -95,15 +92,15 @@ class Metadata extends Component {
         return rows
     }
 
-    previewsInstance(){
-        this.setState({
+    async previewsInstance(){
+        await this.setState({
             currentKey: this.state.currentKey - 1
         })
         this.data()
     }
 
-    nextInstances(){
-        this.setState({
+    async nextInstances(){
+        await this.setState({
             currentKey: this.state.currentKey + 1
         })
         this.data()
@@ -114,7 +111,7 @@ class Metadata extends Component {
         return (
             <div className='jumbotron'>
                 <button type='button' className='btn btn-primary float-left mb-5' onClick={this.previewsInstance} disabled={this.state.currentKey === 0}>Previews Instances</button>
-                <label htmlFor='compteur' className='bg-info text-center' >{(this.state.currentKey) + '/' + this.state.InstancesArray.length}</label>
+                <label htmlFor='compteur' className='bg-info text-center' >{(this.state.currentKey + 1) + '/' + this.state.InstancesArray.length}</label>
                 <button type='button' className='btn btn-primary float-right mb-5' onClick={this.nextInstances} disabled={this.state.currentKey + 1 === this.state.InstancesArray.length}>Next Instances</button>
                 <TreeView 
                     className={this.useStyles.root}

@@ -6,11 +6,13 @@ import OhifLink from '../../Ohif/OhifLink'
 import Modal from 'react-bootstrap/Modal'
 import BootstrapTable from 'react-bootstrap-table-next'
 import cellEditFactory from 'react-bootstrap-table2-editor'
+import Metadata from '../../Metadata/Metadata'
 
 class ActionBouton extends Component{
 
     state = {
-        show: false,
+        showModify: false,
+        showMetadata: false, 
         data: [], 
         modification: {}
     }
@@ -20,10 +22,15 @@ class ActionBouton extends Component{
         this.openModify = this.openModify.bind(this)
         this.onHide = this.onHide.bind(this)
         this.delete = this.delete.bind(this)
+        this.setMetadata = this.setMetadata.bind(this)
+    }
+
+    static defaultProps = {
+        hiddenMetadata: true
     }
 
     openModify() {
-        this.setState({modification: {}, show: true, removePrivateTags: false})
+        this.setState({modification: {}, showModify: true, removePrivateTags: false})
         let rows=[]
         let forbidden = ['studies', 'Instances', 'StudyOrthancID', 'PatientOrthancID', 'SeriesOrthancID', 'StudyID', 'SeriesInstanceUID', 'StudyInstanceUID']
         for (let tag in this.props.row){
@@ -31,6 +38,12 @@ class ActionBouton extends Component{
                 rows.push({'TagName': tag, 'Value': this.props.row[tag] ? this.props.row[tag] : ''})
         }
         this.setState({data: rows})
+    }
+
+    setMetadata(){
+        this.setState({
+            showMetadata: !this.state.showMetadata
+        })
     }
 
     async modify(){
@@ -61,7 +74,7 @@ class ActionBouton extends Component{
 
     onHide(){
         this.setState({
-            show: false
+            showModify: false
         })
     }
 
@@ -115,10 +128,11 @@ class ActionBouton extends Component{
     }
 
     render(){
+        console.log(this.props.hiddenMetadata)
         return (
             <Fragment>
                 {/*Modal pour la modification*/}
-                <Modal show={this.state.show} onHide={this.onHide} onClick={this.handleClick} size='xl'>
+                <Modal show={this.state.showModify} onHide={this.onHide} onClick={this.handleClick} size='xl'>
                 <Modal.Header closeButton>
                     <Modal.Title>Modify {this.props.level}</Modal.Title>
                 </Modal.Header>
@@ -155,6 +169,19 @@ class ActionBouton extends Component{
                 </Modal.Footer>
                 </Modal>
 
+                {/*modal pour metadata*/}
+                <Modal show={this.state.showMetadata} onHide={this.setMetadata}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Metadata</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Metadata serieID={this.props.orthancID} />
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button type='button' className='btn btn-primary' onClick={this.setMetadata} >OK</button>
+                    </Modal.Footer>
+                </Modal>
+
                 <Dropdown onClick={this.handleClick}>
                     <Dropdown.Toggle variant="success" id="dropdown-basic"  >
                         Action
@@ -164,6 +191,7 @@ class ActionBouton extends Component{
                         <OhifLink className='dropdown-item bg-info' {...this.props} />
                         <button className='dropdown-item bg-warning' type='button' onClick={ this.openModify } >Modify</button>
                         <button className='dropdown-item bg-danger' type='button' onClick={ this.delete }>Delete</button>
+                        <button className='dropdown-item bg-info' type='button' onClick={ this.setMetadata} hidden={this.props.hiddenMetadata}>Metadata</button>
                     </Dropdown.Menu>
                 </Dropdown>
             </Fragment>

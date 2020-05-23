@@ -15,9 +15,7 @@ import Import from './components/Import/Import'
 import ContentRootPanel from './components/OrthancContent/ContentRootPanel'
 import Footer from './components/Main/Footer'
 import ExportPanel from './components/Export/ExportPanel'
-import AnonPanel from './components/Anonymize/AnonPanel'
 import NavBar from './components/Main/NavBar'
-import Metadata from './components/Metadata/Metadata'
 
 //CSS Boostrap
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -32,6 +30,7 @@ import '@uppy/drag-drop/dist/style.css'
 import '@uppy/status-bar/dist/style.css'
 //Custom CSS
 import './style.css'
+import AnonRootPanel from './components/Anonymize/AnonRootPanel'
 
 // Configuring Toastify params that will be used all over the app
 toast.configure({
@@ -61,8 +60,7 @@ function App () {
         <Route exact path='/orthanc-content' component={ContentRootPanel} />
         <Route exact path='/robot/:username' render = { (props) => <RobotView username={props.match.params.username} /> } />
         <Route exact path='/export' component={ExportPanel} />
-        <Route exact path='/anonymize' component={AnonPanel} /> 
-        <Route exact path='/metadata' component={Metadata} /> 
+        <Route exact path='/anonymize' component={AnonRootPanel} />
       </Switch>
       <Footer/>
     </>
