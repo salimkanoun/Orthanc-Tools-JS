@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux'
 
-import TableResultsStudiesSeries from '../Connected_Component/TableResultsStudiesSeries'
-import TableResultStudy from '../Connected_Component/TableResultStudy'
+import TableResultsStudiesSeries from './TableResultsStudiesSeries'
+import TableResultStudy from './TableResultStudy'
 
 
 import CreateRobot from '../Component/CreateRobot'
@@ -27,15 +27,21 @@ class Results extends Component {
 
     buildArrayRetrieve(){
 
-        let resultObject= this.props.results
-
-        if ( Object.keys(this.props.resultsSeries)>0 ) {
-            resultObject = this.props.resultsSeries
-        }
-
         let retrieveArray =[]
-        for(let retrieveItemUID of Object.keys(resultObject)){
-            retrieveArray.push( {...resultObject[retrieveItemUID]} )
+        //If series details have been loaded robot will be defined at series level
+        if ( Object.keys(this.props.resultsSeries).length > 0 ) {
+            for(let seriesUID of Object.keys(this.props.resultsSeries)){
+                let seriesObject = this.props.resultsSeries[seriesUID]
+                retrieveArray.push({
+                    ...this.props.results[seriesObject['studyInstanceUID']],
+                    ...seriesObject
+                })
+            }
+        //Else only use the study results
+        }else {
+            for(let retrieveItemUID of Object.keys(this.props.results)){
+                retrieveArray.push( {...this.props.results[retrieveItemUID]} )
+            }
         }
 
         return retrieveArray 

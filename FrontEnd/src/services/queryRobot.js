@@ -11,7 +11,7 @@ const queryRobot = {
             },
             body: JSON.stringify({ 
                     projectName: projectName, 
-                    studyArray: retrieveArray 
+                    retrieveArray: retrieveArray 
                 })
         }).then((answer) => {
             if (!answer.ok) { throw answer }

@@ -59,7 +59,7 @@ function App () {
         <Route exact path='/auto-query' component={AutoQueryRoot} />
         <Route exact path='/options' component={AdminRootPanel} />
         <Route exact path='/orthanc-content' component={ContentRootPanel} />
-        <Route exact path='/robot/:username' component={RobotView} />
+        <Route exact path='/robot/:username' render = { (props) => <RobotView username={props.match.params.username} /> } />
         <Route exact path='/export' component={ExportPanel} />
         <Route exact path='/anonymize' component={AnonPanel} /> 
         <Route exact path='/metadata' component={Metadata} /> 
