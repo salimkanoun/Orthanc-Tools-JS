@@ -14,6 +14,10 @@ describe('Testing Retrieve Item', () => {
     expect(retrieveItem).toBeInstanceOf(RetrieveItem)
   })
 
+  it('should return the number of instances', ()=>{
+    expect(retrieveItem.getNumberOfInstances()).toBe(1300)
+  })
+
   it('should set item validated', () => {
     expect(retrieveItem.validated).toBe(false)
     retrieveItem.setValidated()

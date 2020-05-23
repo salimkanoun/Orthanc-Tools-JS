@@ -82,6 +82,10 @@ class RetrieveItem {
     return this.status
   }
 
+  getNumberOfInstances(){
+    return this.queryAnswer.numberOfSeriesRelatedInstances
+  }
+
   toJSON () {
     return {
       level: this.level,
