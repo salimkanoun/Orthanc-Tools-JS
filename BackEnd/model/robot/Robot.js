@@ -1,17 +1,3 @@
-class RobotSingleton {
-
-  constructor () {
-    if (!RobotSingleton.instance) {
-        RobotSingleton.instance = new Robot()
-    }
-  }
-
-  getRobot () {
-    return RobotSingleton.instance
-  }
-
-}
-
 class Robot {
 
     jobs = { }
@@ -31,9 +17,12 @@ class Robot {
     removeJob(username, type){
         delete this.job[username][type]
     }
+    
 
 }
 
+const robot = new Robot();
+Object.freeze(robot);
 
-
-module.exports = RobotSingleton
+exports.robot = robot
+exports.Robot = Robot
