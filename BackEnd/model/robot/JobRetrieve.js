@@ -48,7 +48,9 @@ class JobRetrieve extends Job{
     }
 
     async doRetrieveItem(item){
-            
+
+        item.setStatus(JobItem.STATUS_RUNNING)
+
         if(item.level === OrthancQueryAnswer.LEVEL_STUDY){    
             this.orthancObject.buildStudyDicomQuery('', '', '', '', '', '', item.studyInstanceUID)
         }else if(item.level === OrthancQueryAnswer.LEVEL_SERIES){
@@ -61,10 +63,10 @@ class JobRetrieve extends Job{
         const retrieveAnswer = await this.orthancObject.makeRetrieve(answer.answerId, answer.answerNumber, this.aetDestination, true)
         const orthancResults = await this.orthancObject.findInOrthancByUid(retrieveAnswer.Query[0]['0020,000d'])
         if (orthancResults.length === 1) {
-            item.setStatus(RetrieveItem.STATUS_RETRIEVED)
+            item.setStatus(JobItem.STATUS_SUCCESS)
             item.setRetrievedOrthancId(orthancResults[0].ID)
         } else {
-            item.setStatus(RetrieveItem.STATUS_FAILURE)
+            item.setStatus(JobItem.STATUS_FAILURE)
         }
     
       }
