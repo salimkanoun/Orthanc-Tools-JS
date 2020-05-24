@@ -69,8 +69,6 @@ describe('Retrieve Item Study', () => {
     expect(orthancFindByUIDSpy).toHaveBeenCalled()
     expect(retrieveItem.getRetrievedOrthancId()).toBe('123456789')
 
-    //SK A FAIRE
-
   })
 
   it('should return correct JSON', () => {
@@ -136,8 +134,6 @@ describe('Retrieve Item Series', () => {
     expect(orthancRetrieveSpy).toHaveBeenCalled()
     expect(orthancFindByUIDSpy).toHaveBeenCalled()
     expect(retrieveItemSeries.getRetrievedOrthancId()).toBe('123456789')
-
-    //SK A FAIRE
 
   })
 
