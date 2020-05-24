@@ -10,12 +10,12 @@ class Robot {
     }
 
     getJob(username, type){
-        return this.job[username][type]
+        return this.jobs[username][type]
 
     }
 
     removeJob(username, type){
-        delete this.job[username][type]
+        delete this.jobs[username][type]
     }
     
 

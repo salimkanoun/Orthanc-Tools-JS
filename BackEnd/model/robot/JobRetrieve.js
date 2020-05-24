@@ -1,34 +1,40 @@
 const Job = require('./Job')
 const Options = require('../Options')
+const schedule = require('node-schedule')
 
-class JobRetrieve extends Job{
+class JobRetrieve extends Job {
 
     constructor(username, orthancObject){
         super(Job.TYPE_RETRIEVE, username)
         this.orthancObject = orthancObject
-        
     }
 
+    /**
+     * Retrieve execution time from options
+     */
     async getScheduleTimeFromOptions () {
         const optionsParameters = await Options.getOptions()
-        return {
+        this.scheduleTime =  {
           hour: optionsParameters.hour,
           min: optionsParameters.min
         }
     }
 
+    /**
+     * Retrieve AET Orthanc Name
+     * SK : Peut etre supprimee depuis Orthanc 1.7.0
+     */
     async storeAetDestination() {
         this.aetDestination = await this.orthancObject.getOrthancAetName()
-
     }
 
+    /**
+     * Check if Retrive Item return only One answer from source AET
+     * @param {JobItemRetrieve} item 
+     */
     async validateRetrieveItem(item) {
 
-        if(item.level === OrthancQueryAnswer.LEVEL_STUDY){    
-            orthancObject.buildStudyDicomQuery('', '', '', '', '', '', item.studyInstanceUID)
-        }else if(item.level === OrthancQueryAnswer.LEVEL_SERIES){
-            orthancObject.buildSeriesDicomQuery(item.studyInstanceUID, '', '', '', '', item.seriesInstanceUID)
-        }
+        this.buildDicomQuery(item)
        
         const answerDetails = await this.orthancObject.makeDicomQuery(item.aet)
     
@@ -40,6 +46,9 @@ class JobRetrieve extends Job{
     
     }
 
+    /**
+     * Loop all Item to checkValidity
+     */
     async validateRetrieveJob(){
         for(let item of this.items){
             let validation = await this.validateRetrieveItem(item)
@@ -47,15 +56,23 @@ class JobRetrieve extends Job{
         }
     }
 
-    async doRetrieveItem(item){
-
-        item.setStatus(JobItem.STATUS_RUNNING)
-
+    /**
+     * Prepare Orthanc Object Query according to Item QueryLevel
+     * @param {JobItemRetrieve} item 
+     */
+    buildDicomQuery(item){
         if(item.level === OrthancQueryAnswer.LEVEL_STUDY){    
             this.orthancObject.buildStudyDicomQuery('', '', '', '', '', '', item.studyInstanceUID)
         }else if(item.level === OrthancQueryAnswer.LEVEL_SERIES){
             this.orthancObject.buildSeriesDicomQuery(item.studyInstanceUID, '', '', '', '', item.seriesInstanceUID)
         }
+    }
+
+    async doRetrieveItem(item){
+
+        item.setStatus(JobItem.STATUS_RUNNING)
+
+        this.buildDicomQuery(item)
     
         const answerDetails = await this.orthancObject.makeDicomQuery(this.aetDestination)
     
@@ -69,17 +86,28 @@ class JobRetrieve extends Job{
             item.setStatus(JobItem.STATUS_FAILURE)
         }
     
-      }
+    }
+
+    /**
+     * Checks that all items are validated
+     */
+    isValidated(){
+        this.items.forEach(item =>{
+            if(!item.validated){
+                return false
+            }
+        })
+        return true
+    }
 
     async doRetrieve () {
         this.status = Job.STATUS_RUNNING
 
         //Check that all items have been validated
-        this.items.forEach(item =>{
-            if(!item.validated){
-                throw "Non validated Items in Retrieve Job"
-            }
-        })
+        if( !this.isValidated() ) {
+            console.log('Non Validated Retrieve')
+            return
+        }
 
         for(let item of this.items){
             await this.doRetrieveItem(item)
@@ -89,16 +117,16 @@ class JobRetrieve extends Job{
     }
 
     async execute() {
-        const currentJob = this
-
+        
         if (this.scheduledJob !== undefined) {
             this.scheduledJob.cancel()
         }
+        
+        await this.storeAetDestination()
+        await this.getScheduleTimeFromOptions()
 
-        let scheduleTime = await this.getScheduleTimeFromOptions()
-
-        const scheduledJob = schedule.scheduleJob(scheduleTime.min + ' ' + scheduleTime.hour + ' * * *', async function () {
-            await currentJob.storeAetDestination()
+        const currentJob = this
+        const scheduledJob = schedule.scheduleJob(this.scheduleTime.min + ' ' + this.scheduleTime.hour + ' * * *', async function () {
             currentJob.doRetrieve()
         })
 
@@ -107,4 +135,4 @@ class JobRetrieve extends Job{
 
 }
 
-export default JobRetrieve
+module.exports = JobRetrieve

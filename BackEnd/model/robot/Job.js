@@ -1,4 +1,4 @@
-class Jobs{
+class Job{
 
     constructor(type, username){
         this.type = type
@@ -57,12 +57,12 @@ class Jobs{
     }
 }
 
-Jobs.TYPE_RETRIEVE = "Retrieve"
-Jobs.TYPE_ANONYMIZE = "Anonymize"
-Jobs.TYPE_DELETE = "Delete"
+Job.TYPE_RETRIEVE = "Retrieve"
+Job.TYPE_ANONYMIZE = "Anonymize"
+Job.TYPE_DELETE = "Delete"
 
-Jobs.STATUS_PENDING = 'Pending'
-Jobs.STATUS_RUNNING = 'Running'
-Jobs.STATUS_FINISHED = 'Finished'
+Job.STATUS_PENDING = 'Pending'
+Job.STATUS_RUNNING = 'Running'
+Job.STATUS_FINISHED = 'Finished'
 
-export default Job
+module.exports = Job
