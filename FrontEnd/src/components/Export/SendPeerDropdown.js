@@ -11,7 +11,8 @@ export default class SendPeerDropdown extends Component{
     state = {
         disabled : false,
         title : "Send To Peer",
-        show: false
+        show: false, 
+        currentID: ''
     }
 
     constructor(props){
@@ -22,6 +23,7 @@ export default class SendPeerDropdown extends Component{
 
     async handleClickDownload(event){
         let destinationPeer =event.currentTarget.id
+        console.log(destinationPeer)
         let jobAnswer = await apis.peers.storePeer(destinationPeer, this.props.exportIds)
 
         let jobMonitoring = new MonitorJob(jobAnswer.ID)
@@ -61,8 +63,8 @@ export default class SendPeerDropdown extends Component{
 
     }
 
-    setModal(){
-        this.setState({show: !this.state.show})
+    setModal(event){
+        this.setState({show: !this.state.show, currentID: event ? event.currentTarget.id : ''})
     }
 
     componentWillMount(){
@@ -72,10 +74,8 @@ export default class SendPeerDropdown extends Component{
     render(){
 
         let dropDownItems = []
-        let dropDownItemsDefault = []
         this.props.peers.forEach(peer => {
             dropDownItems.push(<Dropdown.Item key={peer} id={peer} onClick={ this.props.needConfirm ? this.setModal : this.handleClickDownload } >{peer}</Dropdown.Item>)
-            dropDownItemsDefault.push(<Dropdown.Item key={peer} id={peer} onClick={ this.handleClickDownload } >{peer}</Dropdown.Item>)
         })
 
         return (
@@ -94,9 +94,7 @@ export default class SendPeerDropdown extends Component{
                     </Modal.Body>
                     <Modal.Footer>
                         <button type='button' className='btn btn-info' onClick={this.setModal}>Cancel</button>
-                        <DropdownButton variant="success" disabled={this.state.disabled} title = {this.state.title}>
-                            {dropDownItemsDefault}
-                        </DropdownButton>
+                        <button id={this.state.currentID} type='button' className='btn btn-primary' onClick={this.handleClickDownload}>Download</button>
                     </Modal.Footer>
                 </Modal>
             </Fragment>
