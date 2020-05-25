@@ -66,9 +66,6 @@ class ActionBouton extends Component{
                     <Modal.Body >
                         <Metadata serieID={this.props.orthancID} />
                     </Modal.Body>
-                    <Modal.Footer>
-                        <button type='button' className='btn btn-primary' onClick={this.setMetadata} >OK</button>
-                    </Modal.Footer>
                 </Modal>
 
                 <Dropdown onClick={this.handleClick}>
