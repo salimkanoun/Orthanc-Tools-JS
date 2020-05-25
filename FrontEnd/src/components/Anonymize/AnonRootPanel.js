@@ -3,6 +3,7 @@ import React, { Component, Fragment } from 'react'
 import AnonymizedResults from "./AnonymizedResults";
 import AnonymizePanel from './AnonymizePanel';
 import { connect } from 'react-redux';
+import AnonymizePanelProgress from './AnonymizePanelProgress';
 
 
 class AnonRootPanel extends Component {
@@ -10,6 +11,10 @@ class AnonRootPanel extends Component {
     render() {
         return (
             <Fragment>
+                <div className='jumbotron' hidden={false}> {/*Wait for the backend*/}
+                    <h2 className='card-title mb-3'>Anonymize in progress</h2>
+                    <AnonymizePanelProgress />
+                </div>
                 <div className='jumbotron' hidden={this.props.anonList && this.props.anonList.length === 0}>
                     <h2 className='card-title mb-3'>Anonymize</h2>
                     <AnonymizePanel />
