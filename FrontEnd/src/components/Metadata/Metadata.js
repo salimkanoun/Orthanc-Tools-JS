@@ -27,7 +27,8 @@ class Metadata extends Component {
     state = {
         data: [], 
         InstancesArray: [],
-        currentKey: 0
+        currentKey: 0, 
+        InstancesTags: true
     }
 
     async componentDidMount() {
@@ -52,9 +53,8 @@ class Metadata extends Component {
 
     async data(){
         let data = await apis.content.getInstances(this.state.InstancesArray[this.state.currentKey])
-        console.log('data récupérer : (', this.state.InstancesArray[this.state.currentKey], ') ', data)
         let prepare = this.prepareData(data)
-        this.setState({data: prepare})
+        this.setState({data: prepare, InstancesTags: true})
         return prepare
     }
  
@@ -76,7 +76,6 @@ class Metadata extends Component {
         return answer
             
     }
-
 
     renderTree(array){
         let rows = []
@@ -106,6 +105,12 @@ class Metadata extends Component {
         this.data()
     }
 
+    async setSharedTags(){
+        this.setState({InstancesTags: false})
+        let data = await apis.content.getSharedTags(this.props.serieID)
+        this.setState({data: this.prepareData(data)})
+    }
+
 
     render() {
         return (
@@ -113,6 +118,8 @@ class Metadata extends Component {
                 <button type='button' className='btn btn-primary float-left mb-5' onClick={this.previewsInstance} disabled={this.state.currentKey === 0}>Previews Instances</button>
                 <label htmlFor='compteur' className='bg-info text-center' >{(this.state.currentKey + 1) + '/' + this.state.InstancesArray.length}</label>
                 <button type='button' className='btn btn-primary float-right mb-5' onClick={this.nextInstances} disabled={this.state.currentKey + 1 === this.state.InstancesArray.length}>Next Instances</button>
+                <button type='button' className='btn btn-primary float-left' onClick={()=>this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared Tags</button>
+                <button type='button' className='btn btn-primary float-right' onClick={()=>this.data()} disabled={this.state.InstancesTags}>instances Tags</button>
                 <TreeView 
                     className={this.useStyles.root}
                     defaultExpanded={['root']}

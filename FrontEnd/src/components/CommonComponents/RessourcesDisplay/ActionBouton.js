@@ -59,11 +59,11 @@ class ActionBouton extends Component{
         return (
             <Fragment>
                 {/*modal pour metadata*/}
-                <Modal show={this.state.showMetadata} onHide={this.setMetadata}>
+                <Modal show={this.state.showMetadata} onHide={this.setMetadata} scrollable={true}>
                     <Modal.Header closeButton>
                         <Modal.Title>Metadata</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
+                    <Modal.Body >
                         <Metadata serieID={this.props.orthancID} />
                     </Modal.Body>
                     <Modal.Footer>
