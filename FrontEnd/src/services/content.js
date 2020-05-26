@@ -164,14 +164,14 @@ const query  = {
     },
 
     
-    modifyPatients(ID, replace, remove, removePrivateTags){
+    modifyPatients(ID, replace, remove, removePrivateTags, keepRessource){
         return fetch('/api/patients/' + ID + '/modify', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false})
+            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
@@ -180,14 +180,14 @@ const query  = {
         })
     },
 
-    modifyStudy(ID, replace, remove, removePrivateTags){
+    modifyStudy(ID, replace, remove, removePrivateTags, keepRessource){
         return fetch('/api/studies/' + ID + '/modify', {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false})
+            body: JSON.stringify({Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
@@ -196,14 +196,14 @@ const query  = {
         })
     },
 
-    modifySeries(ID, replace, remove, removePrivateTags){
+    modifySeries(ID, replace, remove, removePrivateTags, keepRessource){
         return fetch('/api/series/' + ID + '/modify', {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false})
+            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())

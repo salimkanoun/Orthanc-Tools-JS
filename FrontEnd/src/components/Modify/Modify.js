@@ -13,7 +13,8 @@ class Modify extends Component {
     state = { 
         show: false, 
         modification: {}, 
-        toasts: {}
+        toasts: {}, 
+        keepSource: false
      }
 
      constructor(props){
@@ -58,16 +59,16 @@ class Modify extends Component {
                 if (!this.state.modification.PatientID || this.state.modification.PatientID === '')
                     alert('PatientID can\'t be empty or the same as before!')
                 else {
-                    jobAnswer = await apis.content.modifyPatients(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
+                    jobAnswer = await apis.content.modifyPatients(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags, this.state.keepSource)
                     this.onHide()
                 }
                 break
             case 'studies':
-                jobAnswer = await apis.content.modifyStudy(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
+                jobAnswer = await apis.content.modifyStudy(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags, this.state.keepSource)
                 this.onHide()
                 break
             case 'series':
-                jobAnswer = await apis.content.modifySeries(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
+                jobAnswer = await apis.content.modifySeries(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags, this.state.keepSource)
                 this.onHide()
                 break
             default:
@@ -164,8 +165,22 @@ class Modify extends Component {
                             }) }
                             selectRow={this.selectRow}
                         />
-                        <label htmlFor='removePrivateTags mr-3'>Removing private tags</label>
-                        <input className='form-check-input ml-3' type='checkbox' onClick={() => this.setState({removePrivateTags: !this.state.removePrivateTags})} />
+                        <div className='row'>
+                            <div className='col-auto'>
+                                <label htmlFor='removePrivateTags'>Removing private tags</label>
+                            </div>
+                            <div className='col-sm'>
+                                <input className='form-check-input' type='checkbox' onClick={() => this.setState({removePrivateTags: !this.state.removePrivateTags})} />
+                            </div>
+                        </div>
+                        <div className='row'>
+                            <div className='col-auto'>
+                                <label htmlFor='keepSource'>Keep Source</label>
+                            </div>
+                            <div className='col-sm'>
+                                <input className='form-check-input' type='checkbox' onClick={() => this.setState({keepSource: !this.state.keepSource})} />
+                            </div>
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <button type='button' className='btn btn-info' onClick={this.onHide}>Cancel</button>
