@@ -14,7 +14,9 @@ class Modify extends Component {
         show: false, 
         modification: {}, 
         toasts: {}, 
-        keepSource: false
+        keepSource: apis.localStorage.getLocalStorage('remember') === 'true' ? apis.localStorage.getLocalStorage('keepSource') === 'true' : false, 
+        removePrivateTags: apis.localStorage.getLocalStorage('remember') === 'true' ? apis.localStorage.getLocalStorage('removePrivateTags') === 'true' : false, 
+        remember: apis.localStorage.getLocalStorage('remember') === 'true'
      }
 
      constructor(props){
@@ -42,7 +44,7 @@ class Modify extends Component {
     }
 
      openModify() {
-        this.setState({modification: {}, show: true, removePrivateTags: false})
+        this.setState({modification: {}, show: true})
         let rows=[]
         let forbidden = ['studies', 'Instances', 'StudyOrthancID', 'PatientOrthancID', 'SeriesOrthancID', 'StudyID', 'SeriesInstanceUID', 'StudyInstanceUID']
         for (let tag in this.props.row){
@@ -51,8 +53,25 @@ class Modify extends Component {
         }
         this.setState({data: rows})
     }
-    
+
+    checkRemember(){
+        console.log(this.state)
+        if (this.state.remember){
+            apis.localStorage.setlocalStorage('keepSource', this.state.keepSource)
+            apis.localStorage.setlocalStorage('removePrivateTags', this.state.removePrivateTags)
+        } else {
+            apis.localStorage.setlocalStorage('keepSource', false)
+            apis.localStorage.setlocalStorage('removePrivateTags', false)
+        }
+        apis.localStorage.setlocalStorage('remember', this.state.remember)
+        this.setState({
+            remember: apis.localStorage.getLocalStorage('remember') === 'true', 
+            removePrivateTags: apis.localStorage.getLocalStorage('removePrivateTags') === 'true', 
+            keepSource: apis.localStorage.getLocalStorage('keepSource') === 'true'
+        })
+    }    
     async modify(){
+        this.checkRemember()
         let jobAnswer = ''
         switch(this.props.level){
             case 'patient':
@@ -133,6 +152,7 @@ class Modify extends Component {
     }
 
     render() {
+        console.log(this.state)
         return (
             <Fragment>
                 <button className='dropdown-item bg-warning' type='button' onClick={ this.openModify } >Modify</button>
@@ -170,7 +190,7 @@ class Modify extends Component {
                                 <label htmlFor='removePrivateTags'>Removing private tags</label>
                             </div>
                             <div className='col-sm'>
-                                <input className='form-check-input' type='checkbox' onClick={() => this.setState({removePrivateTags: !this.state.removePrivateTags})} />
+                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.removePrivateTags} onClick={() => this.setState({removePrivateTags: !this.state.removePrivateTags})} />
                             </div>
                         </div>
                         <div className='row'>
@@ -178,7 +198,15 @@ class Modify extends Component {
                                 <label htmlFor='keepSource'>Keep Source</label>
                             </div>
                             <div className='col-sm'>
-                                <input className='form-check-input' type='checkbox' onClick={() => this.setState({keepSource: !this.state.keepSource})} />
+                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.keepSource} onClick={() => this.setState({keepSource: !this.state.keepSource})} />
+                            </div>
+                        </div>
+                        <div className='row'>
+                            <div className='col-auto'>
+                                <label htmlFor='rememberSettings'>Remember Settings</label>
+                            </div>
+                            <div className='col-sm'>
+                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.remember} onClick={() => this.setState({remember: !this.state.remember})} />
                             </div>
                         </div>
                     </Modal.Body>
