@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import {TreeView, TreeItem} from '@material-ui/lab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import NumericInput from 'react-numeric-input';
 
 import apis from '../../services/apis'
 
@@ -18,16 +19,13 @@ class Metadata extends Component {
         },
     });
 
-    constructor(props){
-        super(props)
-        this.previewsInstance = this.previewsInstance.bind(this)
-        this.nextInstances = this.nextInstances.bind(this)
-    }
 
     state = {
         data: [], 
         InstancesArray: [],
-        currentKey: 0
+        currentKey: 0, 
+        InstancesTags: true, 
+        text: 'disabled'
     }
 
     async componentDidMount() {
@@ -52,9 +50,8 @@ class Metadata extends Component {
 
     async data(){
         let data = await apis.content.getInstances(this.state.InstancesArray[this.state.currentKey])
-        console.log('data récupérer : (', this.state.InstancesArray[this.state.currentKey], ') ', data)
         let prepare = this.prepareData(data)
-        this.setState({data: prepare})
+        this.setState({data: prepare, InstancesTags: true})
         return prepare
     }
  
@@ -77,7 +74,6 @@ class Metadata extends Component {
             
     }
 
-
     renderTree(array){
         let rows = []
             if (Array.isArray(array)){
@@ -92,16 +88,19 @@ class Metadata extends Component {
         return rows
     }
 
-    async previewsInstance(){
-        await this.setState({
-            currentKey: this.state.currentKey - 1
-        })
-        this.data()
+    async setSharedTags(){
+        if (this.state.text === 'disabled'){
+            let data = await apis.content.getSharedTags(this.props.serieID)
+            this.setState({data: this.prepareData(data), text: 'enabled'})
+        } else {
+            this.data()
+            this.setState({text: 'disabled'})
+        }
     }
 
-    async nextInstances(){
+    async handleChange(num){
         await this.setState({
-            currentKey: this.state.currentKey + 1
+            currentKey: num >= this.state.InstancesArray.length ? this.state.InstancesArray.length - 1 : num < 0 ? 0 : num 
         })
         this.data()
     }
@@ -110,9 +109,10 @@ class Metadata extends Component {
     render() {
         return (
             <div className='jumbotron'>
-                <button type='button' className='btn btn-primary float-left mb-5' onClick={this.previewsInstance} disabled={this.state.currentKey === 0}>Previews Instances</button>
-                <label htmlFor='compteur' className='bg-info text-center' >{(this.state.currentKey + 1) + '/' + this.state.InstancesArray.length}</label>
-                <button type='button' className='btn btn-primary float-right mb-5' onClick={this.nextInstances} disabled={this.state.currentKey + 1 === this.state.InstancesArray.length}>Next Instances</button>
+                <button type='button' className='btn btn-primary float-left mb-5' onClick={()=>this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared : {this.state.text}</button>
+                <div hidden={this.state.text === 'enabled'} className='float-right mb-5' >
+                    <NumericInput min={0} max={this.state.InstancesArray.length - 1} value={this.state.currentKey} onChange={(num => this.handleChange(num))} />
+                </div>
                 <TreeView 
                     className={this.useStyles.root}
                     defaultExpanded={['root']}
