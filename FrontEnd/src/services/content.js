@@ -1,4 +1,4 @@
-import { toastifyError, toastifySuccess } from "./toastify";
+import { toastifyError } from "./toastify";
 
 const query  = {
 
@@ -171,10 +171,9 @@ const query  = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true})
+            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false})
         }).then((answer) => {
             if (!answer.ok) {throw answer}
-            toastifySuccess('Patient have been modified')
             return (answer.json())
         }).catch((error) => {
             console.log(error)
@@ -188,10 +187,9 @@ const query  = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true})
+            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false})
         }).then((answer) => {
             if (!answer.ok) {throw answer}
-            toastifySuccess('Study have been modified')
             return (answer.json())
         }).catch((error) => {
             console.log(error)
@@ -205,10 +203,9 @@ const query  = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true})
+            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false})
         }).then((answer) => {
             if (!answer.ok) {throw answer}
-            toastifySuccess('Serie have been modified')
             return (answer.json())
         }).catch((error) => {
             console.log(error)

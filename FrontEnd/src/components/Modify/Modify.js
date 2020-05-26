@@ -1,20 +1,43 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component, Fragment, createRef } from 'react'
 import Modal from 'react-bootstrap/Modal';
 import apis from '../../services/apis';
 import BootstrapTable from 'react-bootstrap-table-next'
 import cellEditFactory from 'react-bootstrap-table2-editor'
 import { toastifyError } from '../../services/toastify';
+import { toast } from 'react-toastify';
+
+import MonitorJob from '../../tools/MonitorJob'
+
 
 class Modify extends Component {
     state = { 
         show: false, 
-        modification: {}
+        modification: {}, 
+        toasts: {}
      }
 
      constructor(props){
         super(props)
         this.openModify = this.openModify.bind(this)
         this.onHide = this.onHide.bind(this)
+    }
+
+    updateToast(id, progress){
+        toast.update(this.state.toasts[id].current, {type: toast.TYPE.INFO, autoClose: false, render: 'Modify progress : ' + progress + '%'})
+    }
+
+    successToast(id){
+        toast.update(this.state.toasts[id].current, {type: toast.TYPE.INFO, autoClose: 5000, render: 'Modify Done',  className: 'bg-success'})
+    }
+
+    failToast(id){
+        toast.update(this.state.toasts[id].current, {type: toast.TYPE.INFO, autoClose: 5000, render: 'Modify fail', className:'bg-danger'})
+    }
+
+    openToast(id){
+        this.setState({
+            toasts: {...this.state.toasts, [id]: {current: toast("Notify progress : 0%", {autoClose: false, className: 'bg-info'})}}
+        })
     }
 
      openModify() {
@@ -29,29 +52,49 @@ class Modify extends Component {
     }
     
     async modify(){
+        let jobAnswer = ''
         switch(this.props.level){
             case 'patient':
                 if (!this.state.modification.PatientID || this.state.modification.PatientID === '')
                     alert('PatientID can\'t be empty or the same as before!')
                 else {
-                    await apis.content.modifyPatients(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
-                    this.props.refresh()
+                    jobAnswer = await apis.content.modifyPatients(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
                     this.onHide()
                 }
                 break
             case 'studies':
-                await apis.content.modifyStudy(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
-                this.props.refresh()
+                jobAnswer = await apis.content.modifyStudy(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
                 this.onHide()
                 break
             case 'series':
-                await apis.content.modifySeries(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
-                this.props.refreshSerie() //Warning in the console cf ContentRootPanel function refreshSerie() line 50
+                jobAnswer = await apis.content.modifySeries(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
                 this.onHide()
                 break
             default:
                 toastifyError("Wrong level")
         }
+        if (jobAnswer !== ''){
+            let id = jobAnswer.ID
+            let jobMonitoring = new MonitorJob(id)
+            let self = this
+            jobMonitoring.onUpdate(function (progress) {
+                self.updateToast(id, progress)
+            })
+
+            jobMonitoring.onFinish(function (state){
+                if(state === MonitorJob.Success){
+                    self.successToast(id)
+                    self.props.refresh ? self.props.refresh() : self.props.refreshSerie()
+                }else if (state === MonitorJob.Failure){
+                    self.failToast(id)
+                }
+                self.job = undefined
+            })
+            this.setState({toasts: {...this.state.toasts, [id]: createRef()}})
+            this.openToast(id)
+            jobMonitoring.startMonitoringJob()
+            this.job = jobMonitoring
+        }    
     }
 
     onHide(){
