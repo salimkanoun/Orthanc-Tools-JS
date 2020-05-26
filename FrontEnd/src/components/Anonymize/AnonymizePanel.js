@@ -74,7 +74,7 @@ class AnonymizePanel extends Component {
     }
 
     emptyList(){
-        this.props.emptyAnonList()
+        this.props.emptyAnonymizeList()
     }
 
     rowEvents = {
@@ -93,7 +93,8 @@ class AnonymizePanel extends Component {
         return style;
     }
 
-    saveNewValues(ID, column, newValue){
+    saveNewValues(ID, column, newValue, row){
+        console.log(row)
         this.props.saveNewValues(ID, column, newValue)
     }
 
@@ -117,7 +118,7 @@ class AnonymizePanel extends Component {
                 studies.push({
                     StudyOrthancID: study.ID, 
                     ...study.MainDicomTags, 
-                    newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '', 
+                    newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : study.MainDicomTags.StudyDescription, 
                     newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
                 })
             }
@@ -136,25 +137,21 @@ class AnonymizePanel extends Component {
                 OrthancStudyID: element.ID, 
                 profile: this.props.profile
             }
-            if ((element.PatientMainDicomTags.newPatientName && element.PatientMainDicomTags.newPatientName !== '' )||
-                (element.PatientMainDicomTags.newPatientID && element.PatientMainDicomTags.newPatientID !== '') ||
-                (element.MainDicomTags.newStudyDescription && element.MainDicomTags.newStudyDescription !== '') ||
-                (element.MainDicomTags.newAccessionNumber && element.MainDicomTags.newAccessionNumber !== '')){
-                
-                    payload = {
-                        ...payload, 
-                        Name: element.PatientMainDicomTags.newPatientName && element.PatientMainDicomTags.newPatientName !== '' ? element.PatientMainDicomTags.newPatientName : element.PatientMainDicomTags.PatientName, 
-                        ID: element.PatientMainDicomTags.newPatientID && element.PatientMainDicomTags.newPatientID !== '' ? element.PatientMainDicomTags.newPatientID : element.PatientMainDicomTags.PatientID, 
-                        StudyDescription: element.MainDicomTags.newStudyDescription && element.MainDicomTags.newStudyDescription !== '' ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
-                        AccessionNumber: element.MainDicomTags.newAccessionNumber && element.MainDicomTags.newAccessionNumber !== '' ? element.MainDicomTags.newAccessionNumber : element.MainDicomTags.AccessionNumber
-                    }
+            payload = {
+                ...payload, 
+                Name: element.PatientMainDicomTags.newPatientName, 
+                ID: element.PatientMainDicomTags.newPatientID, 
+                StudyDescription: element.MainDicomTags.newStudyDescription ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
+                AccessionNumber: element.MainDicomTags.newAccessionNumber ? element.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
             }
-            if (payload.ID === '')
+            if (payload.ID === undefined)
                 listOK = false
             if (Object.keys(payload).length > 2)
                 listToAnonymize.push(payload)
+                console.log(listOK)
         })
             if (listOK){
+                console.log(listToAnonymize)
             this.job = []
             for (let i in listToAnonymize){
                 let study = listToAnonymize[i]
@@ -246,7 +243,7 @@ class AnonymizePanel extends Component {
                                 autoSelectText: true,
                                 mode: 'click', 
                                 afterSaveCell: (oldValue, newValue, row, column) => {
-                                    this.saveNewValues(row.PatientOrthancID, column.dataField, newValue)
+                                    this.saveNewValues(row.PatientOrthancID, column.dataField, newValue, row)
                                 }
                             }) }
                             rowStyle={this.rowStyle} 
@@ -264,7 +261,7 @@ class AnonymizePanel extends Component {
                                 autoSelectText: true,
                                 mode: 'click',
                                 afterSaveCell: (oldValue, newValue, row, column) => {
-                                    this.saveNewValues(row.StudyOrthancID, column.dataField, newValue)
+                                    this.saveNewValues(row.StudyOrthancID, column.dataField, newValue, row)
                                 }
                             }) }
                             pagination={true}

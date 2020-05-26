@@ -1,4 +1,4 @@
-import { toastifyError, toastifySuccess } from "./toastify";
+import { toastifyError } from "./toastify";
 
 const query  = {
 
@@ -164,51 +164,48 @@ const query  = {
     },
 
     
-    modifyPatients(ID, replace, remove, removePrivateTags){
+    modifyPatients(ID, replace, remove, removePrivateTags, keepRessource){
         return fetch('/api/patients/' + ID + '/modify', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true})
+            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }).then((answer) => {
             if (!answer.ok) {throw answer}
-            toastifySuccess('Patient have been modified')
             return (answer.json())
         }).catch((error) => {
             console.log(error)
         })
     },
 
-    modifyStudy(ID, replace, remove, removePrivateTags){
+    modifyStudy(ID, replace, remove, removePrivateTags, keepRessource){
         return fetch('/api/studies/' + ID + '/modify', {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true})
+            body: JSON.stringify({Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }).then((answer) => {
             if (!answer.ok) {throw answer}
-            toastifySuccess('Study have been modified')
             return (answer.json())
         }).catch((error) => {
             console.log(error)
         })
     },
 
-    modifySeries(ID, replace, remove, removePrivateTags){
+    modifySeries(ID, replace, remove, removePrivateTags, keepRessource){
         return fetch('/api/series/' + ID + '/modify', {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true})
+            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }).then((answer) => {
             if (!answer.ok) {throw answer}
-            toastifySuccess('Serie have been modified')
             return (answer.json())
         }).catch((error) => {
             console.log(error)

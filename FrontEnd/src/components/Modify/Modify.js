@@ -1,14 +1,22 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component, Fragment, createRef } from 'react'
 import Modal from 'react-bootstrap/Modal';
 import apis from '../../services/apis';
 import BootstrapTable from 'react-bootstrap-table-next'
 import cellEditFactory from 'react-bootstrap-table2-editor'
 import { toastifyError } from '../../services/toastify';
+import { toast } from 'react-toastify';
+
+import MonitorJob from '../../tools/MonitorJob'
+
 
 class Modify extends Component {
     state = { 
         show: false, 
-        modification: {}
+        modification: {}, 
+        toasts: {}, 
+        keepSource: apis.localStorage.getLocalStorage('remember') === 'true' ? apis.localStorage.getLocalStorage('keepSource') === 'true' : false, 
+        removePrivateTags: apis.localStorage.getLocalStorage('remember') === 'true' ? apis.localStorage.getLocalStorage('removePrivateTags') === 'true' : false, 
+        remember: apis.localStorage.getLocalStorage('remember') === 'true'
      }
 
      constructor(props){
@@ -17,8 +25,26 @@ class Modify extends Component {
         this.onHide = this.onHide.bind(this)
     }
 
+    updateToast(id, progress){
+        toast.update(this.state.toasts[id].current, {type: toast.TYPE.INFO, autoClose: false, render: 'Modify progress : ' + progress + '%'})
+    }
+
+    successToast(id){
+        toast.update(this.state.toasts[id].current, {type: toast.TYPE.INFO, autoClose: 5000, render: 'Modify Done',  className: 'bg-success'})
+    }
+
+    failToast(id){
+        toast.update(this.state.toasts[id].current, {type: toast.TYPE.INFO, autoClose: 5000, render: 'Modify fail', className:'bg-danger'})
+    }
+
+    openToast(id){
+        this.setState({
+            toasts: {...this.state.toasts, [id]: {current: toast("Notify progress : 0%", {autoClose: false, className: 'bg-info'})}}
+        })
+    }
+
      openModify() {
-        this.setState({modification: {}, show: true, removePrivateTags: false})
+        this.setState({modification: {}, show: true})
         let rows=[]
         let forbidden = ['studies', 'Instances', 'StudyOrthancID', 'PatientOrthancID', 'SeriesOrthancID', 'StudyID', 'SeriesInstanceUID', 'StudyInstanceUID']
         for (let tag in this.props.row){
@@ -27,31 +53,68 @@ class Modify extends Component {
         }
         this.setState({data: rows})
     }
-    
+
+    checkRemember(){
+        console.log(this.state)
+        if (this.state.remember){
+            apis.localStorage.setlocalStorage('keepSource', this.state.keepSource)
+            apis.localStorage.setlocalStorage('removePrivateTags', this.state.removePrivateTags)
+        } else {
+            apis.localStorage.setlocalStorage('keepSource', false)
+            apis.localStorage.setlocalStorage('removePrivateTags', false)
+        }
+        apis.localStorage.setlocalStorage('remember', this.state.remember)
+        this.setState({
+            remember: apis.localStorage.getLocalStorage('remember') === 'true', 
+            removePrivateTags: apis.localStorage.getLocalStorage('removePrivateTags') === 'true', 
+            keepSource: apis.localStorage.getLocalStorage('keepSource') === 'true'
+        })
+    }    
     async modify(){
+        this.checkRemember()
+        let jobAnswer = ''
         switch(this.props.level){
             case 'patient':
                 if (!this.state.modification.PatientID || this.state.modification.PatientID === '')
                     alert('PatientID can\'t be empty or the same as before!')
                 else {
-                    await apis.content.modifyPatients(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
-                    this.props.refresh()
+                    jobAnswer = await apis.content.modifyPatients(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags, this.state.keepSource)
                     this.onHide()
                 }
                 break
             case 'studies':
-                await apis.content.modifyStudy(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
-                this.props.refresh()
+                jobAnswer = await apis.content.modifyStudy(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags, this.state.keepSource)
                 this.onHide()
                 break
             case 'series':
-                await apis.content.modifySeries(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags)
-                this.props.refreshSerie() //Warning in the console cf ContentRootPanel function refreshSerie() line 50
+                jobAnswer = await apis.content.modifySeries(this.props.orthancID, this.state.modification, this.node.selectionContext.selected, this.state.removePrivateTags, this.state.keepSource)
                 this.onHide()
                 break
             default:
                 toastifyError("Wrong level")
         }
+        if (jobAnswer !== ''){
+            let id = jobAnswer.ID
+            let jobMonitoring = new MonitorJob(id)
+            let self = this
+            jobMonitoring.onUpdate(function (progress) {
+                self.updateToast(id, progress)
+            })
+
+            jobMonitoring.onFinish(function (state){
+                if(state === MonitorJob.Success){
+                    self.successToast(id)
+                    self.props.refresh ? self.props.refresh() : self.props.refreshSerie()
+                }else if (state === MonitorJob.Failure){
+                    self.failToast(id)
+                }
+                self.job = undefined
+            })
+            this.setState({toasts: {...this.state.toasts, [id]: createRef()}})
+            this.openToast(id)
+            jobMonitoring.startMonitoringJob()
+            this.job = jobMonitoring
+        }    
     }
 
     onHide(){
@@ -89,6 +152,7 @@ class Modify extends Component {
     }
 
     render() {
+        console.log(this.state)
         return (
             <Fragment>
                 <button className='dropdown-item bg-warning' type='button' onClick={ this.openModify } >Modify</button>
@@ -121,8 +185,30 @@ class Modify extends Component {
                             }) }
                             selectRow={this.selectRow}
                         />
-                        <label htmlFor='removePrivateTags mr-3'>Removing private tags</label>
-                        <input className='form-check-input ml-3' type='checkbox' onClick={() => this.setState({removePrivateTags: !this.state.removePrivateTags})} />
+                        <div className='row'>
+                            <div className='col-auto'>
+                                <label htmlFor='removePrivateTags'>Removing private tags</label>
+                            </div>
+                            <div className='col-sm'>
+                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.removePrivateTags} onClick={() => this.setState({removePrivateTags: !this.state.removePrivateTags})} />
+                            </div>
+                        </div>
+                        <div className='row'>
+                            <div className='col-auto'>
+                                <label htmlFor='keepSource'>Keep Source</label>
+                            </div>
+                            <div className='col-sm'>
+                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.keepSource} onClick={() => this.setState({keepSource: !this.state.keepSource})} />
+                            </div>
+                        </div>
+                        <div className='row'>
+                            <div className='col-auto'>
+                                <label htmlFor='rememberSettings'>Remember Settings</label>
+                            </div>
+                            <div className='col-sm'>
+                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.remember} onClick={() => this.setState({remember: !this.state.remember})} />
+                            </div>
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <button type='button' className='btn btn-info' onClick={this.onHide}>Cancel</button>
