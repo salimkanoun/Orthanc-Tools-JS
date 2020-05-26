@@ -52,7 +52,7 @@ class Results extends Component {
         return (
             <Fragment>
                 <div >
-                    <input type="button" className="btn btn-warning float-right" value={this.state.seriesView === true ? "Filter Studies" : "Filter Series"} onClick = {this.filterSeriesListener}/>
+                    <input type="button" className="btn btn-info float-right" value={this.state.seriesView === true ? "Filter Studies" : "Filter Series"} onClick = {this.filterSeriesListener}/>
                 </div>
                 <div >
                     { this.state.seriesView === true ? <TableResultsStudiesSeries /> : <TableResultStudy /> }

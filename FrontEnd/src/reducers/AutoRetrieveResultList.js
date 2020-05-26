@@ -46,8 +46,8 @@ export default function retrieveListReducer (state = initialState, action) {
 
     case AQ_EMPTY_RESULTS :
       return {
-        ...state,
-        results: []
+        results: [],
+        resultsSeries : [],
       }
 
     case AQ_ADD_SERIES_DETAILS :

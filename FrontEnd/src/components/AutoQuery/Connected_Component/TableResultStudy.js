@@ -117,7 +117,7 @@ class TableResultStudy extends Component {
                         <React.Fragment>
                             <div>
                                 <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
-                                <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
+                                <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={this.removeRow} />
                                 <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                                 <div className="mt-5">
                                     <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRowStudies} pagination={paginationFactory()} >
