@@ -1,6 +1,8 @@
 const Job = require('./Job')
 const Options = require('../Options')
 const schedule = require('node-schedule')
+const OrthancQueryAnswer = require('../queries-answer/OrthancQueryAnswer')
+const JobItem = require('./JobItem')
 
 class JobRetrieve extends Job {
 
@@ -54,6 +56,7 @@ class JobRetrieve extends Job {
             let validation = await this.validateRetrieveItem(item)
             item.validated = validation
         }
+        return this.isValidated()
     }
 
     /**

@@ -3,7 +3,6 @@ const OrthancQueryAnswer = require('./OrthancQueryAnswer')
 class QueryStudyAnswer extends OrthancQueryAnswer {
   constructor (answerId,
     answerNumber,
-    level,
     originAET,
     patientName,
     patientID,

@@ -1,7 +1,7 @@
 class JobItem {
 
     constructor() {
-        this.status = RetrieveItem.STATUS_PENDING
+        this.status = JobItem.STATUS_PENDING
     }
 
     setStatus(status){
@@ -13,7 +13,9 @@ class JobItem {
     }
 }
 
-RetrieveItem.STATUS_PENDING = 'Pending'
-RetrieveItem.STATUS_RUNNING = 'Running'
-RetrieveItem.STATUS_SUCCESS = 'Success'
-RetrieveItem.STATUS_FAILURE = 'Failure'
+JobItem.STATUS_PENDING = 'Pending'
+JobItem.STATUS_RUNNING = 'Running'
+JobItem.STATUS_SUCCESS = 'Success'
+JobItem.STATUS_FAILURE = 'Failure'
+
+module.exports = JobItem

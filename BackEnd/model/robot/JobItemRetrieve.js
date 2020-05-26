@@ -23,4 +23,4 @@ class JobItemRetrieve extends JobItem {
 
 }
 
-export default JobItemRetrieve
+module.exports = JobItemRetrieve

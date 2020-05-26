@@ -1,7 +1,7 @@
 const OrthancQueryAnswer = require('./OrthancQueryAnswer')
 
 class QuerySeriesAnswer extends OrthancQueryAnswer {
-  constructor (answerId, answerNumber, level, studyUID, seriesUID, modality, seriesDescription, seriesNumber, originAET, numberOfSeriesRelatedInstances) {
+  constructor (answerId, answerNumber, studyUID, seriesUID, modality, seriesDescription, seriesNumber, originAET, numberOfSeriesRelatedInstances) {
     super(answerId, answerNumber, OrthancQueryAnswer.LEVEL_SERIES, originAET, numberOfSeriesRelatedInstances)
     this.studyInstanceUID = studyUID
     this.seriesInstanceUID = seriesUID
