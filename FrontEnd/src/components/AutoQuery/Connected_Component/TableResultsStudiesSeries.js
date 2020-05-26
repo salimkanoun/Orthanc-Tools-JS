@@ -7,7 +7,7 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import filterFactory, { textFilter, dateFilter, numberFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
-import { addSeriesDetails, removeSeriesResult } from '../../../actions/TableResult'
+import { emptyResultsTable, addSeriesDetails, removeSeriesResult } from '../../../actions/TableResult'
 import apis from '../../../services/apis';
 
 /**
@@ -18,6 +18,7 @@ class TableResultsStudiesSeries extends Component {
     constructor(props){
         super(props)
         this.buildResultsSeriesArray = this.buildResultsSeriesArray.bind(this)
+        this.emptyTable = this.emptyTable.bind(this)
         this.removeRow = this.removeRow.bind(this)
     }
 
@@ -72,6 +73,10 @@ class TableResultsStudiesSeries extends Component {
 
         this.props.addSeriesDetails(seriesAnswers, studyUID)
 
+    }
+
+    emptyTable() {
+        this.props.emptyResultsTable()
     }
 
     columns = [{
@@ -173,18 +178,21 @@ class TableResultsStudiesSeries extends Component {
         let rows = this.buildResultsSeriesArray()
         return (
             <Fragment>
-                <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
-                <ToolkitProvider
-                    keyField="seriesInstanceUID"
-                    data={rows}
-                    columns={this.columns}
-                >{
-                    props => (
-                        <BootstrapTable ref={n => this.node = n} {...props.baseProps} wrapperClasses="table-responsive" selectRow = {this.selectRowSeries} striped={true} bordered={ false } filter={filterFactory()} pagination={paginationFactory()} />
+                <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={this.removeRow} />
+                <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
+                <div className="mt-5">
+                    <ToolkitProvider
+                        keyField="seriesInstanceUID"
+                        data={rows}
+                        columns={this.columns}
+                    >{
+                        props => (
+                            <BootstrapTable ref={n => this.node = n} {...props.baseProps} wrapperClasses="table-responsive" selectRow = {this.selectRowSeries} striped={true} bordered={ false } filter={filterFactory()} pagination={paginationFactory()} />
 
-                    )
-                }
-                </ToolkitProvider>
+                        )
+                    }
+                    </ToolkitProvider>
+                </div>
             </Fragment>
         )
     }
@@ -199,6 +207,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = {
+    emptyResultsTable,
     addSeriesDetails,
     removeSeriesResult
 }

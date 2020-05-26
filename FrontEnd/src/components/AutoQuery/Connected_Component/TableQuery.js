@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
+import moment from 'moment'
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
@@ -94,6 +95,15 @@ class TableQuery extends Component {
     text: 'Date From',
     sort: true,
     filter: dateFilter(),
+    formatter: (cell) => {
+      let dateObj
+      if (cell !== '') {
+        dateObj = moment(cell, "YYYYMMDD")
+      }else{
+        return ''
+      }
+      return moment(dateObj).format("YYYYMMDD")
+    },
     editor: {
       type: Type.DATE
     },
@@ -103,6 +113,15 @@ class TableQuery extends Component {
     text: 'Date To',
     sort: true,
     filter: dateFilter(),
+    formatter: (cell) => {
+      let dateObj
+      if (cell !== '') {
+        dateObj = moment(cell, "YYYYMMDD")
+      }else{
+        return ''
+      }
+      return moment(dateObj).format("YYYYMMDD")
+    },
     editor: {
       type: Type.DATE
     },
@@ -151,7 +170,7 @@ class TableQuery extends Component {
                 <div>
                   <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
                   <input type="button" className="btn btn-success m-2" value="Add" onClick={this.props.addRow} />
-                  <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
+                  <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={this.removeRow} />
                   <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                   <CsvLoader />
                   <div className="mt-5">
@@ -201,10 +220,13 @@ class TableQuery extends Component {
     let dateString = '';
     queryParams.dateFrom = queryParams.dateFrom.split('-').join('')
     queryParams.dateTo = queryParams.dateTo.split('-').join('')
+
     if (queryParams.dateFrom !== '' && queryParams.dateTo !== '') {
       dateString = queryParams.dateFrom + '-' + queryParams.dateTo
     } else if (queryParams.dateFrom === '' && queryParams.dateTo !== '') {
       dateString = '-' + queryParams.dateTo
+    } else if (queryParams.dateFrom !== '' && queryParams.dateTo === '') {
+      dateString =  queryParams.dateFrom+'-'
     }
 
     //Prepare POST payload for query (follow Orthanc APIs)

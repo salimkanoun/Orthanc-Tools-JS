@@ -1,7 +1,12 @@
 const RobotJob = require('../model/RobotJob')
 const RetrieveItem = require('../model/RetrieveItem')
+const QueryStudyAnswer = require('../model/queries-answer/QueryStudyAnswer')
 
 describe('Testing Robot Job Creation', () => {
+
+  let queryStudyAnswer1 = new QueryStudyAnswer('1234','12345', '', 'self', 'salimFirst', 'id','Accession', 'CT', 'Description', 'uid', '20180101',3, 1300 )
+  let queryStudyAnswer2 = new QueryStudyAnswer('12345','123456', '', 'self', 'Name', 'id','Accession', 'CT', 'Description', 'uid', '20180101',3, 1300 )
+ 
   let robotJob = null
 
   it('should create Robot', () => {
@@ -10,9 +15,9 @@ describe('Testing Robot Job Creation', () => {
   })
 
   it('should add queries to job', () => {
-    robotJob.addRetrieveItem('study', 'salimFirst', 'salimID', '01012000', 'PT', 'Mammo', '12345689', 'self')
+    robotJob.addRetrieveItem(queryStudyAnswer1)
     expect(robotJob.getRetrieveListSize()).toBe(1)
-    robotJob.addRetrieveItem('study', 'salimSecond', 'salimID2', '01012000', 'PT', 'Mammo', '12345689', 'self')
+    robotJob.addRetrieveItem(queryStudyAnswer2)
     expect(robotJob.getRetrieveListSize()).toBe(2)
   })
 
@@ -25,7 +30,7 @@ describe('Testing Robot Job Creation', () => {
     robotJob.removeRetrieveItem(1)
     expect(robotJob.getRetrieveListSize()).toBe(1)
     const retrieveItem = robotJob.getRetriveItem(0)
-    expect(retrieveItem.patientName).toBe('salimFirst')
+    expect(retrieveItem.getQueryAnswer().patientName).toBe('salimFirst')
   })
 
   it('should not be validated yet', () => {
@@ -43,7 +48,7 @@ describe('Testing Robot Job Creation', () => {
     expect(robotJob.isValidated()).toBe(false)
   })
 
-  it('should validate job now all items validated', () => {
+  it('should validate job when all items validated', () => {
     robotJob.validated = false
     robotJob.getAllRetrieveItems().forEach((retrieveItem) => {
       retrieveItem.setValidated()
@@ -53,24 +58,22 @@ describe('Testing Robot Job Creation', () => {
   })
 
   it('should calculate statistics of job', () => {
-    robotJob.getRetriveItem(0).setNumberOfInstances(15)
-    robotJob.addRetrieveItem('study', 'salimSecond', 'salimID2', '01012000', 'PT', 'Mammo', '12345689', 'self')
-    robotJob.getRetriveItem(1).setNumberOfInstances(45)
-    robotJob.getRetriveItem(1).setStatus(RetrieveItem.STATUS_RETRIEVED)
+    robotJob.getRetriveItem(0).setStatus(RetrieveItem.STATUS_RETRIEVED)
     expect(robotJob.getProgression()).toEqual({
-      totalInstances: 60,
-      retrievedInstances: 45,
+      totalInstances: 1300,
+      retrievedInstances: 1300,
       failedInstances: 0
     })
 
-    robotJob.addRetrieveItem('study', 'salimSecond', 'salimID2', '01012000', 'PT', 'Mammo', '12345689', 'self')
-    robotJob.getRetriveItem(2).setNumberOfInstances(15)
-    robotJob.getRetriveItem(2).setStatus(RetrieveItem.STATUS_FAILURE)
+    let queryStudyAnswer3 = new QueryStudyAnswer('12345','123456', '', 'self', 'Name', 'id','Accession', 'CT', 'Description', 'uid', '20180101',3, 50 )
+
+    robotJob.addRetrieveItem(queryStudyAnswer3)
+    robotJob.getRetriveItem(1).setStatus(RetrieveItem.STATUS_FAILURE)
 
     expect(robotJob.getProgression()).toEqual({
-      totalInstances: 75,
-      retrievedInstances: 45,
-      failedInstances: 15
+      totalInstances: 1350,
+      retrievedInstances: 1300,
+      failedInstances: 50
     })
   })
 })
