@@ -58,20 +58,9 @@ class Metadata extends Component {
     prepareData(data){
         let answer = []
         for (let id in data){
-            answer.push(Array.isArray(data[id]) ? {name: id, value: data[id].map(node => this.prepareArray(node))} : {name: id, value: data[id]})
+            answer.push(Array.isArray(data[id]) ? {name: id, value: data[id].map(node => this.prepareData(node))} : {name: id, value: data[id]})
         }
         return answer
-    }
-
-    prepareArray(array){
-        let answer = []
-        for (let id in array){
-            answer.push({
-                name: id, value: array[id]
-            })
-        }
-        return answer
-            
     }
 
     renderTree(array){

@@ -152,7 +152,6 @@ class Modify extends Component {
     }
 
     render() {
-        console.log(this.state)
         return (
             <Fragment>
                 <button className='dropdown-item bg-warning' type='button' onClick={ this.openModify } >Modify</button>
