@@ -3,6 +3,7 @@ var express = require('express')
 var morgan = require('morgan')
 var path = require('path')
 var cookieParser = require('cookie-parser')
+var bodyParser = require('body-parser')
 var logger = require('morgan')
 var rfs = require('rotating-file-stream')
 var session = require('express-session')
@@ -17,8 +18,9 @@ var app = express()
 app.use(express.static(path.join(__dirname, 'build')))
 
 app.use(logger('dev'))
-app.use(express.json())
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
+app.use(bodyParser.json({limit: '10mb'}));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 

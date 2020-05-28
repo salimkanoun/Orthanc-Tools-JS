@@ -90,11 +90,11 @@ export default class SendPeerDropdown extends Component{
                     </Modal.Header>
 
                     <Modal.Body>
-                        some studies are not anonymized !
+                        Some studies are not anonymized !
                     </Modal.Body>
                     <Modal.Footer>
                         <button type='button' className='btn btn-info' onClick={this.setModal}>Cancel</button>
-                        <button id={this.state.currentID} type='button' className='btn btn-primary' onClick={this.handleClickDownload}>Download</button>
+                        <button id={this.state.currentID} type='button' className='btn btn-primary' onClick={this.handleClickDownload}>Continue Anyway</button>
                     </Modal.Footer>
                 </Modal>
             </Fragment>
