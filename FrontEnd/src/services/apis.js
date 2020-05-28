@@ -9,6 +9,7 @@ import authentication from './authentication'
 import peers from './peers'
 import content from './content'
 import anon from './anon'
+import localStorage from './localStorage'
 
 export default {
   aets,
@@ -21,5 +22,6 @@ export default {
   authentication, 
   peers, 
   content, 
-  anon
+  anon, 
+  localStorage
 }

@@ -26,6 +26,13 @@ class TablePatientsWithNestedStudiesAndSeries extends Component {
             return (
                 <TableStudiesWithNestedSeries data={answer} hiddenActionBouton = {true} parentPatientId={row.PatientOrthancID} onDeleteStudy={ this.props.onDeleteStudy } onDeleteSeries={ this.props.onDeleteSeries } />
             )
+        },
+        parentClassName: (isExpanded, row, rowIndex) => {
+            if(isExpanded){
+                return 'bg-info'
+            }else{
+                return ''
+            }
         }
                 
     }

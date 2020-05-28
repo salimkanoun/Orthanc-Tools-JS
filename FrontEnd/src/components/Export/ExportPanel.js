@@ -16,7 +16,8 @@ class ExportPanel extends Component {
     state={
         currentStudy: '', 
         aets: [],
-        peers: []
+        peers: [], 
+        needConfirm: false
     }
 
     constructor(props){
@@ -26,6 +27,7 @@ class ExportPanel extends Component {
         this.removeSeries = this.removeSeries.bind(this)
         this.removeStudy = this.removeStudy.bind(this)
         this.child = React.createRef()
+        this.confirm = this.confirm.bind(this)
     }
     
     async componentDidMount(){
@@ -35,6 +37,7 @@ class ExportPanel extends Component {
             aets: aets,
             peers: peers
         })
+        this.confirm()
     }
 
     getExportIDArray(){
@@ -101,8 +104,19 @@ class ExportPanel extends Component {
         return studies
     }
 
+    confirm(){
+        let answer = false
+        this.props.exportList.studyArray.forEach(study => {
+            if (study.AnonymizedFrom === undefined || study.AnonymizedFrom === ''){
+                answer = true
+            }
+        })
+        return answer
+    }
+
     render() {
         let idArray = this.getExportIDArray()
+        let confirm = this.confirm()
         return (
             <div className="jumbotron">
                 <h2 className="card-title mb-3">Export</h2>
@@ -118,7 +132,8 @@ class ExportPanel extends Component {
                             hiddenRemoveRow={true} 
                             hiddenName={false}
                             hiddenID={false}
-                            pagination={true} />
+                            pagination={true} 
+                            hiddenAnonymized={false}/>
                             <button type='button' className="btn btn-warning float-right" onClick={this.emptyList}>Empty List</button>
                     </div>
 
@@ -135,7 +150,7 @@ class ExportPanel extends Component {
                         <SendAetDropdown aets={this.state.aets} exportIds={idArray} />
                     </div>
                     <div className='col-sm'>
-                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray}/>
+                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm} />
                     </div>
                     <div className='col-sm'>
                         <button type='button' className="btn btn-info" onClick={this.handleClickFTP} disabled>Send To FTP</button>

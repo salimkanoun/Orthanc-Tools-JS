@@ -2,6 +2,7 @@ const Robot = require('./RetrieveRobot')
 const Orthanc = require('./Orthanc')
 
 class RobotSingleton {
+
   constructor () {
     if (!RobotSingleton.instance) {
       RobotSingleton.instance = new Robot(new Orthanc())
@@ -11,6 +12,7 @@ class RobotSingleton {
   getRobot () {
     return RobotSingleton.instance
   }
+
 }
 
 module.exports = RobotSingleton

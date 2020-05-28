@@ -45,6 +45,7 @@ export default class SelectModalities extends Component {
      * @param {*} value 
      */
     changeListener(value){
+      if(value === null) value = []
       this.setState({
         selectedModalities : value
       })

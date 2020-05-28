@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import apis from '../../../services/apis'
 import AutoQueryRoot from './AutoQueryRoot'
 
@@ -21,26 +21,8 @@ export default class CreateRobot extends Component {
    * Take array of retrieve from Redux and build a retrieve Array to send to API
    */
   async createRobot () {
-    const results = this.props.resultArray
-    const retrieveArray = []
-
-    results.forEach(result => {
-      const resultToRobot = {
-        patientName: result.patientName,
-        patientID: result.patientID,
-        studyDate: result.studyDate,
-        modality: result.modalitiesInStudy,
-        studyDescription: result.studyDescription,
-        accessionNb: result.accessionNumber,
-        studyInstanceUID : result.studyInstanceUID,
-        aet: result.originAET
-      }
-
-      retrieveArray.push(resultToRobot)
-    })
-
     //Send the retrieve array to back end
-    await apis.queryRobot.createRobot(this.state.projectName, retrieveArray)
+    await apis.queryRobot.createRobot(this.state.projectName, this.props.resultArray)
 
     this.props.switchTab(AutoQueryRoot.MyRobot)
 
@@ -64,13 +46,18 @@ export default class CreateRobot extends Component {
 
   render () {
     return (
-      <div className='container'>
-        <div className='row float-right'>
-          Project Name :
-          <input type='text' name='projectName' value={this.state.value} onChange={this.handleChange} />
-          <input type='button' className='btn btn-success' onClick={this.createRobot} value='Create Robot' />
-        </div>
-      </div>
+        <Fragment>
+          <div className="form-group row">
+            <label>Project Name :</label>
+            <div className="col">
+              <input type='text' className="form-control" name='projectName' value={this.state.value} onChange={this.handleChange} />
+            </div>
+            <div className="col">
+              <input type='button' className='btn btn-success' onClick={this.createRobot} value='Create Robot' />
+            
+            </div>
+          </div>
+        </Fragment>
     )
   }
   

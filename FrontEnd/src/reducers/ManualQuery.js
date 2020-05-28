@@ -39,7 +39,7 @@ export default function manualQueryReducer (state = initialState, action) {
       const newResultArray = state.manualQueryResults.map((studyData) => {
         if (studyData.studyInstanceUID === action.payload.row.studyInstanceUID) {
           studyData.seriesDetails.forEach((serieDetails) => {
-            if (serieDetails.serieInstanceUID === action.payload.row.serieInstanceUID) {
+            if (serieDetails.seriesInstanceUID === action.payload.row.seriesInstanceUID) {
               serieDetails.isRetrieved = true
             }
           })

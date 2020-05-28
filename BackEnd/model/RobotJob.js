@@ -35,6 +35,25 @@ class RobotJob {
     }
   }
 
+  async validate(orthancObject){
+    const retrieveItems = this.getAllRetrieveItems()
+
+      for (let i = 0; i < retrieveItems.length; i++) {
+        //make validation of each retrieve item
+        await retrieveItems[i].validateRetrieveItem(orthancObject)
+      }
+
+      this.validateJobIfAllItemValidated()
+  }
+
+  async retrieveJob() {
+    for (let i = 0; i < this.retrieveList.length; i++) {
+      const retrieveItem = this.getRetriveItem(i)
+      await retrieveItem.doRetrieve()
+    }
+    
+  }
+
   isValidated () {
     return this.validated === RobotJob.VALIDATION_DONE
   }
@@ -53,8 +72,8 @@ class RobotJob {
     this.validated = RobotJob.VALIDATION_DONE
   }
 
-  addRetrieveItem (level, patientName, patientID, studyDate, modality, studyDescription, accessionNb, studyInstanceUID, aet) {
-    const retrieveItem = new RetrieveItem(level, patientName, patientID, studyDate, modality, studyDescription, accessionNb, studyInstanceUID, aet)
+  addRetrieveItem (queryAnswer) {
+    const retrieveItem = new RetrieveItem(queryAnswer)
     this.retrieveList.push(retrieveItem)
   }
 

@@ -13,35 +13,23 @@ Avant Arrivée Sylvain :
         - Gerer la selection pour le robot...
         - Filtre sur le niveau Series => Contains et equal sur modality et series description
         - Gerer le robot pour qu'ils traites retrieve au niveau series et study
-            - Si une serie est selectionnée alors n'importer que les series selectionnées au lieu de la study
 
 Front : 
 - voir ReduxThunk pour stocker de maniere globale les data https://dev.to/markusclaus/fetching-data-from-an-api-using-reactredux-55ao
     - En fait c'est un middleWare => Potentiellement utile pour passportJS => Voir cours Udemy
 - Faire que le select all select tous les non filtre de toutes les pages ? => difficulté....
-- Sous colonne modificatrice pour l'ensemble de la colonne quand table Query => Reste a faire le deselect avant edition
-- Spliter firstName, LastName dans toutes les tables query / results ?
 
 - Interface Suivi robot (pour un utilisateur)
     - Validation robot job
         - Soit manuelle par administrateur
         - Soit automatique lors declanchement robot (avant retrieve ? ou lors de la creation du job ?)
     - Export rapport Query / Retrieve (CSV)
-
-- Interface suivi des robots (tous) pour un administrateur
-    -   Validation d'un robot avant execution (fonction preset plateforme)
-    -   Acces au robot de chaque utilisateur
-    -   Fonction Pause 
+    - Fonction pause ?
 
 - Settings
-    - Restart d'orthanc
-    - Changer le log level
     - AutoQuery : 
         - Nombre limit de query si < limit => Retrieve auto
         - Heure de pause automatique ? (a partir 7h du mat ?)
-
-- Module de Delete ressources d'Orthanc
-    - Comme Anon et Export
 
 - Module Anonymize
     - Faire un robot coté Backend
@@ -53,33 +41,14 @@ Front :
         - Un button pour un Zip par item
         - Un boutton global pour toutes les ressources dans un ZIP
         - Choix hirachique (default) ou DicomDir
-    - Retour du zip vers client
-        - Stream du contenu
-        - Attention au timemout (a tester)
-    - Stockage ZIP vers backend ? (peut etre defini dans options)
-    - Vers AET (quid storage commitment)
+    - quid storage commitment
     - Sous module share vers FTP, SFTP, GaelO, Orthanc Peer ? 
 
-- Module Exploration Contenu d'Orthanc
-    - GUI a reflechir
-        - 3 component Patient / Study /Visit en table et on verra comment on les embrique
-        - Les action du click droit dans un dropdow (https://react-bootstrap.github.io/components/dropdowns/)
-            - Modification de ressources
-            - Preview d'images via lien vers OHIF
-            - Visualisation de Tag => GUI a reflechir
-            - API statisitics => GUI à reflechir
-
-- Module Import d'image
-    - Montrer resultat de upload
-        - Probablement meme composant que listing content orthanc
-
-- Module Disc Producer
-
 - Module Monotoring
+    - Disc Producer
     - Prefetching
     - Database tag monitoring
     - Dicom Routing?
-
 
 + tard : 
     - historique des query dans BDD pour relancer une ancienne requete

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import { toast } from 'react-toastify'
+import moment from 'moment'
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
@@ -93,6 +95,15 @@ class TableQuery extends Component {
     text: 'Date From',
     sort: true,
     filter: dateFilter(),
+    formatter: (cell) => {
+      let dateObj
+      if (cell !== '') {
+        dateObj = moment(cell, "YYYYMMDD")
+      }else{
+        return ''
+      }
+      return moment(dateObj).format("YYYYMMDD")
+    },
     editor: {
       type: Type.DATE
     },
@@ -102,6 +113,15 @@ class TableQuery extends Component {
     text: 'Date To',
     sort: true,
     filter: dateFilter(),
+    formatter: (cell) => {
+      let dateObj
+      if (cell !== '') {
+        dateObj = moment(cell, "YYYYMMDD")
+      }else{
+        return ''
+      }
+      return moment(dateObj).format("YYYYMMDD")
+    },
     editor: {
       type: Type.DATE
     },
@@ -147,11 +167,10 @@ class TableQuery extends Component {
       >{
           props => (
             <React.Fragment>
-              <div className="jumbotron" style={this.props.style}>
                 <div>
                   <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
                   <input type="button" className="btn btn-success m-2" value="Add" onClick={this.props.addRow} />
-                  <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
+                  <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={this.removeRow} />
                   <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                   <CsvLoader />
                   <div className="mt-5">
@@ -162,7 +181,6 @@ class TableQuery extends Component {
                 <div className="text-center">
                   <input type="button" className="btn btn-primary" value="Query" onClick={this.query} />
                 </div>
-              </div>
 
             </React.Fragment>
           )
@@ -172,12 +190,19 @@ class TableQuery extends Component {
   }
 
   async query() {
-
     let data = this.node.props.data
+    const id = toast.info('Starting Studies Queries');
+    let i = 0
+    console.log(data)
     //SK ICI GERER LA PROGRESSION ET LA FIN FAIRE SWITCH DE TAB
     for (const query of data) {
+      i++
+
       //For each line make dicom query and return results
       let answeredResults = await this.makeDicomQuery(query)
+      toast.update(id, {
+        render : 'Queried study '+i+'/'+data.length
+      });
       //For each results, fill the result table through Redux
       answeredResults.forEach((answer) => {
         this.props.addStudyResult(answer)
@@ -195,10 +220,13 @@ class TableQuery extends Component {
     let dateString = '';
     queryParams.dateFrom = queryParams.dateFrom.split('-').join('')
     queryParams.dateTo = queryParams.dateTo.split('-').join('')
+
     if (queryParams.dateFrom !== '' && queryParams.dateTo !== '') {
       dateString = queryParams.dateFrom + '-' + queryParams.dateTo
     } else if (queryParams.dateFrom === '' && queryParams.dateTo !== '') {
       dateString = '-' + queryParams.dateTo
+    } else if (queryParams.dateFrom !== '' && queryParams.dateTo === '') {
+      dateString =  queryParams.dateFrom+'-'
     }
 
     //Prepare POST payload for query (follow Orthanc APIs)
@@ -229,7 +257,7 @@ class TableQuery extends Component {
 const mapStateToProps = (state) => {
   return {
     aets: state.OrthancTools.OrthancAets,
-    queries: state.QueryList.queries
+    queries: state.AutoRetrieveQueryList.queries
   }
 }
 

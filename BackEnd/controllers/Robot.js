@@ -52,8 +52,8 @@ const addRobotJob = async function (req, res) {
   const body = req.body
   const robotJob = new RobotJob(req.session.username, body.projectName)
 
-  body.studyArray.forEach((retrieveQuery) => {
-    robotJob.addRetrieveItem('study', retrieveQuery.patientName, retrieveQuery.patientID, retrieveQuery.studyDate, retrieveQuery.modality, retrieveQuery.studyDescription, retrieveQuery.accessionNb, retrieveQuery.studyInstanceUID, retrieveQuery.aet)
+  body.retrieveArray.forEach((retrieveQuery) => {
+    robotJob.addRetrieveItem(retrieveQuery)
   })
 
   retrieveRobot.addRobotJob(robotJob)

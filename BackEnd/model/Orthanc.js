@@ -1,6 +1,6 @@
 const fs = require('fs')
 const QueryStudyAnswer = require('./queries-answer/QueryStudyAnswer')
-const QuerySerieAnswer = require('./queries-answer/QuerySerieAnswer')
+const QuerySerieAnswer = require('./queries-answer/QuerySeriesAnswer')
 const TagAnon = require('./TagAnon')
 const ReverseProxy = require('./ReverseProxy')
 
@@ -61,7 +61,7 @@ class Orthanc {
     }
   }
 
-  buildSerieDicomQuery (studyUID = '', modality = '', protocolName = '', seriesDescription = '', seriesNumber = '', seriesInstanceUID = '') {
+  buildSeriesDicomQuery (studyUID = '', modality = '', protocolName = '', seriesDescription = '', seriesNumber = '', seriesInstanceUID = '') {
     this.preparedQuery = {
       Level: 'Series',
       Query: {
@@ -143,7 +143,7 @@ class Orthanc {
       }
 
       const originAET = aet
-      const queryAnswserObject = new QuerySerieAnswer(answerId, i, queryLevel, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET, numberOfSeriesRelatedInstances)
+      const queryAnswserObject = new QuerySerieAnswer(answerId, i, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET, numberOfSeriesRelatedInstances)
       answersObjects.push(queryAnswserObject)
     }
 
@@ -205,7 +205,7 @@ class Orthanc {
         modalitiesInStudy = element['0008,0061'].Value
       }
       const origineAET = aet
-      const queryAnswserObject = new QueryStudyAnswer(answerId, i, queryLevel, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate, numberOfStudyRelatedSeries, numberOfStudyRelatedInstances)
+      const queryAnswserObject = new QueryStudyAnswer(answerId, i, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate, numberOfStudyRelatedSeries, numberOfStudyRelatedInstances)
       answersObjects.push(queryAnswserObject)
     }
 

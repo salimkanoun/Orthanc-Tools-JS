@@ -17,7 +17,8 @@ class TableStudy extends Component {
         hiddenID: true, 
         hiddenAccessionNumber: false, 
         editable: false, 
-        hiddenCSV: true
+        hiddenCSV: true,
+        hiddenAnonymized: true
     }
 
     getSelectedItems(){
@@ -86,7 +87,7 @@ class TableStudy extends Component {
         text: 'Action', 
         hidden: this.props.hiddenActionBouton,
         formatter:  ( (value, row, index) => 
-            <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} />
+            <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} row={row} refresh={this.props.refresh}/>
         ),
         clickToSelect: false, 
         editable: false, 
@@ -96,11 +97,20 @@ class TableStudy extends Component {
         text: 'Remove',
         hidden: this.props.hiddenRemoveRow,
         formatter: (cell, row, index) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.onDelete(row.StudyOrthancID)}}>Remove</button>
+            return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.onDelete(row.StudyOrthancID)}} >Remove</button>
         }, 
         editable: false, 
         csvExport: false
-    
+    }, {
+        dataField : 'Anonymized',
+        text: 'Anonymized ?',
+        style: (cell, row, index) => {return {color: row.AnonymizedFrom ? 'green' : 'red'}},
+        classes: 'text-center',
+        formatter: (cell, row, index) => {
+            return row.AnonymizedFrom ? 'Yes' : 'No'
+        },
+        hidden: this.props.hiddenAnonymized, 
+        csvExport: false
     }]
 
     render() {

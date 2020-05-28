@@ -24,12 +24,6 @@ export default class NavBar extends Component {
             <Link className='nav-link' to='/auto-query'>Auto-Retrieve</Link>
           </li>
           <li className='nav-item'>
-            <Link className='nav-link' to='/anonymize'>Anonymize</Link>
-          </li>
-          <li className='nav-item'>
-            <Link className='nav-link' to='/export'>Export</Link>
-          </li>
-          <li className='nav-item'>
             <Link className='nav-link' to='/options'>Administration</Link>
           </li>
         </ul>

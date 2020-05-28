@@ -35,11 +35,7 @@ export default class RobotStatus extends Component {
         clearInterval(this.intervalChcker)
     }
 
-    columns = [ 
-        {
-            dataField: 'key',
-            hidden: true
-        }, {
+    columns = [{
             dataField: 'name',
             text : 'Name'
         }, {
@@ -127,7 +123,7 @@ export default class RobotStatus extends Component {
 
     render() {
         return (
-            <BootstrapTable keyField="key" striped={true} data={this.state.rows} columns={this.columns} />
+            <BootstrapTable keyField="username" striped={true} data={this.state.rows} columns={this.columns} />
         )
     }
 }
