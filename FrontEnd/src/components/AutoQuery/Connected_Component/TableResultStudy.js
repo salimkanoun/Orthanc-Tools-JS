@@ -8,8 +8,6 @@ import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
 import { emptyResultsTable, removeResult } from '../../../actions/TableResult'
 
-import CreateRobot from '../Component/CreateRobot'
-import TableResultSeries from './TableResultSeries'
 
 const { ExportCSVButton } = CSVExport;
 /**
@@ -33,11 +31,7 @@ class TableResultStudy extends Component {
         this.props.emptyResultsTable()
     }
 
-    columns = [{
-        dataField: 'number',
-        hidden: true,
-        csvExport: false
-    }, {
+    columns = [ {
         dataField: 'level',
         hidden: true,
         csvExport: false
@@ -95,49 +89,40 @@ class TableResultStudy extends Component {
         dataField: 'numberOfSeriesRelatedInstances',
         text: 'Instances'
     }]; 
-    
-    selectRowSeries = {
-        mode: 'checkbox',
-        hideSelectAll : true,
-        clickToSelect: true
-    }
 
     selectRowStudies = {
         mode: 'checkbox',
-        hideSelectAll : true,
         clickToSelect: true
     }
 
-    expandRow = {
-        showExpandColumn: true,
-        renderer: (row) => {
-            return (
-                <TableResultSeries rowData={row} selectRow={this.selectRowSeries} ></TableResultSeries>
-            )
+    buildRowArray(){
+        let rows = []
+        for(const studyUID of Object.keys(this.props.results)){
+            rows.push({
+                ...this.props.results[studyUID]
+            })
         }
+        return rows
     }
 
     render() {
         return (
             <ToolkitProvider
-                keyField="key"
-                data={this.props.results}
+                keyField="studyInstanceUID"
+                data={this.buildRowArray()}
                 columns={this.columns}
                 exportCSV={{ onlyExportSelection: false, exportAll: true }}
             >{
                     props => (
                         <React.Fragment>
-                            <div className="jumbotron" style={this.props.style}>
-                                <div>
-                                    <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
-                                    <input type="button" className="btn btn-danger m-2" value="Delete Selected" onClick={this.removeRow} />
-                                    <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
-                                    <div className="mt-5">
-                                        <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRowStudies} pagination={paginationFactory()} expandRow={this.expandRow} >
-                                        </BootstrapTable>
-                                    </div>
+                            <div>
+                                <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
+                                <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={this.removeRow} />
+                                <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
+                                <div className="mt-5">
+                                    <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRowStudies} pagination={paginationFactory()} >
+                                    </BootstrapTable>
                                 </div>
-                                <CreateRobot resultArray={this.props.results} switchTab = {this.props.switchTab} ></CreateRobot>
                             </div>
                         </React.Fragment>
                     )
@@ -150,7 +135,7 @@ class TableResultStudy extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        results: state.ResultList.results
+        results: state.AutoRetrieveResultList.results
     }
 }
 

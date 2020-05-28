@@ -1,19 +1,33 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
 import apis from '../../../services/apis'
 import { toastifySuccess, toastifyError } from '../../../services/toastify'
 import OhifLink from '../../Ohif/OhifLink'
+import Modal from 'react-bootstrap/Modal'
+import Metadata from '../../Metadata/Metadata'
+import Modify from '../../Modify/Modify'
 
 class ActionBouton extends Component{
 
-    constructor(props){
-        super(props)
-        this.modify = this.modify.bind(this)
-        this.delete = this.delete.bind(this)
+    state = {
+        showMetadata: false, 
+        data: []
     }
 
-    modify() {
-        console.log("Modify Call" + this.props.level +" ID "+ this.props.orthancID)
+    constructor(props){
+        super(props)
+        this.delete = this.delete.bind(this)
+        this.setMetadata = this.setMetadata.bind(this)
+    }
+
+    static defaultProps = {
+        hiddenMetadata: true
+    }
+
+    setMetadata(){
+        this.setState({
+            showMetadata: !this.state.showMetadata
+        })
     }
 
     async delete( ) {
@@ -43,17 +57,30 @@ class ActionBouton extends Component{
 
     render(){
         return (
-            <Dropdown onClick={this.handleClick}>
-                <Dropdown.Toggle variant="success" id="dropdown-basic"  >
-                    Action
-                </Dropdown.Toggle>
+            <Fragment>
+                {/*modal pour metadata*/}
+                <Modal show={this.state.showMetadata} onHide={this.setMetadata} scrollable={true}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Metadata</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body >
+                        <Metadata serieID={this.props.orthancID} />
+                    </Modal.Body>
+                </Modal>
 
-                <Dropdown.Menu>
-                    <OhifLink className='dropdown-item bg-info' {...this.props} />
-                    <button className='dropdown-item bg-warning' type='button' onClick={ this.modify } >Modify</button>
-                    <button className='dropdown-item bg-danger' type='button' onClick={ this.delete }>Delete</button>
-                </Dropdown.Menu>
-            </Dropdown>
+                <Dropdown onClick={this.handleClick}>
+                    <Dropdown.Toggle variant="success" id="dropdown-basic"  >
+                        Action
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                        <OhifLink className='dropdown-item bg-info' {...this.props} />
+                        <Modify {...this.props} />
+                        <button className='dropdown-item bg-danger' type='button' onClick={ this.delete }>Delete</button>
+                        <button className='dropdown-item bg-info' type='button' onClick={ this.setMetadata} hidden={this.props.hiddenMetadata}>Metadata</button>
+                    </Dropdown.Menu>
+                </Dropdown>
+            </Fragment>
             )
     }
 
