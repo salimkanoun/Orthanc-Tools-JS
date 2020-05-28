@@ -38,7 +38,7 @@ class SearchForm extends Component{
                 PatientID: formData.patientID,
                 AccessionNumber: formData.accessionNumber,
                 StudyDate: date, 
-                ModalityInStudy: formData.modalities,
+                ModalitiesInStudy: formData.modalities,
                 StudyDescription: formData.studyDescription
             }
         }
