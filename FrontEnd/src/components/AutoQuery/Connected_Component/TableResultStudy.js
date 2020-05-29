@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
 import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter, dateFilter, multiSelectFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
@@ -30,6 +30,11 @@ class TableResultStudy extends Component {
     emptyTable() {
         this.props.emptyResultsTable()
     }
+    options = {
+        0: 'test', 
+        2: 'azer', 
+        1: 'Tep-Scan'
+    }
 
     columns = [ {
         dataField: 'level',
@@ -47,17 +52,23 @@ class TableResultStudy extends Component {
         dataField: 'patientName',
         text: 'Patient Name',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('patientName')
+        })
     }, {
         dataField: 'patientID',
         text: 'Patient ID',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('patientID')
+        })
     }, {
         dataField: 'accessionNumber',
         text: 'Accession Number',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('accessionNumber')
+        })
     }, {
         dataField: 'studyDate',
         text: 'Acquisition Date',
@@ -67,17 +78,23 @@ class TableResultStudy extends Component {
         dataField: 'studyDescription',
         text: 'Study Description',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('studyDescription')
+        })
     }, {
         dataField: 'modalitiesInStudy',
         text: 'Modalities',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('modalitiesInStudy')
+        })
     }, {
         dataField: 'originAET',
         text: 'AET',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('originAET')
+        })
     }, {
         dataField: 'studyInstanceUID',
         hidden: true,
@@ -90,9 +107,29 @@ class TableResultStudy extends Component {
         text: 'Instances'
     }]; 
 
+    
+
     selectRowStudies = {
         mode: 'checkbox',
         clickToSelect: true
+    }
+
+    getOption(cell){
+        let desc = []
+        let options = {}
+        let rows = this.buildRowArray()
+        rows.forEach(element => {
+            if (!desc.includes(element[cell])){
+                desc.push(element[cell])
+            }
+        })
+        for (let i in desc){
+            options = {
+                ...options, 
+                [desc[i]]: desc[i]
+            }
+        }
+        return options
     }
 
     buildRowArray(){
