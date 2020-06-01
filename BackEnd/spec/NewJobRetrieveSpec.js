@@ -77,6 +77,10 @@ describe('Retrieve Job', () => {
 
     })
 
+    it('should return JSON details', async() => {
+        console.log(JSON.stringify(jobRetrieve))
+    })
+
 
 
 })

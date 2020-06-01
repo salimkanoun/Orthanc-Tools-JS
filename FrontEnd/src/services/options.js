@@ -60,6 +60,7 @@ const Options = {
     }).then((answer) => {
       return (answer.json())
     }).then((answer) => { return answer })
+    .catch(error =>{ toastifyError('No connexion to BackEnd')})
   },
 
   getOrthancSystem () {
@@ -111,7 +112,7 @@ const Options = {
         }
         else throw response
       }).catch(error => {
-      toastifyError(error)
+      toastifyError(error.statusText)
     })
   },
 

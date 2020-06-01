@@ -117,7 +117,7 @@ export default class RobotView extends Component {
             
             let rowsRetrieveList = []
 
-            answerData.retrieveList.forEach(robotJob => {
+            answerData.items.forEach(robotJob => {
                 rowsRetrieveList.push({
                     key : Math.random(),
                     ...robotJob
@@ -137,6 +137,8 @@ export default class RobotView extends Component {
                 totalPercentageProgress : newTotalPercentageProgress,
                 percentageFailure : newPercentageFailure
             })
+
+        }).catch(error =>{
 
         })
     }

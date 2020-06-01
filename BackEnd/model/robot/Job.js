@@ -48,13 +48,16 @@ class Job{
 
         })
 
-        return{
+        this.progression = {
             [RetrieveItem.STATUS_PENDING] : numberOfPendingItems,
             [RetrieveItem.STATUS_RUNNING] : numberOfRunningItems,
             [RetrieveItem.STATUS_SUCCESS] : numberOfSuccessItems,
             [RetrieveItem.STATUS_FAILURE] : numberOfFailureItems,
         }
+
+        return this.progression
     }
+    
 }
 
 Job.TYPE_RETRIEVE = "Retrieve"
