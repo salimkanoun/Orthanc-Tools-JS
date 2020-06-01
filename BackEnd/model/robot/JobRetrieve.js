@@ -142,6 +142,17 @@ class JobRetrieve extends Job {
         this.scheduledJob = scheduledJob
     }
 
+    toJSON() {
+        return {
+            items : this.items.map(item =>{
+                return item.toJSON()
+            }),
+            status : this.status
+        }
+    }
+
+
+
 }
 
 module.exports = JobRetrieve

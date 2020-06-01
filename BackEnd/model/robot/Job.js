@@ -1,3 +1,4 @@
+const JobItem = require('./JobItem')
 class Job{
 
     constructor(type, username){
@@ -36,26 +37,39 @@ class Job{
         this.items.forEach(item => {
 
             let itemStatus = item.getStatus()
-            if(itemStatus === RetrieveItem.STATUS_PENDING){
+            if(itemStatus === JobItem.STATUS_PENDING){
                 numberOfPendingItems++
-            }else if(itemStatus === RetrieveItem.STATUS_RUNNING){
+            }else if(itemStatus === JobItem.STATUS_RUNNING){
                 numberOfRunningItems++
-            }else if(itemStatus === RetrieveItem.STATUS_SUCCESS){
+            }else if(itemStatus === JobItem.STATUS_SUCCESS){
                 numberOfSuccessItems++
-            }else if(itemStatus === RetrieveItem.STATUS_FAILURE){
+            }else if(itemStatus === JobItem.STATUS_FAILURE){
                 numberOfFailureItems++
             }
 
         })
 
         this.progression = {
-            [RetrieveItem.STATUS_PENDING] : numberOfPendingItems,
-            [RetrieveItem.STATUS_RUNNING] : numberOfRunningItems,
-            [RetrieveItem.STATUS_SUCCESS] : numberOfSuccessItems,
-            [RetrieveItem.STATUS_FAILURE] : numberOfFailureItems,
+            [JobItem.STATUS_PENDING] : numberOfPendingItems,
+            [JobItem.STATUS_RUNNING] : numberOfRunningItems,
+            [JobItem.STATUS_SUCCESS] : numberOfSuccessItems,
+            [JobItem.STATUS_FAILURE] : numberOfFailureItems,
         }
 
         return this.progression
+    }
+
+    toJSON(){
+
+        return {
+            type : this.type,
+            username : this.username,
+            items : this.items.map(item =>{
+                return item.toJSON()
+            }),
+            status : this.status
+        }
+
     }
     
 }

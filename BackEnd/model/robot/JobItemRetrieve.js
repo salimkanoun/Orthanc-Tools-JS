@@ -21,6 +21,12 @@ class JobItemRetrieve extends JobItem {
         return this.numberOfSeriesRelatedInstances
     }
 
+    toJSON(){
+        return {
+            ...this
+        }
+    }
+
 }
 
 module.exports = JobItemRetrieve

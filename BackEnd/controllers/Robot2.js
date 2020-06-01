@@ -10,6 +10,7 @@ const getRobotDetails = async function (req, res) {
         retrieveJob.getProgression()
         res.json(retrieveJob)
     } catch (error) {
+        console.log(error)
         res.json({
             items: []
         })
@@ -48,10 +49,10 @@ const addRobotJob = async function (req, res) {
     let retrieveJob = new JobRetrieve( "salim", new Orthanc() )
     body.retrieveArray.forEach( (retrieveQuery) => {
         retrieveItem = new JobItemRetrieve(retrieveQuery)
-        retrieveJob.addItem(retrieveQuery)
+        retrieveJob.addItem(retrieveItem)
     })
     robot.addJob(retrieveJob)
-    console.log(retrieveJob)
+    console.log(robot.getJob("salim", Job.TYPE_RETRIEVE))
     res.json( robot.getJob("salim", Job.TYPE_RETRIEVE) )
 }
 
