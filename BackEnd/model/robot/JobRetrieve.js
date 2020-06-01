@@ -56,7 +56,13 @@ class JobRetrieve extends Job {
             let validation = await this.validateRetrieveItem(item)
             item.validated = validation
         }
-        return this.isValidated()
+        //If validated execute the robot
+        if(this.isValidated()) {
+            this.execute()
+            return true
+        }else {
+            return false
+        }
     }
 
     /**
@@ -135,6 +141,17 @@ class JobRetrieve extends Job {
 
         this.scheduledJob = scheduledJob
     }
+
+    toJSON() {
+        return {
+            items : this.items.map(item =>{
+                return item.toJSON()
+            }),
+            status : this.status
+        }
+    }
+
+
 
 }
 

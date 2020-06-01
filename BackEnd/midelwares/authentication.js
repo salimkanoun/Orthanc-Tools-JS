@@ -5,7 +5,7 @@ const userAuthMidelware = function (req, res, next) {
     next()
   } else {
     console.log('No session')
-    res.status(403).end()
+    res.status(403).json("Not Allowed")
   }
 }
 
