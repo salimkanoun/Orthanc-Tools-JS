@@ -33,7 +33,7 @@ class Results extends Component {
             for(let seriesUID of Object.keys(this.props.resultsSeries)){
                 let seriesObject = this.props.resultsSeries[seriesUID]
                 retrieveArray.push({
-                    ...this.props.results[seriesObject['studyInstanceUID']],
+                    ...this.props.results[seriesObject['StudyInstanceUID']],
                     ...seriesObject
                 })
             }

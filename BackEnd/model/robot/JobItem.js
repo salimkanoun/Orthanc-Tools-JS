@@ -1,15 +1,15 @@
 class JobItem {
 
     constructor() {
-        this.status = JobItem.STATUS_PENDING
+        this.Status = JobItem.STATUS_PENDING
     }
 
     setStatus(status){
-        this.status = status
+        this.Status = status
     }
 
     getStatus(){
-        return this.status
+        return this.Status
     }
 }
 

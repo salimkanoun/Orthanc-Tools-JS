@@ -69,29 +69,29 @@ class TableQuery extends Component {
   });
 
   columns = [{
-    dataField: 'number',
+    dataField: 'key',
     hidden: true,
     csvExport: false
   }, {
-    dataField: 'patientName',
+    dataField: 'PatientName',
     text: 'Patient Name',
     sort: true,
     filter: textFilter(),
     headerFormatter: this.customHeader
   }, {
-    dataField: 'patientId',
+    dataField: 'PatientID',
     text: 'Patient ID',
     sort: true,
     filter: textFilter(),
     headerFormatter: this.customHeader
   }, {
-    dataField: 'accessionNumber',
+    dataField: 'AccessionNumber',
     text: 'Accession Number',
     sort: true,
     filter: textFilter(),
     headerFormatter: this.customHeader
   }, {
-    dataField: 'dateFrom',
+    dataField: 'DateFrom',
     text: 'Date From',
     sort: true,
     filter: dateFilter(),
@@ -109,7 +109,7 @@ class TableQuery extends Component {
     },
     headerFormatter: this.customHeader
   }, {
-    dataField: 'dateTo',
+    dataField: 'DateTo',
     text: 'Date To',
     sort: true,
     filter: dateFilter(),
@@ -127,13 +127,13 @@ class TableQuery extends Component {
     },
     headerFormatter: this.customHeader
   }, {
-    dataField: 'studyDescription',
+    dataField: 'StudyDescription',
     text: 'Study Description',
     sort: true,
     filter: textFilter(),
     headerFormatter: this.customHeader
   }, {
-    dataField: 'modalities',
+    dataField: 'ModalitiesInStudy',
     text: 'Modality',
     sort: true,
     filter: textFilter(),
@@ -142,7 +142,7 @@ class TableQuery extends Component {
       <SelectModalities {...editorProps} previousModalities={value} />
     )
   }, {
-    dataField: 'aet',
+    dataField: 'Aet',
     text: 'AET',
     sort: true,
     editor: {
@@ -215,37 +215,36 @@ class TableQuery extends Component {
   }
 
   async makeDicomQuery(queryParams) {
-
     //Prepare Date string for post data
-    let dateString = '';
-    queryParams.dateFrom = queryParams.dateFrom.split('-').join('')
-    queryParams.dateTo = queryParams.dateTo.split('-').join('')
+    let DateString = '';
+    queryParams.DateFrom = queryParams.DateFrom.split('-').join('')
+    queryParams.DateTo = queryParams.DateTo.split('-').join('')
 
-    if (queryParams.dateFrom !== '' && queryParams.dateTo !== '') {
-      dateString = queryParams.dateFrom + '-' + queryParams.dateTo
-    } else if (queryParams.dateFrom === '' && queryParams.dateTo !== '') {
-      dateString = '-' + queryParams.dateTo
-    } else if (queryParams.dateFrom !== '' && queryParams.dateTo === '') {
-      dateString =  queryParams.dateFrom+'-'
+    if (queryParams.DateFrom !== '' && queryParams.DateTo !== '') {
+      DateString = queryParams.DateFrom + '-' + queryParams.DateTo
+    } else if (queryParams.DateFrom === '' && queryParams.DateTo !== '') {
+      DateString = '-' + queryParams.DateTo
+    } else if (queryParams.DateFrom !== '' && queryParams.DateTo === '') {
+      DateString =  queryParams.DateFrom+'-'
     }
 
     //Prepare POST payload for query (follow Orthanc APIs)
     let queryPost = {
       Level: 'Study',
       Query: {
-        PatientName: queryParams.patientName,
-        PatientID: queryParams.patientId,
-        StudyDate: dateString,
-        ModalitiesInStudy: queryParams.modalities,
-        StudyDescription: queryParams.studyDescription,
-        AccessionNumber: queryParams.accessionNumber,
+        PatientName: queryParams.PatientName,
+        PatientID: queryParams.PatientId,
+        StudyDate: DateString,
+        ModalitiesInStudy: queryParams.ModalitiesInStudy,
+        StudyDescription: queryParams.StudyDescription,
+        AccessionNumber: queryParams.AccessionNumber,
         NumberOfStudyRelatedInstances: '',
         NumberOfStudyRelatedSeries: ''
       }
     }
 
     //Call Orthanc API to make Query
-    let createQueryRessource = await apis.query.dicomQuery(queryParams.aet, queryPost)
+    let createQueryRessource = await apis.query.dicomQuery(queryParams.Aet, queryPost)
     //Call OrthancToolsJS API to get a parsed answer of the results
     let queryAnswer = await apis.query.retrieveAnswer(createQueryRessource.ID)
 

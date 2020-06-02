@@ -36,19 +36,19 @@ class TableResultStudy extends Component {
     }
 
     columns = [ {
-        dataField: 'level',
+        dataField: 'Level',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'answerId',
+        dataField: 'AnswerId',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'answerNumber',
+        dataField: 'AnswerNumber',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'patientName',
+        dataField: 'PatientName',
         text: 'Patient Name',
         sort: true,
         filter: customFilter({
@@ -56,10 +56,10 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('patientName')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} reverse={this.state.reverFilter}/>
         }
     }, {
-        dataField: 'patientID',
+        dataField: 'PatientID',
         text: 'Patient ID',
         sort: true,
         filter: customFilter({
@@ -67,10 +67,10 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('patientID')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} reverse={this.state.reverFilter}/>
         }
     }, {
-        dataField: 'accessionNumber',
+        dataField: 'AccessionNumber',
         text: 'Accession Number',
         sort: true,
         filter: customFilter({
@@ -78,15 +78,15 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('accessionNumber')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} reverse={this.state.reverFilter}/>
         }
     }, {
-        dataField: 'studyDate',
+        dataField: 'StudyDate',
         text: 'Acquisition Date',
         sort: true,
         filter: dateFilter()
     }, {
-        dataField: 'studyDescription',
+        dataField: 'StudyDescription',
         text: 'Study Description',
         sort: true,
         filter: customFilter({
@@ -94,10 +94,10 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('studyDescription')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} reverse={this.state.reverFilter}/>
         }
     }, {
-        dataField: 'modalitiesInStudy',
+        dataField: 'ModalitiesInStudy',
         text: 'Modalities',
         sort: true,
         filter: customFilter({
@@ -105,10 +105,10 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('modalitiesInStudy')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+            return <CustomFilter options={this.getOption('ModalitiesInStudy')} onFilter={onFilter} reverse={this.state.reverFilter}/>
         }
     }, {
-        dataField: 'originAET',
+        dataField: 'OriginAET',
         text: 'AET',
         sort: true,
         filter: customFilter({
@@ -116,17 +116,17 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('originAET')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+            return <CustomFilter options={this.getOption('OriginAET')} onFilter={onFilter} reverse={this.state.reverFilter}/>
         }
     }, {
-        dataField: 'studyInstanceUID',
+        dataField: 'StudyInstanceUID',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'numberOfStudyRelatedSeries',
+        dataField: 'NumberOfStudyRelatedSeries',
         text: 'Series'
     }, {
-        dataField: 'numberOfSeriesRelatedInstances',
+        dataField: 'NumberOfSeriesRelatedInstances',
         text: 'Instances'
     }]; 
 
@@ -171,7 +171,7 @@ class TableResultStudy extends Component {
     render() {
         return (
             <ToolkitProvider
-                keyField="studyInstanceUID"
+                keyField="StudyInstanceUID"
                 data={this.buildRowArray()}
                 columns={this.columns}
                 exportCSV={{ onlyExportSelection: false, exportAll: true }}

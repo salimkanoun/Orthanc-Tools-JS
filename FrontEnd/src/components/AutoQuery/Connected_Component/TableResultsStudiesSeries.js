@@ -30,7 +30,7 @@ class TableResultsStudiesSeries extends Component {
         let studyUIDToQuery = Object.keys(this.props.results)
         let availableStudyUID = []
         for(let seriesUID of Object.keys(this.props.resultsSeries)){
-            availableStudyUID.push(this.props.resultsSeries[seriesUID]['studyInstanceUID'])    
+            availableStudyUID.push(this.props.resultsSeries[seriesUID]['StudyInstanceUID'])    
         } 
 
         studyUIDToQuery.forEach (studyUID =>{
@@ -44,7 +44,7 @@ class TableResultsStudiesSeries extends Component {
             //Load All series details of studies answers
             for (let studyResults of emptyResultArray) {
                 i++
-                await this.getSeriesDetails(studyResults.studyInstanceUID, studyResults.originAET)
+                await this.getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET)
                 toast.update(id, {
                     render : 'Queried series '+i+'/'+(emptyResultArray.length)
                 });
@@ -82,19 +82,19 @@ class TableResultsStudiesSeries extends Component {
     }
 
     columns = [{
-        dataField: 'level',
+        dataField: 'Level',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'answerId',
+        dataField: 'AnswerId',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'answerNumber',
+        dataField: 'AnswerNumber',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'patientName',
+        dataField: 'PatientName',
         text: 'Patient Name',
         sort: true,
         filter: customFilter({
@@ -102,10 +102,10 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('patientName')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} reverse={this.state.reverFilter}/>
         }
     }, {
-        dataField: 'patientID',
+        dataField: 'PatientID',
         text: 'Patient ID',
         sort: true,
         filter: customFilter({
@@ -113,10 +113,10 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('patientID')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} reverse={this.state.reverFilter}/>
         }
     }, {
-        dataField: 'accessionNumber',
+        dataField: 'AccessionNumber',
         text: 'Accession Number',
         sort: true,
         filter: customFilter({
@@ -124,15 +124,15 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('accessionNumber')} onFilter={onFilter} reverse={this.state.reverFilter} />
+            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} reverse={this.state.reverFilter} />
         }
     }, {
-        dataField: 'studyDate',
+        dataField: 'StudyDate',
         text: 'Acquisition Date',
         sort: true,
         filter: dateFilter()
     }, {
-        dataField: 'studyDescription',
+        dataField: 'StudyDescription',
         text: 'Study Description',
         sort: true,
         filter: customFilter({
@@ -140,18 +140,18 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('studyDescription')} onFilter={onFilter} reverse={this.state.reverFilter} />
+            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} reverse={this.state.reverFilter} />
         }
     },{
-        dataField: 'studyInstanceUID',
+        dataField: 'StudyInstanceUID',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'seriesInstanceUID',
+        dataField: 'SeriesInstanceUID',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'seriesDescription',
+        dataField: 'SeriesDescription',
         text: 'Serie Description',
         sort: true,
         filter: customFilter({
@@ -159,10 +159,10 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('seriesDescription')} onFilter={onFilter} reverse={this.state.reverFilter} />
+            return <CustomFilter options={this.getOption('SeriesDescription')} onFilter={onFilter} reverse={this.state.reverFilter} />
         }
     }, {
-        dataField: 'modality',
+        dataField: 'Modality',
         text: 'Modality',
         sort: true,
         filter: customFilter({
@@ -170,10 +170,10 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('modality')} onFilter={onFilter} reverse={this.state.reverFilter} />
+            return <CustomFilter options={this.getOption('Modality')} onFilter={onFilter} reverse={this.state.reverFilter} />
         }
     }, {
-        dataField: 'seriesNumber',
+        dataField: 'SeriesNumber',
         text: 'Serie Number',
         sort: true,
         filter: customFilter({
@@ -181,14 +181,14 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('seriesNumber')} onFilter={onFilter} reverse={this.state.reverFilter} />
+            return <CustomFilter options={this.getOption('SeriesNumber')} onFilter={onFilter} reverse={this.state.reverFilter} />
         }
     }, {
-        dataField: 'numberOfSeriesRelatedInstances',
+        dataField: 'NumberOfSeriesRelatedInstances',
         text: 'Instances',
         filter: numberFilter()
     }, {
-        dataField: 'originAET',
+        dataField: 'OriginAET',
         text: 'AET',
         sort: true
     }];
@@ -210,7 +210,7 @@ class TableResultsStudiesSeries extends Component {
         let seriesLines = []
         for(let seriesUID of Object.keys(this.props.resultsSeries)){
             seriesLines.push({
-                ...this.props.results[this.props.resultsSeries[seriesUID]['studyInstanceUID']],
+                ...this.props.results[this.props.resultsSeries[seriesUID]['StudyInstanceUID']],
                 ...this.props.resultsSeries[seriesUID],
 
             })
@@ -247,7 +247,7 @@ class TableResultsStudiesSeries extends Component {
                 <input type="button" className="btn btn-info m-2" value={this.state.reverFilter ? 'Normal Filter' : 'Reverse Filter'} onClick={() => this.setState({reverFilter: !this.state.reverFilter})} />
                 <div className="mt-5">
                     <ToolkitProvider
-                        keyField="seriesInstanceUID"
+                        keyField="SeriesInstanceUID"
                         data={rows}
                         columns={this.columns}
                     >{

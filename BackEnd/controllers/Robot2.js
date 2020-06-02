@@ -46,6 +46,7 @@ const validateRobotJob = async function (req, res) {
 
 const addRobotJob = async function (req, res) {
     const body = req.body
+    //SK ICI GERER L AJOUT INCREMENTAL DE RESSOURCE
     let retrieveJob = new JobRetrieve( "salim", new Orthanc() )
     body.retrieveArray.forEach( (retrieveQuery) => {
         retrieveItem = new JobItemRetrieve(retrieveQuery)
