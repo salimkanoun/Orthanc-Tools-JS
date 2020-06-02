@@ -40,7 +40,7 @@ export default class RobotView extends Component {
         dataField: 'key',
         hidden: true
     }, {
-        dataField: 'level',
+        dataField: 'Level',
         text : 'level',
         filter: selectFilter({
             options: { study : 'study', series : 'series'}
@@ -49,35 +49,39 @@ export default class RobotView extends Component {
         dataField: 'StudyInstanceUID',
         hidden: true
     }, {
-        dataField: 'patientName',
+        dataField: 'PatientName',
         text : 'Patient Name',
         filter: textFilter()
     }, {
-        dataField: 'patientId',
+        dataField: 'PatientID',
         text : 'Patient ID',
         filter: textFilter()
     }, {
-        dataField : 'studyDate',
+        dataField : 'StudyDate',
         text : 'Study Date',
         filter: dateFilter()
     }, {
-        dataField : 'modality',
+        dataField : 'Modality',
         text : 'Modality',
         filter: textFilter()
     }, {
-        dataField : 'studyDescription',
+        dataField : 'StudyDescription',
         text : 'Study Description',
         filter: textFilter()
     }, {
-        dataField : 'accessionNb',
-        text : 'Accession Nb',
+        dataField : 'SeriesDescription',
+        text : 'Series Description',
         filter: textFilter()
     }, {
-        dataField : 'aet',
+        dataField : 'AccessionNumber',
+        text : 'Accession Number',
+        filter: textFilter()
+    }, {
+        dataField : 'OriginAET',
         text : 'AET',
         filter: textFilter()
     }, {
-        dataField : 'status',
+        dataField : 'Status',
         text : 'Status',
         filter: textFilter(),
         style: function callback(cell, row, rowIndex, colIndex) {
@@ -88,12 +92,12 @@ export default class RobotView extends Component {
             }
          }
     }, {
-        dataField : 'remove',
+        dataField : 'Remove',
         text : 'Remove Query',
         formatter : this.removeQueryButton,
         formatExtraData : this
     }, {
-        dataField : 'ohif',
+        dataField : 'OHIF',
         text : 'View in OHIF',
         formatter : function(cell, row, rowIndex, formatExtraData){
             return (

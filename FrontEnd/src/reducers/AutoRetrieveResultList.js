@@ -9,10 +9,10 @@ export default function retrieveListReducer (state = initialState, action) {
   switch (action.type) {
 
     case AQ_ADD_STUDY_RESULT:
-      const studyInstanceUid = action.payload.studyInstanceUID;
+      const StudyInstanceUid = action.payload.StudyInstanceUID;
       let newResultObject = {...state.results}
 
-      newResultObject[studyInstanceUid]= {
+      newResultObject[StudyInstanceUid]= {
         isRetrieved: false,
         ...action.payload
       }
@@ -26,8 +26,8 @@ export default function retrieveListReducer (state = initialState, action) {
       let resultsCopy = {...state.results}
       //Remove selected studies from studies object
       const removedLines = action.payload
-      removedLines.forEach(studyInstanceUID =>{
-          delete resultsCopy[studyInstanceUID]
+      removedLines.forEach(StudyInstanceUID =>{
+          delete resultsCopy[StudyInstanceUID]
       })
 
       //Remove child series of these studies
@@ -55,7 +55,7 @@ export default function retrieveListReducer (state = initialState, action) {
 
       let resultSeriesCopy = {...state.resultsSeries}
       seriesDetails.forEach(series =>{
-        resultSeriesCopy[series.seriesInstanceUID] = {
+        resultSeriesCopy[series.SeriesInstanceUID] = {
           ...series,
           isRetrieved : false
         }
@@ -69,7 +69,7 @@ export default function retrieveListReducer (state = initialState, action) {
     case AQ_REMOVE_SERIES_RESULT :
       //SK ICI A REVOIR
       let seriesUIDToDelete = action.payload
-      console.log(seriesUIDToDelete)
+
       let resultSeriesCopy2 = {...state.resultsSeries}
       //Remove series from series Object
       seriesUIDToDelete.forEach(seriesUID => {
@@ -77,12 +77,10 @@ export default function retrieveListReducer (state = initialState, action) {
       })
       //List remaining StudyUID in this new list
       let remainingStudyUIDInSeries = Object.keys(resultSeriesCopy2).map( seriesUID =>{
-        return resultSeriesCopy2[seriesUID]['studyInstanceUID']
+        return resultSeriesCopy2[seriesUID]['StudyInstanceUID']
       })
       //Get unique remaining StudyUID
       remainingStudyUIDInSeries = [...new Set(remainingStudyUIDInSeries)]
-
-      console.log(remainingStudyUIDInSeries)
       
       let resultStudiesCopy = {...state.results}
       let studyUIDArray = Object.keys(resultStudiesCopy)
