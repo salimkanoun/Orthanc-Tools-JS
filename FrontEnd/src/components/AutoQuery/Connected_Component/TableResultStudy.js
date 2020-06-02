@@ -2,24 +2,28 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
 import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { textFilter, dateFilter, multiSelectFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { dateFilter, Comparator, customFilter, FILTER_TYPES } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
 import { emptyResultsTable, removeResult } from '../../../actions/TableResult'
+import CustomFilter from './CustomFilter';
 
 
 const { ExportCSVButton } = CSVExport;
 /**
  * Result Table of Query for Study Level
  */
+
 class TableResultStudy extends Component {
 
     constructor(props) {
         super(props)
         this.removeRow = this.removeRow.bind(this)
         this.emptyTable = this.emptyTable.bind(this)
+        this.state = {reverFilter: false}
     }
+
 
     removeRow() {
         let selectedKeyRow = this.node.selectionContext.selected
@@ -29,11 +33,6 @@ class TableResultStudy extends Component {
 
     emptyTable() {
         this.props.emptyResultsTable()
-    }
-    options = {
-        0: 'test', 
-        2: 'azer', 
-        1: 'Tep-Scan'
     }
 
     columns = [ {
@@ -52,23 +51,35 @@ class TableResultStudy extends Component {
         dataField: 'patientName',
         text: 'Patient Name',
         sort: true,
-        filter: multiSelectFilter({
-            options: this.getOption('patientName')
-        })
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('patientName')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+        }
     }, {
         dataField: 'patientID',
         text: 'Patient ID',
         sort: true,
-        filter: multiSelectFilter({
-            options: this.getOption('patientID')
-        })
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('patientID')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+        }
     }, {
         dataField: 'accessionNumber',
         text: 'Accession Number',
         sort: true,
-        filter: multiSelectFilter({
-            options: this.getOption('accessionNumber')
-        })
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('accessionNumber')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+        }
     }, {
         dataField: 'studyDate',
         text: 'Acquisition Date',
@@ -78,23 +89,35 @@ class TableResultStudy extends Component {
         dataField: 'studyDescription',
         text: 'Study Description',
         sort: true,
-        filter: multiSelectFilter({
-            options: this.getOption('studyDescription')
-        })
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('studyDescription')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+        }
     }, {
         dataField: 'modalitiesInStudy',
         text: 'Modalities',
         sort: true,
-        filter: multiSelectFilter({
-            options: this.getOption('modalitiesInStudy')
-        })
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('modalitiesInStudy')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+        }
     }, {
         dataField: 'originAET',
         text: 'AET',
         sort: true,
-        filter: multiSelectFilter({
-            options: this.getOption('originAET')
-        })
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('originAET')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+        }
     }, {
         dataField: 'studyInstanceUID',
         hidden: true,
@@ -115,21 +138,16 @@ class TableResultStudy extends Component {
     }
 
     getOption(cell){
-        let desc = []
-        let options = {}
+        let options = []
         let rows = this.buildRowArray()
         rows.forEach(element => {
-            if (!desc.includes(element[cell])){
-                desc.push(element[cell])
+            let find = false
+            options.forEach(option => {if (option.value === element[cell]) find = true})
+            if (!find){
+                options.push({value: element[cell], label: element[cell]})
             }
         })
-        for (let i in desc){
-            options = {
-                ...options, 
-                [desc[i]]: desc[i]
-            }
-        }
-        return options
+        return options 
     }
 
     buildRowArray(){
@@ -140,6 +158,14 @@ class TableResultStudy extends Component {
             })
         }
         return rows
+    }
+
+    getFilteredRessources(){
+        return this.node.filterContext.data
+    }
+
+    getSelectedUID(){
+        return this.node.selectionContext.selected
     }
 
     render() {
@@ -156,6 +182,7 @@ class TableResultStudy extends Component {
                                 <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
                                 <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={this.removeRow} />
                                 <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
+                                <input type="button" className="btn btn-info m-2" value={this.state.reverFilter ? 'Normal Filter' : 'Reverse Filter'} onClick={() => this.setState({reverFilter: !this.state.reverFilter})} />
                                 <div className="mt-5">
                                     <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRowStudies} pagination={paginationFactory()} >
                                     </BootstrapTable>
