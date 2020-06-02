@@ -100,7 +100,7 @@ class Metadata extends Component {
             <div className='jumbotron'>
                 <div className='row mb-4'>
                     <div className='col-auto'>
-                        <button type='button' className='btn btn-primary' onClick={()=>this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared : {this.state.text}</button>
+                        <button type='button' className='btn btn-primary' onClick={()=>this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared Tags: {this.state.text}</button>
                     </div>
                     <div className='col-auto ml-3'>
                         <div className='row'>
