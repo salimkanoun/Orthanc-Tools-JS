@@ -109,7 +109,7 @@ export default class RobotStatus extends Component {
                     key : Math.random(),
                     name : robotJob.projectName,
                     username : robotJob.username,
-                    queriesNb : robotJob.retrieveList.length,
+                    queriesNb : robotJob.items.length,
                     validated : robotJob.validated
                 })
                 
@@ -118,7 +118,7 @@ export default class RobotStatus extends Component {
             this.setState({
                 rows : rows
             })
-        })
+        }).catch(error => {console.log(error)})
     }
 
     render() {

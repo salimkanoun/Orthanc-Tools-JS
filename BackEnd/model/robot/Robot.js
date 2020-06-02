@@ -17,6 +17,8 @@ class Robot {
     removeJob(username, type){
         delete this.jobs[username][type]
     }
+
+    
     
 
 }

@@ -98,9 +98,18 @@ class Metadata extends Component {
     render() {
         return (
             <div className='jumbotron'>
-                <button type='button' className='btn btn-primary float-left mb-5' onClick={()=>this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared : {this.state.text}</button>
-                <div hidden={this.state.text === 'enabled'} className='float-right mb-5' >
-                    <NumericInput min={0} max={this.state.InstancesArray.length - 1} value={this.state.currentKey} onChange={(num => this.handleChange(num))} />
+                <div className='row mb-4'>
+                    <div className='col-auto'>
+                        <button type='button' className='btn btn-primary' onClick={()=>this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared : {this.state.text}</button>
+                    </div>
+                    <div className='col-auto ml-3'>
+                        <div className='row'>
+                            <label htmlFor='numberInstances' className='text-center'>Number of instances : {this.state.InstancesArray.length}</label>
+                        </div>
+                        <div className='row' hidden={this.state.text === 'enabled' || this.state.InstancesArray.length === 1}>
+                            <NumericInput min={1} max={this.state.InstancesArray.length} value={this.state.currentKey + 1} onChange={(num => this.handleChange(num - 1))} />
+                        </div>
+                    </div>
                 </div>
                 <TreeView 
                     className={this.useStyles.root}

@@ -4,7 +4,7 @@ import { toast } from 'react-toastify'
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-import filterFactory, { textFilter, dateFilter, numberFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { textFilter, dateFilter, numberFilter, multiSelectFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
 import { emptyResultsTable, addSeriesDetails, removeSeriesResult } from '../../../actions/TableResult'
@@ -95,17 +95,23 @@ class TableResultsStudiesSeries extends Component {
         dataField: 'patientName',
         text: 'Patient Name',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('patientName')
+        })
     }, {
         dataField: 'patientID',
         text: 'Patient ID',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('patientID')
+        })
     }, {
         dataField: 'accessionNumber',
         text: 'Accession Number',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('accessionNumber')
+        })
     }, {
         dataField: 'studyDate',
         text: 'Acquisition Date',
@@ -115,7 +121,9 @@ class TableResultsStudiesSeries extends Component {
         dataField: 'studyDescription',
         text: 'Study Description',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('studyDescription')
+        })
     },{
         dataField: 'studyInstanceUID',
         hidden: true,
@@ -128,17 +136,23 @@ class TableResultsStudiesSeries extends Component {
         dataField: 'seriesDescription',
         text: 'Serie Description',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('seriesDescription')
+        })
     }, {
         dataField: 'modality',
         text: 'Modality',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('modality')
+        })
     }, {
         dataField: 'seriesNumber',
         text: 'Serie Number',
         sort: true,
-        filter: textFilter()
+        filter: multiSelectFilter({
+            options: this.getOption('seriesNumber')
+        })
     }, {
         dataField: 'numberOfSeriesRelatedInstances',
         text: 'Instances',
@@ -149,6 +163,24 @@ class TableResultsStudiesSeries extends Component {
         sort: true
     }];
 
+    getOption(cell){
+        let desc = []
+        let options = {}
+        let rows = this.buildResultsSeriesArray()
+        rows.forEach(element => {
+            if (!desc.includes(element[cell])){
+                desc.push(element[cell])
+            }
+        })
+        for (let i in desc){
+            options = {
+                ...options, 
+                [desc[i]]: desc[i]
+            }
+        }
+        return options
+    }
+
     buildResultsSeriesArray(){
         let seriesLines = []
         for(let seriesUID of Object.keys(this.props.resultsSeries)){
@@ -158,7 +190,6 @@ class TableResultsStudiesSeries extends Component {
 
             })
         }
-
         return seriesLines
     }
 
