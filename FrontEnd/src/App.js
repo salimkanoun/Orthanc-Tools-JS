@@ -51,17 +51,17 @@ function App () {
         <title>Orthanc Tools</title>
       </Helmet>
       <NavBar />
-      <Switch>
-        <Route exact path='/' component={Authentication} />
-        <Route exact path='/import' component={Import} />
-        <Route exact path='/query' component={Query} />
-        <Route exact path='/auto-query' component={AutoQueryRoot} />
-        <Route exact path='/options' component={AdminRootPanel} />
-        <Route exact path='/orthanc-content' component={ContentRootPanel} />
-        <Route exact path='/robot/:username' render = { (props) => <RobotView username={props.match.params.username} /> } />
-        <Route exact path='/export' component={ExportPanel} />
-        <Route exact path='/anonymize' component={AnonRootPanel} />
-      </Switch>
+        <Switch>
+          <Route exact path='/' component={Authentication} />
+          <Route exact path='/import' component={Import} />
+          <Route exact path='/query' component={Query} />
+          <Route exact path='/auto-query' component={AutoQueryRoot} />
+          <Route exact path='/options' component={AdminRootPanel} />
+          <Route exact path='/orthanc-content' component={ContentRootPanel} />
+          <Route exact path='/robot/:username' render = { (props) => <RobotView username={props.match.params.username} /> } />
+          <Route exact path='/export' component={ExportPanel} />
+          <Route exact path='/anonymize' component={AnonRootPanel} />
+        </Switch>
       <Footer/>
     </>
   )
