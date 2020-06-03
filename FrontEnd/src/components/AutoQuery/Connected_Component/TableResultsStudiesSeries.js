@@ -21,7 +21,6 @@ class TableResultsStudiesSeries extends Component {
         this.buildResultsSeriesArray = this.buildResultsSeriesArray.bind(this)
         this.emptyTable = this.emptyTable.bind(this)
         this.removeRow = this.removeRow.bind(this)
-        this.state = {reverFilter: false}
     }
 
     async componentDidMount(){
@@ -102,7 +101,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter}/>
         }
     }, {
         dataField: 'PatientID',
@@ -113,7 +112,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} reverse={this.state.reverFilter}/>
+            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter}/>
         }
     }, {
         dataField: 'AccessionNumber',
@@ -124,7 +123,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} reverse={this.state.reverFilter} />
+            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} />
         }
     }, {
         dataField: 'StudyDate',
@@ -140,7 +139,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} reverse={this.state.reverFilter} />
+            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} />
         }
     },{
         dataField: 'StudyInstanceUID',
@@ -159,7 +158,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('SeriesDescription')} onFilter={onFilter} reverse={this.state.reverFilter} />
+            return <CustomFilter options={this.getOption('SeriesDescription')} onFilter={onFilter} />
         }
     }, {
         dataField: 'Modality',
@@ -170,7 +169,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('Modality')} onFilter={onFilter} reverse={this.state.reverFilter} />
+            return <CustomFilter options={this.getOption('Modality')} onFilter={onFilter} />
         }
     }, {
         dataField: 'SeriesNumber',
@@ -181,7 +180,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('SeriesNumber')} onFilter={onFilter} reverse={this.state.reverFilter} />
+            return <CustomFilter options={this.getOption('SeriesNumber')} onFilter={onFilter} />
         }
     }, {
         dataField: 'NumberOfSeriesRelatedInstances',
@@ -244,7 +243,6 @@ class TableResultsStudiesSeries extends Component {
             <Fragment>
                 <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={this.removeRow} />
                 <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
-                <input type="button" className="btn btn-info m-2" value={this.state.reverFilter ? 'Normal Filter' : 'Reverse Filter'} onClick={() => this.setState({reverFilter: !this.state.reverFilter})} />
                 <div className="mt-5">
                     <ToolkitProvider
                         keyField="SeriesInstanceUID"
