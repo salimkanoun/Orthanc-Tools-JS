@@ -76,3 +76,8 @@ a {
 }
 
 .react-bootstrap-table table { table-layout: auto !important; }
+
+.jumbotron {
+	background-color: white;
+	border-radius: 30px;
+}

@@ -4,11 +4,12 @@ import { toast } from 'react-toastify'
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-import filterFactory, { textFilter, dateFilter, numberFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { dateFilter, numberFilter, Comparator, customFilter, FILTER_TYPES } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
 import { emptyResultsTable, addSeriesDetails, removeSeriesResult } from '../../../actions/TableResult'
 import apis from '../../../services/apis';
+import CustomFilter from './CustomFilter';
 
 /**
  * Show Series details of studies results
@@ -28,7 +29,7 @@ class TableResultsStudiesSeries extends Component {
         let studyUIDToQuery = Object.keys(this.props.results)
         let availableStudyUID = []
         for(let seriesUID of Object.keys(this.props.resultsSeries)){
-            availableStudyUID.push(this.props.resultsSeries[seriesUID]['studyInstanceUID'])    
+            availableStudyUID.push(this.props.resultsSeries[seriesUID]['StudyInstanceUID'])    
         } 
 
         studyUIDToQuery.forEach (studyUID =>{
@@ -42,7 +43,7 @@ class TableResultsStudiesSeries extends Component {
             //Load All series details of studies answers
             for (let studyResults of emptyResultArray) {
                 i++
-                await this.getSeriesDetails(studyResults.studyInstanceUID, studyResults.originAET)
+                await this.getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET)
                 toast.update(id, {
                     render : 'Queried series '+i+'/'+(emptyResultArray.length)
                 });
@@ -80,85 +81,139 @@ class TableResultsStudiesSeries extends Component {
     }
 
     columns = [{
-        dataField: 'level',
+        dataField: 'Level',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'answerId',
+        dataField: 'AnswerId',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'answerNumber',
+        dataField: 'AnswerNumber',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'patientName',
+        dataField: 'PatientName',
         text: 'Patient Name',
         sort: true,
-        filter: textFilter()
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter}/>
+        }
     }, {
-        dataField: 'patientID',
+        dataField: 'PatientID',
         text: 'Patient ID',
         sort: true,
-        filter: textFilter()
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter}/>
+        }
     }, {
-        dataField: 'accessionNumber',
+        dataField: 'AccessionNumber',
         text: 'Accession Number',
         sort: true,
-        filter: textFilter()
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} />
+        }
     }, {
-        dataField: 'studyDate',
+        dataField: 'StudyDate',
         text: 'Acquisition Date',
         sort: true,
         filter: dateFilter()
     }, {
-        dataField: 'studyDescription',
+        dataField: 'StudyDescription',
         text: 'Study Description',
         sort: true,
-        filter: textFilter()
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} />
+        }
     },{
-        dataField: 'studyInstanceUID',
+        dataField: 'StudyInstanceUID',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'seriesInstanceUID',
+        dataField: 'SeriesInstanceUID',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'seriesDescription',
+        dataField: 'SeriesDescription',
         text: 'Serie Description',
         sort: true,
-        filter: textFilter()
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('SeriesDescription')} onFilter={onFilter} />
+        }
     }, {
-        dataField: 'modality',
+        dataField: 'Modality',
         text: 'Modality',
         sort: true,
-        filter: textFilter()
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('Modality')} onFilter={onFilter} />
+        }
     }, {
-        dataField: 'seriesNumber',
+        dataField: 'SeriesNumber',
         text: 'Serie Number',
         sort: true,
-        filter: textFilter()
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('SeriesNumber')} onFilter={onFilter} />
+        }
     }, {
-        dataField: 'numberOfSeriesRelatedInstances',
+        dataField: 'NumberOfSeriesRelatedInstances',
         text: 'Instances',
         filter: numberFilter()
     }, {
-        dataField: 'originAET',
+        dataField: 'OriginAET',
         text: 'AET',
         sort: true
     }];
+
+    getOption(cell){
+        let options = []
+        let rows = this.buildResultsSeriesArray()
+        rows.forEach(element => {
+            let find = false
+            options.forEach(option => {if (option.value === element[cell]) find = true})
+            if (!find){
+                options.push({value: element[cell], label: element[cell]})
+            }
+        })
+        return options 
+    }
 
     buildResultsSeriesArray(){
         let seriesLines = []
         for(let seriesUID of Object.keys(this.props.resultsSeries)){
             seriesLines.push({
-                ...this.props.results[this.props.resultsSeries[seriesUID]['studyInstanceUID']],
+                ...this.props.results[this.props.resultsSeries[seriesUID]['StudyInstanceUID']],
                 ...this.props.resultsSeries[seriesUID],
 
             })
         }
-
         return seriesLines
     }
 
@@ -174,6 +229,14 @@ class TableResultsStudiesSeries extends Component {
         this.node.selectionContext.selected = []
     }
 
+    getFilteredRessources(){
+        return this.node.filterContext.data
+    }
+
+    getSelectedUID(){
+        return this.node.selectionContext.selected
+    }
+
     render() {
         let rows = this.buildResultsSeriesArray()
         return (
@@ -182,7 +245,7 @@ class TableResultsStudiesSeries extends Component {
                 <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                 <div className="mt-5">
                     <ToolkitProvider
-                        keyField="seriesInstanceUID"
+                        keyField="SeriesInstanceUID"
                         data={rows}
                         columns={this.columns}
                     >{

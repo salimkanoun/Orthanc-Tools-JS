@@ -10,6 +10,7 @@ import SendPeerDropdown from "./SendPeerDropdown"
 import apis from '../../services/apis'
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
+import Modal from "react-bootstrap/Modal"
 
 class ExportPanel extends Component {
     
@@ -17,7 +18,9 @@ class ExportPanel extends Component {
         currentStudy: '', 
         aets: [],
         peers: [], 
-        needConfirm: false
+        needConfirm: false, 
+        show: false, 
+        button: ''
     }
 
     constructor(props){
@@ -28,6 +31,8 @@ class ExportPanel extends Component {
         this.removeStudy = this.removeStudy.bind(this)
         this.child = React.createRef()
         this.confirm = this.confirm.bind(this)
+        this.setModal = this.setModal.bind(this)
+        this.setButton = this.setButton.bind(this)
     }
     
     async componentDidMount(){
@@ -114,6 +119,18 @@ class ExportPanel extends Component {
         return answer
     }
 
+    setModal(){
+        this.setState({
+            show: !this.state.show
+        })
+    }
+
+    setButton(button){
+        this.setState({
+            button: button
+        })
+    }
+
     render() {
         let idArray = this.getExportIDArray()
         let confirm = this.confirm()
@@ -150,7 +167,7 @@ class ExportPanel extends Component {
                         <SendAetDropdown aets={this.state.aets} exportIds={idArray} />
                     </div>
                     <div className='col-sm'>
-                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm} />
+                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm} setModal={this.setModal} setButton={this.setButton} />
                     </div>
                     <div className='col-sm'>
                         <button type='button' className="btn btn-info" onClick={this.handleClickFTP} disabled>Send To FTP</button>
@@ -159,6 +176,19 @@ class ExportPanel extends Component {
                         <button type='button' className="btn btn-info" onClick={this.handleClickWebDav} disabled>Send To WebDav</button>
                     </div>
                 </div>
+                <Modal show={this.state.show} onHide={this.setModal} >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirm export</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body>
+                        Some studies are not anonymized !
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button type='button' className='btn btn-info' onClick={this.setModal}>Cancel</button>
+                        {this.state.button}
+                    </Modal.Footer>
+                </Modal>
             </div>
         )
     }

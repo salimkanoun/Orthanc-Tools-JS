@@ -39,7 +39,7 @@ class ToolsPanel extends Component {
         return (
             <div className="row">
                 <div className="mr-1">
-                    <Link id='anon' ref={refAnon} type="button" className="btn btn-primary" onMouseOver={() => this.setState({show: 'anon'})} to='/anonymize'>
+                    <Link id='anon' ref={refAnon} type="button" className="btn btn-info" onMouseOver={() => this.setState({show: 'anon'})} to='/anonymize'>
                         Anonymize <br/>
                         <span className="badge badge-light" onMouseOver={() => this.setState({show: 'anon'})}>{this.props.anonList.length}</span>
                     </Link>

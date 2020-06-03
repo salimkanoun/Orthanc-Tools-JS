@@ -5,8 +5,8 @@ class JobItemRetrieve extends JobItem {
     constructor(queryAnswer) {
         super()
         Object.assign(this, queryAnswer)
-        this.validated = false
-        this.retrievedOrthancId = null
+        this.Validated = false
+        this.RetrievedOrthancId = null
     }
 
     setRetrievedOrthancId(orthancId) {
@@ -19,6 +19,12 @@ class JobItemRetrieve extends JobItem {
 
     getNumberOfInstances() {
         return this.numberOfSeriesRelatedInstances
+    }
+
+    toJSON(){
+        return {
+            ...this
+        }
     }
 
 }

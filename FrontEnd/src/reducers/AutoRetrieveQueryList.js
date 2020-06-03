@@ -9,11 +9,9 @@ export default function queryListReducer (state = initialState, action) {
   switch (action.type) {
 
     case AQ_ADD_QUERY_TO_LIST:
-      let maxKey = Math.max.apply(Math, state.queries.map(function (query) { return query.key }))
-      maxKey = Math.max(0, maxKey)
       let queriesListCopy = [...state.queries]
       queriesListCopy.push({
-        key: (maxKey + 1),
+        key: Math.random(),
         ...action.payload
       })
       return {
@@ -22,19 +20,17 @@ export default function queryListReducer (state = initialState, action) {
       }
 
     case AQ_ADD_EMPTY_QUERY:
-      let maxKey2 = Math.max.apply(Math, state.queries.map(function (query) { return query.key }))
-      maxKey2 = Math.max(0, maxKey2)
       let queriesCopy = [...state.queries]
       queriesCopy.push({
-        key: (maxKey2 + 1),
-        patientName: '',
-        patientId: '',
-        accessionNumber: '',
-        dateFrom: '',
-        dateTo: '',
-        studyDescription: '',
-        modalities: '',
-        aet: ''
+        key: Math.random(),
+        PatientName: '',
+        PatientId: '',
+        AccessionNumber: '',
+        DateFrom: '',
+        DateTo: '',
+        StudyDescription: '',
+        ModalitiesInStudy: '',
+        Aet: ''
 
       })
       return {
@@ -62,7 +58,7 @@ export default function queryListReducer (state = initialState, action) {
       // Edit all column value
       // Need to change key to force update
       const newState = state.queries.map((query) => {
-        query[query.key] = query.key++
+        query[query.key] = Math.random()
         query[action.payload.columnName] = action.payload.text
         return query
       })

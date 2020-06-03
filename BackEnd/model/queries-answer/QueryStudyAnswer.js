@@ -15,14 +15,14 @@ class QueryStudyAnswer extends OrthancQueryAnswer {
     numberOfStudyRelatedInstances
   ) {
     super(answerId, answerNumber, OrthancQueryAnswer.LEVEL_STUDY , originAET, numberOfStudyRelatedInstances)
-    this.patientName = patientName
-    this.patientID = patientID
-    this.accessionNumber = accessionNumber
-    this.modalitiesInStudy = modalitiesInStudy
-    this.studyDescription = studyDescription
-    this.studyInstanceUID = studyInstanceUID
-    this.studyDate = studyDate
-    this.numberOfStudyRelatedSeries = numberOfStudyRelatedSeries
+    this.PatientName = patientName
+    this.PatientID = patientID
+    this.AccessionNumber = accessionNumber
+    this.ModalitiesInStudy = modalitiesInStudy
+    this.StudyDescription = studyDescription
+    this.StudyInstanceUID = studyInstanceUID
+    this.StudyDate = studyDate
+    this.NumberOfStudyRelatedSeries = numberOfStudyRelatedSeries
   }
 }
 
