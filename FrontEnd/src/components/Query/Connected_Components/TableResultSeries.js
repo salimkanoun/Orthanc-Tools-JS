@@ -13,17 +13,17 @@ import RetrieveButton from '../Components/RetrieveButton';
 class TableResultSeries extends Component {
 
     async componentDidMount(){
-        await this.fetchDataIfUnknown(this.props.rowData.studyInstanceUID, this.props.rowData.originAET)
+        await this.fetchDataIfUnknown(this.props.rowData.StudyInstanceUID, this.props.rowData.OriginAET)
     }
 
-    async fetchDataIfUnknown(studyInstanceUID, originAET){
+    async fetchDataIfUnknown(StudyInstanceUID, OriginAET){
         
         var result = this.props.results.filter(study => {
-            return study.studyInstanceUID === studyInstanceUID
+            return study.StudyInstanceUID === StudyInstanceUID
         })
 
         if (result[0]['seriesDetails'].length === 0 ){
-            await this.getSeriesDetails(studyInstanceUID, originAET)
+            await this.getSeriesDetails(StudyInstanceUID, OriginAET)
         } 
     }
 
@@ -54,49 +54,49 @@ class TableResultSeries extends Component {
         dataField: 'key',
         hidden: true
     },{
-        dataField: 'level',
+        dataField: 'Level',
         hidden: true
     }, {
-        dataField: 'answerId',
+        dataField: 'AnswerId',
         hidden: true
     }, {
-        dataField: 'answerNumber',
+        dataField: 'AnswerNumber',
         hidden: true
     },{
-        dataField: 'studyInstanceUID',
+        dataField: 'StudyInstanceUID',
         hidden: true
     }, {
-        dataField: 'seriesInstanceUID',
+        dataField: 'SeriesInstanceUID',
         hidden: true
     }, {
-        dataField: 'seriesDescription',
+        dataField: 'SeriesDescription',
         text: 'Serie Description',
         sort: true
     }, {
-        dataField: 'modality',
+        dataField: 'Modality',
         text: 'Modality',
         sort: true
     }, {
-        dataField: 'seriesNumber',
+        dataField: 'SeriesNumber',
         text: 'Serie Number',
         sort: true
     }, {
-        dataField: 'numberOfSeriesRelatedInstances',
+        dataField: 'NumberOfSeriesRelatedInstances',
         text: 'Instances'
     }, {
-        dataField : 'retrieve',
+        dataField : 'Retrieve',
         text: 'Retrieve',
         formatter : this.retrieveButton
     }];
 
     retrieveButton(cell, row, rowIndex){
-        return (<RetrieveButton queryAet={row.originAET} uid={row.seriesInstanceUID} level={RetrieveButton.Series} />)
+        return (<RetrieveButton queryAet={row.OriginAET} uid={row.SeriesInstanceUID} level={RetrieveButton.Series} />)
     }
 
     render() {
 
         let currentStudy = this.props.results.filter( (studyData)=>{
-            if(studyData.studyInstanceUID === this.props.rowData.studyInstanceUID){
+            if(studyData.StudyInstanceUID === this.props.rowData.StudyInstanceUID){
                 return true
             }
             return false
