@@ -114,8 +114,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = {
-
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TableResult);
+export default connect(mapStateToProps, null)(TableResult);

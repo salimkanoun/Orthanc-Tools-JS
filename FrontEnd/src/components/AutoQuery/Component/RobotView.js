@@ -124,6 +124,9 @@ export default class RobotView extends Component {
             answerData.items.forEach(robotJob => {
                 rowsRetrieveList.push({
                     key : Math.random(),
+                    //Merge Modalities (study level) to modality column
+                    Modality : robotJob.ModalitiesInStudy,
+                    //SK PEUT ETRE MERGE SERIES ET STUDY DESCRIPTION
                     ...robotJob
                 })
             });
