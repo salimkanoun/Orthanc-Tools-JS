@@ -47,7 +47,7 @@ toast.configure({
 
 const AnimatedSwitch = withRouter(({location}) => (
   <TransitionGroup>
-        <CSSTransition key={location.key} classNames='slide' timeout={1000} in >
+        <CSSTransition key={location.key} classNames='slide' timeout={500} in >
             <Switch location={location}>
               <Route exact path='/' component={Authentication} />
               <Route exact path='/import' component={Import} />
@@ -65,7 +65,6 @@ const AnimatedSwitch = withRouter(({location}) => (
 
 function App () {
   return (
-
     <>
       <Helmet>
         <meta charSet='utf-8' />

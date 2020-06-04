@@ -7,7 +7,7 @@ body {
     sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	background-image: url(./wallpaper.jpg);
+	background-image:  url(./wallpaper.jpg);
 	padding-top: 100px !important ;
 }
 
@@ -32,6 +32,7 @@ code {
 }
 
 .block-title {
+	margin-top: 32px;
 	padding: 8px 18px;
 	text-align: center;
 	font-family: SourceSansProItalic;
@@ -43,6 +44,8 @@ code {
 }
 .block-content {
 	padding: 32px;
+	margin-bottom: 32px;
+	opacity: 0.5;
 }
 
 .block-panel {
@@ -96,7 +99,7 @@ code {
 
 .slide-enter,
 .slide-exit {
-  transition: transform 1000ms ease-out;
+  transition: transform 500ms ease-out;
 }
 
 .slide-enter {
@@ -118,3 +121,12 @@ code {
 .slide-exit-active {
   transform: translateX(-100%);
 }
+
+.nav-link {
+	color: white
+}
+.nav-link:hover {
+	color: black
+}
+
+
