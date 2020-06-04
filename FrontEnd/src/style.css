@@ -2,14 +2,26 @@ body {
   padding: 50px;
   background-color: #E1E2E5;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-image: url(./wallpaper.jpg);
+	padding-top: 100px !important ;
 }
 
 a {
   color: #00B7FF;
 }
 
+code {
+	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+	  monospace;
+  }
+
 .block {
-	margin: 24px auto;
+	margin: 0px auto;
 	background-color: ghostwhite;
 	box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
 	border-radius: 8px;
@@ -97,7 +109,7 @@ a {
 
 .slide-exit {
   position: absolute;
-  top: 0;
+  top: 100px;
   left: 0;
   width: 100%;
   transform: translateX(0%);
