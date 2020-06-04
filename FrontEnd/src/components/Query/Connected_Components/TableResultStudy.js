@@ -15,64 +15,64 @@ class TableResult extends Component {
         dataField: 'key',
         hidden: true
     }, {
-        dataField: 'answerId',
+        dataField: 'AnswerId',
         hidden: true
     }, {
-        dataField: 'answerNumber',
+        dataField: 'AnswerNumber',
         hidden: true
     }, {
-        dataField: 'patientName',
+        dataField: 'PatientName',
         text: 'Patient Name',
         sort: true,
         filter: textFilter()
     }, {
-        dataField: 'patientID',
+        dataField: 'PatientID',
         text: 'Patient ID',
         sort: true,
         filter: textFilter()
     }, {
-        dataField: 'accessionNumber',
+        dataField: 'AccessionNumber',
         text: 'Accession Number',
         sort: true,
         filter: textFilter()
     }, {
-        dataField: 'studyDate',
+        dataField: 'StudyDate',
         text: 'Acquisition Date',
         sort: true,
         filter: dateFilter()
     }, {
-        dataField: 'studyDescription',
+        dataField: 'StudyDescription',
         text: 'Study Description',
         sort: true,
         filter: textFilter()
     }, {
-        dataField: 'modalitiesInStudy',
+        dataField: 'ModalitiesInStudy',
         text: 'Modalities',
         sort: true,
         filter: textFilter()
     }, {
-        dataField: 'originAET',
+        dataField: 'OriginAET',
         hidden: true
     }, {
-        dataField: 'studyInstanceUID',
+        dataField: 'StudyInstanceUID',
         hidden: true
     }, {
-        dataField: 'numberOfStudyRelatedSeries',
+        dataField: 'NumberOfStudyRelatedSeries',
         text: 'Series'
     }, {
-        dataField: 'numberOfSeriesRelatedInstances',
+        dataField: 'NumberOfSeriesRelatedInstances',
         text: 'Instances'
     },{
-        dataField: 'studyOrthancID',
+        dataField: 'StudyOrthancID',
         hidden : true
     }, {
-        dataField : 'retrieve',
+        dataField : 'Retrieve',
         text: 'Retrieve',
         formatter : this.retrieveButton
     }];
 
     retrieveButton(cell, row, rowIndex){
-        return (<RetrieveButton queryAet={row.originAET} uid={row.studyInstanceUID} level={RetrieveButton.Study} />)
+        return (<RetrieveButton queryAet={row.OriginAET} uid={row.StudyInstanceUID} level={RetrieveButton.Study} />)
     }
 
     expandRow = {
@@ -114,8 +114,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = {
-
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TableResult);
+export default connect(mapStateToProps, null)(TableResult);
