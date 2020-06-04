@@ -6,25 +6,25 @@ export default class NavBar extends Component {
 
   render () {
     return (
-      <nav className='navbar navbar-expand-lg navbar-light bg-light mb-5 fixed-top'>
+      <nav className='navbar navbar-expand-lg navbar-light mb-5 fixed-top'>
         <ul className='navbar-nav mr-auto'>
           <li className='nav-item'>
-            <Link className='nav-link' to='/'>Authentication</Link>
+            <Link className='nav-link text-white' to='/'>Authentication</Link>
           </li>
           <li className='nav-item'>
-            <Link className='nav-link' to='/orthanc-content'>Orthanc Content</Link>
+            <Link className='nav-link text-white' to='/orthanc-content'>Orthanc Content</Link>
           </li>
           <li className='nav-item'>
-            <Link className='nav-link' to='/import'>Import</Link>
+            <Link className='nav-link text-white' to='/import'>Import</Link>
           </li>
           <li className='nav-item'>
-            <Link className='nav-link' to='/query'>Query</Link>
+            <Link className='nav-link text-white' to='/query'>Query</Link>
           </li>
           <li className='nav-item'>
-            <Link className='nav-link' to='/auto-query'>Auto-Retrieve</Link>
+            <Link className='nav-link text-white' to='/auto-query'>Auto-Retrieve</Link>
           </li>
           <li className='nav-item'>
-            <Link className='nav-link' to='/options'>Administration</Link>
+            <Link className='nav-link text-white' to='/options'>Administration</Link>
           </li>
         </ul>
         <ToolsPanel />
