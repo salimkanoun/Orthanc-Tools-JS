@@ -131,6 +131,9 @@ router.delete('/studies/*', [userAuthMidelware, userAdminMidelware], reverseProx
 router.delete('/series/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 router.get('/instances/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 
+//plugins
+router.get('/plugins', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+
 //Anonymize simplified API
 router.post('/anonymize', anonymizeStudy)
 

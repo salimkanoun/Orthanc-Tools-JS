@@ -4,6 +4,7 @@ import AetRootPanel from './AetRootPanel'
 import AutoRetrieveRootPanel from './AutoRetrieveRootPanel'
 import PeerRootPanel from './PeerRootPanel'
 import JobsRootPanel from './JobsRootPanel'
+import Plugins from './Plugins'
 
 /**
  * Root Panel of Admin route
@@ -28,6 +29,8 @@ const AdminPanel = () => {
         return (<AutoRetrieveRootPanel />)
       case 'Jobs' :
         return (<JobsRootPanel />)
+      case 'Plugins' :
+        return (<Plugins />)
       default :
         return ([])
     }
@@ -43,6 +46,7 @@ const AdminPanel = () => {
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Robots' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Jobs' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Plugins' />
           </div>
         </div>
         <div className='col-sm'>

@@ -127,6 +127,19 @@ const Options = {
     }).catch((error) => {
       toastifyError(error)
     })
+  },
+
+  getPlugins(){
+    return fetch('api/plugins',{ 
+      method: 'GET'
+    }).then(response => {
+        if (response.ok) {
+          return response.json()
+        }
+        else throw response
+      }).catch(error => {
+      toastifyError(error.statusText)
+    })
   }
 
 }
