@@ -3,7 +3,7 @@ var router = express.Router()
 // Handle controller errors
 require('express-async-errors')
 
-const { authentication } = require('../controllers/authentication')
+const { authentication, logOut } = require('../controllers/authentication')
 const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot2')
 const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
@@ -46,7 +46,8 @@ const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authent
  *        "401":
  *          description: Unauthorized
  */
-router.post('/authentication', authentication)
+router.post('/session/*', authentication)
+router.delete('/session', logOut)
 
 router.post('/retrieve', userAuthMidelware, postRetrieve)
 

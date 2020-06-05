@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import apis from '../services/apis'
 
@@ -26,7 +26,7 @@ export default class Authentication extends Component {
 
     let newState = { }
 
-    await apis.authentication.sendAuthentication(postData).then((answer)=>{
+    await apis.authentication.logIn(postData).then((answer)=>{
       newState =  {
         accessCheck : answer
       }

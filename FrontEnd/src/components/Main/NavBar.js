@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import ToolsPanel from './ToolsPanel'
+import apis from '../../services/apis'
 
 export default class NavBar extends Component {
+
+  async logout(){
+    await apis.authentication.logOut()
+  }
 
   render () {
     return (
       <nav className='navbar navbar-expand-lg mb-5 fixed-top'>
         <ul className='navbar-nav mr-auto'>
-          <li className='nav-item'>
-            <Link className='nav-link' to='/'>Authentication</Link>
-          </li>
           <li className='nav-item'>
             <Link className='nav-link' to='/orthanc-content'>Orthanc Content</Link>
           </li>
@@ -25,6 +27,9 @@ export default class NavBar extends Component {
           </li>
           <li className='nav-item'>
             <Link className='nav-link' to='/options'>Administration</Link>
+          </li>
+          <li className='nav-item float-right'>
+            <Link className='nav-link' onClick={this.logout} to='/'>Log out</Link>
           </li>
         </ul>
         <ToolsPanel />
