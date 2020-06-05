@@ -19,8 +19,16 @@ const getRobotDetails = async function (req, res) {
 }
 
 const getAllRobotDetails = async function (req, res) {
-    let data = []
-    res.json(data)
+    let retrieveJobs = robot.getRetrieveJobs()
+    let answer = []
+    for (let username in retrieveJobs){
+        retrieveJobs[username].getProgression()
+        let jsonDetails = retrieveJobs[username].toJSON()
+        jsonDetails['username'] = username
+
+        answer.push(retrieveJobs[username].toJSON())
+    }
+    res.json(answer)
 }
 
 const removeQueryFromJob = async function (req, res) {

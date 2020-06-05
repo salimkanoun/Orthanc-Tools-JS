@@ -5,15 +5,17 @@ var postRetrieve = async function (req, res) {
   var orthancInstance = new Orthanc()
   const orthancAetName = await orthancInstance.getOrthancAetName()
 
-  if( 'seriesInstanceUID' in body){
-    orthancInstance.buildSerieDicomQuery( '' , '' , '' , '' , '', body.seriesInstanceUID )
-  }else if( 'studyInstanceUID' in body){
-    orthancInstance.buildStudyDicomQuery( '' , '' , '' , '' , '', '', body.studyInstanceUID )
+  if( 'SeriesInstanceUID' in body){
+    orthancInstance.buildSeriesDicomQuery( '' , '' , '' , '' , '', body.SeriesInstanceUID )
+  }else if( 'StudyInstanceUID' in body){
+    orthancInstance.buildStudyDicomQuery( '' , '' , '' , '' , '', '', body.StudyInstanceUID )
+  }else{
+    throw 'Not rekognized level query'
   }
 
-  let queryAnswer  = await orthancInstance.makeDicomQuery(body.aet)
+  let queryAnswer  = await orthancInstance.makeDicomQuery(body.Aet)
   queryAnswer = queryAnswer[0]
-  const jobInfo = await orthancInstance.makeRetrieve(queryAnswer.answerId, queryAnswer.answerNumber, orthancAetName, false)
+  const jobInfo = await orthancInstance.makeRetrieve(queryAnswer.AnswerId, queryAnswer.AnswerNumber, orthancAetName, false)
   res.json(jobInfo.ID)
 }
 
