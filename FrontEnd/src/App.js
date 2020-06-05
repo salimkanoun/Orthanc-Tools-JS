@@ -46,21 +46,23 @@ toast.configure({
 })
 
 const AnimatedSwitch = withRouter(({location}) => (
-  <TransitionGroup>
-        <CSSTransition key={location.key} classNames='slide' timeout={500} in >
-            <Switch location={location}>
-              <Route exact path='/' component={Authentication} />
-              <Route exact path='/import' component={Import} />
-              <Route exact path='/query' component={Query} />
-              <Route exact path='/auto-query' component={AutoQueryRoot} />
-              <Route exact path='/options' component={AdminRootPanel} />
-              <Route exact path='/orthanc-content' component={ContentRootPanel} />
-              <Route exact path='/robot/:username' render = { (props) => <RobotView username={props.match.params.username} /> } />
-              <Route exact path='/export' component={ExportPanel} />
-              <Route exact path='/anonymize' component={AnonRootPanel} />
+  <>
+    <TransitionGroup>
+      <CSSTransition key={location.key} classNames='slide' timeout={500} in >
+          <Switch location={location}>
+            <Route exact path='/' component={Authentication} />
+            <Route exact path='/import' component={Import} />
+            <Route exact path='/query' component={Query} />
+            <Route exact path='/auto-query' component={AutoQueryRoot} />
+            <Route exact path='/options' component={AdminRootPanel} />
+            <Route exact path='/orthanc-content' component={ContentRootPanel} />
+            <Route exact path='/robot/:username' render = { (props) => <RobotView username={props.match.params.username} /> } />
+            <Route exact path='/export' component={ExportPanel} />
+            <Route exact path='/anonymize' component={AnonRootPanel} />
           </Switch>
         </CSSTransition>
       </TransitionGroup>
+    </>
 ))
 
 function App () {

@@ -36,7 +36,7 @@ function AutoQueryRoot () {
   }
 
   return (
-    <>
+    <div>
       <div id='navBar' className='mb-5'>
         <ul className='nav nav-pills nav-fill'>
           <li className='nav-item'>
@@ -53,7 +53,7 @@ function AutoQueryRoot () {
       <div className="jumbotron">
         {getComponentToDisplay()}
       </div>
-    </>
+    </div>
   )
 }
 

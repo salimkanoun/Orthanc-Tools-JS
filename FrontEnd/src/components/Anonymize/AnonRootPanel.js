@@ -10,8 +10,8 @@ class AnonRootPanel extends Component {
 
     render() {
         return (
-            <Fragment>
-                <div className='jumbotron' hidden={false}> {/*Wait for the backend*/}
+            <div>
+                <div className='jumbotron' hidden={true}> {/*Wait for the backend*/}
                     <h2 className='card-title mb-3'>Anonymize in progress</h2>
                     <AnonymizePanelProgress />
                 </div>
@@ -22,7 +22,7 @@ class AnonRootPanel extends Component {
                 <div className='jumbotron'  hidden={this.props.anonymizedList && this.props.anonymizedList.length === 0}>
                     <AnonymizedResults />
                 </div>
-            </Fragment>
+            </div>
             
         )
     }
