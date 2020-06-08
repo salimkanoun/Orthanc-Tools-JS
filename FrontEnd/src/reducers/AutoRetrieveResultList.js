@@ -2,80 +2,74 @@ import { AQ_ADD_STUDY_RESULT, AQ_ADD_SERIES_DETAILS, AQ_REMOVE_STUDY_RESULT, AQ_
 
 const initialState = {
   results: {},
-  resultsSeries : {}, 
-  resultsFiltered: {}, 
-  resultsSeriesFiltered: {}
+  resultsSeries: {},
+  resultsStudiesFiltered: [],
+  resultsSeriesFiltered: []
 }
 
-export default function retrieveListReducer (state = initialState, action) {
+export default function retrieveListReducer(state = initialState, action) {
   switch (action.type) {
 
     case AQ_ADD_STUDY_RESULT:
       const StudyInstanceUid = action.payload.StudyInstanceUID;
-      let newResultObject = {...state.results}
+      let newResultObject = { ...state.results }
 
-      newResultObject[StudyInstanceUid]= {
+      newResultObject[StudyInstanceUid] = {
         isRetrieved: false,
         ...action.payload
       }
 
       return {
         ...state,
-        results : newResultObject
+        results: newResultObject
       }
 
     case AQ_ADD_STUDY_RESULT_FILTERED:
-      const StudyInstanceUidFiltered = action.payload.StudyInstanceUID
-      let newResultObjectFiltered = {...state.resultsFiltered}
-
-      newResultObjectFiltered[StudyInstanceUidFiltered]= {
-        isRetrieved: false,
-        ...action.payload
-      }
+      const studyInstanceUIDFiltered = action.payload
 
       return {
         ...state,
-        resultsFiltered : newResultObjectFiltered
+        resultsStudiesFiltered: studyInstanceUIDFiltered
       }
-    
-    case AQ_REMOVE_STUDY_RESULT :
-      let resultsCopy = {...state.results}
+
+    case AQ_REMOVE_STUDY_RESULT:
+      let resultsCopy = { ...state.results }
       //Remove selected studies from studies object
       const removedLines = action.payload
-      removedLines.forEach(StudyInstanceUID =>{
-          delete resultsCopy[StudyInstanceUID]
+      removedLines.forEach(StudyInstanceUID => {
+        delete resultsCopy[StudyInstanceUID]
       })
 
       //Remove child series of these studies
-      let resultSeriesCopy3 = {...state.resultsSeries}
+      let resultSeriesCopy3 = { ...state.resultsSeries }
       let existingSeriesUID = Object.keys(resultSeriesCopy3)
       existingSeriesUID.forEach(seriesUID => {
-         if(! removedLines.includes(seriesUID)){
-           delete resultSeriesCopy3[seriesUID]
-         }
+        if (!removedLines.includes(seriesUID)) {
+          delete resultSeriesCopy3[seriesUID]
+        }
       })
 
       return {
         ...state,
-        resultsSeries : resultSeriesCopy3,
+        resultsSeries: resultSeriesCopy3,
         results: resultsCopy
       }
 
-    case AQ_EMPTY_RESULTS :
+    case AQ_EMPTY_RESULTS:
       return {
         ...state,
         results: [],
-        resultsSeries : [],
+        resultsSeries: [],
       }
 
-    case AQ_ADD_SERIES_DETAILS :
+    case AQ_ADD_SERIES_DETAILS:
       const seriesDetails = action.payload.seriesDetails
 
-      let resultSeriesCopy = {...state.resultsSeries}
-      seriesDetails.forEach(series =>{
+      let resultSeriesCopy = { ...state.resultsSeries }
+      seriesDetails.forEach(series => {
         resultSeriesCopy[series.SeriesInstanceUID] = {
           ...series,
-          isRetrieved : false
+          isRetrieved: false
         }
       })
 
@@ -86,61 +80,42 @@ export default function retrieveListReducer (state = initialState, action) {
 
     case AQ_ADD_SERIES_RESULT_FILTERED:
       const seriesDetailsFiltered = action.payload
-
-      let resultSeriesCopyFiltered = {...state.resultsSeriesFiltered}
-      resultSeriesCopyFiltered[seriesDetailsFiltered.SeriesInstanceUID]= {
-        isRetrieved: false,
-        ...action.payload
-      }
-
       return {
         ...state,
-        resultsSeriesFiltered: resultSeriesCopyFiltered
+        resultsSeriesFiltered: seriesDetailsFiltered
       }
 
-    case AQ_REMOVE_SERIES_RESULT :
+    case AQ_REMOVE_SERIES_RESULT:
       //SK ICI A REVOIR
       let seriesUIDToDelete = action.payload
 
-      let resultSeriesCopy2 = {...state.resultsSeries}
+      let resultSeriesCopy2 = { ...state.resultsSeries }
       //Remove series from series Object
       seriesUIDToDelete.forEach(seriesUID => {
         delete resultSeriesCopy2[seriesUID]
       })
       //List remaining StudyUID in this new list
-      let remainingStudyUIDInSeries = Object.keys(resultSeriesCopy2).map( seriesUID =>{
+      let remainingStudyUIDInSeries = Object.keys(resultSeriesCopy2).map(seriesUID => {
         return resultSeriesCopy2[seriesUID]['StudyInstanceUID']
       })
       //Get unique remaining StudyUID
       remainingStudyUIDInSeries = [...new Set(remainingStudyUIDInSeries)]
-      
-      let resultStudiesCopy = {...state.results}
+
+      let resultStudiesCopy = { ...state.results }
       let studyUIDArray = Object.keys(resultStudiesCopy)
       let studiesUIDToRemove = studyUIDArray.filter(studyUID => !remainingStudyUIDInSeries.includes(studyUID));
-      studiesUIDToRemove.forEach(studyUID =>{
-          delete resultStudiesCopy[studyUID]
+      studiesUIDToRemove.forEach(studyUID => {
+        delete resultStudiesCopy[studyUID]
       })
 
       return {
         ...state,
-        results : resultStudiesCopy,
+        results: resultStudiesCopy,
         resultsSeries: resultSeriesCopy2
       }
 
-    case AQ_EMPTY_SERIES_RESULT_FILTERED:
-      return{
-        ...state, 
-        resultsSeriesFiltered: []
-      }
 
-    case AQ_EMPTY_STUDY_RESULT_FILTERED: 
-    return {
-      ...state, 
-      resultsFiltered: []
-    }
-
-
-    default :
+    default:
       return state
   }
 

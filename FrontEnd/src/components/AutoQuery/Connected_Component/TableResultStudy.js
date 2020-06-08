@@ -6,7 +6,7 @@ import filterFactory, { dateFilter, Comparator, customFilter, FILTER_TYPES } fro
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
-import { emptyResultsTable, removeResult, addStudyResultFiltered, emptyStudyFiltered } from '../../../actions/TableResult'
+import { emptyResultsTable, removeResult, addStudiesFiltered } from '../../../actions/TableResult'
 import CustomFilter from './CustomFilter';
 
 
@@ -169,11 +169,11 @@ class TableResultStudy extends Component {
     }
 
     saveFilteredValues(){
-        this.props.emptyStudyFiltered()
         let resultDisplay = this.node.filterContext.data
-        resultDisplay.forEach(element => {
-            this.props.addStudyResultFiltered(this.props.results[element.StudyInstanceUID])
-        })
+        console.log(resultDisplay)
+        let filteredStudiesUID = resultDisplay.map(row => row.StudyInstanceUID)
+        console.log(filteredStudiesUID)
+        this.props.addStudiesFiltered(filteredStudiesUID)
     }
 
     render() {
@@ -213,8 +213,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
     emptyResultsTable,
     removeResult, 
-    addStudyResultFiltered, 
-    emptyStudyFiltered
+    addStudiesFiltered
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableResultStudy);

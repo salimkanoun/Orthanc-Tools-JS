@@ -22,7 +22,7 @@ export default class CreateRobot extends Component {
    */
   async createRobot () {
     //Send the retrieve array to back end
-    await apis.queryRobot.createRobot(this.state.projectName, this.props.resultArray)
+    await apis.queryRobot.createRobot(this.state.projectName, this.props.getResultArray())
 
     this.props.switchTab(AutoQueryRoot.MyRobot)
 
@@ -54,7 +54,6 @@ export default class CreateRobot extends Component {
             </div>
             <div className="col">
               <input type='button' className='btn btn-success' onClick={this.createRobot} value='Create Robot' />
-            
             </div>
           </div>
         </Fragment>
