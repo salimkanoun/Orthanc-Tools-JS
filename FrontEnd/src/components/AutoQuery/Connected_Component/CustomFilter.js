@@ -3,32 +3,44 @@ import Select from 'react-select'
 
 class CustomFilter extends Component {
 
+    state = {
+        reverse: false,
+        lastValues: []
+    }
+
     constructor(props){
         super(props)
         this.filter = this.filter.bind(this)
         this.handleClick = this.handleClick.bind(this)
-        this.state = {reverse: false}
     }
 
-    filter(){
+    filter(reverse, options){
         let values = []
-        this.node.select.state.selectValue.forEach(element => values.push(element.value))
-        if (this.state.reverse){
+        options ? options.forEach(element => values.push(element.value)) : values = this.state.lastValues
+        this.setState({
+            lastValues: values
+        })
+        
+        if (reverse){
             let answer = []
             this.props.options.forEach(element => {
                 if (!values.includes(element.value)) answer.push(element.value)
             })
-            this.props.onFilter(answer)
-        } else this.props.onFilter(values)
-        
+            if(answer.length === 0 ) answer = ['']
+            values = answer
+        }
+
+        this.props.onFilter(values)
+
+        this.props.saveValues() //save filtered values into the redux 
     }
 
-    async handleClick(e){
+    handleClick(e){
         e.stopPropagation()
-        await this.setState({
+        this.setState({
             reverse: !this.state.reverse
         })
-        this.filter()
+        this.filter(!this.state.reverse)
     }
 
 
@@ -41,7 +53,7 @@ class CustomFilter extends Component {
         }
         return (
             <Fragment>
-                <Select isMulti options={this.props.options} onInputChange={this.filter} ref={n => this.node = n} styles={customStyles}/>
+                <Select isMulti options={this.props.options} onChange={(values)=> this.filter(this.state.reverse, values)} styles={customStyles} />
                 <input type="button" className="btn btn-info m-2" value={this.state.reverse ? 'Normal Filter' : 'Reverse Filter'} onClick={this.handleClick} />
             </Fragment>
             
