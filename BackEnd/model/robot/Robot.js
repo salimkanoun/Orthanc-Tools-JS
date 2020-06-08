@@ -24,7 +24,12 @@ class Robot {
     }
 
     getJob(username, type){
-        return this.jobs[username][type]
+        try{
+            let job = this.jobs[username][type]
+            return job
+        }catch (error) {
+            return undefined
+        }
 
     }
 

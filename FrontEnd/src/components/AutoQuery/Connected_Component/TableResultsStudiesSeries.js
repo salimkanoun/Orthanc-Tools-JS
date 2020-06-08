@@ -7,7 +7,7 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import filterFactory, { dateFilter, numberFilter, Comparator, customFilter, FILTER_TYPES } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
-import { emptyResultsTable, addSeriesDetails, removeSeriesResult, emptySeriesFiltered, addSeriesDetailsFiltered } from '../../../actions/TableResult'
+import { emptyResultsTable, addSeriesDetails, removeSeriesResult, addSeriesFiltered } from '../../../actions/TableResult'
 import apis from '../../../services/apis';
 import CustomFilter from './CustomFilter';
 
@@ -239,11 +239,9 @@ class TableResultsStudiesSeries extends Component {
     }
 
     saveFilteredValues(){
-        this.props.emptySeriesFiltered()
         let resultDisplay = this.node.filterContext.data
-        resultDisplay.forEach(element => {
-            this.props.addSeriesDetailsFiltered(this.props.resultsSeries[element.SeriesInstanceUID])
-        })
+        let filteredSeriesUID = resultDisplay.map(row => row.SeriesInstanceUID)
+        this.props.addSeriesFiltered(filteredSeriesUID)
     }
 
     render() {
@@ -282,8 +280,7 @@ const mapDispatchToProps = {
     emptyResultsTable,
     addSeriesDetails,
     removeSeriesResult, 
-    emptySeriesFiltered, 
-    addSeriesDetailsFiltered
+    addSeriesFiltered
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableResultsStudiesSeries);
