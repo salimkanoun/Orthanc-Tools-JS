@@ -1,8 +1,10 @@
-import { AQ_ADD_STUDY_RESULT, AQ_ADD_SERIES_DETAILS, AQ_REMOVE_STUDY_RESULT, AQ_REMOVE_SERIES_RESULT, AQ_EMPTY_RESULTS } from '../actions/actions-types'
+import { AQ_ADD_STUDY_RESULT, AQ_ADD_SERIES_DETAILS, AQ_REMOVE_STUDY_RESULT, AQ_REMOVE_SERIES_RESULT, AQ_EMPTY_RESULTS, AQ_ADD_STUDY_RESULT_FILTERED, AQ_ADD_SERIES_RESULT_FILTERED, AQ_EMPTY_SERIES_RESULT_FILTERED, AQ_EMPTY_STUDY_RESULT_FILTERED } from '../actions/actions-types'
 
 const initialState = {
   results: {},
-  resultsSeries : {}
+  resultsSeries : {}, 
+  resultsFiltered: {}, 
+  resultsSeriesFiltered: {}
 }
 
 export default function retrieveListReducer (state = initialState, action) {
@@ -20,6 +22,20 @@ export default function retrieveListReducer (state = initialState, action) {
       return {
         ...state,
         results : newResultObject
+      }
+
+    case AQ_ADD_STUDY_RESULT_FILTERED:
+      const StudyInstanceUidFiltered = action.payload.StudyInstanceUID
+      let newResultObjectFiltered = {...state.resultsFiltered}
+
+      newResultObjectFiltered[StudyInstanceUidFiltered]= {
+        isRetrieved: false,
+        ...action.payload
+      }
+
+      return {
+        ...state,
+        resultsFiltered : newResultObjectFiltered
       }
     
     case AQ_REMOVE_STUDY_RESULT :
@@ -40,12 +56,14 @@ export default function retrieveListReducer (state = initialState, action) {
       })
 
       return {
+        ...state,
         resultsSeries : resultSeriesCopy3,
         results: resultsCopy
       }
 
     case AQ_EMPTY_RESULTS :
       return {
+        ...state,
         results: [],
         resultsSeries : [],
       }
@@ -64,6 +82,20 @@ export default function retrieveListReducer (state = initialState, action) {
       return {
         ...state,
         resultsSeries: resultSeriesCopy
+      }
+
+    case AQ_ADD_SERIES_RESULT_FILTERED:
+      const seriesDetailsFiltered = action.payload
+
+      let resultSeriesCopyFiltered = {...state.resultsSeriesFiltered}
+      resultSeriesCopyFiltered[seriesDetailsFiltered.SeriesInstanceUID]= {
+        isRetrieved: false,
+        ...action.payload
+      }
+
+      return {
+        ...state,
+        resultsSeriesFiltered: resultSeriesCopyFiltered
       }
 
     case AQ_REMOVE_SERIES_RESULT :
@@ -94,6 +126,18 @@ export default function retrieveListReducer (state = initialState, action) {
         results : resultStudiesCopy,
         resultsSeries: resultSeriesCopy2
       }
+
+    case AQ_EMPTY_SERIES_RESULT_FILTERED:
+      return{
+        ...state, 
+        resultsSeriesFiltered: []
+      }
+
+    case AQ_EMPTY_STUDY_RESULT_FILTERED: 
+    return {
+      ...state, 
+      resultsFiltered: []
+    }
 
 
     default :
