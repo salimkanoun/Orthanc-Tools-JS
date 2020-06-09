@@ -2,24 +2,28 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 
 import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { textFilter, dateFilter, multiSelectFilter } from 'react-bootstrap-table2-filter';
+import filterFactory, { dateFilter, Comparator, customFilter, FILTER_TYPES } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
-import { emptyResultsTable, removeResult } from '../../../actions/TableResult'
+import { emptyResultsTable, removeResult, addStudiesFiltered } from '../../../actions/TableResult'
+import CustomFilter from './CustomFilter';
 
 
 const { ExportCSVButton } = CSVExport;
 /**
  * Result Table of Query for Study Level
  */
+
 class TableResultStudy extends Component {
 
     constructor(props) {
         super(props)
         this.removeRow = this.removeRow.bind(this)
         this.emptyTable = this.emptyTable.bind(this)
+        this.saveFilteredValues = this.saveFilteredValues.bind(this)
     }
+
 
     removeRow() {
         let selectedKeyRow = this.node.selectionContext.selected
@@ -30,80 +34,99 @@ class TableResultStudy extends Component {
     emptyTable() {
         this.props.emptyResultsTable()
     }
-    options = {
-        0: 'test', 
-        2: 'azer', 
-        1: 'Tep-Scan'
-    }
 
     columns = [ {
-        dataField: 'level',
+        dataField: 'Level',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'answerId',
+        dataField: 'AnswerId',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'answerNumber',
+        dataField: 'AnswerNumber',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'patientName',
+        dataField: 'PatientName',
         text: 'Patient Name',
         sort: true,
-        filter: multiSelectFilter({
-            options: this.getOption('patientName')
-        })
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+        }
     }, {
-        dataField: 'patientID',
+        dataField: 'PatientID',
         text: 'Patient ID',
         sort: true,
-        filter: multiSelectFilter({
-            options: this.getOption('patientID')
-        })
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+        }
     }, {
-        dataField: 'accessionNumber',
+        dataField: 'AccessionNumber',
         text: 'Accession Number',
         sort: true,
-        filter: multiSelectFilter({
-            options: this.getOption('accessionNumber')
-        })
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+        }
     }, {
-        dataField: 'studyDate',
+        dataField: 'StudyDate',
         text: 'Acquisition Date',
         sort: true,
         filter: dateFilter()
     }, {
-        dataField: 'studyDescription',
+        dataField: 'StudyDescription',
         text: 'Study Description',
         sort: true,
-        filter: multiSelectFilter({
-            options: this.getOption('studyDescription')
-        })
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+        }
     }, {
-        dataField: 'modalitiesInStudy',
+        dataField: 'ModalitiesInStudy',
         text: 'Modalities',
         sort: true,
-        filter: multiSelectFilter({
-            options: this.getOption('modalitiesInStudy')
-        })
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('ModalitiesInStudy')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+        }
     }, {
-        dataField: 'originAET',
+        dataField: 'OriginAET',
         text: 'AET',
         sort: true,
-        filter: multiSelectFilter({
-            options: this.getOption('originAET')
-        })
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('OriginAET')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+        }
     }, {
-        dataField: 'studyInstanceUID',
+        dataField: 'StudyInstanceUID',
         hidden: true,
         csvExport: false
     }, {
-        dataField: 'numberOfStudyRelatedSeries',
+        dataField: 'NumberOfStudyRelatedSeries',
         text: 'Series'
     }, {
-        dataField: 'numberOfSeriesRelatedInstances',
+        dataField: 'NumberOfSeriesRelatedInstances',
         text: 'Instances'
     }]; 
 
@@ -115,21 +138,16 @@ class TableResultStudy extends Component {
     }
 
     getOption(cell){
-        let desc = []
-        let options = {}
+        let options = []
         let rows = this.buildRowArray()
         rows.forEach(element => {
-            if (!desc.includes(element[cell])){
-                desc.push(element[cell])
+            let find = false
+            options.forEach(option => {if (option.value === element[cell]) find = true})
+            if (!find){
+                options.push({value: element[cell], label: element[cell]})
             }
         })
-        for (let i in desc){
-            options = {
-                ...options, 
-                [desc[i]]: desc[i]
-            }
-        }
-        return options
+        return options 
     }
 
     buildRowArray(){
@@ -142,10 +160,26 @@ class TableResultStudy extends Component {
         return rows
     }
 
+    getFilteredRessources(){
+        return this.node.filterContext.data
+    }
+
+    getSelectedUID(){
+        return this.node.selectionContext.selected
+    }
+
+    saveFilteredValues(){
+        let resultDisplay = this.node.filterContext.data
+        console.log(resultDisplay)
+        let filteredStudiesUID = resultDisplay.map(row => row.StudyInstanceUID)
+        console.log(filteredStudiesUID)
+        this.props.addStudiesFiltered(filteredStudiesUID)
+    }
+
     render() {
         return (
             <ToolkitProvider
-                keyField="studyInstanceUID"
+                keyField="StudyInstanceUID"
                 data={this.buildRowArray()}
                 columns={this.columns}
                 exportCSV={{ onlyExportSelection: false, exportAll: true }}
@@ -178,7 +212,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
     emptyResultsTable,
-    removeResult
+    removeResult, 
+    addStudiesFiltered
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableResultStudy);

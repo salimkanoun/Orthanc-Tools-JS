@@ -1,10 +1,10 @@
 class OrthancQueryAnswer {
   constructor (answerId, answerNumber, level, originAET, numberOfSeriesRelatedInstances) {
-    this.answerId = answerId
-    this.answerNumber = answerNumber
-    this.level = level
-    this.originAET = originAET
-    this.numberOfSeriesRelatedInstances = numberOfSeriesRelatedInstances
+    this.AnswerId = answerId
+    this.AnswerNumber = answerNumber
+    this.Level = level
+    this.OriginAET = originAET
+    this.NumberOfSeriesRelatedInstances = numberOfSeriesRelatedInstances
   }
 }
 

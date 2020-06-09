@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import apis from '../services/apis'
 
@@ -26,7 +26,7 @@ export default class Authentication extends Component {
 
     let newState = { }
 
-    await apis.authentication.sendAuthentication(postData).then((answer)=>{
+    await apis.authentication.logIn(postData).then((answer)=>{
       newState =  {
         accessCheck : answer
       }
@@ -71,9 +71,9 @@ export default class Authentication extends Component {
       return <Redirect to='/query' />
     }
     return (
-      <Fragment>
-        <div className='alert alert-danger' id='error' style={{ display:  this.state.errorMessage === undefined ?  'none' : '' }}>{this.state.errorMessage}</div>
-        <div className='jumbotron ' id='login'>
+      <div className="text-center" >
+        <div className='text-center' id='login'> 
+          <div className='alert alert-danger' id='error' style={{ display:  this.state.errorMessage === undefined ?  'none' : '' }}>{this.state.errorMessage}</div>
           <div className='block-title block block-400'>Authentication</div>
           <div className='block-content block block-400'>
             <form id='login-form' onKeyPress={this.handleKeyDown}>
@@ -95,7 +95,7 @@ export default class Authentication extends Component {
             </form>
           </div>
         </div>
-      </Fragment>
+      </div>
     )
   }
 }

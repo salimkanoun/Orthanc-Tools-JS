@@ -19,8 +19,16 @@ const getRobotDetails = async function (req, res) {
 }
 
 const getAllRobotDetails = async function (req, res) {
-    let data = []
-    res.json(data)
+    let retrieveJobs = robot.getRetrieveJobs()
+    let answer = []
+    for (let username in retrieveJobs){
+        retrieveJobs[username].getProgression()
+        let jsonDetails = retrieveJobs[username].toJSON()
+        jsonDetails['username'] = username
+
+        answer.push(retrieveJobs[username].toJSON())
+    }
+    res.json(answer)
 }
 
 const removeQueryFromJob = async function (req, res) {
@@ -46,7 +54,9 @@ const validateRobotJob = async function (req, res) {
 
 const addRobotJob = async function (req, res) {
     const body = req.body
-    let retrieveJob = new JobRetrieve( "salim", new Orthanc() )
+    //SK ICI GERER L AJOUT INCREMENTAL DE RESSOURCE
+    let retrieveJob = robot.getJob("salim", Job.TYPE_RETRIEVE)
+    if(retrieveJob == undefined) retrieveJob = new JobRetrieve("salim", new Orthanc())
     body.retrieveArray.forEach( (retrieveQuery) => {
         retrieveItem = new JobItemRetrieve(retrieveQuery)
         retrieveJob.addItem(retrieveItem)

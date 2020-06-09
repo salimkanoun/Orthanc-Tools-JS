@@ -1,3 +1,5 @@
+const Job = require('./Job') 
+
 class Robot {
 
     jobs = { }
@@ -9,8 +11,25 @@ class Robot {
         this.jobs[jobObject.username][jobObject.type] = jobObject
     }
 
+    getRetrieveJobs(){
+        let jobObjects = {}
+        for(let username in this.jobs){
+            for(let type in this.jobs[username]){
+                if (type == Job.TYPE_RETRIEVE ){
+                    jobObjects[username] = this.jobs[username][type]
+                }
+            }
+        }
+        return jobObjects
+    }
+
     getJob(username, type){
-        return this.jobs[username][type]
+        try{
+            let job = this.jobs[username][type]
+            return job
+        }catch (error) {
+            return undefined
+        }
 
     }
 

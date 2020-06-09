@@ -1,10 +1,13 @@
 import React from 'react'
 import {
   Switch,
-  Route
+  Route,
+  withRouter
 } from 'react-router-dom'
 import Helmet from 'react-helmet'
 import { toast } from 'react-toastify'
+import { TransitionGroup, CSSTransition } from "react-transition-group";
+
 
 import Query from './components/Query/Components/Query'
 import AutoQueryRoot from './components/AutoQuery/Component/AutoQueryRoot'
@@ -42,26 +45,36 @@ toast.configure({
   draggable: true
 })
 
+const AnimatedSwitch = withRouter(({location}) => (
+  <>
+    <TransitionGroup>
+      <CSSTransition key={location.key} classNames='slide' timeout={500} in >
+          <Switch location={location}>
+            <Route exact path='/' component={Authentication} />
+            <Route exact path='/import' component={Import} />
+            <Route exact path='/query' component={Query} />
+            <Route exact path='/auto-query' component={AutoQueryRoot} />
+            <Route exact path='/options' component={AdminRootPanel} />
+            <Route exact path='/orthanc-content' component={ContentRootPanel} />
+            <Route exact path='/robot/:username' render = { (props) => <RobotView username={props.match.params.username} /> } />
+            <Route exact path='/export' component={ExportPanel} />
+            <Route exact path='/anonymize' component={AnonRootPanel} />
+          </Switch>
+        </CSSTransition>
+      </TransitionGroup>
+    </>
+))
+
 function App () {
   return (
-
     <>
       <Helmet>
         <meta charSet='utf-8' />
         <title>Orthanc Tools</title>
       </Helmet>
       <NavBar />
-      <Switch>
-        <Route exact path='/' component={Authentication} />
-        <Route exact path='/import' component={Import} />
-        <Route exact path='/query' component={Query} />
-        <Route exact path='/auto-query' component={AutoQueryRoot} />
-        <Route exact path='/options' component={AdminRootPanel} />
-        <Route exact path='/orthanc-content' component={ContentRootPanel} />
-        <Route exact path='/robot/:username' render = { (props) => <RobotView username={props.match.params.username} /> } />
-        <Route exact path='/export' component={ExportPanel} />
-        <Route exact path='/anonymize' component={AnonRootPanel} />
-      </Switch>
+      <AnimatedSwitch />
+        
       <Footer/>
     </>
   )

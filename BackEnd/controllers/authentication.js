@@ -1,6 +1,6 @@
 var Users = require('../model/Users')
 
-var authentication = async function (req, res) {
+authentication = async function (req, res) {
   const body = req.body
   try {
     const userObject = new Users(body.username)
@@ -14,6 +14,17 @@ var authentication = async function (req, res) {
   } catch (Error) {
     res.status(401).send('Unknown user')
   }
+}, 
+
+logOut = function (req, res){
+  try {
+    req.session.destroy()
+    res.json(true)
+  } catch (error){
+    console.log(error)
+    console.log('logOut fail')
+  }
+  
 }
 
-module.exports = { authentication }
+module.exports = { authentication, logOut }
