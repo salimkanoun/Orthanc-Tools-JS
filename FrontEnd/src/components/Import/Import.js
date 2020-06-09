@@ -15,6 +15,7 @@ import {treeToPatientArray, treeToStudyArray} from '../../tools/processResponse'
 import {addStudiesToExportList} from '../../actions/ExportList'
 import {addStudiesToDeleteList} from '../../actions/DeleteList'
 import {addStudiesToAnonList} from '../../actions/AnonList'
+import { Prompt } from 'react-router-dom'
 
 class Import extends Component {
 
@@ -23,7 +24,8 @@ class Import extends Component {
         patientsObjects : {},
         studiesObjects : {},
         seriesObjects : {},
-        showErrors : false
+        showErrors : false, 
+        inProgress: false
     }
 
     currentTree = {}
@@ -62,6 +64,9 @@ class Import extends Component {
             let info = JSON.parse(response.body.error)
             this.addErrorToState(file.id, file.name, info.Details)
         })
+        this.uppy.on('upload', () => this.setState({inProgress: true}))
+        this.uppy.on('complete', () => this.setState({inProgress: false}))
+        this.uppy.on('cancel-all', () => this.setState({inProgress: false}))
 
     }
 
@@ -254,6 +259,7 @@ class Import extends Component {
                         <input type="button" className="btn btn-warning" value="To Delete" onClick ={this.sendImportedToDelete} />
                     </div>
                 </div>
+                <Prompt when={this.state.inProgress} message='Import in progress. Quit this page will stop the import'/>
             </div>
 
         )
@@ -264,7 +270,6 @@ const mapDispatchToProps = {
     addStudiesToExportList,
     addStudiesToDeleteList,
     addStudiesToAnonList
-
 
 }
 
