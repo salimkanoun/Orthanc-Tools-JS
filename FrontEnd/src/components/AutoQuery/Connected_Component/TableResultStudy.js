@@ -56,18 +56,20 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyPatientName' />
         }
     }, {
         dataField: 'PatientID',
         text: 'Patient ID',
         sort: true,
+        
         filter: customFilter({
             comparator: Comparator.EQ,
-            type: FILTER_TYPES.MULTISELECT
+            type: FILTER_TYPES.MULTISELECT, 
+            
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyPatientID'/>
         }
     }, {
         dataField: 'AccessionNumber',
@@ -78,7 +80,7 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyAccessionNumber'/>
         }
     }, {
         dataField: 'StudyDate',
@@ -94,7 +96,7 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyDate' />
         }
     }, {
         dataField: 'ModalitiesInStudy',
@@ -105,7 +107,7 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('ModalitiesInStudy')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+            return <CustomFilter options={this.getOption('ModalitiesInStudy')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyModalities'/>
         }
     }, {
         dataField: 'OriginAET',
@@ -116,7 +118,7 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('OriginAET')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+            return <CustomFilter options={this.getOption('OriginAET')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyAET'/>
         }
     }, {
         dataField: 'StudyInstanceUID',
@@ -170,9 +172,7 @@ class TableResultStudy extends Component {
 
     saveFilteredValues(){
         let resultDisplay = this.node.filterContext.data
-        console.log(resultDisplay)
         let filteredStudiesUID = resultDisplay.map(row => row.StudyInstanceUID)
-        console.log(filteredStudiesUID)
         this.props.addStudiesFiltered(filteredStudiesUID)
     }
 
@@ -206,7 +206,8 @@ class TableResultStudy extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        results: state.AutoRetrieveResultList.results
+        results: state.AutoRetrieveResultList.results, 
+        filters: state.AutoRetrieveResultList.filters
     }
 }
 
