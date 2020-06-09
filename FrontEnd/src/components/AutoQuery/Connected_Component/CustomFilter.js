@@ -29,7 +29,6 @@ class CustomFilter extends Component {
             if(answer.length === 0 ) answer = ['']
             values = answer
         }
-
         this.props.onFilter(values)
 
         this.props.saveValues() //save filtered values into the redux 
@@ -53,7 +52,7 @@ class CustomFilter extends Component {
         }
         return (
             <Fragment>
-                <Select isMulti options={this.props.options} onChange={(values)=> this.filter(this.state.reverse, values)} styles={customStyles} />
+                <Select isMulti options={this.props.options} onChange={(values)=> this.filter(this.state.reverse, values ? values : [])} styles={customStyles} />
                 <input type="button" className="btn btn-info m-2" value={this.state.reverse ? 'Normal Filter' : 'Reverse Filter'} onClick={this.handleClick} />
             </Fragment>
             
