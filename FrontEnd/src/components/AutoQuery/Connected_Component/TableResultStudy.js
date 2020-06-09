@@ -6,7 +6,7 @@ import filterFactory, { dateFilter, Comparator, customFilter, FILTER_TYPES } fro
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit';
 
-import { emptyResultsTable, removeResult } from '../../../actions/TableResult'
+import { emptyResultsTable, removeResult, addStudiesFiltered } from '../../../actions/TableResult'
 import CustomFilter from './CustomFilter';
 
 
@@ -21,6 +21,7 @@ class TableResultStudy extends Component {
         super(props)
         this.removeRow = this.removeRow.bind(this)
         this.emptyTable = this.emptyTable.bind(this)
+        this.saveFilteredValues = this.saveFilteredValues.bind(this)
     }
 
 
@@ -55,7 +56,7 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter}/>
+            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
         }
     }, {
         dataField: 'PatientID',
@@ -66,7 +67,7 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter}/>
+            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
         }
     }, {
         dataField: 'AccessionNumber',
@@ -77,7 +78,7 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter}/>
+            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
         }
     }, {
         dataField: 'StudyDate',
@@ -93,7 +94,7 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter}/>
+            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
         }
     }, {
         dataField: 'ModalitiesInStudy',
@@ -104,7 +105,7 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('ModalitiesInStudy')} onFilter={onFilter}/>
+            return <CustomFilter options={this.getOption('ModalitiesInStudy')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
         }
     }, {
         dataField: 'OriginAET',
@@ -115,7 +116,7 @@ class TableResultStudy extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('OriginAET')} onFilter={onFilter}/>
+            return <CustomFilter options={this.getOption('OriginAET')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
         }
     }, {
         dataField: 'StudyInstanceUID',
@@ -167,6 +168,14 @@ class TableResultStudy extends Component {
         return this.node.selectionContext.selected
     }
 
+    saveFilteredValues(){
+        let resultDisplay = this.node.filterContext.data
+        console.log(resultDisplay)
+        let filteredStudiesUID = resultDisplay.map(row => row.StudyInstanceUID)
+        console.log(filteredStudiesUID)
+        this.props.addStudiesFiltered(filteredStudiesUID)
+    }
+
     render() {
         return (
             <ToolkitProvider
@@ -203,7 +212,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
     emptyResultsTable,
-    removeResult
+    removeResult, 
+    addStudiesFiltered
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableResultStudy);

@@ -4,33 +4,41 @@ import { connect } from 'react-redux'
 import TableResultsStudiesSeries from './TableResultsStudiesSeries'
 import TableResultStudy from './TableResultStudy'
 
-
 import CreateRobot from '../Component/CreateRobot'
 
 
 class Results extends Component {
 
     state = {
-        seriesView : false
+        seriesView: false
     }
 
-    constructor(props){
+    constructor(props) {
         super(props)
         this.filterSeriesListener = this.filterSeriesListener.bind(this)
+        this.buildArrayRetrieve = this.buildArrayRetrieve.bind(this)
     }
 
-    filterSeriesListener () {
+    filterSeriesListener() {
         this.setState(state => {
-            return {seriesView : !state.seriesView}
+            return { seriesView: !state.seriesView }
         })
     }
 
-    buildArrayRetrieve(){
+    buildArrayRetrieve() {
 
-        let retrieveArray =[]
+        let retrieveArray = []
+        
         //If series details have been loaded robot will be defined at series level
-        if ( Object.keys(this.props.resultsSeries).length > 0 ) {
-            for(let seriesUID of Object.keys(this.props.resultsSeries)){
+        if (Object.keys(this.props.resultsSeries).length > 0 ) {
+            let seriesUIDArray =[]
+            //If exist filtered item send them, if no filtered item all series items are sent
+            if(this.props.seriesFiltered.length > 0){
+                seriesUIDArray = this.props.seriesFiltered
+            }else{
+                seriesUIDArray = Object.keys(this.props.resultsSeries)
+            }
+            for (let seriesUID of seriesUIDArray) {
                 let seriesObject = this.props.resultsSeries[seriesUID]
                 retrieveArray.push({
                     ...this.props.results[seriesObject['StudyInstanceUID']],
@@ -38,27 +46,35 @@ class Results extends Component {
                 })
             }
         //Else only use the study results
-        }else {
-            for(let retrieveItemUID of Object.keys(this.props.results)){
-                retrieveArray.push( {...this.props.results[retrieveItemUID]} )
+        } else {
+            
+            let studiesUIDArray = []
+            if(this.props.studiesFiltered.length >0){
+                studiesUIDArray = this.props.studiesFiltered
+            }else{
+                studiesUIDArray = Object.keys(this.props.results)
+            }
+
+            for (let studyInstanceUID of studiesUIDArray) {
+                retrieveArray.push({ ...this.props.results[studyInstanceUID] })
             }
         }
 
-        return retrieveArray 
-        
+        return retrieveArray
+
     }
 
     render() {
         return (
             <Fragment>
                 <div >
-                    <input type="button" className="btn btn-info float-right" value={this.state.seriesView === true ? "Filter Studies" : "Filter Series"} onClick = {this.filterSeriesListener}/>
+                    <input type="button" className="btn btn-info float-right" value={this.state.seriesView === true ? "Filter Studies" : "Filter Series"} onClick={this.filterSeriesListener} />
                 </div>
                 <div >
-                    { this.state.seriesView === true ? <TableResultsStudiesSeries /> : <TableResultStudy /> }
+                    {this.state.seriesView === true ? <TableResultsStudiesSeries /> : <TableResultStudy />}
                 </div>
                 <div className="text-center">
-                    <CreateRobot resultArray={this.buildArrayRetrieve()} switchTab = {this.props.switchTab} ></CreateRobot>
+                    <CreateRobot getResultArray={this.buildArrayRetrieve} switchTab={this.props.switchTab} />
                 </div>
             </Fragment>
         )
@@ -68,8 +84,10 @@ class Results extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        results : state.AutoRetrieveResultList.results,
-        resultsSeries: state.AutoRetrieveResultList.resultsSeries
+        results: state.AutoRetrieveResultList.results,
+        resultsSeries: state.AutoRetrieveResultList.resultsSeries,
+        studiesFiltered: state.AutoRetrieveResultList.resultsStudiesFiltered,
+        seriesFiltered: state.AutoRetrieveResultList.resultsSeriesFiltered,
     }
 }
 

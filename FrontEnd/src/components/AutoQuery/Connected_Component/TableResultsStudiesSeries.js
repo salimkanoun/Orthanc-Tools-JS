@@ -7,7 +7,7 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import filterFactory, { dateFilter, numberFilter, Comparator, customFilter, FILTER_TYPES } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 
-import { emptyResultsTable, addSeriesDetails, removeSeriesResult } from '../../../actions/TableResult'
+import { emptyResultsTable, addSeriesDetails, removeSeriesResult, addSeriesFiltered } from '../../../actions/TableResult'
 import apis from '../../../services/apis';
 import CustomFilter from './CustomFilter';
 
@@ -21,6 +21,7 @@ class TableResultsStudiesSeries extends Component {
         this.buildResultsSeriesArray = this.buildResultsSeriesArray.bind(this)
         this.emptyTable = this.emptyTable.bind(this)
         this.removeRow = this.removeRow.bind(this)
+        this.saveFilteredValues = this.saveFilteredValues.bind(this)
     }
 
     async componentDidMount(){
@@ -101,7 +102,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter}/>
+            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
         }
     }, {
         dataField: 'PatientID',
@@ -112,7 +113,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter}/>
+            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
         }
     }, {
         dataField: 'AccessionNumber',
@@ -123,7 +124,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} />
+            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
         }
     }, {
         dataField: 'StudyDate',
@@ -139,7 +140,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} />
+            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} />
         }
     },{
         dataField: 'StudyInstanceUID',
@@ -158,7 +159,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('SeriesDescription')} onFilter={onFilter} />
+            return <CustomFilter options={this.getOption('SeriesDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} />
         }
     }, {
         dataField: 'Modality',
@@ -169,7 +170,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('Modality')} onFilter={onFilter} />
+            return <CustomFilter options={this.getOption('Modality')} onFilter={onFilter} saveValues={this.saveFilteredValues} />
         }
     }, {
         dataField: 'SeriesNumber',
@@ -180,7 +181,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('SeriesNumber')} onFilter={onFilter} />
+            return <CustomFilter options={this.getOption('SeriesNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues} />
         }
     }, {
         dataField: 'NumberOfSeriesRelatedInstances',
@@ -237,6 +238,12 @@ class TableResultsStudiesSeries extends Component {
         return this.node.selectionContext.selected
     }
 
+    saveFilteredValues(){
+        let resultDisplay = this.node.filterContext.data
+        let filteredSeriesUID = resultDisplay.map(row => row.SeriesInstanceUID)
+        this.props.addSeriesFiltered(filteredSeriesUID)
+    }
+
     render() {
         let rows = this.buildResultsSeriesArray()
         return (
@@ -272,7 +279,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
     emptyResultsTable,
     addSeriesDetails,
-    removeSeriesResult
+    removeSeriesResult, 
+    addSeriesFiltered
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TableResultsStudiesSeries);

@@ -21,9 +21,9 @@ export function setManualQueryRetrieveStatus (row, isRetrieved) {
   }
 }
 
-export function addManualQuerySeriesDetails (seriesDetails, studyInstanceUID) {
+export function addManualQuerySeriesDetails (seriesDetails, StudyInstanceUID) {
   return {
     type: ADD_MANUAL_QUERY_SERIES_DETAILS,
-    payload: { seriesDetails, studyInstanceUID }
+    payload: { seriesDetails, StudyInstanceUID }
   }
 }

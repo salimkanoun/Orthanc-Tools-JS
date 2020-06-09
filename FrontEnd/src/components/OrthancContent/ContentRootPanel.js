@@ -1,4 +1,4 @@
-import React, { Fragment, Component, createRef } from 'react'
+import React, { Component, createRef } from 'react'
 import SearchForm from './SearchForm'
 import apis from '../../services/apis'
 
@@ -118,12 +118,12 @@ class ContentRootPanel extends Component {
   }
 
   rowEventsStudies = {
-    onClick: (e, row, rowIndex) => {
+    onClick: (e, row) => {
       this.setState({currentSelectedStudyId: row.StudyOrthancID})
     }
   }
 
-  rowStyleStudies = (row, rowIndex) => {
+  rowStyleStudies = (row) => {
     const style = {};
     if (row.StudyOrthancID === this.state.currentSelectedStudyId){
       style.backgroundColor = 'rgba(255,153,51)'
@@ -139,7 +139,6 @@ class ContentRootPanel extends Component {
   
   render() {
       return (
-      <Fragment>
         <div className='jumbotron'>
           <SearchForm onSubmit={this.sendSearch} />
           <div className='row'>
@@ -173,7 +172,6 @@ class ContentRootPanel extends Component {
             </div>
           </div>
         </div>
-      </Fragment>
     )
   }
 

@@ -46,7 +46,8 @@ var accessLogStream = rfs.createStream('access.log', {
 })
 
 logger.token('username', function (req, res) {
-  return req.session.username
+  if (req.session)
+    return req.session.username
 })
 
 logger.token('post', function (req, res) {

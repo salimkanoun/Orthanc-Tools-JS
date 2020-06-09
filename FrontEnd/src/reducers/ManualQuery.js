@@ -15,7 +15,7 @@ export default function manualQueryReducer (state = initialState, action) {
           key: Math.random(),
           isRetrieved: false,
           ...answer,
-          studyOrthancID : '',
+          StudyOrthancID : '',
           seriesDetails: []
         })
       })
@@ -37,9 +37,9 @@ export default function manualQueryReducer (state = initialState, action) {
 
     case SET_MANUAL_QUERY_RETRIEVE_STATUS_SERIES:
       const newResultArray = state.manualQueryResults.map((studyData) => {
-        if (studyData.studyInstanceUID === action.payload.row.studyInstanceUID) {
+        if (studyData.StudyInstanceUID === action.payload.row.StudyInstanceUID) {
           studyData.seriesDetails.forEach((serieDetails) => {
-            if (serieDetails.seriesInstanceUID === action.payload.row.seriesInstanceUID) {
+            if (serieDetails.SeriesInstanceUID === action.payload.row.SeriesInstanceUID) {
               serieDetails.isRetrieved = true
             }
           })
@@ -59,7 +59,7 @@ export default function manualQueryReducer (state = initialState, action) {
       })
 
       const newResultsState = state.manualQueryResults.map((studyData) => {
-        if (studyData.studyInstanceUID === action.payload.studyInstanceUID) {
+        if (studyData.StudyInstanceUID === action.payload.StudyInstanceUID) {
           studyData = {
             ...studyData,
             seriesDetails: seriesDetails

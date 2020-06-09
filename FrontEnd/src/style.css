@@ -1,15 +1,27 @@
 body {
-  padding: 50px;
-  background-color: #E1E2E5;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	padding: 50px;
+  	background-color: #E1E2E5;
+  	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	background-image:  url(./wallpaper.jpg);
+	padding-top: 100px !important ;
 }
 
 a {
   color: #00B7FF;
 }
 
+code {
+	font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+	  monospace;
+  }
+
 .block {
-	margin: 24px auto;
+	margin: 0px auto;
 	background-color: ghostwhite;
 	box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
 	border-radius: 8px;
@@ -20,6 +32,7 @@ a {
 }
 
 .block-title {
+	margin-top: 32px;
 	padding: 8px 18px;
 	text-align: center;
 	font-family: SourceSansProItalic;
@@ -31,6 +44,8 @@ a {
 }
 .block-content {
 	padding: 32px;
+	margin-bottom: 32px;
+	border-radius: 0 0 8px 8px !important;
 }
 
 .block-panel {
@@ -81,3 +96,38 @@ a {
 	background-color: white;
 	border-radius: 30px;
 }
+
+.slide-enter,
+.slide-exit {
+  transition: transform 500ms ease-out;
+}
+
+.slide-enter {
+  transform: translateX(100%);
+}
+
+.slide-enter.slide-enter-active {
+  transform: translateX(0%);
+}
+
+.slide-exit {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  width: 100%;
+  transform: translateX(0%);
+}
+
+.slide-exit-active {
+  transform: translateX(-100%);
+}
+
+.nav-link {
+	color: white
+}
+.nav-link:hover {
+	color: black
+}
+
+
+
