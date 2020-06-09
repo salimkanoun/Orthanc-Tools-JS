@@ -53,7 +53,7 @@ export default class CreateRobot extends Component {
               <input type='text' className="form-control" name='projectName' value={this.state.value} onChange={this.handleChange} />
             </div>
             <div className="col">
-              <input type='button' className='btn btn-success' onClick={this.createRobot} value='Create Robot' />
+              <input type='button' className='btn btn-success' onClick={this.createRobot} value='Add To Robot' />
             </div>
           </div>
         </Fragment>
