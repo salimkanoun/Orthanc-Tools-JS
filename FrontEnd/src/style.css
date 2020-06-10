@@ -103,7 +103,7 @@ code {
 
 .slide-enter-active{
 	translate: 0% 0%;
-	transition:  translate 500ms;
+	transition: 500ms;
 }
 
 .slide-exit{
@@ -116,7 +116,7 @@ code {
 	left: 0px; 
 	width: 100%;
 	translate: -100% 0%;
-	transition: translate 500ms;
+	transition: 500ms;
 }
 
 .auth-enter{
@@ -143,6 +143,4 @@ code {
 .nav-link:hover {
 	color: black
 }
-
-
 
