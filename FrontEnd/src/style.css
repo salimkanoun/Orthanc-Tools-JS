@@ -97,29 +97,26 @@ code {
 	border-radius: 30px;
 }
 
-.slide-enter,
-.slide-exit {
-  transition: transform 500ms ease-out;
+.slide-enter{
+	translate: 100% 0%;
 }
 
-.slide-enter {
-  transform: translateX(100%);
+.slide-enter-active{
+	translate: 0% 0%;
+	transition:  translate 500ms;
 }
 
-.slide-enter.slide-enter-active {
-  transform: translateX(0%);
+.slide-exit{
+	translate: 0% 0%
 }
 
-.slide-exit {
-  position: absolute;
-  top: 100px;
-  left: 0;
-  width: 100%;
-  transform: translateX(0%);
-}
-
-.slide-exit-active {
-  transform: translateX(-100%);
+.slide-exit-active{
+	position: absolute;
+	top: 100px; 
+	left: 0px; 
+	width: 100%;
+	translate: -100% 0%;
+	transition: translate 500ms;
 }
 
 .nav-link {
