@@ -50,7 +50,6 @@ const AnimatedSwitch = withRouter(({location}) => (
     <TransitionGroup>
       <CSSTransition key={location.key} classNames='slide' timeout={500} >
           <Switch location={location}>
-            <Route exact path='/' component={Authentication} />
             <Route exact path='/import' component={Import} />
             <Route exact path='/query' component={Query} />
             <Route exact path='/auto-query' component={AutoQueryRoot} />
@@ -59,6 +58,13 @@ const AnimatedSwitch = withRouter(({location}) => (
             <Route exact path='/robot/:username' render = { (props) => <RobotView username={props.match.params.username} /> } />
             <Route exact path='/export' component={ExportPanel} />
             <Route exact path='/anonymize' component={AnonRootPanel} />
+          </Switch>
+        </CSSTransition>
+      </TransitionGroup>
+      <TransitionGroup>
+      <CSSTransition key={location.key} classNames='auth' timeout={500} >
+          <Switch location={location}>
+            <Route exact path='/' component={Authentication} />
           </Switch>
         </CSSTransition>
       </TransitionGroup>

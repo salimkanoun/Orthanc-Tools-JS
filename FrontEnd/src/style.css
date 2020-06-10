@@ -119,6 +119,24 @@ code {
 	transition: translate 500ms;
 }
 
+.auth-enter{
+	opacity: 0%;
+}
+
+.auth-enter-active{
+	opacity: 1;
+	transition: opacity 1500ms;
+}
+
+.auth-exit{
+	opacity: 0;
+}
+
+.auth-exit-active{
+	opacity: 0;
+	transition: opacity 1500ms;
+}
+
 .nav-link {
 	color: white
 }
