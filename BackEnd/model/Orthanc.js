@@ -81,6 +81,7 @@ class Orthanc {
      * @param {String} aet
      */
   async makeDicomQuery (aet) {
+    console.log(this.preparedQuery)
     const answer = await ReverseProxy.getAnswer('/modalities/' + aet + '/query', 'POST', this.preparedQuery)
 
     if (this.preparedQuery.Level === 'Study') {

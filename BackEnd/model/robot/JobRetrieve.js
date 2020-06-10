@@ -79,9 +79,9 @@ class JobRetrieve extends Job {
      */
     buildDicomQuery(item){
         console.log(item)
-        if(item.level === OrthancQueryAnswer.LEVEL_STUDY){    
+        if(item.Level === OrthancQueryAnswer.LEVEL_STUDY){    
             this.orthancObject.buildStudyDicomQuery('', '', '', '', '', '', item.StudyInstanceUID)
-        }else if(item.level === OrthancQueryAnswer.LEVEL_SERIES){
+        }else if(item.Level === OrthancQueryAnswer.LEVEL_SERIES){
             this.orthancObject.buildSeriesDicomQuery(item.studyInstanceUID, '', '', '', '', item.SeriesInstanceUID)
         }
     }
