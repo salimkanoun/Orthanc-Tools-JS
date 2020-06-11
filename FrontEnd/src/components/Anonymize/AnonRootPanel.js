@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 
 import AnonymizedResults from "./AnonymizedResults";
 import AnonymizePanel from './AnonymizePanel';

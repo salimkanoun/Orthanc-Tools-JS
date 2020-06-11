@@ -28,9 +28,10 @@ import AnonRootPanel from '../Anonymize/AnonRootPanel'
 export default class NavBar extends Component {
 
   state  = {
-    navBackground : '#11ffee00'
+    navBackground : '#11ffee00',
+    location: '/'
   }
-
+  
   async logout(){
     await apis.authentication.logOut()
   }
@@ -43,10 +44,15 @@ export default class NavBar extends Component {
     });
   }
 
+  onEnter(location){
+    this.setState({location: location.pathname})
+    location.pathname === '/' ? this.props.setAuthPanel(true) : this.props.setAuthPanel(false)
+  }
+
   AnimatedSwitch = withRouter(({location}) => (
     <>
       <TransitionGroup>
-        <CSSTransition key={location.key} classNames={location.pathname === '/' ? 'auth' : 'slide'} timeout={500} onEnter={()=>this.props.setLocation(location.pathname)}>
+        <CSSTransition key={location.key} classNames={location.pathname === '/' ? 'auth' : 'slide'} timeout={500} onEnter={() => this.onEnter(location)}>
           <Switch location={location}>
             <Route exact path='/' component={Authentication} />
             <Route exact path='/import' component={Import} />
@@ -66,7 +72,7 @@ export default class NavBar extends Component {
   render () {
     return (
       <Fragment>
-        <nav className='navbar navbar-expand-lg mb-5 fixed-top' style={ {backgroundColor : this.state.navBackground} } >
+        <nav className='navbar navbar-expand-lg mb-5 fixed-top' style={ {backgroundColor : this.state.navBackground} } hidden={this.state.location === '/'}>
           <ul className='navbar-nav mr-auto'>
             <li className='nav-item'>
               <Link className='nav-link' to='/orthanc-content'>Orthanc Content</Link>

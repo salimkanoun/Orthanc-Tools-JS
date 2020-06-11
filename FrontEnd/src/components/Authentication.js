@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import apis from '../services/apis'
-import { CSSTransition } from "react-transition-group";
-import { RemoteChunkSize } from 'papaparse';
 
 export default class Authentication extends Component {
 
@@ -48,10 +46,6 @@ export default class Authentication extends Component {
       authenthified: newState.accessCheck,
       errorMessage : newState.errorMessage
     })
-    
-    if(newState.accessCheck){
-      this.props.setLocation('/query')
-    }
     
   }
 

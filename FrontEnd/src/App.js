@@ -5,7 +5,6 @@ import {
 import { toast } from 'react-toastify'
 
 
-import Authentication from './components/Authentication'
 import Footer from './components/Main/Footer'
 import NavBar from './components/Main/NavBar'
 
@@ -36,26 +35,28 @@ toast.configure({
 class App extends Component {
 
   state = {
-    location: ''
+    auth: true
   }
 
-  constructor(props){
+  constructor (props) {
     super(props)
-    this.setLocation = this.setLocation.bind(this)
+    this.setAuthPanel = this.setAuthPanel.bind(this)
   }
-
-  setLocation(location){
+  
+  setAuthPanel(bool){
     this.setState({
-      location: location
+      auth: bool
     })
   }
 
   render() {
     return (
-      <BrowserRouter>
-        {this.state.location === '/' ? <Authentication setLocation={this.setLocation}/> : <NavBar setLocation={this.setLocation}/> }
-        <Footer/>
-      </BrowserRouter>
+      <div className={this.state.auth ? 'authentification' : 'app'}>
+        <BrowserRouter>
+          <NavBar setAuthPanel={this.setAuthPanel}/>
+          <Footer/>
+        </BrowserRouter>
+      </div>
     );
   }
 }
