@@ -20,7 +20,7 @@ html, body, #root, .authentification {
 .authentification{
 	padding-bottom: 0px !important;
 	padding: 50px;
-	background-image:  url(./images//wallpaperAuth.jpg);
+	background-image:  url(./images/wallpaperAuth.jpg);
 	background-size: 100% 100%;
 }
 
