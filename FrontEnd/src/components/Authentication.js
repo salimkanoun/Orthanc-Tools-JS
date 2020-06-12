@@ -46,6 +46,10 @@ export default class Authentication extends Component {
       authenthified: newState.accessCheck,
       errorMessage : newState.errorMessage
     })
+
+    if(newState.accessCheck){
+      this.props.setLocation('/query')
+    }
     
   }
 
@@ -73,6 +77,7 @@ export default class Authentication extends Component {
       return <Redirect to='/query' />
     }
     return (
+      <div className='vertical-center'>
         <div className='text-center' id='login'> 
           <div className='alert alert-danger' id='error' style={{ display:  this.state.errorMessage === undefined ?  'none' : '' }}>{this.state.errorMessage}</div>
           <div className='block-title block block-400'>Authentication</div>
@@ -96,6 +101,7 @@ export default class Authentication extends Component {
             </form>
           </div>
         </div>
+      </div>
     )
   }
 }
