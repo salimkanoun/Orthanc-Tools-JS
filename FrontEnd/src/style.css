@@ -16,7 +16,6 @@ body {
 }
 .authentification{
 	padding-bottom: 0px !important;
-	padding: 50px;
 	background-image:  url(./images/wallpaperAuth.jpg);
 	background-size: 100% 100%;
 }
@@ -38,7 +37,7 @@ code {
 }
 
 .block-400 {
-	max-width: 400px;
+	width: 400px;
 }
 
 .block-title {
