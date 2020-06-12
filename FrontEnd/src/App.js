@@ -63,7 +63,6 @@ class App extends Component {
   }
 
   AnimatedSwitch = withRouter(({location}) => (
-    <>
       <TransitionGroup>
         <CSSTransition key={location.key} classNames={location.pathname === '/' ? 'auth' : 'slide'} timeout={500} onEnter={() => this.setAuthPanel(location.pathname)}>
           <Switch location={location}>
@@ -79,7 +78,6 @@ class App extends Component {
           </Switch>
         </CSSTransition>
       </TransitionGroup>
-    </>
   ))
 
   render() {

@@ -73,32 +73,29 @@ export default class Authentication extends Component {
       return <Redirect to='/query' />
     }
     return (
-        <div className="text-center" >
-          <div className='text-center' id='login'> 
-            <div className='alert alert-danger' id='error' style={{ display:  this.state.errorMessage === undefined ?  'none' : '' }}>{this.state.errorMessage}</div>
-            <div className='block-title block block-400'>Authentication</div>
-            <div className='block-content block block-400'>
-              <form id='login-form' onKeyPress={this.handleKeyDown}>
+        <div className='text-center' id='login'> 
+          <div className='alert alert-danger' id='error' style={{ display:  this.state.errorMessage === undefined ?  'none' : '' }}>{this.state.errorMessage}</div>
+          <div className='block-title block block-400'>Authentication</div>
+          <div className='block-content block block-400'>
+            <form id='login-form' onKeyPress={this.handleKeyDown}>
 
-                <fieldset>
-                  <label>Username*</label>
-                  <input className='form-control' type='text' placeholder='username' name='username' value={this.state.username.value} onChange={this.handleChange} required />
-                </fieldset>
+              <fieldset>
+                <label>Username*</label>
+                <input className='form-control' type='text' placeholder='username' name='username' value={this.state.username.value} onChange={this.handleChange} required />
+              </fieldset>
 
-                <fieldset>
-                  <label>Password*</label>
-                  <input className='form-control' type='password' placeholder='password' name='password' value={this.state.password.value} onChange={this.handleChange} required />
-                </fieldset>
+              <fieldset>
+                <label>Password*</label>
+                <input className='form-control' type='password' placeholder='password' name='password' value={this.state.password.value} onChange={this.handleChange} required />
+              </fieldset>
 
-                <fieldset className='text-right'>
-                  <button name='connexion' type='button' className='btn btn-dark' onClick={this.handleClick}> Connect </button>
-                </fieldset>
+              <fieldset className='text-right'>
+                <button name='connexion' type='button' className='btn btn-dark' onClick={this.handleClick}> Connect </button>
+              </fieldset>
 
-              </form>
-            </div>
+            </form>
           </div>
         </div>
-      
     )
   }
 }
