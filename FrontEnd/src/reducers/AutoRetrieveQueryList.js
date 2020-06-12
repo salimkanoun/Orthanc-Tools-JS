@@ -58,7 +58,7 @@ export default function queryListReducer (state = initialState, action) {
       // Edit all column value
       // Need to change key to force update
       const newState = state.queries.map((query) => {
-        query[query.key] = Math.random()
+        query.key = Math.random()
         query[action.payload.columnName] = action.payload.text
         return query
       })

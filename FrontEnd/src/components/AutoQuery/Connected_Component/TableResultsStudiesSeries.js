@@ -102,7 +102,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesPatientName'/>
         }
     }, {
         dataField: 'PatientID',
@@ -113,7 +113,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesPatientID'/>
         }
     }, {
         dataField: 'AccessionNumber',
@@ -124,7 +124,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues}/>
+            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesAccessionNumber'/>
         }
     }, {
         dataField: 'StudyDate',
@@ -140,7 +140,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} />
+            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesStudyDesc'/>
         }
     },{
         dataField: 'StudyInstanceUID',
@@ -159,7 +159,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('SeriesDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} />
+            return <CustomFilter options={this.getOption('SeriesDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesDesc'/>
         }
     }, {
         dataField: 'Modality',
@@ -170,7 +170,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('Modality')} onFilter={onFilter} saveValues={this.saveFilteredValues} />
+            return <CustomFilter options={this.getOption('Modality')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesModalities'/>
         }
     }, {
         dataField: 'SeriesNumber',
@@ -181,7 +181,7 @@ class TableResultsStudiesSeries extends Component {
             type: FILTER_TYPES.MULTISELECT
         }), 
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('SeriesNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues} />
+            return <CustomFilter options={this.getOption('SeriesNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesNumber'/>
         }
     }, {
         dataField: 'NumberOfSeriesRelatedInstances',

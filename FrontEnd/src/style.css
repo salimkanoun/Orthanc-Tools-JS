@@ -1,14 +1,23 @@
 body {
-	padding: 50px;
-  	background-color: #E1E2E5;
+	background-image:  url(./images/wallpaper.jpg);
   	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	background-image:  url(./wallpaper.jpg);
-	padding-top: 100px !important ;
+}
+
+
+.app{
+	padding-top: 100px !important;
+	padding: 50px;
+	background-image:  url(./images/wallpaper.jpg);
+}
+.authentification{
+	padding-bottom: 0px !important;
+	background-image:  url(./images/wallpaperAuth.jpg);
+	background-size: 100% 100%;
 }
 
 a {
@@ -28,7 +37,7 @@ code {
 }
 
 .block-400 {
-	max-width: 400px;
+	width: 400px;
 }
 
 .block-title {
@@ -97,29 +106,45 @@ code {
 	border-radius: 30px;
 }
 
-.slide-enter,
-.slide-exit {
-  transition: transform 500ms ease-out;
+.slide-enter{
+	transform: translateX(100%);
 }
 
-.slide-enter {
-  transform: translateX(100%);
+.slide-enter-active{
+	transform: translateX(0%);
+	transition: all 500ms
 }
 
-.slide-enter.slide-enter-active {
-  transform: translateX(0%);
+.slide-exit{
+	transform: translateX(0%);
 }
 
-.slide-exit {
-  position: absolute;
-  top: 100px;
-  left: 0;
-  width: 100%;
-  transform: translateX(0%);
+.slide-exit-active{
+	position: absolute;
+	top: 150px; 
+	left: 0px; 
+	width: 100%;
+	transform: translateX(-100%);
+	transition: all 500ms
+	
 }
 
-.slide-exit-active {
-  transform: translateX(-100%);
+.auth-enter{
+	opacity: 0%;
+}
+
+.auth-enter-active{
+	opacity: 1;
+	transition: opacity 1500ms;
+}
+
+.auth-exit{
+	opacity: 0;
+}
+
+.auth-exit-active{
+	opacity: 0;
+	transition: opacity 1500ms;
 }
 
 .nav-link {
@@ -129,5 +154,13 @@ code {
 	color: black
 }
 
+.vertical-center {
+	min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+	min-height: 100vh; /* These two lines are counted as one :-)       */
+  
+	display: flex;
+	align-items: center;
+	justify-content: center;
+  }
 
 

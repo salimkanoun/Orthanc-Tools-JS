@@ -9,6 +9,11 @@ class JobRetrieve extends Job {
     constructor(username, orthancObject){
         super(Job.TYPE_RETRIEVE, username)
         this.orthancObject = orthancObject
+        this.validation = JobRetrieve.VALIDATION_NOT_DONE
+    }
+
+    setProjectName(projectName){
+        this.projectName = projectName
     }
 
     /**
@@ -52,15 +57,18 @@ class JobRetrieve extends Job {
      * Loop all Item to checkValidity
      */
     async validateRetrieveJob(){
+        this.validated = "Validating"
         for(let item of this.items){
             let validation = await this.validateRetrieveItem(item)
             item.validated = validation
         }
         //If validated execute the robot
         if(this.isValidated()) {
+            this.validation = JobRetrieve.VALIDATION_SUCCESS
             this.execute()
             return true
         }else {
+            this.validation = JobRetrieve.VALIDATION_FAILED
             return false
         }
     }
@@ -70,10 +78,11 @@ class JobRetrieve extends Job {
      * @param {JobItemRetrieve} item 
      */
     buildDicomQuery(item){
-        if(item.level === OrthancQueryAnswer.LEVEL_STUDY){    
-            this.orthancObject.buildStudyDicomQuery('', '', '', '', '', '', item.studyInstanceUID)
-        }else if(item.level === OrthancQueryAnswer.LEVEL_SERIES){
-            this.orthancObject.buildSeriesDicomQuery(item.studyInstanceUID, '', '', '', '', item.seriesInstanceUID)
+        console.log(item)
+        if(item.Level === OrthancQueryAnswer.LEVEL_STUDY){    
+            this.orthancObject.buildStudyDicomQuery('', '', '', '', '', '', item.StudyInstanceUID)
+        }else if(item.Level === OrthancQueryAnswer.LEVEL_SERIES){
+            this.orthancObject.buildSeriesDicomQuery(item.studyInstanceUID, '', '', '', '', item.SeriesInstanceUID)
         }
     }
 
@@ -147,12 +156,20 @@ class JobRetrieve extends Job {
             items : this.items.map(item =>{
                 return item.toJSON()
             }),
-            status : this.status
+            status : this.status,
+            username : this.username,
+            projectName : this.projectName,
+            validation : this.validation
         }
     }
 
 
 
 }
+
+JobRetrieve.VALIDATION_NOT_DONE = "Not Done"
+JobRetrieve.VALIDATION_FAILED = "Failed"
+JobRetrieve.VALIDATION_PENDING = "Validating"
+JobRetrieve.VALIDATION_SUCCESS = "Validated"
 
 module.exports = JobRetrieve

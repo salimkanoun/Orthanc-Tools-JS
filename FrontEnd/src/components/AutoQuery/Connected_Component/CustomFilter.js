@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import Select from 'react-select'
 
+import { saveFilters } from '../../../actions/TableResult'
+import { connect } from 'react-redux'
+
 class CustomFilter extends Component {
 
     state = {
@@ -12,6 +15,12 @@ class CustomFilter extends Component {
         super(props)
         this.filter = this.filter.bind(this)
         this.handleClick = this.handleClick.bind(this)
+        this.getDefaultValues = this.getDefaultValues.bind(this)
+    }   
+
+    
+    componentDidMount() {
+        this.props.onFilter(this.props.filters[this.props.ID])
     }
 
     filter(reverse, options){
@@ -20,7 +29,6 @@ class CustomFilter extends Component {
         this.setState({
             lastValues: values
         })
-        
         if (reverse){
             let answer = []
             this.props.options.forEach(element => {
@@ -30,7 +38,7 @@ class CustomFilter extends Component {
             values = answer
         }
         this.props.onFilter(values)
-
+        this.props.saveFilters(this.props.ID, values)
         this.props.saveValues() //save filtered values into the redux 
     }
 
@@ -40,6 +48,13 @@ class CustomFilter extends Component {
             reverse: !this.state.reverse
         })
         this.filter(!this.state.reverse)
+    }
+
+    getDefaultValues(){
+        let options = this.props.filters[this.props.ID]
+        let defaultValue = []
+        options ? options.forEach(element => defaultValue.push({value: element, label: element})) : defaultValue = []
+        return defaultValue
     }
 
 
@@ -52,7 +67,7 @@ class CustomFilter extends Component {
         }
         return (
             <Fragment>
-                <Select isMulti options={this.props.options} onChange={(values)=> this.filter(this.state.reverse, values ? values : [])} styles={customStyles} />
+                <Select isMulti options={this.props.options} defaultValue={this.getDefaultValues()} onChange={(values)=> this.filter(this.state.reverse, values ? values : [])} styles={customStyles} />
                 <input type="button" className="btn btn-info m-2" value={this.state.reverse ? 'Normal Filter' : 'Reverse Filter'} onClick={this.handleClick} />
             </Fragment>
             
@@ -60,4 +75,15 @@ class CustomFilter extends Component {
     }
 }
 
-export default CustomFilter;
+
+const mapStateToProps = (state) => {
+    return {
+        filters: state.AutoRetrieveResultList.filters
+    }
+}
+
+const mapDispatchToProps = {
+    saveFilters
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CustomFilter);

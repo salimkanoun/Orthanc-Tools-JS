@@ -49,7 +49,7 @@ export default class RobotStatus extends Component {
             text: 'Show Details',
             formatter: this.showRobotDetailsButton
         }, {
-            dataField: 'validated',
+            dataField: 'validation',
             text: 'Validation Status',
             formatter : this.validationButton,
             formatExtraData : this
@@ -62,8 +62,8 @@ export default class RobotStatus extends Component {
     ];
 
     validationButton(cell, row, rowIndex, parentComponent){
-        if(row.validated !== 'Not Done'){
-            return <div className="text-center">{row.validated}</div>
+        if(row.validation !== 'Not Done'){
+            return <div className="text-center">{row.validation}</div>
         }else{
             return (
                 <div className="text-center">
@@ -110,7 +110,7 @@ export default class RobotStatus extends Component {
                     name : robotJob.projectName,
                     username : robotJob.username,
                     queriesNb : robotJob.items.length,
-                    validated : robotJob.validated
+                    validation : robotJob.validation
                 })
                 
             });

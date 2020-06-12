@@ -2,8 +2,8 @@ import { toastifySuccess, toastifyError } from './toastify'
 
 const queryRobot = {
 
-    createRobot(projectName, retrieveArray){
-        return fetch('/api/robot', {
+    createRobot(username, projectName, retrieveArray){
+        return fetch('/api/robot/'+username+'/retrieve', {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -16,7 +16,7 @@ const queryRobot = {
         }).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
-        }).then(() => toastifySuccess('Robot Created'))
+        }).then(() => toastifySuccess('Sent To Retrieve Robot'))
         .catch((error) => {
             toastifyError(error)
         })
@@ -24,7 +24,7 @@ const queryRobot = {
     },
 
     validateRobot(username){
-        return fetch("/api/robot/"+username+"/validate", {
+        return fetch("/api/robot/"+username+"/retrieve/validate", {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -39,7 +39,7 @@ const queryRobot = {
     },
 
     deleteRobot(username){
-        return fetch("/api/robot/"+username, {
+        return fetch("/api/robot/"+username+"/retrieve", {
             method: "DELETE",
         }).catch((error) => {
             toastifyError(error)
@@ -47,7 +47,7 @@ const queryRobot = {
     },
 
     getAllRobotsDetails(){
-        return fetch("/api/robot", {
+        return fetch("/api/robot/retrieve", {
             method: "GET",
             headers: {
                 'Accept': 'application/json',
@@ -62,7 +62,7 @@ const queryRobot = {
     },
 
     getRobotDetails(username){
-        return fetch( "/api/robot/"+username, {
+        return fetch( "/api/robot/"+username+"/retrieve", {
             method: "GET",
             headers: {
                 'Accept': 'application/json',
@@ -78,7 +78,7 @@ const queryRobot = {
 
     deleteRobotItem(username, item){
 
-        return fetch("/api/robot/"+username+"/"+item, {
+        return fetch("/api/robot/"+username+"/retrieve/"+item, {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json',
