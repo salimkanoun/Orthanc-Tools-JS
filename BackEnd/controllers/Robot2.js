@@ -48,7 +48,7 @@ const deleteRobotJob = async function (req, res) {
 
 const validateRobotJob = async function (req, res) {
     let retrieveJob = robot.getJob(req.params.username, Job.TYPE_RETRIEVE)
-    retrieveJob.validateRobotJob()
+    retrieveJob.validateRetrieveJob()
     res.json(true)
 }
 
@@ -57,6 +57,7 @@ const addRobotJob = async function (req, res) {
     //SK ICI GERER L AJOUT INCREMENTAL DE RESSOURCE
     let retrieveJob = robot.getJob("salim", Job.TYPE_RETRIEVE)
     if(retrieveJob == undefined) retrieveJob = new JobRetrieve("salim", new Orthanc())
+    retrieveJob.setProjectName(body.projectName)
     body.retrieveArray.forEach( (retrieveQuery) => {
         retrieveItem = new JobItemRetrieve(retrieveQuery)
         retrieveJob.addItem(retrieveItem)

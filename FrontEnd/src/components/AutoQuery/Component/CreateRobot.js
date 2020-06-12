@@ -21,8 +21,9 @@ export default class CreateRobot extends Component {
    * Take array of retrieve from Redux and build a retrieve Array to send to API
    */
   async createRobot () {
-    //Send the retrieve array to back end
-    await apis.queryRobot.createRobot(this.state.projectName, this.props.getResultArray())
+    //Send the retrieve array to back end*
+    //SK ICI USERNAME COURRANT A INJECTER
+    await apis.queryRobot.createRobot("salim", this.state.projectName, this.props.getResultArray())
 
     this.props.switchTab(AutoQueryRoot.MyRobot)
 

@@ -55,12 +55,12 @@ router.post('/retrieve', userAuthMidelware, postRetrieve)
 router.post('/tools/orthanc-tools-js/create-archive', userAuthMidelware, postExportDicom)
 
 // OrthancToolsJS Robot routes
-router.post('/robot', userAuthMidelware, addRobotJob)
-router.get('/robot', [userAuthMidelware, userAdminMidelware], getAllRobotDetails)
-router.get('/robot/:username', userAuthMidelware, getRobotDetails)
-router.delete('/robot/:username', userAuthMidelware, deleteRobotJob)
-router.delete('/robot/:username/:index', userAuthMidelware, removeQueryFromJob)
-router.post('/robot/:username/validate', [userAuthMidelware, userAdminMidelware], validateRobotJob)
+router.post('/robot/:username/retrieve', userAuthMidelware, addRobotJob)
+router.get('/robot/retrieve', [userAuthMidelware, userAdminMidelware], getAllRobotDetails)
+router.get('/robot/:username/retrieve', userAuthMidelware, getRobotDetails)
+router.delete('/robot/:username/retrieve', userAuthMidelware, deleteRobotJob)
+router.delete('/robot/:username/retrieve/:index', userAuthMidelware, removeQueryFromJob)
+router.post('/robot/:username/retrieve/validate', [userAuthMidelware, userAdminMidelware], validateRobotJob)
 
 // OrthancToolsJS Options routes
 router.get('/options', [userAuthMidelware, userAdminMidelware], getSchedule)
