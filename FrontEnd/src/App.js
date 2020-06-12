@@ -1,12 +1,25 @@
 import React, { Component } from 'react'
 import {
+  Switch,
+  Route,
+  withRouter, 
   BrowserRouter
 } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 
 import Footer from './components/Main/Footer'
 import NavBar from './components/Main/NavBar'
+import Query from './components/Query/Components/Query'
+import AutoQueryRoot from './components/AutoQuery/Component/AutoQueryRoot'
+import RobotView from './components/AutoQuery/Component/RobotView'
+import Authentication from './components/Authentication'
+import AdminRootPanel from './components/Admin/AdminRootPanel'
+import Import from './components/Import/Import'
+import ContentRootPanel from './components/OrthancContent/ContentRootPanel'
+import ExportPanel from './components/Export/ExportPanel'
+import AnonRootPanel from './components/Anonymize/AnonRootPanel'
 
 //CSS Boostrap
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -43,18 +56,39 @@ class App extends Component {
     this.setAuthPanel = this.setAuthPanel.bind(this)
   }
   
-  setAuthPanel(bool){
+  setAuthPanel(location){
     this.setState({
-      auth: bool
+      auth: location === '/'
     })
   }
+
+  AnimatedSwitch = withRouter(({location}) => (
+    <>
+      <TransitionGroup>
+        <CSSTransition key={location.key} classNames={location.pathname === '/' ? 'auth' : 'slide'} timeout={500} onEnter={() => this.setAuthPanel(location.pathname)}>
+          <Switch location={location}>
+            <Route exact path='/' component={Authentication} />
+            <Route exact path='/import' component={Import} />
+            <Route exact path='/query' component={Query} />
+            <Route exact path='/auto-query' component={AutoQueryRoot} />
+            <Route exact path='/options' component={AdminRootPanel} />
+            <Route exact path='/orthanc-content' component={ContentRootPanel} />
+            <Route exact path='/robot/:username' render = { (props) => <RobotView username={props.match.params.username} /> } />
+            <Route exact path='/export' component={ExportPanel} />
+            <Route exact path='/anonymize' component={AnonRootPanel} />
+          </Switch>
+        </CSSTransition>
+      </TransitionGroup>
+    </>
+  ))
 
   render() {
     return (
       <div className={this.state.auth ? 'authentification' : 'app'}>
         <BrowserRouter>
-          <NavBar setAuthPanel={this.setAuthPanel}/>
-          <Footer/>
+          <NavBar setAuthPanel={this.setAuthPanel} hidden={this.state.auth}/>
+          <this.AnimatedSwitch />
+          <Footer hidden={this.state.auth}/>
         </BrowserRouter>
       </div>
     );
