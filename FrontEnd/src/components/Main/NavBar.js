@@ -26,7 +26,7 @@ export default class NavBar extends Component {
 
   render () {
     return (
-        <nav className='navbar navbar-expand-lg mb-5 fixed-top' style={ {backgroundColor : this.state.navBackground} } hidden={this.props.hidden}>
+        <nav className='navbar navbar-expand-lg mb-5 fixed-top' style={ {backgroundColor : this.state.navBackground} } >
           <ul className='navbar-nav mr-auto'>
             <li className='nav-item'>
               <Link className='nav-link' to='/orthanc-content'>Orthanc Content</Link>

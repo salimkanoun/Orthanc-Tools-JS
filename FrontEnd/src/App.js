@@ -86,9 +86,9 @@ class App extends Component {
     return (
       <div className={this.state.auth ? 'authentification' : 'app'}>
         <BrowserRouter>
-          <NavBar setAuthPanel={this.setAuthPanel} hidden={this.state.auth}/>
+          {this.state.auth ? null : <NavBar />}
           <this.AnimatedSwitch />
-          <Footer hidden={this.state.auth}/>
+          {this.state.auth ? null : <Footer />}
         </BrowserRouter>
       </div>
     );

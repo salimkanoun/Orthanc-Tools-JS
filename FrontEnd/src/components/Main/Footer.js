@@ -8,8 +8,8 @@ export default class Footer extends Component {
   render () {
         return (
           <Fragment>
-              <div className="footer-copyright text-center" hidden={this.props.hidden} >Orthanc Tools JS: 0.1.2
-              <button type="button" className='link-button ml-3' hidden={this.props.hidden} onClick={() => this.setState({show: !this.state.show})}>About</button>
+              <div className="footer-copyright text-center" >Orthanc Tools JS: 0.1.2
+              <button type="button" className='link-button ml-3' onClick={() => this.setState({show: !this.state.show})}>About</button>
               </div>
 
               <Modal show={this.state.show} onHide={() => this.setState({show: false})}>
