@@ -41,7 +41,7 @@ const removeQueryFromJob = async function (req, res) {
 
 const deleteRobotJob = async function (req, res) {
     if (req.params.username !== undefined) {
-        robot.removeJob(req.params.username)
+        robot.removeJob(req.params.username, req.params.type)
     }
     res.end()
 }

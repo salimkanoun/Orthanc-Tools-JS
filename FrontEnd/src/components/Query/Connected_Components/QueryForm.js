@@ -59,7 +59,7 @@ class QueryForm extends Component {
       Level: 'Study',
       Query: {
         PatientName: patientName,
-        PatientID: formData.patientId,
+        PatientID: formData.patientID,
         StudyDate: dateString,
         ModalitiesInStudy: formData.modalities,
         StudyDescription: formData.studyDescription,
