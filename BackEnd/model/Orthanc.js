@@ -224,25 +224,27 @@ class Orthanc {
     return answer
   }
 
-  async findInOrthanc (level = 'Study', patientName = '*', patientID = '*', accessionNb = '*', date = '*', studyDescription = '*', modality = '*', studyInstanceUID = '*') {
-    const queryDetails = {}
-
-    if (date !== '*') queryDetails.StudyDate = date
-    if (studyDescription !== '*') queryDetails.StudyDescription = studyDescription
-    if (modality !== '*') queryDetails.ModalitiesInStudy = modality
-    if (patientName !== '*') queryDetails.PatientName = patientName
-    if (patientID !== '*') queryDetails.PatientID = patientID
-    if (accessionNb !== '*') queryDetails.AccessionNumber = accessionNb
-    if (studyInstanceUID !== '*') queryDetails.StudyInstanceUID = studyInstanceUID
+  async findInOrthanc (level = 'Study', patientName = '', patientID = '', accessionNb = '', date = '', studyDescription = '', modality = '', studyInstanceUID = '') {
 
     const queryParameter = {
       Level: level,
       CaseSensitive: false,
       Expand: true,
-      Query: queryDetails
+      Query: {
+        StudyDate : date,
+        StudyDescription : studyDescription,
+        ModalitiesInStudy : modality,
+        PatientName : patientName,
+        PatientID : patientID,
+        AccessionNumber : accessionNb,
+        StudyInstanceUID : studyInstanceUID
+  
+      }
     }
 
-    const answer = await ReverseProxy.getAnswer('/tools/find', 'POST', JSON.stringify(queryParameter))
+    console.log(queryParameter)
+
+    const answer = await ReverseProxy.getAnswer('/tools/find', 'POST', queryParameter)
 
     return answer
   }
@@ -252,7 +254,9 @@ class Orthanc {
      * @param {string} studyUID
      */
   async findInOrthancByUid (studyUID) {
-    const answer = await this.findInOrthanc('Study', '*', '*', '*', '*', '*', '*', studyUID)
+
+    console.log(studyUID)
+    const answer = await this.findInOrthanc('Study', '', '', '', '', '', '', studyUID)
     return answer
   }
 

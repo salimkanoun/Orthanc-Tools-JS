@@ -60,8 +60,8 @@ describe('Retrieve Job', () => {
         spyOn(orthanc, 'makeRetrieve').and.returnValue({Query : [{'0020,000d' : "1234"}]})
         spyOn(orthanc, 'findInOrthancByUid').and.returnValue([{ID : 'orthancID'}])
         await jobRetrieve.doRetrieveItem(jobItemStudy)
-        expect(jobItemStudy.retrievedOrthancId).toBe('orthancID')
-        expect(jobItemStudy.status).toBe('Success')
+        expect(jobItemStudy.RetrievedOrthancId).toBe('orthancID')
+        expect(jobItemStudy.Status).toBe('Success')
 
     })
 
@@ -72,8 +72,8 @@ describe('Retrieve Job', () => {
         spyOn(orthanc, 'makeRetrieve').and.returnValue({Query : [{'0020,000d' : "1234"}]})
         spyOn(orthanc, 'findInOrthancByUid').and.returnValue([{ID : 'orthancID'},{id2:'OrthancID2'}])
         await jobRetrieve.doRetrieveItem(jobItemStudy)
-        expect(jobItemStudy.retrievedOrthancId).toBe(null)
-        expect(jobItemStudy.status).toBe('Failure')
+        expect(jobItemStudy.RetrievedOrthancId).toBe(null)
+        expect(jobItemStudy.Status).toBe('Failure')
 
     })
 

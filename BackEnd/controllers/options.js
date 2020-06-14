@@ -1,9 +1,10 @@
 const Options = require('../model/Options')
+const {robot} = require('../model/robot/Robot')
 
 var changeSchedule = async function (req, res) {
   await Options.setScheduleTime(req.body.hour, req.body.min)
   // Refresh Retrieve Robot to the new time
-  //SK A FAIRE
+  robot.updateRetrieveJobsSchelude()
   res.json(true)
 }
 

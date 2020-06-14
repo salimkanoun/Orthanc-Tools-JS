@@ -134,8 +134,8 @@ export default class RobotView extends Component {
             let newTotalPercentageProgress = 0
             let newPercentageFailure = 0
             if(answerData.totalInstances !== 0){
-                newTotalPercentageProgress = Math.round((answerData.retrievedInstances / answerData.totalInstances)*100)
-                newPercentageFailure = Math.round((answerData.failedInstances / answerData.totalInstances)*100)
+                newTotalPercentageProgress = Math.round((answerData.progression.Success / answerData.progression.TotalInstances)*100)
+                newPercentageFailure = Math.round((answerData.progression.Failure / answerData.progression.TotalInstances)*100)
             }
 
             this.setState({
