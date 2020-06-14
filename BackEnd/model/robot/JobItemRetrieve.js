@@ -10,15 +10,15 @@ class JobItemRetrieve extends JobItem {
     }
 
     setRetrievedOrthancId(orthancId) {
-        this.retrievedOrthancId = orthancId
+        this.RetrievedOrthancId = orthancId
     }
 
     getRetrievedOrthancId() {
-        return this.retrievedOrthancId
+        return this.RetrievedOrthancId
     }
 
     getNumberOfInstances() {
-        return this.numberOfSeriesRelatedInstances
+        return this.NumberOfSeriesRelatedInstances
     }
 
     toJSON(){
