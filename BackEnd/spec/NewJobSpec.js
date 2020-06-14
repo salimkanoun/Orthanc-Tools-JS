@@ -1,7 +1,10 @@
-import Job from '../model/robot/Job'
+const Job = require('../model/robot/Job')
+const JobItemRetrieve = require('../model/robot/JobItemRetrieve')
+const QueryStudyAnswer = require('../model/queries-answer/QueryStudyAnswer')
 
 describe('Job', () => {
 
+    //SK TEST A FAIRE
     it('Should create new job', () => {
 
     })

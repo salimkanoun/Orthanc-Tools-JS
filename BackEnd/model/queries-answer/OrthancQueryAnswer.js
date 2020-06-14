@@ -4,7 +4,7 @@ class OrthancQueryAnswer {
     this.AnswerNumber = answerNumber
     this.Level = level
     this.OriginAET = originAET
-    this.NumberOfSeriesRelatedInstances = numberOfSeriesRelatedInstances
+    this.NumberOfSeriesRelatedInstances = parseInt(numberOfSeriesRelatedInstances)
   }
 }
 

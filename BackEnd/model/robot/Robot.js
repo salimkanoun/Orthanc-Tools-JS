@@ -23,6 +23,16 @@ class Robot {
         return jobObjects
     }
 
+    updateRetrieveJobsSchelude(){
+        for(let username in this.jobs){
+            for(let type in this.jobs[username]){
+                if (type == Job.TYPE_RETRIEVE &&  this.jobs[username][type].isValidated()){
+                    this.jobs[username][type].execute()
+                }
+            }
+        }
+    }
+
     getJob(username, type){
         try{
             let job = this.jobs[username][type]
