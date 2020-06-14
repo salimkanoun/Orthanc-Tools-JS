@@ -8,9 +8,9 @@ describe('JobItemRetrieve', () =>{
     it('should create retrieve item ', ()=>{
         let queryAnswer = new QuerySeriesAnswer('id', 5, 'uid', 'seriesuid', 'CT', 'seriesDesc', 5, 'aet', 500)
         jobItemRetrieve = new JobItemRetrieve(queryAnswer)
-        expect(jobItemRetrieve.answerId).toBe('id')
-        expect(jobItemRetrieve.validated).toBe(false)
-        expect(jobItemRetrieve.retrievedOrthancId).toBe(null)
+        expect(jobItemRetrieve.AnswerId).toBe('id')
+        expect(jobItemRetrieve.Validated).toBe(false)
+        expect(jobItemRetrieve.RetrievedOrthancId).toBe(null)
         expect(jobItemRetrieve.getNumberOfInstances()).toBe(500)
     })
 

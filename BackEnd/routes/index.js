@@ -58,7 +58,7 @@ router.post('/tools/orthanc-tools-js/create-archive', userAuthMidelware, postExp
 router.post('/robot/:username/retrieve', userAuthMidelware, addRobotJob)
 router.get('/robot/retrieve', [userAuthMidelware, userAdminMidelware], getAllRobotDetails)
 router.get('/robot/:username/retrieve', userAuthMidelware, getRobotDetails)
-router.delete('/robot/:username/retrieve', userAuthMidelware, deleteRobotJob)
+router.delete('/robot/:username/:type', userAuthMidelware, deleteRobotJob)
 router.delete('/robot/:username/retrieve/:index', userAuthMidelware, removeQueryFromJob)
 router.post('/robot/:username/retrieve/validate', [userAuthMidelware, userAdminMidelware], validateRobotJob)
 

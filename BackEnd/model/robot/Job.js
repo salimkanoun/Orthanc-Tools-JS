@@ -67,16 +67,17 @@ class Job{
             items : this.items.map(item =>{
                 return item.toJSON()
             }),
-            status : this.status
+            status : this.status,
+            progression : this.getProgression()
         }
 
     }
     
 }
 
-Job.TYPE_RETRIEVE = "Retrieve"
-Job.TYPE_ANONYMIZE = "Anonymize"
-Job.TYPE_DELETE = "Delete"
+Job.TYPE_RETRIEVE = "retrieve"
+Job.TYPE_ANONYMIZE = "anonymize"
+Job.TYPE_DELETE = "delete"
 
 Job.STATUS_PENDING = 'Pending'
 Job.STATUS_RUNNING = 'Running'

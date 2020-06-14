@@ -92,11 +92,13 @@ class JobRetrieve extends Job {
 
         this.buildDicomQuery(item)
     
-        const answerDetails = await this.orthancObject.makeDicomQuery(this.aetDestination)
+        const answerDetails = await this.orthancObject.makeDicomQuery(item.OriginAET)
     
         const answer = answerDetails[0]
-        const retrieveAnswer = await this.orthancObject.makeRetrieve(answer.answerId, answer.answerNumber, this.aetDestination, true)
-        const orthancResults = await this.orthancObject.findInOrthancByUid(retrieveAnswer.Query[0]['0020,000d'])
+        const retrieveAnswer = await this.orthancObject.makeRetrieve(answer.AnswerId, answer.AnswerNumber, this.aetDestination, true)
+        console.log(retrieveAnswer)
+        const orthancResults = await this.orthancObject.findInOrthancByUid(retrieveAnswer['Query'][0]['0020,000d'])
+        console.log(orthancResults)
         if (orthancResults.length === 1) {
             item.setStatus(JobItem.STATUS_SUCCESS)
             item.setRetrievedOrthancId(orthancResults[0].ID)
@@ -151,6 +153,40 @@ class JobRetrieve extends Job {
         this.scheduledJob = scheduledJob
     }
 
+    getProgression(){
+        let numberOfPendingItems = 0
+        let numberOfRunningItems = 0
+        let numberOfSuccessItems = 0
+        let numberOfFailureItems = 0
+        let totalInstances = 0
+
+        this.items.forEach(item => {
+
+            let itemStatus = item.getStatus()
+            if(itemStatus === JobItem.STATUS_PENDING){
+                numberOfPendingItems += item.NumberOfSeriesRelatedInstances
+            }else if(itemStatus === JobItem.STATUS_RUNNING){
+                numberOfRunningItems += item.NumberOfSeriesRelatedInstances
+            }else if(itemStatus === JobItem.STATUS_SUCCESS){
+                numberOfSuccessItems += item.NumberOfSeriesRelatedInstances
+            }else if(itemStatus === JobItem.STATUS_FAILURE){
+                numberOfFailureItems += item.NumberOfSeriesRelatedInstances
+            }
+            totalInstances += item.NumberOfSeriesRelatedInstances
+
+        })
+
+        this.progression = {
+            [JobItem.STATUS_PENDING] : numberOfPendingItems,
+            [JobItem.STATUS_RUNNING] : numberOfRunningItems,
+            [JobItem.STATUS_SUCCESS] : numberOfSuccessItems,
+            [JobItem.STATUS_FAILURE] : numberOfFailureItems,
+            TotalInstances : totalInstances
+        }
+
+        return this.progression
+    }
+
     toJSON() {
         return {
             items : this.items.map(item =>{
@@ -159,7 +195,8 @@ class JobRetrieve extends Job {
             status : this.status,
             username : this.username,
             projectName : this.projectName,
-            validation : this.validation
+            validation : this.validation,
+            progression : this.getProgression()
         }
     }
 
