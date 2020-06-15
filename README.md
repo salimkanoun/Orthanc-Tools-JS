@@ -8,16 +8,27 @@
 [![devDependencies Status](https://david-dm.org/salimkanoun/Orthanc-Tools-JS/dev-status.svg?path=BackEnd)](https://david-dm.org/salimkanoun/Orthanc-Tools-JS?path=BackEnd&type=dev)
 
 
-Rewriting of Orthanc Tools in NodeJS.
+Rewriting of Orthanc Tools in React and NodeJS.
+
+Orthanc Tools JS is mainly a React Frontend for the powerfull Orthanc APIs but also include a Backend for authentication purpose, role management and automation.
+
+Warning : Orthanc Tools JS is still in early developement, this software is not release ready
+
+Current Features : 
+  - Search ressources in Orthanc
+  - Import DICOM file into Orthanc using drag and drop
+  - Export ressources : ZIP, Modalities, Orthanc Peers
+  - Manual Query and Retrieve
+  - Automatic Retrieve : Define a list of studies to retrieve and schedule a robot for automatic retrieval
+  - Massive Delete of Ressources (Orthanc Cleanup)
+  - Administration panel : Declaration and echo of AETs, Orthanc Peers, Jobs management
+
+In Progress : 
+Anonymization
+Automatic Retrieve : Series Filtering
 
 Roadmap : 
-
-1) AutoQuery
-2) ManualQuery
-3) Orthanc content explorer
-4) Import DICOM Tool
-5) Delete Tool
-6) Export Tool
-7) Anonymization Tool
-8) Monitoring Tools
-9) Settings panel (developped in each step)
+Modify ressources
+Export to external endpoint : FTP / SFTP / WebDav
+Monitoring  : Tag collection, DiscProducer management, Prefecthing, AutoRouting
+Definition of User's group Roles with dedidacted services access
