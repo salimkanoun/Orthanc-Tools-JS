@@ -18,7 +18,6 @@ class ExportPanel extends Component {
         currentStudy: '', 
         aets: [],
         peers: [], 
-        needConfirm: false, 
         show: false, 
         button: ''
     }

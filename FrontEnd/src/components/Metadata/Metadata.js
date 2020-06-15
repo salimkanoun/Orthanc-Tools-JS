@@ -88,9 +88,9 @@ class Metadata extends Component {
     }
 
     async handleChange(num){
-        await this.setState({
-            currentKey: num >= this.state.InstancesArray.length ? this.state.InstancesArray.length - 1 : num < 0 ? 0 : num 
-        })
+        await this.setState(prevState => ({
+            currentKey: num >= prevState.InstancesArray.length ? prevState.InstancesArray.length - 1 : num < 0 ? 0 : num
+        }))
         this.data()
     }
 

@@ -18,7 +18,6 @@ class AnonymizePanel extends Component {
     state = { 
         currentPatient: '', 
         prefix: '', 
-        listToAnonymize: [],
         progress: {}
     }
 
@@ -148,35 +147,33 @@ class AnonymizePanel extends Component {
                 listOK = false
             if (Object.keys(payload).length > 2)
                 listToAnonymize.push(payload)
-                console.log(listOK)
         })
             if (listOK){
-                console.log(listToAnonymize)
-            this.job = []
-            for (let i in listToAnonymize){
-                let study = listToAnonymize[i]
-                let id = await apis.anon.anonymize(study.OrthancStudyID, study.profile, study.AccessionNumber, study.Name, study.ID, study.StudyDescription)
+                this.job = []
+                for (let i in listToAnonymize){
+                    let study = listToAnonymize[i]
+                    let id = await apis.anon.anonymize(study.OrthancStudyID, study.profile, study.AccessionNumber, study.Name, study.ID, study.StudyDescription)
 
-                let jobMonitoring = new MonitorJob(id)
-                let self = this
-                
-                jobMonitoring.onUpdate(function (progress) {
-                    self.updateProgress(progress, i)
-                })
-        
-                jobMonitoring.onFinish(async function  (state) {
-                    if (state === MonitorJob.Success){
-                        await self.addNewStudy(jobMonitoring.jobID)
-                    } else if (state === MonitorJob.Failure){
-                        console.log("Failure ", i)
-                    }
+                    let jobMonitoring = new MonitorJob(id)
+                    let self = this
                     
-                })
+                    jobMonitoring.onUpdate(function (progress) {
+                        self.updateProgress(progress, i)
+                    })
+            
+                    jobMonitoring.onFinish(async function  (state) {
+                        if (state === MonitorJob.Success){
+                            await self.addNewStudy(jobMonitoring.jobID)
+                        } else if (state === MonitorJob.Failure){
+                            console.log("Failure ", i)
+                        }
+                        
+                    })
 
-                jobMonitoring.startMonitoringJob()
+                    jobMonitoring.startMonitoringJob()
 
-            }
-        }else toastifyError('Fill all PatientID to anonymize')
+                }
+            }else toastifyError('Fill all PatientID to anonymize')
     }
 
     async addNewStudy(jobID){

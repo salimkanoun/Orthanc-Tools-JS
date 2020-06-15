@@ -14,8 +14,6 @@ import apis from '../../services/apis'
 //Ce composant sera a connecter au redux pour connaitre la longueur de la liste de delete 
 class DeleteTool extends Component {
 
-    state = {show: false}
-
     constructor(props){
         super(props)
         this.handleClickEmpty = this.handleClickEmpty.bind(this)
