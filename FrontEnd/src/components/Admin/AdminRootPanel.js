@@ -5,6 +5,8 @@ import AutoRetrieveRootPanel from './AutoRetrieveRootPanel'
 import PeerRootPanel from './PeerRootPanel'
 import JobsRootPanel from './JobsRootPanel'
 import Plugins from './Plugins'
+import Roles from './Roles'
+import Users from './Users'
 
 /**
  * Root Panel of Admin route
@@ -31,6 +33,10 @@ const AdminPanel = () => {
         return (<JobsRootPanel />)
       case 'Plugins' :
         return (<Plugins />)
+      case 'Roles' :
+        return (<Roles />)
+      case 'Users' :
+        return (<Users />)
       default :
         return ([])
     }
@@ -47,6 +53,8 @@ const AdminPanel = () => {
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Robots' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Jobs' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Plugins' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Roles' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Users' />
           </div>
         </div>
         <div className='col-sm'>

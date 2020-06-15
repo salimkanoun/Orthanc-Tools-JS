@@ -10,8 +10,7 @@ import Modify from '../../Modify/Modify'
 class ActionBouton extends Component{
 
     state = {
-        showMetadata: false, 
-        data: []
+        showMetadata: false
     }
 
     constructor(props){
