@@ -4,7 +4,7 @@ var router = express.Router()
 require('express-async-errors')
 
 const { authentication, logOut } = require('../controllers/authentication')
-const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot2')
+const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob, addAnonJob, getAnonJob } = require('../controllers/Robot2')
 const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
@@ -56,8 +56,10 @@ router.post('/tools/orthanc-tools-js/create-archive', userAuthMidelware, postExp
 
 // OrthancToolsJS Robot routes
 router.post('/robot/:username/retrieve', userAuthMidelware, addRobotJob)
+router.post('/robot/:username/anonymize', userAuthMidelware, addAnonJob)
 router.get('/robot/retrieve', [userAuthMidelware, userAdminMidelware], getAllRobotDetails)
 router.get('/robot/:username/retrieve', userAuthMidelware, getRobotDetails)
+router.get('/robot/:username/anonymize', userAuthMidelware, getAnonJob)
 router.delete('/robot/:username/:type', userAuthMidelware, deleteRobotJob)
 router.delete('/robot/:username/retrieve/:index', userAuthMidelware, removeQueryFromJob)
 router.post('/robot/:username/retrieve/validate', [userAuthMidelware, userAdminMidelware], validateRobotJob)

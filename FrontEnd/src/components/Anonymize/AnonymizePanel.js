@@ -124,31 +124,29 @@ class AnonymizePanel extends Component {
     }
 
     async anonymize(){
+
         this.setState({
             monitors: []
         })
+
         let listToAnonymize = []
+        //SK Ici le check  je comprend pas faut que tu le fasse avant de boucler et construire le payload
         let listOK = true
         this.props.anonList.forEach(element => {
-            let payload = {
-                OrthancStudyID: element.ID, 
-                profile: this.props.profile
-            }
-            payload = {
-                ...payload, 
+            let anonItem = {
+                orthancStudyID: element.ID, 
+                profile: this.props.profile, 
                 newPatientName: element.PatientMainDicomTags.newPatientName, 
                 newPatientID: element.PatientMainDicomTags.newPatientID, 
                 newStudyDescription: element.MainDicomTags.newStudyDescription ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
                 newAccessionNumber: element.MainDicomTags.newAccessionNumber ? element.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
             }
-            if (payload.ID === undefined)
-                listOK = false
-            if (Object.keys(payload).length > 2)
-                listToAnonymize.push(payload)
+
+            listToAnonymize.push(anonItem)
         })
-            if (listOK){
-                await apis.anon.anonymize(listToAnonymize) //wait for the robot's answer to know what do to next
-            }else toastifyError('Fill all PatientID to anonymize')
+
+        await apis.anon.createAnonRobot(listToAnonymize) //wait for the robot's answer to know what do to next
+
     }
 
     async addNewStudy(jobID){
