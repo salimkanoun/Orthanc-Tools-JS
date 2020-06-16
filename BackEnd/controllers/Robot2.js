@@ -2,6 +2,7 @@ const {robot} = require('../model/robot/Robot')
 const JobRetrieve = require('../model/robot/JobRetrieve')
 const Job = require('../model/robot/Job')
 const JobItemRetrieve = require('../model/robot/JobItemRetrieve')
+const JobItemAnon = require('../model/robot/JobItemAnon')
 const Orthanc = require('../model/Orthanc')
 
 const getRobotDetails = async function (req, res) {
@@ -54,17 +55,37 @@ const validateRobotJob = async function (req, res) {
 
 const addRobotJob = async function (req, res) {
     const body = req.body
-    //SK ICI GERER L AJOUT INCREMENTAL DE RESSOURCE
-    let retrieveJob = robot.getJob("salim", Job.TYPE_RETRIEVE)
-    if(retrieveJob == undefined) retrieveJob = new JobRetrieve("salim", new Orthanc())
+    let retrieveJob = robot.getJob(req.params.username, Job.TYPE_RETRIEVE)
+    if(retrieveJob == undefined) retrieveJob = new JobRetrieve(req.params.username, new Orthanc())
     retrieveJob.setProjectName(body.projectName)
     body.retrieveArray.forEach( (retrieveQuery) => {
-        retrieveItem = new JobItemRetrieve(retrieveQuery)
+        let retrieveItem = new JobItemRetrieve(retrieveQuery)
         retrieveJob.addItem(retrieveItem)
     })
     robot.addJob(retrieveJob)
-    console.log(robot.getJob("salim", Job.TYPE_RETRIEVE))
-    res.json( robot.getJob("salim", Job.TYPE_RETRIEVE) )
+    res.json( robot.getJob(req.params.username, Job.TYPE_RETRIEVE) )
+}
+
+const addAnonJob = async function (req, res){
+    const body = req.body
+    let anonJob = robot.getJob(req.params.username, Job.TYPE_ANONYMIZE)
+    if(anonJob == undefined) anonJob = new JobRetrieve(req.params.username, new Orthanc())
+    body.anonArray.forEach( (anonRequest) => {
+        let anonItem = new JobItemAnon(anonRequest.orthancStudyID, 
+            anonRequest.profile, 
+            anonRequest.newPatientName, 
+            anonRequest.newPatientID, 
+            anonRequest.newStudyDescription, 
+            anonRequest.newAccessionNumber)
+        anonJob.addItem(anonItem)
+        
+
+    })
+
+    robot.addJob(anonItem)
+    robot.getJob(req.params.username, Job.TYPE_ANONYMIZE).execute()
+    res.json(true)
+
 }
 
 module.exports = { addRobotJob, getRobotDetails, getAllRobotDetails, deleteRobotJob, removeQueryFromJob, validateRobotJob }
