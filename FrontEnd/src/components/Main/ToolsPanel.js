@@ -26,9 +26,9 @@ class ToolsPanel extends Component {
     }
 
     setConfirmDelete(){
-        this.setState({
-            confirmDelete: !this.state.confirmDelete
-        })
+        this.setState(prevState => ({
+            confirmDelete: !prevState.confirmDelete
+        }))
     }
 
 
