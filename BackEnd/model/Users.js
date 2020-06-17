@@ -62,7 +62,7 @@ class Users {
   }
 
   static async modifyUser(username, password, isAdmin, role, firstName, lastName, mail){
-    db.Roles.destroy({
+    db.Users.destroy({
         where: {
             username: username
         }
@@ -74,6 +74,10 @@ class Users {
     }
     
 }
+
+  static async getUsers(){
+    return await db.Users.findAll()
+  }
 
 }
 

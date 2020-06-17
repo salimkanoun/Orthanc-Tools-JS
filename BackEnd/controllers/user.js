@@ -9,6 +9,13 @@ var Users = require('../model/Users')
         }
     }
 
+    getUsers = async function (req, res) {
+        console.log(req)
+        let user = await Users.getUsers()
+        console.log(user)
+        res.json(user)
+    }
+
     modifyUser = async function(req, res){
         const body = req.body
         try {
@@ -27,4 +34,4 @@ var Users = require('../model/Users')
         }
     }
 
-module.exports = { createUser, modifyUser, deleteUser }
+module.exports = { createUser, modifyUser, deleteUser, getUsers }
