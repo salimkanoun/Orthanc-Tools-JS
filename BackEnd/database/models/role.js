@@ -1,7 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Role = sequelize.define('Role', {
-    id: DataTypes.INTEGER,
     upload: DataTypes.BOOLEAN,
     content: DataTypes.BOOLEAN,
     anon: DataTypes.BOOLEAN,
