@@ -5,7 +5,6 @@ import Select from 'react-select'
 
 import TablePatient from '../CommonComponents/RessourcesDisplay/TablePatients'
 import TableStudy from "../CommonComponents/RessourcesDisplay/TableStudy"
-import MonitorJob from '../../tools/MonitorJob'
 import apis from "../../services/apis"
 
 import { addToAnonymizedList, emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
@@ -93,7 +92,6 @@ class AnonymizePanel extends Component {
     }
 
     saveNewValues(ID, column, newValue, row){
-        console.log(row)
         this.props.saveNewValues(ID, column, newValue)
     }
 
@@ -138,10 +136,10 @@ class AnonymizePanel extends Component {
             }
             payload = {
                 ...payload, 
-                Name: element.PatientMainDicomTags.newPatientName, 
-                ID: element.PatientMainDicomTags.newPatientID, 
-                StudyDescription: element.MainDicomTags.newStudyDescription ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
-                AccessionNumber: element.MainDicomTags.newAccessionNumber ? element.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
+                newPatientName: element.PatientMainDicomTags.newPatientName, 
+                newPatientID: element.PatientMainDicomTags.newPatientID, 
+                newStudyDescription: element.MainDicomTags.newStudyDescription ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
+                newAccessionNumber: element.MainDicomTags.newAccessionNumber ? element.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
             }
             if (payload.ID === undefined)
                 listOK = false
@@ -149,30 +147,7 @@ class AnonymizePanel extends Component {
                 listToAnonymize.push(payload)
         })
             if (listOK){
-                this.job = []
-                for (let i in listToAnonymize){
-                    let study = listToAnonymize[i]
-                    let id = await apis.anon.anonymize(study.OrthancStudyID, study.profile, study.AccessionNumber, study.Name, study.ID, study.StudyDescription)
-
-                    let jobMonitoring = new MonitorJob(id)
-                    let self = this
-                    
-                    jobMonitoring.onUpdate(function (progress) {
-                        self.updateProgress(progress, i)
-                    })
-            
-                    jobMonitoring.onFinish(async function  (state) {
-                        if (state === MonitorJob.Success){
-                            await self.addNewStudy(jobMonitoring.jobID)
-                        } else if (state === MonitorJob.Failure){
-                            console.log("Failure ", i)
-                        }
-                        
-                    })
-
-                    jobMonitoring.startMonitoringJob()
-
-                }
+                await apis.anon.anonymize(listToAnonymize) //wait for the robot's answer to know what do to next
             }else toastifyError('Fill all PatientID to anonymize')
     }
 

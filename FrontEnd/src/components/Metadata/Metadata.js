@@ -50,6 +50,8 @@ class Metadata extends Component {
 
     async data(){
         let data = await apis.content.getInstances(this.state.InstancesArray[this.state.currentKey])
+        let header = await apis.content.getHeader(this.state.InstancesArray[this.state.currentKey])
+        data = {...data, ...header}
         let prepare = this.prepareData(data)
         this.setState({data: prepare, InstancesTags: true})
         return prepare
