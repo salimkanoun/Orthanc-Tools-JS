@@ -9,7 +9,7 @@ const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer } = requ
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { anonymizeStudy } = require('../controllers/anonymize')
-const { getUsers } = require('../controllers/user')
+const { getUsers, createUser } = require('../controllers/user')
 
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
@@ -142,5 +142,6 @@ router.post('/anonymize', anonymizeStudy)
 
 //user 
 router.get('/user', getUsers)
+router.post('/user/create', createUser)
 
 module.exports = router

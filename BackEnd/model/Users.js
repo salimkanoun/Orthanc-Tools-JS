@@ -30,23 +30,28 @@ class Users {
     return user.admin
   }
 
-  static async createUser (username, password, isAdmin, role, firstName, lastName, mail) {
+  static async createUser (body) {
     const saltRounds = 10
-
-    const promise = bcrypt.hash(password, saltRounds).then(function (hash) {
-      db.User.create({
-        first_name:firstName,
-        last_name: lastName,
-        mail: mail,
-        username: username,
+    const promise = bcrypt.hash(body.password, saltRounds).then(function (hash) {
+      db.User.create({/**
+         username: 'test',
+        first_name: body.first_name,
+        last_name: body.last_name,
+        mail: body.mail,
         password: hash,
-        admin: isAdmin, 
-        role: role
+        */
+        username: 'test',
+        first_name: 'test',
+        last_name: 'test',
+        mail: 'test',
+        password: 'test',
+        admin: true, 
+        role: 'admin'
       })
     }).then(() => {
       return true
     }).catch(function (error) {
-      throw new Error('User Creation Failed' + error)
+      console.log(error)
     })
 
     return promise
@@ -77,7 +82,7 @@ class Users {
 
   static async getUsers(){
       const users = await db.User.findAll({
-        attributes: { exclude: ['password']}
+        attributes: ['id', 'username', 'first_name', 'last_name', 'admin', 'mail', 'role']
       })
       if (users === null) {
         throw new Error('User Not Found')
