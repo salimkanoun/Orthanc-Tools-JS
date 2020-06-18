@@ -1,6 +1,5 @@
 var Users = require('../model/Users')
-var Token = require('../token/token')
-
+const jwt = require("jsonwebtoken")
 
 authentication = async function (req, res) {
   const body = req.body
@@ -8,8 +7,15 @@ authentication = async function (req, res) {
     const userObject = new Users(body.username)
     const checkPassword = await userObject.checkPassword(body.password)
     if (checkPassword) {
-      //fait discontionner la connexion 
-      /*const token = Token.generateAccessToken({
+
+    //access SECRET_TOKEN
+      const dotenv = require("dotenv");
+      // get config vars
+      dotenv.config();
+      // access config var
+      process.env.TOKEN_SECRET;
+
+      payload = {
         username: body.username,
         admin: true,
         upload: true,
@@ -20,9 +26,14 @@ authentication = async function (req, res) {
         query: true,
         autoQuery: true,
         delet: true
-    });*/
+      }
+
+      //, { expiresIn: '3600s' }
+      var TOKEN = jwt.sign('a', process.env.TOKEN_SECRET);
+      console.log(TOKEN)
+
       req.session.username = body.username
-      res.json(true);
+      res.json(TOKEN);
     } else {
       res.status(401).send('Wrong Credential')
     }
