@@ -76,9 +76,14 @@ class Users {
 }
 
   static async getUsers(){
-    return await db.Users.findAll()
+      const users = await db.User.findAll({
+        attributes: { exclude: ['password']}
+      })
+      if (users === null) {
+        throw new Error('User Not Found')
+      }
+    return users
   }
-
 }
 
 module.exports = Users

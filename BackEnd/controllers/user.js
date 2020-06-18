@@ -10,9 +10,14 @@ var Users = require('../model/Users')
     }
 
     getUsers = async function (req, res) {
-        console.log(req)
-        let user = await Users.getUsers()
-        console.log(user)
+        let user
+        try {
+            user = await Users.getUsers()
+            console.log(user)
+        } catch (error) {
+            console.log(error)
+            res.status(401).send('fail to get users')
+        }
         res.json(user)
     }
 

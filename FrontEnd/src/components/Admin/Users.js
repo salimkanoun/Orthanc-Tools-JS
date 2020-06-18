@@ -12,22 +12,36 @@ class Users extends Component {
         firstName: '', 
         lastName: '', 
         mail: '', 
-        show: false
+        show: false, 
+        options: []
     }
 
     constructor(props) {
         super(props)
         this.handleChange = this.handleChange.bind(this)
         this.onHide = this.onHide.bind(this)
+        this.modify = this.modify.bind(this)
+        this.getUser = this.getUser.bind(this)
     }
 
-    async componentDidMount() {
-        let user = await apis.User.getUsers()
-        console.log(user)
+    async modify(){
+       let users = await apis.User.getUsers()
+       let options = []
+       users.forEach(element => {
+           options.push({
+               label: element.username, 
+               value: element.username
+           })
+       })
+       this.setState({
+           users: users,
+           options: options, 
+           show: true
+       })
     }
     
 
-    handleChange (event) {
+    handleChange(event) {
         const target = event.target
         const name = target.name
         const value = target.value
@@ -36,8 +50,18 @@ class Users extends Component {
         })
     }
 
-    getUser(){
-        //put all user information in the state
+    getUser(val){
+        let users = this.state.users
+        users.forEach(user => {
+            if (user.username === val.value){
+                this.setState({
+                    username: user.username,
+                    firstName:user.firstName, 
+                    lastName: user.lastName, 
+                    mail: user.mail, 
+                })
+            }
+        })
     }
 
     form(){
@@ -94,7 +118,7 @@ class Users extends Component {
 
                         <button name='create' type='button' className='btn btn-primary float-right mr-2 mt-2' onClick={()=>alert('not implemented yet')}> Create </button>
 
-                        <button name='Edit' type='button' className='btn btn-warning float-right mr-2 mt-2' onClick={()=>this.setState({show: true})}> Modify </button>
+                        <button name='Edit' type='button' className='btn btn-warning float-right mr-2 mt-2' onClick={this.modify}> Modify </button>
                             
                         <button name='delete' type='button' className='btn btn-danger float-right mr-2 mt-2' onClick={()=>alert('not implemented yet')}> Delete </button>
 
@@ -105,7 +129,7 @@ class Users extends Component {
                         <Modal.Title>Modify</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Select options={[]} onChange={this.getUser} />
+                        <Select options={this.state.options} onChange={this.getUser} />
                         {this.form()}
                     </Modal.Body>
                     <Modal.Footer>

@@ -9,9 +9,8 @@ const user = {
               'Content-Type': 'application/json'
             }
         }).then((answer) => {
-            console.log(answer.json())
             if (!answer.ok) { throw answer }
-            return answer.json()
+              return answer.json()
           }).catch(error => {
             toastifyError(error)
           })
