@@ -9,12 +9,14 @@ const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer } = requ
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { anonymizeStudy } = require('../controllers/anonymize')
+const { getUsers } = require('../controllers/user')
 
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
 
 const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authentication')
+
 
 /**
  * @swagger
@@ -137,5 +139,8 @@ router.get('/plugins', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 
 //Anonymize simplified API
 router.post('/anonymize', anonymizeStudy)
+
+//user 
+router.get('/user', getUsers)
 
 module.exports = router

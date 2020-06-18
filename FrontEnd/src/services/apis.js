@@ -10,6 +10,7 @@ import peers from './peers'
 import content from './content'
 import anon from './anon'
 import localStorage from './localStorage'
+import User from './User'
 
 export default {
   aets,
@@ -23,5 +24,6 @@ export default {
   peers, 
   content, 
   anon, 
-  localStorage
+  localStorage, 
+  User
 }
