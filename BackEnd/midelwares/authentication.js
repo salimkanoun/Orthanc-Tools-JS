@@ -1,7 +1,7 @@
 const User = require('../model/Users')
 
 const userAuthMidelware = function (req, res, next) {
-  if (req.session.username !== undefined) {
+  if (req.session.username !== undefined) {  
     next()
   } else {
     console.log('No session')

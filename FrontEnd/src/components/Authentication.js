@@ -27,7 +27,12 @@ export default class Authentication extends Component {
     let newState = { }
 
     await apis.authentication.logIn(postData).then((answer)=>{
+      console.log(answer)
+      
+      //let token = answer
+      
       newState =  {
+
         accessCheck : answer
       }
 
