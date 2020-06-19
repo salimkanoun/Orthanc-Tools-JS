@@ -41,19 +41,16 @@ code {
 }
 
 .block-title {
-	margin-top: 32px;
 	padding: 8px 18px;
 	text-align: center;
 	font-family: SourceSansProItalic;
 	font-size: 24px;
 	color: white;
 	background-color: #891b51;
-	box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
 	border-radius: 8px 8px 0 0;
 }
 .block-content {
 	padding: 32px;
-	margin-bottom: 32px;
 	border-radius: 0 0 8px 8px !important;
 }
 

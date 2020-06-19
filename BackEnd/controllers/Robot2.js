@@ -1,5 +1,6 @@
 const {robot} = require('../model/robot/Robot')
 const JobRetrieve = require('../model/robot/JobRetrieve')
+const JobAnonymize = require('../model/robot/JobAnonymize')
 const Job = require('../model/robot/Job')
 const JobItemRetrieve = require('../model/robot/JobItemRetrieve')
 const JobItemAnon = require('../model/robot/JobItemAnon')
@@ -69,8 +70,11 @@ const addRobotJob = async function (req, res) {
 const addAnonJob = async function (req, res){
     const body = req.body
     let anonJob = robot.getJob(req.params.username, Job.TYPE_ANONYMIZE)
-    if(anonJob == undefined) anonJob = new JobRetrieve(req.params.username, new Orthanc())
-    body.anonArray.forEach( (anonRequest) => {
+    if(anonJob == undefined) {
+        anonJob = new JobAnonymize(req.params.username, new Orthanc())
+        robot.addJob(anonJob)
+    }
+    body.forEach( (anonRequest) => {
         let anonItem = new JobItemAnon(anonRequest.orthancStudyID, 
             anonRequest.profile, 
             anonRequest.newPatientName, 
@@ -78,14 +82,26 @@ const addAnonJob = async function (req, res){
             anonRequest.newStudyDescription, 
             anonRequest.newAccessionNumber)
         anonJob.addItem(anonItem)
-        
-
     })
-
-    robot.addJob(anonItem)
+    console.log(anonJob)
     robot.getJob(req.params.username, Job.TYPE_ANONYMIZE).execute()
     res.json(true)
 
 }
 
-module.exports = { addRobotJob, getRobotDetails, getAllRobotDetails, deleteRobotJob, removeQueryFromJob, validateRobotJob }
+const getAnonJob = async function(req, res){
+
+    try {
+        let anonJob = robot.getJob(req.params.username, Job.TYPE_ANONYMIZE)
+        anonJob.getProgression()
+        res.json(anonJob)
+    } catch (error) {
+        console.log(error)
+        res.json({
+            items: []
+        })
+    }
+
+}
+
+module.exports = { addRobotJob, getRobotDetails, getAllRobotDetails, deleteRobotJob, removeQueryFromJob, validateRobotJob, addAnonJob, getAnonJob }

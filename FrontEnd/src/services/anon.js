@@ -23,6 +23,24 @@ const anon = {
         }).catch(error => {
             toastifyError(error)
         })
+    },
+
+    createAnonRobot(anonymizeArray){
+        //SK user salim hardcodé
+        return fetch('/api/robot/salim/anonymize', {
+            method: 'POST', 
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(anonymizeArray)
+        }).then(answer => {
+            if (!answer.ok) {throw answer}
+            return answer.json()
+        }).catch(error => {
+            toastifyError(error)
+        })
+
     }
 }
 
