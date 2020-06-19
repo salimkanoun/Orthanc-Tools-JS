@@ -15,6 +15,10 @@ authentication = async function (req, res) {
       // access config var
       process.env.TOKEN_SECRET;
 
+      console.log("ahah")
+      console.log(process.env.ACCESS_TOKEN_SECRET)
+      console.log("ohoh")
+
       payload = {
         username: body.username,
         admin: true,
@@ -28,11 +32,8 @@ authentication = async function (req, res) {
         delet: true
       }
 
-      //, { expiresIn: '3600s' }
-      var TOKEN = jwt.sign('a', process.env.TOKEN_SECRET);
-      console.log(TOKEN)
+      var TOKEN = jwt.sign(payload, "a", { expiresIn: '1h' });
 
-      req.session.username = body.username
       res.json(TOKEN);
     } else {
       res.status(401).send('Wrong Credential')
@@ -53,36 +54,3 @@ logOut = function (req, res){
 }
 
 module.exports = { authentication, logOut }
-
-
-
-//encien fonction 
-/*
-authentication = async function (req, res) {
-  const body = req.body
-  try {
-    const userObject = new Users(body.username)
-    const checkPassword = await userObject.checkPassword(body.password)
-    if (checkPassword) {
-      req.session.username = body.username
-      res.json(true)
-    } else {
-      res.status(401).send('Wrong Credential')
-    }
-  } catch (Error) {
-    res.status(401).send('Unknown user')
-  }
-}*/
-
-/*
-logOut = function (req, res){
-  try {
-    req.session.destroy()
-    res.json(true)
-  } catch (error){
-    console.log(error)
-    console.log('logOut fail')
-  }
-  
-}
-*/
