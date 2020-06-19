@@ -253,7 +253,7 @@ class Import extends Component {
                         <input type="button" className="btn btn-info" value="To Anonymize" onClick={this.sendImportedToAnon} />
                     </div>
                     <div className="col">
-                        <input type="button" className="btn btn-info" value="To Export" onClick ={this.sendImportedToExport}/>
+                        <input type="button" className="btn btn-primary" value="To Export" onClick ={this.sendImportedToExport}/>
                     </div>
                     <div className="col">
                         <input type="button" className="btn btn-warning" value="To Delete" onClick ={this.sendImportedToDelete} />
