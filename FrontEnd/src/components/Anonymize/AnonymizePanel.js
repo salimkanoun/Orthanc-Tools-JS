@@ -31,6 +31,7 @@ class AnonymizePanel extends Component {
         this.changeProfile = this.changeProfile.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.autoFill = this.autoFill.bind(this)
+        this.testAllId = this.testAllId.bind(this)
     }
 
     updateProgress(progress, i){
@@ -123,30 +124,41 @@ class AnonymizePanel extends Component {
         return studies
     }
 
+    testAllId(){
+        let answer = true
+        this.props.anonList.forEach((item) => {
+            if (item.PatientMainDicomTags.newPatientID === undefined)
+                answer = false
+        })
+        return answer
+    }
+
     async anonymize(){
+        if (this.testAllId()){ //check all id 
+            let listToAnonymize = []
+            this.props.anonList.forEach(element => {
+                let anonItem = {
+                    orthancStudyID: element.ID, 
+                    profile: this.props.profile, 
+                    newPatientName: element.PatientMainDicomTags.newPatientName, 
+                    newPatientID: element.PatientMainDicomTags.newPatientID, 
+                    newStudyDescription: element.MainDicomTags.newStudyDescription ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
+                    newAccessionNumber: element.MainDicomTags.newAccessionNumber ? element.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
+                }
 
-        this.setState({
-            monitors: []
-        })
+                listToAnonymize.push(anonItem) 
+            })
 
-        let listToAnonymize = []
-        //SK Ici le check  je comprend pas faut que tu le fasse avant de boucler et construire le payload
-        let listOK = true
-        this.props.anonList.forEach(element => {
-            let anonItem = {
-                orthancStudyID: element.ID, 
-                profile: this.props.profile, 
-                newPatientName: element.PatientMainDicomTags.newPatientName, 
-                newPatientID: element.PatientMainDicomTags.newPatientID, 
-                newStudyDescription: element.MainDicomTags.newStudyDescription ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
-                newAccessionNumber: element.MainDicomTags.newAccessionNumber ? element.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
+            let answer = await apis.anon.createAnonRobot(listToAnonymize) //wait for the robot's answer to know what do to next
+            if (answer){
+                let robot
+                do {
+                    robot = await apis.anon.getAnonJob()
+                    this.props.setRobot(robot)
+                } while (robot.progression.Pending !== 0)
+                this.props.setRobot(robot)
             }
-
-            listToAnonymize.push(anonItem)
-        })
-
-        await apis.anon.createAnonRobot(listToAnonymize) //wait for the robot's answer to know what do to next
-
+        } else toastifyError('Fill all patient ID')
     }
 
     async addNewStudy(jobID){
