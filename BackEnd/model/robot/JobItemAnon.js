@@ -20,12 +20,6 @@ class JobItemAnon extends JobItem{
         return this.anonymizedOrthancStudyID
     }
 
-    toJSON(){
-        return {
-            ...this
-        }
-    }
-
 }
 
 module.exports = JobItemAnon

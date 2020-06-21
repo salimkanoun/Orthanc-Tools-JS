@@ -11,6 +11,12 @@ class JobItem {
     getStatus(){
         return this.Status
     }
+
+    toJSON(){
+        return {
+            ...this
+        }
+    }
 }
 
 JobItem.STATUS_PENDING = 'Pending'

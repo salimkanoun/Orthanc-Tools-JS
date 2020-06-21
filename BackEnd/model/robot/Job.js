@@ -6,6 +6,7 @@ class Job{
         this.username = username
         this.items = []
         this.status = Job.STATUS_PENDING
+        this.orthancObject = orthancObject
     }
 
     addItem(item){

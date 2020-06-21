@@ -275,7 +275,7 @@ class Orthanc {
      * @param {string} level
      * @param {string} orthancID
      */
-  async deleteFromOrhtanc (level, orthancID) {
+  async deleteFromOrthanc (level, orthancID) {
     const answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID, 'DELETE', undefined)
     return answer
   }
