@@ -15,10 +15,6 @@ authentication = async function (req, res) {
       // access config var
       process.env.TOKEN_SECRET;
 
-      console.log("ahah")
-      console.log(process.env.ACCESS_TOKEN_SECRET)
-      console.log("ohoh")
-
       payload = {
         username: body.username,
         admin: true,
