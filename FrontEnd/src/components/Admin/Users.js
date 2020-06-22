@@ -32,6 +32,7 @@ class Users extends Component {
 
     async openModify(){
        let users = await apis.User.getUsers()
+       console.log(users)
        let options = []
        users.forEach(element => {
            options.push({

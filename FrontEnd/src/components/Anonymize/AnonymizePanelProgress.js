@@ -9,14 +9,16 @@ import { addToAnonymizedList } from '../../actions/AnonList'
 
 
 class AnonymizePanelProgress extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { 
+
+    state = { 
             show: false, 
             success: 0, 
             failures: 0, 
             total: 0
          }
+    constructor(props) {
+        super(props);
+        this.getInfo = this.getInfo.bind(this)
     }
 
     setModal(){
@@ -24,6 +26,42 @@ class AnonymizePanelProgress extends Component {
             show: !this.state.show
         })
     }
+    
+    componentDidMount() {
+        this.getInfo()
+    }
+
+    async getInfo(){
+        let robot 
+        do {
+            let success = 0
+            let failures = 0
+            robot = await apis.anon.getAnonJob()
+            robot.items.forEach(async item => {
+                switch (item.Status) {
+                    case 'Success':
+                        success = success + 1
+                        let studyDetail = await apis.content.getStudiesDetails(item.setAnonymizedOrthancStudyID)
+                        if (studyDetail !== undefined)
+                            this.props.addToAnonymizedList([studyDetail])
+                        break;
+                    case 'Failures':
+                        failures = failures + 1
+                        break;
+                    default:
+                        break;
+                }
+            })
+            success = 100*success/robot.items.length
+            failures = 100*failures/robot.items.length
+            this.setState({
+                success: success, 
+                failures: failures
+            })
+        } while (robot.status !== 'Finished')
+        this.props.setProgress(false)
+    }
+    
 
     getStudiesAnonymized(){
         let studies = []
@@ -40,33 +78,7 @@ class AnonymizePanelProgress extends Component {
         return studies
     }
 
-    getSuccess(){
-        let success = 0
-        this.props.robot.items.forEach(async (item) => {
-            if (item.Status === 'Success') {
-                success = success + 1
-
-                //add to anonimyzed list
-                let studyDetail = await apis.content.getStudiesDetails(item.setAnonymizedOrthancStudyID)
-                if (studyDetail !== undefined)
-                    this.props.addToAnonymizedList([studyDetail])
-            }
-        })
-        return 100*success/this.props.robot.items.length
-    }
-
-    getFailures(){
-        let failures = 0
-        this.props.robot.items.forEach(item => {
-            if (item.Status === 'Failure') 
-                failures = failures + 1 
-        })
-        return 100*failures/this.props.robot.items.length
-    }
-
     render() {
-        let nbSuccess = this.getSuccess()
-        let nbFail = this.getFailures()
         return (
             <Fragment>
                 <Modal show={this.state.show} scrollable={true} onHide={()=>this.setModal()}>
@@ -89,11 +101,10 @@ class AnonymizePanelProgress extends Component {
                 </Modal>
                 <div style={{width: '15%'}}>
                     <CircularProgressbarWithChildren
-                    value={nbSuccess}
+                    value={this.state.success}
                     strokeWidth={20}
                     width={10}
                     styles={buildStyles({
-                    pathColor: "#f00",
                     trailColor: "transparent"
                     })}
                 >
@@ -103,8 +114,9 @@ class AnonymizePanelProgress extends Component {
                     */}
                     <div style={{ width: "60%" }}>
                     <CircularProgressbar
-                        value={nbFail}
+                        value={this.state.failures}
                         styles={buildStyles({
+                        pathColor: "#f00",
                         trailColor: "transparent"
                         })}
                     />

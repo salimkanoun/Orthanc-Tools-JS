@@ -9,17 +9,17 @@ import AnonymizePanelProgress from './AnonymizePanelProgress';
 class AnonRootPanel extends Component {
 
     state = {
-        robot: {}
+        progress: false
     }
 
     constructor (props) {
         super(props)
-        this.setRobot = this.setRobot.bind(this)
+        this.setProgress = this.setProgress.bind(this)
     }
     
-    setRobot(robot){
+    setProgress(progress){
         this.setState({
-            robot: robot
+            progress: progress
         })
     }
 
@@ -27,18 +27,18 @@ class AnonRootPanel extends Component {
         return (
             <div>
                 {
-                    !(this.state.robot.progression !== undefined && this.state.robot.progression.Pending !== 0) ?
-                    null
-                    :
+                    this.state.progress ?
                     <div className='jumbotron' >
                         <h2 className='card-title mb-3'>Anonymize in progress</h2>
-                        <AnonymizePanelProgress robot={this.state.robot}/>
+                        <AnonymizePanelProgress setProgress={this.setProgress} />
                     </div> 
+                    :
+                    null
                 }
                 
                 <div className='jumbotron'>
                     <h2 className='card-title mb-3'>Anonymize</h2>
-                    <AnonymizePanel setRobot={this.setRobot}/>
+                    <AnonymizePanel setProgress={this.setProgress}/>
                 </div>
                 <div className='jumbotron' hidden={this.props.anonymizedList && this.props.anonymizedList.length === 0}>
                     <AnonymizedResults />
