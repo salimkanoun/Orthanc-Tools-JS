@@ -20,14 +20,25 @@ import ContentRootPanel from '../OrthancContent/ContentRootPanel'
 import ExportPanel from '../Export/ExportPanel'
 import AnonRootPanel from '../Anonymize/AnonRootPanel'
 
-export default class NavBar extends Component {
+import { resetReducer } from '../../actions/LogOut'
+import { connect } from 'react-redux'
+
+class NavBar extends Component {
 
   state  = {
     navBackground : '#11ffee00'
   }
+
+  constructor(props) {
+    super(props)
+    this.logout = this.logout.bind(this)
+  }
+  
   
   async logout(){
     await apis.authentication.logOut()
+    this.props.resetReducer()
+
   }
 
   componentDidMount(){
@@ -91,3 +102,10 @@ export default class NavBar extends Component {
   }
   
 }
+
+const mapsDispatchToProps = {
+  resetReducer
+}
+
+export default connect(null, mapsDispatchToProps)(NavBar)
+
