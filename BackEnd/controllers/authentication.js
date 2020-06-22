@@ -8,12 +8,9 @@ authentication = async function (req, res) {
     const checkPassword = await userObject.checkPassword(body.password)
     if (checkPassword) {
 
-    //access SECRET_TOKEN
-      const dotenv = require("dotenv");
-      // get config vars
-      dotenv.config();
-      // access config var
-      process.env.TOKEN_SECRET;
+      let user = new Users(body.username)
+      let infosUser = await user.getUserRight()
+      //console.log(infosUser.admin)
 
       payload = {
         username: body.username,
@@ -28,7 +25,7 @@ authentication = async function (req, res) {
         delet: true
       }
 
-      var TOKEN = jwt.sign(payload, "a", { expiresIn: '1h' });
+      var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
 
       res.json(TOKEN);
     } else {

@@ -84,6 +84,40 @@ class Users {
       }
     return users
   }
+
+  async getInfoUser(){
+    const user = await db.User.findOne({ 
+      where: {username: this.username}
+    });
+    if (user === null) {
+      throw new Error('User Not Found')
+    }
+    return user
+  }
+
+  async getUserRight(){
+    const user = await db.User.findOne({ 
+      attributes: ['role'],
+      where: {username: this.username}
+    });
+
+    console.log("Affichage:")
+    console.log(user.role)
+
+    /*
+    const rights = await db.Role.findOne({
+      where: {name: user.role}
+    })
+
+    console.log("TEST")
+    console.log(rights.admin)*/
+
+    if (user === null) {
+      throw new Error('User Not Found')
+    }
+    return "rights"
+  }
+
 }
 
 module.exports = Users

@@ -1,5 +1,3 @@
-const User = require('../model/Users')
-const { decode } = require('jsonwebtoken')
 const jwt = require("jsonwebtoken")
 
 const userAuthMidelware = function (req, res, next) {
@@ -8,12 +6,10 @@ const userAuthMidelware = function (req, res, next) {
   const token = authHeader && authHeader.split(' ')[1]
   if (token == null) return res.sendStatus(401) // if there isn't any token
 
-   //!!!!!!!with SECRET_TOKEN it s don t work and its crash  but with "a" no error but it s dont work 
-  var decoded = jwt.verify(token, "a", function(err, decoded) {
+  let decoded = jwt.verify(token, process.env.TOKEN_SECRET, function(err, decoded) {
     console.log(err)
 
     if (err) return res.sendStatus(403)
-      console.log("Est passé en tant que user")
       next() // pass the execution off to whatever request the client intended
   });
   
@@ -25,13 +21,11 @@ const userAdminMidelware = async function (req, res, next) {
     const token = authHeader && authHeader.split(' ')[1]
     if (token == null) return res.sendStatus(401) // if there isn't any token
   
-    //process.env.ACCESS_TOKEN_SECRET
-    var decoded = jwt.verify(token, "a", function(err, decoded) {
+    let decoded = jwt.verify(token, process.env.TOKEN_SECRET, function(err, decoded) {
       console.log(err)
   
       if (err) return res.sendStatus(403)
-      if(decode.admin) {
-        console.log("Est passé en tant que admin") 
+      if(decoded.admin) {
         next() // pass the execution off to whatever request the client intended
       }
     });
