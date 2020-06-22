@@ -1,9 +1,11 @@
 const {robot} = require('../model/robot/Robot')
 const JobRetrieve = require('../model/robot/JobRetrieve')
 const JobAnonymize = require('../model/robot/JobAnonymize')
+const JobDelete = require('../model/robot/JobDelete')
 const Job = require('../model/robot/Job')
 const JobItemRetrieve = require('../model/robot/JobItemRetrieve')
 const JobItemAnon = require('../model/robot/JobItemAnon')
+const JobItemDelete = require('../model/robot/JobDelete')
 const Orthanc = require('../model/Orthanc')
 
 const getRobotDetails = async function (req, res) {
@@ -108,4 +110,40 @@ const getAnonJob = async function(req, res){
 
 }
 
-module.exports = { addRobotJob, getRobotDetails, getAllRobotDetails, deleteRobotJob, removeQueryFromJob, validateRobotJob, addAnonJob, getAnonJob }
+const getDeleteJob = async function(req, res){
+
+    try {
+        let deleteJob = robot.getJob(req.params.username, Job.TYPE_DELETE)
+        deleteJob.getProgression()
+        res.json(deleteJob)
+    } catch (error) {
+        console.log(error)
+        res.json({
+            items: []
+        })
+    }
+
+}
+
+const addDeleteJob = async function (req, res){
+    const body = req.body
+    let deleteJob = robot.getJob(req.params.username, Job.TYPE_DELETE)
+    if(deleteJob != undefined && deleteJob.status == Job.STATUS_RUNNING) {
+        res.status(401).send("Delete Robot is already processing, wait finish before starting a new one")
+        return
+    }
+    
+    deleteJob = new JobDelete(req.params.username, new Orthanc())
+    robot.addJob(deleteJob)
+
+    body.forEach( (deleteOrthancID) => {
+        let deleteItem = new JobItemDelete(deleteOrthancID)
+        deleteJob.addItem(deleteItem)
+    })
+    console.log(deleteJob)
+    robot.getJob(req.params.username, Job.TYPE_DELETE).execute()
+    res.json(true)
+
+}
+
+module.exports = { addRobotJob, getRobotDetails, getAllRobotDetails, deleteRobotJob, removeQueryFromJob, validateRobotJob, addAnonJob, getAnonJob, getDeleteJob, addDeleteJob }

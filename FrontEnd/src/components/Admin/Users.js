@@ -137,7 +137,7 @@ class Users extends Component {
     render() {
         return (
             <Fragment>
-                <div className='jumbotron'>
+                <div>
                     <h2 className='card-title'>Users Panel</h2>
                     <form id='user-form'>
 

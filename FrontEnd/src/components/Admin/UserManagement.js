@@ -49,7 +49,7 @@ class UserManagement extends Component {
                     </li>
                     </ul>
                 </div>
-                <div className="jumbotron">
+                <div>
                     {this.getComponentToDisplay()}
                 </div>
             </div>

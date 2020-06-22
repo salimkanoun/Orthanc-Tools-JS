@@ -19,7 +19,7 @@ class JobAnonymize extends Job {
         item.setStatus(JobItem.STATUS_RUNNING)
         let anonAnswer = await this.orthancObject.makeAnon('studies', item.sourceOrthancStudyID, item.anonProfile, item.newAccessionNumber, item.newPatientID, item.newPatientName, item.newStudyDescription, true)
         if (anonAnswer.ID !== undefined) {
-            item.setAnonymizedOrthancStudyID = anonAnswer.ID
+            item.setAnonymizedOrthancStudyID(anonAnswer.ID)
             item.setStatus(JobItem.STATUS_SUCCESS)
         } else {
             item.setStatus(JobItem.STATUS_FAILURE)

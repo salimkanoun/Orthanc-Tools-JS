@@ -41,7 +41,7 @@ class AnonymizePanelProgress extends Component {
                 switch (item.Status) {
                     case 'Success':
                         success = success + 1
-                        let studyDetail = await apis.content.getStudiesDetails(item.setAnonymizedOrthancStudyID)
+                        let studyDetail = await apis.content.getStudiesDetails(item.anonymizedOrthancStudyID)
                         if (studyDetail !== undefined)
                             this.props.addToAnonymizedList([studyDetail])
                         break;

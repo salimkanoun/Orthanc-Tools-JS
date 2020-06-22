@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component, Fragment } from "react"
 import Select from "react-select";
 import Toggle from 'react-toggle'
 
@@ -67,9 +67,9 @@ class Roles extends Component {
 
     render() {
         return (
-            <div className='jumbotron'>
+            <Fragment>
                 <h2 className='card-title mb-4'>User Roles</h2>
-                <div className='row'>
+                <div className='row text-center'>
                 <div className='col-3' >
                     <Select defaultValue={this.roles[0]} single options={this.roles} onChange={this.handleChange}/>
                 </div>
@@ -149,7 +149,7 @@ class Roles extends Component {
                 <button className='btn btn-primary mt-2' type='button' onClick={()=>alert('not implemented yet')} >Send</button>
                 </div>
                 </div>
-            </div>
+            </Fragment>
         );
     }
 }
