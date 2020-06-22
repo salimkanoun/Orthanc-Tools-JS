@@ -125,7 +125,10 @@ class AnonymizePanelProgress extends Component {
                 </div>
                 
 
-                <button type='button' className='btn btn-info float-right' onClick={()=>this.setModal()} >Show Details</button>
+                <button type='button' className='btn btn-info float-right mr-2' onClick={()=>this.setModal()} >Show Details</button>
+                <button type='button' className='btn btn-danger float-right mr-2' onClick={()=>alert('not implemented yet')} >Delete</button>
+                <button type='button' className='btn btn-primary float-right mr-2' onClick={()=>alert('not implemented yet')} >Resume</button>
+                <button type='button' className='btn btn-warning float-right mr-2' onClick={()=>alert('not implemented yet')} >Pause</button>
             </Fragment>
         );
     }
