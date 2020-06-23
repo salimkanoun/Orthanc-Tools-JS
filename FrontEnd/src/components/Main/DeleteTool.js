@@ -29,10 +29,17 @@ class DeleteTool extends Component {
     }
 
     //SK Ici laisser l'action au front et gérer un retour visuel, je m'occuperai du back
-     handleClickDelete(){
+    handleClickDelete(){
         //close Modal
         this.handleConfirm()
         //call API DELETE
+
+        //await apis.deleteRobot.createDeleteRobot(this.props.deleteList)
+
+        //to use delete robot, add 'async' in front of handleClickDelete
+        //decommente ligne 37
+        //and comment the following code (ligne 43 to 49)
+
         this.props.deleteList.forEach(async (study) => {
             console.log("Will delete : ", study.ID)
             await apis.content.deleteStudies(study.ID) //take a lot of time, need to pass by the back
@@ -40,6 +47,7 @@ class DeleteTool extends Component {
             this.props.removeOrthancContentStudy(study.ID)
            
         });
+
     }
 
     handleClickEmpty(){

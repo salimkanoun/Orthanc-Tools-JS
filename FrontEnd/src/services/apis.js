@@ -11,6 +11,7 @@ import content from './content'
 import anon from './anon'
 import localStorage from './localStorage'
 import User from './User'
+import deleteRobot from './deleteRobot'
 
 export default {
   aets,
@@ -25,5 +26,6 @@ export default {
   content, 
   anon, 
   localStorage, 
-  User
+  User, 
+  deleteRobot
 }
