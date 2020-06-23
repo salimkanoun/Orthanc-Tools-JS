@@ -1,20 +1,24 @@
 import { toastifyError } from './toastify'
 import streamSaver from 'streamsaver'
+import updateOptions from '../authorizedOption'
 
 const exportDicom = {
 
     exportHirachicalDicoms(OrthancIDsArray){
-        return fetch('/api/tools/create-archive/', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              Synchronous : false,
-              Resources : OrthancIDsArray
-            })
-          }).then((answer) => {
+
+        const exportHirachicalDicomsOption =  {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            Synchronous : false,
+            Resources : OrthancIDsArray
+          })
+        }
+
+        return fetch('/api/tools/create-archive/', updateOptions(exportHirachicalDicomsOption) ).then((answer) => {
             if (!answer.ok) { throw answer }
             return answer.json()
           })
@@ -24,7 +28,8 @@ const exportDicom = {
     },
 
     exportDicomDirDicoms( OrthancIDsArray ){
-      return fetch('/api/tools/create-media-extended/', {
+
+      const exportDicomDirDicomsOption =  {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -34,7 +39,9 @@ const exportDicom = {
           Synchronous : false,
           Resources : OrthancIDsArray
         })
-      }).then((answer) => {
+      }
+
+      return fetch('/api/tools/create-media-extended/', updateOptions(exportDicomDirDicomsOption) ).then((answer) => {
         if (!answer.ok) { throw answer }
         return (answer.json())
       }).catch((error) => {
