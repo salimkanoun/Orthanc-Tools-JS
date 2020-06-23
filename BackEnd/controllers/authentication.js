@@ -10,7 +10,6 @@ authentication = async function (req, res) {
 
       let user = new Users(body.username)
       let infosUser = await user.getUserRight()
-      //console.log(infosUser.admin)
 
       payload = {
         username: body.username,
