@@ -106,7 +106,10 @@ class Users {
       where: {username: this.username}
     });
 
-    console.log("Affichage:")
+    console.log("Affichage Last name:")
+    console.log(user.last_name)
+
+    console.log("Affichage Role (ca marche pas!!):")
     console.log(user.role)
 
     /*
