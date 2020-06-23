@@ -1,9 +1,11 @@
 import { toastifySuccess, toastifyError } from './toastify'
+import updateOptions from '../authorizedOption'
 
 const queryRobot = {
 
     createRobot(username, projectName, retrieveArray){
-        return fetch('/api/robot/'+username+'/retrieve', {
+
+        const createRobotOption =  {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -13,7 +15,9 @@ const queryRobot = {
                     projectName: projectName, 
                     retrieveArray: retrieveArray 
                 })
-        }).then((answer) => {
+        }
+
+        return fetch('/api/robot/'+username+'/retrieve', updateOptions(createRobotOption) ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).then(() => toastifySuccess('Sent To Retrieve Robot'))
@@ -24,13 +28,16 @@ const queryRobot = {
     },
 
     validateRobot(username){
-        return fetch("/api/robot/"+username+"/retrieve/validate", {
+
+        const validateRobotOption = {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then((answer) => {
+        }
+
+        return fetch("/api/robot/"+username+"/retrieve/validate", updateOptions(validateRobotOption) ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {
@@ -39,21 +46,27 @@ const queryRobot = {
     },
 
     deleteRobot(username){
-        return fetch("/api/robot/"+username+"/retrieve", {
+
+        const deleteRobotOption = {
             method: "DELETE",
-        }).catch((error) => {
+        }
+
+        return fetch("/api/robot/"+username+"/retrieve", updateOptions(deleteRobotOption) ).catch((error) => {
             toastifyError(error)
         })
     },
 
     getAllRobotsDetails(){
-        return fetch("/api/robot/retrieve", {
+
+        const getAllRobotsDetails =  {
             method: "GET",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then((answer) => {
+        }
+
+        return fetch("/api/robot/retrieve", updateOptions(getAllRobotsDetails) ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {
@@ -62,13 +75,16 @@ const queryRobot = {
     },
 
     getRobotDetails(username){
-        return fetch( "/api/robot/"+username+"/retrieve", {
+
+        const getRobotDetailsOption =  {
             method: "GET",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then((answer) => {
+        }
+
+        return fetch( "/api/robot/"+username+"/retrieve", updateOptions(getRobotDetailsOption) ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {
@@ -78,13 +94,15 @@ const queryRobot = {
 
     deleteRobotItem(username, item){
 
-        return fetch("/api/robot/"+username+"/retrieve/"+item, {
+        const deleteRobotItemOption =  {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then((answer) => {
+        }
+
+        return fetch("/api/robot/"+username+"/retrieve/"+item, updateOptions(deleteRobotItemOption) ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {

@@ -5,7 +5,7 @@ const query = {
 
     dicomQuery(aet, queryDetails){
 
-      var dicomQueryOption = {
+      const dicomQueryOption = {
         method: "POST",
         headers: {
           'Accept': 'application/json',
@@ -22,7 +22,7 @@ const query = {
 
     retrieveAnswer ( orthancIdQuery ) {
 
-      var retrieveAnswerOption =  {
+      const retrieveAnswerOption =  {
         method: "GET",
         headers: {
           'Accept': 'application/json',

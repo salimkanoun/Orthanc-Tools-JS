@@ -30,6 +30,8 @@ function decode (req, res) {
 
 const userAuthMidelware = function (req, res, next) {
   
+  let decoded;
+
   try {
     decoded = decode(req, res);
   }
@@ -42,6 +44,8 @@ const userAuthMidelware = function (req, res, next) {
 
 const userAdminMidelware = async function (req, res, next) {
   
+  let decoded;
+
   try {
     decoded = decode(req, res);
   }
@@ -56,6 +60,8 @@ const userAdminMidelware = async function (req, res, next) {
 
 const uploadMidelware = async function (req, res, next) {
   
+  let decoded;
+
   try {
     decoded = decode(req, res);
   }
@@ -70,6 +76,8 @@ const uploadMidelware = async function (req, res, next) {
 
 const contentMidelware = async function (req, res, next) {
   
+  let decoded;
+
   try {
     decoded = decode(req, res);
   }
@@ -84,6 +92,8 @@ const contentMidelware = async function (req, res, next) {
 
 const anonMidelware = async function (req, res, next) {
   
+  let decoded;
+
   try {
     decoded = decode(req, res);
   }
@@ -98,6 +108,8 @@ const anonMidelware = async function (req, res, next) {
 
 const exportLocalMidelware = async function (req, res, next) {
   
+  let decoded;
+
   try {
     decoded = decode(req, res);
   }
@@ -112,6 +124,8 @@ const exportLocalMidelware = async function (req, res, next) {
 
 const exportExternMidelware = async function (req, res, next) {
   
+  let decoded;
+
   try {
     decoded = decode(req, res);
   }
@@ -126,6 +140,8 @@ const exportExternMidelware = async function (req, res, next) {
 
 const queryMidelware = async function (req, res, next) {
   
+  let decoded;
+
   try {
     decoded = decode(req, res);
   }
@@ -140,6 +156,8 @@ const queryMidelware = async function (req, res, next) {
 
 const autoQueryMidelware = async function (req, res, next) {
   
+  let decoded;
+
   try {
     decoded = decode(req, res);
   }
@@ -154,6 +172,8 @@ const autoQueryMidelware = async function (req, res, next) {
 
 const deleteMidelware = async function (req, res, next) {
   
+  let decoded;
+
   try {
     decoded = decode(req, res);
   }
