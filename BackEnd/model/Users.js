@@ -102,7 +102,7 @@ class Users {
 
   async getUserRight(){
     const user = await db.User.findOne({ 
-      attributes: ['role'],
+      attributes: ['role', 'last_name'],
       where: {username: this.username}
     });
 
