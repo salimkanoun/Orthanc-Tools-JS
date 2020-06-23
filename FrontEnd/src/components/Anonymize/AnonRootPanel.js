@@ -36,7 +36,7 @@ class AnonRootPanel extends Component {
                     null
                 }
                 
-                <div className='jumbotron'>
+                <div className='jumbotron' hidden={this.state.progress}>
                     <h2 className='card-title mb-3'>Anonymize</h2>
                     <AnonymizePanel setProgress={this.setProgress}/>
                 </div>

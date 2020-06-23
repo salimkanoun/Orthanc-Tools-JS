@@ -5,7 +5,7 @@ import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy';
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
 import apis from '../../services/apis';
 
-import { addToAnonymizedList } from '../../actions/AnonList'
+import { addToAnonymizedList, emptyAnonymizeList } from '../../actions/AnonList'
 
 
 class AnonymizePanelProgress extends Component {
@@ -59,6 +59,7 @@ class AnonymizePanelProgress extends Component {
                 failures: failures
             })
         } while (robot.status !== 'Finished')
+        this.props.emptyAnonymizeList()
         this.props.setProgress(false)
     }
     
@@ -79,6 +80,7 @@ class AnonymizePanelProgress extends Component {
     }
 
     render() {
+        let total = this.state.success + this.state.failures
         return (
             <Fragment>
                 <Modal show={this.state.show} scrollable={true} onHide={()=>this.setModal()}>
@@ -99,7 +101,8 @@ class AnonymizePanelProgress extends Component {
                         <button type='button' className='btn btn-primary text-center' onClick={()=>this.setModal()}>Close</button>
                     </Modal.Footer>
                 </Modal>
-                <div style={{width: '15%'}}>
+                {total.toFixed(2) + ' %'}
+                <div style={{width: '15%'}} hidden={this.state.success === 0}>
                     <CircularProgressbarWithChildren
                     value={this.state.success}
                     strokeWidth={20}
@@ -112,7 +115,7 @@ class AnonymizePanelProgress extends Component {
                     Width here needs to be (100 - 2 * strokeWidth)% 
                     in order to fit exactly inside the outer progressbar.
                     */}
-                    <div style={{ width: "60%" }}>
+                    <div style={{ width: "60%" }} hidden={this.state.failures === 0}>
                     <CircularProgressbar
                         value={this.state.failures}
                         styles={buildStyles({
@@ -126,9 +129,9 @@ class AnonymizePanelProgress extends Component {
                 
 
                 <button type='button' className='btn btn-info float-right mr-2' onClick={()=>this.setModal()} >Show Details</button>
-                <button type='button' className='btn btn-danger float-right mr-2' onClick={()=>alert('not implemented yet')} >Delete</button>
-                <button type='button' className='btn btn-primary float-right mr-2' onClick={()=>alert('not implemented yet')} >Resume</button>
-                <button type='button' className='btn btn-warning float-right mr-2' onClick={()=>alert('not implemented yet')} >Pause</button>
+                <button type='button' className='btn btn-danger float-right mr-2' onClick={()=>alert('not implemented yet')} disabled>Delete</button>
+                <button type='button' className='btn btn-primary float-right mr-2' onClick={()=>alert('not implemented yet')} disabled>Resume</button>
+                <button type='button' className='btn btn-warning float-right mr-2' onClick={()=>alert('not implemented yet')} disabled>Pause</button>
             </Fragment>
         );
     }
@@ -141,7 +144,8 @@ const mapStateToProps = state => {
 }
 
 const mapsDispatchToProps = {
-    addToAnonymizedList
+    addToAnonymizedList,
+    emptyAnonymizeList
 }
 
 export default connect(mapStateToProps, mapsDispatchToProps)(AnonymizePanelProgress)
