@@ -85,9 +85,9 @@ router.get('/jobs*', userAdminMidelware, reverseProxyGet)
 router.post('/jobs/*/*', userAdminMidelware, reverseProxyPost)
 // Orthanc Aets Routes
 router.get('/modalities', userAuthMidelware, reverseProxyGet)
-router.get('/modalities*', userAdminMidelware, reverseProxyGet)
-router.delete('/modalities/*', userAdminMidelware, reverseProxyDelete)
-router.post('/modalities/:dicom/echo', userAdminMidelware, reverseProxyPost)
+router.get('/modalities*', userAuthMidelware, reverseProxyGet)
+router.delete('/modalities/*', userAuthMidelware, reverseProxyDelete)
+router.post('/modalities/:dicom/echo', userAuthMidelware, reverseProxyPost)
 router.put('/modalities/:dicom/', userAdminMidelware, reverseProxyPut)
 router.post('/modalities/*/store',exportLocalMidelware , reverseProxyPost )
 
@@ -111,9 +111,9 @@ router.post('/tools/create-archive', exportLocalMidelware , reverseProxyPost )
 router.post('/tools/create-media-extended', exportLocalMidelware , reverseProxyPost )
 
 //Orthanc Peers Routes
-router.get('/peers*', userAdminMidelware, reverseProxyGet)
-router.delete('/peers/*', userAdminMidelware, reverseProxyDelete)
-router.get('/peers/:peer/system', userAdminMidelware, reverseProxyGet)
+router.get('/peers*', userAuthMidelware, reverseProxyGet)
+router.delete('/peers/*', userAuthMidelware, reverseProxyDelete)
+router.get('/peers/:peer/system', userAuthMidelware, reverseProxyGet)
 router.put('/peers/:peer/', userAdminMidelware, reverseProxyPut)
 router.post('/peers/*/store', exportExternMidelware , reverseProxyPost )
 
@@ -139,12 +139,11 @@ router.delete('/patients/*', contentMidelware, reverseProxyDelete)
 router.delete('/studies/*', contentMidelware, reverseProxyDelete)
 router.delete('/series/*', contentMidelware, reverseProxyDelete)
 router.get('/instances/*', contentMidelware, reverseProxyGet)
-
 //plugins
 router.get('/plugins', userAdminMidelware, reverseProxyGet)
 
 //user 
-router.get('/user', getUsers)
-router.post('/user/create', createUser)
+router.get('/user', userAdminMidelware ,getUsers)
+router.post('/user/create', userAdminMidelware ,createUser)
 
 module.exports = router
