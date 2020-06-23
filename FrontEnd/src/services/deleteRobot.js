@@ -1,33 +1,30 @@
 import { toastifyError } from './toastify'
 
-const anon = {
+const deleteRobot = {
 
-
-    createAnonRobot(anonymizeArray){
-        //SK user salim hardcodé
-        return fetch('/api/robot/salim/anonymize', {
+    createDeleteRobot(deleteArray){
+        return fetch('/api/robot/salim/delete', {
             method: 'POST', 
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(anonymizeArray)
+            },
+            body: JSON.stringify(deleteArray)
         }).then(answer => {
             if (!answer.ok) {throw answer}
             return answer.json()
         }).catch(error => {
-            toastifyError(error)
+            toastifyError('error', error)
         })
+    }, 
 
-    },
-
-    getAnonJob(){
-        return fetch('/api/robot/salim/anonymize', {
+    getDeleteRobot(){
+        return fetch('/api/robot/salim/delete', {
             method: 'GET', 
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
-              }
+            },
         }).then(answer => {
             if (!answer.ok) {throw answer}
             return answer.json()
@@ -35,6 +32,8 @@ const anon = {
             toastifyError(error)
         })
     }
+
+
 }
 
-export default anon
+export default deleteRobot

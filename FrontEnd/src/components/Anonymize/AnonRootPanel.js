@@ -8,16 +8,37 @@ import AnonymizePanelProgress from './AnonymizePanelProgress';
 
 class AnonRootPanel extends Component {
 
+    state = {
+        progress: false
+    }
+
+    constructor (props) {
+        super(props)
+        this.setProgress = this.setProgress.bind(this)
+    }
+    
+    setProgress(progress){
+        this.setState({
+            progress: progress
+        })
+    }
+
     render() {
         return (
             <div>
-                <div className='jumbotron' hidden={true}> {/*Wait for the backend*/}
-                    <h2 className='card-title mb-3'>Anonymize in progress</h2>
-                    <AnonymizePanelProgress />
-                </div>
-                <div className='jumbotron'>
+                {
+                    this.state.progress ?
+                    <div className='jumbotron' >
+                        <h2 className='card-title mb-3'>Anonymize in progress</h2>
+                        <AnonymizePanelProgress setProgress={this.setProgress} />
+                    </div> 
+                    :
+                    null
+                }
+                
+                <div className='jumbotron' hidden={this.state.progress}>
                     <h2 className='card-title mb-3'>Anonymize</h2>
-                    <AnonymizePanel />
+                    <AnonymizePanel setProgress={this.setProgress}/>
                 </div>
                 <div className='jumbotron' hidden={this.props.anonymizedList && this.props.anonymizedList.length === 0}>
                     <AnonymizedResults />

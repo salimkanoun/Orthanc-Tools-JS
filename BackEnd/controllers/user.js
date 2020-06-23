@@ -5,7 +5,8 @@ var Users = require('../model/Users')
         try {
             await Users.createUser(body)
         } catch (error) {
-            res.status(401).send('Fail')
+            console.log(error)
+            res.status(402).send('Fail')
         }
     }
 
@@ -13,7 +14,6 @@ var Users = require('../model/Users')
         let user
         try {
             user = await Users.getUsers()
-            console.log(user)
         } catch (error) {
             console.log(error)
             res.status(401).send('fail to get users')

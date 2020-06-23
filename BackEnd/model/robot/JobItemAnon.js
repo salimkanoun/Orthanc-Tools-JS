@@ -13,11 +13,11 @@ class JobItemAnon extends JobItem{
     }
 
     setAnonymizedOrthancStudyID(studyID){
-        this.anonymizedStudyID = studyID
+        this.anonymizedOrthancStudyID = studyID
     }
 
     getAnonymizedOrthancStudyID(){
-        return this.anonymizedStudyID
+        return this.anonymizedOrthancStudyID
     }
 
 }

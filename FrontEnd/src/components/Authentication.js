@@ -87,13 +87,13 @@ export default class Authentication extends Component {
 
   render () {
     if (this.state.authenthified) {
-      return <Redirect to='/query' />
+      return <Redirect to='/orthanc-content' />
     }
     return (
       <div className='vertical-center'>
-        <div className='text-center' id='login'> 
+        <div className='shadow text-center' id='login'> 
           <div className='alert alert-danger' id='error' style={{ display:  this.state.errorMessage === undefined ?  'none' : '' }}>{this.state.errorMessage}</div>
-          <div className='block-title block block-400'>Authentication</div>
+          <div className='block-title block block-400'>Orthanc-Tools-JS</div>
           <div className='block-content block block-400'>
             <form id='login-form' onKeyPress={this.handleKeyDown}>
 

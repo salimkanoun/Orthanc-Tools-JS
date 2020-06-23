@@ -31,6 +31,7 @@ class AnonymizePanel extends Component {
         this.changeProfile = this.changeProfile.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.autoFill = this.autoFill.bind(this)
+        this.testAllId = this.testAllId.bind(this)
     }
 
     updateProgress(progress, i){
@@ -123,32 +124,34 @@ class AnonymizePanel extends Component {
         return studies
     }
 
+    testAllId(){
+        let answer = true
+        this.props.anonList.forEach((item) => {
+            if (item.PatientMainDicomTags.newPatientID === undefined)
+                answer = false
+        })
+        return answer
+    }
+
     async anonymize(){
-        this.setState({
-            monitors: []
-        })
-        let listToAnonymize = []
-        let listOK = true
-        this.props.anonList.forEach(element => {
-            let payload = {
-                OrthancStudyID: element.ID, 
-                profile: this.props.profile
-            }
-            payload = {
-                ...payload, 
-                newPatientName: element.PatientMainDicomTags.newPatientName, 
-                newPatientID: element.PatientMainDicomTags.newPatientID, 
-                newStudyDescription: element.MainDicomTags.newStudyDescription ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
-                newAccessionNumber: element.MainDicomTags.newAccessionNumber ? element.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
-            }
-            if (payload.ID === undefined)
-                listOK = false
-            if (Object.keys(payload).length > 2)
-                listToAnonymize.push(payload)
-        })
-            if (listOK){
-                await apis.anon.anonymize(listToAnonymize) //wait for the robot's answer to know what do to next
-            }else toastifyError('Fill all PatientID to anonymize')
+        if (this.testAllId()){ //check all id 
+            let listToAnonymize = []
+            this.props.anonList.forEach(element => {
+                let anonItem = {
+                    orthancStudyID: element.ID, 
+                    profile: this.props.profile, 
+                    newPatientName: element.PatientMainDicomTags.newPatientName, 
+                    newPatientID: element.PatientMainDicomTags.newPatientID, 
+                    newStudyDescription: element.MainDicomTags.newStudyDescription ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
+                    newAccessionNumber: element.MainDicomTags.newAccessionNumber ? element.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
+                }
+
+                listToAnonymize.push(anonItem) 
+            })
+
+            let answer = await apis.anon.createAnonRobot(listToAnonymize) //wait for the robot's answer to know what do to next
+            this.props.setProgress(answer)
+        } else toastifyError('Fill all patient ID')
     }
 
     async addNewStudy(jobID){

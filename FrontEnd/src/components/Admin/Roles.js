@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component, Fragment } from "react"
 import Select from "react-select";
 import Toggle from 'react-toggle'
 
@@ -67,15 +67,15 @@ class Roles extends Component {
 
     render() {
         return (
-            <div className='jumbotron'>
+            <Fragment>
                 <h2 className='card-title mb-4'>User Roles</h2>
-                <div className="row-md mb-4">
-                    <div className='col-md-4'>
-                        <Select single options={this.roles} onChange={this.handleChange}/>
-                    </div>
+                <div className='row text-center'>
+                <div className='col-3' >
+                    <Select defaultValue={this.roles[0]} single options={this.roles} onChange={this.handleChange}/>
                 </div>
+                <div className='col-lg' >
                 <div className="row mb-2">
-                    <div className='col-2'>
+                    <div className='col-3'>
                         <h5>Administration</h5>
                     </div>
                     <div className='col-sm'>
@@ -83,7 +83,7 @@ class Roles extends Component {
                     </div>
                 </div>
                 <div className="row mb-2">
-                    <div className='col-2'>
+                    <div className='col-3'>
                         <h5>Anonymisation</h5>
                     </div>
                     <div className='col-sm'>
@@ -91,7 +91,7 @@ class Roles extends Component {
                     </div>
                 </div>
                 <div className="row mb-2">
-                    <div className='col-2'>
+                    <div className='col-3'>
                         <h5>Auto-Query</h5>
                     </div>
                     <div className='col-sm'>
@@ -99,7 +99,7 @@ class Roles extends Component {
                     </div>
                 </div>
                 <div className="row mb-2">
-                    <div className='col-2'>
+                    <div className='col-3'>
                         <h5>Content</h5>
                     </div>
                     <div className='col-sm'>
@@ -107,7 +107,7 @@ class Roles extends Component {
                     </div>
                 </div>
                 <div className="row mb-2">
-                    <div className='col-2'>
+                    <div className='col-3'>
                         <h5>Delete</h5>
                     </div>
                     <div className='col-sm'>
@@ -115,7 +115,7 @@ class Roles extends Component {
                     </div>
                 </div>
                 <div className="row mb-2">
-                    <div className='col-2'>
+                    <div className='col-3'>
                         <h5>Export Local</h5>
                     </div>
                     <div className='col-sm'>
@@ -123,7 +123,7 @@ class Roles extends Component {
                     </div>
                 </div>
                 <div className="row mb-2">
-                    <div className='col-2'>
+                    <div className='col-3'>
                         <h5>Export Extern</h5>
                     </div>
                     <div className='col-sm'>
@@ -131,7 +131,7 @@ class Roles extends Component {
                     </div>
                 </div>
                 <div className="row mb-2">
-                    <div className='col-2'>
+                    <div className='col-3'>
                         <h5>Query</h5>
                     </div>
                     <div className='col-sm'>
@@ -139,7 +139,7 @@ class Roles extends Component {
                     </div>
                 </div>
                 <div className="row mb-2">
-                    <div className='col-2'>
+                    <div className='col-3'>
                         <h5>Upload</h5>
                     </div>
                     <div className='col-sm'>
@@ -147,7 +147,9 @@ class Roles extends Component {
                     </div>
                 </div>
                 <button className='btn btn-primary mt-2' type='button' onClick={()=>alert('not implemented yet')} >Send</button>
-            </div>
+                </div>
+                </div>
+            </Fragment>
         );
     }
 }

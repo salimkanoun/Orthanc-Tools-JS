@@ -1,11 +1,12 @@
 const JobItem = require('./JobItem')
 class Job{
 
-    constructor(type, username){
+    constructor(type, username, orthancObject){
         this.type = type
         this.username = username
         this.items = []
         this.status = Job.STATUS_PENDING
+        this.orthancObject = orthancObject
     }
 
     addItem(item){

@@ -4,12 +4,12 @@ var router = express.Router()
 require('express-async-errors')
 
 const { authentication, logOut } = require('../controllers/authentication')
-const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot2')
+const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob, addAnonJob, getAnonJob, getDeleteJob, addDeleteJob } = require('../controllers/Robot2')
 const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { anonymizeStudy } = require('../controllers/anonymize')
-const { getUsers } = require('../controllers/user')
+const { getUsers, createUser } = require('../controllers/user')
 
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
@@ -60,7 +60,11 @@ router.post('/tools/orthanc-tools-js/create-archive', userAuthMidelware, postExp
 // OrthancToolsJS Robot routes
 router.post('/robot/:username/retrieve', userAuthMidelware, addRobotJob)
 router.get('/robot/retrieve', userAdminMidelware, getAllRobotDetails)
+router.post('/robot/:username/anonymize', userAuthMidelware, addAnonJob)
+router.post('/robot/:username/delete', userAuthMidelware, addDeleteJob)
 router.get('/robot/:username/retrieve', userAuthMidelware, getRobotDetails)
+router.get('/robot/:username/delete', userAuthMidelware, getDeleteJob)
+router.get('/robot/:username/anonymize', userAuthMidelware, getAnonJob)
 router.delete('/robot/:username/:type', userAuthMidelware, deleteRobotJob)
 router.delete('/robot/:username/retrieve/:index', userAuthMidelware, removeQueryFromJob)
 router.post('/robot/:username/retrieve/validate', userAdminMidelware, validateRobotJob)
@@ -143,5 +147,6 @@ router.post('/anonymize', anonymizeStudy)
 
 //user 
 router.get('/user', getUsers)
+router.post('/user/create', createUser)
 
 module.exports = router
