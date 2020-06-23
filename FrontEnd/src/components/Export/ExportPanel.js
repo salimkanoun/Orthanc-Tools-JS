@@ -41,7 +41,6 @@ class ExportPanel extends Component {
             aets: aets,
             peers: peers
         })
-        this.confirm()
     }
 
     getExportIDArray(){
