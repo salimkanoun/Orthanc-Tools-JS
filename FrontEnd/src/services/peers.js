@@ -1,9 +1,10 @@
 import { toastifySuccess, toastifyError } from './toastify'
+import updateOptions from '../authorizedOption'
 
 const peers = {
 
     getPeers(){
-        return fetch('/api/peers')
+        return fetch('/api/peers', updateOptions() )
             .then((answer) => {
                 if (!answer.ok) { throw answer }
                 return (answer.json())
@@ -15,7 +16,7 @@ const peers = {
     },
 
     getPeersExpand(){
-        return fetch('/api/peers?expand')
+        return fetch('/api/peers?expand', updateOptions())
             .then((answer) => {
                 if (!answer.ok) { throw answer }
                 return (answer.json())
@@ -26,14 +27,17 @@ const peers = {
     },
 
     updatePeer(name, parameters){
-        return fetch('/api/peers/'+ name, {
+
+        const updatePeerOption = {
             method: 'PUT', 
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json' 
             }, 
             body: JSON.stringify(parameters)
-        }).then((answer) => {
+        }
+
+        return fetch('/api/peers/'+ name, updateOptions(updatePeerOption)).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {
@@ -42,9 +46,12 @@ const peers = {
     },
 
     deletePeer(name){
-        return fetch('/api/peers/' + name, {
+
+        const deletePeerOption = {
             method: 'DELETE'
-        }).then((answer) => {
+        }
+
+        return fetch('/api/peers/' + name, updateOptions(deletePeerOption)).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -53,7 +60,7 @@ const peers = {
     },
 
     echoPeer(peerName){
-        fetch ('/api/peers/' + peerName + '/system').then(response => {
+        fetch ('/api/peers/' + peerName + '/system', updateOptions()).then(response => {
             if (response.ok) return response.json()
             else throw response
         }).then((response) => {
@@ -62,7 +69,8 @@ const peers = {
     }, 
 
     storePeer(name, orthancIDsArray){
-        return fetch ('/api/peers/' + name + '/store', {
+
+        const storePeerOption = {
             method: 'POST', 
             headers: {
               Accept: 'application/json',
@@ -72,7 +80,9 @@ const peers = {
                 Synchronous : false,
                 Resources : orthancIDsArray
             })
-        }).then((answer) => {
+        }
+
+        return fetch ('/api/peers/' + name + '/store', updateOptions(storePeerOption)).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch(error => {

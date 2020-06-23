@@ -1,16 +1,21 @@
 import { toastifyError } from './toastify'
+import updateOptions from '../authorizedOption'
+
 
 const deleteRobot = {
 
     createDeleteRobot(deleteArray){
-        return fetch('/api/robot/salim/delete', {
+
+        const createDeleteRobotOption = {
             method: 'POST', 
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(deleteArray)
-        }).then(answer => {
+        }
+
+        return fetch('/api/robot/salim/delete', updateOptions(createDeleteRobotOption)).then(answer => {
             if (!answer.ok) {throw answer}
             return answer.json()
         }).catch(error => {
@@ -19,13 +24,16 @@ const deleteRobot = {
     }, 
 
     getDeleteRobot(){
-        return fetch('/api/robot/salim/delete', {
+
+        const getDeleteRobotOption = {
             method: 'GET', 
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
-        }).then(answer => {
+        }
+
+        return fetch('/api/robot/salim/delete', updateOptions(getDeleteRobotOption)).then(answer => {
             if (!answer.ok) {throw answer}
             return answer.json()
         }).catch(error => {

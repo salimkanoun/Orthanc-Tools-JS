@@ -29,7 +29,7 @@ const aets = {
 
   updateAet (name, parameters) {
 
-    var updateAetOption =  {
+    const updateAetOption =  {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
@@ -49,7 +49,7 @@ const aets = {
 
   deleteAet (name) {
 
-    var deleteAetOption = {
+    const deleteAetOption = {
       method: 'DELETE'
     }
 
@@ -64,7 +64,7 @@ const aets = {
 
   echoAet (aetName) {
 
-    var echoAetOption = {
+    const echoAetOption = {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -83,7 +83,7 @@ const aets = {
 
   storeAET( name, orthancIDsArray){
 
-    var storeAETOption = {
+    const storeAETOption = {
       method: 'POST', 
       headers: {
         Accept: 'application/json',
