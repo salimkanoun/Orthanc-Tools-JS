@@ -15,7 +15,8 @@ const { getUsers, createUser } = require('../controllers/user')
 const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
 
-const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authentication')
+const { userAuthMidelware, userAdminMidelware, uploadMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
+    exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware } = require('../midelwares/authentication')
 
 
 /**
@@ -58,46 +59,46 @@ router.post('/tools/orthanc-tools-js/create-archive', userAuthMidelware, postExp
 
 // OrthancToolsJS Robot routes
 router.post('/robot/:username/retrieve', userAuthMidelware, addRobotJob)
+router.get('/robot/retrieve', userAdminMidelware, getAllRobotDetails)
 router.post('/robot/:username/anonymize', userAuthMidelware, addAnonJob)
 router.post('/robot/:username/delete', userAuthMidelware, addDeleteJob)
-router.get('/robot/retrieve', [userAuthMidelware, userAdminMidelware], getAllRobotDetails)
 router.get('/robot/:username/retrieve', userAuthMidelware, getRobotDetails)
 router.get('/robot/:username/delete', userAuthMidelware, getDeleteJob)
 router.get('/robot/:username/anonymize', userAuthMidelware, getAnonJob)
 router.delete('/robot/:username/:type', userAuthMidelware, deleteRobotJob)
 router.delete('/robot/:username/retrieve/:index', userAuthMidelware, removeQueryFromJob)
-router.post('/robot/:username/retrieve/validate', [userAuthMidelware, userAdminMidelware], validateRobotJob)
+router.post('/robot/:username/retrieve/validate', userAdminMidelware, validateRobotJob)
 
 // OrthancToolsJS Options routes
-router.get('/options', [userAuthMidelware, userAdminMidelware], getSchedule)
-router.put('/options', [userAuthMidelware, userAdminMidelware], changeSchedule)
+router.get('/options', userAdminMidelware, getSchedule)
+router.put('/options', userAdminMidelware, changeSchedule)
 // OrthancToolsJS Settings routes
-router.get('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], getOrthancServer)
-router.put('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], setOrthancServer)
+router.get('/options/orthanc-server', userAdminMidelware, getOrthancServer)
+router.put('/options/orthanc-server', userAdminMidelware, setOrthancServer)
 
 // OrthancToolsJS API to get simplified results from Orthanc
 router.get('/queries/:orthancIdQuery/parsedAnswers', userAuthMidelware, getParsedAnswer)
 
 // Orthanc Query Routes
-router.post('/modalities/:modality/query', userAuthMidelware, reverseProxyPost)
-router.get('/queries/:orthancIdQuery/answers*', userAuthMidelware, reverseProxyGet)
+router.post('/modalities/:modality/query', queryMidelware, reverseProxyPost)
+router.get('/queries/:orthancIdQuery/answers*', queryMidelware, reverseProxyGet)
 
 // Orthanc System API
-router.get('/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.get('/system', userAdminMidelware, reverseProxyGet)
 
 // Orthanc Dicom Import Route
 router.post('/instances', [userAuthMidelware], reverseProxyPostUploadDicom)
 
 // Orthanc Job API
-router.get('/jobs*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
-router.post('/jobs/*/*', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
+router.get('/jobs*', userAdminMidelware, reverseProxyGet)
+router.post('/jobs/*/*', userAdminMidelware, reverseProxyPost)
 
 // Orthanc Aets Routes
 router.get('/modalities', userAuthMidelware, reverseProxyGet)
-router.get('/modalities*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
-router.delete('/modalities/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
-router.post('/modalities/:dicom/echo', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
-router.put('/modalities/:dicom/', [[userAuthMidelware, userAdminMidelware]], reverseProxyPut)
+router.get('/modalities*', userAdminMidelware, reverseProxyGet)
+router.delete('/modalities/*', userAdminMidelware, reverseProxyDelete)
+router.post('/modalities/:dicom/echo', userAdminMidelware, reverseProxyPost)
+router.put('/modalities/:dicom/', userAdminMidelware, reverseProxyPut)
 router.post('/modalities/*/store',userAuthMidelware , reverseProxyPost )
 
 // Orthanc DicomWebRoutes
@@ -109,37 +110,37 @@ router.post('/tools/create-archive',[userAuthMidelware] , reverseProxyPost )
 router.post('/tools/create-media-extended',[userAuthMidelware] , reverseProxyPost )
 
 //Orthanc Peers Routes
-router.get('/peers*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
-router.delete('/peers/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
-router.get('/peers/:peer/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
-router.put('/peers/:peer/', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
+router.get('/peers*', userAdminMidelware, reverseProxyGet)
+router.delete('/peers/*', userAdminMidelware, reverseProxyDelete)
+router.get('/peers/:peer/system', userAdminMidelware, reverseProxyGet)
+router.put('/peers/:peer/', userAdminMidelware, reverseProxyPut)
 router.post('/peers/*/store', userAuthMidelware , reverseProxyPost )
 
 //Orthanc reset route
-router.post('/tools/reset', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
+router.post('/tools/reset', userAdminMidelware, reverseProxyPost)
 
 //Orthanc shutdown route
-router.post('/tools/shutdown', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
+router.post('/tools/shutdown', userAdminMidelware, reverseProxyPost)
 
 //Orthanc get and set Verbosity
-router.get('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
-router.put('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseProxyPutPlainText)
+router.get('/tools/log-level', userAdminMidelware, reverseProxyGet)
+router.put('/tools/log-level', userAdminMidelware, reverseProxyPutPlainText)
 
 //Orthanc content
-router.post('/tools/find',  [userAuthMidelware, userAdminMidelware], reverseProxyPost )
-router.get('/patients/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
-router.post('/patients/*/modify', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
-router.get('/studies/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
-router.post('/studies/*/modify', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
-router.get('/series/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
-router.post('/series/*/modify', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
-router.delete('/patients/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
-router.delete('/studies/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
-router.delete('/series/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
-router.get('/instances/*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.post('/tools/find', userAdminMidelware, reverseProxyPost )
+router.get('/patients/*', userAdminMidelware, reverseProxyGet)
+router.post('/patients/*/modify', userAdminMidelware, reverseProxyPost)
+router.get('/studies/*', userAdminMidelware, reverseProxyGet)
+router.post('/studies/*/modify', userAdminMidelware, reverseProxyPost)
+router.get('/series/*', userAdminMidelware, reverseProxyGet)
+router.post('/series/*/modify', userAdminMidelware, reverseProxyPost)
+router.delete('/patients/*', userAdminMidelware, reverseProxyDelete)
+router.delete('/studies/*', userAdminMidelware, reverseProxyDelete)
+router.delete('/series/*', userAdminMidelware, reverseProxyDelete)
+router.get('/instances/*', userAdminMidelware, reverseProxyGet)
 
 //plugins
-router.get('/plugins', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+router.get('/plugins', userAdminMidelware, reverseProxyGet)
 
 //Anonymize simplified API
 router.post('/anonymize', anonymizeStudy)

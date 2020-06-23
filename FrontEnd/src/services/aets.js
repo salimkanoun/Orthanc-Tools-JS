@@ -1,9 +1,11 @@
 import { toastifySuccess, toastifyError } from './toastify'
+import updateOptions from '../authorizedOption'
+
 
 const aets = {
 
   getAets () {
-    return fetch('/api/modalities')
+    return fetch('/api/modalities', updateOptions())
       .then((answer) => {
         if (!answer.ok) { throw answer }
         return (answer.json())
@@ -15,7 +17,7 @@ const aets = {
   },
 
   getAetsExpand () {
-    return fetch('/api/modalities?expand')
+    return fetch('/api/modalities?expand', updateOptions())
       .then((answer) => {
         if (!answer.ok) { throw answer }
         return (answer.json())
@@ -26,14 +28,17 @@ const aets = {
   },
 
   updateAet (name, parameters) {
-    return fetch('/api/modalities/' + name, {
+
+    var updateAetOption =  {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(parameters)
-    }).then((answer) => {
+    } 
+
+    return fetch('/api/modalities/' + name, updateOptions(updateAetOption)).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     })
@@ -43,9 +48,12 @@ const aets = {
   },
 
   deleteAet (name) {
-    return fetch('/api/modalities/' + name, {
+
+    var deleteAetOption = {
       method: 'DELETE'
-    }).then((answer) => {
+    }
+
+    return fetch('/api/modalities/' + name, updateOptions(deleteAetOption) ).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     })
@@ -55,14 +63,17 @@ const aets = {
   },
 
   echoAet (aetName) {
-    fetch('/api/modalities/' + aetName + '/echo', {
+
+    var echoAetOption = {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({})
-    }).then(response => {
+    }
+
+    fetch('/api/modalities/' + aetName + '/echo', updateOptions(echoAetOption) ).then(response => {
       if (response.ok) response.json()
       else throw response
     }).then((answer) => {
@@ -71,7 +82,8 @@ const aets = {
   }, 
 
   storeAET( name, orthancIDsArray){
-    return fetch ('/api/modalities/' + name + '/store', {
+
+    var storeAETOption = {
       method: 'POST', 
       headers: {
         Accept: 'application/json',
@@ -81,7 +93,9 @@ const aets = {
         Synchronous : false,
         Resources : orthancIDsArray
         })
-      }).then((answer) => {
+      }
+
+    return fetch ('/api/modalities/' + name + '/store', updateOptions(storeAETOption)).then((answer) => {
           if (!answer.ok) {throw answer}
           return (answer.json())
       }).catch(error => {

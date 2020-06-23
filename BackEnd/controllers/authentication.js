@@ -1,4 +1,5 @@
 var Users = require('../model/Users')
+const jwt = require("jsonwebtoken")
 
 authentication = async function (req, res) {
   const body = req.body
@@ -6,8 +7,27 @@ authentication = async function (req, res) {
     const userObject = new Users(body.username)
     const checkPassword = await userObject.checkPassword(body.password)
     if (checkPassword) {
-      req.session.username = body.username
-      res.json(true)
+
+      let user = new Users(body.username)
+      let infosUser = await user.getUserRight()
+      //console.log(infosUser.admin)
+
+      payload = {
+        username: body.username,
+        admin: true,
+        upload: true,
+        content: true,
+        anon: true,
+        exportLocal: true,
+        exportExtern: true,
+        query: true,
+        autoQuery: true,
+        delet: true
+      }
+
+      var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
+
+      res.json(TOKEN);
     } else {
       res.status(401).send('Wrong Credential')
     }
@@ -18,8 +38,7 @@ authentication = async function (req, res) {
 
 logOut = function (req, res){
   try {
-    req.session.destroy()
-    res.json(true)
+    
   } catch (error){
     console.log(error)
     console.log('logOut fail')

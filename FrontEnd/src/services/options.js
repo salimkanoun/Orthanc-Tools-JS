@@ -1,4 +1,25 @@
 import { toastifySuccess, toastifyError } from './toastify'
+import updateOptions from '../authorizedOption'
+
+var optionPlugin = { 
+  method: 'GET'
+}
+
+var optionOrthancSystem = {
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+  }
+}
+
+var optionOrthancServer = {
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+  }
+}
 
 const Options = {
 
@@ -51,26 +72,14 @@ const Options = {
   },
 
   getOrthancServer () {
-    return fetch('/api/options/orthanc-server', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then((answer) => {
+    return fetch('/api/options/orthanc-server', updateOptions(optionOrthancServer)).then((answer) => {
       return (answer.json())
     }).then((answer) => { return answer })
     .catch(error =>{ toastifyError('No connexion to BackEnd')})
   },
 
   getOrthancSystem () {
-    return fetch('/api/system', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then((answer) => {
+    return fetch('/api/system', updateOptions(optionOrthancSystem)).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).then((answer) => {
@@ -130,9 +139,7 @@ const Options = {
   },
 
   getPlugins(){
-    return fetch('api/plugins',{ 
-      method: 'GET'
-    }).then(response => {
+    return fetch('api/plugins',updateOptions(optionPlugin)).then(response => {
         if (response.ok) {
           return response.json()
         }

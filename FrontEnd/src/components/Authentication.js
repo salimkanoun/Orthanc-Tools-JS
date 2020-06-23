@@ -19,6 +19,7 @@ export default class Authentication extends Component {
   }
 
   async handleClick () {
+    
     const postData = {
       username: this.state.username,
       password: this.state.password
@@ -27,6 +28,18 @@ export default class Authentication extends Component {
     let newState = { }
 
     await apis.authentication.logIn(postData).then((answer)=>{
+    
+      // get token from fetch request
+      const token = answer;
+
+      //cookie's options
+      var d = new Date();
+      d.setTime(d.getTime() + (7*24*60*60*1000)); // cookie expire in 7 days
+      var expires = d.toUTCString();
+
+      // set token in cookie
+      document.cookie = `tokenOrthancJs=${token}; expires=${expires}`
+
       newState =  {
         accessCheck : answer
       }
