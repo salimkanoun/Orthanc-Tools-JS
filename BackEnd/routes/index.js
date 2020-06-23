@@ -65,8 +65,9 @@ router.post('/robot/:username/retrieve/validate', userAdminMidelware, validateRo
 router.post('/robot/:username/anonymize', anonMidelware, addAnonJob)
 router.get('/robot/:username/anonymize', anonMidelware, getAnonJob)
 //DeleteRobot
-router.post('/robot/:username/delete', deleteMidelware, addDeleteJob)
-router.get('/robot/:username/delete', deleteMidelware, getDeleteJob)
+//SK BUG MIDELWARE DELETE?
+router.post('/robot/:username/delete', userAuthMidelware, addDeleteJob)
+router.get('/robot/:username/delete', userAuthMidelware, getDeleteJob)
 
 //Removal of Robots
 //SK ICI MIDELWARE EN FONCTION DU TYPE?
