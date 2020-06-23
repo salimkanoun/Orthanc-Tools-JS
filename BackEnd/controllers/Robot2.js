@@ -134,12 +134,13 @@ const addDeleteJob = async function (req, res){
     }
     
     deleteJob = new JobDelete(req.params.username, new Orthanc())
-    robot.addJob(deleteJob)
-
+    
     body.forEach( (deleteOrthancID) => {
         let deleteItem = new JobItemDelete(deleteOrthancID)
         deleteJob.addItem(deleteItem)
     })
+    
+    robot.addJob(deleteJob)
     console.log(deleteJob)
     robot.getJob(req.params.username, Job.TYPE_DELETE).execute()
     res.json(true)
