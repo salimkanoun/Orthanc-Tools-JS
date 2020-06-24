@@ -44,8 +44,6 @@ class Users {
         password: hash,
         role: body.role,
         admin: true
-      }).then(function(user){
-        console.log('success : ', user.toJSON())
       }).catch(function (error){
         console.log(error, body)
       })

@@ -1,4 +1,4 @@
-import { toastifyError } from './toastify'
+import { toastifyError, toastifySuccess } from './toastify'
 import updateOptions from '../authorizedOption'
 
 const user = {
@@ -32,7 +32,7 @@ const user = {
 
       return fetch('/api/user/modify', updateOptions(modifyUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
-          return answer.json()
+          return answer.json(true)
       }).catch(error => {
         toastifyError(error)
       })
@@ -45,12 +45,12 @@ const user = {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         }, 
-        body: JSON.stringify(username)
+        body: JSON.stringify([username])
       }
       
       return fetch('/api/user/delete', updateOptions(deleteUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
-          console.log('user delete with success')
+          toastifySuccess('User Delete with success')
       }).catch(error => {
         console.log(error)
         toastifyError('error')
@@ -71,7 +71,7 @@ const user = {
 
       return fetch('/api/user/create', updateOptions(createUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
-          console.log('user created with success')
+          toastifySuccess('user created with success')
       }).catch(error => {
         toastifyError(error)
       })
