@@ -13,16 +13,19 @@ authentication = async function (req, res) {
 
       payload = {
         username: body.username,
-        admin: true,
-        upload: true,
-        content: true,
-        anon: true,
-        exportLocal: true,
-        exportExtern: true,
-        query: true,
-        autoQuery: true,
-        delet: true
+        admin: infosUser.admin,
+        upload: infosUser.upload,
+        content: infosUser.content,
+        anon: infosUser.anon,
+        export_local: infosUser.export_local,
+        export_extern: infosUser.export_extern,
+        query: infosUser.query,
+        auto_query: infosUser.auto_query,
+        delete: infosUser.delete,
+        modify: infosUser.modify
       }
+
+      console.log(payload)
 
       var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
 
@@ -37,12 +40,11 @@ authentication = async function (req, res) {
 
 logOut = function (req, res){
   try {
-    
+    console.log('user logs out') //Mettre en place un système pour rendre non viable le token apres deconnexion
   } catch (error){
     console.log(error)
     console.log('logOut fail')
   }
-  
 }
 
 module.exports = { authentication, logOut }

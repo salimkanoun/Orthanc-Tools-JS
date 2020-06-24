@@ -16,7 +16,7 @@ const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
 
 const { userAuthMidelware, userAdminMidelware, uploadMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
-    exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware } = require('../midelwares/authentication')
+    exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware } = require('../midelwares/authentication')
 
 
 /**

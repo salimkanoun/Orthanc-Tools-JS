@@ -186,5 +186,21 @@ const deleteMidelware = async function (req, res, next) {
   }
 }
 
+const modifyMidelware = async function (req, res, next) {
+  
+  let decoded;
+
+  try {
+    decoded = decode(req, res);
+  }
+  catch(err) {
+    return err;
+  }
+
+  if(decoded.modify) {
+    next() // pass the execution off to whatever request the client intended
+  }
+}
+
 module.exports = { userAuthMidelware, userAdminMidelware, uploadMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
-  exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware}    
+  exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware}    
