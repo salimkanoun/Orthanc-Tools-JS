@@ -8,11 +8,12 @@ class Users extends Component {
 
     state = {
         data : {
-            username: undefined, 
-            password: undefined,
+            id: undefined,
+            username: undefined,
             first_name: undefined, 
             last_name: undefined, 
             mail: undefined,
+            role: 'admin'
         },
         showModify: false,
         showDelete: false,
@@ -61,7 +62,9 @@ class Users extends Component {
     }
 
     async modify(){
-        await apis.User.modifyUser(this.state.data)
+        let data = {...this.state.data}
+        data = {...data, first_name: 'syl'}
+        await apis.User.modifyUser(data)
     }
 
     delete(){
@@ -84,7 +87,7 @@ class Users extends Component {
                     }
                 })
                 this.setState({
-                data: data
+                    data: data
                 })
             }
             
@@ -130,7 +133,15 @@ class Users extends Component {
 
     onHide(){
         this.setState(prevState => ({
-            showModify: !prevState.showModify
+            showModify: !prevState.showModify, 
+            data : {
+                id: undefined,
+                username: undefined,
+                first_name: undefined, 
+                last_name: undefined, 
+                mail: undefined,
+                role: 'admin'
+            },
         }))
     }
 
@@ -159,7 +170,7 @@ class Users extends Component {
                         {this.form()}
                     </Modal.Body>
                     <Modal.Footer>
-                        <button name='Edit' type='button' className='btn btn-warning float-right mr-2 mt-2' onClick={()=>alert('not implemented yet')}> Modify </button>
+                        <button name='Edit' type='button' className='btn btn-warning float-right mr-2 mt-2' onClick={this.modify}> Modify </button>
                         <button name='delete' type='button' className='btn btn-danger float-right mr-2 mt-2' onClick={() => this.setState({showDelete: true})}> Delete </button>
                         <button name='Edit' type='button' className='btn btn-info float-right mr-2 mt-2' onClick={()=>this.setState({showModify: false})}> Close </button>
                     </Modal.Footer>

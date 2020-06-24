@@ -21,7 +21,6 @@ const user = {
     }, 
 
     modifyUser(data){
-
       const modifyUserOption = {
         method: 'POST', 
         headers: {
@@ -31,7 +30,7 @@ const user = {
         body: JSON.stringify(data)
       }
 
-      return fetch('/api/user', updateOptions(modifyUserOption)).then((answer) => {
+      return fetch('/api/user/modify', updateOptions(modifyUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
           return answer.json()
       }).catch(error => {

@@ -32,21 +32,22 @@ class Users {
 
   static async createUser (body) {
     const saltRounds = 10
-    const promise = bcrypt.hash(body.password, saltRounds).then(function (hash) {
-      db.User.create({/**
-         username: 'test',
-        first_name: body.first_name,
-        last_name: body.last_name,
+    let id = null
+    await db.User.max('id').then(max => id = max + 1)
+     const promise = bcrypt.hash(body.password, saltRounds).then(function (hash) {
+      db.User.create({
+        id: id,
+        username: body.username,
+        first_name: body.fistName,
+        last_name: body.lastName,
         mail: body.mail,
         password: hash,
-        */
-        username: 'test',
-        first_name: 'test',
-        last_name: 'test',
-        mail: 'test',
-        password: 'test',
-        admin: true, 
-        role: 'admin'
+        role: body.role,
+        isAdmin: true
+      }).then(function(user){
+        console.log('success : ', user.toJSON())
+      }).catch(function (error){
+        console.log(error, body)
       })
     }).then(() => {
       return true
@@ -55,6 +56,7 @@ class Users {
     })
 
     return promise
+    
   }
 
   static async deleteUser (username) {
@@ -66,16 +68,19 @@ class Users {
     })
   }
 
-  static async modifyUser(username, password, isAdmin, role, firstName, lastName, mail){
-    db.Users.destroy({
-        where: {
-            username: username
-        }
-    })
-    try {
-        Users.createUser(username, password, isAdmin, role, firstName, lastName, mail)
-    } catch (error){
-        throw new Error('Fail to modify' + error)
+  static async modifyUser(data){
+     try {
+      await db.User.upsert({
+        id: data.id,
+        username: data.username, 
+        isAdmin: data.admin, 
+        first_name: data.first_name, 
+        last_name: data.last_name, 
+        mail: data.mail, 
+        role: data.role
+      })
+    } catch (error) {
+      console.log(error)
     }
     
 }

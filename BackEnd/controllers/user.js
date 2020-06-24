@@ -24,7 +24,7 @@ var Users = require('../model/Users')
     modifyUser = async function(req, res){
         const body = req.body
         try {
-            await Users.modifyUser(body.name, body)
+            await Users.modifyUser(body)
         } catch (error) {
             res.status(401).send('Fail to modify user')
         }
