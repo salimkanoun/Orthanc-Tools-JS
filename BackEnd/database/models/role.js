@@ -7,14 +7,14 @@ module.exports = (sequelize, DataTypes) => {
     upload: DataTypes.BOOLEAN,
     content: DataTypes.BOOLEAN,
     anon: DataTypes.BOOLEAN,
-    exportLocal: DataTypes.BOOLEAN,
-    exportExtern: DataTypes.BOOLEAN,
-    exportExtern: DataTypes.BOOLEAN,
+    export_local: DataTypes.BOOLEAN,
+    export_extern: DataTypes.BOOLEAN,
     query: DataTypes.BOOLEAN,
-    autoQuery: DataTypes.BOOLEAN,
+    auto_query: DataTypes.BOOLEAN,
     delete: DataTypes.BOOLEAN,
     admin: DataTypes.BOOLEAN,
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    modify:DataTypes.BOOLEAN
   }, {});
   Role.associate = function(models) {
     Role.hasOne(models.User, {

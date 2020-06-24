@@ -116,19 +116,15 @@ class Users {
     });
 
     const rights = await db.Role.findOne({
-      attributes: ['upload', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin'],
+      attributes: ['upload', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin','modify'],
       where: {name: user.role}
     });
-
-    console.log("TEST")
-    console.log(rights.export_local)
 
     if (user === null) {
       throw new Error('User Not Found')
     }
-    return "rights"
+    return rights
   }
-
 }
 
 module.exports = Users
