@@ -34,6 +34,7 @@ var Users = require('../model/Users')
         const name = req.body
         try {
             await Users.deleteUser(name)
+            res.json(true)
         } catch (error) {
             res.status(401).send('Fail to user')
         }

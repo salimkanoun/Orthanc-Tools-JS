@@ -81,10 +81,13 @@ class Users extends Component {
     }
 
     async delete(){
+        
         if (this.state.data.username !== undefined) {
-            await apis.User.deleteUser(this.state.data.username)
+            await apis.User.deleteUser(this.state.data.username).then(()=>{
+                this.setState({showDelete: false})
+                this.onHide()
+            })
         }
-        this.setState({showDelete: false})
     }
 
     async createUser(){
