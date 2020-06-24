@@ -32,7 +32,11 @@ class Roles {
       }
 
     static async getAllRoles () {
-        return await db.Role.findAll({attributes: ['name']}) //return a JSON
+        await db.Role.findAll(
+            {attributes: ['name']}
+        ).then((answer) => {
+            return answer
+        }).catch((error) => console.log(error))
     }
 
     static async getPermission (name) {
@@ -44,41 +48,16 @@ class Roles {
             'query',
             'auto_query',
             'delete',
-            'admin']}) //return a JSON
+            'admin']}).catch((error) => console.log(error)) //return a JSON
     }
 
+    
     static async deleteRoles(name){
-
-        db.Roles.destroy({
-            where: {
-                name: name
-            }
-        })
+        //TODO
     }
 
     static async modifyRoles(name, payload){
-        db.Roles.destroy({
-            where: {
-                name: name
-            }
-        })
-        try {
-            db.Roles.create({
-                name: payload.name,
-                upload: payload.upload,
-                content: payload.content,
-                anon: payload.anon,
-                export_local: payload.exportLocal,
-                export_extern: payload.exportExtern,
-                query: payload.query,
-                auto_query: payload.autoQuery,
-                delete: payload.delete,
-                admin: payload.admin
-            })
-        } catch (error){
-            throw new Error('Fail to modify' + error)
-        }
-        
+        //TODO
     }
 
 }
