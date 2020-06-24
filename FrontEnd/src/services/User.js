@@ -21,7 +21,6 @@ const user = {
     }, 
 
     modifyUser(data){
-
       const modifyUserOption = {
         method: 'POST', 
         headers: {
@@ -31,7 +30,7 @@ const user = {
         body: JSON.stringify(data)
       }
 
-      return fetch('/api/user', updateOptions(modifyUserOption)).then((answer) => {
+      return fetch('/api/user/modify', updateOptions(modifyUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
           return answer.json()
       }).catch(error => {
@@ -40,17 +39,21 @@ const user = {
     },
 
     deleteUser(username){
-
       const deleteUserOption = {
         method: 'DELETE', 
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }, 
         body: JSON.stringify(username)
       }
-
-      return fetch('/api/user', updateOptions(deleteUserOption)).then((answer) => {
+      
+      return fetch('/api/user/delete', updateOptions(deleteUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
           console.log('user delete with success')
       }).catch(error => {
-        toastifyError(error)
+        console.log(error)
+        toastifyError('error')
       })
     }, 
 

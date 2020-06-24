@@ -36,9 +36,10 @@ class NavBar extends Component {
   
   
   async logout(){
-    await apis.authentication.logOut()
-    this.props.resetReducer()
-
+    this.props.resetReducer() //empty all reducer
+    document.cookie = 'tokenOrthancJs=undefined' //change value of the cookie to delete the token
+    await apis.authentication.logOut() //do nothing (need to modify in back to increase security)
+  
   }
 
   componentDidMount(){

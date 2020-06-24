@@ -12,6 +12,7 @@ import anon from './anon'
 import localStorage from './localStorage'
 import User from './User'
 import deleteRobot from './deleteRobot'
+import role from './role'
 
 export default {
   aets,
@@ -27,5 +28,6 @@ export default {
   anon, 
   localStorage, 
   User, 
-  deleteRobot
+  deleteRobot, 
+  role
 }

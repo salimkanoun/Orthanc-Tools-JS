@@ -29,23 +29,21 @@ class DeleteTool extends Component {
     }
 
     //SK Ici laisser l'action au front et gérer un retour visuel, je m'occuperai du back
-    handleClickDelete(){
+    async handleClickDelete(){
         //close Modal
         this.handleConfirm()
         //call API DELETE
+        let deletedSeriesIdArray = this.props.deleteList.map(deleteObject => {
+            return deleteObject.Series[0]
+        })
+        console.log(deletedSeriesIdArray)
+        await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray)
 
-        //await apis.deleteRobot.createDeleteRobot(this.props.deleteList)
-
-        //to use delete robot, add 'async' in front of handleClickDelete
-        //decommente ligne 37
-        //and comment the following code (ligne 43 to 49)
-
+        //A GERER LE FLUSH DE LA LISTE DU COUP
+        //La liste des delete elle etait bien au niveau Series non ?
         this.props.deleteList.forEach(async (study) => {
-            console.log("Will delete : ", study.ID)
-            await apis.content.deleteStudies(study.ID) //take a lot of time, need to pass by the back
             this.props.removeStudyFromDeleteList(study.ID)
             this.props.removeOrthancContentStudy(study.ID)
-           
         });
 
     }

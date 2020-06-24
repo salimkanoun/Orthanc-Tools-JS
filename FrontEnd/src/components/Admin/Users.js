@@ -8,16 +8,33 @@ class Users extends Component {
 
     state = {
         data : {
-            username: undefined, 
-            password: undefined,
+            id: undefined,
+            username: undefined,
             first_name: undefined, 
             last_name: undefined, 
             mail: undefined,
+            role: undefined
         },
         showModify: false,
         showDelete: false,
-        options: []
+        optionsUser: [], 
+        optionRoles: []
     }
+
+    async componentDidMount() {
+        let roles = await apis.role.getRoles()
+        let options =  []
+        roles.forEach((role) => {
+            options.push({
+                value: role.name, 
+                label: role.name
+            })
+        })
+        this.setState({
+            optionRoles: options
+        })
+    }
+    
 
     constructor(props) {
         super(props)
@@ -32,7 +49,6 @@ class Users extends Component {
 
     async openModify(){
        let users = await apis.User.getUsers()
-       console.log(users)
        let options = []
        users.forEach(element => {
            options.push({
@@ -64,8 +80,11 @@ class Users extends Component {
         await apis.User.modifyUser(this.state.data)
     }
 
-    delete(){
-        alert('Delete' + this.state.data.username)
+    async delete(){
+        if (this.state.data.username !== undefined) {
+            await apis.User.deleteUser(this.state.data.username)
+        }
+        this.setState({showDelete: false})
     }
 
     async createUser(){
@@ -84,7 +103,7 @@ class Users extends Component {
                     }
                 })
                 this.setState({
-                data: data
+                    data: data
                 })
             }
             
@@ -106,7 +125,7 @@ class Users extends Component {
 
                 <fieldset>
                     <label>Roles*</label>
-                    <Select />
+                    <Select single options={this.state.optionRoles} onChange={(val) => this.setState((prevState) => ({data: {...prevState.data, role: val.value}}))} name='role'/>
                 </fieldset>
 
                 <fieldset>
@@ -130,7 +149,15 @@ class Users extends Component {
 
     onHide(){
         this.setState(prevState => ({
-            showModify: !prevState.showModify
+            showModify: !prevState.showModify, 
+            data : {
+                id: undefined,
+                username: undefined,
+                first_name: undefined, 
+                last_name: undefined, 
+                mail: undefined,
+                role: 'admin'
+            },
         }))
     }
 
@@ -159,7 +186,7 @@ class Users extends Component {
                         {this.form()}
                     </Modal.Body>
                     <Modal.Footer>
-                        <button name='Edit' type='button' className='btn btn-warning float-right mr-2 mt-2' onClick={()=>alert('not implemented yet')}> Modify </button>
+                        <button name='Edit' type='button' className='btn btn-warning float-right mr-2 mt-2' onClick={this.modify}> Modify </button>
                         <button name='delete' type='button' className='btn btn-danger float-right mr-2 mt-2' onClick={() => this.setState({showDelete: true})}> Delete </button>
                         <button name='Edit' type='button' className='btn btn-info float-right mr-2 mt-2' onClick={()=>this.setState({showModify: false})}> Close </button>
                     </Modal.Footer>

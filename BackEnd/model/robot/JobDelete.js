@@ -4,7 +4,7 @@ const JobItem  = require('./JobItem')
 class JobDelete extends Job {
 
     constructor(username, orthancObject){
-        super(username, Job.TYPE_DELETE, orthancObject)
+        super(Job.TYPE_DELETE, username, orthancObject)
     }
 
     async execute(){
