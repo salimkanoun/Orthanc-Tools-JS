@@ -7,13 +7,10 @@ module.exports = (sequelize, DataTypes) => {
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,
     mail:DataTypes.STRING,
-
+    
   }, {})
   User.associate = function (models) {
-    User.hasOne(models.Role, {
-      foreignKey: 'name',
-      as: 'role'
-    })
+ 
   }
   return User
 }
