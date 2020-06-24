@@ -1,4 +1,7 @@
 'use strict';
+
+const Users = require("../../model/Users");
+
 module.exports = (sequelize, DataTypes) => {
   const Role = sequelize.define('Role', {
     upload: DataTypes.BOOLEAN,
@@ -14,7 +17,10 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING
   }, {});
   Role.associate = function(models) {
-    // associations can be defined here
+    Role.hasOne(models.User, {
+      foreignKey: 'role',
+      as:'role'
+    })
   };
   return Role;
 };
