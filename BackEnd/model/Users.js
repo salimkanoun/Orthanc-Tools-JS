@@ -10,12 +10,17 @@ class Users {
     if (this.user !== undefined) {
       return this.user
     } else {
-      const user = await db.User.findOne({ where: { username: this.username } })
-      if (user === null) {
-        throw new Error('User Not Found')
+      try {
+        const user = await db.User.findOne({ where: { username: this.username } })
+        if (user === null) {
+          throw new Error('User Not Found')
+        }
+        this.user = user
+        return this.user
+      } catch (error) {
+        console.log(error)
       }
-      this.user = user
-      return this.user
+      
     }
   }
 
@@ -33,7 +38,7 @@ class Users {
   static async createUser (body) {
     const saltRounds = 10
     let id = null
-    await db.User.max('id').then(max => id = max + 1)
+    await db.User.max('id').then(max => id = max + 1).catch((error) => console.log(error))
     const promise = bcrypt.hash(body.password, saltRounds).then(function (hash) {
       db.User.create({
         id: id,
@@ -67,7 +72,6 @@ class Users {
     } catch (error) {
       console.log(error)
     }
-    
   }
 
   static async modifyUser(data){
@@ -88,40 +92,71 @@ class Users {
 }
 
   static async getUsers(){
-      const users = await db.User.findAll({
+    
+    let users;
+    
+    try{
+        users = await db.User.findAll({
         attributes: ['id', 'username', 'first_name', 'last_name', 'admin', 'mail', 'role']
       })
       if (users === null) {
         throw new Error('User Not Found')
       }
-    return users
+      } catch (error) {
+        console.log(error)
+    } finally {
+      return users
+    }
+    
   }
 
   async getInfoUser(){
-    const user = await db.User.findOne({ 
-      where: {username: this.username}
-    });
-    if (user === null) {
-      throw new Error('User Not Found')
+    
+    let user;
+    
+    try {
+        user = await db.User.findOne({ 
+        where: {username: this.username}
+      });
+      if (user === null) {
+        throw new Error('User Not Found')
+      }
+      } catch(error) {
+        console.log(error)
+    } finally {
+      return user
     }
-    return user
+    
   }
 
   async getUserRight(){
-    const user = await db.User.findOne({ 
-      attributes: ['role'],
-      where: {username: this.username}
-    });
 
-    const rights = await db.Role.findOne({
-      attributes: ['upload', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin','modify'],
-      where: {name: user.role}
-    });
+    let rights;
 
-    if (user === null) {
-      throw new Error('User Not Found')
-    }
-    return rights
+    try {
+      const user = await db.User.findOne({ 
+        attributes: ['role'],
+        where: {username: this.username}
+      });
+
+      if (user === null) {
+        throw new Error('User Not Found')
+      }
+
+        rights = await db.Role.findOne({
+        attributes: ['upload', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin','modify'],
+        where: {name: user.role}
+      });
+
+      if (rights === null) {
+        throw new Error('Rights Not Found')
+      }
+      } catch (error) {
+      console.log(error)
+      } finally {
+        return rights
+      }
+      
   }
 }
 
