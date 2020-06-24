@@ -27,4 +27,14 @@ var Roles = require('../model/Roles')
         }
     }
 
-module.exports = { createRole, modifyRole, deleteRole }
+    getRoles = async function(req, res){
+        try {
+            let roles = await Roles.getAllRoles()
+            res.json(roles)
+        } catch (error) {
+            res.json('')
+            console.log(error)
+        }
+    }
+
+module.exports = { createRole, modifyRole, deleteRole, getRoles }

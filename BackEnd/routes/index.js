@@ -8,7 +8,8 @@ const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, dele
 const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
-const { getUsers, createUser, modifyUser } = require('../controllers/user')
+const { getUsers, createUser, modifyUser, deleteUser } = require('../controllers/user')
+const { getRoles } = require('../controllers/role')
 
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
@@ -147,5 +148,9 @@ router.get('/plugins', userAdminMidelware, reverseProxyGet)
 router.get('/user', userAdminMidelware ,getUsers)
 router.post('/user/create', userAdminMidelware ,createUser)
 router.post('/user/modify', userAdminMidelware ,modifyUser)
+router.delete('/user/delete', userAdminMidelware, deleteUser)
+
+//roles
+router.get('/roles', userAdminMidelware, getRoles)
 
 module.exports = router

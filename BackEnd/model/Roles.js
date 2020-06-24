@@ -32,7 +32,7 @@ class Roles {
       }
 
     static async getAllRoles () {
-        return await db.Roles.findAll() //return a JSON
+        return await db.Role.findAll({attributes: ['name']}) //return a JSON
     }
 
     static async getPermission (name) {

@@ -34,16 +34,16 @@ class Users {
     const saltRounds = 10
     let id = null
     await db.User.max('id').then(max => id = max + 1)
-     const promise = bcrypt.hash(body.password, saltRounds).then(function (hash) {
+    const promise = bcrypt.hash(body.password, saltRounds).then(function (hash) {
       db.User.create({
         id: id,
         username: body.username,
-        first_name: body.fistName,
+        first_name: body.firstName,
         last_name: body.lastName,
         mail: body.mail,
         password: hash,
         role: body.role,
-        isAdmin: true
+        admin: true
       }).then(function(user){
         console.log('success : ', user.toJSON())
       }).catch(function (error){
@@ -60,12 +60,16 @@ class Users {
   }
 
   static async deleteUser (username) {
-
-    await db.Users.destroy({
+    try {
+      await db.User.destroy({
       where: {
           username: username
       }
     })
+    } catch (error) {
+      console.log(error)
+    }
+    
   }
 
   static async modifyUser(data){
