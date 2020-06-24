@@ -61,7 +61,7 @@ class Users {
 
   static async deleteUser (username) {
 
-    db.Users.destroy({
+    await db.Users.destroy({
       where: {
           username: username
       }
@@ -107,23 +107,17 @@ class Users {
 
   async getUserRight(){
     const user = await db.User.findOne({ 
-      attributes: ['role', 'last_name'],
+      attributes: ['role'],
       where: {username: this.username}
     });
 
-    console.log("Affichage Last name:")
-    console.log(user.last_name)
-
-    console.log("Affichage Role (ca marche pas!!):")
-    console.log(user.role)
-
-    /*
     const rights = await db.Role.findOne({
+      attributes: ['upload', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin'],
       where: {name: user.role}
-    })
+    });
 
     console.log("TEST")
-    console.log(rights.admin)*/
+    console.log(rights.export_local)
 
     if (user === null) {
       throw new Error('User Not Found')
