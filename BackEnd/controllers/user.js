@@ -4,9 +4,10 @@ var Users = require('../model/Users')
         const body = req.body
         try {
             await Users.createUser(body)
+            res.json(true)
         } catch (error) {
             console.log(error)
-            res.status(402).send('Fail')
+            res.status(401).send('Fail to create user')
         }
     }
 
@@ -25,6 +26,7 @@ var Users = require('../model/Users')
         const body = req.body
         try {
             await Users.modifyUser(body)
+            res.json(true)
         } catch (error) {
             res.status(401).send('Fail to modify user')
         }

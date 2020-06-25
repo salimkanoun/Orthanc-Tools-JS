@@ -32,11 +32,13 @@ class Roles {
       }
 
     static async getAllRoles () {
-        await db.Role.findAll(
+      try {
+        return await db.Role.findAll(
             {attributes: ['name']}
-        ).then((answer) => {
-            return answer
-        }).catch((error) => console.log(error))
+        )
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     static async getPermission (name) {

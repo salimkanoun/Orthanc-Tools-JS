@@ -32,9 +32,9 @@ const user = {
 
       return fetch('/api/user/modify', updateOptions(modifyUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
-          return answer.json(true)
+          toastifySuccess('User Modify with success')
       }).catch(error => {
-        toastifyError(error)
+        toastifyError(error.statusText)
       })
     },
 
@@ -52,8 +52,7 @@ const user = {
         if (!answer.ok) { throw answer }
           toastifySuccess('User Delete with success')
       }).catch(error => {
-        console.log(error)
-        toastifyError('error')
+        toastifyError(error.statusText)
       })
     }, 
 
@@ -73,7 +72,7 @@ const user = {
         if (!answer.ok) { throw answer }
           toastifySuccess('user created with success')
       }).catch(error => {
-        toastifyError(error)
+        toastifyError(error.statusText)
       })
     }
 }

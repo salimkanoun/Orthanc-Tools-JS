@@ -2,6 +2,9 @@ import React, { Component, Fragment } from 'react'
 import Select from 'react-select'
 import Modal from 'react-bootstrap/Modal';
 import apis from '../../services/apis';
+import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator'
+import cellEditFactory from 'react-bootstrap-table2-editor'
 
 
 class Users extends Component {
@@ -15,13 +18,54 @@ class Users extends Component {
             mail: undefined,
             role: undefined
         },
-        showModify: false,
+        username: '',
+        users: [],
         showDelete: false,
+        showCreate: false,
         optionsUser: [], 
         optionRoles: []
     }
 
     async componentDidMount() {
+        this.getRoles()
+        this.getUsers()
+    }
+
+    constructor(props) {
+        super(props)
+        this.handleChange = this.handleChange.bind(this)
+        this.modify = this.modify.bind(this)
+        this.delete = this.delete.bind(this)
+        this.createUser = this.createUser.bind(this)
+        this.getRoles = this.getRoles.bind(this)
+        this.handleClick = this.handleClick.bind(this)
+        this.resetState = this.resetState.bind(this)
+    }
+
+    async getUsers(){
+       let users = await apis.User.getUsers()
+       this.setState({
+           users: users
+       })
+    }
+
+    resetState(){
+        this.setState({
+            data : {
+                id: undefined,
+                username: undefined,
+                first_name: undefined, 
+                last_name: undefined, 
+                mail: undefined,
+                role: undefined
+            },
+            showDelete: false,
+            showCreate: false
+        })
+        this.getUsers()
+    }
+    
+    async getRoles(){
         let roles = await apis.role.getRoles()
         let options =  []
         roles.forEach((role) => {
@@ -34,33 +78,19 @@ class Users extends Component {
             optionRoles: options
         })
     }
-    
 
-    constructor(props) {
-        super(props)
-        this.handleChange = this.handleChange.bind(this)
-        this.onHide = this.onHide.bind(this)
-        this.openModify = this.openModify.bind(this)
-        this.getUser = this.getUser.bind(this)
-        this.modify = this.modify.bind(this)
-        this.delete = this.delete.bind(this)
-        this.createUser = this.createUser.bind(this)
-    }
-
-    async openModify(){
-       let users = await apis.User.getUsers()
-       let options = []
-       users.forEach(element => {
-           options.push({
-               label: element.username, 
-               value: element.username
-           })
-       })
-       this.setState({
-           users: users,
-           options: options, 
-           showModify: true
-       })
+    handleClick(event){
+        let name = event.target.name
+        switch (name) {
+            case 'delete':
+                this.setState({showDelete: true})
+                break;
+            case 'create':
+                this.setState({showCreate: true})
+                break;
+            default:
+                break;
+        }
     }
     
 
@@ -76,42 +106,75 @@ class Users extends Component {
         }))
     }
 
-    async modify(){
-        await apis.User.modifyUser(this.state.data)
+    async modify(row){
+        await apis.User.modifyUser(row).then(()=>this.resetState()).catch((error) => console.log(error))
     }
 
     async delete(){
-        
-        if (this.state.data.username !== undefined) {
-            await apis.User.deleteUser(this.state.data.username).then(()=>{
-                this.setState({showDelete: false})
-                this.onHide()
+        if (this.state.username !== '') {
+            await apis.User.deleteUser(this.state.username).then(()=>{
+                this.resetState()
             })
         }
     }
 
     async createUser(){
         await apis.User.createUser(this.state.data)
+        this.resetState()
     }
 
-    getUser(val){
-        let users = this.state.users
-        users.forEach(user => {
-            if (user.username === val.value){
-                let data = {}
-                Object.keys(user).forEach(key => {
-                    data = {
-                        ...data, 
-                        [key]: user[key] !== null ? user[key] : '' 
-                    }
-                })
-                this.setState({
-                    data: data
-                })
+    column = [
+        {
+            dataField: 'id', 
+            hidden: true
+        },
+        {
+            dataField: 'username', 
+            text: 'Username', 
+            sort: true
+        }, 
+        {
+            dataField: 'first_name', 
+            text: 'First name', 
+            sort: true
+        }, 
+        {
+            dataField: 'last_name', 
+            text: 'Last name', 
+            sort: true
+        }, 
+        {
+            dataField: 'mail', 
+            text: 'Mail', 
+            sort: true
+        },
+        {
+            dataField: 'role', 
+            text: 'Role', 
+            sort: true
+        }, 
+        {
+            dataField: 'edit', 
+            text: 'Edit',
+            editable: false, 
+            formatter: (cell, row, index) => {
+                return <button type='button' name='edit' className='btn btn-warning' onClick={(event)=>{
+                    this.modify(row)
+                }} >Edit</button>
             }
-            
-        })
-    }
+        }, 
+        {
+            dataField: 'delete', 
+            text: 'Delete',
+            editable: false, 
+            formatter: (cell, row, index) => {
+                return <button type='button' name='delete' className='btn btn-danger' onClick={(event)=>{
+                    this.handleClick(event)
+                    this.setState({username: row.username})
+                }} >Delete</button>
+            }
+        }
+    ]
 
     form(){
         return (
@@ -150,60 +213,48 @@ class Users extends Component {
         )
     }
 
-    onHide(){
-        this.setState(prevState => ({
-            showModify: !prevState.showModify, 
-            data : {
-                id: undefined,
-                username: undefined,
-                first_name: undefined, 
-                last_name: undefined, 
-                mail: undefined,
-                role: 'admin'
-            },
-        }))
-    }
-
     render() {
         return (
             <Fragment>
                 <div>
                     <h2 className='card-title'>Users Panel</h2>
-                    <form id='user-form'>
-
-                        {this.form()}
-
-                        <button name='create' type='button' className='btn btn-primary float-right mr-2 mt-2' onClick={this.createUser}> Create </button>
-
-                        <button name='Edit' type='button' className='btn btn-warning float-right mr-2 mt-2' onClick={this.openModify}> Edit </button>
-                            
-                    </form>
+                    <button type='button' name='create' className='btn btn-primary float-right mb-3' onClick={this.handleClick}>New User</button>
+                    <BootstrapTable 
+                        keyField='id' 
+                        data={this.state.users} 
+                        columns={this.column} 
+                        striped 
+                        pagination={paginationFactory()} 
+                        wrapperClasses="table-responsive"
+                        cellEdit={ cellEditFactory({ 
+                            blurToSave: true,
+                            autoSelectText: true,
+                            mode: 'click',
+                        }) }
+                        />
                 </div>
-                <Modal id='modify' show={this.state.showModify} onHide={this.onHide} size='xl'>
+                <Modal id='delete' show={this.state.showDelete} onHide={this.resetState} size='sm'>
                     <Modal.Header closeButton>
-                        <Modal.Title>Modify</Modal.Title>
+                        <h2 className='card-title'>Delete User</h2>
                     </Modal.Header>
                     <Modal.Body>
-                        <label>Chose user :</label>
-                        <Select options={this.state.options} onChange={this.getUser} />
-                        {this.form()}
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <button name='Edit' type='button' className='btn btn-warning float-right mr-2 mt-2' onClick={this.modify}> Modify </button>
-                        <button name='delete' type='button' className='btn btn-danger float-right mr-2 mt-2' onClick={() => this.setState({showDelete: true})}> Delete </button>
-                        <button name='Edit' type='button' className='btn btn-info float-right mr-2 mt-2' onClick={()=>this.setState({showModify: false})}> Close </button>
-                    </Modal.Footer>
-                </Modal>
-                <Modal id='delete' show={this.state.showDelete} onHide={()=>this.setState({showDelete: false})} size='sm'>
-                    <Modal.Header closeButton>
-                        Delete User
-                    </Modal.Header>
-                    <Modal.Body>
-                        Are You sure to delete {this.state.data.username} ? 
+                        Are You sure to delete {this.state.username} ? 
                     </Modal.Body>
                     <Modal.Footer>
                         <button type='button' className='btn btn-danger' onClick={this.delete}>Delete</button>
                         <button type='button' className='btn btn-info' onClick={() => this.setState({showDelete: false})}>Close</button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal id='create' show={this.state.showCreate} onHide={this.resetState} size='md'>
+                    <Modal.Header closeButton>
+                        <h2 className='card-title'>Create User</h2>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {this.form()}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button type='button' className='btn btn-primary' onClick={this.createUser}>Create</button>
+                        <button type='button' className='btn btn-info' onClick={this.resetState}>Close</button>
                     </Modal.Footer>
                 </Modal>
             </Fragment>
