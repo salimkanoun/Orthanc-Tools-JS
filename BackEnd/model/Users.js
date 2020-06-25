@@ -81,7 +81,6 @@ class Users {
     } catch (error) {
       console.log(error)
     }
-    
 }
 
   static async getUsers(){

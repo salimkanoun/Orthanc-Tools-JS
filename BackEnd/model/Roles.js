@@ -20,6 +20,7 @@ class Roles {
             query: payload.query,
             auto_query: payload.autoQuery,
             delete: payload.delete,
+            modify: payload.modify,
             admin: payload.admin
           })
         }).then(() => {
@@ -50,16 +51,40 @@ class Roles {
             'query',
             'auto_query',
             'delete',
-            'admin']}).catch((error) => console.log(error)) //return a JSON
+            'admin',
+            'modify']}).catch((error) => console.log(error)) //return a JSON
     }
 
-    
     static async deleteRoles(name){
-        //TODO
+      try {
+        await db.Role.destroy({
+        where: {
+            name: name
+        }
+      })
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     static async modifyRoles(name, payload){
-        //TODO
+      try {
+        await db.Role.upsert({
+          name: name,
+          upload: payload.upload,
+          content: payload.content,
+          anon: payload.anon,
+          export_local: payload.exportLocal,
+          export_extern: payload.exportExtern,
+          query: payload.query,
+          auto_query: payload.autoQuery,
+          delete: payload.delete,
+          modify: payload.modify,
+          admin: payload.admin
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
 
 }
