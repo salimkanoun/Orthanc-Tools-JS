@@ -12,7 +12,7 @@ const user = {
         }
     } 
 
-        return fetch('/api/user', updateOptions(getUsersOption)).then((answer) => {
+        return fetch('/users/users', updateOptions(getUsersOption)).then((answer) => {
             if (!answer.ok) { throw answer }
               return answer.json()
           }).catch(error => {
@@ -22,7 +22,7 @@ const user = {
 
     modifyUser(data){
       const modifyUserOption = {
-        method: 'POST', 
+        method: 'PUT', 
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
@@ -30,7 +30,7 @@ const user = {
         body: JSON.stringify(data)
       }
 
-      return fetch('/api/user/modify', updateOptions(modifyUserOption)).then((answer) => {
+      return fetch('/users/users', updateOptions(modifyUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
           toastifySuccess('User Modify with success')
       }).catch(error => {
@@ -48,7 +48,7 @@ const user = {
         body: JSON.stringify([username])
       }
       
-      return fetch('/api/user/delete', updateOptions(deleteUserOption)).then((answer) => {
+      return fetch('/users/users', updateOptions(deleteUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
           toastifySuccess('User Delete with success')
       }).catch(error => {
@@ -68,7 +68,7 @@ const user = {
 
       }
 
-      return fetch('/api/user/create', updateOptions(createUserOption)).then((answer) => {
+      return fetch('/users/users', updateOptions(createUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
           toastifySuccess('user created with success')
       }).catch(error => {

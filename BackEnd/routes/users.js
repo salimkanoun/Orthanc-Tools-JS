@@ -1,10 +1,14 @@
 var express = require('express')
 var router = express.Router()
 
-/* GET users listing. */
+const { getUsers, createUser, modifyUser, deleteUser } = require('../controllers/user')
 
-router.get('/', function (req, res, next) {
-  res.send('respond with a resource')
-})
+const { userAdminMidelware } = require('../midelwares/authentication')
+
+/* GET users listing. */
+router.get('/users', userAdminMidelware ,getUsers)
+router.post('/users', userAdminMidelware ,createUser)
+router.put('/users', userAdminMidelware ,modifyUser)
+router.delete('/users', userAdminMidelware, deleteUser)
 
 module.exports = router

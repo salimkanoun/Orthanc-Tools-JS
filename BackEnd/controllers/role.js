@@ -4,7 +4,9 @@ var Roles = require('../model/Roles')
         const body = req.body
         try {
             await Roles.createRoles(body)
+            res.json(true)
         } catch (error) {
+            console.log(error)
             res.status(401).send('Fail')
         }
     }
@@ -12,8 +14,10 @@ var Roles = require('../model/Roles')
     modifyRole = async function(req, res){
         const body = req.body
         try {
-            await Roles.modifyRole(body.name, body)
+            await Roles.modifyRoles(body.name, body)
+            res.json(true)
         } catch (error) {
+            console.log(error)
             res.status(401).send('Fail to modify role')
         }
     }
@@ -22,7 +26,9 @@ var Roles = require('../model/Roles')
         const name = req.body
         try {
             await Roles.deleteRole(name)
+            res.json(true)
         } catch (error) {
+            console.log(error)
             res.status(401).send('Fail to delete')
         }
     }
@@ -37,4 +43,14 @@ var Roles = require('../model/Roles')
         }
     }
 
-module.exports = { createRole, modifyRole, deleteRole, getRoles }
+    getPermission = async function(req, res){
+        try {
+            let permission = await Roles.getPermission(req.params.name)
+            res.json(permission)
+        } catch (error) {
+            console.log(error)
+            res.status(401).send('Fail to get Permission')
+        }
+    }
+
+module.exports = { createRole, modifyRole, deleteRole, getRoles, getPermission }

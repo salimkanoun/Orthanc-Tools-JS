@@ -3,14 +3,14 @@ const db = require('../database/models')
 class Roles {
 
     static async createRoles (payload) {
-
-        const roles = await db.Roles.findOne({ where: { name: payload.name } })
+        console.log(payload)
+        const roles = await db.Role.findOne({ 
+          where: { name: payload.name }})
         if(roles) {
             throw new Error('This roles already exist');
         }
 
-        const promise = ( () => {
-          db.Roles.create({
+        const promise = db.Role.create({
             name: payload.name,
             upload: payload.upload,
             content: payload.content,
@@ -22,12 +22,7 @@ class Roles {
             delete: payload.delete,
             modify: payload.modify,
             admin: payload.admin
-          })
-        }).then(() => {
-          return true
-        }).catch(function (error) {
-          throw new Error('Roles Creation Failed' + error)
-        })
+          }).catch(e => console.log(e))
     
         return promise
       }
@@ -43,7 +38,7 @@ class Roles {
     }
 
     static async getPermission (name) {
-        return await db.Roles.findAll({ where: { name: name }, attributes: ['upload',
+        return await db.Role.findAll({ where: { name: name }, attributes: ['upload',
             'content',
             'anon',
             'export_local',
@@ -55,7 +50,7 @@ class Roles {
             'modify']}).catch((error) => console.log(error)) //return a JSON
     }
 
-    static async deleteRoles(name){
+    static async deleteRole(name){
       try {
         await db.Role.destroy({
         where: {

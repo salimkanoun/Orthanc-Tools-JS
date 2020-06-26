@@ -13,7 +13,9 @@ module.exports = (sequelize, DataTypes) => {
     auto_query: DataTypes.BOOLEAN,
     delete: DataTypes.BOOLEAN,
     admin: DataTypes.BOOLEAN,
-    name: DataTypes.STRING,
+    name: {
+      primaryKey: true,
+      type: DataTypes.STRING},
     modify:DataTypes.BOOLEAN
   }, {});
   Role.associate = function(models) {
