@@ -12,7 +12,7 @@ module.exports = {
   },
 
   down: (queryInterface, Sequelize) => {
-    queryInterface.removeColumn('Roles', 'modify');
+    return queryInterface.removeColumn('Roles', 'modify');
   }
 };
 
