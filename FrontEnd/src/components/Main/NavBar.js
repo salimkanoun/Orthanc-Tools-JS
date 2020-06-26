@@ -26,7 +26,8 @@ import { connect } from 'react-redux'
 class NavBar extends Component {
 
   state  = {
-    navBackground : '#11ffee00'
+    navBackground : '#11ffee00',
+    token: {}
   }
 
   constructor(props) {
@@ -42,12 +43,15 @@ class NavBar extends Component {
   
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     document.addEventListener("scroll", () => {
       const backgroundcolor = window.scrollY < 50 ? "#11ffee00" : "#0275d8";
 
       this.setState({ navBackground: backgroundcolor });
     });
+
+    let token = await apis.token.decodeCookie()
+    this.setState({token: token})
   }
 
   AnimatedSwitch = withRouter(({location}) => (
@@ -75,19 +79,19 @@ class NavBar extends Component {
         <nav className='navbar navbar-expand-lg mb-5 fixed-top' style={ {backgroundColor : this.state.navBackground} } >
           <ul className='navbar-nav mr-auto'>
             <li className='nav-item'>
-              <Link className='nav-link' to='/orthanc-content'>Orthanc Content</Link>
+              <Link className='nav-link' to='/orthanc-content' hidden={!this.state.token.content}>Orthanc Content</Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/import'>Import</Link>
+              <Link className='nav-link' to='/import' >Import</Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/query'>Query</Link>
+              <Link className='nav-link' to='/query' hidden={!this.state.token.query}>Query</Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/auto-query'>Auto-Retrieve</Link>
+              <Link className='nav-link' to='/auto-query' hidden={!this.state.token.auto_query}>Auto-Retrieve</Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/options'>Administration</Link>
+              <Link className='nav-link' to='/options' hidden={!this.state.token.admin}>Administration</Link>
             </li>
             <li className='nav-item float-right'>
               <Link className='nav-link' onClick={this.logout} to='/'>Log out</Link>

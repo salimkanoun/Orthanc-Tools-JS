@@ -1,4 +1,5 @@
 const db = require('../database/models')
+const jwt = require("jsonwebtoken")
 
 class Roles {
 
@@ -79,6 +80,17 @@ class Roles {
         })
       } catch (error) {
         console.log(error)
+      }
+    }
+
+    static async getRoleFromToken(token){
+      
+      try { 
+        return jwt.verify(token, process.env.TOKEN_SECRET) 
+      } 
+      catch(err) {
+        console.log(err)
+        throw res.sendStatus(403)//if incorrect token
       }
     }
 
