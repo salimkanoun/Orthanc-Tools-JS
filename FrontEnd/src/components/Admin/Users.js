@@ -23,7 +23,8 @@ class Users extends Component {
         showDelete: false,
         showCreate: false,
         optionsUser: [], 
-        optionRoles: []
+        optionRoles: [],
+        disabledRows: []
     }
 
     async componentDidMount() {
@@ -45,7 +46,7 @@ class Users extends Component {
     async getUsers(){
        let users = await apis.User.getUsers()
        this.setState({
-           users: users
+           users: users, 
        })
     }
 
@@ -107,7 +108,10 @@ class Users extends Component {
     }
 
     async modify(row){
-        await apis.User.modifyUser(row).then(()=>this.resetState()).catch((error) => console.log(error))
+        
+        await apis.User.modifyUser(row).then(()=>{
+            this.resetState()
+        }).catch((error) => console.log(error))
     }
 
     async delete(){
@@ -156,11 +160,11 @@ class Users extends Component {
         {
             dataField: 'edit', 
             text: 'Edit',
-            editable: false, 
+            editable: false,
             formatter: (cell, row, index) => {
-                return <button type='button' name='edit' className='btn btn-warning' onClick={(event)=>{
+                return <button type='button' name='edit' className='btn btn-warning' onClick={()=>{
                     this.modify(row)
-                }} >Edit</button>
+                }} >Save</button>
             }
         }, 
         {
@@ -229,7 +233,7 @@ class Users extends Component {
                         cellEdit={ cellEditFactory({ 
                             blurToSave: true,
                             autoSelectText: true,
-                            mode: 'click',
+                            mode: 'click'
                         }) }
                         />
                 </div>
