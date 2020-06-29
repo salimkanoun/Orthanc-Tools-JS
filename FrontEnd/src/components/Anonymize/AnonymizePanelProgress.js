@@ -36,7 +36,7 @@ class AnonymizePanelProgress extends Component {
         do {
             let success = 0
             let failures = 0
-            robot = await apis.anon.getAnonJob()
+            robot = await apis.anon.getAnonJob(this.props.username)
             robot.items.forEach(async item => {
                 switch (item.Status) {
                     case 'Success':
@@ -130,7 +130,8 @@ class AnonymizePanelProgress extends Component {
 
 const mapStateToProps = state => {
     return {
-        anonymizedList: state.AnonList.anonymizedList
+        anonymizedList: state.AnonList.anonymizedList,
+        username: state.Username.username
     }
 }
 

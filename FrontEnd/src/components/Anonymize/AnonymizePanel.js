@@ -149,7 +149,7 @@ class AnonymizePanel extends Component {
                 listToAnonymize.push(anonItem) 
             })
 
-            let answer = await apis.anon.createAnonRobot(listToAnonymize) //wait for the robot's answer to know what do to next
+            let answer = await apis.anon.createAnonRobot(listToAnonymize, this.props.username) //wait for the robot's answer to know what do to next
             this.props.setProgress(answer)
         } else toastifyError('Fill all patient ID')
     }
@@ -278,7 +278,8 @@ class AnonymizePanel extends Component {
 const mapStateToProps = state => {
     return { 
         anonList: state.AnonList.anonList, 
-        profile: state.AnonList.profile
+        profile: state.AnonList.profile, 
+        username: state.Username.username
     }
 }
 const mapDispatchToProps = {

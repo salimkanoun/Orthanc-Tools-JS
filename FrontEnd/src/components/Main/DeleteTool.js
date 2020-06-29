@@ -52,12 +52,12 @@ class DeleteTool extends Component {
             return deleteObject.Series[0]
         })
         console.log(deletedSeriesIdArray)
-        let answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray)
+        let answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
         if (answer){
             this.openToast()
             let progress
             do {
-                progress = await apis.deleteRobot.getDeleteRobot()
+                progress = await apis.deleteRobot.getDeleteRobot(this.props.username)
                 let nb = progress.progression.Success/progress.items.length
                 this.updateToast(nb)
             } while (progress.status !== "Finished")
@@ -127,7 +127,8 @@ class DeleteTool extends Component {
 
 const mapStateToProps = state => {
     return {
-        deleteList: state.DeleteList.deleteList
+        deleteList: state.DeleteList.deleteList, 
+        username: state.Username.username
     }
 }
 

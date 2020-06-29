@@ -21,6 +21,7 @@ import ExportPanel from '../Export/ExportPanel'
 import AnonRootPanel from '../Anonymize/AnonRootPanel'
 
 import { resetReducer } from '../../actions/LogOut'
+import { saveUsername } from '../../actions/Username'
 import { connect } from 'react-redux'
 
 class NavBar extends Component {
@@ -51,6 +52,7 @@ class NavBar extends Component {
     });
 
     let token = await apis.token.decodeCookie()
+    this.props.saveUsername(token.username)
     this.setState({token: token})
   }
 
@@ -109,7 +111,8 @@ class NavBar extends Component {
 }
 
 const mapsDispatchToProps = {
-  resetReducer
+  resetReducer, 
+  saveUsername
 }
 
 export default connect(null, mapsDispatchToProps)(NavBar)
