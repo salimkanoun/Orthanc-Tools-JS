@@ -56,6 +56,7 @@ class TableSeries extends Component{
                 columns={this.columns}
                 {...this.props}
                 pagination={undefined}
+                wrapperClasses="table-responsive"
             />
         )
     }
