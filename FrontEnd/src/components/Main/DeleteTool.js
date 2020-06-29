@@ -58,7 +58,6 @@ class DeleteTool extends Component {
             let progress
             do {
                 progress = await apis.deleteRobot.getDeleteRobot()
-                console.log(progress)
                 let nb = progress.progression.Success/progress.items.length
                 this.updateToast(nb)
             } while (progress.status !== "Finished")
