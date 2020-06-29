@@ -82,7 +82,7 @@ class NavBar extends Component {
               <Link className='nav-link' to='/orthanc-content' hidden={!this.state.token.content}>Orthanc Content</Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/import' >Import</Link>
+              <Link className='nav-link' to='/import' hidden={this.state.token.import}>Import</Link>
             </li>
             <li className='nav-item'>
               <Link className='nav-link' to='/query' hidden={!this.state.token.query}>Query</Link>
@@ -97,7 +97,7 @@ class NavBar extends Component {
               <Link className='nav-link' onClick={this.logout} to='/'>Log out</Link>
             </li>
           </ul>
-          <ToolsPanel />
+          <ToolsPanel roles={this.state.token}/>
         </nav>
         {<this.AnimatedSwitch />}
       </Fragment>
