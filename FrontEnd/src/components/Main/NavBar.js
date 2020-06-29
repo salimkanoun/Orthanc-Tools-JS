@@ -7,6 +7,7 @@ import {
   Route,
   withRouter, 
 } from 'react-router-dom'
+import { Navbar, Nav } from 'react-bootstrap'
 
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
@@ -45,6 +46,9 @@ class NavBar extends Component {
   }
 
   async componentDidMount(){
+    this.setState({
+      sizeScreen: document.documentElement.clientWidth
+    })
     document.addEventListener("scroll", () => {
       const backgroundcolor = window.scrollY < 50 ? "#11ffee00" : "#0275d8";
 
@@ -73,9 +77,33 @@ class NavBar extends Component {
       </CSSTransition>
     </TransitionGroup>
 ))
-  
 
-  render () {
+
+  navBarResponsive = () => {
+    return (
+      <Fragment>
+        <Navbar fixed='top' collapseOnSelect expand='lg' bg='dark' variant='dark'>
+            <Navbar.Toggle aria-controls='responsive_navbar' />
+            <Navbar.Collapse id='responsive_navbvar'>
+              <Nav className='float-right mr-3'>
+                <ToolsPanel roles={this.state.token} apercu={false}/>
+              </Nav>
+              <Nav className='mr-auto'>
+                <Link className='nav-link' to='/orthanc-content' hidden={!this.state.token.content}>Orthanc Content</Link>
+                <Link className='nav-link' to='/import' hidden={this.state.token.import}>Import</Link>
+                <Link className='nav-link' to='/query' hidden={!this.state.token.query}>Query</Link>
+                <Link className='nav-link' to='/auto-query' hidden={!this.state.token.auto_query}>Auto-Retrieve</Link>
+                <Link className='nav-link' to='/options' hidden={!this.state.token.admin}>Administration</Link>
+                <Link className='nav-link' onClick={this.logout} to='/'>Log out</Link>
+              </Nav>
+            </Navbar.Collapse>
+          </Navbar>
+          {<this.AnimatedSwitch />}
+      </Fragment>
+    )
+  }
+
+  navbarClassique = ()  => {
     return (
       <Fragment>
         <nav className='navbar navbar-expand-lg mb-5 fixed-top' style={ {backgroundColor : this.state.navBackground} } >
@@ -99,11 +127,18 @@ class NavBar extends Component {
               <Link className='nav-link' onClick={this.logout} to='/'>Log out</Link>
             </li>
           </ul>
-          <ToolsPanel roles={this.state.token}/>
+          <ToolsPanel roles={this.state.token} apercu={true}/>
         </nav>
         {<this.AnimatedSwitch />}
       </Fragment>
-        
+    )
+  }
+  
+
+  render () {
+    return (
+      
+        this.state.sizeScreen < 970 ? <this.navBarResponsive/> : <this.navbarClassique/>
       
     )
   }

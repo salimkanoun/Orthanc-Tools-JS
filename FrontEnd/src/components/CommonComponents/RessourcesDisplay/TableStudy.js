@@ -128,6 +128,7 @@ class TableStudy extends Component {
                     {...props.baseProps}
                     striped={true} 
                     pagination={this.props.pagination ? paginationFactory() : undefined}
+                    wrapperClasses="table-responsive"
                 />
                 {this.props.button}
                 

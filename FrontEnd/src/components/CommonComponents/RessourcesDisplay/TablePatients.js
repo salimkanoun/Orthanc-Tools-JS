@@ -67,7 +67,8 @@ class TablePatients extends Component{
     render(){
         return (
             <Fragment>
-                <BootstrapTable ref={n => this.node = n} keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} {...this.props} pagination={this.props.pagination ? paginationFactory() : undefined} />
+                <BootstrapTable ref={n => this.node = n} keyField="PatientOrthancID" striped={true} data={this.props.patients} columns={this.columns} {...this.props} pagination={this.props.pagination ? paginationFactory() : undefined} 
+                wrapperClasses="table-responsive"/>
                 {this.props.button}
             </Fragment>
         )
