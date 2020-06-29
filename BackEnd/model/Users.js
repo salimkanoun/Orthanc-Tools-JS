@@ -142,7 +142,7 @@ class Users {
       }
 
         rights = await db.Role.findOne({
-        attributes: ['upload', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin','modify'],
+        attributes: ['import', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin','modify'],
         where: {name: user.role}
       });
 
@@ -181,13 +181,9 @@ class Users {
         } else if (mode.localUser) {
           //Local user
           return this.getLocalUserRight();
-
-        } else if (mode.ldap) {
-          //LDAP user
-          return getLDAPUserRight();
-        }    
+        } 
     } catch(err) {
-
+      console.log(err)
     }
   }
 

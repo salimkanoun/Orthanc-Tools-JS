@@ -12,7 +12,7 @@ class Roles {
         const promise = ( () => {
           db.Roles.create({
             name: payload.name,
-            upload: payload.upload,
+            import: payload.import,
             content: payload.content,
             anon: payload.anon,
             export_local: payload.exportLocal,
@@ -41,7 +41,7 @@ class Roles {
     }
 
     static async getPermission (name) {
-        return await db.Roles.findAll({ where: { name: name }, attributes: ['upload',
+        return await db.Roles.findAll({ where: { name: name }, attributes: ['import',
             'content',
             'anon',
             'export_local',
@@ -69,7 +69,7 @@ class Roles {
       try {
         await db.Role.upsert({
           name: name,
-          upload: payload.upload,
+          import: payload.import,
           content: payload.content,
           anon: payload.anon,
           export_local: payload.exportLocal,

@@ -15,7 +15,7 @@ const { getRoles } = require('../controllers/role')
 const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
 
-const { userAuthMidelware, userAdminMidelware, uploadMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
+const { userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
     exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware } = require('../midelwares/authentication')
 
 
@@ -102,7 +102,7 @@ router.get('/queries/:orthancIdQuery/parsedAnswers', queryMidelware, getParsedAn
 
 // Orthanc Dicom Import Route
 //SK Middelware manquant
-router.post('/instances', uploadMidelware, reverseProxyPostUploadDicom)
+router.post('/instances', importMidelware, reverseProxyPostUploadDicom)
 
 // Orthanc DicomWebRoutes
 router.get('/dicom-web/*', contentMidelware, reverseProxyGet)

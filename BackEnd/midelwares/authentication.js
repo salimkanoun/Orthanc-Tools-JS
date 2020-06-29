@@ -58,7 +58,7 @@ const userAdminMidelware = async function (req, res, next) {
   }
 }
 
-const uploadMidelware = async function (req, res, next) {
+const importMidelware = async function (req, res, next) {
   
   let decoded;
 
@@ -67,7 +67,7 @@ const uploadMidelware = async function (req, res, next) {
   }
   catch(err) { return }
 
-  if(decoded.upload) {
+  if(decoded.import) {
     next() // pass the execution off to whatever request the client intended
   } else {
     res.status(401).send('Not allowed to upload');
@@ -202,5 +202,5 @@ const modifyMidelware = async function (req, res, next) {
   }
 }
 
-module.exports = { userAuthMidelware, userAdminMidelware, uploadMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
+module.exports = { userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
   exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware}    
