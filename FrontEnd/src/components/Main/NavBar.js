@@ -50,7 +50,7 @@ class NavBar extends Component {
     this.setState({
       sizeScreen: document.documentElement.clientWidth
     })
-    
+
     window.addEventListener('resize', () => {
       this.setState({sizeScreen: document.documentElement.clientWidth})
     });
@@ -88,7 +88,7 @@ class NavBar extends Component {
   navBarResponsive = () => {
     return (
       <Fragment>
-        <Navbar fixed='top' collapseOnSelect expand='lg' bg='dark' variant='dark'>
+        <Navbar fixed='top' collapseOnSelect expand='lg' bg='primary' variant='dark'>
             <Navbar.Toggle aria-controls='responsive_navbar' />
             <Navbar.Collapse id='responsive_navbvar'>
               <Nav className='float-right mr-3'>
@@ -96,7 +96,7 @@ class NavBar extends Component {
               </Nav>
               <Nav className='mr-auto'>
                 <Link className='nav-link' to='/orthanc-content' hidden={!this.state.token.content}>Orthanc Content</Link>
-                <Link className='nav-link' to='/import' hidden={this.state.token.import}>Import</Link>
+                <Link className='nav-link' to='/import' hidden={!this.state.token.import}>Import</Link>
                 <Link className='nav-link' to='/query' hidden={!this.state.token.query}>Query</Link>
                 <Link className='nav-link' to='/auto-query' hidden={!this.state.token.auto_query}>Auto-Retrieve</Link>
                 <Link className='nav-link' to='/options' hidden={!this.state.token.admin}>Administration</Link>

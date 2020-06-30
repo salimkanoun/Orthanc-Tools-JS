@@ -55,7 +55,7 @@ class Roles extends Component {
             this.setState({
                 data: {
                     name: name,
-                    upload: permission.upload, 
+                    import: permission.import, 
                     content: permission.content, 
                     anon: permission.anon, 
                     exportLocal: permission.export_local, 
@@ -189,7 +189,7 @@ class Roles extends Component {
                             <h5>Import</h5>
                         </div>
                         <div className='col-auto'>
-                            <Toggle checked={this.state.data.upload} onChange={()=>this.setState(prevState => ({data: {...prevState.data, import: !prevState.data.import}}))}/>
+                            <Toggle checked={this.state.data.import} onChange={()=>this.setState(prevState => ({data: {...prevState.data, import: !prevState.data.import}}))}/>
                         </div>
                     </div>
                     <div className="row mb-2">

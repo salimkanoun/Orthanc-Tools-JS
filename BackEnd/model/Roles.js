@@ -39,7 +39,7 @@ class Roles {
     }
 
     static async getPermission (name) {
-        return await db.Roles.findAll({ where: { name: name }, attributes: ['import',
+        return await db.Role.findAll({ where: { name: name }, attributes: ['import',
             'content',
             'anon',
             'export_local',
@@ -64,10 +64,10 @@ class Roles {
     }
 
     static async modifyRoles(name, payload){
+      console.log(payload.import)
       try {
         await db.Role.upsert({
           name: name,
-          import: payload.import,
           content: payload.content,
           anon: payload.anon,
           export_local: payload.exportLocal,
@@ -75,8 +75,9 @@ class Roles {
           query: payload.query,
           auto_query: payload.autoQuery,
           delete: payload.delete,
+          admin: payload.admin,
           modify: payload.modify,
-          admin: payload.admin
+          import: payload.import
         })
       } catch (error) {
         console.log(error)
