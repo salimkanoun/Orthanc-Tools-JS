@@ -46,9 +46,15 @@ class NavBar extends Component {
   }
 
   async componentDidMount(){
+
     this.setState({
       sizeScreen: document.documentElement.clientWidth
     })
+    
+    window.addEventListener('resize', () => {
+      this.setState({sizeScreen: document.documentElement.clientWidth})
+    });
+
     document.addEventListener("scroll", () => {
       const backgroundcolor = window.scrollY < 50 ? "#11ffee00" : "#0275d8";
 
@@ -138,7 +144,7 @@ class NavBar extends Component {
   render () {
     return (
       
-        this.state.sizeScreen < 970 ? <this.navBarResponsive/> : <this.navbarClassique/>
+        this.state.sizeScreen < 992 ? <this.navBarResponsive/> : <this.navbarClassique/>
       
     )
   }
