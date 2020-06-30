@@ -7,6 +7,7 @@ import {
   Route,
   withRouter, 
 } from 'react-router-dom'
+import { Navbar, Nav } from 'react-bootstrap'
 
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
@@ -21,12 +22,14 @@ import ExportPanel from '../Export/ExportPanel'
 import AnonRootPanel from '../Anonymize/AnonRootPanel'
 
 import { resetReducer } from '../../actions/LogOut'
+import { saveUsername } from '../../actions/Username'
 import { connect } from 'react-redux'
 
 class NavBar extends Component {
 
   state  = {
-    navBackground : '#11ffee00'
+    navBackground : '#11ffee00',
+    token: {}
   }
 
   constructor(props) {
@@ -42,12 +45,25 @@ class NavBar extends Component {
   
   }
 
-  componentDidMount(){
+  async componentDidMount(){
+
+    this.setState({
+      sizeScreen: document.documentElement.clientWidth
+    })
+    
+    window.addEventListener('resize', () => {
+      this.setState({sizeScreen: document.documentElement.clientWidth})
+    });
+
     document.addEventListener("scroll", () => {
       const backgroundcolor = window.scrollY < 50 ? "#11ffee00" : "#0275d8";
 
       this.setState({ navBackground: backgroundcolor });
     });
+
+    let token = await apis.token.decodeCookie()
+    this.props.saveUsername(token.username)
+    this.setState({token: token})
   }
 
   AnimatedSwitch = withRouter(({location}) => (
@@ -67,37 +83,68 @@ class NavBar extends Component {
       </CSSTransition>
     </TransitionGroup>
 ))
-  
 
-  render () {
+
+  navBarResponsive = () => {
+    return (
+      <Fragment>
+        <Navbar fixed='top' collapseOnSelect expand='lg' bg='dark' variant='dark'>
+            <Navbar.Toggle aria-controls='responsive_navbar' />
+            <Navbar.Collapse id='responsive_navbvar'>
+              <Nav className='float-right mr-3'>
+                <ToolsPanel roles={this.state.token} apercu={false}/>
+              </Nav>
+              <Nav className='mr-auto'>
+                <Link className='nav-link' to='/orthanc-content' hidden={!this.state.token.content}>Orthanc Content</Link>
+                <Link className='nav-link' to='/import' hidden={this.state.token.import}>Import</Link>
+                <Link className='nav-link' to='/query' hidden={!this.state.token.query}>Query</Link>
+                <Link className='nav-link' to='/auto-query' hidden={!this.state.token.auto_query}>Auto-Retrieve</Link>
+                <Link className='nav-link' to='/options' hidden={!this.state.token.admin}>Administration</Link>
+                <Link className='nav-link' onClick={this.logout} to='/'>Log out</Link>
+              </Nav>
+            </Navbar.Collapse>
+          </Navbar>
+          {<this.AnimatedSwitch />}
+      </Fragment>
+    )
+  }
+
+  navbarClassique = ()  => {
     return (
       <Fragment>
         <nav className='navbar navbar-expand-lg mb-5 fixed-top' style={ {backgroundColor : this.state.navBackground} } >
           <ul className='navbar-nav mr-auto'>
             <li className='nav-item'>
-              <Link className='nav-link' to='/orthanc-content'>Orthanc Content</Link>
+              <Link className='nav-link' to='/orthanc-content' hidden={!this.state.token.content}>Orthanc Content</Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/import'>Import</Link>
+              <Link className='nav-link' to='/import' hidden={this.state.token.import}>Import</Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/query'>Query</Link>
+              <Link className='nav-link' to='/query' hidden={!this.state.token.query}>Query</Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/auto-query'>Auto-Retrieve</Link>
+              <Link className='nav-link' to='/auto-query' hidden={!this.state.token.auto_query}>Auto-Retrieve</Link>
             </li>
             <li className='nav-item'>
-              <Link className='nav-link' to='/options'>Administration</Link>
+              <Link className='nav-link' to='/options' hidden={!this.state.token.admin}>Administration</Link>
             </li>
             <li className='nav-item float-right'>
               <Link className='nav-link' onClick={this.logout} to='/'>Log out</Link>
             </li>
           </ul>
-          <ToolsPanel />
+          <ToolsPanel roles={this.state.token} apercu={true}/>
         </nav>
         {<this.AnimatedSwitch />}
       </Fragment>
-        
+    )
+  }
+  
+
+  render () {
+    return (
+      
+        this.state.sizeScreen < 992 ? <this.navBarResponsive/> : <this.navbarClassique/>
       
     )
   }
@@ -105,7 +152,8 @@ class NavBar extends Component {
 }
 
 const mapsDispatchToProps = {
-  resetReducer
+  resetReducer, 
+  saveUsername
 }
 
 export default connect(null, mapsDispatchToProps)(NavBar)

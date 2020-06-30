@@ -118,7 +118,7 @@ code {
 
 .slide-exit-active{
 	position: absolute;
-	top: 150px; 
+	top: 100px; 
 	left: 0px; 
 	width: 100%;
 	transform: translateX(-100%);

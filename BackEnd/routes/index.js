@@ -8,8 +8,7 @@ const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, dele
 const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
-const { getUsers, createUser, modifyUser, deleteUser } = require('../controllers/user')
-const { getRoles } = require('../controllers/role')
+const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
 
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
@@ -144,13 +143,14 @@ router.get('/instances/*', contentMidelware, reverseProxyGet)
 //plugins
 router.get('/plugins', userAdminMidelware, reverseProxyGet)
 
-//user 
-router.get('/user', userAdminMidelware ,getUsers)
-router.post('/user/create', userAdminMidelware ,createUser)
-router.post('/user/modify', userAdminMidelware ,modifyUser)
-router.delete('/user/delete', userAdminMidelware, deleteUser)
-
 //roles
 router.get('/roles', userAdminMidelware, getRoles)
+router.get('/roles/:name', userAdminMidelware, getPermission)
+router.put('/roles', userAdminMidelware, modifyRole)
+router.post('/roles', userAdminMidelware, createRole)
+router.delete('/roles', userAdminMidelware, deleteRole)
+
+//token
+router.get('/token', userAuthMidelware, getRoleFromToken)
 
 module.exports = router

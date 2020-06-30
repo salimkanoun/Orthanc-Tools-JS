@@ -1,16 +1,17 @@
 const db = require('../database/models')
+const jwt = require("jsonwebtoken")
 
 class Roles {
 
     static async createRoles (payload) {
-
-        const roles = await db.Roles.findOne({ where: { name: payload.name } })
+        console.log(payload)
+        const roles = await db.Role.findOne({ 
+          where: { name: payload.name }})
         if(roles) {
             throw new Error('This roles already exist');
         }
 
-        const promise = ( () => {
-          db.Roles.create({
+        const promise = db.Role.create({
             name: payload.name,
             import: payload.import,
             content: payload.content,
@@ -22,22 +23,19 @@ class Roles {
             delete: payload.delete,
             modify: payload.modify,
             admin: payload.admin
-          })
-        }).then(() => {
-          return true
-        }).catch(function (error) {
-          throw new Error('Roles Creation Failed' + error)
-        })
+          }).catch(e => console.log(e))
     
         return promise
       }
 
     static async getAllRoles () {
-        await db.Role.findAll(
+      try {
+        return await db.Role.findAll(
             {attributes: ['name']}
-        ).then((answer) => {
-            return answer
-        }).catch((error) => console.log(error))
+        )
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     static async getPermission (name) {
@@ -53,7 +51,7 @@ class Roles {
             'modify']}).catch((error) => console.log(error)) //return a JSON
     }
 
-    static async deleteRoles(name){
+    static async deleteRole(name){
       try {
         await db.Role.destroy({
         where: {
@@ -82,6 +80,17 @@ class Roles {
         })
       } catch (error) {
         console.log(error)
+      }
+    }
+
+    static async getRoleFromToken(token){
+      
+      try { 
+        return jwt.verify(token, process.env.TOKEN_SECRET) 
+      } 
+      catch(err) {
+        console.log(err)
+        throw res.sendStatus(403)//if incorrect token
       }
     }
 

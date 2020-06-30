@@ -56,3 +56,6 @@ export const EMPTY_EXPORT_LIST = 'EMPTY_EXPORT_LIST'
 
 //Log out
 export const LOG_OUT = 'LOG_OUT'
+
+//save username
+export const SAVE_USERNAME = 'SAVE_USERNAME'

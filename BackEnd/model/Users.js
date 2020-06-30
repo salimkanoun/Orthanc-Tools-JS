@@ -49,17 +49,10 @@ class Users {
         password: hash,
         role: body.role,
         admin: true
-      }).catch(function (error){
-        console.log(error, body)
-      })
-    }).then(() => {
-      return true
-    }).catch(function (error) {
-      console.log(error)
+      }).catch(e => console.log(e))
     })
 
     return promise
-    
   }
 
   static async deleteUser (username) {

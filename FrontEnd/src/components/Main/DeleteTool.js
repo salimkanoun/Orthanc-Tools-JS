@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import Popover from 'react-bootstrap/Popover'
 import Overlay from 'react-bootstrap/Overlay'
+import { toast } from 'react-toastify';
 
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
@@ -14,6 +15,7 @@ import apis from '../../services/apis'
 //Ce composant sera a connecter au redux pour connaitre la longueur de la liste de delete 
 class DeleteTool extends Component {
 
+
     constructor(props){
         super(props)
         this.handleClickEmpty = this.handleClickEmpty.bind(this)
@@ -21,11 +23,24 @@ class DeleteTool extends Component {
         this.onDeletePatient = this.onDeletePatient.bind(this)
         this.onDeleteStudy = this.onDeleteStudy.bind(this)
         this.handleConfirm = this.handleConfirm.bind(this)
+        this.toast = React.createRef(null)
     }
 
     handleConfirm(){
         this.props.onHide()
         this.props.setConfirm()
+    }
+    
+    openToast(){
+        this.toast.current = toast("Delete progress : 0%", { autoClose: false})
+    }
+
+    updateToast(progress){
+        toast.update(this.toast.current, {type: toast.TYPE.INFO, render: 'Delete progress : ' + progress + '%'})
+    }
+
+    successToast(){
+        toast.update(this.toast.current, {type: toast.TYPE.INFO, render: 'Delete done', className: 'bg-success', autoClose: 2000})
     }
 
     //SK Ici laisser l'action au front et gérer un retour visuel, je m'occuperai du back
@@ -37,8 +52,17 @@ class DeleteTool extends Component {
             return deleteObject.Series[0]
         })
         console.log(deletedSeriesIdArray)
-        await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray)
-
+        let answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
+        if (answer){
+            this.openToast()
+            let progress
+            do {
+                progress = await apis.deleteRobot.getDeleteRobot(this.props.username)
+                let nb = progress.progression.Success/progress.items.length
+                this.updateToast(nb)
+            } while (progress.status !== "Finished")
+            this.successToast()
+        }
         //A GERER LE FLUSH DE LA LISTE DU COUP
         //La liste des delete elle etait bien au niveau Series non ?
         this.props.deleteList.forEach(async (study) => {
@@ -103,7 +127,8 @@ class DeleteTool extends Component {
 
 const mapStateToProps = state => {
     return {
-        deleteList: state.DeleteList.deleteList
+        deleteList: state.DeleteList.deleteList, 
+        username: state.Username.username
     }
 }
 

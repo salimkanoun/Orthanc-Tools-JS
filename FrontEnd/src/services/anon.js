@@ -3,7 +3,7 @@ import updateOptions from '../authorizedOption'
 
 const anon = {
 
-    createAnonRobot(anonymizeArray){
+    createAnonRobot(anonymizeArray, username){
         
         const createAnonRobotOption = {
             method: 'POST', 
@@ -14,8 +14,7 @@ const anon = {
               body: JSON.stringify(anonymizeArray)
         }
         
-        //SK user salim hardcodé
-        return fetch('/api/robot/salim/anonymize', updateOptions(createAnonRobotOption) ).then(answer => {
+        return fetch('/api/robot/' + username + '/anonymize', updateOptions(createAnonRobotOption) ).then(answer => {
             if (!answer.ok) {throw answer}
             return answer.json()
         }).catch(error => {
@@ -24,7 +23,7 @@ const anon = {
 
     },
 
-    getAnonJob(){
+    getAnonJob(username){
 
         const getAnonJobOption = {
             method: 'GET', 
@@ -34,7 +33,7 @@ const anon = {
               }
         }
 
-        return fetch('/api/robot/salim/anonymize', updateOptions(getAnonJobOption) ).then(answer => {
+        return fetch('/api/robot/' + username + '/anonymize', updateOptions(getAnonJobOption) ).then(answer => {
             if (!answer.ok) {throw answer}
             return answer.json()
         }).catch(error => {

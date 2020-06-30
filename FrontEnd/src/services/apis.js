@@ -13,6 +13,7 @@ import localStorage from './localStorage'
 import User from './User'
 import deleteRobot from './deleteRobot'
 import role from './role'
+import token from './token'
 
 export default {
   aets,
@@ -29,5 +30,6 @@ export default {
   localStorage, 
   User, 
   deleteRobot, 
-  role
+  role, 
+  token
 }

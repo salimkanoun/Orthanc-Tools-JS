@@ -36,7 +36,7 @@ class AnonymizePanelProgress extends Component {
         do {
             let success = 0
             let failures = 0
-            robot = await apis.anon.getAnonJob()
+            robot = await apis.anon.getAnonJob(this.props.username)
             robot.items.forEach(async item => {
                 switch (item.Status) {
                     case 'Success':
@@ -101,32 +101,23 @@ class AnonymizePanelProgress extends Component {
                         <button type='button' className='btn btn-primary text-center' onClick={()=>this.setModal()}>Close</button>
                     </Modal.Footer>
                 </Modal>
-                {total.toFixed(2) + ' %'}
-                <div style={{width: '15%'}} hidden={this.state.success === 0}>
+                <div className="col-md-2 text-left">
                     <CircularProgressbarWithChildren
-                    value={this.state.success}
-                    strokeWidth={20}
-                    width={10}
-                    styles={buildStyles({
-                    trailColor: "transparent"
-                    })}
-                >
-                    {/*
-                    Width here needs to be (100 - 2 * strokeWidth)% 
-                    in order to fit exactly inside the outer progressbar.
-                    */}
-                    <div style={{ width: "60%" }} hidden={this.state.failures === 0}>
-                    <CircularProgressbar
-                        value={this.state.failures}
+                        value={this.state.success}
+                        text={'Progress : ' + total.toFixed(2) + ' %'}
                         styles={buildStyles({
-                        pathColor: "#f00",
-                        trailColor: "transparent"
-                        })}
-                    />
-                    </div>
-                </CircularProgressbarWithChildren>
+                            textSize: '8px'
+                        })}>
+                    
+                        <CircularProgressbar
+                            value={this.state.failures}
+                            styles={buildStyles({
+                            pathColor: "#f00",
+                            trailColor: "transparent"
+                            })}
+                        />
+                    </CircularProgressbarWithChildren>
                 </div>
-                
 
                 <button type='button' className='btn btn-info float-right mr-2' onClick={()=>this.setModal()} >Show Details</button>
                 <button type='button' className='btn btn-danger float-right mr-2' onClick={()=>alert('not implemented yet')} disabled>Delete</button>
@@ -139,7 +130,8 @@ class AnonymizePanelProgress extends Component {
 
 const mapStateToProps = state => {
     return {
-        anonymizedList: state.AnonList.anonymizedList
+        anonymizedList: state.AnonList.anonymizedList,
+        username: state.Username.username
     }
 }
 
