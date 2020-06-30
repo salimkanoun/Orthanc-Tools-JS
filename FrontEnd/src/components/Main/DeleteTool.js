@@ -48,10 +48,12 @@ class DeleteTool extends Component {
         //close Modal
         this.handleConfirm()
         //call API DELETE
-        let deletedSeriesIdArray = this.props.deleteList.map(deleteObject => {
-            return deleteObject.Series[0]
+
+        let deletedSeriesIdArray = []
+        this.props.deleteList.forEach((item) => {
+            deletedSeriesIdArray = [...deletedSeriesIdArray, ...item.Series]
         })
-        console.log(deletedSeriesIdArray)
+        
         let answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
         if (answer){
             this.openToast()

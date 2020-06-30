@@ -145,11 +145,12 @@ code {
 }
 
 .nav-link {
-	color: white
+	color: rgba(255, 255, 255, 1) !important
 }
 .nav-link:hover {
 	color: black
 }
+
 
 .vertical-center {
 	min-height: 100%;  /* Fallback for browsers do NOT support vh unit */

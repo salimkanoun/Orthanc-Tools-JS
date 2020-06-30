@@ -48,15 +48,16 @@ class NavBar extends Component {
   async componentDidMount(){
 
     this.setState({
-      sizeScreen: document.documentElement.clientWidth
+      navbar: document.documentElement.clientWidth < 992 ? 'responsive' : 'classique'
     })
 
     window.addEventListener('resize', () => {
-      this.setState({sizeScreen: document.documentElement.clientWidth})
+      const size = document.documentElement.clientWidth
+      size < 992 ? this.setState({navbar: 'responsive'}) : this.setState({navbar: 'classique'})
     });
 
     document.addEventListener("scroll", () => {
-      const backgroundcolor = window.scrollY < 50 ? "#11ffee00" : "#0275d8";
+      const backgroundcolor = window.scrollY < 50 ? "null" : "primary";
 
       this.setState({ navBackground: backgroundcolor });
     });
@@ -85,57 +86,29 @@ class NavBar extends Component {
 ))
 
 
+
+
   navBarResponsive = () => {
     return (
       <Fragment>
-        <Navbar fixed='top' collapseOnSelect expand='lg' bg='primary' variant='dark'>
-            <Navbar.Toggle aria-controls='responsive_navbar' />
+        <Navbar fixed='top' collapseOnSelect expand='lg' bg={this.state.navbar === 'responsive' ? 'primary' : this.state.navBackground} variant='dark' onRateChange={() => console.log('start')}>
+            <Navbar.Toggle aria-controls='responsive_navbar'  />
             <Navbar.Collapse id='responsive_navbvar'>
-              <Nav className='float-right mr-3'>
-                <ToolsPanel roles={this.state.token} apercu={false}/>
-              </Nav>
+              {this.state.navbar === 'responsive' ? <div className='float-right'><ToolsPanel roles={this.state.token} apercu={false}/></div> : null}
+                      
               <Nav className='mr-auto'>
-                <Link className='nav-link' to='/orthanc-content' hidden={!this.state.token.content}>Orthanc Content</Link>
-                <Link className='nav-link' to='/import' hidden={!this.state.token.import}>Import</Link>
-                <Link className='nav-link' to='/query' hidden={!this.state.token.query}>Query</Link>
-                <Link className='nav-link' to='/auto-query' hidden={!this.state.token.auto_query}>Auto-Retrieve</Link>
-                <Link className='nav-link' to='/options' hidden={!this.state.token.admin}>Administration</Link>
-                <Link className='nav-link' onClick={this.logout} to='/'>Log out</Link>
+                      <Link className='nav-link' to='/orthanc-content' hidden={!this.state.token.content}>Orthanc Content</Link>
+                      <Link className='nav-link' to='/import' hidden={!this.state.token.import}>Import</Link>
+                      <Link className='nav-link' to='/query' hidden={!this.state.token.query}>Query</Link>
+                      <Link className='nav-link' to='/auto-query' hidden={!this.state.token.auto_query}>Auto-Retrieve</Link>
+                      <Link className='nav-link' to='/options' hidden={!this.state.token.admin}>Administration</Link>
+                      <Link className='nav-link' onClick={this.logout} to='/'>Log out</Link>
               </Nav>
+              {this.state.navbar === 'classique' ? <ToolsPanel roles={this.state.token} apercu={true}/> : null}
+              
             </Navbar.Collapse>
           </Navbar>
           {<this.AnimatedSwitch />}
-      </Fragment>
-    )
-  }
-
-  navbarClassique = ()  => {
-    return (
-      <Fragment>
-        <nav className='navbar navbar-expand-lg mb-5 fixed-top' style={ {backgroundColor : this.state.navBackground} } >
-          <ul className='navbar-nav mr-auto'>
-            <li className='nav-item'>
-              <Link className='nav-link' to='/orthanc-content' hidden={!this.state.token.content}>Orthanc Content</Link>
-            </li>
-            <li className='nav-item'>
-              <Link className='nav-link' to='/import' hidden={this.state.token.import}>Import</Link>
-            </li>
-            <li className='nav-item'>
-              <Link className='nav-link' to='/query' hidden={!this.state.token.query}>Query</Link>
-            </li>
-            <li className='nav-item'>
-              <Link className='nav-link' to='/auto-query' hidden={!this.state.token.auto_query}>Auto-Retrieve</Link>
-            </li>
-            <li className='nav-item'>
-              <Link className='nav-link' to='/options' hidden={!this.state.token.admin}>Administration</Link>
-            </li>
-            <li className='nav-item float-right'>
-              <Link className='nav-link' onClick={this.logout} to='/'>Log out</Link>
-            </li>
-          </ul>
-          <ToolsPanel roles={this.state.token} apercu={true}/>
-        </nav>
-        {<this.AnimatedSwitch />}
       </Fragment>
     )
   }
@@ -144,7 +117,7 @@ class NavBar extends Component {
   render () {
     return (
       
-        this.state.sizeScreen < 992 ? <this.navBarResponsive/> : <this.navbarClassique/>
+        <this.navBarResponsive/>
       
     )
   }
