@@ -14,7 +14,7 @@ authentication = async function (req, res) {
       payload = {
         username: body.username,
         admin: infosUser.admin,
-        upload: infosUser.upload,
+        import: infosUser.import,
         content: infosUser.content,
         anon: infosUser.anon,
         export_local: infosUser.export_local,
@@ -24,8 +24,6 @@ authentication = async function (req, res) {
         delete: infosUser.delete,
         modify: infosUser.modify
       }
-
-      console.log(payload)
 
       var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
 

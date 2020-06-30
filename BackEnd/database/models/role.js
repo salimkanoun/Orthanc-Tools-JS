@@ -4,7 +4,7 @@ const Users = require("../../model/Users");
 
 module.exports = (sequelize, DataTypes) => {
   const Role = sequelize.define('Role', {
-    upload: DataTypes.BOOLEAN,
+    import: DataTypes.BOOLEAN,
     content: DataTypes.BOOLEAN,
     anon: DataTypes.BOOLEAN,
     export_local: DataTypes.BOOLEAN,

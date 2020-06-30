@@ -121,8 +121,7 @@ class Users {
     
   }
 
-  async getUserRight(){
-
+  async getLocalUserRight () {
     let rights;
 
     try {
@@ -136,7 +135,7 @@ class Users {
       }
 
         rights = await db.Role.findOne({
-        attributes: ['upload', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin','modify'],
+        attributes: ['import', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin','modify'],
         where: {name: user.role}
       });
 
@@ -148,8 +147,39 @@ class Users {
       } finally {
         return rights
       }
-      
   }
+
+  async getLDAPUserRight () {
+    //todo
+  }  
+
+  async getUserRight(){
+
+      const mode = await db.Option.findOne({ 
+        attributes: ['ldap','localUser'],
+        where: {id: '1'}
+      });
+
+      try {
+        if(mode.ldap && mode.localUser) {
+          if(this.username.indexOf('@') === -1) {
+            //Local user
+            return getLocalUserRight();
+
+          } else {
+            //LDAP user
+            return getLDAPUserRight();
+          }
+
+        } else if (mode.localUser) {
+          //Local user
+          return this.getLocalUserRight();
+        } 
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
 }
 
 module.exports = Users
