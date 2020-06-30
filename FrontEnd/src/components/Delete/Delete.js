@@ -1,7 +1,5 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import Popover from 'react-bootstrap/Popover'
-import Overlay from 'react-bootstrap/Overlay'
 import { toast } from 'react-toastify';
 
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
@@ -12,8 +10,11 @@ import {studyArrayToPatientArray} from '../../tools/processResponse'
 import Modal from 'react-bootstrap/Modal'
 import apis from '../../services/apis'
 
-//Ce composant sera a connecter au redux pour connaitre la longueur de la liste de delete 
-class DeleteTool extends Component {
+class Delete extends Component {
+
+    state = {
+        show: false
+    }
 
 
     constructor(props){
@@ -27,8 +28,9 @@ class DeleteTool extends Component {
     }
 
     handleConfirm(){
-        this.props.onHide()
-        this.props.setConfirm()
+        this.setState(prevState => ({
+            show: !prevState.show
+        }))
     }
     
     openToast(){
@@ -43,7 +45,6 @@ class DeleteTool extends Component {
         toast.update(this.toast.current, {type: toast.TYPE.INFO, render: 'Delete done', className: 'bg-success', autoClose: 2000})
     }
 
-    //SK Ici laisser l'action au front et gérer un retour visuel, je m'occuperai du back
     async handleClickDelete(){
         //close Modal
         this.handleConfirm()
@@ -60,13 +61,11 @@ class DeleteTool extends Component {
             let progress
             do {
                 progress = await apis.deleteRobot.getDeleteRobot(this.props.username)
-                let nb = progress.progression.Success/progress.items.length
+                let nb = 100*progress.progression.Success/progress.items.length
                 this.updateToast(nb)
             } while (progress.status !== "Finished")
             this.successToast()
         }
-        //A GERER LE FLUSH DE LA LISTE DU COUP
-        //La liste des delete elle etait bien au niveau Series non ?
         this.props.deleteList.forEach(async (study) => {
             this.props.removeStudyFromDeleteList(study.ID)
             this.props.removeOrthancContentStudy(study.ID)
@@ -78,8 +77,6 @@ class DeleteTool extends Component {
         this.props.emptyDeleteList()
     }
 
-    //SK : Ici on avait deja defini des listener onDelete pour le dropdown, je les ai reutillise pour
-    //le boutton delete de la row
     onDeletePatient(patientOrthancID){
         this.props.removePatientFromDeleteList(patientOrthancID)
     }
@@ -91,27 +88,23 @@ class DeleteTool extends Component {
     render(){
         return (
             <Fragment>
-                <Overlay target={this.props.target} show={this.props.show} placement="left" onHide={this.props.onHide} rootClose >
-                    <Popover id="popover-basic" style={ { maxWidth : '100%' }} >
-                        <Popover.Title as="h3">Delete List</Popover.Title>
-                        <Popover.Content>
-                            <div className="float-right mb-3">
-                                <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
-                            </div>
-                            <TablePatientsWithNestedStudies 
-                                patients={studyArrayToPatientArray(this.props.deleteList)} 
-                                hiddenActionBouton={true} 
-                                hiddenRemoveRow={false} 
-                                onDeletePatient={this.onDeletePatient} 
-                                onDeleteStudy={this.onDeleteStudy}
-                                wrapperClasses="table-responsive" />
-                            <div className="text-center">
-                                <button type="button" className="btn btn-danger" onClick={this.handleConfirm} >Delete List</button>
-                            </div>
-                        </Popover.Content>
-                    </Popover>
-                </Overlay>
-                <Modal show={this.props.confirmDelete} onHide={this.handleConfirm}>
+                <div className='jumbotron'>
+                    <h2 className="card-title mb-3">Delete</h2>
+                    <div className="float-right mb-3">
+                        <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
+                    </div>
+                    <TablePatientsWithNestedStudies 
+                        patients={studyArrayToPatientArray(this.props.deleteList)} 
+                        hiddenActionBouton={true} 
+                        hiddenRemoveRow={false} 
+                        onDeletePatient={this.onDeletePatient} 
+                        onDeleteStudy={this.onDeleteStudy}
+                        wrapperClasses="table-responsive" />
+                    <div className="text-center">
+                        <button type="button" className="btn btn-danger" onClick={this.handleConfirm} >Delete List</button>
+                    </div>
+                </div>
+                <Modal show={this.state.show} onHide={this.handleConfirm}>
                     <Modal.Header closeButton>
                         <Modal.Title>Confirm Delete</Modal.Title>
                     </Modal.Header>
@@ -141,4 +134,4 @@ const mapDispatchToProps = {
     removeOrthancContentStudy
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteTool)
+export default connect(mapStateToProps, mapDispatchToProps)(Delete)

@@ -52,7 +52,13 @@ class ToolsPanel extends Component {
                     </Link>
                     <ExportTool  target={refExport} show={this.state.show === 'export' ? true : false} onHide={this.closePopovers} />
                 </div>
-                <div className="mr-1" hidden={!this.props.roles.delete}>
+                <div className='mr-2' hidden={this.props.apercu}>
+                    <Link id='delete' ref={refDelete} type='button' className='btn btn-danger' to='/delete'>
+                        Delete <br/>
+                        <span className="badge badge-light">{(this.props.deleteList.length)}</span>
+                    </Link>
+                </div>
+                <div className="mr-2" hidden={!this.props.roles.delete || !this.props.apercu} >
                     <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onMouseOver={this.props.apercu ? () => this.setState({show: 'delete'}) : null } onClick={() => this.setState({confirmDelete: true})} >
                         Delete <br/>
                         <span className="badge badge-light" onMouseOver={this.props.apercu ? () => this.setState({show: 'delete'}) : null } >{(this.props.deleteList.length)}</span>

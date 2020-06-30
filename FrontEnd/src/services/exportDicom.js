@@ -4,7 +4,7 @@ import updateOptions from '../authorizedOption'
 
 const exportDicom = {
 
-    exportHirachicalDicoms(OrthancIDsArray){
+    exportHirachicalDicoms(OrthancIDsArray, TS){
 
         const exportHirachicalDicomsOption =  {
           method: 'POST',
@@ -14,7 +14,8 @@ const exportDicom = {
           },
           body: JSON.stringify({
             Synchronous : false,
-            Resources : OrthancIDsArray
+            Resources : OrthancIDsArray, 
+            Transcode: TS
           })
         }
 
@@ -27,7 +28,7 @@ const exportDicom = {
           })
     },
 
-    exportDicomDirDicoms( OrthancIDsArray ){
+    exportDicomDirDicoms( OrthancIDsArray, TS ){
 
       const exportDicomDirDicomsOption =  {
         method: 'POST',
@@ -37,7 +38,8 @@ const exportDicom = {
         },
         body: JSON.stringify({
           Synchronous : false,
-          Resources : OrthancIDsArray
+          Resources : OrthancIDsArray, 
+          Transcode: TS
         })
       }
 

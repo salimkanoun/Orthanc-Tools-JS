@@ -11,6 +11,7 @@ import apis from '../../services/apis'
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 import Modal from "react-bootstrap/Modal"
+import Select from 'react-select'
 
 class ExportPanel extends Component {
     
@@ -19,7 +20,8 @@ class ExportPanel extends Component {
         aets: [],
         peers: [], 
         show: false, 
-        button: ''
+        button: '',
+        TS: {}
     }
 
     constructor(props){
@@ -32,7 +34,27 @@ class ExportPanel extends Component {
         this.confirm = this.confirm.bind(this)
         this.setModal = this.setModal.bind(this)
         this.setButton = this.setButton.bind(this)
+        this.handleChange = this.handleChange.bind(this)
     }
+
+    componentWillMount() {
+        const TS = apis.localStorage.getLocalStorage('TS')
+        let value = {}
+        if(TS !== null){
+            this.TSOptions.forEach((option) => {
+                if (option.value === TS)
+                    value = option
+            })
+            this.setState({
+                TS: value
+            })
+        } else {
+            this.setState({
+                TS: this.TSOptions[0]
+            })
+        }
+    }
+    
     
     async componentDidMount(){
         let aets = await apis.aets.getAets()
@@ -129,6 +151,32 @@ class ExportPanel extends Component {
         })
     }
 
+    TSOptions = [
+        {value: 'none',                     label: 'None'},
+        {value: '1.2.840.10008.1.2',        label: 'Implicit VR Endian'},
+        {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
+        {value: '1.2.840.10008.1.2.1',      label: 'Deflated Explicit VR Little Endian'},
+        {value: '1.2.840.10008.1.2.2',      label: 'Explicit VR Big Endian'},
+        {value: '1.2.840.10008.1.2.4.50',   label: 'JPEG 8-bit'},
+        {value: '1.2.840.10008.1.2.4.51',   label: 'JPEG 12-bit'},
+        {value: '1.2.840.10008.1.2.4.57',   label: 'JPEG Lossless'},
+        {value: '1.2.840.10008.1.2.4.70',   label: 'JPEG Lossless'},
+        {value: '1.2.840.10008.1.2.4.80',   label: 'JPEG-LS Lossless' },
+        {value: '1.2.840.10008.1.2.4.81',   label: 'JPEG-LS Lossy'},
+        {value: '1.2.840.10008.1.2.4.90',   label: 'JPEG 2000'},
+        {value: '1.2.840.10008.1.2.4.91',   label: 'JPEG 2000'},
+        {value: '1.2.840.10008.1.2.4.92',   label: 'JPEG 2000'},
+        {value: '1.2.840.10008.1.2.4.93',   label: 'JPEG 2000'}
+
+    ]
+
+    handleChange(value){
+        this.setState({
+            TS: value
+        })
+        apis.localStorage.setlocalStorage('TS', value.value)
+    }
+
     render() {
         let idArray = this.getExportIDArray()
         let confirm = this.confirm()
@@ -159,7 +207,8 @@ class ExportPanel extends Component {
                 </div>
                 <div className="row text-center mt-5">
                     <div className='col-sm'>
-                        <DownloadDropdown exportIds={idArray} />
+                        <DownloadDropdown exportIds={idArray} TS={this.state.TS.value} />
+                        <Select className='mt-2' name="ts" single options={this.TSOptions} onChange={this.handleChange} value={this.state.TS}/>
                     </div>
                     <div className='col-sm'>
                         <SendAetDropdown aets={this.state.aets} exportIds={idArray} />
