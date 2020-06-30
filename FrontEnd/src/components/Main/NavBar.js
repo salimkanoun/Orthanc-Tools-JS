@@ -20,6 +20,7 @@ import Import from '../Import/Import'
 import ContentRootPanel from '../OrthancContent/ContentRootPanel'
 import ExportPanel from '../Export/ExportPanel'
 import AnonRootPanel from '../Anonymize/AnonRootPanel'
+import Delete from '../Delete/Delete'
 
 import { resetReducer } from '../../actions/LogOut'
 import { saveUsername } from '../../actions/Username'
@@ -80,15 +81,14 @@ class NavBar extends Component {
           <Route exact path='/robot/:username' render = { (props) => <RobotView username={props.match.params.username} /> } />
           <Route exact path='/export' component={ExportPanel} />
           <Route exact path='/anonymize' component={AnonRootPanel} />
+          <Route exact path='/delete' component={Delete} />
         </Switch>
       </CSSTransition>
     </TransitionGroup>
 ))
+  
 
-
-
-
-  navBarResponsive = () => {
+  render () {
     return (
       <Fragment>
         <Navbar fixed='top' collapseOnSelect expand='lg' bg={this.state.navbar === 'responsive' ? 'primary' : this.state.navBackground} variant='dark' onRateChange={() => console.log('start')}>
@@ -110,15 +110,6 @@ class NavBar extends Component {
           </Navbar>
           {<this.AnimatedSwitch />}
       </Fragment>
-    )
-  }
-  
-
-  render () {
-    return (
-      
-        <this.navBarResponsive/>
-      
     )
   }
   
