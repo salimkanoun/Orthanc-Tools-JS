@@ -1,4 +1,4 @@
-import { ADD_DELETE_LIST, REMOVE_PATIENT_DELETE_LIST, REMOVE_STUDY_DELETE_LIST, EMPTY_DELETE_LIST } from "../actions/actions-types"
+import { ADD_STUDY_DELETE_LIST, REMOVE_PATIENT_DELETE_LIST, REMOVE_STUDY_DELETE_LIST, EMPTY_DELETE_LIST } from "../actions/actions-types"
 
 const initialState = {
     deleteList: []
@@ -7,7 +7,7 @@ const initialState = {
 export default function deleteListReducer (state = initialState, action ) {
     switch (action.type) {
 
-        case ADD_DELETE_LIST:
+        case ADD_STUDY_DELETE_LIST:
           let deleteArray = action.payload
           //Add only id that are not already in the delete list
           let newStudies = deleteArray.filter(id =>  ! state.deleteList.includes(id) )
