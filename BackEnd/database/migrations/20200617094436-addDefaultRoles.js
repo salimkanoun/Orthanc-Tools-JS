@@ -4,7 +4,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('Roles', [{
       name: 'admin',
-      upload: true, 
+      import: true, 
       content: true, 
       anon: true, 
       export_local: true, 
@@ -14,10 +14,11 @@ module.exports = {
       delete: true, 
       admin: true,
       createdAt: new Date().toDateString(),
-      updatedAt: new Date().toDateString()
+      updatedAt: new Date().toDateString(),
+      modify: true
     }, {
       name: 'user',
-      upload: true, 
+      import: true, 
       content: true, 
       anon: true, 
       export_local: true, 
@@ -27,7 +28,8 @@ module.exports = {
       delete: true, 
       admin: false,
       createdAt: new Date().toDateString(),
-      updatedAt: new Date().toDateString()
+      updatedAt: new Date().toDateString(),
+      modify: true
     }])
   },
 

@@ -52,6 +52,8 @@ class Roles {
     }
 
     static async deleteRole(name){
+      if(name === 'admin') throw 'Can\'t delete role admin'
+
       try {
         await db.Role.destroy({
         where: {
@@ -64,6 +66,8 @@ class Roles {
     }
 
     static async modifyRoles(name, payload){
+      if(name === 'admin') throw 'Can\'t modify role admin'
+
       console.log(payload.import)
       try {
         await db.Role.upsert({

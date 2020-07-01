@@ -48,7 +48,7 @@ class Users {
         mail: body.mail,
         password: hash,
         role: body.role,
-        admin: true
+        admin: false
       }).catch(e => console.log(e))
     })
 
@@ -56,11 +56,15 @@ class Users {
   }
 
   static async deleteUser (username) {
+    let user = new Users(username)
+    
+    if(await user.isAdmin()) throw 'Can\'t delete superAdmin'
+  
     try {
       await db.User.destroy({
       where: {
           username: username
-      }
+       }
     })
     } catch (error) {
       console.log(error)
@@ -68,16 +72,20 @@ class Users {
   }
 
   static async modifyUser(data){
-     try {
+    let user = new Users(data.username)
+    
+    if(await user.isAdmin() && data.role !=='admin') throw 'Can\'t modify superAdmin\'s role'
+
+    try {
       await db.User.upsert({
-        id: data.id,
-        username: data.username, 
-        isAdmin: data.admin, 
-        first_name: data.first_name, 
-        last_name: data.last_name, 
-        mail: data.mail, 
-        role: data.role
-      })
+      id: data.id,
+      username: data.username, 
+      isAdmin: data.admin, 
+      first_name: data.first_name, 
+      last_name: data.last_name, 
+      mail: data.mail, 
+      role: data.role
+    })
     } catch (error) {
       console.log(error)
     }
@@ -121,7 +129,7 @@ class Users {
     
   }
 
-  async getLocalUserRight () {
+  async getLocalUserRight() {
     let rights;
 
     try {
@@ -156,28 +164,28 @@ class Users {
   async getUserRight(){
 
       const mode = await db.Option.findOne({ 
-        attributes: ['ldap','localUser'],
+        attributes: ['ldap'],
         where: {id: '1'}
       });
 
       try {
-        if(mode.ldap && mode.localUser) {
-          if(this.username.indexOf('@') === -1) {
-            //Local user
-            return getLocalUserRight();
+          if(mode.ldap && this.username.indexOf('@') !== -1) {
+            //LDAP user
+            return this.getLDAPUserRight();
 
           } else {
-            //LDAP user
-            return getLDAPUserRight();
+            //Local user
+            return this.getLocalUserRight();
+            
           }
 
-        } else if (mode.localUser) {
-          //Local user
-          return this.getLocalUserRight();
-        } 
     } catch(err) {
       console.log(err)
     }
+  }
+
+  async changePassWord(username) {
+    
   }
 
 }
