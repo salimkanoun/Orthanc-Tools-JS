@@ -76,8 +76,21 @@ class Users {
     
     if(await user.isAdmin() && data.role !=='admin') throw 'Can\'t modify superAdmin\'s role'
 
-    try {
-      await db.User.upsert({
+    const saltRounds = 10
+
+    if(data.password ==! null) {
+      try {
+        const promise = bcrypt.hash(data.password, saltRounds).then(function (hash) {db.User.upsert({
+          password: data.password
+        })
+      })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+  try { 
+    await db.User.upsert({
       id: data.id,
       username: data.username, 
       isAdmin: data.admin, 
@@ -86,9 +99,9 @@ class Users {
       mail: data.mail, 
       role: data.role
     })
-    } catch (error) {
-      console.log(error)
-    }
+  } catch (error) {
+    console.log(error)
+  }
 }
 
   static async getUsers(){
@@ -182,10 +195,6 @@ class Users {
     } catch(err) {
       console.log(err)
     }
-  }
-
-  async changePassWord(username) {
-    
   }
 
 }
