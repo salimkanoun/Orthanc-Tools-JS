@@ -24,6 +24,7 @@ var Users = require('../model/Users')
 
     modifyUser = async function(req, res){
         const body = req.body
+        console.log('BODY : ', body)
         try {
             await Users.modifyUser(body)
             res.json(true)

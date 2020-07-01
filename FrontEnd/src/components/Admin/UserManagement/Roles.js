@@ -3,7 +3,7 @@ import Toggle from 'react-toggle'
 import BootstrapTable from 'react-bootstrap-table-next';
 import Modal from 'react-bootstrap/Modal';
 
-import apis from '../../services/apis'
+import apis from '../../../services/apis'
 
 class Roles extends Component {
 

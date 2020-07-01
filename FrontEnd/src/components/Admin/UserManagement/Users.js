@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import Select from 'react-select'
 import Modal from 'react-bootstrap/Modal';
-import apis from '../../services/apis';
+import apis from '../../../services/apis';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import cellEditFactory from 'react-bootstrap-table2-editor'
@@ -16,7 +16,8 @@ class Users extends Component {
             first_name: undefined, 
             last_name: undefined, 
             mail: undefined,
-            role: undefined
+            role: undefined, 
+            password: undefined
         },
         username: '',
         users: [],
@@ -44,7 +45,14 @@ class Users extends Component {
     }
 
     async getUsers(){
-       let users = await apis.User.getUsers()
+       let answer = await apis.User.getUsers()
+       let users = []
+       answer.forEach((user) => {
+           users.push({
+               ...user, 
+               password: undefined
+           })
+       })
        this.setState({
            users: users, 
        })
@@ -58,7 +66,8 @@ class Users extends Component {
                 first_name: undefined, 
                 last_name: undefined, 
                 mail: undefined,
-                role: undefined
+                role: undefined, 
+                password: undefined
             },
             showDelete: false,
             showCreate: false
@@ -108,8 +117,19 @@ class Users extends Component {
     }
 
     async modify(row){
-        
-        await apis.User.modifyUser(row).then(()=>{
+        let payload = {}
+        if (this.state.data.password === undefined || this.state.data.password === ''){
+            payload = {
+                ...row, 
+                password: null
+            }
+        } else {
+            payload = {
+                ...row, 
+                password: this.state.data.password
+            }
+        }
+        await apis.User.modifyUser(payload).then(()=>{
             this.resetState()
         }).catch((error) => console.log(error))
     }
@@ -157,6 +177,16 @@ class Users extends Component {
             text: 'Role', 
             sort: true
         }, 
+        {
+            dataField: 'password', 
+            text: 'New Password', 
+            editable: false,
+            formatter: (cell, row, index) => {
+                return (
+                    <input name='password' type="password" className="form-control" placeholder="Password" onChange={this.handleChange}></input>
+                )
+            }
+        },
         {
             dataField: 'edit', 
             text: 'Edit',
