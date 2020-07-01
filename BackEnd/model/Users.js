@@ -78,10 +78,11 @@ class Users {
 
     const saltRounds = 10
 
-    if(data.password ==! null) {
+    if(data.password !== null) {
       try {
         const promise = bcrypt.hash(data.password, saltRounds).then(function (hash) {db.User.upsert({
-          password: data.password
+          id: data.id,
+          password: hash
         })
       })
       } catch (error) {

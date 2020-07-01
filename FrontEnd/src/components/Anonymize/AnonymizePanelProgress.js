@@ -131,7 +131,7 @@ class AnonymizePanelProgress extends Component {
 const mapStateToProps = state => {
     return {
         anonymizedList: state.AnonList.anonymizedList,
-        username: state.Username.username
+        username: state.OrthancTools.username
     }
 }
 

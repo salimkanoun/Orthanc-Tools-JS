@@ -5,7 +5,7 @@ import AutoRetrieveRootPanel from './AutoRetrieveRootPanel'
 import PeerRootPanel from './PeerRootPanel'
 import JobsRootPanel from './JobsRootPanel'
 import Plugins from './Plugins'
-import UserManagement from './UserManagement'
+import UserManagement from './UserManagement/UserManagement'
 
 /**
  * Root Panel of Admin route

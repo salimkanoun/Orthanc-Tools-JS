@@ -7,7 +7,6 @@ import DeleteList from './DeleteList'
 import ExportList from './ExportList'
 import AnonList from './AnonList'
 import OrthancContent from './OrthancContent'
-import Username from './Username'
 
 const appReducer = combineReducers({
   OrthancTools,
@@ -17,8 +16,7 @@ const appReducer = combineReducers({
   DeleteList, 
   ExportList, 
   AnonList, 
-  OrthancContent, 
-  Username
+  OrthancContent
 })
 
 const rootReducer = (state, action) => {
