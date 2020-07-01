@@ -53,10 +53,10 @@ class TranscodeSelector extends Component {
         {value: '1.2.840.10008.1.2.4.70',   label: 'JPEG Lossless'},
         {value: '1.2.840.10008.1.2.4.80',   label: 'JPEG-LS Lossless' },
         {value: '1.2.840.10008.1.2.4.81',   label: 'JPEG-LS Lossy'},
-        {value: '1.2.840.10008.1.2.4.90',   label: 'JPEG 2000'},
-        {value: '1.2.840.10008.1.2.4.91',   label: 'JPEG 2000'},
-        {value: '1.2.840.10008.1.2.4.92',   label: 'JPEG 2000'},
-        {value: '1.2.840.10008.1.2.4.93',   label: 'JPEG 2000'}
+        {value: '1.2.840.10008.1.2.4.90',   label: 'JPEG 2000 (90)'},
+        {value: '1.2.840.10008.1.2.4.91',   label: 'JPEG 2000 (91)'},
+        {value: '1.2.840.10008.1.2.4.92',   label: 'JPEG 2000 (92)'},
+        {value: '1.2.840.10008.1.2.4.93',   label: 'JPEG 2000 (93)'}
 
     ]
 
