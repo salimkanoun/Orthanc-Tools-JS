@@ -1,17 +1,17 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
+import Modal from "react-bootstrap/Modal"
 
+import apis from '../../services/apis'
 import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy'
 import TableSeries from '../CommonComponents/RessourcesDisplay/TableSeries'
 import DownloadDropdown from "./DownloadDropdown"
 import SendAetDropdown from "./SendAetDropdown"
 import SendPeerDropdown from "./SendPeerDropdown"
+import TranscodeSelector from './TranscodeSelector'
 
-import apis from '../../services/apis'
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
-import Modal from "react-bootstrap/Modal"
-import Select from 'react-select'
 
 class ExportPanel extends Component {
     
@@ -20,8 +20,7 @@ class ExportPanel extends Component {
         aets: [],
         peers: [], 
         show: false, 
-        button: '',
-        TS: {}
+        button: ''
     }
 
     constructor(props){
@@ -30,30 +29,11 @@ class ExportPanel extends Component {
         this.emptyList = this.emptyList.bind(this)
         this.removeSeries = this.removeSeries.bind(this)
         this.removeStudy = this.removeStudy.bind(this)
-        this.child = React.createRef()
         this.confirm = this.confirm.bind(this)
         this.setModal = this.setModal.bind(this)
         this.setButton = this.setButton.bind(this)
-        this.handleChange = this.handleChange.bind(this)
     }
 
-    componentWillMount() {
-        const TS = apis.localStorage.getLocalStorage('TS')
-        let value = {}
-        if(TS !== null){
-            this.TSOptions.forEach((option) => {
-                if (option.value === TS)
-                    value = option
-            })
-            this.setState({
-                TS: value
-            })
-        } else {
-            this.setState({
-                TS: this.TSOptions[0]
-            })
-        }
-    }
     
     
     async componentDidMount(){
@@ -64,7 +44,7 @@ class ExportPanel extends Component {
             peers: peers
         })
     }
-
+    
     getExportIDArray(){
         let ids = []
         this.props.exportList.seriesArray.forEach(serie => {
@@ -95,9 +75,9 @@ class ExportPanel extends Component {
 
     rowEvents = {
         onClick: (e, row, rowIndex) => {
-          this.setState({currentStudy: row.StudyOrthancID})
+            this.setState({currentStudy: row.StudyOrthancID})
         }
-      }
+    }
 
     rowStyle = (row, rowIndex) => {
         const style = {};
@@ -125,63 +105,38 @@ class ExportPanel extends Component {
                     SeriesOrthancID: serie.ID,
                     Instances: serie.Instances.length
                 })
-        }})
-        return studies
-    }
+            }})
+            return studies
+        }
 
-    confirm(){
-        let answer = false
-        this.props.exportList.studyArray.forEach(study => {
-            if (study.AnonymizedFrom === undefined || study.AnonymizedFrom === ''){
-                answer = true
-            }
-        })
-        return answer
-    }
-
-    setModal(){
-        this.setState({
-            show: !this.state.show
-        })
-    }
-
-    setButton(button){
-        this.setState({
-            button: button
-        })
-    }
-
-    TSOptions = [
-        {value: 'none',                     label: 'None'},
-        {value: '1.2.840.10008.1.2',        label: 'Implicit VR Endian'},
-        {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
-        {value: '1.2.840.10008.1.2.1',      label: 'Deflated Explicit VR Little Endian'},
-        {value: '1.2.840.10008.1.2.2',      label: 'Explicit VR Big Endian'},
-        {value: '1.2.840.10008.1.2.4.50',   label: 'JPEG 8-bit'},
-        {value: '1.2.840.10008.1.2.4.51',   label: 'JPEG 12-bit'},
-        {value: '1.2.840.10008.1.2.4.57',   label: 'JPEG Lossless'},
-        {value: '1.2.840.10008.1.2.4.70',   label: 'JPEG Lossless'},
-        {value: '1.2.840.10008.1.2.4.80',   label: 'JPEG-LS Lossless' },
-        {value: '1.2.840.10008.1.2.4.81',   label: 'JPEG-LS Lossy'},
-        {value: '1.2.840.10008.1.2.4.90',   label: 'JPEG 2000'},
-        {value: '1.2.840.10008.1.2.4.91',   label: 'JPEG 2000'},
-        {value: '1.2.840.10008.1.2.4.92',   label: 'JPEG 2000'},
-        {value: '1.2.840.10008.1.2.4.93',   label: 'JPEG 2000'}
-
-    ]
-
-    handleChange(value){
-        this.setState({
-            TS: value
-        })
-        apis.localStorage.setlocalStorage('TS', value.value)
-    }
-
-    render() {
-        let idArray = this.getExportIDArray()
-        let confirm = this.confirm()
-        return (
-            <div className="jumbotron">
+        confirm(){
+            let answer = false
+            this.props.exportList.studyArray.forEach(study => {
+                if (study.AnonymizedFrom === undefined || study.AnonymizedFrom === ''){
+                    answer = true
+                }
+            })
+            return answer
+        }
+    
+        setModal(){
+            this.setState({
+                show: !this.state.show
+            })
+        }
+    
+        setButton(button){
+            this.setState({
+                button: button
+            })
+        }
+    
+    
+        render() {
+            let idArray = this.getExportIDArray()
+            let confirm = this.confirm()
+            return (
+                <div className="jumbotron">
                 <h2 className="card-title mb-3">Export</h2>
                 <div className="row">
                     <div className="col-sm">
@@ -207,8 +162,8 @@ class ExportPanel extends Component {
                 </div>
                 <div className="row text-center mt-5">
                     <div className='col-sm'>
-                        <DownloadDropdown exportIds={idArray} TS={this.state.TS.value} />
-                        <Select className='mt-2' name="ts" single options={this.TSOptions} onChange={this.handleChange} value={this.state.TS}/>
+                        <DownloadDropdown exportIds={idArray} />
+                        <TranscodeSelector />
                     </div>
                     <div className='col-sm'>
                         <SendAetDropdown aets={this.state.aets} exportIds={idArray} />
