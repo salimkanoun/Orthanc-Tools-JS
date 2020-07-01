@@ -279,7 +279,7 @@ const mapStateToProps = state => {
     return { 
         anonList: state.AnonList.anonList, 
         profile: state.AnonList.profile, 
-        username: state.Username.username
+        username: state.OrthancTools.username
     }
 }
 const mapDispatchToProps = {

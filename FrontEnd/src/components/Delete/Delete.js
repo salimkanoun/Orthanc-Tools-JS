@@ -123,7 +123,7 @@ class Delete extends Component {
 const mapStateToProps = state => {
     return {
         deleteList: state.DeleteList.deleteList, 
-        username: state.Username.username
+        username: state.OrthancTools.username
     }
 }
 
