@@ -5,6 +5,19 @@ import updateOptions from '../authorizedOption'
 const exportDicom = {
 
     exportHirachicalDicoms(OrthancIDsArray, TS){
+      let body = {}
+      if (TS !== 'none') {
+        body = {
+          Synchronous : false,
+          Resources : OrthancIDsArray, 
+          Transcode: TS
+        }
+      } else {
+        body = {
+          Synchronous : false,
+          Resources : OrthancIDsArray
+        }
+      }
 
         const exportHirachicalDicomsOption =  {
           method: 'POST',
@@ -12,11 +25,7 @@ const exportDicom = {
             Accept: 'application/json',
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            Synchronous : false,
-            Resources : OrthancIDsArray, 
-            Transcode: TS
-          })
+          body: JSON.stringify(body)
         }
 
         return fetch('/api/tools/create-archive/', updateOptions(exportHirachicalDicomsOption) ).then((answer) => {
@@ -29,6 +38,19 @@ const exportDicom = {
     },
 
     exportDicomDirDicoms( OrthancIDsArray, TS ){
+      let body = {}
+      if (TS !== 'none') {
+        body = {
+          Synchronous : false,
+          Resources : OrthancIDsArray, 
+          Transcode: TS
+        }
+      } else {
+        body = {
+          Synchronous : false,
+          Resources : OrthancIDsArray
+        }
+      }
 
       const exportDicomDirDicomsOption =  {
         method: 'POST',
@@ -36,11 +58,7 @@ const exportDicom = {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          Synchronous : false,
-          Resources : OrthancIDsArray, 
-          Transcode: TS
-        })
+        body: JSON.stringify(body)
       }
 
       return fetch('/api/tools/create-media-extended/', updateOptions(exportDicomDirDicomsOption) ).then((answer) => {
