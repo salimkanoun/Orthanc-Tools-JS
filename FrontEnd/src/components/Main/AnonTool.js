@@ -14,7 +14,6 @@ class AnonTool extends Component {
 
     constructor(props){
         super(props)
-        this.handleClick = this.handleClick.bind(this)
         this.handleClickEmpty = this.handleClickEmpty.bind(this)
         this.onDeleteStudy = this.onDeleteStudy.bind(this)
         this.onDeletePatient = this.onDeletePatient.bind(this)
@@ -30,13 +29,6 @@ class AnonTool extends Component {
 
     handleClickEmpty(){
         this.props.emptyAnonymizeList()
-    }
-
-    handleClick(){
-        //call API Anon 
-        this.props.listContent.forEach((content) => {
-            console.log("Will anonymize " + content.id + " from " + content.level + " level")
-        })
     }
 
     render(){
