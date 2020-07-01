@@ -7,7 +7,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.STRING
       },
-      upload: {
+      import: {
         type: Sequelize.BOOLEAN, 
         defaultValue: false
       },
@@ -40,6 +40,10 @@ module.exports = {
         defaultValue: false
       },
       admin: {
+        type: Sequelize.BOOLEAN, 
+        defaultValue: false
+      },
+      modify: {
         type: Sequelize.BOOLEAN, 
         defaultValue: false
       },

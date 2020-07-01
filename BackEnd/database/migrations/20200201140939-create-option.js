@@ -21,13 +21,18 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      ldap: {
+        type: Sequelize.BOOLEAN, 
+        defaultValue: false
       }
     }).then(() => {
       queryInterface.bulkInsert('Options', [{
         hour: 22,
         min: 0,
         createdAt: new Date().toDateString(),
-        updatedAt: new Date().toDateString()
+        updatedAt: new Date().toDateString(),
+        ldap: false
       }], {})
     })
   },
