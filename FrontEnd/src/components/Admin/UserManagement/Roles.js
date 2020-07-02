@@ -4,6 +4,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import Modal from 'react-bootstrap/Modal';
 
 import apis from '../../../services/apis'
+import ModifyRole from "./ModifyRole";
 
 class Roles extends Component {
 
@@ -32,7 +33,6 @@ class Roles extends Component {
         this.create = this.create.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.delete = this.delete.bind(this)
-        this.modify = this.modify.bind(this)
     }
 
     componentDidMount() {
@@ -42,34 +42,6 @@ class Roles extends Component {
     async getRoles(){
         let roles = await apis.role.getRoles()
         this.setState({roles: roles})
-    }
-
-    async modify(){
-        let payload = this.state.data
-        await apis.role.modifyRole(payload).then(() => this.onHide()).catch(error => console.log(error))
-    }
-
-    async openModify(name){
-        let permission = {}
-        await apis.role.getPermission(name).then(answer => permission = answer[0]).then(()=>{
-            this.setState({
-                data: {
-                    name: name,
-                    import: permission.import, 
-                    content: permission.content, 
-                    anon: permission.anon, 
-                    exportLocal: permission.export_local, 
-                    exportExtern: permission.export_extern, 
-                    query: permission.query,
-                    autoQuery: permission.auto_query, 
-                    delete: permission.delete, 
-                    admin: permission.admin, 
-                    modify: permission.modify
-                }, 
-                showModify: true
-            })
-        }).catch(error => console.log(error))
-        
     }
 
     async delete(e){
@@ -83,8 +55,7 @@ class Roles extends Component {
     onHide(){
         this.setState(prevState => ({
             data: {...prevState.data, name: ''},
-            showCreate: false, 
-            showModify: false, 
+            showCreate: false,
             showDelete: false
         }))
         this.getRoles()
@@ -99,9 +70,7 @@ class Roles extends Component {
             dataField: 'edit', 
             text: 'Edit', 
             formatter: (cell, row, index) => {
-                return <button type='button' className='btn btn-warning' name='openModify' onClick={()=>{
-                    this.openModify(row.name)
-                }} >Edit</button>
+                return <ModifyRole name={row.name} />
             }
         }, {
             dataField: 'delete', 
@@ -250,18 +219,6 @@ class Roles extends Component {
                     </Modal.Footer>
                 </Modal>
             
-                <Modal id='modify' show={this.state.showModify} onHide={() => this.onHide()}>
-                    <Modal.Header closeButton>
-                        <h2 className='card-title'>Modify role {this.state.data.name}</h2>
-                    </Modal.Header>
-                    <Modal.Body>  
-                        {this.form()}
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <button type='button' name='create' className='btn btn-primary' onClick={this.modify} >Save</button>
-                        <button type='button' className='btn btn-info' onClick={() => this.setState({showModify: false})} >Cancel</button>
-                    </Modal.Footer>
-                </Modal>
             </Fragment>
         );
     }
