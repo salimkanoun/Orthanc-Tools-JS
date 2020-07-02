@@ -36,6 +36,9 @@ class Users {
   }
 
   static async createUser (body) {
+
+    if(body.username.indexOf('@') !== -1) throw '@ is forbiden'
+
     const saltRounds = 10
     let id = null
     await db.User.max('id').then(max => id = max + 1).catch((error) => console.log(error))
@@ -72,6 +75,8 @@ class Users {
   }
 
   static async modifyUser(data){
+    if(data.username.indexOf('@') !== -1) throw '@ is forbiden'
+
     let user = new Users(data.username)
     
     if(await user.isAdmin() && data.role !=='admin') throw 'Can\'t modify superAdmin\'s role'
