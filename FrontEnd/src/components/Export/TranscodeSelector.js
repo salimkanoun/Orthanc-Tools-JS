@@ -20,8 +20,9 @@ class TranscodeSelector extends Component {
         let value = {}
         if(TS !== null){
             this.options.forEach((option) => {
-                if (option.value === TS)
+                if (option.value === TS){
                     value = option
+                }
             })
             this.setState({
                 TS: value
@@ -30,6 +31,7 @@ class TranscodeSelector extends Component {
             this.setState({
                 TS: this.options[0]
             })
+            apis.localStorage.setlocalStorage('TS', this.options[0].value)
         }
     }
 

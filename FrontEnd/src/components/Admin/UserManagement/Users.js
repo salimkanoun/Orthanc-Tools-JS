@@ -23,9 +23,7 @@ class Users extends Component {
         users: [],
         showDelete: false,
         showCreate: false,
-        optionsUser: [], 
         optionRoles: [],
-        disabledRows: []
     }
 
     async componentDidMount() {
