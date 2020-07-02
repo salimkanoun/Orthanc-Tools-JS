@@ -82,8 +82,8 @@ router.put('/options/orthanc-server', userAdminMidelware, setOrthancServer)
 // Orthanc System API
 router.get('/system', userAdminMidelware, reverseProxyGet)
 // Orthanc Job API
-router.get('/jobs*', userAdminMidelware, reverseProxyGet)
-router.post('/jobs/*/*', userAdminMidelware, reverseProxyPost)
+router.get('/jobs*', userAuthMidelware, reverseProxyGet)
+router.post('/jobs/*', userAuthMidelware, reverseProxyPost)
 // Orthanc Aets Routes
 router.get('/modalities', userAuthMidelware, reverseProxyGet)
 router.get('/modalities*', userAuthMidelware, reverseProxyGet)
