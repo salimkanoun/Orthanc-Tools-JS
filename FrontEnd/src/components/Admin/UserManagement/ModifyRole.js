@@ -10,18 +10,7 @@ class ModifyRole extends Component {
 
     state = { 
         show: false,
-        data: {
-            import: false, 
-            content: false, 
-            anon: false, 
-            exportLocal: false, 
-            exportExtern: false, 
-            query: false,
-            autoQuery: false, 
-            delete: false, 
-            admin: false, 
-            modify: false
-        }, 
+        data: {}, 
      };
     constructor(props) {
         super(props);
@@ -43,22 +32,12 @@ class ModifyRole extends Component {
         let permission = {}
         await apis.role.getPermission(this.props.name).then(answer => permission = answer[0]).then(()=>{
             this.setState({
-                data: {
-                    import: permission.import, 
-                    content: permission.content, 
-                    anon: permission.anon, 
-                    exportLocal: permission.export_local, 
-                    exportExtern: permission.export_extern, 
-                    query: permission.query,
-                    autoQuery: permission.auto_query, 
-                    delete: permission.delete, 
-                    admin: permission.admin, 
-                    modify: permission.modify
-                }, 
+                data: {...permission}, 
                 show: true
             })
         }).catch(error => console.log(error))
     }
+
     render() {
         return (
             <Fragment>
