@@ -49,8 +49,8 @@ class AnonymizedResults extends Component {
 
     deleteList(){
         this.props.addStudiesToDeleteList(this.props.anonymizedList)
+        this.emptyAnonymizedList()
     }
-
 
     render() {
         return (

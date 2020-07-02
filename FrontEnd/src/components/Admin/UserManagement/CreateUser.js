@@ -4,6 +4,7 @@ import Select from 'react-select'
 import Modal from 'react-bootstrap/Modal';
 
 import apis from '../../../services/apis';
+import { toastifyError } from '../../../services/toastify';
 
 
 class CreateUser extends Component {
@@ -100,8 +101,14 @@ class CreateUser extends Component {
     }
 
     async createUser(){
-        await apis.User.createUser(this.state.data)
-        this.resetState()
+        if (this.state.data.role === '' || 
+        this.state.data.username === '' ||
+        this.state.data.password === ''){
+            toastifyError('Please fill all required input')
+        } else {
+            await apis.User.createUser(this.state.data)
+            this.resetState()
+        }
     }
 
     async getRoles(){
