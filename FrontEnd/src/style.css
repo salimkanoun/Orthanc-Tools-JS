@@ -132,7 +132,7 @@ code {
 
 .auth-enter-active{
 	opacity: 1;
-	transition: opacity 1500ms;
+	transition: opacity 1000ms;
 }
 
 .auth-exit{
@@ -141,7 +141,7 @@ code {
 
 .auth-exit-active{
 	opacity: 0;
-	transition: opacity 1500ms;
+	transition: opacity 1000ms;
 }
 
 .nav-link {
