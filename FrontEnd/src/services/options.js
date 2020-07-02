@@ -114,7 +114,7 @@ const Options = {
       method: 'POST'
     }
 
-    return fetch('api/tools/shutdown', updateOptions(shutdownOrthancOption) ).then((answer) => {
+    return fetch('/api/tools/shutdown', updateOptions(shutdownOrthancOption) ).then((answer) => {
       if (!answer.ok) {throw answer}
       return (answer.json())
     }).catch((error) => {
@@ -129,7 +129,7 @@ const Options = {
       method: 'GET'
     }
 
-    return fetch('api/tools/log-level', updateOptions(getVerbosityOption) ).then(response => {
+    return fetch('/api/tools/log-level', updateOptions(getVerbosityOption) ).then(response => {
         if (response.ok) {
           return response.text()
         }
@@ -147,7 +147,7 @@ const Options = {
       body: value
     }
 
-    return fetch('api/tools/log-level', updateOptions(setVerbosityOption) ).then((answer) => {
+    return fetch('/api/tools/log-level', updateOptions(setVerbosityOption) ).then((answer) => {
       if (!answer.ok) {throw answer}
       toastifySuccess("Verbosity have been updated")
     }).catch((error) => {
@@ -156,7 +156,7 @@ const Options = {
   },
 
   getPlugins(){
-    return fetch('api/plugins',updateOptions(optionPlugin)).then(response => {
+    return fetch('/api/plugins',updateOptions(optionPlugin)).then(response => {
         if (response.ok) {
           return response.json()
         }
@@ -164,6 +164,42 @@ const Options = {
       }).catch(error => {
       toastifyError(error.statusText)
     })
+  },
+
+  getMode() {
+    return fetch('/api/mode',updateOptions(optionPlugin)).then(response => {
+      if (response.ok) {
+        return response.json()
+      }
+      else throw response
+    }).catch(error => {
+    toastifyError(error.statusText)
+  })
+  },
+
+  changeMode(mode) {
+
+    const payload = {
+      mode: mode
+    }
+
+    const changeModeOption = {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    }
+
+    return fetch('/api/changeMode',updateOptions(changeModeOption)).then(response => {
+      if (response.ok) {
+        return response.json()
+      }
+      else throw response
+    }).catch(error => {
+    toastifyError(error.statusText)
+  })
   }
 
 }

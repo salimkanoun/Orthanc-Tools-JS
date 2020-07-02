@@ -24,4 +24,14 @@ var setOrthancServer = function (req, res) {
   res.end()
 }
 
-module.exports = { changeSchedule, getSchedule, getOrthancServer, setOrthancServer }
+var getMode = async function(req, res) {
+  const mode = await Options.getMode()
+  res.json(mode)
+}
+
+var changeMode = async function(req, res) {
+  const mode = req.body.mode
+  Options.changeMode(mode)
+}  
+
+module.exports = { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getMode, changeMode }

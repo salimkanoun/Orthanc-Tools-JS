@@ -148,7 +148,7 @@ class Users extends Component {
         return (
             <Fragment>
                 <div>
-                    <h2 className='card-title'>Users Panel</h2>
+                    <h2 className='card-title'>Local Users Panel</h2>
                     <CreateUser getUsers={this.getUsers}/>
                     <BootstrapTable 
                         keyField='id' 
