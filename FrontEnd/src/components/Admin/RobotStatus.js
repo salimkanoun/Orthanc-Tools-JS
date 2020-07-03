@@ -123,7 +123,7 @@ export default class RobotStatus extends Component {
 
     render() {
         return (
-            <BootstrapTable keyField="username" striped={true} data={this.state.rows} columns={this.columns} />
+            <BootstrapTable keyField="username" striped={true} data={this.state.rows} columns={this.columns} wrapperClasses='table-responsive' />
         )
     }
 }

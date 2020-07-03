@@ -84,7 +84,7 @@ export default class Aets extends Component {
     render() {
         return (
             <Fragment>
-                <BootstrapTable keyField="name" striped={true} data={this.orthancApisToRows()} columns={this.columns} />
+                <BootstrapTable keyField="name" striped={true} data={this.orthancApisToRows()} columns={this.columns} wrapperClasses='table-responsive' />
             </Fragment>
         )
     }

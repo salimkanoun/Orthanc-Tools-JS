@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy';
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
 import apis from '../../services/apis';
-
 import { addToAnonymizedList, emptyAnonymizeList } from '../../actions/AnonList'
 
 
@@ -27,39 +26,46 @@ class AnonymizePanelProgress extends Component {
     }
     
     componentDidMount() {
-        this.getInfo()
+        this.startMonitoring()
+    }
+
+    startMonitoring(){
+        this.intervalChcker = setInterval(() => this.getInfo(), 2000)
+    }
+
+    stopMonitoring(){
+        if(this.intervalChcker !== undefined) clearInterval(this.intervalChcker)
+        this.props.emptyAnonymizeList()
+        this.props.setProgress(false)
     }
 
     async getInfo(){
-        let robot 
-        do {
-            let success = 0
-            let failures = 0
-            robot = await apis.anon.getAnonJob(this.props.username)
-            robot.items.forEach(async item => {
-                switch (item.Status) {
-                    case 'Success':
-                        success = success + 1
-                        let studyDetail = await apis.content.getStudiesDetails(item.anonymizedOrthancStudyID)
-                        if (studyDetail !== undefined)
-                            this.props.addToAnonymizedList([studyDetail])
-                        break;
-                    case 'Failures':
-                        failures = failures + 1
-                        break;
-                    default:
-                        break;
-                }
-            })
-            success = 100*success/robot.items.length
-            failures = 100*failures/robot.items.length
-            this.setState({
-                success: success, 
-                failures: failures
-            })
-        } while (robot.status !== 'Finished')
-        this.props.emptyAnonymizeList()
-        this.props.setProgress(false)
+        let success = 0
+        let failures = 0
+        let robot = await apis.anon.getAnonJob(this.props.username)
+        robot.items.forEach(async item => {
+            switch (item.Status) {
+                case 'Success':
+                    success = success + 1
+                    let studyDetail = await apis.content.getStudiesDetails(item.anonymizedOrthancStudyID)
+                    if (studyDetail !== undefined)
+                        this.props.addToAnonymizedList([studyDetail])
+                    break;
+                case 'Failures':
+                    failures = failures + 1
+                    break;
+                default:
+                    break;
+            }
+        })
+        success = 100*success/robot.items.length
+        failures = 100*failures/robot.items.length
+        this.setState({
+            success: success, 
+            failures: failures
+        })
+        console.log(robot.status)
+        if (robot.status === 'Finished') {this.stopMonitoring()}
     }
     
 
