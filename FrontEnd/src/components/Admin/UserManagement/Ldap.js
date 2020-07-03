@@ -1,11 +1,13 @@
 import React, { Component, Fragment } from "react"
 import Toggle from 'react-toggle'
 import apis from "../../../services/apis"
+import BootstrapTable from 'react-bootstrap-table-next';
 
 class Ldap extends Component {
 
     state = {
-        check: false
+        check: false,
+        roles: []
     }
 
     constructor(props) {
@@ -28,6 +30,24 @@ class Ldap extends Component {
         await apis.options.changeMode(!this.state.check)
     }
 
+    columns = [
+        {
+            dataField: 'groupName', 
+            text: 'Group name', 
+            sort: true
+        }, {
+            dataField: 'associedRole', 
+            text: 'Associed role', 
+            formatter: (cell, row, index) => {
+            }
+        }, {
+            dataField: 'delete', 
+            text: 'Delete', 
+            formatter: (cell, row, index) => {
+            }
+        }
+    ]
+
     render() {
         return (
             <Fragment>
@@ -41,7 +61,7 @@ class Ldap extends Component {
                             <Toggle checked={this.state.check} onChange={this.changeMode} />
                         </div>
                     </div>    
-                    <div className="form-group">
+                    <div className="form-group ml-3">
                         <div className="row">
                             <div className='col'>
                                 <label htmlFor="address">Address : </label>
@@ -63,14 +83,13 @@ class Ldap extends Component {
                             </div>
                         </div>            
                     </div>
-                    <div className="form-group text-right">
-                    <input type='button' disabled={!this.state.check} className='btn btn-primary mr-1' onClick={this.submitOrthancSettings} value='Update' />
-                    <input type='button' disabled={!this.state.check} className='btn btn-info mr-1' onClick={this.testConnexion} value='Check Connexion' />
+                    <div className="form-group text-right mr-2">
+                    <input type='button' disabled={!this.state.check} className='btn btn-primary mr-1' onClick={null} value='Update' />
+                    <input type='button' disabled={!this.state.check} className='btn btn-info mr-1' onClick={null} value='Check Connexion' />
                     </div>         
                 </div>
-
-                <div>
-                    
+                <div className="form-group mr-3 mt-4" hidden={!this.state.check}>
+                    <BootstrapTable keyField='groupName' data={this.state.roles} columns={this.columns} striped />
                 </div>
             </Fragment>         
         )

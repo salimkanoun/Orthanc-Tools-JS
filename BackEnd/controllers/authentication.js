@@ -11,7 +11,7 @@ authentication = async function (req, res) {
       let user = new Users(body.username)
       let infosUser = await user.getUserRight()
 
-      payload = {
+      let payload = {
         username: body.username,
         admin: infosUser.admin,
         import: infosUser.import,

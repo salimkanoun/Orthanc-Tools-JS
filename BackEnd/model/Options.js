@@ -57,7 +57,7 @@ const Options = {
   },
 
   changeMode: async (mode) => {
-
+    
     try {
       await db.Option.upsert({
         id:1,
