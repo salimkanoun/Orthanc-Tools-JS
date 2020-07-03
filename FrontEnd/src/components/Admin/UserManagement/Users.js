@@ -16,7 +16,6 @@ class Users extends Component {
         username: '',
         users: [],
         showDelete: false,
-        optionRoles: [],
     }
 
     async componentDidMount() {

@@ -11,7 +11,7 @@ class Roles extends Component {
     state = { 
         name: '',
         roles: [],
-        openDelete: false,
+        showDelete: false
     };
 
     constructor(props) {

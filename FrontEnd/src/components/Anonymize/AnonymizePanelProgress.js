@@ -13,8 +13,7 @@ class AnonymizePanelProgress extends Component {
     state = { 
             show: false, 
             success: 0, 
-            failures: 0, 
-            total: 0
+            failures: 0
          }
     constructor(props) {
         super(props);
