@@ -14,7 +14,7 @@ class TablePatientsWithNestedStudies extends Component {
     
     handleRowSelect(row, isSelected){
         if (isSelected){
-            this.setState({selectedStudy: [...this.state.selectedStudy, {studyID: row.StudyOrthancID, row: row}]})
+            this.setState(prevState => ({selectedStudy: [...prevState.selectedStudy, {studyID: row.StudyOrthancID, row: row}]}))
         }else{
             let newList = this.state.selectedStudy.filter(study => study.studyID !== row.StudyOrthancID)
             this.setState({selectedStudy: newList})

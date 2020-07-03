@@ -149,8 +149,8 @@ class ContentRootPanel extends Component {
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
-                    <button className='dropdown-item bg-info' type='button' onClick={ this.sendToExportList } >Export List</button>
-                    <button className='dropdown-item bg-primary' type='button' onClick={ this.sendToAnonList } >Anonymize List</button>
+                    <button className='dropdown-item bg-primary' type='button' onClick={ this.sendToExportList } >Export List</button>
+                    <button className='dropdown-item bg-info' type='button' onClick={ this.sendToAnonList } >Anonymize List</button>
                     <button className='dropdown-item bg-danger' type='button' onClick={ this.sendToDeleteList } >Delete List</button>
                   </Dropdown.Menu>
               </Dropdown>

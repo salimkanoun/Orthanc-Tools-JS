@@ -14,6 +14,12 @@ var usersRouter = require('./routes/users')
 
 var app = express()
 
+const dotenv = require("dotenv");
+  // get config vars
+  dotenv.config();
+  // access config var
+  process.env.TOKEN_SECRET;
+
 // static routes
 app.use(express.static(path.join(__dirname, 'build')))
 

@@ -44,14 +44,15 @@ export default class DownloadDropdown extends Component{
     }
 
     async handleClickDownload(e){
+        let TS = apis.localStorage.getLocalStorage('TS')
         e.stopPropagation()
 
         let jobAnswer
 
         if(e.currentTarget.id === 'hirarchical'){
-            jobAnswer = await apis.exportDicom.exportHirachicalDicoms(this.props.exportIds)
+            jobAnswer = await apis.exportDicom.exportHirachicalDicoms(this.props.exportIds, TS)
         }else{
-            jobAnswer = await apis.exportDicom.exportDicomDirDicoms(this.props.exportIds)
+            jobAnswer = await apis.exportDicom.exportDicomDirDicoms(this.props.exportIds, TS)
         }
 
         let jobMonitoring = new MonitorJob(jobAnswer.ID)

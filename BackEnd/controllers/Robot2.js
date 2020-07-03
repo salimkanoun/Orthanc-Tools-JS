@@ -1,7 +1,11 @@
 const {robot} = require('../model/robot/Robot')
 const JobRetrieve = require('../model/robot/JobRetrieve')
+const JobAnonymize = require('../model/robot/JobAnonymize')
+const JobDelete = require('../model/robot/JobDelete')
 const Job = require('../model/robot/Job')
 const JobItemRetrieve = require('../model/robot/JobItemRetrieve')
+const JobItemAnon = require('../model/robot/JobItemAnon')
+const JobItemDelete = require('../model/robot/JobItemDelete')
 const Orthanc = require('../model/Orthanc')
 
 const getRobotDetails = async function (req, res) {
@@ -54,17 +58,93 @@ const validateRobotJob = async function (req, res) {
 
 const addRobotJob = async function (req, res) {
     const body = req.body
-    //SK ICI GERER L AJOUT INCREMENTAL DE RESSOURCE
-    let retrieveJob = robot.getJob("salim", Job.TYPE_RETRIEVE)
-    if(retrieveJob == undefined) retrieveJob = new JobRetrieve("salim", new Orthanc())
+    let retrieveJob = robot.getJob(req.params.username, Job.TYPE_RETRIEVE)
+    if(retrieveJob == undefined) retrieveJob = new JobRetrieve(req.params.username, new Orthanc())
     retrieveJob.setProjectName(body.projectName)
     body.retrieveArray.forEach( (retrieveQuery) => {
-        retrieveItem = new JobItemRetrieve(retrieveQuery)
+        let retrieveItem = new JobItemRetrieve(retrieveQuery)
         retrieveJob.addItem(retrieveItem)
     })
     robot.addJob(retrieveJob)
-    console.log(robot.getJob("salim", Job.TYPE_RETRIEVE))
-    res.json( robot.getJob("salim", Job.TYPE_RETRIEVE) )
+    res.json( robot.getJob(req.params.username, Job.TYPE_RETRIEVE) )
 }
 
-module.exports = { addRobotJob, getRobotDetails, getAllRobotDetails, deleteRobotJob, removeQueryFromJob, validateRobotJob }
+const addAnonJob = async function (req, res){
+    const body = req.body
+    let anonJob = robot.getJob(req.params.username, Job.TYPE_ANONYMIZE)
+    if(anonJob != undefined && anonJob.status == Job.STATUS_RUNNING) {
+        res.status(401).send("Anon Robot is already processing, wait finish before starting a new one")
+        return
+    }
+    
+    anonJob = new JobAnonymize(req.params.username, new Orthanc())
+    robot.addJob(anonJob)
+
+    body.forEach( (anonRequest) => {
+        let anonItem = new JobItemAnon(anonRequest.orthancStudyID, 
+            anonRequest.profile, 
+            anonRequest.newPatientName, 
+            anonRequest.newPatientID, 
+            anonRequest.newStudyDescription, 
+            anonRequest.newAccessionNumber)
+        anonJob.addItem(anonItem)
+    })
+    console.log(anonJob)
+    robot.getJob(req.params.username, Job.TYPE_ANONYMIZE).execute()
+    res.json(true)
+
+}
+
+const getAnonJob = async function(req, res){
+
+    try {
+        let anonJob = robot.getJob(req.params.username, Job.TYPE_ANONYMIZE)
+        anonJob.getProgression()
+        res.json(anonJob)
+    } catch (error) {
+        console.log(error)
+        res.json({
+            items: []
+        })
+    }
+
+}
+
+const getDeleteJob = async function(req, res){
+
+    try {
+        let deleteJob = robot.getJob(req.params.username, Job.TYPE_DELETE)
+        deleteJob.getProgression()
+        res.json(deleteJob)
+    } catch (error) {
+        console.log(error)
+        res.json({
+            items: []
+        })
+    }
+
+}
+
+const addDeleteJob = async function (req, res){
+    const body = req.body
+    let deleteJob = robot.getJob(req.params.username, Job.TYPE_DELETE)
+    if(deleteJob != undefined && deleteJob.status == Job.STATUS_RUNNING) {
+        res.status(401).send("Delete Robot is already processing, wait finish before starting a new one")
+        return
+    }
+    
+    deleteJob = new JobDelete(req.params.username, new Orthanc())
+    
+    body.forEach( (deleteOrthancID) => {
+        let deleteItem = new JobItemDelete(deleteOrthancID)
+        deleteJob.addItem(deleteItem)
+    })
+    
+    robot.addJob(deleteJob)
+    console.log(deleteJob)
+    robot.getJob(req.params.username, Job.TYPE_DELETE).execute()
+    res.json(true)
+
+}
+
+module.exports = { addRobotJob, getRobotDetails, getAllRobotDetails, deleteRobotJob, removeQueryFromJob, validateRobotJob, addAnonJob, getAnonJob, getDeleteJob, addDeleteJob }

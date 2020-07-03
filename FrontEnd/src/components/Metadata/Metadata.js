@@ -50,6 +50,8 @@ class Metadata extends Component {
 
     async data(){
         let data = await apis.content.getInstances(this.state.InstancesArray[this.state.currentKey])
+        let header = await apis.content.getHeader(this.state.InstancesArray[this.state.currentKey])
+        data = {...data, ...header}
         let prepare = this.prepareData(data)
         this.setState({data: prepare, InstancesTags: true})
         return prepare
@@ -88,9 +90,9 @@ class Metadata extends Component {
     }
 
     async handleChange(num){
-        await this.setState({
-            currentKey: num >= this.state.InstancesArray.length ? this.state.InstancesArray.length - 1 : num < 0 ? 0 : num 
-        })
+        await this.setState(prevState => ({
+            currentKey: num >= prevState.InstancesArray.length ? prevState.InstancesArray.length - 1 : num < 0 ? 0 : num
+        }))
         this.data()
     }
 

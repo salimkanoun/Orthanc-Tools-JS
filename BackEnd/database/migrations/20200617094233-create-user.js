@@ -9,10 +9,12 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       username: {
+        allowNull: false,
         type: Sequelize.STRING,
         unique: true
       },
       password: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       admin: {
@@ -25,7 +27,24 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      }
+      }, 
+      role: {
+        allowNull: false, 
+        references: {
+          model: 'Roles', 
+          key: 'name'
+        }, 
+        type: Sequelize.STRING
+      },
+      first_name: {
+        type: Sequelize.STRING
+      },
+      last_name: {
+        type: Sequelize.STRING
+      },
+      mail: {
+        type: Sequelize.STRING
+      },
     })
   },
   down: (queryInterface, Sequelize) => {

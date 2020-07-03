@@ -1,11 +1,15 @@
 import { toastifyError, toastifySuccess } from './toastify'
+import updateOptions from '../authorizedOption'
 
 const jobs = {
 
     getJobs(){
-      return fetch('/api/jobs?expand', {
+
+      const getJobsOption = {
         method: 'GET'
-      }).then((answer) => {
+      }
+
+      return fetch('/api/jobs?expand', updateOptions(getJobsOption)).then((answer) => {
         if (!answer.ok) { throw answer }
         return answer.json()
       }).catch(error => {
@@ -14,13 +18,16 @@ const jobs = {
     },
 
     getJobInfos(jobId){
-        return fetch('/api/jobs/' + jobId, {
-            method: 'GET',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-            }
-          }).then((answer) => {
+
+      const getJobInfosOption = {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
+
+        return fetch('/api/jobs/' + jobId, updateOptions(getJobInfosOption) ).then((answer) => {
             if (!answer.ok) { throw answer }
             return answer.json()
           }).catch(error => {
@@ -30,14 +37,17 @@ const jobs = {
     },
 
     cancelJob(jobId){
-      return fetch('/api/jobs/' + jobId + '/cancel', {
+
+      const cancelJobOption = {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         },
         body : JSON.stringify({})
-      }).then((answer) => {
+      }
+
+      return fetch('/api/jobs/' + jobId + '/cancel', updateOptions(cancelJobOption) ).then((answer) => {
         if (!answer.ok) { throw answer }
         toastifySuccess('Job Cancelled')
       }).catch(error => {
@@ -47,14 +57,17 @@ const jobs = {
     }, 
 
     pauseJob(jobId){
-      return fetch('/api/jobs/' + jobId + '/pause', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body : JSON.stringify({})
-        }).then((answer) => {
+
+      const pauseJobOption = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body : JSON.stringify({})
+      }
+
+      return fetch('/api/jobs/' + jobId + '/pause', updateOptions(pauseJobOption) ).then((answer) => {
           if (!answer.ok) { throw answer }
           toastifySuccess('Job paused')
         }).catch(error => {
@@ -63,14 +76,17 @@ const jobs = {
     }, 
 
     resumbitJob(jobId){
-      return fetch('/api/jobs/' + jobId + '/resubmit', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body : JSON.stringify({})
-        }).then((answer) => {
+
+      const resumbitJobOption = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body : JSON.stringify({})
+      }
+
+      return fetch('/api/jobs/' + jobId + '/resubmit', updateOptions(resumbitJobOption) ).then((answer) => {
           if (!answer.ok) { throw answer }
           toastifySuccess('Job resubmited')
         }).catch(error => {
@@ -79,14 +95,17 @@ const jobs = {
     }, 
 
     resumeJob(jobId){
-      return fetch('/api/jobs/' + jobId + '/resume', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body : JSON.stringify({})
-        }).then((answer) => {
+
+      const resumeJobOption = {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body : JSON.stringify({})
+      } 
+
+      return fetch('/api/jobs/' + jobId + '/resume', updateOptions(resumeJobOption) ).then((answer) => {
           if (!answer.ok) { throw answer }
           toastifySuccess('Job resumed')
         }).catch(error => {

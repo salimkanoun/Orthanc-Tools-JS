@@ -1,20 +1,34 @@
 import { toastifyError } from './toastify'
 import streamSaver from 'streamsaver'
+import updateOptions from '../authorizedOption'
 
 const exportDicom = {
 
-    exportHirachicalDicoms(OrthancIDsArray){
-        return fetch('/api/tools/create-archive/', {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              Synchronous : false,
-              Resources : OrthancIDsArray
-            })
-          }).then((answer) => {
+    exportHirachicalDicoms(OrthancIDsArray, TS){
+      let body = {}
+      if (TS !== 'none') {
+        body = {
+          Synchronous : false,
+          Resources : OrthancIDsArray, 
+          Transcode: TS
+        }
+      } else {
+        body = {
+          Synchronous : false,
+          Resources : OrthancIDsArray
+        }
+      }
+
+        const exportHirachicalDicomsOption =  {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        }
+
+        return fetch('/api/tools/create-archive/', updateOptions(exportHirachicalDicomsOption) ).then((answer) => {
             if (!answer.ok) { throw answer }
             return answer.json()
           })
@@ -23,18 +37,31 @@ const exportDicom = {
           })
     },
 
-    exportDicomDirDicoms( OrthancIDsArray ){
-      return fetch('/api/tools/create-media-extended/', {
+    exportDicomDirDicoms( OrthancIDsArray, TS ){
+      let body = {}
+      if (TS !== 'none') {
+        body = {
+          Synchronous : false,
+          Resources : OrthancIDsArray, 
+          Transcode: TS
+        }
+      } else {
+        body = {
+          Synchronous : false,
+          Resources : OrthancIDsArray
+        }
+      }
+
+      const exportDicomDirDicomsOption =  {
         method: 'POST',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          Synchronous : false,
-          Resources : OrthancIDsArray
-        })
-      }).then((answer) => {
+        body: JSON.stringify(body)
+      }
+
+      return fetch('/api/tools/create-media-extended/', updateOptions(exportDicomDirDicomsOption) ).then((answer) => {
         if (!answer.ok) { throw answer }
         return (answer.json())
       }).catch((error) => {

@@ -38,9 +38,9 @@ class Modify extends Component {
     }
 
     openToast(id){
-        this.setState({
-            toasts: {...this.state.toasts, [id]: {current: toast("Notify progress : 0%", {autoClose: false, className: 'bg-info'})}}
-        })
+        this.setState(prevState => ({
+            toasts: {...prevState.toasts, [id]: {current: toast("Notify progress : 0%", {autoClose: false, className: 'bg-info'})}}
+        }))
     }
 
      openModify() {
@@ -110,7 +110,7 @@ class Modify extends Component {
                 }
                 self.job = undefined
             })
-            this.setState({toasts: {...this.state.toasts, [id]: createRef()}})
+            this.setState(prevState => ({toasts: {...prevState.toasts, [id]: createRef()}}))
             this.openToast(id)
             jobMonitoring.startMonitoringJob()
             this.job = jobMonitoring
@@ -174,12 +174,12 @@ class Modify extends Component {
                                 mode: 'click',
                                 nonEditableRows: () =>  this.props.level === 'studies' ? ['PatientID'] : [] ,
                                 afterSaveCell: (oldValue, newValue, row, column) => {
-                                    this.setState({
+                                    this.setState(prevState => ({
                                         modification: {
-                                            ...this.state.modification, 
+                                            ...prevState.modification, 
                                             [row.TagName]: row.Value
                                         }
-                                    })
+                                    }))
                                 }
                             }) }
                             selectRow={this.selectRow}
@@ -189,7 +189,7 @@ class Modify extends Component {
                                 <label htmlFor='removePrivateTags'>Removing private tags</label>
                             </div>
                             <div className='col-sm'>
-                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.removePrivateTags} onClick={() => this.setState({removePrivateTags: !this.state.removePrivateTags})} />
+                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.removePrivateTags} onClick={() => this.setState(prevState => ({removePrivateTags: !prevState.removePrivateTags}))} />
                             </div>
                         </div>
                         <div className='row'>
@@ -197,7 +197,7 @@ class Modify extends Component {
                                 <label htmlFor='keepSource'>Keep Source</label>
                             </div>
                             <div className='col-sm'>
-                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.keepSource} onClick={() => this.setState({keepSource: !this.state.keepSource})} />
+                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.keepSource} onClick={() => this.setState(prevState => ({keepSource: !prevState.keepSource}))} />
                             </div>
                         </div>
                         <div className='row'>
@@ -205,7 +205,7 @@ class Modify extends Component {
                                 <label htmlFor='rememberSettings'>Remember Settings</label>
                             </div>
                             <div className='col-sm'>
-                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.remember} onClick={() => this.setState({remember: !this.state.remember})} />
+                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.remember} onClick={() => this.setState(prevState => ({remember: !prevState.remember}))} />
                             </div>
                         </div>
                     </Modal.Body>

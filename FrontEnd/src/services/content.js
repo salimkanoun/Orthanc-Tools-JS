@@ -1,16 +1,20 @@
 import { toastifyError } from "./toastify";
+import updateOptions from '../authorizedOption'
 
 const query  = {
 
     getContent(contentSerch){
-        return fetch('/api/tools/find', {
+
+        const getContentOption = {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(contentSerch)
-        }).then((response) => {
+        }
+
+        return fetch('/api/tools/find', updateOptions(getContentOption)).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -19,13 +23,16 @@ const query  = {
     },
 
     getPatientsDetails(ID){
-        return fetch('/api/patients/' + ID + '?expand', {
+
+        const getPatientsDetailsOption = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then((response) => {
+        }
+
+        return fetch('/api/patients/' + ID + '?expand', updateOptions(getPatientsDetailsOption)).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -34,13 +41,16 @@ const query  = {
     },
 
     getStudiesDetails(ID){
-        return fetch('/api/studies/' + ID+ '?expand', {
+
+        const getStudiesDetailsOption = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then((response) => {
+        }
+
+        return fetch('/api/studies/' + ID+ '?expand', updateOptions(getStudiesDetailsOption)).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -53,13 +63,16 @@ const query  = {
      * @param {string} studyID 
      */
     getSeriesDetails(studyID){
-        return fetch('/api/studies/' + studyID + '/series?expand', {
+
+        const getSeriesDetailsOption = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then((response) => {
+        }
+
+        return fetch('/api/studies/' + studyID + '/series?expand', updateOptions(getSeriesDetailsOption)).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -68,13 +81,16 @@ const query  = {
     },
 
     getSeriesDetailsByID(serieID){
-        return fetch('/api/series/' + serieID + '?expand', {
+
+        const getSeriesDetailsByIDOption = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then((response) => {
+        }
+
+        return fetch('/api/series/' + serieID + '?expand', updateOptions(getSeriesDetailsByIDOption)).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -83,13 +99,16 @@ const query  = {
     },
 
     getSeriesInstances(serieID){
-        return fetch('/api/series/' + serieID + '/instances', {
+
+        const getSeriesInstancesOption =  {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then((response) => {
+        }
+
+        return fetch('/api/series/' + serieID + '/instances', updateOptions(getSeriesInstancesOption) ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -98,13 +117,16 @@ const query  = {
     },
 
     getInstances(instanceID){
-        return fetch('/api/instances/' + instanceID + '/tags?simplify', {
+
+        const getInstancesOption = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then((response) => {
+        }
+
+        return fetch('/api/instances/' + instanceID + '/tags?simplify', updateOptions(getInstancesOption) ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -113,13 +135,34 @@ const query  = {
     },
 
     getSharedTags(serieID){
-        return fetch('/api/series/' + serieID + '/shared-tags?simplify', {
+
+        const getSharedTagsOption = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             }
-        }).then((response) => {
+        }
+
+        return fetch('/api/series/' + serieID + '/shared-tags?simplify', updateOptions(getSharedTagsOption)).then((response) => {
+            if (!response.ok) {throw response}
+            return response.json()
+        }).catch((error) => {
+            toastifyError(error)
+        })
+    },
+
+    getHeader(serieID){
+
+        const getHeaderOption = {
+            method: 'GET', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }
+
+        return fetch('/api/instances/' + serieID + '/header?simplify', updateOptions(getHeaderOption)).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -128,9 +171,12 @@ const query  = {
     },
 
     deletePatient(ID){
-        return fetch('/api/patients/' + ID, {
+
+        const deletePatientOption  =  {
             method: 'DELETE'
-        }).then((answer) => {
+        }
+
+        return fetch('/api/patients/' + ID, updateOptions(deletePatientOption) ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -140,9 +186,12 @@ const query  = {
     },
 
     deleteStudies(ID){
-        return fetch('/api/studies/' + ID, {
+
+        const deleteStudiesOption =  {
             method: 'DELETE'
-        }).then((answer) => {
+        }
+
+        return fetch('/api/studies/' + ID, updateOptions(deleteStudiesOption) ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -152,9 +201,12 @@ const query  = {
     },
 
     deleteSeries(ID){
-        return fetch('/api/series/' + ID, {
+
+        const deleteSeriesOption = {
             method: 'DELETE'
-        }).then((answer) => {
+        }
+
+        return fetch('/api/series/' + ID, updateOptions(deleteSeriesOption) ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -165,14 +217,17 @@ const query  = {
 
     
     modifyPatients(ID, replace, remove, removePrivateTags, keepRessource){
-        return fetch('/api/patients/' + ID + '/modify', {
+
+        const modifyPatientsOption = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
-        }).then((answer) => {
+        }
+
+        return fetch('/api/patients/' + ID + '/modify', updateOptions(modifyPatientsOption) ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -181,14 +236,17 @@ const query  = {
     },
 
     modifyStudy(ID, replace, remove, removePrivateTags, keepRessource){
-        return fetch('/api/studies/' + ID + '/modify', {
+
+        const modifyStudyOption =  {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
-        }).then((answer) => {
+        }
+
+        return fetch('/api/studies/' + ID + '/modify', updateOptions(modifyStudyOption) ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -197,14 +255,17 @@ const query  = {
     },
 
     modifySeries(ID, replace, remove, removePrivateTags, keepRessource){
-        return fetch('/api/series/' + ID + '/modify', {
+
+        const modifySeriesOption = {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
-        }).then((answer) => {
+        }
+
+        return fetch('/api/series/' + ID + '/modify', updateOptions(modifySeriesOption) ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {

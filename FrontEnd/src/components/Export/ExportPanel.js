@@ -1,16 +1,17 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
+import Modal from "react-bootstrap/Modal"
 
+import apis from '../../services/apis'
 import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy'
 import TableSeries from '../CommonComponents/RessourcesDisplay/TableSeries'
 import DownloadDropdown from "./DownloadDropdown"
 import SendAetDropdown from "./SendAetDropdown"
 import SendPeerDropdown from "./SendPeerDropdown"
+import TranscodeSelector from './TranscodeSelector'
 
-import apis from '../../services/apis'
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
-import Modal from "react-bootstrap/Modal"
 
 class ExportPanel extends Component {
     
@@ -18,7 +19,6 @@ class ExportPanel extends Component {
         currentStudy: '', 
         aets: [],
         peers: [], 
-        needConfirm: false, 
         show: false, 
         button: ''
     }
@@ -29,11 +29,12 @@ class ExportPanel extends Component {
         this.emptyList = this.emptyList.bind(this)
         this.removeSeries = this.removeSeries.bind(this)
         this.removeStudy = this.removeStudy.bind(this)
-        this.child = React.createRef()
         this.confirm = this.confirm.bind(this)
         this.setModal = this.setModal.bind(this)
         this.setButton = this.setButton.bind(this)
     }
+
+    
     
     async componentDidMount(){
         let aets = await apis.aets.getAets()
@@ -42,9 +43,8 @@ class ExportPanel extends Component {
             aets: aets,
             peers: peers
         })
-        this.confirm()
     }
-
+    
     getExportIDArray(){
         let ids = []
         this.props.exportList.seriesArray.forEach(serie => {
@@ -75,9 +75,9 @@ class ExportPanel extends Component {
 
     rowEvents = {
         onClick: (e, row, rowIndex) => {
-          this.setState({currentStudy: row.StudyOrthancID})
+            this.setState({currentStudy: row.StudyOrthancID})
         }
-      }
+    }
 
     rowStyle = (row, rowIndex) => {
         const style = {};
@@ -105,37 +105,38 @@ class ExportPanel extends Component {
                     SeriesOrthancID: serie.ID,
                     Instances: serie.Instances.length
                 })
-        }})
-        return studies
-    }
+            }})
+            return studies
+        }
 
-    confirm(){
-        let answer = false
-        this.props.exportList.studyArray.forEach(study => {
-            if (study.AnonymizedFrom === undefined || study.AnonymizedFrom === ''){
-                answer = true
-            }
-        })
-        return answer
-    }
-
-    setModal(){
-        this.setState({
-            show: !this.state.show
-        })
-    }
-
-    setButton(button){
-        this.setState({
-            button: button
-        })
-    }
-
-    render() {
-        let idArray = this.getExportIDArray()
-        let confirm = this.confirm()
-        return (
-            <div className="jumbotron">
+        confirm(){
+            let answer = false
+            this.props.exportList.studyArray.forEach(study => {
+                if (study.AnonymizedFrom === undefined || study.AnonymizedFrom === ''){
+                    answer = true
+                }
+            })
+            return answer
+        }
+    
+        setModal(){
+            this.setState({
+                show: !this.state.show
+            })
+        }
+    
+        setButton(button){
+            this.setState({
+                button: button
+            })
+        }
+    
+    
+        render() {
+            let idArray = this.getExportIDArray()
+            let confirm = this.confirm()
+            return (
+                <div className="jumbotron">
                 <h2 className="card-title mb-3">Export</h2>
                 <div className="row">
                     <div className="col-sm">
@@ -162,6 +163,7 @@ class ExportPanel extends Component {
                 <div className="row text-center mt-5">
                     <div className='col-sm'>
                         <DownloadDropdown exportIds={idArray} />
+                        <TranscodeSelector />
                     </div>
                     <div className='col-sm'>
                         <SendAetDropdown aets={this.state.aets} exportIds={idArray} />
