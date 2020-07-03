@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
+
 import apis from '../services/apis'
+import { CSSTransition } from "react-transition-group";
 
 export default class Authentication extends Component {
 
@@ -8,7 +10,8 @@ export default class Authentication extends Component {
     username: '',
     password: '',
     authenthified: undefined,
-    errorMessage: undefined
+    errorMessage: undefined,
+    show: false
   }
 
   constructor (props) {
@@ -18,7 +21,15 @@ export default class Authentication extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this)
   }
 
+  componentDidMount() {
+    this.setState({
+      show: true
+    })
+  }
+  
+
   async handleClick () {
+    
     const postData = {
       username: this.state.username,
       password: this.state.password
@@ -27,6 +38,18 @@ export default class Authentication extends Component {
     let newState = { }
 
     await apis.authentication.logIn(postData).then((answer)=>{
+    
+      // get token from fetch request
+      const token = answer;
+
+      //cookie's options
+      var d = new Date();
+      d.setTime(d.getTime() + (7*24*60*60*1000)); // cookie expire in 7 days
+      var expires = d.toUTCString();
+
+      // set token in cookie
+      document.cookie = `tokenOrthancJs=${token}; expires=${expires}`
+
       newState =  {
         accessCheck : answer
       }
@@ -74,34 +97,36 @@ export default class Authentication extends Component {
 
   render () {
     if (this.state.authenthified) {
-      return <Redirect to='/query' />
+      return <Redirect to='/orthanc-content' />
     }
     return (
-      <div className='vertical-center'>
-        <div className='text-center' id='login'> 
-          <div className='alert alert-danger' id='error' style={{ display:  this.state.errorMessage === undefined ?  'none' : '' }}>{this.state.errorMessage}</div>
-          <div className='block-title block block-400'>Authentication</div>
-          <div className='block-content block block-400'>
-            <form id='login-form' onKeyPress={this.handleKeyDown}>
+        <CSSTransition in={this.state.show} timeout={1500} classNames='auth'>
+         <div className='vertical-center'>
+            <div className='shadow text-center' id='login'> 
+              <div className='alert alert-danger' id='error' style={{ display:  this.state.errorMessage === undefined ?  'none' : '' }}>{this.state.errorMessage}</div>
+                  <div className='block-title block block-400'>Orthanc-Tools-JS</div>
+                  <div className='block-content block block-400'>
+                    <form id='login-form' onKeyPress={this.handleKeyDown}>
+                      <fieldset>
+                        <label>Username*</label>
+                        <input className='form-control' type='text' placeholder='username' name='username' value={this.state.username.value} onChange={this.handleChange} required />
+                      </fieldset>
 
-              <fieldset>
-                <label>Username*</label>
-                <input className='form-control' type='text' placeholder='username' name='username' value={this.state.username.value} onChange={this.handleChange} required />
-              </fieldset>
+                      <fieldset>
+                        <label>Password*</label>
+                        <input className='form-control' type='password' placeholder='password' name='password' value={this.state.password.value} onChange={this.handleChange} required />
+                      </fieldset>
 
-              <fieldset>
-                <label>Password*</label>
-                <input className='form-control' type='password' placeholder='password' name='password' value={this.state.password.value} onChange={this.handleChange} required />
-              </fieldset>
+                      <fieldset className='text-right'>
+                        <button name='connexion' type='button' className='btn btn-dark' onClick={this.handleClick}> Connect </button>
+                      </fieldset>
 
-              <fieldset className='text-right'>
-                <button name='connexion' type='button' className='btn btn-dark' onClick={this.handleClick}> Connect </button>
-              </fieldset>
-
-            </form>
+                    </form>
+                  </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </CSSTransition>
+         
     )
   }
 }

@@ -5,10 +5,9 @@ import Select from 'react-select'
 
 import TablePatient from '../CommonComponents/RessourcesDisplay/TablePatients'
 import TableStudy from "../CommonComponents/RessourcesDisplay/TableStudy"
-import MonitorJob from '../../tools/MonitorJob'
 import apis from "../../services/apis"
 
-import { addToAnonymizedList, emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
+import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
 import { studyArrayToPatientArray } from '../../tools/processResponse'
 import { toastifyError } from "../../services/toastify"
 
@@ -18,84 +17,13 @@ class AnonymizePanel extends Component {
     state = { 
         currentPatient: '', 
         prefix: '', 
-        listToAnonymize: [],
         progress: {}
     }
 
-
     constructor(props) {
         super(props)
-        this.removePatient = this.removePatient.bind(this)
-        this.removeStudy = this.removeStudy.bind(this)
-        this.emptyList = this.emptyList.bind(this)
-        this.saveNewValues = this.saveNewValues.bind(this)
         this.anonymize = this.anonymize.bind(this)
-        this.changeProfile = this.changeProfile.bind(this)
-        this.handleChange = this.handleChange.bind(this)
-        this.autoFill = this.autoFill.bind(this)
-    }
-
-    updateProgress(progress, i){
-        i++
-        this.setState({
-            progress: {
-                ...this.state.progress,
-                [i] : {
-                    nb: i, 
-                    progress: progress, 
-                    status: progress < 100 ? 'item btn btn-danger' : 'item btn btn-success'
-                }
-            }
-        })
-        this.displayRows()
-    }
-
-    displayRows(){
-        let rows = []
-        for(let i in this.state.progress){
-            rows.push(<button disabled={true} type='button' key={this.state.progress[i].nb} className={this.state.progress[i].status} >job n°{this.state.progress[i].nb} : {this.state.progress[i].progress}%{'\n'}</button>)
-        }
-        this.setState({
-            rows: rows
-        })
-    }
-
-
-    changeProfile(event){
-        this.props.saveProfile(event.value)
-    }
-
-    removePatient(patientID){
-        this.props.removePatientFromAnonList(patientID)
-    }
-
-    removeStudy(studyID){
-        this.props.removeStudyFromAnonList(studyID)
-    }
-
-    emptyList(){
-        this.props.emptyAnonymizeList()
-    }
-
-    rowEvents = {
-        onClick: (e, row) => {
-            this.setState({currentPatient: row.PatientOrthancID})
-        }
-    }
-
-    rowStyle = (row) => {
-        const style = {};
-        if (row.PatientOrthancID === this.state.currentPatient){
-            style.backgroundColor = 'rgba(255,153,51)'
-        }
-        style.borderTop = 'none';
-
-        return style;
-    }
-
-    saveNewValues(ID, column, newValue, row){
-        console.log(row)
-        this.props.saveNewValues(ID, column, newValue)
+        this.testAllId = this.testAllId.bind(this)
     }
 
     getPatients(){
@@ -126,79 +54,34 @@ class AnonymizePanel extends Component {
         return studies
     }
 
+    testAllId(){
+        let answer = true
+        this.props.anonList.forEach((item) => {
+            if (item.PatientMainDicomTags.newPatientID === undefined)
+                answer = false
+        })
+        return answer
+    }
+
     async anonymize(){
-        this.setState({
-            monitors: []
-        })
-        let listToAnonymize = []
-        let listOK = true
-        this.props.anonList.forEach(element => {
-            let payload = {
-                OrthancStudyID: element.ID, 
-                profile: this.props.profile
-            }
-            payload = {
-                ...payload, 
-                Name: element.PatientMainDicomTags.newPatientName, 
-                ID: element.PatientMainDicomTags.newPatientID, 
-                StudyDescription: element.MainDicomTags.newStudyDescription ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
-                AccessionNumber: element.MainDicomTags.newAccessionNumber ? element.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
-            }
-            if (payload.ID === undefined)
-                listOK = false
-            if (Object.keys(payload).length > 2)
-                listToAnonymize.push(payload)
-                console.log(listOK)
-        })
-            if (listOK){
-                console.log(listToAnonymize)
-            this.job = []
-            for (let i in listToAnonymize){
-                let study = listToAnonymize[i]
-                let id = await apis.anon.anonymize(study.OrthancStudyID, study.profile, study.AccessionNumber, study.Name, study.ID, study.StudyDescription)
+        if (this.testAllId()){ //check all id 
+            let listToAnonymize = []
+            this.props.anonList.forEach(element => {
+                let anonItem = {
+                    orthancStudyID: element.ID, 
+                    profile: this.props.profile, 
+                    newPatientName: element.PatientMainDicomTags.newPatientName, 
+                    newPatientID: element.PatientMainDicomTags.newPatientID, 
+                    newStudyDescription: element.MainDicomTags.newStudyDescription ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
+                    newAccessionNumber: element.MainDicomTags.newAccessionNumber ? element.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
+                }
 
-                let jobMonitoring = new MonitorJob(id)
-                let self = this
-                
-                jobMonitoring.onUpdate(function (progress) {
-                    self.updateProgress(progress, i)
-                })
-        
-                jobMonitoring.onFinish(async function  (state) {
-                    if (state === MonitorJob.Success){
-                        await self.addNewStudy(jobMonitoring.jobID)
-                    } else if (state === MonitorJob.Failure){
-                        console.log("Failure ", i)
-                    }
-                    
-                })
-
-                jobMonitoring.startMonitoringJob()
-
-            }
-        }else toastifyError('Fill all PatientID to anonymize')
-    }
-
-    async addNewStudy(jobID){
-        let content = await this.getContentJob(jobID)
-        let studyID = content.ID
-        let studyDetail = await apis.content.getStudiesDetails(studyID)
-        this.props.addToAnonymizedList([studyDetail])
-        this.removeStudy(studyDetail.AnonymizedFrom)
-    }
-
-    async getContentJob(jobID){
-        let infos = await apis.jobs.getJobInfos(jobID)
-        return infos.Content
-    }
-
-    
-    componentWillUnmount() {
-        if (this.job){
-            this.job.forEach(job => {
-                if (job !== undefined) job.cancelJob()
+                listToAnonymize.push(anonItem) 
             })
-        }
+
+            let answer = await apis.anon.createAnonRobot(listToAnonymize, this.props.username) //wait for the robot's answer to know what do to next
+            this.props.setProgress(answer)
+        } else toastifyError('Fill all patient ID')
     }
 
     getProfileSelected(){
@@ -211,18 +94,26 @@ class AnonymizePanel extends Component {
         return this.option[index]
     }
 
-    handleChange(event){
-        this.setState({prefix: event.target.value})
+    rowStyle = (row) => {
+        const style = {};
+        if (row.PatientOrthancID === this.state.currentPatient){
+            style.backgroundColor = 'rgba(255,153,51)'
+        }
+        style.borderTop = 'none';
+        
+        return style;
     }
-
-    autoFill(){
-        this.props.autoFill(this.state.prefix)
-    }
-
+    
     option = [
         {value: 'Default', label: 'Default'}, 
         {value: 'Full', label: 'Full'}
     ]
+    
+    rowEvents = {
+        onClick: (e, row) => {
+            this.setState({currentPatient: row.PatientOrthancID})
+        }
+    }
 
     render() {
         return (
@@ -243,25 +134,25 @@ class AnonymizePanel extends Component {
                                 autoSelectText: true,
                                 mode: 'click', 
                                 afterSaveCell: (oldValue, newValue, row, column) => {
-                                    this.saveNewValues(row.PatientOrthancID, column.dataField, newValue, row)
+                                    this.props.saveNewValues(row.PatientOrthancID, column.dataField, newValue)
                                 }
                             }) }
                             rowStyle={this.rowStyle} 
-                            onDelete={this.removePatient} />
+                            onDelete={this.props.removePatientFromAnonList} />
                     </div>
                     <div className="col-sm">
                         <TableStudy 
                             data={this.getStudy()}
                             hiddenActionBouton={true} 
                             hiddenRemoveRow={false} 
-                            onDelete={this.removeStudy}
+                            onDelete={this.props.removeStudyFromAnonList}
                             editable={true}
                             cellEdit={ cellEditFactory({ 
                                 blurToSave: true,
                                 autoSelectText: true,
                                 mode: 'click',
                                 afterSaveCell: (oldValue, newValue, row, column) => {
-                                    this.saveNewValues(row.StudyOrthancID, column.dataField, newValue, row)
+                                    this.props.saveNewValues(row.StudyOrthancID, column.dataField, newValue)
                                 }
                             }) }
                             pagination={true}
@@ -270,11 +161,11 @@ class AnonymizePanel extends Component {
                 </div>
                 <div className="row mb-3">
                     <div className='col-sm'>
-                        <input type='text' name='prefix' id='prefix' className='form-control' placeholder='prefix' onChange={this.handleChange} />
+                        <input type='text' name='prefix' id='prefix' className='form-control' placeholder='prefix' onChange={(e) => this.setState({prefix: e.target.value})} />
                     </div>
                     <div className='col-sm'>
-                        <button type='button' className='btn btn-warning mr-3' onClick={this.autoFill}>AutoFill</button>
-                        <button type='button' className="btn btn-warning" onClick={this.emptyList}>Empty List</button>
+                        <button type='button' className='btn btn-warning mr-3' onClick={() => this.props.autoFill(this.state.prefix)}>AutoFill</button>
+                        <button type='button' className="btn btn-warning" onClick={this.props.emptyAnonymizeList}>Empty List</button>
                     
                     </div>
                     <div className='col-sm'>
@@ -285,15 +176,12 @@ class AnonymizePanel extends Component {
                         <label htmlFor='profile'>Anon Profile : </label>
                     </div>
                     <div className="col-2" >
-                        <Select name='profile' single options={this.option} onChange={this.changeProfile} placeholder='Profile' value={this.getProfileSelected()} />  
+                        <Select name='profile' single options={this.option} onChange={(e) => this.props.saveProfile(e.value)} placeholder='Profile' value={this.getProfileSelected()} />  
                     </div>
                     <div className="col-sm">
                         <button className='btn btn-primary' type='button' onClick={this.anonymize} >Anonymize</button> 
                     </div>
                 </div>
-                <pre>
-                    {this.state.rows}
-                </pre>
             </Fragment>
         )
             
@@ -303,11 +191,12 @@ class AnonymizePanel extends Component {
 const mapStateToProps = state => {
     return { 
         anonList: state.AnonList.anonList, 
-        profile: state.AnonList.profile
+        profile: state.AnonList.profile, 
+        username: state.OrthancTools.username
     }
 }
+
 const mapDispatchToProps = {
-    addToAnonymizedList,
     emptyAnonymizeList,
     removePatientFromAnonList, 
     removeStudyFromAnonList,

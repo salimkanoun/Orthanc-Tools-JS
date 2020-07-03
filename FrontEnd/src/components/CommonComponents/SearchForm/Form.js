@@ -113,25 +113,25 @@ class Search extends Component{
                 <div className='row'>
                     <div className='col-sm'>
                         <label htmlFor='lastName'>Last Name</label>
-                        <input type='text' name='lastName' id='lastName' className='form-control' placeholder='Last name' onChange={this.handleChange} />
+                        <input type='text' name='lastName' id='lastName' className='form-control' placeholder='Last name' onChange={this.handleChange} value={this.state.lastName}/>
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='firstName'>First Name</label>
-                        <input type='text' name='firstName' id='firstName' className='form-control' placeholder='First name' onChange={this.handleChange} />
+                        <input type='text' name='firstName' id='firstName' className='form-control' placeholder='First name' onChange={this.handleChange} value={this.state.firstName}/>
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='patientID'>Patient ID</label>
-                        <input type='text' name='patientID' id='patientID' className='form-control' placeholder='Patient ID' onChange={this.handleChange} />
+                        <input type='text' name='patientID' id='patientID' className='form-control' placeholder='Patient ID' onChange={this.handleChange} value={this.state.patientID}/>
                     </div>
                 </div>
                 <div className='row'>
                     <div className='col-sm'>
                         <label htmlFor='accessionNumber'>Accession Number</label>
-                        <input type='text' name='accessionNumber' id='accessionNumber' className='form-control' placeholder='Accession Number' onChange={this.handleChange} />
+                        <input type='text' name='accessionNumber' id='accessionNumber' className='form-control' placeholder='Accession Number' onChange={this.handleChange} value={this.state.accessionNumber}/>
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='studyDescription'>Study Description</label>
-                        <input type='text' name='studyDescription' id='studyDescription' className='form-control' placeholder='Study Description' onChange={this.handleChange} />
+                        <input type='text' name='studyDescription' id='studyDescription' className='form-control' placeholder='Study Description' onChange={this.handleChange} value={this.state.studyDescription}/>
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='modalities'>Modalities</label>

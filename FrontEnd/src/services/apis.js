@@ -10,6 +10,10 @@ import peers from './peers'
 import content from './content'
 import anon from './anon'
 import localStorage from './localStorage'
+import User from './User'
+import deleteRobot from './deleteRobot'
+import role from './role'
+import token from './token'
 
 export default {
   aets,
@@ -23,5 +27,9 @@ export default {
   peers, 
   content, 
   anon, 
-  localStorage
+  localStorage, 
+  User, 
+  deleteRobot, 
+  role, 
+  token
 }

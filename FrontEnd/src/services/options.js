@@ -1,16 +1,40 @@
 import { toastifySuccess, toastifyError } from './toastify'
+import updateOptions from '../authorizedOption'
+
+var optionPlugin = { 
+  method: 'GET'
+}
+
+var optionOrthancSystem = {
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+  }
+}
+
+var optionOrthancServer = {
+  method: 'GET',
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+  }
+}
 
 const Options = {
 
   setRobotScheduleHour (hour, min) {
-    return fetch('/api/options', {
+
+    const setRobotScheduleHourOption = {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ hour: hour, min: min })
-    }).then((answer) => {
+    }
+
+    return fetch('/api/options', updateOptions(setRobotScheduleHourOption) ).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).then(() => {
@@ -21,7 +45,7 @@ const Options = {
   },
 
   getRobotScheduledHour () {
-    return fetch('/api/options')
+    return fetch('/api/options', updateOptions() )
       .then((answer) => {
         if (!answer.ok) { throw answer }
         return answer.json()
@@ -36,14 +60,16 @@ const Options = {
       OrthancPassword: password
     }
 
-    return fetch('/api/options/orthanc-server', {
+    const setOrthancServerOption = {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(postData)
-    }).then((answser) => {
+    }
+
+    return fetch('/api/options/orthanc-server', updateOptions(setOrthancServerOption) ).then((answser) => {
       if ( ! answser.ok) throw answser
     })
       .then((answer) => toastifySuccess('Updated'))
@@ -51,26 +77,14 @@ const Options = {
   },
 
   getOrthancServer () {
-    return fetch('/api/options/orthanc-server', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then((answer) => {
+    return fetch('/api/options/orthanc-server', updateOptions(optionOrthancServer)).then((answer) => {
       return (answer.json())
     }).then((answer) => { return answer })
     .catch(error =>{ toastifyError('No connexion to BackEnd')})
   },
 
   getOrthancSystem () {
-    return fetch('/api/system', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
-    }).then((answer) => {
+    return fetch('/api/system', updateOptions(optionOrthancSystem)).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).then((answer) => {
@@ -81,9 +95,12 @@ const Options = {
   }, 
 
   resetOrthanc(){
-    return fetch('/api/tools/reset', {
+
+    const resetOrthancOption = {
       method: 'POST'
-    }).then((answer) => {
+    } 
+
+    return fetch('/api/tools/reset', updateOptions(resetOrthancOption) ).then((answer) => {
       if (!answer.ok) {throw answer}
       return (answer.json())
     }).catch((error) => {
@@ -92,9 +109,12 @@ const Options = {
   },
 
   shutdownOrthanc(){
-    return fetch('api/tools/shutdown', {
+
+    const shutdownOrthancOption =  {
       method: 'POST'
-    }).then((answer) => {
+    }
+
+    return fetch('api/tools/shutdown', updateOptions(shutdownOrthancOption) ).then((answer) => {
       if (!answer.ok) {throw answer}
       return (answer.json())
     }).catch((error) => {
@@ -104,9 +124,12 @@ const Options = {
 
   //return current verbosity in Orthanc log
   getVerbosity(){
-    return fetch('api/tools/log-level',{ 
+
+    const getVerbosityOption = { 
       method: 'GET'
-    }).then(response => {
+    }
+
+    return fetch('api/tools/log-level', updateOptions(getVerbosityOption) ).then(response => {
         if (response.ok) {
           return response.text()
         }
@@ -118,10 +141,13 @@ const Options = {
 
   //set verbosity in Orthanc
   setVerbosity(value){
-    return fetch('api/tools/log-level', {
+
+    const setVerbosityOption = {
       method: 'PUT', 
       body: value
-    }).then((answer) => {
+    }
+
+    return fetch('api/tools/log-level', updateOptions(setVerbosityOption) ).then((answer) => {
       if (!answer.ok) {throw answer}
       toastifySuccess("Verbosity have been updated")
     }).catch((error) => {
@@ -130,9 +156,7 @@ const Options = {
   },
 
   getPlugins(){
-    return fetch('api/plugins',{ 
-      method: 'GET'
-    }).then(response => {
+    return fetch('api/plugins',updateOptions(optionPlugin)).then(response => {
         if (response.ok) {
           return response.json()
         }

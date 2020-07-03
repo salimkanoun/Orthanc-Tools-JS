@@ -7,8 +7,7 @@ const JobItem = require('./JobItem')
 class JobRetrieve extends Job {
 
     constructor(username, orthancObject){
-        super(Job.TYPE_RETRIEVE, username)
-        this.orthancObject = orthancObject
+        super(Job.TYPE_RETRIEVE, username, orthancObject)
         this.validation = JobRetrieve.VALIDATION_NOT_DONE
     }
 

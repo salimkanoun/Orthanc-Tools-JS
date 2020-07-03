@@ -1,4 +1,5 @@
 var Users = require('../model/Users')
+const jwt = require("jsonwebtoken")
 
 authentication = async function (req, res) {
   const body = req.body
@@ -6,8 +7,27 @@ authentication = async function (req, res) {
     const userObject = new Users(body.username)
     const checkPassword = await userObject.checkPassword(body.password)
     if (checkPassword) {
-      req.session.username = body.username
-      res.json(true)
+
+      let user = new Users(body.username)
+      let infosUser = await user.getUserRight()
+
+      let payload = {
+        username: body.username,
+        admin: infosUser.admin,
+        import: infosUser.import,
+        content: infosUser.content,
+        anon: infosUser.anon,
+        export_local: infosUser.export_local,
+        export_extern: infosUser.export_extern,
+        query: infosUser.query,
+        auto_query: infosUser.auto_query,
+        delete: infosUser.delete,
+        modify: infosUser.modify
+      }
+
+      var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
+
+      res.json(TOKEN);
     } else {
       res.status(401).send('Wrong Credential')
     }
@@ -18,13 +38,11 @@ authentication = async function (req, res) {
 
 logOut = function (req, res){
   try {
-    req.session.destroy()
-    res.json(true)
+    console.log('user logs out') //Mettre en place un système pour rendre non viable le token apres deconnexion
   } catch (error){
     console.log(error)
     console.log('logOut fail')
   }
-  
 }
 
 module.exports = { authentication, logOut }

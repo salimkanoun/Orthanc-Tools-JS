@@ -1,22 +1,23 @@
+import updateOptions from '../authorizedOption'
+
 const retrieve = {
 
     retrieveByUID (postData) {
 
-        return fetch('/api/retrieve', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(postData)
+      var retrieveByUIDOption =  {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(postData)
+      }
 
-        }).then((answer) => {
+        return fetch('/api/retrieve', updateOptions(retrieveByUIDOption)).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         })
-
     }
-
 }
 
 export default retrieve;

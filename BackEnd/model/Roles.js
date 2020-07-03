@@ -1,0 +1,104 @@
+const db = require('../database/models')
+const jwt = require("jsonwebtoken")
+
+class Roles {
+
+    static async createRoles (payload) {
+        console.log(payload)
+        const roles = await db.Role.findOne({ 
+          where: { name: payload.name }})
+        if(roles) {
+            throw new Error('This roles already exist');
+        }
+
+        const promise = db.Role.create({
+            name: payload.name,
+            import: payload.import,
+            content: payload.content,
+            anon: payload.anon,
+            export_local: payload.exportLocal,
+            export_extern: payload.exportExtern,
+            query: payload.query,
+            auto_query: payload.autoQuery,
+            delete: payload.delete,
+            modify: payload.modify,
+            admin: payload.admin
+          }).catch(e => console.log(e))
+    
+        return promise
+      }
+
+    static async getAllRoles () {
+      try {
+        return await db.Role.findAll(
+            {attributes: ['name']}
+        )
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    static async getPermission (name) {
+        return await db.Role.findAll({ where: { name: name }, attributes: ['import',
+            'content',
+            'anon',
+            'export_local',
+            'export_extern',
+            'query',
+            'auto_query',
+            'delete',
+            'admin',
+            'modify']}).catch((error) => console.log(error)) //return a JSON
+    }
+
+    static async deleteRole(name){
+      if(name === 'admin') throw 'Can\'t delete role admin'
+
+      try {
+        await db.Role.destroy({
+        where: {
+            name: name
+        }
+      })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    static async modifyRoles(name, payload){
+      if(name === 'admin') throw 'Can\'t modify role admin'
+
+      console.log(payload.import)
+      try {
+        await db.Role.upsert({
+          name: name,
+          content: payload.content,
+          anon: payload.anon,
+          export_local: payload.exportLocal,
+          export_extern: payload.exportExtern,
+          query: payload.query,
+          auto_query: payload.autoQuery,
+          delete: payload.delete,
+          admin: payload.admin,
+          modify: payload.modify,
+          import: payload.import
+        })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    static async getRoleFromToken(token){
+      
+      try { 
+        return jwt.verify(token, process.env.TOKEN_SECRET) 
+      } 
+      catch(err) {
+        console.log(err)
+        throw res.sendStatus(403)//if incorrect token
+      }
+    }
+
+}
+
+module.exports = Roles

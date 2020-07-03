@@ -23,7 +23,15 @@ export default function anonListReducer (state = initialState, action) {
         case ADD_ANONYMIZED_LIST:
           let anonArray1 = action.payload
           //Add only id that are not already in the anon list
-          let newStudies1 = anonArray1.filter(id =>  ! state.anonymizedList.includes(id) )
+          let newStudies1 = []
+          anonArray1.forEach((item) => {
+            let find = false
+            state.anonymizedList.forEach(element => {
+              if (item.ID === element.ID)
+                find = true
+            })
+            if (!find){newStudies1.push(item)}
+          })
           let newIncresedList1 = [...state.anonymizedList, ...newStudies1]
           return {
             anonymizedList : newIncresedList1, 

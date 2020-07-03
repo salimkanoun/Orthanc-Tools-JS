@@ -8,7 +8,7 @@ import ExportList from './ExportList'
 import AnonList from './AnonList'
 import OrthancContent from './OrthancContent'
 
-export default combineReducers({
+const appReducer = combineReducers({
   OrthancTools,
   ManualQuery,
   AutoRetrieveQueryList,
@@ -18,3 +18,13 @@ export default combineReducers({
   AnonList, 
   OrthancContent
 })
+
+const rootReducer = (state, action) => {
+  if (action.type === 'LOG_OUT') {
+    state = undefined
+  }
+
+  return appReducer(state, action)
+}
+
+export default rootReducer

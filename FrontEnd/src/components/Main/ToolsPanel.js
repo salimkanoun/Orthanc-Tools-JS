@@ -26,9 +26,9 @@ class ToolsPanel extends Component {
     }
 
     setConfirmDelete(){
-        this.setState({
-            confirmDelete: !this.state.confirmDelete
-        })
+        this.setState(prevState => ({
+            confirmDelete: !prevState.confirmDelete
+        }))
     }
 
 
@@ -38,24 +38,30 @@ class ToolsPanel extends Component {
         const refDelete = React.createRef()
         return (
             <div className="row">
-                <div className="mr-1">
-                    <Link id='anon' ref={refAnon} type="button" className="btn btn-info" onMouseOver={() => this.setState({show: 'anon'})} to='/anonymize'>
+                <div className="mr-1" hidden={!this.props.roles.anon}>
+                    <Link id='anon' ref={refAnon} type="button" className="btn btn-info" onMouseOver={this.props.apercu ? () => this.setState({show: 'anon'}) : null} to='/anonymize'>
                         Anonymize <br/>
-                        <span className="badge badge-light" onMouseOver={() => this.setState({show: 'anon'})}>{this.props.anonList.length}</span>
+                        <span className="badge badge-light" onMouseOver={this.props.apercu ? () => this.setState({show: 'anon'}) : null}>{this.props.anonList.length}</span>
                     </Link>
                     <AnonTool target={refAnon} show={this.state.show === 'anon' ? true : false} onHide={this.closePopovers} />
                 </div>
-                <div className="mr-1">
-                    <Link id='export' ref={refExport} type="button" className="btn btn-primary" onMouseOver={() => this.setState({show: 'export'})} to='/export' >
+                <div className="mr-1" hidden={!this.props.roles.export_extern || !this.props.roles.export_local}>
+                    <Link id='export' ref={refExport} type="button" className="btn btn-primary" onMouseOver={this.props.apercu ? () => this.setState({show: 'export'}) : null } to='/export' >
                         Export <br/>
-                        <span className="badge badge-light" onMouseOver={() => this.setState({show: 'export'})}>{this.props.studyArray.length}</span>
+                        <span className="badge badge-light" onMouseOver={this.props.apercu ? () => this.setState({show: 'export'}) : null }>{this.props.studyArray.length}</span>
                     </Link>
                     <ExportTool  target={refExport} show={this.state.show === 'export' ? true : false} onHide={this.closePopovers} />
                 </div>
-                <div className="mr-1" >
-                    <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onMouseOver={() => this.setState({show: 'delete'})} onClick={() => this.setState({confirmDelete: true})} >
+                <div className='mr-2' hidden={this.props.apercu}>
+                    <Link id='delete' ref={refDelete} type='button' className='btn btn-danger' to='/delete'>
                         Delete <br/>
-                        <span className="badge badge-light" onMouseOver={() => this.setState({show: 'delete'})} >{(this.props.deleteList.length)}</span>
+                        <span className="badge badge-light">{(this.props.deleteList.length)}</span>
+                    </Link>
+                </div>
+                <div className="mr-2" hidden={!this.props.roles.delete || !this.props.apercu} >
+                    <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onMouseOver={this.props.apercu ? () => this.setState({show: 'delete'}) : null } onClick={() => this.setState({confirmDelete: true})} >
+                        Delete <br/>
+                        <span className="badge badge-light" onMouseOver={this.props.apercu ? () => this.setState({show: 'delete'}) : null } >{(this.props.deleteList.length)}</span>
                     </button>
                     <DeleteTool target={refDelete} show={this.state.show === 'delete' ? true : false} onHide={this.closePopovers} confirmDelete={this.state.confirmDelete} setConfirm={this.setConfirmDelete} />
                 </div>
