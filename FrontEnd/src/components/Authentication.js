@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 
 import apis from '../services/apis'
-import { TransitionGroup, CSSTransition } from "react-transition-group";
-import { Container } from 'react-bootstrap';
+import { CSSTransition } from "react-transition-group";
 
 export default class Authentication extends Component {
 
@@ -101,8 +100,7 @@ export default class Authentication extends Component {
       return <Redirect to='/orthanc-content' />
     }
     return (
-      <Container>
-        <CSSTransition in={this.state.show} timeout={1000} classNames='auth' unmountOnExit>
+        <CSSTransition in={this.state.show} timeout={1500} classNames='auth'>
          <div className='vertical-center'>
             <div className='shadow text-center' id='login'> 
               <div className='alert alert-danger' id='error' style={{ display:  this.state.errorMessage === undefined ?  'none' : '' }}>{this.state.errorMessage}</div>
@@ -127,8 +125,7 @@ export default class Authentication extends Component {
                   </div>
             </div>
           </div>
-                </CSSTransition>
-      </Container>
+        </CSSTransition>
          
     )
   }

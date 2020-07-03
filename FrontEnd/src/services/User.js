@@ -15,8 +15,9 @@ const user = {
         return fetch('/users/users', updateOptions(getUsersOption)).then((answer) => {
             if (!answer.ok) { throw answer }
               return answer.json()
-          }).catch(error => {
-            toastifyError(error)
+          }).catch(async error => {
+            let errorText = await error.text()
+            toastifyError(errorText)
           })
     }, 
 
@@ -33,8 +34,9 @@ const user = {
       return fetch('/users/users', updateOptions(modifyUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
           toastifySuccess('User Modify with success')
-      }).catch(error => {
-        toastifyError(error.statusText)
+      }).catch(async error => {
+        let errorText = await error.text()
+        toastifyError(errorText)
       })
     },
 
@@ -51,8 +53,9 @@ const user = {
       return fetch('/users/users', updateOptions(deleteUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
           toastifySuccess('User Delete with success')
-      }).catch(error => {
-        toastifyError(error.statusText)
+      }).catch(async error => {
+        let errorText = await error.text()
+        toastifyError(errorText)
       })
     }, 
 
@@ -71,8 +74,10 @@ const user = {
       return fetch('/users/users', updateOptions(createUserOption)).then((answer) => {
         if (!answer.ok) { throw answer }
           toastifySuccess('user created with success')
-      }).catch(error => {
-        toastifyError(error.statusText)
+      }).catch(async error => {
+        console.log(error)
+        let errorText = await error.text()
+        toastifyError(errorText)
       })
     }
 }
