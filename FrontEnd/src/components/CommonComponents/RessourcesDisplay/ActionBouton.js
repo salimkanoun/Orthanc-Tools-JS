@@ -67,16 +67,16 @@ class ActionBouton extends Component{
                     </Modal.Body>
                 </Modal>
 
-                <Dropdown onClick={this.handleClick}>
+                <Dropdown onClick={this.handleClick} drop='left'>
                     <Dropdown.Toggle variant="success" id="dropdown-basic"  >
                         Action
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
                         <OhifLink className='dropdown-item bg-info' {...this.props} />
+                        <button className='dropdown-item bg-info' type='button' onClick={ this.setMetadata} hidden={this.props.hiddenMetadata}>Metadata</button>
                         <Modify {...this.props} />
                         <button className='dropdown-item bg-danger' type='button' onClick={ this.delete }>Delete</button>
-                        <button className='dropdown-item bg-info' type='button' onClick={ this.setMetadata} hidden={this.props.hiddenMetadata}>Metadata</button>
                     </Dropdown.Menu>
                 </Dropdown>
             </Fragment>

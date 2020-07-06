@@ -45,6 +45,27 @@ class Delete extends Component {
         toast.update(this.toast.current, {type: toast.TYPE.INFO, render: 'Delete done', className: 'bg-success', autoClose: 2000})
     }
 
+    startMonitoring(){
+        this.openToast()
+        this.intervalChcker = setInterval(() => this.getInfo(), 2000)
+    }
+
+    stopMonitoring(){
+        if(this.intervalChcker !== undefined) clearInterval(this.intervalChcker)
+        this.successToast()
+        this.props.deleteList.forEach(async (study) => {
+            this.props.removeStudyFromDeleteList(study.ID)
+            this.props.removeOrthancContentStudy(study.ID)
+        });
+    }
+
+    async getInfo(){
+        let progress = await apis.deleteRobot.getDeleteRobot(this.props.username)
+        let nb = 100*progress.progression.Success/progress.items.length
+        this.updateToast(nb)
+        if(progress.status === 'Finished') {this.stopMonitoring()}
+    }
+
     async handleClickDelete(){
         //close Modal
         this.handleConfirm()
@@ -57,19 +78,8 @@ class Delete extends Component {
         
         let answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
         if (answer){
-            this.openToast()
-            let progress
-            do {
-                progress = await apis.deleteRobot.getDeleteRobot(this.props.username)
-                let nb = 100*progress.progression.Success/progress.items.length
-                this.updateToast(nb)
-            } while (progress.status !== "Finished")
-            this.successToast()
+            this.startMonitoring()
         }
-        this.props.deleteList.forEach(async (study) => {
-            this.props.removeStudyFromDeleteList(study.ID)
-            this.props.removeOrthancContentStudy(study.ID)
-        });
 
     }
 
