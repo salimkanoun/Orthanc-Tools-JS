@@ -28,7 +28,8 @@ class AnonymizePanel extends Component {
 
     async componentDidMount() {
         let robot = await apis.anon.getAnonJob(this.props.username)
-        if (robot.status !== 'Finished')
+        console.log(robot)
+        if (robot.status && robot.status !== 'Finished')
             this.props.setProgress(true)
     }
 
