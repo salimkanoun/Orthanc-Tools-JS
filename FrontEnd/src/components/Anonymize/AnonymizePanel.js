@@ -1,13 +1,13 @@
 import React, { Component, Fragment } from "react"
 import { connect } from "react-redux"
 import cellEditFactory from 'react-bootstrap-table2-editor'
-import Select from 'react-select'
 
 import TablePatient from '../CommonComponents/RessourcesDisplay/TablePatients'
 import TableStudy from "../CommonComponents/RessourcesDisplay/TableStudy"
 import apis from "../../services/apis"
+import AnonProfile from './AnonProfile'
 
-import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList, saveNewValues, saveProfile, autoFill } from '../../actions/AnonList'
+import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList, saveNewValues, autoFill } from '../../actions/AnonList'
 import { studyArrayToPatientArray } from '../../tools/processResponse'
 import { toastifyError } from "../../services/toastify"
 
@@ -31,7 +31,6 @@ class AnonymizePanel extends Component {
         if (robot.status !== 'Finished')
             this.props.setProgress(true)
     }
-    
 
     getPatients(){
         let patients = []
@@ -91,16 +90,6 @@ class AnonymizePanel extends Component {
         } else toastifyError('Fill all patient ID')
     }
 
-    getProfileSelected(){
-        let index = -1
-        this.option.forEach(element => {
-            if (element.value === this.props.profile){
-                index = this.option.indexOf(element)
-            }
-        })
-        return this.option[index]
-    }
-
     rowStyle = (row) => {
         const style = {};
         if (row.PatientOrthancID === this.state.currentPatient){
@@ -110,11 +99,6 @@ class AnonymizePanel extends Component {
         
         return style;
     }
-    
-    option = [
-        {value: 'Default', label: 'Default'}, 
-        {value: 'Full', label: 'Full'}
-    ]
     
     rowEvents = {
         onClick: (e, row) => {
@@ -179,11 +163,8 @@ class AnonymizePanel extends Component {
                         </div>
                 </div>
                 <div className="row">
-                    <div className="col-auto" >
-                        <label htmlFor='profile'>Anon Profile : </label>
-                    </div>
-                    <div className="col-2" >
-                        <Select name='profile' single options={this.option} onChange={(e) => this.props.saveProfile(e.value)} placeholder='Profile' value={this.getProfileSelected()} />  
+                    <div className='col-lg'>
+                        <AnonProfile />
                     </div>
                     <div className="col-sm">
                         <button className='btn btn-primary' type='button' onClick={this.anonymize} >Anonymize</button> 
@@ -207,8 +188,7 @@ const mapDispatchToProps = {
     emptyAnonymizeList,
     removePatientFromAnonList, 
     removeStudyFromAnonList,
-    saveNewValues, 
-    saveProfile, 
+    saveNewValues,
     autoFill
 }
 
