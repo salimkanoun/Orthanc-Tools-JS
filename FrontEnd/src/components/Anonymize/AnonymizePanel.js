@@ -26,6 +26,13 @@ class AnonymizePanel extends Component {
         this.testAllId = this.testAllId.bind(this)
     }
 
+    async componentDidMount() {
+        let robot = await apis.anon.getAnonJob(this.props.username)
+        if (robot.status !== 'Finished')
+            this.props.setProgress(true)
+    }
+    
+
     getPatients(){
         let patients = []
         patients = studyArrayToPatientArray(this.props.anonList)
