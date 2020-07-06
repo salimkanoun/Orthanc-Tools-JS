@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 class InputPassword extends Component {
 
     static defaultProps = {
-        previousPassword = ''
+        previousPassword: ''
     }
     
     state = { 
