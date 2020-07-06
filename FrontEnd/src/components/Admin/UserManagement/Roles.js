@@ -73,7 +73,7 @@ class Roles extends Component {
             <Fragment>
                 <h2 className='card-title'>Roles Panel</h2>
                 <CreateRole getRoles={this.getRoles}/>
-                <BootstrapTable keyField='name' data={this.state.roles} columns={this.columns} striped />
+                <BootstrapTable keyField='name' data={this.state.roles} columns={this.columns} striped wrapperClasses='table-responsive' />
 
                 <Modal id='delete' show={this.state.showDelete} onHide={() => this.setState({showDelete: false})} size='sm'>
                     <Modal.Header closeButton>

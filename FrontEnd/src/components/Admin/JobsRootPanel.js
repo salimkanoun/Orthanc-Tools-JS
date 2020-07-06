@@ -157,6 +157,7 @@ class JobsRootPanel extends Component {
                     data={this.state.rows} 
                     columns={this.column} 
                     pagination={paginationFactory()}
+                    wrapperClasses='table-responsive'
                 />
             </Fragment>
         );
