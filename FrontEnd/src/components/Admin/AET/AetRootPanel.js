@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Aets from './AetsListTable'
 import AetForm from './AetForm'
-import apis from '../../services/apis'
+import apis from '../../../services/apis'
 
 /**
  * Root Panel of AETs options

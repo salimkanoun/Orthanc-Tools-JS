@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react'
-import apis from '../../services/apis'
+import apis from '../../../services/apis'
 
 /**
  * Form to declare or modify an Orthanc Peer

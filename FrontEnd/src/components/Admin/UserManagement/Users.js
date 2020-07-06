@@ -7,16 +7,15 @@ import cellEditFactory from 'react-bootstrap-table2-editor'
 import apis from '../../../services/apis';
 
 import CreateUser from './CreateUser'
+import InputPassword from './InputPassword'
 
 
 class Users extends Component {
 
     state = {
-        password: undefined,
         username: '',
         users: [],
         showDelete: false,
-        optionRoles: [],
     }
 
     async componentDidMount() {
@@ -25,7 +24,6 @@ class Users extends Component {
 
     constructor(props) {
         super(props)
-        this.handleChange = this.handleChange.bind(this)
         this.modify = this.modify.bind(this)
         this.delete = this.delete.bind(this)
         this.resetState = this.resetState.bind(this)
@@ -38,7 +36,7 @@ class Users extends Component {
        answer.forEach((user) => {
            users.push({
                ...user, 
-               password: undefined
+               password: ''
            })
        })
        this.setState({
@@ -48,32 +46,17 @@ class Users extends Component {
 
     resetState(){
         this.setState({
-            password: undefined,
             showDelete: false
         })
         this.getUsers()
     }
-    
-    handleChange(event) {
-        const target = event.target
-        const name = target.name
-        const value = target.value
-        this.setState({
-            [name]: value
-        })
-    }
 
     async modify(row){
-        let payload = {}
-        if (this.state.password === ''){
+        let payload = {...row}
+        if (row.password === ''){
             payload = {
-                ...row, 
+                ...payload, 
                 password: null
-            }
-        } else {
-            payload = {
-                ...row, 
-                password: this.state.password
             }
         }
         await apis.User.modifyUser(payload).then(()=>{
@@ -116,13 +99,13 @@ class Users extends Component {
             sort: true
         }, {
             dataField: 'password', 
-            text: 'New Password', 
-            editable: false,
-            formatter: (cell, row, index) => {
-                return (
-                    <input name='password' type="password" className="form-control" placeholder="Password" onChange={this.handleChange}></input>
-                )
-            }
+            text: 'New Password',
+            style: {
+                'fontSize': '0px'
+            },
+            editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => (
+                <InputPassword {...editorProps} previousPassword={value} />
+              )
         }, {
             dataField: 'edit', 
             text: 'Edit',

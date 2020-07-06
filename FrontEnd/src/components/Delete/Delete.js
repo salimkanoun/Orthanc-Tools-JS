@@ -7,8 +7,8 @@ import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDispla
 import { removePatientFromDeleteList, removeStudyFromDeleteList, emptyDeleteList } from '../../actions/DeleteList'
 import { removeOrthancContentStudy } from '../../actions/OrthancContent'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
-import Modal from 'react-bootstrap/Modal'
 import apis from '../../services/apis'
+import ModalDelete from '../Main/ModalDelete';
 
 class Delete extends Component {
 
@@ -45,6 +45,27 @@ class Delete extends Component {
         toast.update(this.toast.current, {type: toast.TYPE.INFO, render: 'Delete done', className: 'bg-success', autoClose: 2000})
     }
 
+    startMonitoring(){
+        this.openToast()
+        this.intervalChcker = setInterval(() => this.getInfo(), 2000)
+    }
+
+    stopMonitoring(){
+        if(this.intervalChcker !== undefined) clearInterval(this.intervalChcker)
+        this.successToast()
+        this.props.deleteList.forEach(async (study) => {
+            this.props.removeStudyFromDeleteList(study.ID)
+            this.props.removeOrthancContentStudy(study.ID)
+        });
+    }
+
+    async getInfo(){
+        let progress = await apis.deleteRobot.getDeleteRobot(this.props.username)
+        let nb = 100*progress.progression.Success/progress.items.length
+        this.updateToast(nb)
+        if(progress.status === 'Finished') {this.stopMonitoring()}
+    }
+
     async handleClickDelete(){
         //close Modal
         this.handleConfirm()
@@ -57,19 +78,8 @@ class Delete extends Component {
         
         let answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
         if (answer){
-            this.openToast()
-            let progress
-            do {
-                progress = await apis.deleteRobot.getDeleteRobot(this.props.username)
-                let nb = 100*progress.progression.Success/progress.items.length
-                this.updateToast(nb)
-            } while (progress.status !== "Finished")
-            this.successToast()
+            this.startMonitoring()
         }
-        this.props.deleteList.forEach(async (study) => {
-            this.props.removeStudyFromDeleteList(study.ID)
-            this.props.removeOrthancContentStudy(study.ID)
-        });
 
     }
 
@@ -104,16 +114,7 @@ class Delete extends Component {
                         <button type="button" className="btn btn-danger" onClick={this.handleConfirm} >Delete List</button>
                     </div>
                 </div>
-                <Modal show={this.state.show} onHide={this.handleConfirm}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Confirm Delete</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Are you sure to Delete the list</Modal.Body>
-                    <Modal.Footer>
-                        <input type='button' className='btn btn-secondary' onClick={this.handleConfirm} value="Cancel" />
-                        <input type='button' className='btn btn-danger' onClick={this.handleClickDelete} value="Delete" />
-                    </Modal.Footer>
-                </Modal>
+                <ModalDelete show={this.state.show} onHide={this.handleConfirm} onClick={this.handleClickDelete} />
             </Fragment>
             
         )

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react'
 import PeerListTable from './PeerListTable'
 import PeerForm from './PeerForm'
-import apis from '../../services/apis'
+import apis from '../../../services/apis'
 
 /**
  * Root Panel of Peers options

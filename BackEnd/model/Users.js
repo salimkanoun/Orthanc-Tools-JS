@@ -37,7 +37,7 @@ class Users {
 
   static async createUser (body) {
 
-    if(body.username.indexOf('@') !== -1) throw '@ is forbiden'
+    if(body.username.indexOf('@') !== -1) throw new Error('@ is forbiden') 
 
     const saltRounds = 10
     let id = null

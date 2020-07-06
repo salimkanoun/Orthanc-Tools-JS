@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Link } from 'react-router-dom'
-import apis from '../../services/apis';
+import apis from '../../../services/apis';
 
 export default class RobotStatus extends Component {
 
@@ -123,7 +123,7 @@ export default class RobotStatus extends Component {
 
     render() {
         return (
-            <BootstrapTable keyField="username" striped={true} data={this.state.rows} columns={this.columns} />
+            <BootstrapTable keyField="username" striped={true} data={this.state.rows} columns={this.columns} wrapperClasses='table-responsive' />
         )
     }
 }
