@@ -16,8 +16,7 @@ class AnonymizePanel extends Component {
 
     state = { 
         currentPatient: '', 
-        prefix: '', 
-        progress: {}
+        prefix: ''
     }
 
     constructor(props) {
