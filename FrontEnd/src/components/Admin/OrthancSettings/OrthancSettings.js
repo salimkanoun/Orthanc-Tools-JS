@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from 'react'
-import apis from '../../services/apis';
+import apis from '../../../services/apis';
 import Select from 'react-select'
-import Modal from 'react-bootstrap/Modal'
+
+import ModalRestart from './ModalRestart'
+import ModalShutdown from './ModalShutdown';
 
 export default class OrthancSettings extends Component {
 
@@ -22,10 +24,6 @@ export default class OrthancSettings extends Component {
         this.shutdown = this.shutdown.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.testConnexion = this.testConnexion.bind(this)
-        this.handleShowRestart = this.handleShowRestart.bind(this)
-        this.handleShowShutdown = this.handleShowShutdown.bind(this)
-        this.handleCloseRestart = this.handleCloseRestart.bind(this)
-        this.handleCloseShutdown = this.handleCloseShutdown.bind(this)
         this.changeListener = this.changeListener.bind(this)
     }
 
@@ -85,20 +83,6 @@ export default class OrthancSettings extends Component {
         this.setState({optionSelected: event})
     }
 
-    //PopUp to confirm restart and shutdown action 
-    handleShowRestart(){
-        this.setState({showRestart: true})
-    }
-    handleCloseRestart(){
-        this.setState({showRestart: false})
-    }
-    handleCloseShutdown(){
-        this.setState({showShutdown: false})
-    }
-    handleShowShutdown(){
-        this.setState({showShutdown: true})
-    }
-
     verbosities = [
         { value: 'default', label: 'Default'},
         { value: 'verbose', label: 'Verbose'},
@@ -132,28 +116,10 @@ export default class OrthancSettings extends Component {
                 <div className="form-group text-right">
                     <input type='button' className='btn btn-primary mr-1' onClick={this.submitOrthancSettings} value='Update' />
                     <input type='button' className='btn btn-info mr-1' onClick={this.testConnexion} value='Check Connexion' />
-                    <input type='button' className='btn btn-warning mr-1' onClick={this.handleShowRestart} value='Restart' />
-                    <Modal show={this.state.showRestart} onHide={this.handleCloseRestart}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Confirm restart</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Are you sure to restart Orthanc system ?</Modal.Body>
-                        <Modal.Footer>
-                            <input type='button' className='btn btn-secondary' onClick={this.handleCloseRestart} value="Close" />
-                            <input type='button' className='btn btn-warning' onClick={this.reset} value="Restart" />
-                        </Modal.Footer>
-                    </Modal>
-                    <input type='button' className='btn btn-danger mr-1' onClick={this.handleShowShutdown} value='Shutdown' />
-                    <Modal show={this.state.showShutdown} onHide={this.handleCloseShutdown}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Confirm Shutdown</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Are you sure to shutdown Orthanc system ?</Modal.Body>
-                        <Modal.Footer>
-                            <input type='button' className='btn btn-secondary' onClick={this.handleCloseShutdown} value="Close" />
-                            <input type='button' className='btn btn-danger' onClick={this.shutdown} value="Shutdown" />
-                        </Modal.Footer>
-                    </Modal>
+                    <input type='button' className='btn btn-warning mr-1' onClick={() => this.setState({showRestart: true})} value='Restart' />
+                    <ModalRestart show={this.state.showRestart} onHide={() => this.setState({showRestart: false})} />
+                    <input type='button' className='btn btn-danger mr-1' onClick={() => this.setState({showShutdown: true})} value='Shutdown' />
+                    <ModalShutdown show={this.state.showShutdown} onHide={() => this.setState({showShutdown: false})} />
                 </div>
                 <div className="row">
                     <div className="col-md-auto">
