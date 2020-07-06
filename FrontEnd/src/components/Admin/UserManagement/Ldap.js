@@ -21,7 +21,6 @@ class Ldap extends Component {
 
     async componentWillMount() {
         let value = await this.getModeFromDB()
-        console.log(value)
         this.setState({check: value})
     }
 
