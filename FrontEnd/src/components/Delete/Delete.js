@@ -7,8 +7,8 @@ import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDispla
 import { removePatientFromDeleteList, removeStudyFromDeleteList, emptyDeleteList } from '../../actions/DeleteList'
 import { removeOrthancContentStudy } from '../../actions/OrthancContent'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
-import Modal from 'react-bootstrap/Modal'
 import apis from '../../services/apis'
+import ModalDelete from '../Main/ModalDelete';
 
 class Delete extends Component {
 
@@ -114,16 +114,7 @@ class Delete extends Component {
                         <button type="button" className="btn btn-danger" onClick={this.handleConfirm} >Delete List</button>
                     </div>
                 </div>
-                <Modal show={this.state.show} onHide={this.handleConfirm}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Confirm Delete</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Are you sure to Delete the list</Modal.Body>
-                    <Modal.Footer>
-                        <input type='button' className='btn btn-secondary' onClick={this.handleConfirm} value="Cancel" />
-                        <input type='button' className='btn btn-danger' onClick={this.handleClickDelete} value="Delete" />
-                    </Modal.Footer>
-                </Modal>
+                <ModalDelete show={this.state.show} onHide={this.handleConfirm} onClick={this.handleClickDelete} />
             </Fragment>
             
         )

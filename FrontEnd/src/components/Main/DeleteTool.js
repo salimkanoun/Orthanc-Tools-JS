@@ -9,8 +9,8 @@ import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDispla
 import { removePatientFromDeleteList, removeStudyFromDeleteList, emptyDeleteList } from '../../actions/DeleteList'
 import { removeOrthancContentStudy } from '../../actions/OrthancContent'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
-import Modal from 'react-bootstrap/Modal'
 import apis from '../../services/apis'
+import ModalDelete from './ModalDelete';
 
 //Ce composant sera a connecter au redux pour connaitre la longueur de la liste de delete 
 class DeleteTool extends Component {
@@ -119,16 +119,7 @@ class DeleteTool extends Component {
                         </Popover.Content>
                     </Popover>
                 </Overlay>
-                <Modal show={this.props.confirmDelete} onHide={this.handleConfirm}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Confirm Delete</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>Are you sure to Delete the list</Modal.Body>
-                    <Modal.Footer>
-                        <input type='button' className='btn btn-secondary' onClick={this.handleConfirm} value="Cancel" />
-                        <input type='button' className='btn btn-danger' onClick={this.handleClickDelete} value="Delete" />
-                    </Modal.Footer>
-                </Modal>
+                <ModalDelete show={this.props.confirmDelete} onHide={this.handleConfirm} onClick={this.handleClickDelete} />
             </Fragment>
             
         )
