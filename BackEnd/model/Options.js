@@ -42,6 +42,31 @@ const Options = {
     }
 
     return Options.configSettings
+  },
+
+  getMode: async () => {
+    let mode
+    try {
+      mode = await db.Option.findOne()
+
+    } catch (err) {
+      console.log(err)
+    }
+
+    return mode.ldap
+  },
+
+  changeMode: async (mode) => {
+    
+    try {
+      await db.Option.upsert({
+        id:1,
+        ldap: mode
+      })
+
+    } catch (err) {
+      console.log(err)
+    }
   }
 
 }

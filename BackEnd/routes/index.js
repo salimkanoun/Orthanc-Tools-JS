@@ -5,7 +5,7 @@ require('express-async-errors')
 
 const { authentication, logOut } = require('../controllers/authentication')
 const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob, addAnonJob, getAnonJob, getDeleteJob, addDeleteJob } = require('../controllers/Robot2')
-const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer } = require('../controllers/options')
+const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getMode, changeMode } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
@@ -152,5 +152,9 @@ router.delete('/roles', userAdminMidelware, deleteRole)
 
 //token
 router.get('/token', userAuthMidelware, getRoleFromToken)
+
+//Mode
+router.get('/mode', userAdminMidelware, getMode)
+router.put('/changeMode', userAdminMidelware, changeMode)
 
 module.exports = router
