@@ -11,7 +11,6 @@ import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList,
 import { studyArrayToPatientArray } from '../../tools/processResponse'
 import { toastifyError } from "../../services/toastify"
 
-
 class AnonymizePanel extends Component {
 
     state = { 
@@ -28,7 +27,7 @@ class AnonymizePanel extends Component {
 
     async componentDidMount() {
         let robot = await apis.anon.getAnonJob(this.props.username)
-        if (robot.status !== 'Finished')
+        if (robot.status && robot.status !== 'Finished')
             this.props.setProgress(true)
     }
 
