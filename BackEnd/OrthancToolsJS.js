@@ -8,8 +8,6 @@ var logger = require('morgan')
 var rfs = require('rotating-file-stream')
 var session = require('express-session')
 var open = require('open')
-const http2 = require('http2')
-const fs = require('fs');
 
 var apisRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
@@ -94,22 +92,14 @@ app.use(function (err, req, res, next) {
 })
 
 const port = 4000
-
-const options = {
-  key: fs.readFileSync('./key/localhost-privkey.pem'),
-  cert: fs.readFileSync('./key/localhost-cert.pem'),
-  allowHTTP1 : true
-}
   
-http2
-      .createSecureServer(options, app)
-      .listen(port, (error) => {
+app.listen(port, (error) => {
         if (error) {
           console.error(error)
           return process.exit(1)
         } else {
           console.log('Listening on port: ' + port)
-          if (app.get('env') === 'production') open('http://localhost:4000/%27')
+          if (app.get('env') === 'production') open('http://localhost:4000/')
         }
       })
 

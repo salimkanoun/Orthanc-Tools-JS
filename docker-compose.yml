@@ -6,7 +6,9 @@ services:
     orthanctoolsjs:
         image: salimkanoun/orthanctoolsjs
         container_name: orthanctoolsjs
-        ports: ["80:4000"]
+        ports: 
+            - 80:4000
+            - 443:4000
         restart: unless-stopped
         volumes: ["orthanctoolsjs:/OrthancToolsJs/data:Z"]
         environment:
