@@ -81,15 +81,18 @@ const addAnonJob = async function (req, res){
     anonJob = new JobAnonymize(req.params.username, orthanc)
     robot.addJob(anonJob)
 
-    for(let anonRequest in body){
-        let studiesData = await orthanc.getOrthancDetails('Study', anonRequest.orthancStudyID)
-        console.log(studiesData)
+    for(let anonRequest of body){
+        let studiesData = await orthanc.getOrthancDetails('studies', anonRequest.orthancStudyID)
         let anonItem = new JobItemAnon(anonRequest.orthancStudyID, 
             anonRequest.profile, 
             anonRequest.newPatientName, 
             anonRequest.newPatientID, 
             anonRequest.newStudyDescription, 
-            anonRequest.newAccessionNumber)
+            anonRequest.newAccessionNumber,
+            studiesData.PatientMainDicomTags.PatientName,
+            studiesData.PatientMainDicomTags.PatientID,
+            studiesData.MainDicomTags.StudyDescription,
+            studiesData.MainDicomTags.AccessionNumber)
         anonJob.addItem(anonItem)
 
     }
