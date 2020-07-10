@@ -109,7 +109,7 @@ http2
           return process.exit(1)
         } else {
           console.log('Listening on port: ' + port)
-          if (app.get('env') === 'production') open('http://localhost:4000/%27')
+          //if (app.get('env') === 'production') open('http://localhost:4000/')
         }
       })
 
