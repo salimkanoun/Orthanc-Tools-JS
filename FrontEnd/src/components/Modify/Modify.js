@@ -1,12 +1,10 @@
 import React, { Component, Fragment, createRef } from 'react'
-import Modal from 'react-bootstrap/Modal';
 import apis from '../../services/apis';
-import BootstrapTable from 'react-bootstrap-table-next'
-import cellEditFactory from 'react-bootstrap-table2-editor'
 import { toastifyError } from '../../services/toastify';
 import { toast } from 'react-toastify';
 
 import MonitorJob from '../../tools/MonitorJob'
+import ModalModify from './ModalModify';
 
 
 class Modify extends Component {
@@ -23,6 +21,7 @@ class Modify extends Component {
         super(props)
         this.openModify = this.openModify.bind(this)
         this.onHide = this.onHide.bind(this)
+        this.afterSaveCell = this.afterSaveCell.bind(this)
     }
 
     updateToast(id, progress){
@@ -123,97 +122,34 @@ class Modify extends Component {
         })
     }
 
-    handleClick(e){
-        e.stopPropagation()
-    }
-
-    columns = [
-        {
-            dataField: 'TagName', 
-            text: 'Tag name', 
-            sort: true, 
-        },  {
-            dataField: 'Value', 
-            text: 'Value', 
-            sort: true, 
-        }
-    ]
-
-    selectRow = {
-        mode: 'checkbox', 
-        style: {background: 'red'}, 
-        nonSelectable: ['PatientID', 'SeriesTime', 'SeriesDate', 'Modality', 'StudyDate', 'StudyTime'], 
-        selectionRenderer: ({ mode, checked, disabled }) => {
-            if (disabled) return 'Mendatory'
-            else return <input type = 'checkbox'/>
-        },
-        selectColumnPosition: 'right', 
-        selectionHeaderRenderer: () => {return 'Delete'}
+    afterSaveCell(oldValue, newValue, row, column){
+        this.setState(prevState => ({
+            modification: {
+                ...prevState.modification, 
+                [row.TagName]: row.Value
+            }
+        }))
     }
 
     render() {
         return (
             <Fragment>
                 <button className='dropdown-item bg-warning' type='button' onClick={ this.openModify } >Modify</button>
-
-                <Modal show={this.state.show} onHide={this.onHide} onClick={this.handleClick} size='xl'>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Modify {this.props.level}</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <BootstrapTable 
-                            ref={n => this.node = n}
-                            keyField='TagName' 
-                            data={this.state.data} 
-                            striped={true} 
-                            columns={this.columns} 
-                            wrapperClasses="table-responsive"
-                            cellEdit={ cellEditFactory({ 
-                                blurToSave: true,
-                                autoSelectText: true,
-                                mode: 'click',
-                                nonEditableRows: () =>  this.props.level === 'studies' ? ['PatientID'] : [] ,
-                                afterSaveCell: (oldValue, newValue, row, column) => {
-                                    this.setState(prevState => ({
-                                        modification: {
-                                            ...prevState.modification, 
-                                            [row.TagName]: row.Value
-                                        }
-                                    }))
-                                }
-                            }) }
-                            selectRow={this.selectRow}
-                        />
-                        <div className='row'>
-                            <div className='col-auto'>
-                                <label htmlFor='removePrivateTags'>Removing private tags</label>
-                            </div>
-                            <div className='col-sm'>
-                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.removePrivateTags} onClick={() => this.setState(prevState => ({removePrivateTags: !prevState.removePrivateTags}))} />
-                            </div>
-                        </div>
-                        <div className='row'>
-                            <div className='col-auto'>
-                                <label htmlFor='keepSource'>Keep Source</label>
-                            </div>
-                            <div className='col-sm'>
-                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.keepSource} onClick={() => this.setState(prevState => ({keepSource: !prevState.keepSource}))} />
-                            </div>
-                        </div>
-                        <div className='row'>
-                            <div className='col-auto'>
-                                <label htmlFor='rememberSettings'>Remember Settings</label>
-                            </div>
-                            <div className='col-sm'>
-                                <input className='form-check-input' type='checkbox' defaultChecked={this.state.remember} onClick={() => this.setState(prevState => ({remember: !prevState.remember}))} />
-                            </div>
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <button type='button' className='btn btn-info' onClick={this.onHide}>Cancel</button>
-                        <button type='button' className='btn btn-warning' onClick={() => this.modify()}>Modify</button>
-                    </Modal.Footer>
-                </Modal>
+                <ModalModify 
+                    reference={n => this.node = n}
+                    show={this.state.show} 
+                    onHide={() => this.setState({show: false})} 
+                    data={this.state.data} 
+                    level={this.props.level} 
+                    afterSaveCell={this.afterSaveCell} 
+                    defaultCheckedPrivateTags={this.state.removePrivateTags}
+                    onClickPrivateTags={() => this.setState(prevState => ({removePrivateTags: !prevState.removePrivateTags}))}
+                    defaultCheckedKeepSource={this.state.keepSource}
+                    onClickKeepSource={() => this.setState(prevState => ({keepSource: !prevState.keepSource}))}
+                    defaultCheckedRemember={this.state.remember} 
+                    onClickRemember={() => this.setState(prevState => ({remember: !prevState.remember}))}
+                    modify={() => this.modify()}
+                />
             </Fragment>
         );
     }

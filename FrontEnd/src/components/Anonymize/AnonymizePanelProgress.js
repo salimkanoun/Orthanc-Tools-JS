@@ -13,7 +13,8 @@ class AnonymizePanelProgress extends Component {
             show: false, 
             success: 0, 
             failures: 0
-         }
+    }
+
     constructor(props) {
         super(props);
         this.getInfo = this.getInfo.bind(this)
@@ -64,10 +65,8 @@ class AnonymizePanelProgress extends Component {
             success: success, 
             failures: failures
         })
-        console.log(robot.status)
         if (robot.status === 'Finished') {this.stopMonitoring()}
     }
-    
 
     getStudiesAnonymized(){
         let studies = []

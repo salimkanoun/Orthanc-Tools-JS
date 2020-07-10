@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
-import apis from '../../services/apis';
+import apis from '../../../services/apis';
 
 /**
  * Table with known AETs details with Echo and Remove button

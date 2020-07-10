@@ -17,6 +17,8 @@ import {addStudiesToDeleteList} from '../../actions/DeleteList'
 import {addStudiesToAnonList} from '../../actions/AnonList'
 import { Prompt } from 'react-router-dom'
 
+import updateOptions from '../../authorizedOption'
+
 class Import extends Component {
 
     state = {
@@ -43,7 +45,7 @@ class Import extends Component {
             allowMultipleUploads: true,
         })
 
-        this.uppy.use(XHRUpload, {
+        let XHRUploadOption =  {
             endpoint: '/api/instances',
             formData : false,
             limit : 1,
@@ -51,7 +53,9 @@ class Import extends Component {
                 'Content-Type' : 'application/dicom',
                 'Accept': 'application/json'
             }
-        })
+        }
+
+        this.uppy.use(XHRUpload, updateOptions(XHRUploadOption))
 
         this.uppy.on('upload-success', async (file, response) => {
             if(response.body.ID !== undefined){

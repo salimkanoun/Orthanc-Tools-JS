@@ -1,6 +1,5 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import Modal from "react-bootstrap/Modal"
 
 import apis from '../../services/apis'
 import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy'
@@ -9,6 +8,7 @@ import DownloadDropdown from "./DownloadDropdown"
 import SendAetDropdown from "./SendAetDropdown"
 import SendPeerDropdown from "./SendPeerDropdown"
 import TranscodeSelector from './TranscodeSelector'
+import ModalWarning from './ModalWarning'
 
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
@@ -30,7 +30,6 @@ class ExportPanel extends Component {
         this.removeSeries = this.removeSeries.bind(this)
         this.removeStudy = this.removeStudy.bind(this)
         this.confirm = this.confirm.bind(this)
-        this.setModal = this.setModal.bind(this)
         this.setButton = this.setButton.bind(this)
     }
 
@@ -119,12 +118,6 @@ class ExportPanel extends Component {
             return answer
         }
     
-        setModal(){
-            this.setState({
-                show: !this.state.show
-            })
-        }
-    
         setButton(button){
             this.setState({
                 button: button
@@ -169,7 +162,7 @@ class ExportPanel extends Component {
                         <SendAetDropdown aets={this.state.aets} exportIds={idArray} />
                     </div>
                     <div className='col-sm'>
-                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm} setModal={this.setModal} setButton={this.setButton} />
+                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm} setModal={() => this.setState({show: true})} setButton={this.setButton} />
                     </div>
                     <div className='col-sm'>
                         <button type='button' className="btn btn-info" onClick={this.handleClickFTP} disabled>Send To FTP</button>
@@ -178,19 +171,7 @@ class ExportPanel extends Component {
                         <button type='button' className="btn btn-info" onClick={this.handleClickWebDav} disabled>Send To WebDav</button>
                     </div>
                 </div>
-                <Modal show={this.state.show} onHide={this.setModal} >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Confirm export</Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body>
-                        Some studies are not anonymized !
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <button type='button' className='btn btn-info' onClick={this.setModal}>Cancel</button>
-                        {this.state.button}
-                    </Modal.Footer>
-                </Modal>
+                <ModalWarning show={this.state.show} onHide={() => this.setState({show: false})} button={this.state.button} />
             </div>
         )
     }

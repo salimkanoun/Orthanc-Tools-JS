@@ -2,9 +2,9 @@ import React, { Component, Fragment } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Dropdown from "react-bootstrap/Dropdown";
-import Modal from "react-bootstrap/Modal";
 
-import apis from "../../services/apis";
+import apis from "../../../services/apis";
+import ModalDetails from './ModalDetails'
 
 class JobsRootPanel extends Component {
 
@@ -65,39 +65,6 @@ class JobsRootPanel extends Component {
         )
     }
 
-    columnDetails = [
-        {
-            dataField: 'ID', 
-            hidden: true
-        }, {
-            dataField: 'ErrorCode', 
-            text: 'Error Code'
-        }, 
-        {
-            dataField: 'ErrorDescription', 
-            text: 'Error Description'
-        }, {
-            dataField: 'Priority', 
-            text: 'Priority'
-        }, {
-            dataField: 'Type', 
-            text: 'Type'
-        }, {
-            dataField: 'EffectiveRuntime', 
-            text: 'Effective Runtime'
-        }, {
-            dataField: 'Content', 
-            text: 'Details', 
-            formatter: (cell, row, index) => {
-                return (
-                    <pre>
-                        {JSON.stringify(row.Content , null, 2)}
-                    </pre>
-                )
-            }
-        }
-    ]
-
     column = [
         {
             dataField: 'ID', 
@@ -130,27 +97,7 @@ class JobsRootPanel extends Component {
         return (
             <Fragment>
                 <h2 className="card-title">Jobs</h2>
-                <Modal show={this.state.showDetail} onHide={() => this.setState({showDetail: false})} size='xl'>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Job Details</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <BootstrapTable 
-                            keyField='ID' 
-                            data={[this.state.rows[this.state.currentRowIndex]]} 
-                            columns={this.columnDetails} 
-                            striped={true} 
-                            wrapperClasses="table-responsive" 
-                        />
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <button type='button' 
-                        className='btn btn-primary' 
-                        onClick={()=>this.setState({showDetail: false})}>
-                            Close
-                        </button>
-                    </Modal.Footer>
-                </Modal>
+                <ModalDetails show={this.state.showDetail} onHide={() => this.setState({showDetail: false})} data={[this.state.rows[this.state.currentRowIndex]]} />
                 <BootstrapTable 
                     keyField='ID' 
                     striped={true} 
