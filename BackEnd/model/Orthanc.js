@@ -382,6 +382,18 @@ class Orthanc {
     const answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID + '/anonymize', 'POST', postData )
     return answer
   }
+
+  async getChanges(last) {
+    outPutStream = "/changes?since=" + last
+    let changes = await ReverseProxy.getAnswer(outputStream, "GET", undefined)
+    return changes
+  }
+
+  async getChangesLast() {
+    outPutStream = "/changes?last"
+    let changes = await ReverseProxy.getAnswer(outputStream, "GET", undefined)
+    return changes
+  }
 }
 
 module.exports = Orthanc

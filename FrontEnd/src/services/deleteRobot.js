@@ -1,7 +1,6 @@
 import { toastifyError } from './toastify'
 import updateOptions from '../authorizedOption'
 
-
 const deleteRobot = {
 
     createDeleteRobot(deleteArray, username){

@@ -24,10 +24,42 @@ class Users {
     }
   }
 
-  async checkPassword (plainPassword) {
+  async checkLDAPPassword (plainPassword) {
+    let username = this.username;
+    if(this.username.indexOf('@') === 0) {
+      username = username.substr(1)
+    }
+
+    //ToDo
+  }
+
+  async checkLocalPassword (plainPassword) {
     const user = await this._getUserEntity()
     const check = await bcrypt.compare(plainPassword, user.password).catch(() => { return false })
     return check
+  }
+
+  async checkPassword (plainPassword) {
+   
+    const mode = await db.Option.findOne({ 
+      attributes: ['ldap'],
+      where: {id: '1'}
+    });
+
+    try {
+        if(mode.ldap && this.username.indexOf('@') !== -1) {
+          //LDAP user
+          return this.checkLDAPPassword(plainPassword);
+
+        } else {
+          //Local user
+          return this.checkLocalPassword(plainPassword);
+          
+        }
+
+    } catch(err) {
+      console.log(err)
+    }
   }
 
   async isAdmin () {
@@ -126,11 +158,10 @@ class Users {
     } finally {
       return users
     }
-    
+  
   }
 
   async getInfoUser(){
-    
     let user;
     
     try {
@@ -176,8 +207,13 @@ class Users {
       }
   }
 
-  async getLDAPUserRight () {
-    //todo
+  async getLDAPUserRight () { 
+    let username = this.username;
+    if(this.username.indexOf('@') === 0) {
+      username = username.substr(1)
+    }
+
+    //ToDo
   }  
 
   async getUserRight(){

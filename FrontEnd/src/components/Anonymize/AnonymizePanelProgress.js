@@ -1,28 +1,34 @@
 import React, { Component, Fragment } from 'react'
-import Modal from 'react-bootstrap/Modal';
 import { connect } from 'react-redux';
-import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy';
+
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
-import apis from '../../services/apis';
+
+import AnonymizeRobotDetails from './AnonymizeRobotDetails'
+
 import { addToAnonymizedList, emptyAnonymizeList } from '../../actions/AnonList'
+
+import apis from '../../services/apis';
 
 
 class AnonymizePanelProgress extends Component {
 
     state = { 
-            show: false, 
+            showRobotDetails: false, 
             success: 0, 
-            failures: 0
+            failures: 0,
+            numberOfItem : 0,
+            robotItems : []
     }
 
     constructor(props) {
         super(props);
         this.getInfo = this.getInfo.bind(this)
+        this.toogleModal = this.toogleModal.bind(this)
     }
 
-    setModal(){
+    toogleModal(){
         this.setState({
-            show: !this.state.show
+            showRobotDetails: !this.state.showRobotDetails
         })
     }
     
@@ -44,77 +50,67 @@ class AnonymizePanelProgress extends Component {
         let success = 0
         let failures = 0
         let robot = await apis.anon.getAnonJob(this.props.username)
+        console.log(robot.items)
+        this.setState({
+            robotItems : robot.items
+        })
+
         robot.items.forEach(async item => {
+
+            
             switch (item.Status) {
                 case 'Success':
                     success = success + 1
                     let studyDetail = await apis.content.getStudiesDetails(item.anonymizedOrthancStudyID)
                     if (studyDetail !== undefined)
                         this.props.addToAnonymizedList([studyDetail])
-                    break;
+                    break
                 case 'Failures':
                     failures = failures + 1
-                    break;
+                    break
                 default:
-                    break;
+                    break
             }
         })
-        success = 100*success/robot.items.length
-        failures = 100*failures/robot.items.length
+
         this.setState({
             success: success, 
-            failures: failures
+            failures: failures,
+            numberOfItem : robot.items.length
         })
         if (robot.status === 'Finished') {this.stopMonitoring()}
     }
 
-    getStudiesAnonymized(){
-        let studies = []
-        this.props.anonymizedList.forEach(study => {
-            studies.push({
-                StudyOrthancID: study.ID, 
-                ...study.MainDicomTags, 
-                ...study.PatientMainDicomTags,
-                AnonymizedFrom: study.AnonymizedFrom,
-                newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '', 
-                newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
-            })
-        })
-        return studies
-    }
-
     render() {
-        let total = this.state.success + this.state.failures
+        //Calculate progression to display
+        let successPercent
+        let failuresPercent
+        let itemProgression
+        if(this.state.numberOfItem !== 0){
+            successPercent = 100*this.state.success/this.state.numberOfItem
+            failuresPercent = 100*this.state.failures/this.state.numberOfItem
+            itemProgression = this.state.success + this.state.failures
+
+        }else {
+            successPercent = 0
+            failuresPercent = 0
+            itemProgression = 0
+        }
+
+
         return (
             <Fragment>
-                <Modal show={this.state.show} scrollable={true} onHide={()=>this.setModal()}>
-                    <Modal.Header closeButton >
-                        <Modal.Title>Progress</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                    <TableStudy
-                                data={this.getStudiesAnonymized()}
-                                hiddenActionBouton={true} 
-                                onDelete={this.removeStudyAnonymized}
-                                hiddenName={false}
-                                hiddenID={false}
-                                pagination={true}
-                                />
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <button type='button' className='btn btn-primary text-center' onClick={()=>this.setModal()}>Close</button>
-                    </Modal.Footer>
-                </Modal>
+                <AnonymizeRobotDetails show = {this.state.showRobotDetails} onHide = {this.toogleModal} robotItems={this.state.robotItems}/>
                 <div className="col-md-2 text-left">
                     <CircularProgressbarWithChildren
-                        value={this.state.success}
-                        text={'Progress : ' + total.toFixed(2) + ' %'}
+                        value={successPercent}
+                        text={'Studies Done : ' + itemProgression + '/'+ this.state.numberOfItem}
                         styles={buildStyles({
                             textSize: '8px'
                         })}>
                     
                         <CircularProgressbar
-                            value={this.state.failures}
+                            value={failuresPercent}
                             styles={buildStyles({
                             pathColor: "#f00",
                             trailColor: "transparent"
@@ -123,12 +119,12 @@ class AnonymizePanelProgress extends Component {
                     </CircularProgressbarWithChildren>
                 </div>
 
-                <button type='button' className='btn btn-info float-right mr-2' onClick={()=>this.setModal()} >Show Details</button>
+                <button type='button' className='btn btn-info float-right mr-2' onClick={()=>this.toogleModal()} >Show Details</button>
                 <button type='button' className='btn btn-danger float-right mr-2' onClick={()=>alert('not implemented yet')} disabled>Delete</button>
                 <button type='button' className='btn btn-primary float-right mr-2' onClick={()=>alert('not implemented yet')} disabled>Resume</button>
                 <button type='button' className='btn btn-warning float-right mr-2' onClick={()=>alert('not implemented yet')} disabled>Pause</button>
             </Fragment>
-        );
+        )
     }
 }
 
