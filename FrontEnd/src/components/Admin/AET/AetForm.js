@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import Select from 'react-select'
-import apis from '../../services/aets'
+import apis from '../../../services/aets'
 
 /**
  * Form to declare or modify an AET

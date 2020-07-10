@@ -31,11 +31,9 @@ function decode (req, res) {
 }
 
 const userAuthMidelware = function (req, res, next) {
-  
-  let decoded;
 
   try {
-    decoded = decode(req, res);
+    decode(req, res);
   }
   catch(err) { return }
 

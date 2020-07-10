@@ -85,7 +85,7 @@ class RoleForm extends Component {
                     </div>
                     <div className="row mb-2">
                         <div className='col-5'>
-                            <h5>Export Local</h5>
+                            <h5>Local Export</h5>
                         </div>
                         <div className='col-auto'>
                             <Toggle checked={this.state.exportLocal} onChange={()=>this.setState(prevState => ({exportLocal: !prevState.exportLocal}))}/>  
@@ -93,7 +93,7 @@ class RoleForm extends Component {
                     </div>
                     <div className="row mb-2">
                         <div className='col-5'>
-                            <h5>Export Extern</h5>
+                            <h5>Remote Export</h5>
                         </div>
                         <div className='col-auto'>
                             <Toggle checked={this.state.exportExtern} onChange={()=>this.setState(prevState => ({exportExtern: !prevState.exportExtern}))}/>  

@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 
 import Users from './Users'
 import Roles from './Roles'
+import Ldap from './Ldap'
+
 
 class UserManagement extends Component {
     
@@ -23,6 +25,9 @@ class UserManagement extends Component {
             case 'Roles':
                 component = <Roles />
                 break
+            case 'Ldap':
+                component = <Ldap />
+                break    
             default: 
                 break
         }
@@ -41,11 +46,14 @@ class UserManagement extends Component {
             <div>
                 <div id='navBar' className='mb-5'>
                     <ul className='nav nav-pills nav-fill'>
-                    <li className='nav-item text-black'>
-                        <button className={this.state.currentComponent === 'Users' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => this.switchTab('Users')}>Users</button>
-                    </li>
                     <li className='nav-item'>
                         <button className={this.state.currentComponent === 'Roles' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => this.switchTab('Roles')}>Roles</button>
+                    </li>    
+                    <li className='nav-item'>
+                        <button className={this.state.currentComponent === 'Users' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => this.switchTab('Users')}>Local Users</button>
+                    </li>
+                    <li className='nav-item'>
+                        <button className={this.state.currentComponent === 'Ldap' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => this.switchTab('Ldap')}>Distant Users</button>
                     </li>
                     </ul>
                 </div>

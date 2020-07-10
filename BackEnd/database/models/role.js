@@ -1,7 +1,5 @@
 'use strict';
 
-const Users = require("../../model/Users");
-
 module.exports = (sequelize, DataTypes) => {
   const Role = sequelize.define('Role', {
     import: DataTypes.BOOLEAN,
