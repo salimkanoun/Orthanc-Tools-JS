@@ -76,11 +76,14 @@ const addAnonJob = async function (req, res){
         res.status(401).send("Anon Robot is already processing, wait finish before starting a new one")
         return
     }
-    
-    anonJob = new JobAnonymize(req.params.username, new Orthanc())
+    let orthanc = new Orthanc()
+
+    anonJob = new JobAnonymize(req.params.username, orthanc)
     robot.addJob(anonJob)
 
-    body.forEach( (anonRequest) => {
+    for(let anonRequest in body){
+        let studiesData = await orthanc.getOrthancDetails('Study', anonRequest.orthancStudyID)
+        console.log(studiesData)
         let anonItem = new JobItemAnon(anonRequest.orthancStudyID, 
             anonRequest.profile, 
             anonRequest.newPatientName, 
@@ -88,6 +91,11 @@ const addAnonJob = async function (req, res){
             anonRequest.newStudyDescription, 
             anonRequest.newAccessionNumber)
         anonJob.addItem(anonItem)
+
+    }
+
+    body.forEach( (anonRequest) => {
+        
     })
     console.log(anonJob)
     robot.getJob(req.params.username, Job.TYPE_ANONYMIZE).execute()
