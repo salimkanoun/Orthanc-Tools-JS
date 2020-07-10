@@ -8,6 +8,8 @@ var logger = require('morgan')
 var rfs = require('rotating-file-stream')
 var session = require('express-session')
 var open = require('open')
+const http2 = require('http2')
+const fs = require('fs');
 
 var apisRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
@@ -60,7 +62,7 @@ logger.token('post', function (req, res) {
   return JSON.stringify(req.body)
 })
 
-app.use(unless('/', morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ":post";', { stream: accessLogStream })))
+app.use(unless('/', morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTPS/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ":post";', { stream: accessLogStream })))
 
 // Serve compiled React front end
 app.get('/', function (req, res) {
@@ -91,10 +93,24 @@ app.use(function (err, req, res, next) {
   res.end()
 })
 
-app.listen(4000, function () {
-  console.log('Example app listening on port 4000!')
-  console.log(app.get('env'))
-  if (app.get('env') === 'production') open('http://localhost:4000')
-})
+const port = 4000
+
+const options = {
+  key: fs.readFileSync('./key/localhost-privkey.pem'),
+  cert: fs.readFileSync('./key/localhost-cert.pem'),
+  allowHTTP1 : true
+}
+  
+http2
+      .createSecureServer(options, app)
+      .listen(port, (error) => {
+        if (error) {
+          console.error(error)
+          return process.exit(1)
+        } else {
+          console.log('Listening on port: ' + port)
+          if (app.get('env') === 'production') open('http://localhost:4000/%27')
+        }
+      })
 
 module.exports = app

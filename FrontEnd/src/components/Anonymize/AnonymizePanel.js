@@ -11,7 +11,6 @@ import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList,
 import { studyArrayToPatientArray } from '../../tools/processResponse'
 import { toastifyError } from "../../services/toastify"
 
-
 class AnonymizePanel extends Component {
 
     state = { 

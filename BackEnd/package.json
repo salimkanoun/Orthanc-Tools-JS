@@ -45,6 +45,7 @@
     "rotating-file-stream": "^2.1.1",
     "sequelize": "^5.22.3",
     "sequelize-cli": "^5.5.1",
+    "spdy": "^4.0.2",
     "sqlite3": "^4.2.0"
   },
   "engines": {
