@@ -10,6 +10,8 @@ const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
 
+const { test,test2 } = require('../controllers/monitoring')
+
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
@@ -157,5 +159,8 @@ router.get('/token', userAuthMidelware, getRoleFromToken)
 //Mode
 router.get('/mode', userAdminMidelware, getMode)
 router.put('/changeMode', userAdminMidelware, changeMode)
+
+//Monitoring
+router.head('/monitoring', test2)
 
 module.exports = router

@@ -1,33 +1,47 @@
-const Orthanc = require('./Orthanc')
+const Orthanc = require('../Orthanc')
 
 class Orthanc_Monitoring {
     
     constructor () {
+        this.orthanc = new Orthanc()
+
         this.done = false
         this.last = 0
 
-        //newStableStudyID = [];
-        //newStablePatientID = [];
-        //newStableSeriesID = [];
-        //newPatientID = [];
-        //newStudyID = [];
-        //newSerieID = [];
+        //Méthode 1 
+        //Arrays of events
+        this.newStableStudyID = [];
+        this.newStablePatientID = [];
+        this.newStableSeriesID = [];
+        this.newPatientID = [];
+        this.newStudyID = [];
+        this.newSerieID = [];
+
+        //Méthode 2 
+        //CallBack
+        this.callBackArray = []
+
+    }
+
+    //Métode 2
+    register(eventType, func) {
+        this.callBackArray[eventType].push(func)
     }
 
     makeMonitor() {
         do {
             this._parseOutput(this.last);
         }
-        while(!done);
+        while(!this.done);
         
     }
 
-    getChangeLastLine() {
-		changes = Orthanc.getChangesLast();
-		last = parseInt(changes.get("Last"));
-		console.log(last);
+    async getChangeLastLine() {
+        let changes = await this.orthanc.getChangesLast();
+        this.last = parseInt(changes.Last);
+		console.log(this.last);
 		
-		return last;
+		return this.last;
     }
     
     setChangeLastLine(last) {
@@ -35,46 +49,68 @@ class Orthanc_Monitoring {
     }
     
     autoSetChangeLastLine() {
-        last = this.getChangeLastLine();
-		this.last=last;
+        this.last = this.getChangeLastLine();
     }
 
     async _parseOutput(last) {
-        let changes = await Orthanc.getChanges(last)
+        
+        let changes
+        try {
+            changes = await this.orthanc.getChanges(last)
+        } catch (err) {
+            console.log(err)
+        }
         console.log(changes)
 
-        let changesArray=changes.get("Changes");
+        let changesArray=changes.Changes;
 
-        changesArray.forEach (function(changeEvent) {
-            ID = changeEvent.get("ID").getAsString();
+        changesArray.forEach(function(changeEvent) {
+            ID = changeEvent.ID;
             
             if (changeEvent.get("ChangeType") === "NewPatient") {
-				//newPatientID.push(ID);
+                //Méthode 1 
+                this.newPatientID.push(ID);
+                //Méthode 2
+                this.callBackArray[NEW_PATIENT].forEach(function(func) {
+                    this.callBackArray[NEW_PATIENT].func(ID)
+                })
 			}
 			 
 			else if (changeEvent.get("ChangeType") === "NewStudy") {
-				//newStudyID.push(ID);
-
+                //Méthode 1 
+                this.newStudyID.push(ID);
+                //Méthode 2
 			}
 			
 			else if (changeEvent.get("ChangeType") === "NewSeries") {
-				//newSerieID.push(ID);
+                //Méthode 1 
+                this.newSerieID.push(ID);
+                //Méthode 2 
 			}
 			
 			else if (changeEvent.get("ChangeType") === "StablePatient") {
-				//newStablePatientID.push(ID);
+                //Méthode 1 
+                this.newStablePatientID.push(ID);
+                //Méthode 2 
 			}
 			
 			else if (changeEvent.get("ChangeType") === "StableStudy") {
-				//newStableStudyID.push(ID);
+                //Méthode 1 
+                this.newStableStudyID.push(ID);
+                //Méthode 2 
 			}
 
 			else if (changeEvent.get("ChangeType") === "StableSeries") {
-				//newStableSeriesID.push(ID);
+                //Méthode 1 
+                this.newStableSeriesID.push(ID);
+                //Méthode 2
 			}
-        })   
-        last = parseInt(changes.get("Last"));
-        done = parseBoolean(changes.get("Done")); 
+        }) 
+        
+        this.last = parseInt(changes.Last);
+        this.done = changes.Done; 
     }
         
 }
+
+module.exports = Orthanc_Monitoring

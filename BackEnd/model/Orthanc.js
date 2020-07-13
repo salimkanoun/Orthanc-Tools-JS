@@ -383,15 +383,19 @@ class Orthanc {
     return answer
   }
 
-  async getChanges(last) {
-    outPutStream = "/changes?since=" + last
-    let changes = await ReverseProxy.getAnswer(outputStream, "GET", undefined)
+   async getChanges (last) {
+    //let outPutStream = this.getOrthancAetName() + "/changes?since=" + last
+    let outPutStream = "/changes?since=" + last
+    let changes = await ReverseProxy.getAnswer(outPutStream, "GET", undefined)
+    console.log(changes)
+    console.log(outPutStream)
     return changes
   }
 
   async getChangesLast() {
-    outPutStream = "/changes?last"
-    let changes = await ReverseProxy.getAnswer(outputStream, "GET", undefined)
+    //let outPutStream = this.getOrthancAetName() + "/changes?last"
+    let outPutStream = "/changes?last"
+    let changes = await ReverseProxy.getAnswer(outPutStream, "GET", undefined)
     return changes
   }
 }
