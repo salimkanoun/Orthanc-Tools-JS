@@ -1,17 +1,25 @@
 import React, { Component } from 'react'
+import { connect } from "react-redux"
+
 import BootstrapTable from 'react-bootstrap-table-next'
 import filterFactory, { textFilter, dateFilter, selectFilter } from 'react-bootstrap-table2-filter'
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import OhifLink from '../../Ohif/OhifLink';
-import apis from '../../../services/apis';
+
+import AnonExportDeleteSendButton from '../../Import/AnonExportDeleteSendButton'
+import OhifLink from '../../Ohif/OhifLink'
+import apis from '../../../services/apis'
+
+import {addStudiesToExportList} from '../../../actions/ExportList'
+import {addStudiesToDeleteList} from '../../../actions/DeleteList'
+import {addStudiesToAnonList} from '../../../actions/AnonList'
 
 /**
  * View page of a sigle Retrieve Robot content
  * With progress monitoring and delete item action
  */
-export default class RobotView extends Component {
+class RobotView extends Component {
 
     state = {
         rows : [],
@@ -104,7 +112,46 @@ export default class RobotView extends Component {
                 <OhifLink StudyInstanceUID = {row.StudyInstanceUID} />
             )
         }
-    }];
+    }, {
+        dataField : 'RetrievedOrthancId',
+        hidden : true
+    }]
+
+
+
+    selectRow = {
+        mode: 'checkbox',
+        onSelect: (row, isSelect, rowIndex, e) => {
+            if (row.Status !== 'Retrieved') {
+              return false;
+            }
+          }
+    }
+
+    sendToTools(){
+        //SK ICI A FAIRE
+        //get selected row keys
+        let selectedKeyRow = this.node.selectionContext.selected
+        //get array of selected rows
+        let seletectedRows = this.state.rows.filter(row =>{
+            if( selectedKeyRow.includes(row.key) ) return true
+            else return false
+        })
+        //Loop each item to retrieve study level
+        for(row of seletectedRows){
+            if(row.Level === 'study') {
+
+            }else{
+
+            }
+        }
+        //send to reducer
+
+        //this.props.addStudiesToExportList()
+        //this.props.addStudiesToDeleteList()
+        //this.props.addStudiesToAnonList()
+
+    }
 
     startProgressMonitoring(){
         this.intervalChcker = setInterval(this.refreshHandler, 2000)
@@ -188,8 +235,18 @@ export default class RobotView extends Component {
                         </CircularProgressbarWithChildren>
                     </div>
                 </div>
-                <BootstrapTable wrapperClasses="table-responsive" keyField="key" striped={true} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
+                <BootstrapTable wrapperClasses="table-responsive" keyField="key" striped={true} rowClasses = {this.rowClasses} selectRow = {this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
+                <AnonExportDeleteSendButton ref={n => this.node = n} onAnonClick = {'r'} onExportClick={'r'} onDeleteClick={'r'} />
             </div>
         )
     }
 }
+
+const mapDispatchToProps = {
+    addStudiesToExportList,
+    addStudiesToDeleteList,
+    addStudiesToAnonList
+
+}
+
+export default connect(null, mapDispatchToProps)(RobotView)

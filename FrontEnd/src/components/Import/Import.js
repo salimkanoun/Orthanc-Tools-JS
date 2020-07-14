@@ -18,6 +18,7 @@ import {addStudiesToAnonList} from '../../actions/AnonList'
 import { Prompt } from 'react-router-dom'
 
 import updateOptions from '../../authorizedOption'
+import AnonExportDeleteSendButton from './AnonExportDeleteSendButton'
 
 class Import extends Component {
 
@@ -252,17 +253,7 @@ class Import extends Component {
                         patients = {this.buildImportTree()}
                     />
                 </div>
-                <div className="row text-center mt-3">
-                    <div className="col">
-                        <input type="button" className="btn btn-info" value="To Anonymize" onClick={this.sendImportedToAnon} />
-                    </div>
-                    <div className="col">
-                        <input type="button" className="btn btn-primary" value="To Export" onClick ={this.sendImportedToExport}/>
-                    </div>
-                    <div className="col">
-                        <input type="button" className="btn btn-warning" value="To Delete" onClick ={this.sendImportedToDelete} />
-                    </div>
-                </div>
+                <AnonExportDeleteSendButton onAnonClick = {this.sendImportedToAnon} onExportClick={this.sendImportedToExport} onDeleteClick={this.sendImportedToDelete} />
                 <Prompt when={this.state.inProgress} message='Import in progress. Quit this page will stop the import'/>
             </div>
 
