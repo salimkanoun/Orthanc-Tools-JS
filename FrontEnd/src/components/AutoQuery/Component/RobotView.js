@@ -32,6 +32,9 @@ class RobotView extends Component {
         this.refreshHandler=this.refreshHandler.bind(this)
         this.startProgressMonitoring = this.startProgressMonitoring.bind(this)
         this.stopProgressMonitoring = this.stopProgressMonitoring.bind(this)
+        this.sendToAnon = this.sendToAnon.bind(this)
+        this.sendToExport = this.sendToExport.bind(this)
+        this.sendToDelete = this.sendToDelete.bind(this)
         
     }
 
@@ -128,29 +131,47 @@ class RobotView extends Component {
           }
     }
 
-    sendToTools(){
-        //SK ICI A FAIRE
+    async getSelectedItemsStudiesDetails(){
+
         //get selected row keys
+        console.log(this.node)
         let selectedKeyRow = this.node.selectionContext.selected
         //get array of selected rows
         let seletectedRows = this.state.rows.filter(row =>{
             if( selectedKeyRow.includes(row.key) ) return true
             else return false
         })
+
+        let studyDataRetrieved = []
         //Loop each item to retrieve study level
-        for(row of seletectedRows){
+        for(let row of seletectedRows){
+            let studyDetails
             if(row.Level === 'study') {
-
-            }else{
-
+                studyDetails = await apis.content.getStudiesDetails(row.RetrievedOrthancId)
+            } else {
+                let seriesData = await apis.content.getSeriesDetailsByID(row.RetrievedOrthancId)
+                studyDetails = await apis.content.getStudiesDetails(seriesData.ParentStudy)
             }
+            studyDataRetrieved.push(studyDetails)
         }
-        //send to reducer
 
-        //this.props.addStudiesToExportList()
-        //this.props.addStudiesToDeleteList()
-        //this.props.addStudiesToAnonList()
+        return studyDataRetrieved
 
+    }
+
+    async sendToAnon(){
+        let studyArray  = await this.getSelectedItemsStudiesDetails()
+        this.props.addStudiesToAnonList(studyArray)
+    }
+
+    async sendToExport(){
+        let studyArray  = await this.getSelectedItemsStudiesDetails()
+        this.props.addStudiesToExportList(studyArray)
+    }
+
+    async sendToDelete(){
+        let studyArray  = await this.getSelectedItemsStudiesDetails()
+        this.props.addStudiesToDeleteList(studyArray)
     }
 
     startProgressMonitoring(){
@@ -235,8 +256,8 @@ class RobotView extends Component {
                         </CircularProgressbarWithChildren>
                     </div>
                 </div>
-                <BootstrapTable wrapperClasses="table-responsive" keyField="key" striped={true} rowClasses = {this.rowClasses} selectRow = {this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
-                <AnonExportDeleteSendButton ref={n => this.node = n} onAnonClick = {'r'} onExportClick={'r'} onDeleteClick={'r'} />
+                <BootstrapTable ref={n => this.node = n} wrapperClasses="table-responsive" keyField="key" striped={true} rowClasses = {this.rowClasses} selectRow = {this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
+                <AnonExportDeleteSendButton onAnonClick = {this.sendToAnon} onExportClick={this.sendToExport} onDeleteClick={this.sendToDelete} />
             </div>
         )
     }
