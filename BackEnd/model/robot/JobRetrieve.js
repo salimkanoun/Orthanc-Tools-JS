@@ -42,7 +42,7 @@ class JobRetrieve extends Job {
 
         this.buildDicomQuery(item)
        
-        const answerDetails = await this.orthancObject.makeDicomQuery(item.aet)
+        const answerDetails = await this.orthancObject.makeDicomQuery(item.OriginAET)
     
         if (answerDetails.length === 1) {
           return true
@@ -56,10 +56,10 @@ class JobRetrieve extends Job {
      * Loop all Item to checkValidity
      */
     async validateRetrieveJob(){
-        this.validated = "Validating"
+        this.validated = JobRetrieve.VALIDATION_PENDING
         for(let item of this.items){
             let validation = await this.validateRetrieveItem(item)
-            item.validated = validation
+            item.setValidation(validation)
         }
         //If validated execute the robot
         if(this.isValidated()) {
@@ -112,7 +112,7 @@ class JobRetrieve extends Job {
      */
     isValidated(){
         this.items.forEach(item =>{
-            if(!item.validated){
+            if(!item.Validated){
                 return false
             }
         })

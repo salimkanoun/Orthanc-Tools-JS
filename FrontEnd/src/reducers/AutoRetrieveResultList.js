@@ -18,7 +18,6 @@ export default function retrieveListReducer(state = initialState, action) {
       let newResultObject = { ...state.results }
 
       newResultObject[StudyInstanceUid] = {
-        isRetrieved: false,
         ...action.payload
       }
 
@@ -71,8 +70,7 @@ export default function retrieveListReducer(state = initialState, action) {
       let resultSeriesCopy = { ...state.resultsSeries }
       seriesDetails.forEach(series => {
         resultSeriesCopy[series.SeriesInstanceUID] = {
-          ...series,
-          isRetrieved: false
+          ...series
         }
       })
 

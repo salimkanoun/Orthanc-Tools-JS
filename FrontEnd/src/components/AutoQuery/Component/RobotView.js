@@ -48,7 +48,7 @@ class RobotView extends Component {
     }
 
     columns = [{
-        dataField: 'key',
+        dataField: 'Key',
         hidden: true
     }, {
         dataField: 'Level',
@@ -92,13 +92,17 @@ class RobotView extends Component {
         text : 'AET',
         filter: textFilter()
     }, {
+        dataField : 'Validated',
+        text : 'Validated',
+        filter: textFilter()
+    }, {
         dataField : 'Status',
         text : 'Status',
         filter: textFilter(),
         style: function callback(cell, row, rowIndex, colIndex) {
-            if(cell === 'Retrieved'){
+            if(cell === 'Success'){
                 return ({backgroundColor: 'green'})
-            }else if (cell === 'Failed'){
+            }else if (cell === 'Failure'){
                 return ({backgroundColor: 'red'})
             }
          }
@@ -124,21 +128,24 @@ class RobotView extends Component {
 
     selectRow = {
         mode: 'checkbox',
+        clickToSelect: true,
         onSelect: (row, isSelect, rowIndex, e) => {
-            if (row.Status !== 'Retrieved') {
-              return false;
-            }
+            console.log(row)
+            if (row.Status !== 'Success') {
+              return false
+            } else {
+              return true
           }
+        }
     }
 
     async getSelectedItemsStudiesDetails(){
 
         //get selected row keys
-        console.log(this.node)
         let selectedKeyRow = this.node.selectionContext.selected
         //get array of selected rows
         let seletectedRows = this.state.rows.filter(row =>{
-            if( selectedKeyRow.includes(row.key) ) return true
+            if( selectedKeyRow.includes(row.Key) ) return true
             else return false
         })
 
@@ -191,10 +198,8 @@ class RobotView extends Component {
 
             answerData.items.forEach(robotJob => {
                 rowsRetrieveList.push({
-                    key : Math.random(),
                     //Merge Modalities (study level) to modality column
                     Modality : robotJob.ModalitiesInStudy,
-                    //SK PEUT ETRE MERGE SERIES ET STUDY DESCRIPTION
                     ...robotJob
                 })
             });
@@ -256,7 +261,7 @@ class RobotView extends Component {
                         </CircularProgressbarWithChildren>
                     </div>
                 </div>
-                <BootstrapTable ref={n => this.node = n} wrapperClasses="table-responsive" keyField="key" striped={true} rowClasses = {this.rowClasses} selectRow = {this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
+                <BootstrapTable ref={n => this.node = n} wrapperClasses="table-responsive" keyField="Key" striped={true} rowClasses = {this.rowClasses} selectRow = {this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
                 <AnonExportDeleteSendButton onAnonClick = {this.sendToAnon} onExportClick={this.sendToExport} onDeleteClick={this.sendToDelete} />
             </div>
         )
