@@ -42,28 +42,28 @@ class Import extends Component {
 
     __pFileReader(file) {
         return new Promise((resolve, reject) => {
-          var fr = new FileReader();
-          fr.readAsText(file);
+          var fr = new FileReader()
+          fr.readAsArrayBuffer(file)
           fr.onload = () => {
-            resolve(fr);
+            resolve(fr)
           }
         });
     }
 
     async addFile(files) {
-        console.log(files)
+        
         this.setState({ inProgress: true })
 
         for (let file of files) {
 
             await this.__pFileReader(file).then(async (reader) =>{
-                const stringBuffer = reader.result
+                const stringBuffer = new Uint8Array(reader.result)
+
                 try {
                     let response = await apis.importDicom.importDicom(stringBuffer)
-                    await this.addUploadedFileToState(response.body)
+                    await this.addUploadedFileToState(response)
 
                 } catch (error) {
-                    console.log(error)
                     let errorJson = JSON.parse(error.error)
                     this.addErrorToState(file.name, errorJson.Details)
                 }
