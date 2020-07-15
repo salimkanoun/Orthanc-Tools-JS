@@ -8,6 +8,19 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.dropzone {
+	margin: 16px 0;
+	height: 100px;
+	width: 100%;
+	color: rgb(241, 30, 76);
+	line-height: 85px;
+	text-align: center;
+	background-color: rgb(255, 241, 244);
+	border-radius: 16px;
+	border: 5px dashed rgb(209, 19, 63);
+	cursor: pointer;
+}
+
 
 .app{
 	padding-top: 100px !important;
