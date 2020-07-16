@@ -59,6 +59,8 @@ class Import extends Component {
         let i = 1
         for (let file of files) {
 
+            if( ! this.state.inProgress) break
+            
             await this.__pFileReader(file).then(async (reader) =>{
                 const stringBuffer = new Uint8Array(reader.result)
 
@@ -76,6 +78,10 @@ class Import extends Component {
             i = ++i
         }
 
+        this.setState({ inProgress: false })
+    }
+
+    componentWillUnmount(){
         this.setState({ inProgress: false })
     }
 
@@ -233,7 +239,7 @@ class Import extends Component {
                             </section>
                         )}
                     </Dropzone>
-                    <ProgressBar variant='info' now={this.state.processedFiles} max= {this.state.numberOfFiles} label='Processing' />
+                    <ProgressBar variant='info' now={this.state.processedFiles} min={0} max= {this.state.numberOfFiles} label={this.state.processedFiles>0 ? 'Uploading '+this.state.processedFiles+'/'+this.state.numberOfFiles : null} />
                     <div className="float-right">
                         <input type="button" className="btn btn-warning" value={"See Errors (" + this.state.errors.length + ")"} onClick={this.handleShowErrorClick} />
                     </div>
