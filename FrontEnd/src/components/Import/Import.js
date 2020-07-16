@@ -30,6 +30,8 @@ class Import extends Component {
         processedFiles : 0
     }
 
+    cancelImport = false
+
     currentTree = {}
 
     constructor(props) {
@@ -59,8 +61,11 @@ class Import extends Component {
         let i = 1
         for (let file of files) {
 
-            if( ! this.state.inProgress) break
-            
+            if( this.cancelImport ) {
+                console.log('Upload Interrupted')
+                return
+            }
+
             await this.__pFileReader(file).then(async (reader) =>{
                 const stringBuffer = new Uint8Array(reader.result)
 
@@ -82,7 +87,7 @@ class Import extends Component {
     }
 
     componentWillUnmount(){
-        this.setState({ inProgress: false })
+        this.cancelImport = true
     }
 
     /**
@@ -223,24 +228,24 @@ class Import extends Component {
             showErrors: !this.state.showErrors
         })
     }
-
+    
     render() {
         return (
             <div className="jumbotron">
                 <h2 className="col card-title">Import Dicom Files</h2>
                 <div className="col mb-5">
-                    <Dropzone onDrop={acceptedFiles => this.addFile(acceptedFiles)} >
+                    <Dropzone disabled = {this.state.inProgress} onDrop={acceptedFiles => this.addFile(acceptedFiles)} >
                         {({ getRootProps, getInputProps }) => (
                             <section>
-                                <div className="dropzone" {...getRootProps()}>
+                                <div className={this.state.inProgress ? "dropzone dz-parsing":"dropzone"} {...getRootProps()} >
                                     <input directory="" webkitdirectory="" {...getInputProps()} />
-                                    <p>Drop Dicom Folder</p>
+                                    <p>{this.state.inProgress ? "Uploading" : "Drop Dicom Folder"}</p>
                                 </div>
                             </section>
                         )}
                     </Dropzone>
                     <ProgressBar variant='info' now={this.state.processedFiles} min={0} max= {this.state.numberOfFiles} label={this.state.processedFiles>0 ? 'Uploading '+this.state.processedFiles+'/'+this.state.numberOfFiles : null} />
-                    <div className="float-right">
+                    <div className="float-right mt-3">
                         <input type="button" className="btn btn-warning" value={"See Errors (" + this.state.errors.length + ")"} onClick={this.handleShowErrorClick} />
                     </div>
 
