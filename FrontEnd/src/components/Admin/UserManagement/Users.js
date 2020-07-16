@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import Modal from 'react-bootstrap/Modal';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator'
-import cellEditFactory from 'react-bootstrap-table2-editor'
+import cellEditFactory, {Type} from 'react-bootstrap-table2-editor'
 
 import apis from '../../../services/apis';
 
@@ -96,7 +96,23 @@ class Users extends Component {
         }, {
             dataField: 'role', 
             text: 'Role', 
-            sort: true
+            sort: true,
+            editor: {
+                type: Type.SELECT,
+                getOptions: (setOptions, { row, column }) => {
+                   apis.role.getRoles().then(roles =>{
+                        let options = []
+                        roles.forEach((role) => {
+                            options.push({
+                                value: role.name, 
+                                label: role.name
+                            })
+                        })
+                        setOptions(options)
+                    })
+                    
+                }
+            }
         }, {
             dataField: 'password', 
             text: 'New Password',
