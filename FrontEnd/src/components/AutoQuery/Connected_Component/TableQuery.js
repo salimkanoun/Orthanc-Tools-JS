@@ -65,7 +65,11 @@ class TableQuery extends Component {
   cellEdit = cellEditFactory({
     mode: 'click',
     blurToSave: true,
-    autoSelectText: true
+    autoSelectText: true,
+    afterSaveCell: (oldValue, newValue, row, column) => { 
+      //Force rerender to get style update
+      this.node.forceUpdate()
+     }
   });
 
   columns = [{
@@ -76,6 +80,9 @@ class TableQuery extends Component {
     dataField: 'PatientName',
     text: 'Patient Name',
     sort: true,
+    editor: {
+      placeholder : 'Set value'
+    },
     filter: textFilter(),
     headerFormatter: this.customHeader
   }, {
@@ -83,11 +90,17 @@ class TableQuery extends Component {
     text: 'Patient ID',
     sort: true,
     filter: textFilter(),
+    editor: {
+      placeholder : 'Set value'
+    },
     headerFormatter: this.customHeader
   }, {
     dataField: 'AccessionNumber',
     text: 'Accession Number',
     sort: true,
+    editor: {
+      placeholder : 'Set value'
+    },
     filter: textFilter(),
     headerFormatter: this.customHeader
   }, {
@@ -130,6 +143,9 @@ class TableQuery extends Component {
     dataField: 'StudyDescription',
     text: 'Study Description',
     sort: true,
+    editor: {
+      placeholder : 'Set value'
+    },
     filter: textFilter(),
     headerFormatter: this.customHeader
   }, {
@@ -157,6 +173,21 @@ class TableQuery extends Component {
     headerFormatter: this.customHeader
   }];
 
+  rowStyle = (row, rowIndex) => {
+
+    let nonEmptyColumns = Object.values(row).filter((rowValues) => {
+      if(rowValues !== '') return true
+      else return false
+    })
+
+    if(nonEmptyColumns.length <= 1) {
+      return { background : 'LightBlue' };
+    }else{
+      return { background : rowIndex % 2 ===0 ? 'transparent' : 'rgba(0,0,0,.05)'}
+    }
+    
+  }
+
   render() {
     return (
       <ToolkitProvider
@@ -174,7 +205,7 @@ class TableQuery extends Component {
                   <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
                   <CsvLoader />
                   <div className="mt-5">
-                    <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} >
+                    <BootstrapTable wrapperClasses="table-responsive" rowStyle = {this.rowStyle} ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} >
                     </BootstrapTable>
                   </div>
                 </div>
