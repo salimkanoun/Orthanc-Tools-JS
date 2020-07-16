@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from "react-redux"
 
 import Dropzone from 'react-dropzone'
+import ProgressBar from 'react-bootstrap/ProgressBar'
 import Modal from 'react-bootstrap/Modal'
 
 import TablePatientsWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudiesAndSeries'
@@ -24,7 +25,9 @@ class Import extends Component {
         studiesObjects: {},
         seriesObjects: {},
         showErrors: false,
-        inProgress: false
+        inProgress: false,
+        numberOfFiles : 0,
+        processedFiles : 0
     }
 
     currentTree = {}
@@ -52,8 +55,8 @@ class Import extends Component {
 
     async addFile(files) {
         
-        this.setState({ inProgress: true })
-
+        this.setState({ inProgress: true, numberOfFiles : files.length, processedFiles : 0 })
+        let i = 1
         for (let file of files) {
 
             await this.__pFileReader(file).then(async (reader) =>{
@@ -69,6 +72,8 @@ class Import extends Component {
                 }
 
             })
+            this.setState((state) => { return {processedFiles: ++state.processedFiles} })
+            i = ++i
         }
 
         this.setState({ inProgress: false })
@@ -228,7 +233,7 @@ class Import extends Component {
                             </section>
                         )}
                     </Dropzone>
-
+                    <ProgressBar variant='info' now={this.state.processedFiles} max= {this.state.numberOfFiles} label='Processing' />
                     <div className="float-right">
                         <input type="button" className="btn btn-warning" value={"See Errors (" + this.state.errors.length + ")"} onClick={this.handleShowErrorClick} />
                     </div>
