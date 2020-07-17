@@ -29,7 +29,7 @@ export default class SelectModalities extends Component {
     componentDidMount(){
       //If we recieve a previous modality input in props, load it in the state
       if(this.props.previousModalities !== ""){
-        let previousModalityArray = this.props.previousModalities.split('/').map( (modality)=> {
+        let previousModalityArray = this.props.previousModalities.split('\\').map( (modality)=> {
             return { value: modality, label: modality }
         })
 
@@ -77,7 +77,7 @@ export default class SelectModalities extends Component {
       });
 
       let modalityString= ''
-      if(modalityArray.length > 0) modalityString = modalityArray.join('/')
+      if(modalityArray.length > 0) modalityString = modalityArray.join('\\')
 
       return modalityString;
     }
