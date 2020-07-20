@@ -113,4 +113,8 @@ class Orthanc_Monitoring {
         
 }
 
-module.exports = Orthanc_Monitoring
+const orthanc_Monitoring = new Orthanc_Monitoring();
+Object.freeze(orthanc_Monitoring);
+
+exports.orthanc_Monitoring = orthanc_Monitoring
+exports.Orthanc_Monitoring = Orthanc_Monitoring

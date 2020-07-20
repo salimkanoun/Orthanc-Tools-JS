@@ -6,23 +6,35 @@ const tmp = require('tmp');
 
 class CdBurner {
     
-    constructor(monitoring, table_burning_history) {
+    constructor(monitoring) {
         this.orthanc = new Orthanc()
 
         this.monitoring = monitoring
 
-        this.epsonDirectory = ""
-        this.viewerDirectory = ""
-        this.labelFile = ""
-        this.dateFormatChoix = ""
+        this.epsonDirectory 
+        this.viewerDirectory 
+        this.labelFile 
+        this.dateFormatChoix 
 
         this.levelPatient
 
-        this.table_burning_history = table_burning_history
-
         this.burnerManifacturer
 
-        this.DateOptions = {month: 'numeric', day: 'numeric'}
+        this.DateOptions
+        this.format
+        if(this._dateFormat()) {
+            this.DateOptions = {month: 'numeric', day: 'numeric'}
+            this.format = "fr-FR"
+        } else {
+            this.DateOptions = {month: 'numeric', day: 'numeric' }
+            this.format = "uk-UA"
+        }
+        
+    }
+
+    _dateFormat() {
+        //ToDo
+        //récuperer dans la bd le format et les options de date
     }
 
     //Méthode 1 
@@ -38,7 +50,6 @@ class CdBurner {
         //ToDo         
     }
     */
-
     /**
 	 * Stop the monitoring every 90secs
 	 */
@@ -63,23 +74,24 @@ class CdBurner {
         }    
     }
 
+    stopCDMonitoring() {
+        //ToDo
+    } 
+
     async _makeCDFromPatient(newStablePatientID) {
-        //Store the Row number where we are going to display progress
-		let rownumber = this.table_burning_history.length;
-        
         let patient = this.orthanc.findInOrthanc('Patient', '', newStablePatientID, '', '', '', '', '')//Obtenir les infos d un patient depuis son patientID
         
         let studies = this.orthanc.findInOrthanc('Study', '', newStablePatientID, '', '', '', '', '')
 
         if(studies.length === 1) {
-            newStableStudyID = studies[0].MainDicomTags.StudyID //Recuper la studyID à partie de la studies du patientID
-            makeCD(newStableStudyID);
+            let newStableStudyID = studies[0].MainDicomTags.StudyID //Recuper la studyID à partie de la studies du patientID
+            this.makeCD(newStableStudyID);
         }
 
         let formattedPatientDOB = "N/A"
         try {
-            let PatientDOB = patient.MainDicomTags.PatientBirthDate //date d'anniversaire du patient
-            formattedPatientDOB = PatientDOB.toLocaleDateString(undefined, this.DateOptions) //datte d'anniverssaire formaté du patient
+            let patientDOB = patient.MainDicomTags.PatientBirthDate //date d'anniversaire du patient
+            formattedPatientDOB = patientDOB.toLocaleDateString(this.format, this.DateOptions) //datte d'anniverssaire formaté du patient
         } catch (err) {
             console.log(err)
         }
@@ -97,7 +109,7 @@ class CdBurner {
             
             let modalities = []
             for(u=0; u<series.length ; u++) {
-                modality = series[u].MainDicomTags.Modality;
+                let modality = series[u].MainDicomTags.Modality;
 			    if(!modalities.contains(modality)) modalities.push(modality);
             }
 
@@ -122,10 +134,7 @@ class CdBurner {
             } 
         }
 
-        modalitiesInStudyPrimera = String.join("//", uniqueModalitiesForPrimera);
-
-        //Update display status
-        //ToDo
+        let modalitiesInStudyPrimera = String.join("//", uniqueModalitiesForPrimera);
         
         //Generate the ZIP with Orthanc IDs dicom
 		for(u=0; u<studies.length ; u++) {
@@ -148,14 +157,14 @@ class CdBurner {
                         
                         // Creation du Cd
                         if (this.burnerManifacturer === "Epson") {
-                            discType = _determineDiscType();
-                            dat = _printDat(datInfos);
+                            let discType = _determineDiscType();
+                            let dat = _printDat(datInfos);
                             //Generation du Dat
                             //dat = _printDat(nom, id, formattedDateExamen, studyDescription, accessionNumber, formattedPatientDOB );
-                            requestFileAndID = _createCdBurnerEpson(dat, discType, patient.getName(), "Mutiples");
+                            let requestFileAndID = _createCdBurnerEpson(dat, discType, patient.getName(), "Mutiples");
                             
                         } else if(this.burnerManifacturer ==="Primera") {
-                            requestFileAndID = _createCdBurnerPrimera(patient.getName(), patient.getPatientId(), "Mutiples", studies.size()+" studies", "Mutiples", formattedPatientDOB ,studies.size(), modalitiesInStudyPrimera);
+                            let requestFileAndID = _createCdBurnerPrimera(patient.getName(), patient.getPatientId(), "Mutiples", studies.size()+" studies", "Mutiples", formattedPatientDOB ,studies.size(), modalitiesInStudyPrimera);
                         }    
 
                         //On efface la study de Orthanc
@@ -176,62 +185,85 @@ class CdBurner {
     _makeCD(newStableStudyID) {
         for (i=0; i<newStableStudyID.length ; i++) {
 			
-			study = ortancQuery.getStudyDetails(studyID, true);
-			patient = ortancQuery.getPatient(study.getParentPatientId());
-			//Store the Row number where we are going to display progress
-			rownumber = table_burning_history.getRowCount();
-			
+            //study = ortancQuery.getStudyDetails(studyID, true);
+            let study = this.orthanc.findInOrthanc('Study', '', newStablePatientID, '', '', '', '', '')
+            
+            //patient = ortancQuery.getPatient(study.getParentPatientId());
+            //let patient = this.orthanc.findInOrthanc('Patient', '', sutdy.MainDicomTags.PatientID, '', '', '', '', '')
+            let patient = this.orthanc.findInOrthanc('Patient', '', sutdy.ID, '', '', '', '', '')
+            
 			//Get value of interest : Patient Name / ID / DOB / study date and description
-			nom = patient.getName();
-			id = patient.getPatientId();
-			studyDescription = study.getStudyDescription();
-			accessionNumber = study.getAccession();
+			let nom = patient.MainDicomTags.PatientName;
+			let id = patient.ID;
+			let studyDescription = study.MainDicomTags.StudyDescription;
+			let accessionNumber = study.MainDicomTags.AccessionNumber;
 		
 			formattedDateExamen = "N/A";
-			if(study.getDate()!=null) {
-				formattedDateExamen = formatter.format(study.getDate());
+			if(study.MainDicomTags.StudyDate !== null) {
+                formattedDateExamen = study.MainDicomTags.StudyDate.toLocaleDateString(undefined, this.DateOptions)
 			}
 			
-			formattedPatientDOB="N/A";
+			formattedPatientDOB = "N/A";
 			try {
-				patientDOBDate = parserDate.parse(patient.getPatientBirthDate());
-				formattedPatientDOB = formatter.format(patientDOBDate);
+				let patientDOBDate = patient.MainDicomTags.PatientBirthDate;
+				formattedPatientDOB = patientDOBDate.toLocaleDateString(this.format, this.DateOptions);
 			}catch (e) { }
 			
-			modalitiesInStudy = String.join("//", study.getModalitiesInStudy());
-			
-			//Update display status
-			//ToDo
+			let modalitiesInStudy = String.join("//", study.getModalitiesInStudy());
 			
 			//Generate the ZIP with Orthanc IDs dicom
-			orthancIds= []
-			orthancIds.add(studyID);
-			zip = generateZip(orthancIds);
-			
-			// Unzip du fichier ZIP recupere
-			table_burning_history.setValueAt("Unzipping", rownumber, 5);
-			unzip(zip);
+			let orthancIds = []
+			orthancIds.push(studyID);
 
-			requestFileAndID = null;
-			// Creation du Cd
-			if (burnerManifacturer.equals("Epson")) {
-				discType = determineDiscType();
-				//Generation du Dat
-				dat = printDat(nom, id, formattedDateExamen, studyDescription, accessionNumber, formattedPatientDOB, modalitiesInStudy );
-				requestFileAndID = createCdBurnerEpson(dat, discType, nom, formattedDateExamen);
-				
-			} else if(burnerManifacturer.equals("Primera")) {
-				requestFileAndID = createCdBurnerPrimera(nom, id, formattedDateExamen, studyDescription, accessionNumber, formattedPatientDOB, 1, modalitiesInStudy);
-			}
-			
-			//On efface tout a la sortie JVM
-			recursiveDeleteOnExit(folder);
-			//Efface le zip dezipe
-			zip.delete();
-			
-			//On efface la study de Orthanc
-			if (deleteStudies) connexion.makeDeleteConnection("/studies/"+studyID);
-				
+            Orthanc.exportArchiveDicom(study.MainDicomTags.StudyID, Orthanc.exportArchiveDicom(study.MainDicomTags.StudyID))
+
+            let datInfos = {
+                nom: patient.MainDicomTags.PatientName,
+                id: patient.MainDicomTags.PatientID ,
+                formattedDateExamen: formattedDateExamen,
+                studyDescription: studyDescription,
+                accessionNumber: accessionNumber,
+                formattedPatientDOB: formattedPatientDOB,
+                modalitiesInStudy: modalitiesInStudy
+            } 
+
+            // Unzip du fichier ZIP recupere
+            for(u=0; u<studies.length ; u++) {
+                fs.readFile('./data/export_dicom/' + Orthanc.exportArchiveDicom(studies[u].MainDicomTags.StudyID + '.zip', function(err, data) {
+                if (err) throw err;
+                    JSZip.loadAsync(data).then(function (zip) {
+                        
+                        tmp.file(function _tempFileCreated(err, path, fd, cleanupCallback) {
+                            if (err) throw err;
+                                fs.writeFile(path, zip, function(err) {
+                                    if(err) {
+                                        return console.log(err);
+                                    }
+                                }); 
+                            
+                            // Creation du Cd
+                            if (this.burnerManifacturer === "Epson") {
+                                let discType = _determineDiscType();
+                                let dat = _printDat(datInfos);
+                                //Generation du Dat
+                                //dat = _printDat(nom, id, formattedDateExamen, studyDescription, accessionNumber, formattedPatientDOB );
+                                let requestFileAndID = _createCdBurnerEpson(dat, discType, patient.getName(), "Mutiples");
+                                
+                            } else if(this.burnerManifacturer ==="Primera") {
+                                let requestFileAndID = _createCdBurnerPrimera(patient.getName(), patient.getPatientId(), "Mutiples", studies.size()+" studies", "Mutiples", formattedPatientDOB ,studies.size(), modalitiesInStudyPrimera);
+                            }    
+
+                            //On efface la study de Orthanc
+                            if (deleteStudies) {
+                                //ToDo //connexion.makeDeleteConnection("/patients/"+patientID);
+                            }
+
+                            cleanupCallback();
+                        });
+
+                    });
+                }));
+            }
 		}
     }
     
@@ -241,8 +273,8 @@ class CdBurner {
 			discType=suportType;
 		} else {
 			//Get size of viewer and images to determine if CD or DVD to Burn
-			imageSize = fs.statSync('ToDo').size;
-			ViewerSize = fs.statSync('ToDo').size;
+			let imageSize = fs.statSync('ToDo').size;
+			let ViewerSize = fs.statSync('ToDo').size;
 			//If size over 630 Mo
 			if(imageSize + ViewerSize > 630000000) {
 				discType="DVD";
@@ -257,13 +289,13 @@ class CdBurner {
     _printDat(infos) {
 
         //On parse le nom pour enlever les ^ et passer le prenom en minuscule
-        nom = infos[0].nom;
-        separationNomPrenom = nom.indexOf("^", 0);
+        let nom = infos[0].nom;
+        let separationNomPrenom = nom.indexOf("^", 0);
         if (separationNomPrenom!=-1) {
-            nom=nom.substring(0, separationNomPrenom+2)+nom.substring(separationNomPrenom+2).toLowerCase();
+            nom = nom.substring(0, separationNomPrenom+2)+nom.substring(separationNomPrenom+2).toLowerCase();
         }
         
-         datFile = "patientName="+nom.replaceAll("\\^", " ")+"\n"
+         let datFile = "patientName="+nom.replaceAll("\\^", " ")+"\n"
                      + "patientId=" + infos[0].id +"\n"
                      + "studyDate="+ infos[0].date + "\n"
                      + "modalities="+infos[0].modalities+"\n"
@@ -281,7 +313,7 @@ class CdBurner {
                      + "modalities"+(i+1)+"="+infos[i].modalities+"\n";
          }
 
-         dat = fs.appendFile(folder + File.separator + "CD"+dateFormat.format(datenow)+".dat", datFile, function (err) {
+         let dat = fs.appendFile(folder + File.separator + "CD"+dateFormat.format(datenow)+".dat", datFile, function (err) {
             if (err) throw err;
             console.log('Saved!');
           });
@@ -309,12 +341,12 @@ class CdBurner {
 
         // On ecrit le fichier JDF
         
-        f = fs.appendFile(epsonDirectory + File.separator + "CD_" + dateFormat.format(datenow) + ".JDF", txtRobot, function (err) {
+        let f = fs.appendFile(epsonDirectory + File.separator + "CD_" + dateFormat.format(datenow) + ".JDF", txtRobot, function (err) {
             if (err) throw err;
             console.log('Saved!');
           });
         
-        answer = {f, jobId};
+        let answer = {f, jobId};
         return answer;                
     }
 
@@ -367,11 +399,13 @@ class CdBurner {
 	}
 
      _createJobID(name, formattedStudyDate) {
-		lastName = null;
-		firstName= "";
+        let results = "";
+
+        let lastName = null;
+		let firstName= "";
 		//prepare JOB_ID string.
 		if(name.contains("^")) {
-			names = name.split(Pattern.quote("^"));
+			let names = name.split(Pattern.quote("^"));
 			//Get 10 first character of lastname and first name if input over 10 characters
 			if(names[0].length()>5) lastName=names[0].substring(0, 5); else lastName=names[0];
 			if(names[1].length()>5) firstName=names[1].substring(0, 5); else firstName=names[1];
@@ -397,4 +431,8 @@ class CdBurner {
 	}
 }    
 
-module.exports = CdBurner
+const cdBurner = new CdBurner();
+Object.freeze(cdBurner);
+
+exports.cdBurner = cdBurner
+exports.CdBurner = CdBurner
