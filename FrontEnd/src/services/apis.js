@@ -1,3 +1,4 @@
+import importDicom from './importDicom'
 import aets from './aets'
 import options from './options'
 import queryRobot from './queryRobot'
@@ -16,6 +17,7 @@ import role from './role'
 import token from './token'
 
 export default {
+  importDicom,
   aets,
   options,
   queryRobot,

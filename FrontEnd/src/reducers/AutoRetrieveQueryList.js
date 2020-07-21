@@ -24,7 +24,7 @@ export default function queryListReducer (state = initialState, action) {
       queriesCopy.push({
         key: Math.random(),
         PatientName: '',
-        PatientId: '',
+        PatientID: '',
         AccessionNumber: '',
         DateFrom: '',
         DateTo: '',
