@@ -2,6 +2,8 @@ const Orthanc = require('../../Orthanc')
 var fs = require("fs");
 var JSZip = require("jszip");
 const tmp = require('tmp');
+const orthanc_Monitoring = require('../Orthanc_Monitoring')
+
 
 
 class CdBurner {
@@ -63,6 +65,7 @@ class CdBurner {
     /**
 	 * Methode CallBack à appelé dans Orthanc_Monitoring pour creer un cd quand un evenemnt apparait dans orthanc
 	 */
+    /*
     startCDMonitoring() {
         //Si orthanc_Monitoring n'est pas allumé alors l'allumé
             //ToDo
@@ -76,6 +79,20 @@ class CdBurner {
 
     stopCDMonitoring() {
         //ToDo
+    }*/
+
+    //Méthode 3
+    startCDMonitoring() {
+        //Si orthanc_Monitoring n'est pas allumé alors l'allumé
+            //ToDo
+
+        orthanc_Monitoring.eventEmitteraddListener('StablePatient', (orthancID) => {this._makeCDFromPatient(orthancID)})
+        orthanc_Monitoring.eventEmitteraddListener('StableStudy', (orthancID) => {this._makeCD(orthancID)})
+    }
+
+    stopCDMonitoring() {
+        orthanc_Monitoring.removeListener('StablePatient', (orthancID) => {this._makeCDFromPatient(orthancID)})
+        orthanc_Monitoring.removeListener('StableStudy', (orthancID) => {this._makeCD(orthancID)})
     } 
 
     async _makeCDFromPatient(newStablePatientID) {
