@@ -3,7 +3,7 @@ var fs = require("fs");
 var JSZip = require("jszip");
 const tmp = require('tmp');
 const orthanc_Monitoring = require('../Orthanc_Monitoring')
-
+const db = require('../database/models')
 
 
 class CdBurner {
@@ -20,68 +20,31 @@ class CdBurner {
 
         this.levelPatient
 
-        this.burnerManifacturer
+        this.burnerManifacturer = "" //Epson or Primera
 
-        this.DateOptions
-        this.format
-        if(this._dateFormat()) {
-            this.DateOptions = {month: 'numeric', day: 'numeric'}
+        //Date format
+        this.DateOptions = {month: 'numeric', day: 'numeric'} //precision of the date
+        this.format = "" //format of date (using contry convention)
+        
+        let dbFormat = await this._dateFormat()
+        if(dbFormat === "fr") {     
             this.format = "fr-FR"
+        } else if(dbFormat === "uk") {
+            this.format = "uk-UA"
         } else {
-            this.DateOptions = {month: 'numeric', day: 'numeric' }
             this.format = "uk-UA"
         }
         
     }
 
-    _dateFormat() {
-        //ToDo
-        //récuperer dans la bd le format et les options de date
+    async _dateFormat() {
+        const format = await db.Option.findOne({ 
+            attributes: ['DateFormat'],
+          });
+
+          return format
     }
 
-    //Méthode 1 
-    /**
-	 * Start Monitoring of Orthanc Change API every 90secs
-	 */
-    /*
-    startCDMonitoring() {
-		if ( epsonDirectory==null ||viewerDirectory==null ||labelFile==null || dateFormatChoix==null ){
-            throw "need to set output folder"
-        }
-
-        //ToDo         
-    }
-    */
-    /**
-	 * Stop the monitoring every 90secs
-	 */
-    /*
-    stopCDMonitoring() {
-        //ToDo
-    } 
-    */   
-
-    //Méthode 2
-    /**
-	 * Methode CallBack à appelé dans Orthanc_Monitoring pour creer un cd quand un evenemnt apparait dans orthanc
-	 */
-    /*
-    startCDMonitoring() {
-        //Si orthanc_Monitoring n'est pas allumé alors l'allumé
-            //ToDo
-
-        if(levelPatient) {
-            monitoring.register(STABLE_PATIENT, (orthancID) => {this._makeCDFromPatient(orthancID)})
-        } else {
-            monitoring.register(STABLE_STUDIES, (orthancID) => {this._makeCD(orthancID)})
-        }    
-    }
-
-    stopCDMonitoring() {
-        //ToDo
-    }*/
-
-    //Méthode 3
     startCDMonitoring() {
         //Si orthanc_Monitoring n'est pas allumé alors l'allumé
             //ToDo
@@ -186,7 +149,7 @@ class CdBurner {
 
                         //On efface la study de Orthanc
 			            if (deleteStudies) {
-				            //ToDo //connexion.makeDeleteConnection("/patients/"+patientID);
+                            //ToDo
 			            }
 
                         cleanupCallback();
@@ -205,8 +168,6 @@ class CdBurner {
             //study = ortancQuery.getStudyDetails(studyID, true);
             let study = this.orthanc.findInOrthanc('Study', '', newStablePatientID, '', '', '', '', '')
             
-            //patient = ortancQuery.getPatient(study.getParentPatientId());
-            //let patient = this.orthanc.findInOrthanc('Patient', '', sutdy.MainDicomTags.PatientID, '', '', '', '', '')
             let patient = this.orthanc.findInOrthanc('Patient', '', sutdy.ID, '', '', '', '', '')
             
 			//Get value of interest : Patient Name / ID / DOB / study date and description
@@ -272,7 +233,7 @@ class CdBurner {
 
                             //On efface la study de Orthanc
                             if (deleteStudies) {
-                                //ToDo //connexion.makeDeleteConnection("/patients/"+patientID);
+                                //ToDo
                             }
 
                             cleanupCallback();
@@ -289,9 +250,11 @@ class CdBurner {
 		if ( !suportType === "Auto") {
 			discType=suportType;
 		} else {
-			//Get size of viewer and images to determine if CD or DVD to Burn
-			let imageSize = fs.statSync('ToDo').size;
-			let ViewerSize = fs.statSync('ToDo').size;
+            //Get size of viewer and images to determine if CD or DVD to Burn
+            let  = 'ToDo'
+
+			let imageSize = fs.statSync(link).size;
+			let ViewerSize = fs.statSync(link).size;
 			//If size over 630 Mo
 			if(imageSize + ViewerSize > 630000000) {
 				discType="DVD";
