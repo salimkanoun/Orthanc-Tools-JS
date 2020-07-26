@@ -21,6 +21,9 @@ const ReverseProxy = {
       options = {
         method: method,
         url: serverString,
+        headers: {
+          'Forwarded' : 'by=localhost;for=localhost;host='+process.env.DOMAIN+'/api;proto='+process.env.PROTOCOL
+        },
         auth: {
           user: this.username,
           password: this.password
