@@ -97,7 +97,8 @@ class TableResultStudy extends Component {
         }), 
         filterRenderer: (onFilter) => {
             return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyDate' />
-        }
+        },
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'ModalitiesInStudy',
         text: 'Modalities',

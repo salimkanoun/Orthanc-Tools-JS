@@ -28,22 +28,26 @@ class TablePatients extends Component{
         dataField: 'PatientName', 
         text: this.props.textNameColumn, 
         sort: true, 
-        editable: false
+        editable: false,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'PatientID', 
         text: this.props.textIDColumn, 
         sort: true, 
-        editable: false
+        editable: false,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'newPatientName', 
         text: 'New Name', 
         editable: true,
-        hidden: this.props.hiddenNewName
+        hidden: this.props.hiddenNewName,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'newPatientID', 
         text: 'New ID', 
         editable: true, 
-        hidden: this.props.hiddenNewID
+        hidden: this.props.hiddenNewID,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'Action', 
         text: 'Action',

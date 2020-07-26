@@ -44,13 +44,15 @@ class TableStudy extends Component {
         sort: true, 
         hidden: this.props.hiddenName,
         title: (cell, row, rowIndex, colIndex) => row.PatientName, 
-        editable: false
+        editable: false,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'PatientID', 
         text: 'Patient ID', 
         sort: true, 
         hidden: this.props.hiddenID, 
-        editable: false
+        editable: false,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'StudyDate', 
         text: 'Study Date', 
@@ -61,14 +63,16 @@ class TableStudy extends Component {
         text: 'Description',
         sort: true,
         title: (cell, row, rowIndex, colIndex) => row.StudyDescription, 
-        editable: false
+        editable: false,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'newStudyDescription', 
         text: 'New Description', 
         sort: true, 
         editable: this.props.editable, 
         hidden: !this.props.editable, 
-        csvExport: false
+        csvExport: false,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'AccessionNumber', 
         text: 'Accession Number',

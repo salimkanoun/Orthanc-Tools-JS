@@ -22,7 +22,7 @@ const ReverseProxy = {
         method: method,
         url: serverString,
         headers: {
-          'Forwarded' : 'by=localhost;for=localhost;host='+process.env.DOMAIN+'/api;proto='+process.env.PROTOCOL
+          'Forwarded' : 'by=localhost;for=localhost;host='+process.env.DOMAIN_ADDRESS+'/api;proto='+process.env.DOMAIN_PROTOCOL
         },
         auth: {
           user: this.username,

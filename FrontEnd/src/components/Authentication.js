@@ -62,8 +62,6 @@ export default class Authentication extends Component {
       }
 
     })
-    
-    
 
     this.setState({
       authenthified: newState.accessCheck,

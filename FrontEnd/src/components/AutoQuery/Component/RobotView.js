@@ -62,11 +62,13 @@ class RobotView extends Component {
     }, {
         dataField: 'PatientName',
         text : 'Patient Name',
-        filter: textFilter()
+        filter: textFilter(),
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'PatientID',
         text : 'Patient ID',
-        filter: textFilter()
+        filter: textFilter(),
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField : 'StudyDate',
         text : 'Study Date',
@@ -78,11 +80,13 @@ class RobotView extends Component {
     }, {
         dataField : 'StudyDescription',
         text : 'Study Description',
-        filter: textFilter()
+        filter: textFilter(),
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField : 'SeriesDescription',
         text : 'Series Description',
-        filter: textFilter()
+        filter: textFilter(),
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField : 'AccessionNumber',
         text : 'Accession Number',
