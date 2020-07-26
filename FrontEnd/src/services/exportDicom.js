@@ -71,10 +71,18 @@ const exportDicom = {
 
     async downloadZip(jobID){
 
+      const getZipOptions = {
+        method: 'GET', 
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    }
+
       const url = '/api/jobs/'+jobID+'/archive'
       const fileStream = streamSaver.createWriteStream( jobID+".zip")
 
-      fetch(url).then(res => {
+      fetch(url, updateOptions(getZipOptions)).then(res => {
         const readableStream = res.body
         
         if (window.WritableStream && readableStream.pipeTo) {
