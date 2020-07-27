@@ -4,14 +4,19 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn(
       'Options',
-      'DateFormat',
+      'dateFormat',
      {
-       type: Sequelize.STRING
-     } 
+       type: Sequelize.STRING,
+       defaultValue: 'uk' 
+     },
+     
     );
   },
 
   down: (queryInterface, Sequelize) => {
-    
+    return queryInterface.removeColumn(
+      'Options',
+      'dateFormat'
+    );
   }
 };

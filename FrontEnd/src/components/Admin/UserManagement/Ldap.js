@@ -87,7 +87,9 @@ class Ldap extends Component {
                     <input type='button' disabled={!this.state.check} className='btn btn-info mr-1' onClick={null} value='Check Connexion' />
                     </div>         
                 </div>
-                <div className="form-group mr-3 mt-4" hidden={!this.state.check}>
+
+                <button type='button' hidden={!this.state.check} className='btn btn-primary mr-3 mt-2' onClick={() => this.setState({show: true})} >New Correspondence</button>
+                <div className="form-group mr-3 mt-3" hidden={!this.state.check}>
                     <BootstrapTable keyField='groupName' data={this.state.roles} columns={this.columns} striped />
                 </div>
             </Fragment>         

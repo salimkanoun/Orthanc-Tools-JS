@@ -3,7 +3,7 @@ var fs = require("fs");
 var JSZip = require("jszip");
 const tmp = require('tmp');
 const orthanc_Monitoring = require('../Orthanc_Monitoring')
-const db = require('../database/models')
+const db = require('../../../database/models')
 
 
 class CdBurner {
@@ -26,7 +26,7 @@ class CdBurner {
         this.DateOptions = {month: 'numeric', day: 'numeric'} //precision of the date
         this.format = "" //format of date (using contry convention)
         
-        let dbFormat = await this._dateFormat()
+        let dbFormat = this._dateFormat()
         if(dbFormat === "fr") {     
             this.format = "fr-FR"
         } else if(dbFormat === "uk") {
@@ -39,7 +39,7 @@ class CdBurner {
 
     async _dateFormat() {
         const format = await db.Option.findOne({ 
-            attributes: ['DateFormat'],
+            attributes: ['dateFormat'],
           });
 
           return format
@@ -251,7 +251,7 @@ class CdBurner {
 			discType=suportType;
 		} else {
             //Get size of viewer and images to determine if CD or DVD to Burn
-            let  = 'ToDo'
+            let link  = ''//ToDo
 
 			let imageSize = fs.statSync(link).size;
 			let ViewerSize = fs.statSync(link).size;
