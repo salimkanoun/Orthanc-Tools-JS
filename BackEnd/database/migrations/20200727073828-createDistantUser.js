@@ -11,10 +11,14 @@ module.exports = {
       groupName: {
         allowNull: false,
         type: Sequelize.STRING, 
-      },
-      associedcedRole: {
-        allowNull: false,
-        type: Sequelize.STRING, 
+      }, 
+      role: {
+        allowNull: false, 
+        references: {
+          model: 'Roles', 
+          key: 'name'
+        }, 
+        type: Sequelize.STRING
       }
     });
   },

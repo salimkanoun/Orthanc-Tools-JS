@@ -14,7 +14,7 @@ const ldap = {
         body: JSON.stringify(LdapSettings)
       };
 
-        return fetch("/api/ldap/", updateOptions(setLdapSettingsOption) ).then((answer) => {
+        return fetch("/api/ldapSettings/", updateOptions(setLdapSettingsOption) ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
           }).catch(error => toastifyError(error))
@@ -30,7 +30,23 @@ const ldap = {
         }
       }
 
-        return fetch("/api/ldap/", updateOptions(getLdapSettingsOption)).then((answer) => {
+        return fetch("/api/ldapSettings/", updateOptions(getLdapSettingsOption)).then((answer) => {
+            if (!answer.ok) { throw answer }
+            return (answer.json())
+          }).catch(error => toastifyError(error))
+    },
+
+    testLdapSettings() {
+
+      const testLdapSettingsOption =  {
+        method: "GET",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
+
+        return fetch("/api/ldapTestCo/", updateOptions(testLdapSettingsOption)).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
           }).catch(error => toastifyError(error))
@@ -38,16 +54,16 @@ const ldap = {
 
     createCorrespondence(Correspondence){
 
-        const setLdapSettingsOption = {
+        const createCorrespondenceOption = {
           method: "POST",
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(LdapSettings)
+          body: JSON.stringify(Correspondence)
         };
   
-          return fetch("/api/ldap/", updateOptions(setLdapSettingsOption) ).then((answer) => {
+          return fetch("/api/ldap/", updateOptions(createCorrespondenceOption) ).then((answer) => {
               if (!answer.ok) { throw answer }
               return (answer.json())
             }).catch(error => toastifyError(error))
@@ -55,16 +71,16 @@ const ldap = {
       
     deleteCorrespondence(Correspondence){
 
-        const setLdapSettingsOption = {
+        const deleteCorrespondenceOption = {
             method: 'DELETE',
             headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
             },
-            body: JSON.stringify(LdapSettings)
+            body: JSON.stringify(Correspondence)
         };
     
-            return fetch("/api/ldap/", updateOptions(setLdapSettingsOption) ).then((answer) => {
+            return fetch("/api/ldap/", updateOptions(deleteCorrespondenceOption) ).then((answer) => {
                 if (!answer.ok) { throw answer }
                     toastifySuccess('Correspondence deleted with success')
                     return (answer.json())
@@ -73,7 +89,7 @@ const ldap = {
         
     getAllCorrespodences() {
 
-      const getLdapSettingsOption =  {
+      const getAllCorrespodencesOption =  {
         method: "GET",
         headers: {
           'Accept': 'application/json',
@@ -81,7 +97,7 @@ const ldap = {
         }
       }
 
-        return fetch("/api/ldap/", updateOptions(getLdapSettingsOption)).then((answer) => {
+        return fetch("/api/ldap/", updateOptions(getAllCorrespodencesOption)).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
           }).catch(error => toastifyError(error))

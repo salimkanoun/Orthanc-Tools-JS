@@ -160,6 +160,11 @@ router.get('/token', userAuthMidelware, getRoleFromToken)
 router.get('/mode', userAdminMidelware, getMode)
 router.put('/changeMode', userAdminMidelware, changeMode)
 
+//Ldap
+router.get('/ldapSettings', userAdminMidelware, getMode)
+router.post('/ldapSettings', userAdminMidelware, changeMode)
+router.get('/ldapTestCo', userAdminMidelware, changeMode)
+
 //Monitoring
 router.head('/monitoring', test2)
 
