@@ -10,23 +10,48 @@ class Ldap extends Component {
 
     state = {
         check: false,
-        LDAPport: 389,
+        LDAPport: 0,
         roles: [],
         DN: '',
         mdp: '',
         adresse: '',
-        changeType: ''
+        changeType: '',
+        protocole: ''
     }
 
     constructor(props) {
         super(props)
         this.changeMode=this.changeMode.bind(this)
         this.optionsTypeGroupe = [
-            { value: 'ad', label: 'MemberOf (Active Directory)' },
-            { value: 'memberOf', label: 'MemberOf (LDAP)' }
+            { value: 'Active Directory', label: 'Active Directory' },
+            { value: 'LDAP', label: 'LDAP' }
           ]
         this.changeListener = this.changeListener.bind(this)  
         this.handleChange = this.handleChange.bind(this) 
+        this.setLdapSetting = this.setLdapSetting.bind(this)
+        this.testLdapSettings = this.testLdapSettings.bind(this)
+    }
+
+    async getLdapSetting() {
+        return await apis.ldap.getLdapSettings()
+    }
+
+    async setLdapSetting() {
+        const options = {
+            TypeGroupe: this.state.changeType.value,
+            adresse:this.state.adresse,
+            port:this.state.LDAPport,
+            DN:this.state.DN,
+            mdp:this.state.mdp,
+            protocole:this.state.protocole
+        }
+        console.log("TESTTTTTTTTTTTTTTT")
+        console.log(options)
+        await apis.ldap.setLdapSettings(options)
+    }
+
+    async testLdapSettings() {
+       await apis.ldap.testLdapSettings()
     }
 
     async getModeFromDB() {
@@ -34,8 +59,20 @@ class Ldap extends Component {
     }
 
     async componentWillMount() {
+        //Mode
         let value = await this.getModeFromDB()
         this.setState({check: value})
+
+        //Ldap
+        let options = await this.getLdapSetting()
+        console.log("TEST MOUNT")
+        console.log(options)
+        this.setState({protocole: options.protocoles})
+        this.setState({changeType: options.TypeGroupe})
+        this.setState({adresse: options.adresse})
+        this.setState({LDAPport: options.port})
+        this.setState({DN: options.DN})
+        this.setState({mdp: options.mdp})
     }
 
     async changeMode() {
@@ -77,7 +114,7 @@ class Ldap extends Component {
 
     render() {
         return (
-            <div>
+            <Fragment>
                 <h2 className='card-title'>Distant Users Panel</h2>
                 <div>
                     <div className="row mt-5 mb-3">
@@ -102,17 +139,21 @@ class Ldap extends Component {
                         </div>    
                         <div className="row mt-2">
                             <div className='col-sm'>
+                                <label htmlFor="protocole">Protocole : </label>
+                                <input type='text' disabled={!this.state.check} name="protocole" className="form-control" onChange={this.handleChange} value={this.state.protocole} placeholder="ldap(s)//:" />
+                            </div>
+                            <div className='col-sm'>
                                 <label htmlFor="adresse">Adresse : </label>
-                                <input type='text' disabled={!this.state.check} name="adresse" className="form-control" onChange={this.handleChange} value={this.state.adresse} placeholder="ldap://" />
+                                <input type='text' disabled={!this.state.check} name="adresse" className="form-control" onChange={this.handleChange} value={this.state.adresse} />
                             </div>
                             <div className='col-sm'>
                                 <label htmlFor="LDAPPort">Port : </label>
-                                <input type='number' min='0' max='1000' name='LDAPport' id='LDAPport' className='form-control' onChange={this.handleChange} value={this.state.LDAPport}/>  
+                                <input type='number' disabled={!this.state.check} min='0' max='1000' name='LDAPport' id='LDAPport' className='form-control' onChange={this.handleChange} value={this.state.LDAPport}/>  
                             </div>
                         </div>
                         <div className="row mt-2">
                             <div className='col-sm'>
-                                <label htmlFor="DN" >Nom de Domaine de la Liaison LDAP : </label>
+                                <label htmlFor="DN" >DN de la Liaison LDAP : </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info' fontSize="small" color="action"/>
                                 <ReactTooltip place="right" effect="solid" id='info' type='dark'>
                                     <span>Show happy face</span>
@@ -130,8 +171,8 @@ class Ldap extends Component {
                         </div>            
                     </div>
                     <div className="form-group text-right mr-2">
-                    <input type='button' disabled={!this.state.check} className='btn btn-primary mr-1' onClick={null} value='Update' />
-                    <input type='button' disabled={!this.state.check} className='btn btn-info mr-1' onClick={null} value='Check Connexion' />
+                    <input type='button' disabled={!this.state.check} className='btn btn-primary mr-1' onClick={this.setLdapSetting} value='Update' />
+                    <input type='button' disabled={!this.state.check} className='btn btn-info mr-1' onClick={this.testLdapSettings} value='Check Connexion' />
                     </div>         
                 </div>
 
@@ -139,7 +180,7 @@ class Ldap extends Component {
                 <div className="form-group mr-3 mt-3" hidden={!this.state.check}>
                     <BootstrapTable keyField='groupName' data={this.state.roles} columns={this.columns} striped />
                 </div>
-            </div>         
+            </Fragment>         
         )
     }    
 }    

@@ -6,13 +6,13 @@ module.exports = {
       id: { //ID
         allowNull: false,
         primaryKey: true,
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       groupName: {
         allowNull: false,
         type: Sequelize.STRING, 
       }, 
-      role: {
+      roleDistant: {
         allowNull: false, 
         references: {
           model: 'Roles', 

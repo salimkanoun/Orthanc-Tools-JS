@@ -3,7 +3,7 @@ import updateOptions from '../authorizedOption'
 
 const ldap = {
 
-    setLdapSettings(LdapSettings){
+    async setLdapSettings(LdapSettings){
 
       const setLdapSettingsOption = {
         method: "POST",
@@ -20,7 +20,7 @@ const ldap = {
           }).catch(error => toastifyError(error))
     },
 
-    getLdapSettings() {
+    async getLdapSettings() {
 
       const getLdapSettingsOption =  {
         method: "GET",
@@ -36,7 +36,7 @@ const ldap = {
           }).catch(error => toastifyError(error))
     },
 
-    testLdapSettings() {
+    async testLdapSettings() {
 
       const testLdapSettingsOption =  {
         method: "GET",
@@ -82,7 +82,7 @@ const ldap = {
     
             return fetch("/api/ldap/", updateOptions(deleteCorrespondenceOption) ).then((answer) => {
                 if (!answer.ok) { throw answer }
-                    toastifySuccess('Correspondence deleted with success')
+                    //toastifySuccess('Correspondence deleted with success')
                     return (answer.json())
             }).catch(error => toastifyError(error))
         }, 
