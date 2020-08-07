@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       TypeGroupe: {
-        defaultValue: 'Active Directory',
+        defaultValue: 'ad',
         type: Sequelize.STRING, 
       },
       protocole: {
@@ -22,7 +22,7 @@ module.exports = {
         type: Sequelize.STRING, 
       },
       port: {
-        defaultValue: 450,
+        defaultValue: 389,
         type: Sequelize.INTEGER, 
       },
       DN: {
@@ -32,14 +32,24 @@ module.exports = {
       mdp: {
         defaultValue: '',
         type: Sequelize.STRING, 
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: new Date().toDateString()
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: new Date().toDateString()
       }
     }).then(() => {
       queryInterface.bulkInsert('LdapOptions', [{
         id:1,
-        TypeGroupe:'Active Directory',
+        TypeGroupe:'ad',
         protocole:'',
         adresse:'',
-        port:450,
+        port:389,
         DN:'',
         mdp:''
       }], {})

@@ -1,5 +1,5 @@
 const db = require('../database/models')
-const LdapClient = require('../ldap/ldapClient')
+const AdClient = require('../ldap/adClient')
 
 const Ldap = {
 
@@ -10,14 +10,10 @@ const Ldap = {
         'port',
         'DN',
         'mdp'] }))
-        console.log("TEST MODEL get LDAP SETTINGS : ")
-        console.log(option)
         return ({ protocoles: option.protocole, TypeGroupe: option.TypeGroupe, adresse: option.adresse, port: option.port, DN: option.DN, mdp: option.mdp })
     },
 
      setLdapSettings: async (options) => {
-        console.log("TEST MODEL SET LDAP SETTINGS : ")
-        console.log(options)
         try {
             await db.LdapOptions.upsert({
                 id: 1,
@@ -40,7 +36,18 @@ const Ldap = {
         'port',
         'DN',
         'mdp'] }))
-        client = new LdapClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp )
+
+        let client;
+
+        if(option.TypeGroupe === 'ad') {
+            client = new AdClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp )
+        } else if(option.TypeGroupe === 'ldap') {
+            //ToDo
+            throw 'ToDo'
+        } else {
+            throw 'inccorect TypeGroupe'
+        }
+        
         return client.testSettings()
     }
 

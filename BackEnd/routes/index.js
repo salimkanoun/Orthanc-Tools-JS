@@ -164,7 +164,7 @@ router.put('/changeMode', userAdminMidelware, changeMode)
 
 //Ldap
 router.get('/ldapSettings', userAdminMidelware, getLdapSettings)
-router.post('/ldapSettings', userAdminMidelware, setLdapSettings)
+router.put('/ldapSettings', userAdminMidelware, setLdapSettings)
 router.get('/ldapTestCo', userAdminMidelware, testLdapSettings)
 
 //Monitoring

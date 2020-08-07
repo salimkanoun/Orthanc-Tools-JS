@@ -1,4 +1,4 @@
-class LdapClient {
+class ADClient {
     
     constructor(type, protocole,  adresse, port, DN, mdp) {
         this.type = type,
@@ -13,5 +13,6 @@ class LdapClient {
         
         return true
     }
-
 }
+
+module.exports = ADClient

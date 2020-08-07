@@ -4,9 +4,8 @@ import updateOptions from '../authorizedOption'
 const ldap = {
 
     async setLdapSettings(LdapSettings){
-
       const setLdapSettingsOption = {
-        method: "POST",
+        method: 'PUT',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
