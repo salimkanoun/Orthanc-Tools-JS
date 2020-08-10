@@ -59,27 +59,26 @@ const ldap = {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(Correspondence)
+          body: JSON.stringify([Correspondence])
         };
   
-          return fetch("/api/ldap/", updateOptions(createCorrespondenceOption) ).then((answer) => {
+          return fetch("/api/ldapCorrespondences/", updateOptions(createCorrespondenceOption) ).then((answer) => {
               if (!answer.ok) { throw answer }
               return (answer.json())
             }).catch(error => toastifyError(error))
       },
       
     deleteCorrespondence(Correspondence){
-
         const deleteCorrespondenceOption = {
             method: 'DELETE',
             headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
             },
-            body: JSON.stringify(Correspondence)
+            body: JSON.stringify([Correspondence])
         };
     
-            return fetch("/api/ldap/", updateOptions(deleteCorrespondenceOption) ).then((answer) => {
+            return fetch("/api/ldapCorrespondences/", updateOptions(deleteCorrespondenceOption) ).then((answer) => {
                 if (!answer.ok) { throw answer }
                     //toastifySuccess('Correspondence deleted with success')
                     return (answer.json())
@@ -96,11 +95,26 @@ const ldap = {
         }
       }
 
-        return fetch("/api/ldap/", updateOptions(getAllCorrespodencesOption)).then((answer) => {
+        return fetch("/api/ldapCorrespondences/", updateOptions(getAllCorrespodencesOption)).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
           }).catch(error => toastifyError(error))
     },
+
+    getAllGroupName() {
+      const getAllCorrespodencesOption =  {
+        method: "GET",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
+
+        return fetch("/api/ldapGroupeName/", updateOptions(getAllCorrespodencesOption)).then((answer) => {
+            if (!answer.ok) { throw answer }
+            return (answer.json())
+          }).catch(error => toastifyError(error))
+    }
 }
 
 export default ldap

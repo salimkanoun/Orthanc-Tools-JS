@@ -12,12 +12,12 @@ class Ldap extends Component {
     state = {
         check: false,
         LDAPport: 389,
-        roles: [],
         DN: '',
         mdp: '',
         adresse: '',
         changeType: { value: 'ad', label: 'Active Directory' },
-        protocole: ''
+        protocole: '',
+        correspondences: [],
     }
 
     constructor(props) {
@@ -31,14 +31,8 @@ class Ldap extends Component {
         this.handleChange = this.handleChange.bind(this) 
         this.setLdapSetting = this.setLdapSetting.bind(this)
         this.testLdapSettings = this.testLdapSettings.bind(this)
-    }
-
-    getState() {
-        if(this.state.check) {
-            return true
-        } else {
-            return false
-        }
+        this.getCorrespondences = this.getCorrespondences.bind(this)
+        this.delete = this.delete.bind(this)
     }
 
     async getLdapSetting() {
@@ -66,6 +60,8 @@ class Ldap extends Component {
     }
 
     async componentWillMount() {
+        this.getCorrespondences()
+        
         //Mode
         let value = await this.getModeFromDB()
         this.setState({check: value})
@@ -109,6 +105,25 @@ class Ldap extends Component {
         this.setState({changeType: event})
     }
 
+    async delete(toDelete) {
+        await apis.ldap.deleteCorrespondence(toDelete).then(()=>{
+            //let answer = await apis.ldap.getAllCorrespodences()
+            /*this.setState({
+                correspondences: answer 
+            })*/
+        })
+    }
+
+    async getCorrespondences() {
+        //let answer = await apis.ldap.getAllCorrespodences()
+        /*this.setState({
+            correspondences: answer 
+        })*/
+        this.setState({
+            correspondences: [{groupName:'test', associedRole:'test'}] 
+        })
+    }
+
     columns = [
         {
             dataField: 'groupName', 
@@ -117,12 +132,12 @@ class Ldap extends Component {
         }, {
             dataField: 'associedRole', 
             text: 'Associed role', 
-            formatter: (cell, row, index) => {
-            }
         }, {
             dataField: 'delete', 
-            text: 'Delete', 
+            text: 'Delete',
+            editable: false, 
             formatter: (cell, row, index) => {
+                return <button type='button' name='delete' className='btn btn-danger' onClick={()=>{this.delete(row.groupName)}} >Delete</button>
             }
         }
     ]
@@ -223,9 +238,9 @@ class Ldap extends Component {
                     </div>         
                 </div>
 
-                <CreateCorrespondence getState={this.getState} />
+                <CreateCorrespondence show={!this.state.check} getCorrespondences={this.getCorrespondences} />
                 <div className="form-group mr-3 mt-3" hidden={!this.state.check}>
-                    <BootstrapTable keyField='groupName' data={this.state.roles} columns={this.columns} striped />
+                    <BootstrapTable keyField='groupName' data={this.state.correspondences} columns={this.columns} striped />
                 </div>
             </Fragment>         
         )

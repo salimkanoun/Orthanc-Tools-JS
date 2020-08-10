@@ -49,6 +49,40 @@ const Ldap = {
         }
         
         return client.testSettings()
+    },
+
+    getAllCorrespodences: async() => {
+
+    },
+
+    setCorrespodence: async(correspondence) => {
+        
+    },
+
+    deleteCorrespodence: async(correspondence) => {
+        console.log("TEST")
+    },
+
+    getAllGroupeNames: async() => {
+
+        const option = await db.LdapOptions.findOne(({ where: { id: 1 }, attributes: ['TypeGroupe',
+        'protocole',
+        'adresse',
+        'port',
+        'DN',
+        'mdp'] }))
+
+        let client;
+
+        if(option.TypeGroupe === 'ad') {
+            client = new AdClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp )
+        } else if(option.TypeGroupe === 'ldap') {
+            //ToDo
+            throw 'ToDo'
+        } else {
+            throw 'inccorect TypeGroupe'
+        }
+        return client.getAllCorrespodences()
     }
 
 }    

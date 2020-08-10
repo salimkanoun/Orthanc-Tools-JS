@@ -12,7 +12,7 @@ const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFrom
 
 const { test,test2 } = require('../controllers/monitoring')
 
-const { getLdapSettings, setLdapSettings, testLdapSettings } = require('../controllers/ldap')
+const { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames} = require('../controllers/ldap')
 
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
@@ -166,6 +166,10 @@ router.put('/changeMode', userAdminMidelware, changeMode)
 router.get('/ldapSettings', userAdminMidelware, getLdapSettings)
 router.put('/ldapSettings', userAdminMidelware, setLdapSettings)
 router.get('/ldapTestCo', userAdminMidelware, testLdapSettings)
+router.post('/ldapCorrespondences', userAdminMidelware, setLdapCorrespodence)
+router.get('/ldapCorrespondences', userAdminMidelware, getLdapCorrespodences)
+router.delete('/ldapCorrespondences', userAdminMidelware, deleteCorrespodence)
+router.get('/ldapGroupeName', userAdminMidelware, getLdapGroupeNames)
 
 //Monitoring
 router.head('/monitoring', test2)

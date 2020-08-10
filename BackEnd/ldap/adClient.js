@@ -13,6 +13,10 @@ class ADClient {
         
         return true
     }
+
+    async getAllCorrespodences() {
+        return []
+    }
 }
 
 module.exports = ADClient

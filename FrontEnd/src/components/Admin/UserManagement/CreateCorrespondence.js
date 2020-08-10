@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import Modal from 'react-bootstrap/Modal';
+import Select from 'react-select'
 
 import apis from '../../../services/apis'
 
@@ -7,34 +8,78 @@ import apis from '../../../services/apis'
 class CreateCorrespondence extends Component {
     state = { 
         show: false, 
+        groupName:'',
+        associedRole:'',
+        optionsAssociedRole: [],
+        optionsGroupeName: []
     }
 
     constructor(props){
         super(props)
         this.create = this.create.bind(this)
+
+        this.changeRole = this.changeRole.bind(this)
+        this.changeGroupe = this.changeGroupe.bind(this)
+
+    }
+
+    componentDidMount() {
+        this.getAssociedRole()
+    }
+
+    changeGroupe(event) {
+        this.setState({groupName: event})
+    }
+
+    changeRole(event) {
+        this.setState({associedRole: event})
+    }
+
+    async getGroupName() {
+        let res = []
+        let list = await apis.ldap.getAllGroupName()
+        /*for() {
+            res.push({value:'', label:''})
+        }*/
+        return res
+    }
+
+    async getAssociedRole() {
+        let res = []
+        let list = await apis.role.getRoles()
+        for(let i=0; i<list.length; i++) {
+            res.push({value:list[i].name, label:list[i].name})
+        }
+        this.setState({
+            optionsAssociedRole: res
+        })
     }
 
     async create(){
-            await apis.ldap.createCorrespondence().then(()=>{
+            await apis.ldap.createCorrespondence({groupName:this.state.groupName, associedRole:this.state.associedRole}).then(()=>{
+                this.props.getCorrespondences()
                 this.setState({
                     show: false, 
                 })
-                this.props.getRoles()
+                
             }).catch(error => console.log(error))
     }
 
     render() {
         return (
             <Fragment>
-                <button type='button' hidden={!this.props.getState()} className='btn btn-primary mr-3 mt-2' onClick={() => this.setState({show: true})} >New correspondence</button>
+                <button type='button' hidden={this.props.show} className='btn btn-primary mr-3 mt-2' onClick={() => this.setState({show: true})} >New correspondence</button>
                 <Modal id='create' show={this.state.show} onHide={() => this.setState({show: false})}>
                     <Modal.Header closeButton>
                         <h2 className='card-title'>Create new correspondence</h2>
                     </Modal.Header>
                     <Modal.Body>   
-                        <label>Name*</label>
-                        <input className='form-control mb-4' type='text' placeholder='name' name='name' value={this.state.name} onChange={(e) => this.setState({name: e.target.value})} required />
+                        <label>Group name</label>
+                        <Select name="typeGroupe" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.optionsGroupeName} onChange={this.changeGroupe} value={this.state.groupName} required/>
                         
+                        <label className='mt-3'>Associed role</label>
+                        <Select name="typeGroupe" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsAssociedRole} onChange={this.changeRole} value={this.state.associedRole} required/>
+
                     </Modal.Body>
                     <Modal.Footer>
                         <button type='button' name='create' className='btn btn-primary' onClick={this.create} >Create</button>
