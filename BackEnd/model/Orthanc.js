@@ -394,6 +394,11 @@ class Orthanc {
     let changes = await ReverseProxy.getAnswer(outputStream, "GET", undefined)
     return changes
   }
+
+  async getSopClassUID(instanceID){
+    let changes = await ReverseProxy.getAnswerPlainText('/instances/'+instanceID+"/metadata/SopClassUid", "GET", undefined)
+    return changes
+  }
 }
 
 module.exports = Orthanc
