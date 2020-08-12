@@ -41,14 +41,14 @@ export default class Authentication extends Component {
     
       // get token from fetch request
       const token = answer;
-
+      
       //cookie's options
       var d = new Date();
       d.setTime(d.getTime() + (7*24*60*60*1000)); // cookie expire in 7 days
       var expires = d.toUTCString();
 
       // set token in cookie
-      document.cookie = `tokenOrthancJs=${token}; expires=${expires}`
+      document.cookie = `tokenOrthancJs=${token}; expires=${expires};HttpOnly`
 
       newState =  {
         accessCheck : answer

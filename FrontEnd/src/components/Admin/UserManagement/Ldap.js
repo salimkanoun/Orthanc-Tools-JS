@@ -59,7 +59,7 @@ class Ldap extends Component {
         return await apis.options.getMode()
     }
 
-    async componentWillMount() {
+    async componentDidMount() {
         this.getCorrespondences()
         
         //Mode
@@ -107,20 +107,14 @@ class Ldap extends Component {
 
     async delete(toDelete) {
         await apis.ldap.deleteCorrespondence(toDelete).then(()=>{
-            //let answer = await apis.ldap.getAllCorrespodences()
-            /*this.setState({
-                correspondences: answer 
-            })*/
+            this.getCorrespondences()
         })
     }
 
     async getCorrespondences() {
-        //let answer = await apis.ldap.getAllCorrespodences()
-        /*this.setState({
-            correspondences: answer 
-        })*/
+        let answer = await apis.ldap.getAllCorrespodences()
         this.setState({
-            correspondences: [{groupName:'test', associedRole:'test'}] 
+            correspondences: answer 
         })
     }
 

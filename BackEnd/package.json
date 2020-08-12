@@ -48,7 +48,8 @@
     "sequelize": "^5.22.3",
     "sequelize-cli": "^5.5.1",
     "spdy": "^4.0.2",
-    "sqlite3": "^4.2.0"
+    "sqlite3": "^4.2.0",
+    "tmp-promise": "^3.0.2"
   },
   "engines": {
     "node": ">=12.0.0",

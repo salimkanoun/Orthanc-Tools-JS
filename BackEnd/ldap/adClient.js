@@ -15,7 +15,10 @@ class ADClient {
     }
 
     async getAllCorrespodences() {
-        return []
+        return [
+            { value: 'ad', label: 'Active Directory' },
+            { value: 'ldap', label: 'LDAP' }
+          ]
     }
 }
 

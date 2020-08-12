@@ -55,8 +55,11 @@ var Roles = require('../model/Roles')
 
     getRoleFromToken = async function(req, res){
         try {
-            const authHeader = req.headers['authorization']
-            const token = authHeader && authHeader.split(' ')[1]
+            const token = req.cookies.tokenOrthancJs
+            if (!token) {
+                throw "No token"
+            }
+
             let answer = await Roles.getRoleFromToken(token)
             res.json(answer)
         } catch (error) {

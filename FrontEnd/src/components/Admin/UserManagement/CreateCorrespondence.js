@@ -24,6 +24,7 @@ class CreateCorrespondence extends Component {
     }
 
     componentDidMount() {
+        this.getGroupName()
         this.getAssociedRole()
     }
 
@@ -36,12 +37,10 @@ class CreateCorrespondence extends Component {
     }
 
     async getGroupName() {
-        let res = []
         let list = await apis.ldap.getAllGroupName()
-        /*for() {
-            res.push({value:'', label:''})
-        }*/
-        return res
+
+        this.setState({ optionsGroupeName:list
+        })
     }
 
     async getAssociedRole() {
@@ -56,7 +55,7 @@ class CreateCorrespondence extends Component {
     }
 
     async create(){
-            await apis.ldap.createCorrespondence({groupName:this.state.groupName, associedRole:this.state.associedRole}).then(()=>{
+            await apis.ldap.createCorrespondence({groupName:this.state.groupName.value, associedRole:this.state.associedRole.value}).then(()=>{
                 this.props.getCorrespondences()
                 this.setState({
                     show: false, 
@@ -75,7 +74,7 @@ class CreateCorrespondence extends Component {
                     </Modal.Header>
                     <Modal.Body>   
                         <label>Group name</label>
-                        <Select name="typeGroupe" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.optionsGroupeName} onChange={this.changeGroupe} value={this.state.groupName} required/>
+                        <Select name="typeGroupe" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsGroupeName} onChange={this.changeGroupe} value={this.state.groupName} required/>
                         
                         <label className='mt-3'>Associed role</label>
                         <Select name="typeGroupe" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsAssociedRole} onChange={this.changeRole} value={this.state.associedRole} required/>

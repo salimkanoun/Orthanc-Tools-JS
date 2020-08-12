@@ -2,6 +2,7 @@ const Orthanc = require('../../Orthanc')
 var fs = require("fs");
 var JSZip = require("jszip");
 const tmp = require('tmp');
+const tmpPromise = require('tmp-promise');
 const orthanc_Monitoring = require('../Orthanc_Monitoring')
 const db = require('../../../database/models')
 
@@ -49,8 +50,8 @@ class CdBurner {
         //Si orthanc_Monitoring n'est pas allumé alors l'allumé
             //ToDo
 
-        orthanc_Monitoring.eventEmitteraddListener('StablePatient', (orthancID) => {this._makeCDFromPatient(orthancID)})
-        orthanc_Monitoring.eventEmitteraddListener('StableStudy', (orthancID) => {this._makeCD(orthancID)})
+        orthanc_Monitoring.on('StablePatient', (orthancID) => {this._makeCDFromPatient(orthancID)})
+        orthanc_Monitoring.on('StableStudy', (orthancID) => {this._makeCD(orthancID)})
     }
 
     stopCDMonitoring() {
@@ -149,7 +150,7 @@ class CdBurner {
 
                         //On efface la study de Orthanc
 			            if (deleteStudies) {
-                            //ToDo
+                            //await this.orthanc.deleteFromOrthanc('studies')
 			            }
 
                         cleanupCallback();

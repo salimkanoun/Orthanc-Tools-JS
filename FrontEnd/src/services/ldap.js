@@ -69,13 +69,13 @@ const ldap = {
       },
       
     deleteCorrespondence(Correspondence){
-        const deleteCorrespondenceOption = {
+      const deleteCorrespondenceOption = {
             method: 'DELETE',
             headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
             },
-            body: JSON.stringify([Correspondence])
+            body: JSON.stringify({correspodence:Correspondence})
         };
     
             return fetch("/api/ldapCorrespondences/", updateOptions(deleteCorrespondenceOption) ).then((answer) => {

@@ -52,15 +52,30 @@ const Ldap = {
     },
 
     getAllCorrespodences: async() => {
+        const answer = await db.DistantUser.findAll(({attributes: ['groupName', 'roleDistant']}))
+        let res = [] 
+        for(let i=0; i<answer.length; i++){
+            res[i]={groupName:answer[i].dataValues.groupName, associedRole:answer[i].dataValues.roleDistant}
+        } 
 
+        return res
     },
 
     setCorrespodence: async(correspondence) => {
-        
+        const promise = db.DistantUser.create({
+            groupName: correspondence[0].groupName,
+            roleDistant : correspondence[0].associedRole,
+          }).catch(e => console.log(e))
+    
+        return promise
     },
 
     deleteCorrespodence: async(correspondence) => {
-        console.log("TEST")
+        await db.DistantUser.destroy({
+            where: {
+                groupName: correspondence.correspodence
+             }
+          })
     },
 
     getAllGroupeNames: async() => {
