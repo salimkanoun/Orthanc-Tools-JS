@@ -33,6 +33,18 @@ module.exports = {
         defaultValue: '',
         type: Sequelize.STRING, 
       },
+      user: {
+        defaultValue: '',
+        type: Sequelize.STRING, 
+      },
+      groupe: {
+        defaultValue: '',
+        type: Sequelize.STRING, 
+      },
+      base: {
+        defaultValue: '',
+        type: Sequelize.STRING, 
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

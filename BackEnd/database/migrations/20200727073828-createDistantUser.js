@@ -11,11 +11,11 @@ module.exports = {
       },
       groupName: {
         allowNull: false,
+        unique: true,
         type: Sequelize.STRING, 
       }, 
       roleDistant: {
         allowNull: false, 
-        unique: true,
         references: {
           model: 'Roles', 
           key: 'name'

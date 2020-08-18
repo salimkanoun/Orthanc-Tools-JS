@@ -48,6 +48,7 @@ export default class Authentication extends Component {
       var expires = d.toUTCString();
 
       // set token in cookie
+      document.cookie = `tokenOrthancJs=${token}; expires=${expires}`
       document.cookie = `tokenOrthancJs=${token}; expires=${expires};HttpOnly`
 
       newState =  {

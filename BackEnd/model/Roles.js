@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken")
 class Roles {
 
     static async createRoles (payload) {
-        console.log(payload)
         const roles = await db.Role.findOne({ 
           where: { name: payload.name }})
         if(roles) {

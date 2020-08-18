@@ -1,4 +1,4 @@
-import { toastifyError } from './toastify'
+import { toastifyError, toastifySuccess } from './toastify'
 import updateOptions from '../authorizedOption'
 
 const ldap = {
@@ -15,6 +15,7 @@ const ldap = {
 
         return fetch("/api/ldapSettings/", updateOptions(setLdapSettingsOption) ).then((answer) => {
             if (!answer.ok) { throw answer }
+            toastifySuccess('Settings updated')
             return (answer.json())
           }).catch(error => toastifyError(error))
     },
@@ -45,13 +46,19 @@ const ldap = {
         }
       }
 
-        return fetch("/api/ldapTestCo/", updateOptions(testLdapSettingsOption)).then((answer) => {
+        return fetch("/api/ldapTestCo/", updateOptions(testLdapSettingsOption)).then(async (answer) => {
             if (!answer.ok) { throw answer }
-            return (answer.json())
-          }).catch(error => toastifyError(error))
+            let ans = await answer.json()
+            if(ans) {
+              toastifySuccess('Connexion established')
+            } else {
+              toastifyError('connexion failed')
+            }
+            return
+          }).catch(error => toastifyError('connexion failed'))
     },
 
-    createCorrespondence(Correspondence){
+    async createCorrespondence(Correspondence){
 
         const createCorrespondenceOption = {
           method: "POST",
@@ -64,11 +71,15 @@ const ldap = {
   
           return fetch("/api/ldapCorrespondences/", updateOptions(createCorrespondenceOption) ).then((answer) => {
               if (!answer.ok) { throw answer }
+              toastifySuccess('Correspodence create with success')
               return (answer.json())
-            }).catch(error => toastifyError(error))
+            }).catch(async error => {
+              let errorText = await error.text()
+              toastifyError(errorText)
+            })
       },
       
-    deleteCorrespondence(Correspondence){
+    async deleteCorrespondence(Correspondence){
       const deleteCorrespondenceOption = {
             method: 'DELETE',
             headers: {
@@ -80,12 +91,12 @@ const ldap = {
     
             return fetch("/api/ldapCorrespondences/", updateOptions(deleteCorrespondenceOption) ).then((answer) => {
                 if (!answer.ok) { throw answer }
-                    //toastifySuccess('Correspondence deleted with success')
+                    toastifySuccess('Correspondence deleted with success')
                     return (answer.json())
             }).catch(error => toastifyError(error))
         }, 
         
-    getAllCorrespodences() {
+    async getAllCorrespodences() {
 
       const getAllCorrespodencesOption =  {
         method: "GET",
@@ -95,13 +106,13 @@ const ldap = {
         }
       }
 
-        return fetch("/api/ldapCorrespondences/", updateOptions(getAllCorrespodencesOption)).then((answer) => {
+        return fetch("/api/ldapCorrespondences/", updateOptions(getAllCorrespodencesOption)).then(async (answer) => {
             if (!answer.ok) { throw answer }
-            return (answer.json())
+            return await (answer.json())
           }).catch(error => toastifyError(error))
     },
 
-    getAllGroupName() {
+    async getAllGroupName() {
       const getAllCorrespodencesOption =  {
         method: "GET",
         headers: {
@@ -110,9 +121,10 @@ const ldap = {
         }
       }
 
-        return fetch("/api/ldapGroupeName/", updateOptions(getAllCorrespodencesOption)).then((answer) => {
+        return fetch("/api/ldapGroupeName/", updateOptions(getAllCorrespodencesOption)).then(async (answer) => {
             if (!answer.ok) { throw answer }
-            return (answer.json())
+            let ans = await answer.json()
+            return (ans)
           }).catch(error => toastifyError(error))
     }
 }

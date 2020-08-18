@@ -10,22 +10,23 @@ const db = require('../../../database/models')
 class CdBurner {
     
     constructor(monitoring) {
+
         this.orthanc = new Orthanc()
 
         this.monitoring = monitoring
 
-        this.epsonDirectory 
-        this.viewerDirectory 
-        this.labelFile 
-        this.dateFormatChoix 
+        this.epsonDirectory = ''
+        this.viewerDirectory = ''
+        this.labelFile =''
+        this.dateFormatChoix = ''
 
-        this.levelPatient
+        this.levelPatient = ''
 
-        this.burnerManifacturer = "" //Epson or Primera
+        this.burnerManifacturer = '' //Epson or Primera
 
         //Date format
         this.DateOptions = {month: 'numeric', day: 'numeric'} //precision of the date
-        this.format = "" //format of date (using contry convention)
+        this.format = '' //format of date (using contry convention)
         
         let dbFormat = this._dateFormat()
         if(dbFormat === "fr") {     
@@ -246,7 +247,7 @@ class CdBurner {
 		}
     }
     
-    _determineDiscType() {
+    async _determineDiscType() {
 		let discType
 		if ( !suportType === "Auto") {
 			discType=suportType;
@@ -254,8 +255,10 @@ class CdBurner {
             //Get size of viewer and images to determine if CD or DVD to Burn
             let link  = ''//ToDo
 
-			let imageSize = fs.statSync(link).size;
-			let ViewerSize = fs.statSync(link).size;
+            //let imageSize = fs.statSync(link).size;
+            //let imageSize = await filehandle.stat().size
+            //let ViewerSize = fs.statSync(link).size;
+            //let ViewerSize = await filehandle.stat().size
 			//If size over 630 Mo
 			if(imageSize + ViewerSize > 630000000) {
 				discType="DVD";
@@ -414,6 +417,5 @@ class CdBurner {
 
 const cdBurner = new CdBurner();
 Object.freeze(cdBurner);
-
-exports.cdBurner = cdBurner
 exports.CdBurner = CdBurner
+exports.cdBurner = cdBurner

@@ -10,7 +10,10 @@ module.exports = (sequelize, DataTypes) => {
     adresse:DataTypes.STRING,
     port:DataTypes.INTEGER,
     DN:DataTypes.STRING,
-    mdp:DataTypes.STRING
+    mdp:DataTypes.STRING,
+    user:DataTypes.STRING,
+    groupe:DataTypes.STRING,
+    base:DataTypes.STRING
   }, {})
   LdapOptions.associate = function (models) {
     // associations can be defined here
