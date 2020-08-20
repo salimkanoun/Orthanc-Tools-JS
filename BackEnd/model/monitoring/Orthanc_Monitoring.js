@@ -10,8 +10,6 @@ class Orthanc_Monitoring extends EventEmitter {
 
         this.done = false
         this.last = 0
-
-        this.eventEmitter = new EventEmitter();
     }
 
     makeMonitor() {

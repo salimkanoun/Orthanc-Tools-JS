@@ -26,17 +26,7 @@ class CdBurner {
 
         //Date format
         this.DateOptions = {month: 'numeric', day: 'numeric'} //precision of the date
-        this.format = '' //format of date (using contry convention)
-        
-        let dbFormat = this._dateFormat()
-        if(dbFormat === "fr") {     
-            this.format = "fr-FR"
-        } else if(dbFormat === "uk") {
-            this.format = "uk-UA"
-        } else {
-            this.format = "uk-UA"
-        }
-        
+        this.format = this._dateFormat() //format of date (using contry convention)
     }
 
     async _dateFormat() {
@@ -44,20 +34,29 @@ class CdBurner {
             attributes: ['dateFormat'],
           });
 
-          return format
+        let res;
+
+        if(format === "fr") {     
+            res = "fr-FR"
+        } else if(format === "uk") {
+            res = "uk-UA"
+        } else {
+            res = "uk-UA"
+        }
+        return res
     }
 
     startCDMonitoring() {
         //Si orthanc_Monitoring n'est pas allumé alors l'allumé
             //ToDo
 
-        orthanc_Monitoring.on('StablePatient', (orthancID) => {this._makeCDFromPatient(orthancID)})
-        orthanc_Monitoring.on('StableStudy', (orthancID) => {this._makeCD(orthancID)})
+        this.monitoring.on('StablePatient', (orthancID) => {this._makeCDFromPatient(orthancID)})
+        this.monitoring.on('StableStudy', (orthancID) => {this._makeCD(orthancID)})
     }
 
     stopCDMonitoring() {
-        orthanc_Monitoring.removeListener('StablePatient', (orthancID) => {this._makeCDFromPatient(orthancID)})
-        orthanc_Monitoring.removeListener('StableStudy', (orthancID) => {this._makeCD(orthancID)})
+        this.monitoring.removeListener('StablePatient', (orthancID) => {this._makeCDFromPatient(orthancID)})
+        this.monitoring.removeListener('StableStudy', (orthancID) => {this._makeCD(orthancID)})
     } 
 
     async _makeCDFromPatient(newStablePatientID) {
@@ -415,7 +414,7 @@ class CdBurner {
 	}
 }    
 
-const cdBurner = new CdBurner();
+const cdBurner = new CdBurner(orthanc_Monitoring);
 Object.freeze(cdBurner);
 exports.CdBurner = CdBurner
 exports.cdBurner = cdBurner

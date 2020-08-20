@@ -1,45 +1,48 @@
 const CdBurner = require('../../model/monitoring/cdBurner/CdBurner')
+
 const Orthanc = require('../../model/Orthanc')
+const db = require('../../database/models')
+const {orthanc_Monitoring, Orthanc_Monitoring } = require('../../model/monitoring/Orthanc_Monitoring')
 
 describe('Test CdBurner', () => {
 
     let cdBurnerTest = CdBurner.cdBurner
 
     it('should be instence a cdBurner', ()=>{
-        spyOn(cdBurner, '_dateFormat()').and.returnValue('fr-FR')
+        //let cdBurner = new CdBurner.CdBurner(new Orthanc_Monitoring.Orthanc_Monitoring())
+        //let cdBurner = new CdBurner.CdBurner(Orthanc_Monitoring.orthanc_Monitoring)
+        let cdBurner = new CdBurner.CdBurner(orthanc_Monitoring)
 
-        let cdBurner = new CdBurner()
-        expect(cdBurner.orthanc).toBeInstanceOf(Orthanc_Monitoring)
-        expect(cdBurner.epsonDirectory).toBe()
-        expect(cdBurner.viewerDirectory).toBe()
-        expect(cdBurner.labelFile).toEqual()
-        expect(cdBurner.dateFormatChoix).toEqual()
-        expect(cdBurner.levelPatient).toEqual()
-        expect(cdBurner.burnerManifacturer).toEqual()
+        expect(cdBurner.orthanc).toBeInstanceOf(Orthanc)
+        expect(cdBurner.monitoring).toBeInstanceOf(Orthanc_Monitoring)
+        expect(cdBurner.epsonDirectory).toBe('')
+        expect(cdBurner.viewerDirectory).toBe('')
+        expect(cdBurner.labelFile).toEqual('')
+        expect(cdBurner.dateFormatChoix).toEqual('')
+        expect(cdBurner.levelPatient).toEqual('')
+        expect(cdBurner.burnerManifacturer).toEqual('')
     })
 
-    it('date options should be imported from db', ()=>{
-        spyOn(cdBurnerTest, 'dateFormat').and.returnValue('fr-FR')
-        console.log(cdBurnerTest.dateFormat())
+    /*
+    it('date options should be return', ()=>{
+        let cdBurner = new CdBurner.CdBurner()
+        spyOn(cdBurner, '_dateFormat').and.returnValue('fr-FR')
+        expect(cdBurner._dateFormat()).toBe("fr-FR")
+    })*/
 
-        expect( cdBurnerTest.dateFormat()).toBe("fr-FR")
-    })
-
-    it('_dateFormat should importe data from db', ()=>{
-        cdB = new CdBurner()
+    it('_dateFormat should importe data from db', async ()=>{
+        let cdBurner = new CdBurner.CdBurner()
         
-        spyOn(cdB, 'findOne()').and.returnValue('fr')
-        let rep  = cdBurnerTest._dateFormat() 
+        spyOn(db.Option, 'findOne').and.returnValue('fr')
+        let rep  = await cdBurner._dateFormat() 
         expect(rep).toBe("fr-FR")
-
-        spyOn(cdB, 'findOne()').and.returnValue('uk')
-        let rep2  = cdBurnerTest._dateFormat() 
-        expect(rep2).toBe("uk-UA")
     })
 
-    it('start monitoring should create listner', ()=>{
+    it('start monitoring should create listener', ()=>{
+        let spy = spyOn(cdBurnerTest.monitoring.EventEmitter, 'on')
+
         cdBurnerTest.startCDMonitoring()
-        expect(cdBurnerTest.monitoring).toBe("")
+        expect(spy.count()).toBe(2)
     })
 
     it('stop monitoring should destroy listner', ()=>{

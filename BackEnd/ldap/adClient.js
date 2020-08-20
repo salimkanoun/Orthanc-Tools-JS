@@ -1,8 +1,11 @@
 var ActiveDirectory = require('activedirectory');
+var AbstractAnnuaire = require ('./abstractAnnuaire');
 
-class ADClient {
+
+class ADClient extends AbstractAnnuaire {
     
     constructor(type, protocole,  adresse, port, DN, mdp, base, user, groupe) {
+            super()
             this.type = type,
             this.protocole = protocole
             this.adresse = adresse,
@@ -19,7 +22,7 @@ class ADClient {
             }
     }
 
-    async testSettings(callback) {
+    testSettings(callback) {
         let ad;
         
         try {
@@ -39,7 +42,7 @@ class ADClient {
             var username = this.DN;
             var password = this.mdp;
 
-            await ad.authenticate(username, password, function(err, auth) {
+            ad.authenticate(username, password, function(err, auth) {
             let res = false
             if (err) {
                 console.log('ERROR: '+JSON.stringify(err));
@@ -61,7 +64,7 @@ class ADClient {
         }    
     }
 
-    async getAllCorrespodences(callback) {
+    getAllCorrespodences(callback) {
         let ad;
         
         try {
@@ -83,7 +86,7 @@ class ADClient {
                 filter: this.groupe
             }
             
-            await ad.findGroups(queryFindGroupsOptions, function(err, groups) {
+            ad.findGroups(queryFindGroupsOptions, function(err, groups) {
                 let res = []
                 if (err) {
                 console.log('ERROR: ' + err);
@@ -104,7 +107,7 @@ class ADClient {
         }    
     }
 
-    async autentification(username, mdp, callback) {
+    autentification(username, mdp, callback) {
         let ad;
         
         try {
@@ -124,7 +127,7 @@ class ADClient {
             var username = username;
             var password = mdp;
 
-            await ad.authenticate(username, password, function(err, auth) {
+            ad.authenticate(username, password, function(err, auth) {
             let res = false
             if (err) {
                 console.log('ERROR: '+JSON.stringify(err));
@@ -147,14 +150,74 @@ class ADClient {
         }
     }
 
-    async getPermition(username, callback) {
-        try{
-            return callback(true)
+    async getPermission(username, groupes, callback) {
+        //Connexion
+        let ad;
+        
+        try {
+            var config = { url: this.protocole + this.adresse + ':' + this.port,
+            baseDN: this.base,
+            username: this.DN,
+            password: this.mdp 
+            }
+
+            ad = new ActiveDirectory(config);
         } catch(err) {
             console.log(err)
+            return callback([])
         }
+
+        //Get username
+        let usernameMemberOf;
+
+        try{
+            let words = username.split('@');
+            usernameMemberOf = words[0];
+
+        } catch (err) {
+            console.log(err)
+            return callback([])
+        }
+
+        //Get groups
+        let res = []
+        let memberPromisesArray =[]
+        for(let i=0;i<groupes.length;i++) {
+
+            let memberPromises = this.isMemberOfPromise(usernameMemberOf, groupes[i]).then((isMember)=>{
+                if (isMember) {res.push(groupes[i])}
+            }).catch((error)=> {console.log(error)})
+
+            memberPromisesArray.push(memberPromises)
+            
+        }
+
+        Promise.all(memberPromisesArray).then(()=>{
+            callback(res)
+        })
     }
-    
+
+    isMemberOfPromise(usernameMemberOf, groupe){
+
+        var config = { url: this.protocole + this.adresse + ':' + this.port,
+            baseDN: this.base,
+            username: this.DN,
+            password: this.mdp 
+            }
+
+        let ad = new ActiveDirectory(config);
+
+        return new Promise((resolve, reject) => {
+
+            ad.isUserMemberOf(usernameMemberOf, groupe, function(err, isMember) {
+                if (err) {
+                    reject( 'ERROR: ' +JSON.stringify(err) )
+                }
+                resolve(isMember)
+              })
+
+        })
+    }
 }
 
 module.exports = ADClient

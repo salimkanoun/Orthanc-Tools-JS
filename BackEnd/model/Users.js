@@ -129,6 +129,7 @@ class Users {
   }
 
   static async modifyUser(data){
+    
     if(data.username.indexOf('@') !== -1) throw '@ is forbiden'
 
     let user = new Users(data.username)
@@ -149,16 +150,16 @@ class Users {
       }
     }
 
-  try { 
-    await db.User.upsert({
-      id: data.id,
-      username: data.username, 
-      isAdmin: data.admin, 
-      first_name: data.first_name, 
-      last_name: data.last_name, 
-      mail: data.mail, 
-      role: data.role
-    })
+  try {
+      const mod = await db.User.findOne(({ where: { id:data.id } }))
+      mod.id = data.id
+      mod.username = data.username, 
+      mod.isAdmin = data.admin, 
+      mod.first_name = data.first_name, 
+      mod.last_name = data.last_name, 
+      mod.mail = data.mail, 
+      mod.role = data.role
+      await mod.save()
   } catch (error) {
     console.log(error)
   }
@@ -252,7 +253,7 @@ class Users {
             throw 'inccorect TypeGroupe'
         }
 
-    await client.getPermition(username, function(response) { 
+    await client.getPermission(username, ['user','Users','Administrators','aaa','Guest'], async function(response) { 
       let res = {
         import:true,
         content:true,
@@ -266,6 +267,7 @@ class Users {
         modify:true
       }
       
+      console.log(response)
       return callback(res)
     })
   }  
