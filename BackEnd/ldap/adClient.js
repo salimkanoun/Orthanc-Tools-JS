@@ -20,29 +20,26 @@ class ADClient extends AbstractAnnuaire {
             } else {
                 this.groupe = groupe
             }
+
+            this.buildAD()
     }
 
-    testSettings(callback) {
-        let ad;
-        
-        try {
+    buildAD() {
             var config = { url: this.protocole + this.adresse + ':' + this.port,
             baseDN: this.base,
             username: this.DN,
             password: this.mdp 
             }
 
-            ad = new ActiveDirectory(config);
-        } catch(err) {
-            console.log(err)
-            return callback(false)
-        }
+            this.ad = new ActiveDirectory(config);
+    }
 
+    testSettings(callback) {
         try {
             var username = this.DN;
             var password = this.mdp;
 
-            ad.authenticate(username, password, function(err, auth) {
+            this.ad.authenticate(username, password, function(err, auth) {
             let res = false
             if (err) {
                 console.log('ERROR: '+JSON.stringify(err));
@@ -65,28 +62,13 @@ class ADClient extends AbstractAnnuaire {
     }
 
     getAllCorrespodences(callback) {
-        let ad;
-        
-        try {
-            var config = { url: this.protocole + this.adresse + ':' + this.port,
-            baseDN: this.base,
-            username: this.DN,
-            password: this.mdp 
-            }
-        
-            ad = new ActiveDirectory(config);
-        } catch(err) {
-            console.log(err)
-            return callback([])
-        }
-
         try {
             var queryFindGroupsOptions = {
                 scope: 'sub',
                 filter: this.groupe
             }
             
-            ad.findGroups(queryFindGroupsOptions, function(err, groups) {
+            this.ad.findGroups(queryFindGroupsOptions, function(err, groups) {
                 let res = []
                 if (err) {
                 console.log('ERROR: ' + err);
@@ -108,26 +90,11 @@ class ADClient extends AbstractAnnuaire {
     }
 
     autentification(username, mdp, callback) {
-        let ad;
-        
-        try {
-            var config = { url: this.protocole + this.adresse + ':' + this.port,
-            baseDN: this.base,
-            username: this.DN,
-            password: this.mdp 
-            }
-
-            ad = new ActiveDirectory(config);
-        } catch(err) {
-            console.log(err)
-            return callback(false)
-        }
-
-        try {
+          try {
             var username = username;
             var password = mdp;
 
-            ad.authenticate(username, password, function(err, auth) {
+            this.ad.authenticate(username, password, function(err, auth) {
             let res = false
             if (err) {
                 console.log('ERROR: '+JSON.stringify(err));
@@ -151,22 +118,6 @@ class ADClient extends AbstractAnnuaire {
     }
 
     async getPermission(username, groupes, callback) {
-        //Connexion
-        let ad;
-        
-        try {
-            var config = { url: this.protocole + this.adresse + ':' + this.port,
-            baseDN: this.base,
-            username: this.DN,
-            password: this.mdp 
-            }
-
-            ad = new ActiveDirectory(config);
-        } catch(err) {
-            console.log(err)
-            return callback([])
-        }
-
         //Get username
         let usernameMemberOf;
 
@@ -198,18 +149,9 @@ class ADClient extends AbstractAnnuaire {
     }
 
     isMemberOfPromise(usernameMemberOf, groupe){
-
-        var config = { url: this.protocole + this.adresse + ':' + this.port,
-            baseDN: this.base,
-            username: this.DN,
-            password: this.mdp 
-            }
-
-        let ad = new ActiveDirectory(config);
-
         return new Promise((resolve, reject) => {
 
-            ad.isUserMemberOf(usernameMemberOf, groupe, function(err, isMember) {
+            this.ad.isUserMemberOf(usernameMemberOf, groupe, function(err, isMember) {
                 if (err) {
                     reject( 'ERROR: ' +JSON.stringify(err) )
                 }
