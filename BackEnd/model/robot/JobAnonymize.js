@@ -25,7 +25,7 @@ class JobAnonymize extends Job {
             //If default, remove the secondary capture SOPClassUID
             if(item.anonProfile === 'Default'){
                 let anonymizedStudyDetails  = await this.orthancObject.getOrthancDetails('studies', anonAnswer.ID)
-                for(seriesOrthancID of anonymizedStudyDetails['Series']){
+                for(let seriesOrthancID of anonymizedStudyDetails['Series']){
                     let seriesDetails = await this.orthancObject.getOrthancDetails('series', seriesOrthancID)
                     let firstInstanceID = seriesDetails['Instances'][0]
                     let sopClassUID = await this.orthancObject.getSopClassUID(firstInstanceID)
