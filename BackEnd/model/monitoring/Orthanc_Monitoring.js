@@ -5,11 +5,25 @@ class Orthanc_Monitoring extends EventEmitter {
     
     constructor () {
         super()
-        
         this.orthanc = new Orthanc()
-
         this.done = false
         this.last = 0
+    }
+
+    async startMonitoring () {
+        //If already started skip
+        if(this.monitoringRunning) return
+
+        this.monitoringRunning = true
+        //Get last change number at monitoring startup (monitoring will start at this index)
+        let changes = await this.orthanc.getChangesLast()
+        this.last = changes.Last
+        this.monitoringInterval = setInterval(this.makeMonitor, 2000)
+    }
+
+    stopMonitoring (){
+        this.monitoringRunning = false
+        clearInterval(this.monitoringInterval)
     }
 
     makeMonitor() {
@@ -20,22 +34,6 @@ class Orthanc_Monitoring extends EventEmitter {
         
     }
 
-    async getChangeLastLine() {
-        let changes = await this.orthanc.getChangesLast();
-        this.last = parseInt(changes.Last);
-		console.log(this.last);
-		
-		return this.last;
-    }
-    
-    setChangeLastLine(last) {
-        this.last = last
-    }
-    
-    autoSetChangeLastLine() {
-        this.last = this.getChangeLastLine();
-    }
-
     async _parseOutput(last) {
         
         let changes
@@ -44,7 +42,6 @@ class Orthanc_Monitoring extends EventEmitter {
         } catch (err) {
             console.log(err)
         }
-        console.log(changes)
 
         let changesArray=changes.Changes;
 
@@ -76,8 +73,8 @@ class Orthanc_Monitoring extends EventEmitter {
 			}
         }) 
         
-        this.last = parseInt(changes.Last);
-        this.done = changes.Done; 
+        this.last = changes.Last
+        this.done = changes.Done
     }
         
 }
