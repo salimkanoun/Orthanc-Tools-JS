@@ -253,21 +253,53 @@ class Users {
             throw 'inccorect TypeGroupe'
         }
 
-    await client.getPermission(username, ['user','Users','Administrators','aaa','Guest'], async function(response) { 
-      let res = {
-        import:true,
-        content:true,
-        anon:true,
-        export_local:true,
-        export_extern:true,
-        query:true,
-        auto_query:true,
-        delete:true,
-        admin:true,
-        modify:true
-      }
+        const opt = await db.DistantUser.findAll(({attributes: ['groupName'] }))
+        const roles = []; 
+        for(let u=0;u<opt.length;u++) {roles.push(opt[u].dataValues.groupName)}
+
+    await client.getPermission(username, roles, async function(response) { 
       
-      console.log(response)
+      let res = {
+        import:false,
+        content:false,
+        anon:false,
+        export_local:false,
+        export_extern:false,
+        query:false,
+        auto_query:false,
+        delete:false,
+        admin:false,
+        modify:false
+      }
+
+      for(let i=0;i<response.length;i++) {
+
+        let resp = await db.DistantUser.findOne(({where: {groupName: response[i]}, attributes: ['roleDistant'] }))
+        let role = await resp.dataValues.roleDistant; 
+
+        let option = await db.Role.findOne(({ where: { name: role }, attributes: ['import',
+        'content',
+        'anon',
+        'export_local',
+        'export_extern',
+        'query','auto_query','delete','admin','modify'] }))
+
+        res = {
+          import:res.import || option.dataValues.import,
+          content:res.content || option.dataValues.content,
+          anon:res.anon || option.dataValues.anon,
+          export_local:res.export_local || option.dataValues.export_local,
+          export_extern:res.export_extern || option.dataValues.export_extern,
+          query:res.query || option.dataValues.query,
+          auto_query:res.auto_query || option.dataValues.auto_query,
+          delete:res.delete || option.dataValues.delete,
+          admin:res.admin || option.dataValues.admin,
+          modify:res.modify || option.dataValues.modify
+        }
+
+        console.log(res)
+      }
+
       return callback(res)
     })
   }  

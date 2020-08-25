@@ -1,5 +1,6 @@
 const Orthanc = require('../../Orthanc')
 var fs = require("fs");
+var fsPromises = require('fs')
 var JSZip = require("jszip");
 const tmp = require('tmp');
 const tmpPromise = require('tmp-promise');
@@ -12,38 +13,32 @@ class CdBurner {
     constructor(monitoring) {
 
         this.orthanc = new Orthanc()
-
         this.monitoring = monitoring
 
-        this.epsonDirectory = ''
-        this.viewerDirectory = ''
         this.labelFile =''
-        this.dateFormatChoix = ''
-
         this.levelPatient = ''
-
         this.burnerManifacturer = '' //Epson or Primera
 
         //Date format
-        this.DateOptions = {month: 'numeric', day: 'numeric'} //precision of the date
-        this.format = this._dateFormat() //format of date (using contry convention)
+        this.dateOptions = {month: 'numeric', day: 'numeric'} //precision of the date
     }
 
-    async _dateFormat() {
-        const format = await db.Option.findOne({ 
+    async setSettings() {
+
+        const options = await db.Option.findOne({ 
             attributes: ['dateFormat'],
           });
 
-        let res;
-
-        if(format === "fr") {     
-            res = "fr-FR"
+        //format of date (using contry convention)
+        if(options.dateFormat === "fr") {     
+            this.format = "fr-FR"
         } else if(format === "uk") {
-            res = "uk-UA"
+            this.format = "uk-UA"
         } else {
-            res = "uk-UA"
+            this.format = "uk-UA"
         }
-        return res
+
+        this.viewerPath = options.CDBurnerViewerPath;
     }
 
     startCDMonitoring() {
@@ -72,7 +67,7 @@ class CdBurner {
         let formattedPatientDOB = "N/A"
         try {
             let patientDOB = patient.MainDicomTags.PatientBirthDate //date d'anniversaire du patient
-            formattedPatientDOB = patientDOB.toLocaleDateString(this.format, this.DateOptions) //datte d'anniverssaire formaté du patient
+            formattedPatientDOB = patientDOB.toLocaleDateString(this.format, this.dateOptions) //datte d'anniverssaire formaté du patient
         } catch (err) {
             console.log(err)
         }
@@ -179,13 +174,13 @@ class CdBurner {
 		
 			formattedDateExamen = "N/A";
 			if(study.MainDicomTags.StudyDate !== null) {
-                formattedDateExamen = study.MainDicomTags.StudyDate.toLocaleDateString(undefined, this.DateOptions)
+                formattedDateExamen = study.MainDicomTags.StudyDate.toLocaleDateString(undefined, this.dateOptions)
 			}
 			
 			formattedPatientDOB = "N/A";
 			try {
 				let patientDOBDate = patient.MainDicomTags.PatientBirthDate;
-				formattedPatientDOB = patientDOBDate.toLocaleDateString(this.format, this.DateOptions);
+				formattedPatientDOB = patientDOBDate.toLocaleDateString(this.format, this.dateOptions);
 			}catch (e) { }
 			
 			let modalitiesInStudy = String.join("//", study.getModalitiesInStudy());
@@ -255,11 +250,18 @@ class CdBurner {
             let link  = ''//ToDo
 
             //let imageSize = fs.statSync(link).size;
-            //let imageSize = await filehandle.stat().size
-            //let ViewerSize = fs.statSync(link).size;
-            //let ViewerSize = await filehandle.stat().size
+            let imageSize = await fsPromises.open(link).then((filehandle) => {return filehandle.stat()} ).then(stat=>{
+                return stat.size
+            })
+            console.log(imageSize)
+
+            let viewerSize = await fsPromises.open("").then((filehandle) => {return filehandle.stat()} ).then(stat=>{
+                return stat.size
+            })
+            console.log(imageSize)
+    
 			//If size over 630 Mo
-			if(imageSize + ViewerSize > 630000000) {
+			if(imageSize + viewerSize > 630000000) {
 				discType="DVD";
 			} else {
 				discType="CD";

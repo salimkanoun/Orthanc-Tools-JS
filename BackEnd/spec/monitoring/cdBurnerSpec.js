@@ -9,18 +9,16 @@ describe('Test CdBurner', () => {
     let cdBurnerTest = CdBurner.cdBurner
 
     it('should be instence a cdBurner', ()=>{
-        //let cdBurner = new CdBurner.CdBurner(new Orthanc_Monitoring.Orthanc_Monitoring())
-        //let cdBurner = new CdBurner.CdBurner(Orthanc_Monitoring.orthanc_Monitoring)
         let cdBurner = new CdBurner.CdBurner(orthanc_Monitoring)
 
         expect(cdBurner.orthanc).toBeInstanceOf(Orthanc)
         expect(cdBurner.monitoring).toBeInstanceOf(Orthanc_Monitoring)
-        expect(cdBurner.epsonDirectory).toBe('')
-        expect(cdBurner.viewerDirectory).toBe('')
+
         expect(cdBurner.labelFile).toEqual('')
-        expect(cdBurner.dateFormatChoix).toEqual('')
         expect(cdBurner.levelPatient).toEqual('')
         expect(cdBurner.burnerManifacturer).toEqual('')
+        
+        expect(cdBurner.dateOptions).toEqual({month: 'numeric', day: 'numeric'})
     })
 
     /*
@@ -33,9 +31,9 @@ describe('Test CdBurner', () => {
     it('_dateFormat should importe data from db', async ()=>{
         let cdBurner = new CdBurner.CdBurner()
         
-        spyOn(db.Option, 'findOne').and.returnValue('fr')
-        let rep  = await cdBurner._dateFormat() 
-        expect(rep).toBe("fr-FR")
+        spyOn(db.Option, 'findOne').and.returnValue({dateFormat:'fr'})
+        let rep  = await cdBurner.setSettings() 
+        expect(this.format).toBe("fr-FR")
     })
 
     it('start monitoring should create listener', ()=>{
