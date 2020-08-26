@@ -28,6 +28,21 @@ class Orthanc {
     ReverseProxy.streamToFile('/tools/create-archive', 'POST', orthancIds, streamWriter)
   }
 
+  getArchiveDicom(orthancIds)  {
+
+     return new Promise((resolve, reject)=>{
+      const destination = './data/export_dicom/' + Math.random().toString(36).substr(2, 5) + '.zip'
+      const streamWriter = fs.createWriteStream(destination)
+      ReverseProxy.streamToFileWithCallBack('/tools/create-archive', 'POST', orthancIds, streamWriter, resolve(destination))
+
+    })
+    
+  } 
+
+  getArchiveDicomPath(filename){
+    return './data/export_dicom/' + filename + '.zip'
+  }
+
   /**
      * Prepare JSON query for DICOM query request in Orthanc
      * @param {string} level

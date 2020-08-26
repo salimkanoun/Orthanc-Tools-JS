@@ -116,6 +116,18 @@ const ReverseProxy = {
       })
   },
 
+  streamToFileWithCallBack (api, method, data, streamWriter, finishCallBack) {
+    request(this.makeOptions(method, api, data))
+      .on('response', function (response) {
+        if (response.statusCode === 200) {
+          response.pipe(streamWriter)
+            .on('finish', finishCallBack )
+        }
+      }).catch((error) => {
+        console.log(error)
+      })
+  },
+
   async getAnswer (api, method, data) {
     const requestPromise = request(this.makeOptions(method, api, data)).then(function (body) {
       return JSON.parse(body)
