@@ -50,7 +50,7 @@ class CdBurner {
         //Create listener
         this.__makeListener()
         //Start monitoring service
-        this.monitoring.startMonitoring()
+        this.monitoring.startMonitoringService(orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
 
     }
 

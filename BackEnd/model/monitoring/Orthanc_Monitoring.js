@@ -10,20 +10,46 @@ class Orthanc_Monitoring extends EventEmitter {
         this.last = 0
     }
 
-    async startMonitoring () {
+    monitoringService = {
+        cdBurner = false
+    }
+
+    async startMonitoringifNeeded () {
         //If already started skip
         if(this.monitoringRunning) return
 
-        this.monitoringRunning = true
-        //Get last change number at monitoring startup (monitoring will start at this index)
-        let changes = await this.orthanc.getChangesLast()
-        this.last = changes.Last
-        this.monitoringInterval = setInterval(this.makeMonitor, 2000)
+        let startedServiceArray = Object.keys(this.monitoringService).filter(service=> (service ===true) )
+
+        if(startedServiceArray.length >0 ){
+            this.monitoringRunning = true
+            //Get last change number at monitoring startup (monitoring will start at this index)
+            let changes = await this.orthanc.getChangesLast()
+            this.last = changes.Last
+            this.monitoringInterval = setInterval(this.makeMonitor, 2000)
+
+        }
+        
     }
 
-    stopMonitoring (){
-        this.monitoringRunning = false
-        clearInterval(this.monitoringInterval)
+    startMonitoringService(serviceName){
+        this.monitoringService[serviceName] = true
+        this.startMonitoringifNeeded()
+    }
+
+    stopMonitoringService(serviceName){
+        this.monitoringService[serviceName] = false
+        this.stopMonitoringIfNeeded()
+    }
+
+    stopMonitoringIfNeeded (){
+        if(!this.monitoringRunning) return
+
+        let startedServiceArray = Object.keys(this.monitoringService).filter(service=> (service ===true) )
+        if(startedServiceArray.length === 0 ){
+            this.monitoringRunning = false
+            clearInterval(this.monitoringInterval)
+        }
+
     }
 
     makeMonitor() {
@@ -81,6 +107,8 @@ class Orthanc_Monitoring extends EventEmitter {
 
 const orthanc_Monitoring = new Orthanc_Monitoring();
 Object.freeze(orthanc_Monitoring);
+
+const MONITORING_SERVICE_CDBURNER = "CdBurner"
 
 exports.orthanc_Monitoring = orthanc_Monitoring
 exports.Orthanc_Monitoring = Orthanc_Monitoring
