@@ -1,7 +1,9 @@
-var {cdBurner} = require('../model/monitoring/cdburner/CdBurner')
+var CdBurnerFactory = require('../model/monitoring/cdburner/CdBurnerFactory')
 
 var startBurner = async function(req, res) {
-    cdBurner.startCDMonitoring()
+    console.log(CdBurnerFactory)
+    cdBurnerInstance = CdBurnerFactory.getInstance()
+    cdBurnerInstance.startCDMonitoring()
     res.end()
 }
 

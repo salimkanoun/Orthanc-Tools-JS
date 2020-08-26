@@ -105,10 +105,6 @@ class Orthanc_Monitoring extends EventEmitter {
         
 }
 
-const orthanc_Monitoring = new Orthanc_Monitoring();
-Object.freeze(orthanc_Monitoring);
-
 const MONITORING_SERVICE_CDBURNER = "CdBurner"
 
-exports.orthanc_Monitoring = orthanc_Monitoring
-exports.Orthanc_Monitoring = Orthanc_Monitoring
+module.exports = Orthanc_Monitoring
