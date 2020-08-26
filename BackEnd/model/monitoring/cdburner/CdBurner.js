@@ -20,25 +20,26 @@ class CdBurner {
         this.dateOptions = { month: 'numeric', day: 'numeric' } //precision of the date
 
         const options = await db.Option.findOne({
-            attributes: ['dateFormat'],
+            attributes: ['dateFormat','burner_label_file','burner_monitoring_level','burner_burner_manifacturer'
+            ,'burner_monitored_folder','burner_delete_study_after_sent','burner_viewer_path'],
         });
 
         //format of date (using contry convention)
-        if (options.dateFormat === "fr") {
+        if (options.date_format === "fr") {
             this.format = "fr-FR"
-        } else if (format === "uk") {
+        } else if (options.date_format === "uk") {
             this.format = "uk-UA"
         } else {
             this.format = "uk-UA"
         }
 
         //SK A FILL A PARTIR DE LA DB
-        this.labelFile = options.CDBurnerLabelFile;
-        this.monitoringLevel = options.CDBurnerMonitoringLevel;
-        this.burnerManifacturer = options.CDBurnerBurnerManifacturer; //Epson or Primera
-        this.monitoredFolder = options.CDBurnerMonitoredFolder;
-        this.deleteStudyAfterSent = options.CDBurnerDeleteStudyAfterSent;
-        this.viewerPath = options.CDBurnerViewerPath;
+        this.labelFile = options.burner_label_file;
+        this.monitoringLevel = options.burner_monitoring_level;
+        this.burnerManifacturer = options.burner_burner_manifacturer; //Epson or Primera
+        this.monitoredFolder = options.burner_monitored_folder;
+        this.deleteStudyAfterSent = options.burner_delete_study_after_sent;
+        this.viewerPath = options.burner_viewer_path;
     }
 
     async startCDMonitoring() {

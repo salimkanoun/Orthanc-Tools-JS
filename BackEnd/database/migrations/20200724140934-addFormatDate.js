@@ -4,7 +4,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addColumn(
       'Options',
-      'dateFormat',
+      'date_format',
      {
        type: Sequelize.STRING,
        allowNull: false,

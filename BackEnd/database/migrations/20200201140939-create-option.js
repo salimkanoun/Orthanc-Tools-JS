@@ -26,32 +26,32 @@ module.exports = {
         type: Sequelize.BOOLEAN, 
         defaultValue: false
       },
-      CDBurnerLabelFile: {
+      burner_LabelFile: {
         allowNull: false,
         type: Sequelize.STRING, 
         defaultValue: '',
       },
-      CDBurnerMonitoringLevel: {
+      burner_monitoring_level: {
         allowNull: false,
         type: Sequelize.STRING, 
         defaultValue: '',
       },
-      CDBurnerBurnerManifacturer: {
+      burner_burner_manifacturer: {
         allowNull: false,
         type: Sequelize.STRING, 
         defaultValue: '',
       },
-      CDBurnerMonitoredFolder: {
+      burner_monitored_folder: {
         allowNull: false,
         type: Sequelize.STRING, 
         defaultValue: '',
       },
-      CDBurnerDeleteStudyAfterSent: {
+      burner_delete_study_after_sent: {
         allowNull: false,
         type: Sequelize.BOOLEAN, 
         defaultValue: false,
       },
-      CDBurnerViewerPath: {
+      burner_viewer_path: {
         allowNull: false,
         type: Sequelize.STRING, 
         defaultValue: '',
