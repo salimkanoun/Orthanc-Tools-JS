@@ -7,6 +7,7 @@ module.exports = {
       'dateFormat',
      {
        type: Sequelize.STRING,
+       allowNull: false,
        defaultValue: 'uk' 
      },
      

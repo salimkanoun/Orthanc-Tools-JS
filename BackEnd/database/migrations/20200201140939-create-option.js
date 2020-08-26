@@ -25,7 +25,38 @@ module.exports = {
       ldap: {
         type: Sequelize.BOOLEAN, 
         defaultValue: false
+      },
+      CDBurnerLabelFile: {
+        allowNull: false,
+        type: Sequelize.STRING, 
+        defaultValue: '',
+      },
+      CDBurnerMonitoringLevel: {
+        allowNull: false,
+        type: Sequelize.STRING, 
+        defaultValue: '',
+      },
+      CDBurnerBurnerManifacturer: {
+        allowNull: false,
+        type: Sequelize.STRING, 
+        defaultValue: '',
+      },
+      CDBurnerMonitoredFolder: {
+        allowNull: false,
+        type: Sequelize.STRING, 
+        defaultValue: '',
+      },
+      CDBurnerDeleteStudyAfterSent: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN, 
+        defaultValue: false,
+      },
+      CDBurnerViewerPath: {
+        allowNull: false,
+        type: Sequelize.STRING, 
+        defaultValue: '',
       }
+
     }).then(() => {
       queryInterface.bulkInsert('Options', [{
         hour: 22,

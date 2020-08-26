@@ -1,5 +1,5 @@
 var fs = require("fs");
-var fsPromises = require('fs/promises')
+//var fsPromises = require('fs/promises')
 var JSZip = require("jszip");
 const tmp = require('tmp');
 const tmpPromise = require('tmp-promise');
@@ -33,11 +33,11 @@ class CdBurner {
         }
 
         //SK A FILL A PARTIR DE LA DB
-        this.labelFile = ''
-        this.monitoringLevel = ''
-        this.burnerManifacturer = '' //Epson or Primera
-        this.monitoredFolder = ''
-        this.deleteStudyAfterSent = false
+        this.labelFile = options.CDBurnerLabelFile;
+        this.monitoringLevel = options.CDBurnerMonitoringLevel;
+        this.burnerManifacturer = options.CDBurnerBurnerManifacturer; //Epson or Primera
+        this.monitoredFolder = options.CDBurnerMonitoredFolder;
+        this.deleteStudyAfterSent = options.CDBurnerDeleteStudyAfterSent;
         this.viewerPath = options.CDBurnerViewerPath;
     }
 
@@ -51,7 +51,6 @@ class CdBurner {
         this.__makeListener()
         //Start monitoring service
         this.monitoring.startMonitoringService(orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
-
     }
 
     /**
@@ -211,7 +210,7 @@ class CdBurner {
 
     }
 
-    _makeCD(newStableStudyID) {
+    async _makeCD(newStableStudyID) {
 
         let study = this.orthanc.findInOrthanc('Study', '', newStableStudyID, '', '', '', '', '')
         let patient = this.orthanc.findInOrthanc('Patient', '', study.ParentPatient, '', '', '', '', '')

@@ -11,7 +11,7 @@ class Orthanc_Monitoring extends EventEmitter {
     }
 
     monitoringService = {
-        cdBurner = false
+        cdBurner: false
     }
 
     async startMonitoringifNeeded () {
