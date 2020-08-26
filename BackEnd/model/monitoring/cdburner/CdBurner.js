@@ -172,66 +172,25 @@ class CdBurner {
             }
         }
 
-        let modalitiesInStudyPrimera = String.join("//", uniqueModalitiesForPrimera);
+        //SK ICI METHODE POUR DL ET DEZIPER LES DICOMS
 
-        //Generate the ZIP with Orthanc IDs dicom
-        for (u = 0; u < studies.length; u++) {
-            Orthanc.exportArchiveDicom(studies[u].MainDicomTags.StudyID, Orthanc.exportArchiveDicom(studies[u].MainDicomTags.StudyID))
+
+        if (this.burnerManifacturer === MONITOR_CD_EPSON) {
+            let discType = await _determineDiscType()
+            let dat = await _printDat(datInfos);
+            //Generation du Dat
+            requestFileAndID = await _createCdBurnerEpson(dat, discType, patient.MainDicomTags.PatientName, "Mutiples")
+
+        } else if (this.burnerManifacturer === MONITOR_CD_PRIMERA) {
+            nom, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities
+            //SK ICI METHODE POUR RECUPERE LES MODALITIES IN STUDY
+            let modalitiesInStudyPrimera = "MODALITIES"
+            requestFileAndID = await _createCdBurnerPrimera(patient.MainDicomTags.PatientName, patient.MainDicomTags.PatientID, "Mutiples", (studies.length + " studies") , "Mutiples", formattedPatientDOB, studies.length , modalitiesInStudyPrimera)
         }
 
-        // Unzip du fichier ZIP recupere
-
-        let writeFileUnzipedPromises = []
-
-        for (u = 0; u < studies.length; u++) {
-            
-            let data = await fs.promises.readFile('./data/export_dicom/' + Orthanc.exportArchiveDicom(studies[u].MainDicomTags.StudyID + '.zip'))
-            
-            tmpPromise.dir({ unsafeCleanup : true }).then( async (directory)=>{
-
-                var jsZip = new JSZip();
-                
-                jsZip.loadAsync(data, {createFolders: true}).then ((contents)=>{
-                    Object.keys(contents.files).forEach( (filename) => {
-                        let writePromise = jsZip.file(filename).async('nodebuffer').then((content)=>{
-                            var dest = directory + filename;
-                            fs.writeFileSync(dest, content);
-                        })
-
-                        writeFileUnzipedPromises.push(writePromise)
-                    })
-                })
-
-                
-               
-            })
-
+        if (this.deleteStudyAfterSent) {
+            this.orthanc.deleteFromOrthanc('patients', newStablePatientID)
         }
-
-        Promise.all(writeFileUnzipedPromises).then(async ()=>{
-
-            let requestFileAndID
-
-            if (this.burnerManifacturer === MONITOR_CD_EPSON) {
-                let discType = await _determineDiscType()
-                let dat = await _printDat(datInfos);
-                //Generation du Dat
-                requestFileAndID = await _createCdBurnerEpson(dat, discType, patient.getName(), "Mutiples")
-
-            } else if (this.burnerManifacturer === MONITOR_CD_PRIMERA) {
-                requestFileAndID = await _createCdBurnerPrimera(patient.getName(), patient.getPatientId(), "Mutiples", studies.size() + " studies", "Mutiples", formattedPatientDOB, studies.size(), modalitiesInStudyPrimera)
-            }
-
-            if (this.deleteStudyAfterSent) {
-                this.orthanc.deleteFromOrthanc('patients', newStablePatientID)
-            }
-
-            // Creation du Cd
-            // Manual cleanup
-            directory.cleanup();
-
-        })
-
 
     }
 
@@ -371,13 +330,13 @@ class CdBurner {
     }
 
     async _createCdBurnerEpson(dat, discType, name, formattedStudyDate) {
-        //Builiding text file for robot request
-        let txtRobot = "# Making data CD\n";
+        
         let jobId = _createJobID(name, formattedStudyDate);
-        //Peut definir le Job ID et le mettre le compteur dans registery si besoin de tracer les operation avec fichier STF
-        if (jobId != null) txtRobot += "JOB_ID=" + jobId + "\n";
 
-        txtRobot += "#nombre de copies\n"
+        //Builiding text file for robot request
+        txtRobot = "# Making data CD\n"
+            + "JOB_ID=" + jobId + "\n"
+            + "#nombre de copies\n"
             + "COPIES=1\n"
             + "#CD ou DVD\n"
             + "DISC_TYPE=" + discType + "\n"
@@ -397,12 +356,10 @@ class CdBurner {
 
     async _createCdBurnerPrimera(nom, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities) {
         //Command Keys/Values for Primera Robot
-        let txtRobot
         let jobId = _createJobID(nom, date);
 
-        if (jobId != null) txtRobot += "JobID=" + jobId + "\n";
-
-        txtRobot += "ClientID = Orthanc-Tools"
+        txtRobot = "JobID=" + jobId + "\n"
+            + "ClientID = Orthanc-Tools" + "\n"
             + "Copies = 1\n"
             + "DataImageType = UDF\n"
             + "Data=" + viewerDirectory + "\n"
@@ -440,10 +397,8 @@ class CdBurner {
     }
 
     _createJobID(name, formattedStudyDate) {
-        let results
-
-        let lastName = null;
-        let firstName;
+        let lastName = ""
+        let firstName = ""
         //prepare JOB_ID string.
         if (name.contains("^")) {
             let names = name.split(Pattern.quote("^"));
@@ -455,13 +410,12 @@ class CdBurner {
             if (name.length !== 0) {
                 if (name.length > 10) lastName = name.substring(0, 10); else lastName = name;
             } else {
-                //No name information return null
-                return null;
+                lastName = "NoName"
             }
 
         }
 
-        results = lastName + "_" + firstName + "_" + formattedStudyDate + "_" + Math.round(Math.random() * 1000);
+        let results = lastName + "_" + firstName + "_" + formattedStudyDate + "_" + Math.round(Math.random() * 1000);
         //Remove Accent and space to match requirement of burners
         results = results.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); //stripAccents
         results = results.trim();
