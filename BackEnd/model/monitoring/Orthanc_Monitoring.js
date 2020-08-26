@@ -18,7 +18,7 @@ class Orthanc_Monitoring extends EventEmitter {
         //If already started skip
         if(this.monitoringRunning) return
 
-        let startedServiceArray = Object.keys(this.monitoringService).filter(service=> (service ===true) )
+        let startedServiceArray = Object.keys(this.monitoringService).filter(service=> (this.monitoringService[service] ===true) )
 
         if(startedServiceArray.length >0 ){
             this.monitoringRunning = true
@@ -44,7 +44,7 @@ class Orthanc_Monitoring extends EventEmitter {
     stopMonitoringIfNeeded (){
         if(!this.monitoringRunning) return
 
-        let startedServiceArray = Object.keys(this.monitoringService).filter(service=> (service ===true) )
+        let startedServiceArray = Object.keys(this.monitoringService).filter(service=> (this.monitoringService[service] ===true) )
         if(startedServiceArray.length === 0 ){
             this.monitoringRunning = false
             clearInterval(this.monitoringInterval)
