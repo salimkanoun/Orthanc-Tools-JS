@@ -402,8 +402,6 @@ class Orthanc {
     //let outPutStream = this.getOrthancAetName() + "/changes?since=" + last
     let outPutStream = "/changes?since=" + last
     let changes = await ReverseProxy.getAnswer(outPutStream, "GET", undefined)
-    console.log(changes)
-    console.log(outPutStream)
     return changes
   }
 

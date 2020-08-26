@@ -4,6 +4,7 @@ const tmp = require('tmp');
 const tmpPromise = require('tmp-promise');
 const orthanc_Monitoring = require('../Orthanc_Monitoring')
 const db = require('../../../database/models')
+const moment = require('moment')
 
 
 class CdBurner {
@@ -16,7 +17,7 @@ class CdBurner {
     async setSettings() {
 
         //Date format
-        this.dateOptions = { month: 'numeric', day: 'numeric' } //precision of the date
+        this.dateOptions = { month: 'numeric', day: 'numeric', year : 'numeric' } //precision of the date
 
         const options = await db.Option.findOne({
             attributes: ['date_format','burner_label_file','burner_monitoring_level','burner_burner_manifacturer'
@@ -39,6 +40,8 @@ class CdBurner {
         this.monitoredFolder = options.burner_monitored_folder;
         this.deleteStudyAfterSent = options.burner_delete_study_after_sent;
         this.viewerPath = options.burner_viewer_path;
+
+        this._makeCD('4197238a-fd8a087e-b411f628-693092b5-badcccd0')
     }
 
     async startCDMonitoring() {
@@ -124,8 +127,8 @@ class CdBurner {
     async _makeCDFromPatient(newStablePatientID) {
         //SK A REFACTORISER POUR AVOIR LES STUDIES DU PATIENT
         //SK A VERIFIER SI PLUSIEURS EVENT EN MEME TEMPS EN ASYNC LA CHARGE SERVEUR
-        let patient = this.orthanc.findInOrthanc('Patient', '', newStablePatientID, '', '', '', '', '')//Obtenir les infos d un patient depuis son patientID
-        let studies = this.orthanc.findInOrthanc('Study', '', newStablePatientID, '', '', '', '', '')
+        let patient = await this.orthanc.findInOrthanc('Patient', '', newStablePatientID, '', '', '', '', '')//Obtenir les infos d un patient depuis son patientID
+        let studies = await this.orthanc.findInOrthanc('Study', '', newStablePatientID, '', '', '', '', '')
 
         if (studies.length === 1) {
             let newStableStudyID = studies[0].MainDicomTags.StudyID //Recuper la studyID à partie de la studies du patientID
@@ -211,16 +214,18 @@ class CdBurner {
     }
 
     async _makeCD(newStableStudyID) {
+        let study = await this.orthanc.getOrthancDetails('studies', newStableStudyID)
+        let patient = await this.orthanc.getOrthancDetails('patients', study.ParentPatient)
 
-        let study = this.orthanc.findInOrthanc('Study', '', newStableStudyID, '', '', '', '', '')
-        let patient = this.orthanc.findInOrthanc('Patient', '', study.ParentPatient, '', '', '', '', '')
-
-        formattedDateExamen = "N/A";
-        if (study.MainDicomTags.StudyDate !== null) {
-            formattedDateExamen = study.MainDicomTags.StudyDate.toLocaleDateString(undefined, this.dateOptions)
+        let formattedDateExamen = "N/A"
+        console.log(study)
+        if (study.MainDicomTags.StudyDate !== undefined) {
+            let parsedDate = moment(study.MainDicomTags.StudyDate, "YYYYMMDD");
+            console.log(parsedDate)
+            formattedDateExamen = parsedDate.toLocaleDateString(this.format, this.dateOptions)
         }
 
-        formattedPatientDOB = "N/A";
+        let formattedPatientDOB = "N/A";
         try {
             let patientDOBDate = patient.MainDicomTags.PatientBirthDate;
             formattedPatientDOB = patientDOBDate.toLocaleDateString(this.format, this.dateOptions);

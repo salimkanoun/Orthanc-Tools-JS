@@ -25,7 +25,7 @@ class Orthanc_Monitoring extends EventEmitter {
             //Get last change number at monitoring startup (monitoring will start at this index)
             let changes = await this.orthanc.getChangesLast()
             this.last = changes.Last
-            this.monitoringInterval = setInterval(this.makeMonitor, 2000)
+            this.monitoringInterval = setInterval(()=>{this.makeMonitor()}, 2000)
 
         }
         
@@ -52,9 +52,9 @@ class Orthanc_Monitoring extends EventEmitter {
 
     }
 
-    makeMonitor() {
+    async makeMonitor() {
         do {
-            this._parseOutput(this.last);
+            await this._parseOutput(this.last);
         }
         while(!this.done);
         
