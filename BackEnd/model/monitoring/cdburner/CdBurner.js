@@ -26,11 +26,11 @@ class CdBurner {
 
         //format of date (using contry convention)
         if (options.date_format === "fr") {
-            this.format = "fr-FR"
+            this.format = "DD/MM/YYYY"
         } else if (options.date_format === "uk") {
-            this.format = "uk-UA"
+            this.format = "MM/DD/YYYY"
         } else {
-            this.format = "uk-UA"
+            this.format = "MM/DD/YYYY"
         }
 
         //SK A FILL A PARTIR DE LA DB
@@ -88,13 +88,14 @@ class CdBurner {
 
     async __unzip(studies){
 
-        let studyOrthancIDArray  = studies.filter((study)=>{
+        let studyOrthancIDArray  = studies.map((study)=>{
             return study.ID
         })
-
-        let zipFileName = await Orthanc.getArchiveDicom(studyOrthancIDArray).then((filename) => {
+        console.log(studyOrthancIDArray)
+        let zipFileName = await this.orthanc.getArchiveDicom(studyOrthancIDArray).then((filename) => {
             return filename
         })
+        console.log(zipFileName)
         var jsZip = new JSZip();
         //SK A REVOIR ICI
         let unzipedFolder = await tmpPromise.dir({ unsafeCleanup : true }).then( async (directory)=>{
@@ -220,22 +221,22 @@ class CdBurner {
         let formattedDateExamen = "N/A"
         console.log(study)
         if (study.MainDicomTags.StudyDate !== undefined) {
-            let parsedDate = moment(study.MainDicomTags.StudyDate, "YYYYMMDD");
+            let parsedDate = moment(study.MainDicomTags.StudyDate, "YYYYMMDD")
             console.log(parsedDate)
-            formattedDateExamen = parsedDate.toLocaleDateString(this.format, this.dateOptions)
+            formattedDateExamen = moment(parsedDate).format(this.format)
         }
 
         let formattedPatientDOB = "N/A";
         try {
-            let patientDOBDate = patient.MainDicomTags.PatientBirthDate;
-            formattedPatientDOB = patientDOBDate.toLocaleDateString(this.format, this.dateOptions);
+            let patientDOBDate = moment(patient.MainDicomTags.PatientBirthDate, "YYYYMMDD")
+            formattedPatientDOB = moment(patientDOBDate).format(this.format);
         } catch (e) { }
 
         //SK ICI FAIRE DE QUOI RECUPERER LES MODALITIES IN STUDY
         let modalitiesInStudy = "MODALITY" //String.join("//", study.getModalitiesInStudy());
 
         //Generate the ZIP with Orthanc IDs dicom
-        let unzipedFolder = this.__unzip(newStableStudyID)
+        let unzipedFolder = this.__unzip([study])
 
         let datInfos = [{
             nom: patient.MainDicomTags.PatientName,
