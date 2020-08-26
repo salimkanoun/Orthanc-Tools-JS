@@ -1,5 +1,5 @@
 var fs = require("fs");
-var fsPromises = require('fs')
+var fsPromises = require('fs/promises')
 var JSZip = require("jszip");
 const tmp = require('tmp');
 const tmpPromise = require('tmp-promise');
@@ -87,29 +87,38 @@ class CdBurner {
     async __unzip(studies){
 
         let studyOrthancIDArray  = studies.filter((study)=>{
-            return study.MainDicomTags.StudyID
+            return study.ID
         })
 
         let zipFileName = await Orthanc.getArchiveDicom(studyOrthancIDArray).then((filename) => {
             return filename
         })
-
+        var jsZip = new JSZip();
         //SK A REVOIR ICI
-        tmpPromise.dir({ unsafeCleanup : true }).then( async (directory)=>{
+        let unzipedFolder = await tmpPromise.dir({ unsafeCleanup : true }).then( async (directory)=>{
 
-            var jsZip = new JSZip();
-            
-            jsZip.loadAsync(data, {createFolders: true}).then ((contents)=>{
+            await fsPromises.readFile(zipFileName).then((data)=>{
+                return jsZip.loadAsync(data, {createFolders: true})
+            }).then ( (contents)=>{
+                writeFileUnzipedPromises = []
                 Object.keys(contents.files).forEach( (filename) => {
                     let writePromise = jsZip.file(filename).async('nodebuffer').then((content)=>{
                         var dest = directory + filename;
-                        fs.writeFileSync(dest, content);
+                        return fsPromises.writeFile(dest, content);
                     })
-
                     writeFileUnzipedPromises.push(writePromise)
+
                 })
+                return writeFileUnzipedPromises
+            }).then((writepromises)=>{
+                return Promise.all(writepromises)
             })
+
+            return directory
+
         })
+
+        return unzipedFolder;
 
     }
 
@@ -173,19 +182,27 @@ class CdBurner {
         }
 
         //SK ICI METHODE POUR DL ET DEZIPER LES DICOMS
-
+        let unzipedFolder = this.__unzip(studies)
 
         if (this.burnerManifacturer === MONITOR_CD_EPSON) {
-            let discType = await _determineDiscType()
+            let discType = await _determineDiscType(unzipedFolder)
             let dat = await _printDat(datInfos);
             //Generation du Dat
-            requestFileAndID = await _createCdBurnerEpson(dat, discType, patient.MainDicomTags.PatientName, "Mutiples")
+            requestFileAndID = await _createCdBurnerEpson(dat, discType, patient.MainDicomTags.PatientName, "Mutiples", unzipedFolder)
 
         } else if (this.burnerManifacturer === MONITOR_CD_PRIMERA) {
             nom, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities
             //SK ICI METHODE POUR RECUPERE LES MODALITIES IN STUDY
             let modalitiesInStudyPrimera = "MODALITIES"
-            requestFileAndID = await _createCdBurnerPrimera(patient.MainDicomTags.PatientName, patient.MainDicomTags.PatientID, "Mutiples", (studies.length + " studies") , "Mutiples", formattedPatientDOB, studies.length , modalitiesInStudyPrimera)
+            requestFileAndID = await _createCdBurnerPrimera(patient.MainDicomTags.PatientName, 
+                patient.MainDicomTags.PatientID, 
+                "Mutiples", 
+                (studies.length + " studies") , 
+                "Mutiples", 
+                formattedPatientDOB, 
+                studies.length, 
+                modalitiesInStudyPrimera,
+                unzipedFolder)
         }
 
         if (this.deleteStudyAfterSent) {
@@ -214,11 +231,7 @@ class CdBurner {
         let modalitiesInStudy = "MODALITY" //String.join("//", study.getModalitiesInStudy());
 
         //Generate the ZIP with Orthanc IDs dicom
-        let orthancIds = []
-        orthancIds.push(studyID);
-
-        //SK ICI BRANCHER LA METHODE QUI RECUPERE LES DATA D ORTHACN ET QUI DEZIPE DANS UN REPERTOIRE TEMPORAIRE
-        //Orthanc.exportArchiveDicom(study.MainDicomTags.StudyID, Orthanc.exportArchiveDicom(study.MainDicomTags.StudyID))
+        let unzipedFolder = this.__unzip(newStableStudyID)
 
         let datInfos = [{
             nom: patient.MainDicomTags.PatientName,
@@ -235,7 +248,7 @@ class CdBurner {
             let discType = _determineDiscType()
             //Generation du Dat
             let dat = await _printDat(datInfos);
-            requestFileAndID = await _createCdBurnerEpson(dat, discType, datInfos.nom, datInfos.formattedDateExamen);
+            requestFileAndID = await _createCdBurnerEpson(dat, discType, datInfos.nom, datInfos.formattedDateExamen, unzipedFolder);
 
         } else if (this.burnerManifacturer === MONITOR_CD_PRIMERA) {
             requestFileAndID = await _createCdBurnerPrimera(datInfos.nom, 
@@ -245,7 +258,8 @@ class CdBurner {
                 studies[u].MainDicomTags.AccessionNumber, 
                 datInfos.formattedPatientDOB, 
                 1, 
-                datInfos.modalitiesInStudy);
+                datInfos.modalitiesInStudy, 
+                unzipedFolder);
         }
 
         //On efface la study de Orthanc
@@ -329,7 +343,7 @@ class CdBurner {
         return dat;
     }
 
-    async _createCdBurnerEpson(dat, discType, name, formattedStudyDate) {
+    async _createCdBurnerEpson(dat, discType, name, formattedStudyDate, dicomPath) {
         
         let jobId = _createJobID(name, formattedStudyDate);
 
@@ -341,8 +355,8 @@ class CdBurner {
             + "#CD ou DVD\n"
             + "DISC_TYPE=" + discType + "\n"
             + "FORMAT=UDF102\n"
-            + "DATA=" + viewerDirectory + "\n"
-            + "DATA=" + folder + File.separator + "DICOM" + File.separator + "\n"
+            + "DATA=" + this.viewerDirectory + "\n"
+            + "DATA=" + dicomPath + "\n"
             + "#Instruction d'impression\n"
             + "LABEL=" + labelFile + "\n"
             + "REPLACE_FIELD=" + dat.getAbsolutePath().toString();
@@ -354,7 +368,7 @@ class CdBurner {
         return answer;
     }
 
-    async _createCdBurnerPrimera(nom, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities) {
+    async _createCdBurnerPrimera(nom, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities, dicomPath) {
         //Command Keys/Values for Primera Robot
         let jobId = _createJobID(nom, date);
 
@@ -362,8 +376,8 @@ class CdBurner {
             + "ClientID = Orthanc-Tools" + "\n"
             + "Copies = 1\n"
             + "DataImageType = UDF\n"
-            + "Data=" + viewerDirectory + "\n"
-            + "Data=" + folder + File.separator + "DICOM\n"
+            + "Data=" + this.viewerPath + "\n"
+            + "Data=" + dicomPath+ "\n"
             + "RejectIfNotBlank=YES\n"
             + "CloseDisc=YES\n"
             + "VerifyDisc=YES\n"
