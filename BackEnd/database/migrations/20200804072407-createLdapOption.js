@@ -47,13 +47,11 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: new Date().toDateString()
+        type: Sequelize.DATE
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE,
-        defaultValue: new Date().toDateString()
+        type: Sequelize.DATE
       }
     }).then(() => {
       queryInterface.bulkInsert('LdapOptions', [{
@@ -63,7 +61,9 @@ module.exports = {
         adresse:'',
         port:389,
         DN:'',
-        mdp:''
+        mdp:'',
+        createdAt: new Date().toDateString(),
+        updatedAt: new Date().toDateString()
       }], {})
     })
   },

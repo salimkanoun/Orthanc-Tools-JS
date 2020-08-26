@@ -1,5 +1,4 @@
-var fs = require("fs");
-//var fsPromises = require('fs/promises')
+var fsPromises = require('fs').promises
 var JSZip = require("jszip");
 const tmp = require('tmp');
 const tmpPromise = require('tmp-promise');
@@ -20,7 +19,7 @@ class CdBurner {
         this.dateOptions = { month: 'numeric', day: 'numeric' } //precision of the date
 
         const options = await db.Option.findOne({
-            attributes: ['dateFormat','burner_label_file','burner_monitoring_level','burner_burner_manifacturer'
+            attributes: ['date_format','burner_label_file','burner_monitoring_level','burner_burner_manifacturer'
             ,'burner_monitored_folder','burner_delete_study_after_sent','burner_viewer_path'],
         });
 
@@ -335,7 +334,7 @@ class CdBurner {
 
         }
 
-        let dat = await fs.appendFile(folder + File.separator + "CD" + dateFormat.format(datenow) + ".dat", datFile, function (err) {
+        let dat = await fsPromises.appendFile(folder + File.separator + "CD" + dateFormat.format(datenow) + ".dat", datFile, function (err) {
             if (err) throw err;
             console.log('Saved!');
         });
@@ -362,7 +361,7 @@ class CdBurner {
             + "REPLACE_FIELD=" + dat.getAbsolutePath().toString();
 
         // Wrint JDF file in monitoring folder
-        await fs.promises.appendFile(this.monitoredFolder + File.separator + "CD_" + dateFormat.format(datenow) + ".JDF", txtRobot)
+        await fsPromises.appendFile(this.monitoredFolder + File.separator + "CD_" + dateFormat.format(datenow) + ".JDF", txtRobot)
 
         let answer = { f, jobId };
         return answer;
@@ -404,7 +403,7 @@ class CdBurner {
             + "MergeField=" + modalities + "\n";
 
         // Making a .JRQ file in the watched folder
-        await fs.promises.appendFile(this.monitoredFolder + File.separator + "CD_" + dateFormat.format(datenow) + ".JRQ", txtRobot)
+        await fsPromises.appendFile(this.monitoredFolder + File.separator + "CD_" + dateFormat.format(datenow) + ".JRQ", txtRobot)
 
         let answer = { f, jobId };
         return answer;
@@ -440,8 +439,6 @@ class CdBurner {
     }
 }
 
-const cdBurner = new CdBurner(orthanc_Monitoring)
-
 const MONITOR_PATIENT = "Patient";
 const MONITOR_STUDY = "Study"
 
@@ -452,6 +449,4 @@ const MONITOR_CT_TYPE_DVD = "DVD"
 const MONITOR_CD_PRIMERA = "Primera"
 const MONITOR_CD_EPSON = "Epson"
 
-Object.freeze(cdBurner);
-exports.CdBurner = CdBurner
-exports.cdBurner = cdBurner
+module.exports = CdBurner
