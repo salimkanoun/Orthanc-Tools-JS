@@ -26,7 +26,7 @@ module.exports = {
         type: Sequelize.BOOLEAN, 
         defaultValue: false
       },
-      burner_LabelFile: {
+      burner_Label_file: {
         allowNull: false,
         type: Sequelize.STRING, 
         defaultValue: '',
