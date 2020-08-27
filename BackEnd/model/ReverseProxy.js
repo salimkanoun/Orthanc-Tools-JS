@@ -122,8 +122,7 @@ const ReverseProxy = {
         if (response.statusCode === 200) {
           response.pipe(streamWriter)
             .on('finish', ()=>{
-              console.log("finished writing") 
-              finishCallBack
+              finishCallBack()
             } )
         }
       }).catch((error) => {

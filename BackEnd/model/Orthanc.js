@@ -31,11 +31,19 @@ class Orthanc {
   getArchiveDicom(orthancIds)  {
 
      return new Promise( (resolve, reject)=>{
-      const destination = './data/export_dicom/' + Math.random().toString(36).substr(2, 5) + '.zip'
-      const streamWriter = fs.createWriteStream(destination)
-      ReverseProxy.streamToFileWithCallBack('/tools/create-archive', 'POST', orthancIds, streamWriter, ()=>{
-        resolve(destination)
-      })
+
+       try{
+
+        const destination = './data/export_dicom/' + Math.random().toString(36).substr(2, 5) + '.zip'
+        const streamWriter = fs.createWriteStream(destination)
+        ReverseProxy.streamToFileWithCallBack('/tools/create-archive', 'POST', orthancIds, streamWriter, ()=>{
+          resolve(destination)
+        })
+
+       } catch (err) {
+         reject()
+       }
+
 
     })
     

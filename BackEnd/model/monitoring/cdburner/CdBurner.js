@@ -1,7 +1,7 @@
 var fsPromises = require('fs').promises
-var JSZip = require("jszip");
-const tmp = require('tmp');
-const tmpPromise = require('tmp-promise');
+var JSZip = require("jszip")
+const path = require('path');
+const tmpPromise = require('tmp-promise')
 const orthanc_Monitoring = require('../Orthanc_Monitoring')
 const db = require('../../../database/models')
 const moment = require('moment')
@@ -91,33 +91,35 @@ class CdBurner {
         let studyOrthancIDArray  = studies.map((study)=>{
             return study.ID
         })
-        console.log(studyOrthancIDArray)
-        let zipFileName = await this.orthanc.getArchiveDicom(studyOrthancIDArray).then((filename) => {
-            return filename
-        })
-        console.log(zipFileName)
+
+        let zipFileName = await this.orthanc.getArchiveDicom(studyOrthancIDArray)
+
         var jsZip = new JSZip();
         //SK A REVOIR ICI
-        let unzipedFolder = await tmpPromise.dir({ unsafeCleanup : true }).then( async (directory)=>{
+        let unzipedFolder = await tmpPromise.dir({ unsafeCleanup : true }).then( (directory)=>{
+            console.log(directory)
 
-            await fsPromises.readFile(zipFileName).then((data)=>{
+            return fsPromises.readFile(zipFileName).then((data)=>{
                 return jsZip.loadAsync(data, {createFolders: true})
             }).then ( (contents)=>{
-                writeFileUnzipedPromises = []
+                console.log(contents)
+                let writeFileUnzipedPromises = []
+
                 Object.keys(contents.files).forEach( (filename) => {
+                    if(contents.files[filename].dir) return
+                    
                     let writePromise = jsZip.file(filename).async('nodebuffer').then((content)=>{
-                        var dest = directory + filename;
-                        return fsPromises.writeFile(dest, content);
+                        var dest = path.join(directory.path, filename)
+                        return fsPromises.mkdir(path.dirname(dest), { recursive: true }).then( () => fsPromises.appendFile(dest, content))
                     })
+
                     writeFileUnzipedPromises.push(writePromise)
 
                 })
                 return writeFileUnzipedPromises
             }).then((writepromises)=>{
                 return Promise.all(writepromises)
-            })
-
-            return directory
+            }).then(() => { return directory})
 
         })
 
@@ -128,6 +130,7 @@ class CdBurner {
     async _makeCDFromPatient(newStablePatientID) {
         //SK A REFACTORISER POUR AVOIR LES STUDIES DU PATIENT
         //SK A VERIFIER SI PLUSIEURS EVENT EN MEME TEMPS EN ASYNC LA CHARGE SERVEUR
+        //SK A CORRIGER POUR LES DATES ICI
         let patient = await this.orthanc.findInOrthanc('Patient', '', newStablePatientID, '', '', '', '', '')//Obtenir les infos d un patient depuis son patientID
         let studies = await this.orthanc.findInOrthanc('Study', '', newStablePatientID, '', '', '', '', '')
 
@@ -184,8 +187,7 @@ class CdBurner {
             }
         }
 
-        //SK ICI METHODE POUR DL ET DEZIPER LES DICOMS
-        let unzipedFolder = this.__unzip(studies)
+        let unzipedFolder = await this.__unzip(studies)
 
         if (this.burnerManifacturer === MONITOR_CD_EPSON) {
             let discType = await _determineDiscType(unzipedFolder)
@@ -236,8 +238,9 @@ class CdBurner {
         let modalitiesInStudy = "MODALITY" //String.join("//", study.getModalitiesInStudy());
 
         //Generate the ZIP with Orthanc IDs dicom
-        let unzipedFolder = this.__unzip([study])
+        let unzipedFolder = await this.__unzip([study])
 
+        //SK CONTINUER A DEBEUGER ICI
         let datInfos = [{
             nom: patient.MainDicomTags.PatientName,
             id: patient.MainDicomTags.PatientID,
@@ -250,7 +253,7 @@ class CdBurner {
 
 
         if (this.burnerManifacturer === MONITOR_CD_EPSON) {
-            let discType = _determineDiscType()
+            let discType = await _determineDiscType()
             //Generation du Dat
             let dat = await _printDat(datInfos);
             requestFileAndID = await _createCdBurnerEpson(dat, discType, datInfos.nom, datInfos.formattedDateExamen, unzipedFolder);
