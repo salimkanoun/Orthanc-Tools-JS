@@ -12,7 +12,6 @@ const recursive = require("recursive-readdir");
 //HISTORIQUE DES CDS
 //Debug des metadonnées (cf infra)
 //recuperation des modalities
-//supression du zip
 //debug patient
 
 class CdBurner {
