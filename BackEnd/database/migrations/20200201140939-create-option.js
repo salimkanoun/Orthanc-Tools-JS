@@ -51,6 +51,11 @@ module.exports = {
         type: Sequelize.BOOLEAN, 
         defaultValue: false,
       },
+      burner_support_type : {
+        allowNull: false,
+        type: Sequelize.BOOLEAN, 
+        defaultValue: "Auto",
+      },
       burner_viewer_path: {
         allowNull: false,
         type: Sequelize.STRING, 
@@ -63,7 +68,7 @@ module.exports = {
         min: 0,
         createdAt: new Date().toDateString(),
         updatedAt: new Date().toDateString(),
-        ldap: false
+        ldap: false,
       }], {})
     })
   },

@@ -7,6 +7,13 @@ const db = require('../../../database/models')
 const moment = require('moment')
 const recursive = require("recursive-readdir");
 
+//SK RESTE A FAIRE
+//TRACKING DES PROCESS
+//HISTORIQUE DES CDS
+//Debug des metadonnées (cf infra)
+//recuperation des modalities
+//supression du zip
+//debug patient
 
 class CdBurner {
 
@@ -21,8 +28,9 @@ class CdBurner {
         this.dateOptions = { month: 'numeric', day: 'numeric', year : 'numeric' } //precision of the date
 
         const options = await db.Option.findOne({
-            attributes: ['date_format','burner_label_file','burner_monitoring_level','burner_burner_manifacturer'
-            ,'burner_monitored_folder','burner_delete_study_after_sent','burner_viewer_path'],
+            attributes: ['date_format',
+            'burner_label_file','burner_monitoring_level','burner_burner_manifacturer'
+            ,'burner_monitored_folder','burner_delete_study_after_sent','burner_viewer_path', 'burner_support_type'],
         });
 
         //format of date (using contry convention)
@@ -34,17 +42,16 @@ class CdBurner {
             this.format = "MM/DD/YYYY"
         }
 
-        //SK A FILL A PARTIR DE LA DB
-        this.labelFile = options.burner_label_file;
-        this.monitoringLevel = options.burner_monitoring_level;
-        this.burnerManifacturer = options.burner_burner_manifacturer; //Epson or Primera
-        this.monitoredFolder = options.burner_monitored_folder;
-        this.deleteStudyAfterSent = options.burner_delete_study_after_sent;
-        this.viewerPath = options.burner_viewer_path;
-        //SK A AJOUTER DANS MIGRATION BURNERSUPORTTYPE
+        //Refresh parameter from DB
+        this.labelFile = options.burner_label_file
+        this.monitoringLevel = options.burner_monitoring_level
+        this.burnerManifacturer = options.burner_burner_manifacturer
+        this.monitoredFolder = options.burner_monitored_folder
+        this.deleteStudyAfterSent = options.burner_delete_study_after_sent
+        this.viewerPath = options.burner_viewer_path
+        this.suportType = options.burner_support_type
 
         //TEST
-
         this.monitoringLevel = CdBurner.MONITOR_STUDY
         this.burnerManifacturer = CdBurner.MONITOR_CD_EPSON
         this.monitoredFolder = 'C:\\Users\\kanoun_s\\Documents\\cdBurner'
@@ -56,6 +63,9 @@ class CdBurner {
         
     }
 
+    /**
+     * Start Cd Monitoring process
+     */
     async startCDMonitoring() {
         if (this.monitoringStarted) return
 
@@ -90,6 +100,9 @@ class CdBurner {
         }
     }
 
+    /**
+     * Stops Monitoring Process
+     */
     stopCDMonitoring() {
         this.monitoringStarted = false
         //In Future version, centralize monitoring status of service and shutdown monitoring if all are stopped
@@ -98,6 +111,12 @@ class CdBurner {
 
     }
 
+    /**
+     * download dicom from orthanc and unzip archive in a temporary folder
+     * return temporary path (containings dicom)
+     * SK : A FAIRE LE TRANSCODING
+     * @param {Array} studies 
+     */
     async __unzip(studies){
 
         let studyOrthancIDArray  = studies.map((study)=>{
@@ -106,8 +125,8 @@ class CdBurner {
 
         let zipFileName = await this.orthanc.getArchiveDicom(studyOrthancIDArray)
 
-        var jsZip = new JSZip();
-        //SK A REVOIR ICI
+        var jsZip = new JSZip()
+
         let unzipedFolder = await tmpPromise.dir({ unsafeCleanup : true }).then( (directory)=>{
             return fsPromises.readFile(zipFileName).then((data)=>{
                 return jsZip.loadAsync(data, {createFolders: true})
@@ -128,7 +147,7 @@ class CdBurner {
                 return writeFileUnzipedPromises
             }).then((writepromises)=>{
                 return Promise.all(writepromises)
-            }).then(() => { return directory.path})
+            }).then( ()=> fsPromises.unlink(zipFileName) ).then( ()=> directory.path)
 
         })
 
@@ -248,10 +267,8 @@ class CdBurner {
 
         //Generate the ZIP with Orthanc IDs dicom
         let unzipedFolder = await this.__unzip([study])
-        console.log('ici apres unzip')
-        console.log(unzipedFolder)
 
-        //SK CONTINUER A DEBEUGER ICI
+        //SK DEBEUGER ICI
         let datInfos = [{
             nom: patient.MainDicomTags.PatientName,
             id: patient.MainDicomTags.PatientID,
@@ -263,16 +280,12 @@ class CdBurner {
         }]
 
         let requestFileAndID
-        console.log(this.burnerManifacturer)
+
         if (this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON) {
-            console.log('epson')
             let discType = await this._determineDiscType(unzipedFolder)
-            console.log(discType)
             //Generation du Dat
             let dat = await this._printDat(datInfos);
-            console.log(dat)
             requestFileAndID = await this._createCdBurnerEpson(dat, discType, datInfos.nom, datInfos.formattedDateExamen, unzipedFolder);
-            console.log(requestFileAndID)
 
         } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
             requestFileAndID = await this._createCdBurnerPrimera(datInfos.nom, 
@@ -486,7 +499,7 @@ class CdBurner {
 CdBurner.MONITOR_PATIENT = "Patient";
 CdBurner.MONITOR_STUDY = "Study"
 
-CdBurner.MONITOR_CD_TYPE_AUTO = "auto"
+CdBurner.MONITOR_CD_TYPE_AUTO = "Auto"
 CdBurner.MONITOR_CD_TYPE_CD = "CD"
 CdBurner.MONITOR_CD_TYPE_DVD = "DVD"
 
