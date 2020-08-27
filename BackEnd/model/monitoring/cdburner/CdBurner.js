@@ -22,6 +22,7 @@ class CdBurner {
     constructor(monitoring) {
         this.orthanc = monitoring.orthanc
         this.monitoring = monitoring
+        this.monitorJobs = this.monitorJobs.bind(this)
     }
 
     async setSettings() {
@@ -52,6 +53,8 @@ class CdBurner {
         this.deleteStudyAfterSent = options.burner_delete_study_after_sent
         this.viewerPath = options.burner_viewer_path
         this.suportType = options.burner_support_type
+
+        this.jobStatus = {}
 
         //TEST
         this.monitoringLevel = CdBurner.MONITOR_STUDY
@@ -89,6 +92,7 @@ class CdBurner {
         } else if (this.monitoringLevel === CdBurner.MONITOR_STUDY) {
             this.monitoring.on('StableStudy', (orthancID) => { this._makeCD(orthancID) })
         }
+        this.monitorJobInterval = setInterval(this.monitorJobs, 5000)
     }
 
     /**
@@ -100,6 +104,7 @@ class CdBurner {
         } else if (this.monitoringLevel === CdBurner.MONITOR_STUDY) {
             this.monitoring.removeListener('StableStudy', (orthancID) => { this._makeCD(orthancID) })
         }
+        clearInterval(this.monitorJobInterval)
     }
 
     /**
@@ -216,18 +221,19 @@ class CdBurner {
         }
 
         let unzipedFolder = await this.__unzip(studies)
-
+        let jobID = this._createJobID(patient.MainDicomTags.PatientName, "Mutiples")
+        let requestFilePath 
         if (this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON) {
             let discType = await this._determineDiscType(unzipedFolder)
             let dat = await this._printDat(datInfos);
             //Generation du Dat
-            requestFileAndID = await this._createCdBurnerEpson(dat, discType, patient.MainDicomTags.PatientName, "Mutiples", unzipedFolder)
+            requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, patient.MainDicomTags.PatientName, "Mutiples", unzipedFolder)
 
         } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
             nom, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities
             //SK ICI METHODE POUR RECUPERE LES MODALITIES IN STUDY
             let modalitiesInStudyPrimera = "MODALITIES"
-            requestFileAndID = await this._createCdBurnerPrimera(patient.MainDicomTags.PatientName, 
+            requestFilePath = await this._createCdBurnerPrimera(jobID, patient.MainDicomTags.PatientName, 
                 patient.MainDicomTags.PatientID, 
                 "Mutiples", 
                 (studies.length + " studies") , 
@@ -265,8 +271,13 @@ class CdBurner {
         //SK ICI FAIRE DE QUOI RECUPERER LES MODALITIES IN STUDY
         let modalitiesInStudy = "MODALITY" //String.join("//", study.getModalitiesInStudy());
 
+        //Creat ID for this JOB
+        let jobID = this._createJobID(patient.MainDicomTags.PatientName, formattedDateExamen)
+        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING)
+
         //Generate the ZIP with Orthanc IDs dicom
         let unzipedFolder = await this.__unzip([study])
+        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE)
 
         //SK DEBEUGER ICI
         let datInfos = [{
@@ -279,16 +290,16 @@ class CdBurner {
             modalitiesInStudy: modalitiesInStudy
         }]
 
-        let requestFileAndID
+        let requestFilePath
 
         if (this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON) {
             let discType = await this._determineDiscType(unzipedFolder)
             //Generation du Dat
             let dat = await this._printDat(datInfos);
-            requestFileAndID = await this._createCdBurnerEpson(dat, discType, datInfos.nom, datInfos.formattedDateExamen, unzipedFolder);
+            requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, datInfos.nom, datInfos.formattedDateExamen, unzipedFolder);
 
         } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
-            requestFileAndID = await this._createCdBurnerPrimera(datInfos.nom, 
+            requestFilePath = await this._createCdBurnerPrimera(jobID, datInfos.nom, 
                 datInfos.id, 
                 datInfos.formattedDateExamen, 
                 studies[u].MainDicomTags.StudyDescription, 
@@ -299,6 +310,7 @@ class CdBurner {
                 unzipedFolder);
         }
 
+        this.updateJobStatus(jobID ,requestFilePath, CdBurner.JOB_STATUS_SENT_TO_BURNER)
         //On efface la study de Orthanc
         if (this.deleteStudyAfterSent) {
             await this.orthanc.deleteFromOrthanc('studies', newStableStudyID)
@@ -306,6 +318,65 @@ class CdBurner {
 
         
 
+    }
+
+    monitorJobs(){
+
+        let nonFinishedRequestFile = Object.keys(this.jobStatus).map(jobID =>{
+            if(this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_DONE && 
+            this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_ERROR && 
+            this.jobStatus[jobID]['status'] !== null){
+                return  this.jobStatus[jobID]['requestFile']
+            }
+        })
+
+        console.log(nonFinishedRequestFile)
+        for (let requestFileName of nonFinishedRequestFile){
+            let name = path.parse(requestFileName).name
+            let extension = path.parse(requestFileName).ext
+        }
+
+        /**
+         * File folder = new File(epsonDirectory);
+		File[] listOfFiles = folder.listFiles();
+
+		for (File file : listOfFiles) {
+		    if (file.isFile()) {
+		    	String baseName=FilenameUtils.getBaseName(file.toString());
+		    	if(burningStatus.containsKey(baseName)) {
+		    		String extension=FilenameUtils.getExtension(file.toString());
+		    		int rowNubmer=(int) burningStatus.get(baseName)[0];
+		    		File tempFolder=(File) burningStatus.get(baseName)[1];
+		    		if(extension.equals("ERR")) {
+		    			table_burning_history.setValueAt("Burning Error", rowNubmer, 5);
+		    			burningStatus.remove(baseName);
+		    			playSound(false);
+		    			FileUtils.deleteDirectory(tempFolder);
+		    		}else if(extension.equals("INP")) {
+		    			table_burning_history.setValueAt("Burning In Progress", rowNubmer, 5);
+		    		}else if(extension.equals("DON")) {
+		    			playSound(true);
+		    			burningStatus.remove(baseName);
+		    			table_burning_history.setValueAt("Burning Done", rowNubmer, 5);
+		    			FileUtils.deleteDirectory(tempFolder);
+		    		}else if(extension.equals("STP")) {
+		    			table_burning_history.setValueAt("Paused", rowNubmer, 5);
+		    		}
+		    	}
+		    }
+		}
+         */
+        
+
+
+
+    }
+
+    updateJobStatus(jobID, requestFile, status){
+        this.jobStatus[jobID] = {
+            requestFile : requestFile,
+            status : status
+        }
     }
 
     /**
@@ -373,9 +444,7 @@ class CdBurner {
         return dat;
     }
 
-    async _createCdBurnerEpson(dat, discType, name, formattedStudyDate, dicomPath) {
-        
-        let jobId = this._createJobID(name, formattedStudyDate);
+    async _createCdBurnerEpson(jobId, dat, discType, name, formattedStudyDate, dicomPath) {
 
         //Builiding text file for robot request
         let txtRobot = "# Making data CD\n"
@@ -395,13 +464,10 @@ class CdBurner {
         let filePath = path.join(this.monitoredFolder, "CD_" + moment().format('YYYYMMDDTHHmmssSS') + ".JDF")
         await fsPromises.appendFile( filePath, txtRobot)
 
-        let answer = { filePath, jobId };
-        return answer;
+        return filePath;
     }
 
-    async _createCdBurnerPrimera(nom, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities, dicomPath) {
-        //Command Keys/Values for Primera Robot
-        let jobId = this._createJobID(nom, date);
+    async _createCdBurnerPrimera(jobId, nom, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities, dicomPath) {
 
         let txtRobot = "JobID=" + jobId + "\n"
             + "ClientID = Orthanc-Tools" + "\n"
@@ -438,8 +504,7 @@ class CdBurner {
         let filePath = path.join(this.monitoredFolder, "CD_"+ moment().format('YYYYMMDDTHHmmssSS'), ".JRQ")
         await fsPromises.appendFile( filePath, txtRobot)
 
-        let answer = { filePath, jobId };
-        return answer;
+        return filePath;
     }
 
     /**
@@ -452,10 +517,10 @@ class CdBurner {
         let firstName = ""
         //prepare JOB_ID string.
         if (name !== undefined && name.includes("^")) {
-            let names = name.split(Pattern.quote("^"));
+            let names = name.split("^");
             //Get 10 first character of lastname and first name if input over 10 characters
-            if (names[0].length() > 5) lastName = names[0].substring(0, 5); else lastName = names[0];
-            if (names[1].length() > 5) firstName = names[1].substring(0, 5); else firstName = names[1];
+            if (names[0].length > 5) lastName = names[0].substring(0, 5); else lastName = names[0];
+            if (names[1].length > 5) firstName = names[1].substring(0, 5); else firstName = names[1];
 
         } else {
             if (name !== undefined && name.length !== 0) {
@@ -466,14 +531,14 @@ class CdBurner {
 
         }
 
-        let results = lastName + "_" + firstName + "_" + formattedStudyDate + "_" + Math.round(Math.random() * 1000);
+        let id = lastName + "_" + firstName + "_" + formattedStudyDate + "_" + Math.round(Math.random() * 1000);
         //Remove Accent and space to match requirement of burners
-        results = results.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); //stripAccents
-        results = results.trim();
+        id = id.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); //stripAccents
+        id = id.trim();
         //Remove non alpha numeric character (except let _)
-        results = results.replace("[^a-zA-Z0-9_]", "");
+        id = id.replace("[^a-zA-Z0-9_]", "");
 
-        return results;
+        return id;
     }
 
     /**
@@ -505,5 +570,15 @@ CdBurner.MONITOR_CD_TYPE_DVD = "DVD"
 
 CdBurner.MONITOR_CD_PRIMERA = "Primera"
 CdBurner.MONITOR_CD_EPSON = "Epson"
+
+CdBurner.JOB_STATUS_SENT_TO_BURNER ="Sent To Burner"
+CdBurner.JOB_STATUS_RETRIEVING_DICOM = "Retrieving Dicom"
+CdBurner.JOB_STATUS_UNZIPING = "Unziping"
+CdBurner.JOB_STATUS_UNZIP_DONE = "Unzip Done"
+CdBurner.JOB_STATUS_BURNING_ERROR = "Burning Error"
+CdBurner.JOB_STATUS_BURNING_IN_PROGRESS = "Burning In Progress"
+CdBurner.JOB_STATUS_BURNING_DONE = "Burning Done"
+CdBurner.JOB_STATUS_BURNING_PAUSED = "Burning Paused"
+CdBurner.JOB_STATUS_REQUEST_RECIEVED = "Burning Request Recieved"
 
 module.exports = CdBurner
