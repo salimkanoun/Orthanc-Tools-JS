@@ -40,8 +40,19 @@ class CdBurner {
         this.monitoredFolder = options.burner_monitored_folder;
         this.deleteStudyAfterSent = options.burner_delete_study_after_sent;
         this.viewerPath = options.burner_viewer_path;
+        //SK A AJOUTER DANS MIGRATION BURNERSUPORTTYPE
 
+        //TEST
+
+        this.monitoringLevel = CdBurner.MONITOR_STUDY
+        this.burnerManifacturer = CdBurner.MONITOR_CD_EPSON
+        this.monitoredFolder = 'C:\\Users\\kanoun_s\\Documents\\cdBurner'
+        this.deleteStudyAfterSent = false
+        this.viewerPath = 'C:\\Users\\kanoun_s\\Documents\\monitoring'
+        this.suportType = CdBurner.MONITOR_CD_TYPE_AUTO
+        this.labelFile = 'labelPath'
         this._makeCD('4197238a-fd8a087e-b411f628-693092b5-badcccd0')
+        
     }
 
     async startCDMonitoring() {
@@ -119,7 +130,7 @@ class CdBurner {
                 return writeFileUnzipedPromises
             }).then((writepromises)=>{
                 return Promise.all(writepromises)
-            }).then(() => { return directory})
+            }).then(() => { return directory.path})
 
         })
 
@@ -189,17 +200,17 @@ class CdBurner {
 
         let unzipedFolder = await this.__unzip(studies)
 
-        if (this.burnerManifacturer === MONITOR_CD_EPSON) {
-            let discType = await _determineDiscType(unzipedFolder)
-            let dat = await _printDat(datInfos);
+        if (this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON) {
+            let discType = await this._determineDiscType(unzipedFolder)
+            let dat = await this._printDat(datInfos);
             //Generation du Dat
-            requestFileAndID = await _createCdBurnerEpson(dat, discType, patient.MainDicomTags.PatientName, "Mutiples", unzipedFolder)
+            requestFileAndID = await this._createCdBurnerEpson(dat, discType, patient.MainDicomTags.PatientName, "Mutiples", unzipedFolder)
 
-        } else if (this.burnerManifacturer === MONITOR_CD_PRIMERA) {
+        } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
             nom, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities
             //SK ICI METHODE POUR RECUPERE LES MODALITIES IN STUDY
             let modalitiesInStudyPrimera = "MODALITIES"
-            requestFileAndID = await _createCdBurnerPrimera(patient.MainDicomTags.PatientName, 
+            requestFileAndID = await this._createCdBurnerPrimera(patient.MainDicomTags.PatientName, 
                 patient.MainDicomTags.PatientID, 
                 "Mutiples", 
                 (studies.length + " studies") , 
@@ -239,6 +250,8 @@ class CdBurner {
 
         //Generate the ZIP with Orthanc IDs dicom
         let unzipedFolder = await this.__unzip([study])
+        console.log('ici apres unzip')
+        console.log(unzipedFolder)
 
         //SK CONTINUER A DEBEUGER ICI
         let datInfos = [{
@@ -251,15 +264,20 @@ class CdBurner {
             modalitiesInStudy: modalitiesInStudy
         }]
 
-
-        if (this.burnerManifacturer === MONITOR_CD_EPSON) {
-            let discType = await _determineDiscType()
+        let requestFileAndID
+        console.log(this.burnerManifacturer)
+        if (this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON) {
+            console.log('epson')
+            let discType = await this._determineDiscType(unzipedFolder)
+            console.log(discType)
             //Generation du Dat
-            let dat = await _printDat(datInfos);
-            requestFileAndID = await _createCdBurnerEpson(dat, discType, datInfos.nom, datInfos.formattedDateExamen, unzipedFolder);
+            let dat = await this._printDat(datInfos);
+            console.log(dat)
+            requestFileAndID = await this._createCdBurnerEpson(dat, discType, datInfos.nom, datInfos.formattedDateExamen, unzipedFolder);
+            console.log(requestFileAndID)
 
-        } else if (this.burnerManifacturer === MONITOR_CD_PRIMERA) {
-            requestFileAndID = await _createCdBurnerPrimera(datInfos.nom, 
+        } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
+            requestFileAndID = await this._createCdBurnerPrimera(datInfos.nom, 
                 datInfos.id, 
                 datInfos.formattedDateExamen, 
                 studies[u].MainDicomTags.StudyDescription, 
@@ -285,7 +303,8 @@ class CdBurner {
      */
     async _determineDiscType(dicomPath) {
         let discType
-        if (suportType !== CdBurner.MONITOR_CD_TYPE_AUTO) {
+
+        if (this.suportType !== CdBurner.MONITOR_CD_TYPE_AUTO) {
             discType = suportType;
         } else {
 
@@ -302,13 +321,13 @@ class CdBurner {
             console.log(imageSize)
 
             //If size over 630 Mo
-            if (imageSize + viewerSize > 630000000) {
-                discType = CdBurner.MONITOR_CT_TYPE_DVD
+            if ( (imageSize + viewerSize) > 630000000) {
+                discType = CdBurner.MONITOR_CD_TYPE_DVD
             } else {
-                discType = CdBurner.MONITOR_CT_TYPE_CD
+                discType = CdBurner.MONITOR_CD_TYPE_CD
             }
         }
-
+        console.log(discType)
         return discType;
     }
 
@@ -321,7 +340,7 @@ class CdBurner {
             nom = nom.substring(0, separationNomPrenom + 2) + nom.substring(separationNomPrenom + 2).toLowerCase();
         }
 
-        let datFile = "patientName=" + nom.replaceAll("\\^", " ") + "\n"
+        let datFile = "patientName=" + nom.replace("\\^", " ") + "\n"
             + "patientId=" + infos[0].id + "\n"
             //patient date is a duplicate of studydate (depreciated)
             + "patientDate=" + infos[0].patientDOB + "\n"
@@ -343,7 +362,7 @@ class CdBurner {
 
         }
 
-        let dat = await fsPromises.appendFile(folder + File.separator + "CD" + dateFormat.format(datenow) + ".dat", datFile, function (err) {
+        let dat = await fsPromises.appendFile(path.join(this.monitoredFolder, "CD" + moment().format('YYYYMMDDTHHmmssSS') + ".dat"), datFile, function (err) {
             if (err) throw err;
             console.log('Saved!');
         });
@@ -353,10 +372,10 @@ class CdBurner {
 
     async _createCdBurnerEpson(dat, discType, name, formattedStudyDate, dicomPath) {
         
-        let jobId = _createJobID(name, formattedStudyDate);
+        let jobId = this._createJobID(name, formattedStudyDate);
 
         //Builiding text file for robot request
-        txtRobot = "# Making data CD\n"
+        let txtRobot = "# Making data CD\n"
             + "JOB_ID=" + jobId + "\n"
             + "#nombre de copies\n"
             + "COPIES=1\n"
@@ -366,21 +385,22 @@ class CdBurner {
             + "DATA=" + this.viewerDirectory + "\n"
             + "DATA=" + dicomPath + "\n"
             + "#Instruction d'impression\n"
-            + "LABEL=" + labelFile + "\n"
-            + "REPLACE_FIELD=" + dat.getAbsolutePath().toString();
+            + "LABEL=" + this.labelFile + "\n"
+            + "REPLACE_FIELD=" + dat
 
         // Wrint JDF file in monitoring folder
-        await fsPromises.appendFile(this.monitoredFolder + File.separator + "CD_" + dateFormat.format(datenow) + ".JDF", txtRobot)
+        let filePath = path.join(this.monitoredFolder, "CD_" + moment().format('YYYYMMDDTHHmmssSS') + ".JDF")
+        await fsPromises.appendFile( filePath, txtRobot)
 
-        let answer = { f, jobId };
+        let answer = { filePath, jobId };
         return answer;
     }
 
     async _createCdBurnerPrimera(nom, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities, dicomPath) {
         //Command Keys/Values for Primera Robot
-        let jobId = _createJobID(nom, date);
+        let jobId = this._createJobID(nom, date);
 
-        txtRobot = "JobID=" + jobId + "\n"
+        let txtRobot = "JobID=" + jobId + "\n"
             + "ClientID = Orthanc-Tools" + "\n"
             + "Copies = 1\n"
             + "DataImageType = UDF\n"
@@ -412,24 +432,26 @@ class CdBurner {
             + "MergeField=" + modalities + "\n";
 
         // Making a .JRQ file in the watched folder
-        await fsPromises.appendFile(this.monitoredFolder + File.separator + "CD_" + dateFormat.format(datenow) + ".JRQ", txtRobot)
+        let filePath = path.join(this.monitoredFolder, "CD_"+ moment().format('YYYYMMDDTHHmmssSS'), ".JRQ")
+        await fsPromises.appendFile( filePath, txtRobot)
 
-        let answer = { f, jobId };
+        let answer = { filePath, jobId };
         return answer;
     }
 
     _createJobID(name, formattedStudyDate) {
+        console.log(name)
         let lastName = ""
         let firstName = ""
         //prepare JOB_ID string.
-        if (name.contains("^")) {
+        if (name !== undefined && name.includes("^")) {
             let names = name.split(Pattern.quote("^"));
             //Get 10 first character of lastname and first name if input over 10 characters
             if (names[0].length() > 5) lastName = names[0].substring(0, 5); else lastName = names[0];
             if (names[1].length() > 5) firstName = names[1].substring(0, 5); else firstName = names[1];
 
         } else {
-            if (name.length !== 0) {
+            if (name !== undefined && name.length !== 0) {
                 if (name.length > 10) lastName = name.substring(0, 10); else lastName = name;
             } else {
                 lastName = "NoName"
@@ -442,20 +464,20 @@ class CdBurner {
         results = results.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); //stripAccents
         results = results.trim();
         //Remove non alpha numeric character (except let _)
-        results = results.replaceAll("[^a-zA-Z0-9_]", "");
+        results = results.replace("[^a-zA-Z0-9_]", "");
 
         return results;
     }
 }
 
-const MONITOR_PATIENT = "Patient";
-const MONITOR_STUDY = "Study"
+CdBurner.MONITOR_PATIENT = "Patient";
+CdBurner.MONITOR_STUDY = "Study"
 
-const MONITOR_CD_TYPE_AUTO = "auto"
-const MONITOR_CD_TYPE_CD = "CD"
-const MONITOR_CT_TYPE_DVD = "DVD"
+CdBurner.MONITOR_CD_TYPE_AUTO = "auto"
+CdBurner.MONITOR_CD_TYPE_CD = "CD"
+CdBurner.MONITOR_CD_TYPE_DVD = "DVD"
 
-const MONITOR_CD_PRIMERA = "Primera"
-const MONITOR_CD_EPSON = "Epson"
+CdBurner.MONITOR_CD_PRIMERA = "Primera"
+CdBurner.MONITOR_CD_EPSON = "Epson"
 
 module.exports = CdBurner
