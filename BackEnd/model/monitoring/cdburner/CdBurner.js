@@ -5,6 +5,7 @@ const tmpPromise = require('tmp-promise')
 const orthanc_Monitoring = require('../Orthanc_Monitoring')
 const db = require('../../../database/models')
 const moment = require('moment')
+const recursive = require("recursive-readdir");
 
 
 class CdBurner {
@@ -108,12 +109,9 @@ class CdBurner {
         var jsZip = new JSZip();
         //SK A REVOIR ICI
         let unzipedFolder = await tmpPromise.dir({ unsafeCleanup : true }).then( (directory)=>{
-            console.log(directory)
-
             return fsPromises.readFile(zipFileName).then((data)=>{
                 return jsZip.loadAsync(data, {createFolders: true})
             }).then ( (contents)=>{
-                console.log(contents)
                 let writeFileUnzipedPromises = []
 
                 Object.keys(contents.files).forEach( (filename) => {
@@ -309,25 +307,17 @@ class CdBurner {
         } else {
 
             //Get viewer Path Size
-            let viewerSize = await fsPromises.open(this.viewerPath).then((filehandle) => { return filehandle.stat() }).then(stat => {
-                return stat.size
-            })
-            console.log(viewerSize)
-
-            //Get DICOM Path Size
-            let imageSize = await fsPromises.open(dicomPath).then((filehandle) => { return filehandle.stat() }).then(stat => {
-                return stat.size
-            })
-            console.log(imageSize)
+            let dicomSize = await this.getFolderSize(dicomPath)
+            let viewerSize = await this.getFolderSize(this.viewerPath)
 
             //If size over 630 Mo
-            if ( (imageSize + viewerSize) > 630000000) {
+            if ( (dicomSize + viewerSize) > 630000000) {
                 discType = CdBurner.MONITOR_CD_TYPE_DVD
             } else {
                 discType = CdBurner.MONITOR_CD_TYPE_CD
             }
         }
-        console.log(discType)
+
         return discType;
     }
 
@@ -439,8 +429,12 @@ class CdBurner {
         return answer;
     }
 
+    /**
+     * Create unique job id using patient last and first name, date and random number
+     * @param {string} name 
+     * @param {string} formattedStudyDate 
+     */
     _createJobID(name, formattedStudyDate) {
-        console.log(name)
         let lastName = ""
         let firstName = ""
         //prepare JOB_ID string.
@@ -467,6 +461,25 @@ class CdBurner {
         results = results.replace("[^a-zA-Z0-9_]", "");
 
         return results;
+    }
+
+    /**
+     * calculate folder's content size
+     * @param {string} path 
+     */
+    getFolderSize(path){
+        return recursive(path).then( (files, error)=>{
+            let promises = []
+            let sizeCounter = 0
+            for(let file of files){
+                promises.push(
+                    fsPromises.stat(file).then((stat) =>{sizeCounter += stat.size})
+                )
+            }
+
+            return Promise.all(promises).then(()=> sizeCounter)
+
+        })
     }
 }
 
