@@ -11,6 +11,7 @@ const recursive = require("recursive-readdir");
 //Debug des metadonnées (cf infra)
 //recuperation des modalities
 //debug patient
+//Effacement fichier temporaires
 //TRACKING DES PROCESS
 //HISTORIQUE DES CDS
 //Transcoding dans export
