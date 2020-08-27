@@ -8,11 +8,13 @@ const moment = require('moment')
 const recursive = require("recursive-readdir");
 
 //SK RESTE A FAIRE
-//TRACKING DES PROCESS
-//HISTORIQUE DES CDS
 //Debug des metadonnées (cf infra)
 //recuperation des modalities
 //debug patient
+//TRACKING DES PROCESS
+//HISTORIQUE DES CDS
+//Transcoding dans export
+
 
 class CdBurner {
 
@@ -104,10 +106,8 @@ class CdBurner {
      */
     stopCDMonitoring() {
         this.monitoringStarted = false
-        //In Future version, centralize monitoring status of service and shutdown monitoring if all are stopped
-        this.monitoring.stopMonitoring()
         this.__removeListener()
-
+        this.monitoring.stopMonitoringService(orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
     }
 
     /**
