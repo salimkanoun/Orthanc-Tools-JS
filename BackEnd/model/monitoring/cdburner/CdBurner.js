@@ -9,9 +9,11 @@ const recursive = require("recursive-readdir");
 
 //SK RESTE A FAIRE
 //Effacement fichier temporaires
-//TransferSyntax a inserer dans DB
-
 //Check Event multiple charge serveur
+
+//Front 
+//Options CD Burner
+//Main Interface : Lister les Job + Route pour Cancel un JOB (et backend) + Jouer sons en success/failure
 
 
 class CdBurner {
