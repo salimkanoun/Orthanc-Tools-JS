@@ -8,10 +8,9 @@ const moment = require('moment')
 const recursive = require("recursive-readdir");
 
 //SK RESTE A FAIRE
-//debug patient
 //Effacement fichier temporaires
-//Debug des metadonnées (cf infra)
-//Transcoding dans export
+//TransferSyntax a inserer dans DB
+
 //Check Event multiple charge serveur
 
 
@@ -31,7 +30,7 @@ class CdBurner {
         const options = await db.Option.findOne({
             attributes: ['date_format',
             'burner_label_file','burner_monitoring_level','burner_burner_manifacturer'
-            ,'burner_monitored_folder','burner_delete_study_after_sent','burner_viewer_path', 'burner_support_type'],
+            ,'burner_monitored_folder','burner_delete_study_after_sent','burner_viewer_path', 'burner_support_type', 'burner_transfer_syntax'],
         });
 
         //format of date (using contry convention)
@@ -51,10 +50,11 @@ class CdBurner {
         this.deleteStudyAfterSent = options.burner_delete_study_after_sent
         this.viewerPath = options.burner_viewer_path
         this.suportType = options.burner_support_type
-
+        this.transferSyntax = options.burner_transfer_syntax
         this.jobStatus = {}
 
         //TEST
+        this.transferSyntax = "1.2.840.10008.1.2.4.80"
         this.monitoringLevel = CdBurner.MONITOR_STUDY
         this.burnerManifacturer = CdBurner.MONITOR_CD_PRIMERA
         this.monitoredFolder = 'C:\\Users\\kanoun_s\\Documents\\cdBurner'
@@ -127,7 +127,7 @@ class CdBurner {
             return study.ID
         })
 
-        let zipFileName = await this.orthanc.getArchiveDicom(studyOrthancIDArray)
+        let zipFileName = await this.orthanc.getArchiveDicomDir(studyOrthancIDArray, this.transferSyntax)
 
         var jsZip = new JSZip()
 
@@ -285,7 +285,6 @@ class CdBurner {
         console.log(unzipedFolder)
         this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE)
 
-        //SK DEBEUGER ICI
         let datInfos = [{
             patientName: patient.MainDicomTags.PatientName,
             patientID: patient.MainDicomTags.PatientID,
@@ -341,7 +340,6 @@ class CdBurner {
     async monitorJobs(){
 
         let nonFinishedRequestFile = {}
-        console.log(this.jobStatus)
         
         //Keep only job which didn't reached Done or Error Status
         Object.keys(this.jobStatus).forEach(jobID =>{

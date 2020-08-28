@@ -28,7 +28,20 @@ class Orthanc {
     ReverseProxy.streamToFile('/tools/create-archive', 'POST', orthancIds, streamWriter)
   }
 
-  getArchiveDicom(orthancIds)  {
+  getArchiveDicom(orthancIds, transcoding = null)  {
+
+    let payload
+    
+    if(transcoding){
+      payload ={
+        "Transcode": transcoding,
+        "Resources": orthancIds
+      }
+    }else{
+      payload ={
+        "Resources": orthancIds
+      }
+    }
 
      return new Promise( (resolve, reject)=>{
 
@@ -36,7 +49,7 @@ class Orthanc {
 
         const destination = './data/export_dicom/' + Math.random().toString(36).substr(2, 5) + '.zip'
         const streamWriter = fs.createWriteStream(destination)
-        ReverseProxy.streamToFileWithCallBack('/tools/create-archive', 'POST', orthancIds, streamWriter, ()=>{
+        ReverseProxy.streamToFileWithCallBack('/tools/create-archive', 'POST', payload, streamWriter, ()=>{
           resolve(destination)
         })
 
@@ -48,6 +61,37 @@ class Orthanc {
     })
     
   } 
+
+  getArchiveDicomDir(orthancIds, transcoding = null)  {
+
+    let payload
+
+    if(transcoding){
+      payload ={
+        "Transcode": transcoding,
+        "Resources": orthancIds
+      }
+    }else{
+      payload ={
+        "Resources": orthancIds
+      }
+    }
+
+    return new Promise( (resolve, reject)=>{
+      try{
+       const destination = './data/export_dicom/' + Math.random().toString(36).substr(2, 5) + '.zip'
+       const streamWriter = fs.createWriteStream(destination)
+       ReverseProxy.streamToFileWithCallBack('/tools/create-media-extended', 'POST', payload, streamWriter, ()=>{
+         resolve(destination)
+       })
+
+      } catch (err) {
+        reject()
+      }
+
+   })
+   
+ } 
 
   getArchiveDicomPath(filename){
     return './data/export_dicom/' + filename + '.zip'

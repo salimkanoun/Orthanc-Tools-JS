@@ -60,6 +60,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING, 
         defaultValue: '',
+      },
+      burner_transfer_syntax : {
+        allowNull: true,
+        type: Sequelize.STRING, 
+        defaultValue: null,
       }
 
     }).then(() => {
