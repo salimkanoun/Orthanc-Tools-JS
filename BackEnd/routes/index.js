@@ -10,7 +10,7 @@ const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
 
-const { startBurner, getBurner } = require('../controllers/monitoring')
+const { startBurner, getBurner, stopBurner } = require('../controllers/monitoring')
 
 const { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames} = require('../controllers/ldap')
 
@@ -173,7 +173,8 @@ router.get('/ldapGroupeName', userAdminMidelware, getLdapGroupeNames)
 
 
 //Monitoring
-router.post('/monitoring/burner/start', startBurner)
+router.post('/monitoring/burner', startBurner)
+router.delete('/monitoring/burner', stopBurner)
 router.get('/monitoring/burner', getBurner)
 
 module.exports = router

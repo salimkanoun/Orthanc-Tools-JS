@@ -20,6 +20,7 @@ class CdBurner {
     constructor(monitoring) {
         this.orthanc = monitoring.orthanc
         this.monitoring = monitoring
+        this.monitoringStarted = false
         this.monitorJobs = this.monitorJobs.bind(this)
     }
 
@@ -214,8 +215,17 @@ class CdBurner {
             } )
         }
 
+        let studyDetailsToFront = {
+            patientName: patient.MainDicomTags.PatientName,
+            patientID: patient.MainDicomTags.PatientID,
+            studyDate: 'Multiples',
+            studyDescription: 'Multiples',
+            accessionNumber: 'Multiples',
+            patientDOB: formattedPatientDOB,
+            modalitiesInStudy: modalitiesInStudy
+        }
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, "Mutiples")
-        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING, 'None')
+        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING, 'None', studyDetailsToFront)
 
         let unzipedFolder = await this.__unzip(studies)
         this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
@@ -276,14 +286,6 @@ class CdBurner {
         //Conctatenate modalities array to a string with "//" separator
         let modalitiesInStudy = modalities.join("//")
 
-        //Creat ID for this JOB
-        let jobID = this._createJobID(patient.MainDicomTags.PatientName, formattedDateExamen)
-        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING, 'None')
-
-        //Generate the ZIP with Orthanc IDs dicom
-        let unzipedFolder = await this.__unzip([study])
-        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
-
         let datInfos = [{
             patientName: patient.MainDicomTags.PatientName,
             patientID: patient.MainDicomTags.PatientID,
@@ -294,6 +296,16 @@ class CdBurner {
             modalitiesInStudy: modalitiesInStudy
         }]
 
+
+        //Creat ID for this JOB
+        let jobID = this._createJobID(patient.MainDicomTags.PatientName, formattedDateExamen)
+        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING, 'None', datInfos[0])
+
+        //Generate the ZIP with Orthanc IDs dicom
+        let unzipedFolder = await this.__unzip([study])
+        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
+
+        
         let timeStamp = moment().format('YYYYMMDDTHHmmssSS')
         let requestFilePath
 
@@ -378,12 +390,13 @@ class CdBurner {
       
     }
 
-    updateJobStatus(jobID, requestFile, status, tempZip = null){
+    updateJobStatus(jobID, requestFile, status, tempZip = null, jobDetails = null){
 
         this.jobStatus[jobID] = {
             requestFile : requestFile,
             status : status,
-            tempZip : (tempZip!==null) ? tempZip : this.jobStatus[jobID]['tempZip']
+            tempZip : (tempZip!==null) ? tempZip : this.jobStatus[jobID]['tempZip'],
+            details : (jobDetails !==null ) ? jobDetails  : this.jobStatus[jobID]['details']
         }
 
         //If Done or Error remove temporary files
@@ -575,7 +588,8 @@ class CdBurner {
 
     toJSON(){
         return {
-            ...this.jobStatus
+            CdBurnerService : this.monitoringStarted,
+            Jobs : {...this.jobStatus}
         }
     }
 }

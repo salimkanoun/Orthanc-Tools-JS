@@ -15,6 +15,7 @@ import deleteRobot from './deleteRobot'
 import role from './role'
 import token from './token'
 import ldap from './ldap'
+import cdBurner from './cdBurner'
 
 export default {
   aets,
@@ -33,5 +34,6 @@ export default {
   deleteRobot, 
   role, 
   token,
-  ldap
+  ldap,
+  cdBurner
 }
