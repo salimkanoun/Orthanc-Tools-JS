@@ -56,13 +56,14 @@ class CdBurner {
 
         //TEST
         this.monitoringLevel = CdBurner.MONITOR_STUDY
-        this.burnerManifacturer = CdBurner.MONITOR_CD_EPSON
+        this.burnerManifacturer = CdBurner.MONITOR_CD_PRIMERA
         this.monitoredFolder = 'C:\\Users\\kanoun_s\\Documents\\cdBurner'
         this.deleteStudyAfterSent = false
         this.viewerPath = 'C:\\Users\\kanoun_s\\Documents\\monitoring'
         this.suportType = CdBurner.MONITOR_CD_TYPE_AUTO
         this.labelFile = 'labelPath'
-        this._makeCDFromPatient('b75b59a4-8ef08c76-6467f229-c88142c6-8041f9c8')
+        //this._makeCDFromPatient('b75b59a4-8ef08c76-6467f229-c88142c6-8041f9c8')
+        this._makeCDFromStudy('4197238a-fd8a087e-b411f628-693092b5-badcccd0')
         
     }
 
@@ -100,7 +101,7 @@ class CdBurner {
         if (this.monitoringLevel === CdBurner.MONITOR_PATIENT) {
             this.monitoring.removeListener('StablePatient', (orthancID) => { this._makeCDFromPatient(orthancID) })
         } else if (this.monitoringLevel === CdBurner.MONITOR_STUDY) {
-            this.monitoring.removeListener('StableStudy', (orthancID) => { this._makeCD(orthancID) })
+            this.monitoring.removeListener('StableStudy', (orthancID) => { this._makeCDFromStudy(orthancID) })
         }
         clearInterval(this.monitorJobInterval)
     }
@@ -165,7 +166,7 @@ class CdBurner {
         //If Patient has only one study get the study Orthanc ID and process it as a single study burning
         if (studies.length === 1) {
             let newStableStudyID = studies[0].ID 
-            this._makeCD(newStableStudyID)
+            this._makeCDFromStudy(newStableStudyID)
             return
         }
 
@@ -224,8 +225,9 @@ class CdBurner {
 
         if (this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON) {
             let discType = await this._determineDiscType(unzipedFolder)
-            let dat = await this._printDat(datInfos, timeStamp);
             //Generation du Dat
+            let dat = await this._printDat(datInfos, timeStamp);
+            console.log(dat)
             requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, unzipedFolder, timeStamp)
 
         } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
@@ -249,7 +251,7 @@ class CdBurner {
 
     }
 
-    async _makeCD(newStableStudyID) {
+    async _makeCDFromStudy(newStableStudyID) {
         let study = await this.orthanc.getOrthancDetails('studies', newStableStudyID)
         let patient = await this.orthanc.getOrthancDetails('patients', study.ParentPatient)
         let series = await this.orthanc.getSeriesDetailsOfStudy(newStableStudyID)
@@ -280,6 +282,7 @@ class CdBurner {
 
         //Generate the ZIP with Orthanc IDs dicom
         let unzipedFolder = await this.__unzip([study])
+        console.log(unzipedFolder)
         this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE)
 
         //SK DEBEUGER ICI
@@ -303,14 +306,14 @@ class CdBurner {
             requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, unzipedFolder, timeStamp);
 
         } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
-            requestFilePath = await this._createCdBurnerPrimera(jobID, datInfos.patientName, 
-                datInfos.patientID, 
-                datInfos.studyDate, 
-                datInfos.studyDescription, 
-                dateInfos.accessionNumber, 
-                datInfos.patientDOB, 
+            requestFilePath = await this._createCdBurnerPrimera(jobID, datInfos[0].patientName, 
+                datInfos[0].patientID, 
+                datInfos[0].studyDate, 
+                datInfos[0].studyDescription, 
+                datInfos[0].accessionNumber, 
+                datInfos[0].patientDOB, 
                 1, 
-                datInfos.modalitiesInStudy, 
+                datInfos[0].modalitiesInStudy, 
                 unzipedFolder);
         }
 
@@ -444,12 +447,9 @@ class CdBurner {
 
         }
 
-        let dat = await fsPromises.appendFile(path.join(this.monitoredFolder, "CD" + "_" + timeStampString + ".DAT"), datFile, function (err) {
-            if (err) throw err;
-            console.log('Saved!');
-        });
-
-        return dat;
+        let datFilePath = path.join(this.monitoredFolder, "CD" + "_" + timeStampString + ".DAT")
+        await fsPromises.appendFile(datFilePath, datFile )
+        return datFilePath;
     }
 
     async _createCdBurnerEpson(jobId, dat, discType, dicomPath, timeStampString) {
@@ -462,7 +462,7 @@ class CdBurner {
             + "#CD ou DVD\n"
             + "DISC_TYPE=" + discType + "\n"
             + "FORMAT=UDF102\n"
-            + "DATA=" + this.viewerDirectory + "\n"
+            + "DATA=" + this.viewerPath + "\n"
             + "DATA=" + dicomPath + "\n"
             + "#Instruction d'impression\n"
             + "LABEL=" + this.labelFile + "\n"
@@ -493,7 +493,7 @@ class CdBurner {
             The possible file types are .STD (SureThingTM), .jpg (JPEG), .bmp (Windows Bitmap), or .PRN (printed to file through any application). 
             If this key is not given then no printing will be performed. 
             */
-            + "PrintLabel=" + labelFile + "\n"
+            + "PrintLabel=" + this.labelFile + "\n"
             /* MergeField - This key specifies a merge field for SureThing printing.
             The print file specified within the JRQ must be a SureThing file, 
             and it must have been designed with a Merge File specified.
@@ -509,7 +509,7 @@ class CdBurner {
             + "MergeField=" + modalities + "\n";
 
         // Making a .JRQ file in the watched folder
-        let filePath = path.join(this.monitoredFolder, "CD_"+ moment().format('YYYYMMDDTHHmmssSS'), ".JRQ")
+        let filePath = path.join(this.monitoredFolder, "CD_"+ moment().format('YYYYMMDDTHHmmssSS')) + ".JRQ"
         await fsPromises.appendFile( filePath, txtRobot)
 
         return filePath;
