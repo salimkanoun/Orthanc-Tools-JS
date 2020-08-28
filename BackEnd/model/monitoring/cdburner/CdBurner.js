@@ -8,13 +8,11 @@ const moment = require('moment')
 const recursive = require("recursive-readdir");
 
 //SK RESTE A FAIRE
-//Debug des metadonnées (cf infra)
-//recuperation des modalities
 //debug patient
 //Effacement fichier temporaires
-//TRACKING DES PROCESS
-//HISTORIQUE DES CDS
+//Debug des metadonnées (cf infra)
 //Transcoding dans export
+//Check Event multiple charge serveur
 
 
 class CdBurner {
@@ -64,7 +62,7 @@ class CdBurner {
         this.viewerPath = 'C:\\Users\\kanoun_s\\Documents\\monitoring'
         this.suportType = CdBurner.MONITOR_CD_TYPE_AUTO
         this.labelFile = 'labelPath'
-        this._makeCD('4197238a-fd8a087e-b411f628-693092b5-badcccd0')
+        this._makeCDFromPatient('b75b59a4-8ef08c76-6467f229-c88142c6-8041f9c8')
         
     }
 
@@ -161,78 +159,77 @@ class CdBurner {
     }
 
     async _makeCDFromPatient(newStablePatientID) {
-        //SK A REFACTORISER POUR AVOIR LES STUDIES DU PATIENT
-        //SK A VERIFIER SI PLUSIEURS EVENT EN MEME TEMPS EN ASYNC LA CHARGE SERVEUR
-        //SK A CORRIGER POUR LES DATES ICI
-        let patient = await this.orthanc.findInOrthanc('Patient', '', newStablePatientID, '', '', '', '', '')//Obtenir les infos d un patient depuis son patientID
-        let studies = await this.orthanc.findInOrthanc('Study', '', newStablePatientID, '', '', '', '', '')
+        let patient = await this.orthanc.getOrthancDetails('patients', newStablePatientID)
+        let studies = await this.orthanc.getStudiesDetailsOfPatient(newStablePatientID)
 
+        //If Patient has only one study get the study Orthanc ID and process it as a single study burning
         if (studies.length === 1) {
-            let newStableStudyID = studies[0].MainDicomTags.StudyID //Recuper la studyID à partie de la studies du patientID
-            this.makeCD(newStableStudyID)
+            let newStableStudyID = studies[0].ID 
+            this._makeCD(newStableStudyID)
             return
         }
 
         let formattedPatientDOB = "N/A"
         try {
-            let patientDOB = patient.MainDicomTags.PatientBirthDate //date d'anniversaire du patient
-            formattedPatientDOB = patientDOB.toLocaleDateString(this.format, this.dateOptions) //date d'anniverssaire formaté du patient
+            formattedPatientDOB = this.formatDicomDate(patient.MainDicomTags.PatientBirthDate)
         } catch (err) {
             console.log(err)
         }
 
-        let datInfos = [studies.length]
+        let datInfos = []
         let uniqueModalitiesForPrimera = []
 
-        for (i = 0; i < studies.length; i++) {
+        for (let i = 0; i < studies.length; i++) {
             let formattedDateExamen = "N/A";
-            if (studies[i].MainDicomTags.StudyDate !== null) formattedDateExamen = studies[i].MainDicomTags.StudyDate.toLocaleString();
+            try {
+                formattedDateExamen = this.formatDicomDate(studies[i].MainDicomTags.StudyDate)
+            } catch (err) {
+                console.log(err)
+            }
             let studyDescription = studies[i].MainDicomTags.StudyDescription;
             let accessionNumber = studies[i].MainDicomTags.AccessionNumber;
 
-            let series = studies[i].Series
+            let series = await this.orthanc.getSeriesDetailsOfStudy(studies[i].ID)
 
             let modalities = []
-            for (u = 0; u < series.length; u++) {
-                let modality = series[u].MainDicomTags.Modality;
-                if (!modalities.contains(modality)) modalities.push(modality);
-            }
+            series.forEach((serie)=>{
+                let modality = serie.MainDicomTags.Modality;
+                if (!modalities.includes(modality)) modalities.push(modality);
+                if (!uniqueModalitiesForPrimera.includes(modality)) uniqueModalitiesForPrimera.push(modality);
+            })
 
-            let modalitiesInStudy
-            for (u = 0; u < modalities.length; u++) {
-                modalitiesInStudy = String.join("//", modalities[u]);
-            }
+            //Conctatenate modalities array to a string with "//" separator
+            let modalitiesInStudy = modalities.join("//")
 
-            for (u = 0; u < modalities.length; u++) {
-                if (!uniqueModalitiesForPrimera.contains(modalities[u])) {
-                    uniqueModalitiesForPrimera.push(modalities[u]);
-                }
-            }
-
-            datInfos[i] = {
-                Name: patient.MainDicomTags.PatientName,
-                getPatientId: patient.MainDicomTags.PatientID,
-                formattedDateExamen: formattedDateExamen,
+            datInfos.push( {
+                patientName: patient.MainDicomTags.PatientName,
+                patientID: patient.MainDicomTags.PatientID,
+                studyDate: formattedDateExamen,
                 studyDescription: studyDescription,
                 accessionNumber: accessionNumber,
-                formattedPatientDOB: formattedPatientDOB,
+                patientDOB: formattedPatientDOB,
                 modalitiesInStudy: modalitiesInStudy
-            }
+            } )
         }
 
-        let unzipedFolder = await this.__unzip(studies)
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, "Mutiples")
+        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING)
+
+        let unzipedFolder = await this.__unzip(studies)
+        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE)
+
+        let timeStamp = moment().format('YYYYMMDDTHHmmssSS')
+
         let requestFilePath 
+
         if (this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON) {
             let discType = await this._determineDiscType(unzipedFolder)
-            let dat = await this._printDat(datInfos);
+            let dat = await this._printDat(datInfos, timeStamp);
             //Generation du Dat
-            requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, patient.MainDicomTags.PatientName, "Mutiples", unzipedFolder)
+            requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, unzipedFolder, timeStamp)
 
         } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
-            nom, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities
-            //SK ICI METHODE POUR RECUPERE LES MODALITIES IN STUDY
-            let modalitiesInStudyPrimera = "MODALITIES"
+
             requestFilePath = await this._createCdBurnerPrimera(jobID, patient.MainDicomTags.PatientName, 
                 patient.MainDicomTags.PatientID, 
                 "Mutiples", 
@@ -240,9 +237,11 @@ class CdBurner {
                 "Mutiples", 
                 formattedPatientDOB, 
                 studies.length, 
-                modalitiesInStudyPrimera,
+                uniqueModalitiesForPrimera.join("//"),
                 unzipedFolder)
         }
+
+        this.updateJobStatus(jobID ,requestFilePath, CdBurner.JOB_STATUS_SENT_TO_BURNER)
 
         if (this.deleteStudyAfterSent) {
             this.orthanc.deleteFromOrthanc('patients', newStablePatientID)
@@ -253,23 +252,27 @@ class CdBurner {
     async _makeCD(newStableStudyID) {
         let study = await this.orthanc.getOrthancDetails('studies', newStableStudyID)
         let patient = await this.orthanc.getOrthancDetails('patients', study.ParentPatient)
+        let series = await this.orthanc.getSeriesDetailsOfStudy(newStableStudyID)
 
         let formattedDateExamen = "N/A"
-        console.log(study)
-        if (study.MainDicomTags.StudyDate !== undefined) {
-            let parsedDate = moment(study.MainDicomTags.StudyDate, "YYYYMMDD")
-            console.log(parsedDate)
-            formattedDateExamen = moment(parsedDate).format(this.format)
-        }
 
-        let formattedPatientDOB = "N/A";
         try {
-            let patientDOBDate = moment(patient.MainDicomTags.PatientBirthDate, "YYYYMMDD")
-            formattedPatientDOB = moment(patientDOBDate).format(this.format);
+            formattedDateExamen = this.formatDicomDate(study.MainDicomTags.StudyDate)
         } catch (e) { }
 
-        //SK ICI FAIRE DE QUOI RECUPERER LES MODALITIES IN STUDY
-        let modalitiesInStudy = "MODALITY" //String.join("//", study.getModalitiesInStudy());
+
+        let formattedPatientDOB = "N/A"
+        try {
+            formattedPatientDOB = this.formatDicomDate(patient.MainDicomTags.PatientBirthDate)
+        } catch (e) { }
+
+        let modalities = []
+        series.forEach((serie)=>{
+            let modality = serie.MainDicomTags.Modality
+            if (!modalities.includes(modality)) modalities.push(modality)
+        })
+        //Conctatenate modalities array to a string with "//" separator
+        let modalitiesInStudy = modalities.join("//")
 
         //Creat ID for this JOB
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, formattedDateExamen)
@@ -281,95 +284,97 @@ class CdBurner {
 
         //SK DEBEUGER ICI
         let datInfos = [{
-            nom: patient.MainDicomTags.PatientName,
-            id: patient.MainDicomTags.PatientID,
-            formattedDateExamen: formattedDateExamen,
+            patientName: patient.MainDicomTags.PatientName,
+            patientID: patient.MainDicomTags.PatientID,
+            studyDate: formattedDateExamen,
             studyDescription: study.MainDicomTags.StudyDescription,
             accessionNumber: study.MainDicomTags.AccessionNumber,
-            formattedPatientDOB: formattedPatientDOB,
+            patientDOB: formattedPatientDOB,
             modalitiesInStudy: modalitiesInStudy
         }]
 
+        let timeStamp = moment().format('YYYYMMDDTHHmmssSS')
         let requestFilePath
 
         if (this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON) {
             let discType = await this._determineDiscType(unzipedFolder)
             //Generation du Dat
-            let dat = await this._printDat(datInfos);
-            requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, datInfos.nom, datInfos.formattedDateExamen, unzipedFolder);
+            let dat = await this._printDat(datInfos, timeStamp);
+            requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, unzipedFolder, timeStamp);
 
         } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
-            requestFilePath = await this._createCdBurnerPrimera(jobID, datInfos.nom, 
-                datInfos.id, 
-                datInfos.formattedDateExamen, 
-                studies[u].MainDicomTags.StudyDescription, 
-                studies[u].MainDicomTags.AccessionNumber, 
-                datInfos.formattedPatientDOB, 
+            requestFilePath = await this._createCdBurnerPrimera(jobID, datInfos.patientName, 
+                datInfos.patientID, 
+                datInfos.studyDate, 
+                datInfos.studyDescription, 
+                dateInfos.accessionNumber, 
+                datInfos.patientDOB, 
                 1, 
                 datInfos.modalitiesInStudy, 
                 unzipedFolder);
         }
 
         this.updateJobStatus(jobID ,requestFilePath, CdBurner.JOB_STATUS_SENT_TO_BURNER)
+
         //On efface la study de Orthanc
         if (this.deleteStudyAfterSent) {
             await this.orthanc.deleteFromOrthanc('studies', newStableStudyID)
         }
 
-        
-
     }
 
-    monitorJobs(){
+    /**
+     * format dicom string according to current date display settings
+     * @param {string} dicomDateString 
+     */
+    formatDicomDate(dicomDateString){
+        let parsedDate = moment(dicomDateString, "YYYYMMDD")
+        return moment(parsedDate).format(this.format)
+    }
 
-        let nonFinishedRequestFile = Object.keys(this.jobStatus).map(jobID =>{
+    /**
+     * Monitor the monitored folder to search for request extension change
+     */
+    async monitorJobs(){
+
+        let nonFinishedRequestFile = {}
+        console.log(this.jobStatus)
+        
+        //Keep only job which didn't reached Done or Error Status
+        Object.keys(this.jobStatus).forEach(jobID =>{
             if(this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_DONE && 
             this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_ERROR && 
             this.jobStatus[jobID]['status'] !== null){
-                return  this.jobStatus[jobID]['requestFile']
+                nonFinishedRequestFile[jobID] = {...this.jobStatus[jobID]}
             }
         })
 
-        console.log(nonFinishedRequestFile)
-        for (let requestFileName of nonFinishedRequestFile){
-            let name = path.parse(requestFileName).name
-            let extension = path.parse(requestFileName).ext
+        //Get Current Job File available in monitored folder
+        let currentRequestFiles = await fsPromises.readdir(this.monitoredFolder).then((files)=>{
+            let fileObject = {}
+            files.forEach((file)=>{
+                let name  = path.parse(file).name
+                let extension = path.parse(file).ext
+                if(extension !== ".DAT") fileObject[name] = extension
+            })
+            return fileObject
+        })
+
+        //For each current JobID check if the file request extension has changed and update the status accordically
+        for (let jobId of Object.keys(nonFinishedRequestFile) ){
+            let jobRequestFile = nonFinishedRequestFile[jobId]['requestFile']
+            let name = path.parse(jobRequestFile).name
+            if(currentRequestFiles[name] === '.DON'){
+                this.updateJobStatus(jobId, jobRequestFile, CdBurner.JOB_STATUS_BURNING_DONE)
+            }else if(currentRequestFiles[name] === '.INP'){
+                this.updateJobStatus(jobId, jobRequestFile, CdBurner.JOB_STATUS_BURNING_IN_PROGRESS)
+            }else if(currentRequestFiles[name] === '.ERR'){
+                this.updateJobStatus(jobId, jobRequestFile, CdBurner.JOB_STATUS_BURNING_ERROR)
+            }else if(currentRequestFiles[name] === '.STP'){
+                this.updateJobStatus(jobId, jobRequestFile, CdBurner.JOB_STATUS_BURNING_PAUSED)
+            }
         }
-
-        /**
-         * File folder = new File(epsonDirectory);
-		File[] listOfFiles = folder.listFiles();
-
-		for (File file : listOfFiles) {
-		    if (file.isFile()) {
-		    	String baseName=FilenameUtils.getBaseName(file.toString());
-		    	if(burningStatus.containsKey(baseName)) {
-		    		String extension=FilenameUtils.getExtension(file.toString());
-		    		int rowNubmer=(int) burningStatus.get(baseName)[0];
-		    		File tempFolder=(File) burningStatus.get(baseName)[1];
-		    		if(extension.equals("ERR")) {
-		    			table_burning_history.setValueAt("Burning Error", rowNubmer, 5);
-		    			burningStatus.remove(baseName);
-		    			playSound(false);
-		    			FileUtils.deleteDirectory(tempFolder);
-		    		}else if(extension.equals("INP")) {
-		    			table_burning_history.setValueAt("Burning In Progress", rowNubmer, 5);
-		    		}else if(extension.equals("DON")) {
-		    			playSound(true);
-		    			burningStatus.remove(baseName);
-		    			table_burning_history.setValueAt("Burning Done", rowNubmer, 5);
-		    			FileUtils.deleteDirectory(tempFolder);
-		    		}else if(extension.equals("STP")) {
-		    			table_burning_history.setValueAt("Paused", rowNubmer, 5);
-		    		}
-		    	}
-		    }
-		}
-         */
-        
-
-
-
+      
     }
 
     updateJobStatus(jobID, requestFile, status){
@@ -405,38 +410,41 @@ class CdBurner {
         return discType;
     }
 
-    async _printDat(infos) {
+    async _printDat(infos, timeStampString) {
 
         //On parse le nom pour enlever les ^ et passer le prenom en minuscule
-        let nom = infos[0].nom;
-        let separationNomPrenom = nom.indexOf("^", 0);
-        if (separationNomPrenom != -1) {
-            nom = nom.substring(0, separationNomPrenom + 2) + nom.substring(separationNomPrenom + 2).toLowerCase();
+        let patientName
+        try{
+            patientName = infos[0].patientName;
+            let separationNomPrenom = patientName.indexOf("^", 0);
+            patientName = patientName.substring(0, separationNomPrenom + 2).toUpperCase() + patientName.substring(separationNomPrenom + 2).toLowerCase();
+        }catch (err) {
+
         }
 
-        let datFile = "patientName=" + nom.replace("\\^", " ") + "\n"
-            + "patientId=" + infos[0].id + "\n"
-            //patient date is a duplicate of studydate (depreciated)
-            + "patientDate=" + infos[0].patientDOB + "\n"
+        if(!patientName) patientName = "No Name"
+
+        let datFile = "patientName=" + patientName.replace("\\^", " ") + "\n"
+            + "patientId=" + infos[0].patientID + "\n"
             + "patientDOB=" + infos[0].patientDOB + "\n"
             + "numberOfStudies=" + infos.length + "\n"
 
         for (let i = 0; i < infos.length; i++) {
             if (i == 0) {
-                datFile += "studyDate=" + infos[i].date + "\n"
+                datFile += "studyDate=" + infos[i].studyDate + "\n"
                     + "studyDescription=" + infos[i].studyDescription + "\n"
                     + "accessionNumber=" + infos[i].accessionNumber + "\n"
-                    + "modalities=" + infos[i].modalities + "\n"
+                    + "modalities=" + infos[i].modalitiesInStudy + "\n"
             } else {
-                datFile += "studyDate" + (i + 1) + "=" + infos[i].date + "\n"
+                datFile += "studyDate" + (i + 1) + "=" + infos[i].studyDate + "\n"
                     + "studyDescription" + (i + 1) + "=" + infos[i].studyDescription + "\n"
                     + "accessionNumber" + (i + 1) + "=" + infos[i].accessionNumber + "\n"
-                    + "modalities" + (i + 1) + "=" + infos[i].modalities + "\n"
+                    + "modalities" + (i + 1) + "=" + infos[i].modalitiesInStudy + "\n"
             }
 
         }
 
-        let dat = await fsPromises.appendFile(path.join(this.monitoredFolder, "CD" + moment().format('YYYYMMDDTHHmmssSS') + ".dat"), datFile, function (err) {
+        let dat = await fsPromises.appendFile(path.join(this.monitoredFolder, "CD" + "_" + timeStampString + ".DAT"), datFile, function (err) {
             if (err) throw err;
             console.log('Saved!');
         });
@@ -444,7 +452,7 @@ class CdBurner {
         return dat;
     }
 
-    async _createCdBurnerEpson(jobId, dat, discType, name, formattedStudyDate, dicomPath) {
+    async _createCdBurnerEpson(jobId, dat, discType, dicomPath, timeStampString) {
 
         //Builiding text file for robot request
         let txtRobot = "# Making data CD\n"
@@ -461,7 +469,7 @@ class CdBurner {
             + "REPLACE_FIELD=" + dat
 
         // Wrint JDF file in monitoring folder
-        let filePath = path.join(this.monitoredFolder, "CD_" + moment().format('YYYYMMDDTHHmmssSS') + ".JDF")
+        let filePath = path.join(this.monitoredFolder, "CD_" + timeStampString + ".JDF")
         await fsPromises.appendFile( filePath, txtRobot)
 
         return filePath;
@@ -558,6 +566,12 @@ class CdBurner {
             return Promise.all(promises).then(()=> sizeCounter)
 
         })
+    }
+
+    toJSON(){
+        return {
+            ...this.jobStatus
+        }
     }
 }
 

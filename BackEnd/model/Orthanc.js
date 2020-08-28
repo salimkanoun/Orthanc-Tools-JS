@@ -295,6 +295,16 @@ class Orthanc {
     return answer
   }
 
+  async getStudiesDetailsOfPatient(orthancID){
+    const answer = await ReverseProxy.getAnswer('/patients/' + orthancID + '/studies?expand', 'GET', undefined)
+    return answer
+  }
+
+  async getSeriesDetailsOfStudy(orthancID){
+    const answer = await ReverseProxy.getAnswer('/studies/' + orthancID + '/series?expand', 'GET', undefined)
+    return answer
+  }
+
   /**
      * Delete a ressource in Orthanc
      * @param {string} level
