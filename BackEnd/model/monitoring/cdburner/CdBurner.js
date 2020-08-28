@@ -8,7 +8,6 @@ const moment = require('moment')
 const recursive = require("recursive-readdir");
 
 //SK RESTE A FAIRE
-//Effacement fichier temporaires
 //Check Event multiple charge serveur
 
 //Front 
@@ -153,7 +152,7 @@ class CdBurner {
                 return writeFileUnzipedPromises
             }).then((writepromises)=>{
                 return Promise.all(writepromises)
-            }).then( ()=> fsPromises.unlink(zipFileName) ).then( ()=> directory.path)
+            }).then( ()=> fsPromises.unlink(zipFileName) ).then( ()=> directory)
 
         })
 
@@ -216,21 +215,20 @@ class CdBurner {
         }
 
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, "Mutiples")
-        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING)
+        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING, 'None')
 
         let unzipedFolder = await this.__unzip(studies)
-        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE)
+        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
 
         let timeStamp = moment().format('YYYYMMDDTHHmmssSS')
 
         let requestFilePath 
 
         if (this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON) {
-            let discType = await this._determineDiscType(unzipedFolder)
+            let discType = await this._determineDiscType(unzipedFolder.path)
             //Generation du Dat
             let dat = await this._printDat(datInfos, timeStamp);
-            console.log(dat)
-            requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, unzipedFolder, timeStamp)
+            requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, unzipedFolder.path, timeStamp)
 
         } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
 
@@ -242,7 +240,7 @@ class CdBurner {
                 formattedPatientDOB, 
                 studies.length, 
                 uniqueModalitiesForPrimera.join("//"),
-                unzipedFolder)
+                unzipedFolder.path)
         }
 
         this.updateJobStatus(jobID ,requestFilePath, CdBurner.JOB_STATUS_SENT_TO_BURNER)
@@ -280,12 +278,11 @@ class CdBurner {
 
         //Creat ID for this JOB
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, formattedDateExamen)
-        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING)
+        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING, 'None')
 
         //Generate the ZIP with Orthanc IDs dicom
         let unzipedFolder = await this.__unzip([study])
-        console.log(unzipedFolder)
-        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE)
+        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
 
         let datInfos = [{
             patientName: patient.MainDicomTags.PatientName,
@@ -301,10 +298,10 @@ class CdBurner {
         let requestFilePath
 
         if (this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON) {
-            let discType = await this._determineDiscType(unzipedFolder)
+            let discType = await this._determineDiscType(unzipedFolder.path)
             //Generation du Dat
             let dat = await this._printDat(datInfos, timeStamp);
-            requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, unzipedFolder, timeStamp);
+            requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, unzipedFolder.path, timeStamp);
 
         } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
             requestFilePath = await this._createCdBurnerPrimera(jobID, datInfos[0].patientName, 
@@ -315,7 +312,7 @@ class CdBurner {
                 datInfos[0].patientDOB, 
                 1, 
                 datInfos[0].modalitiesInStudy, 
-                unzipedFolder);
+                unzipedFolder.path);
         }
 
         this.updateJobStatus(jobID ,requestFilePath, CdBurner.JOB_STATUS_SENT_TO_BURNER)
@@ -364,26 +361,34 @@ class CdBurner {
         })
 
         //For each current JobID check if the file request extension has changed and update the status accordically
-        for (let jobId of Object.keys(nonFinishedRequestFile) ){
-            let jobRequestFile = nonFinishedRequestFile[jobId]['requestFile']
+        for (let jobID of Object.keys(nonFinishedRequestFile) ){
+            let jobRequestFile = nonFinishedRequestFile[jobID]['requestFile']
+            console.log(jobRequestFile)
             let name = path.parse(jobRequestFile).name
             if(currentRequestFiles[name] === '.DON'){
-                this.updateJobStatus(jobId, jobRequestFile, CdBurner.JOB_STATUS_BURNING_DONE)
+                this.updateJobStatus(jobID, jobRequestFile, CdBurner.JOB_STATUS_BURNING_DONE)
             }else if(currentRequestFiles[name] === '.INP'){
-                this.updateJobStatus(jobId, jobRequestFile, CdBurner.JOB_STATUS_BURNING_IN_PROGRESS)
+                this.updateJobStatus(jobID, jobRequestFile, CdBurner.JOB_STATUS_BURNING_IN_PROGRESS)
             }else if(currentRequestFiles[name] === '.ERR'){
-                this.updateJobStatus(jobId, jobRequestFile, CdBurner.JOB_STATUS_BURNING_ERROR)
+                this.updateJobStatus(jobID, jobRequestFile, CdBurner.JOB_STATUS_BURNING_ERROR)
             }else if(currentRequestFiles[name] === '.STP'){
-                this.updateJobStatus(jobId, jobRequestFile, CdBurner.JOB_STATUS_BURNING_PAUSED)
+                this.updateJobStatus(jobID, jobRequestFile, CdBurner.JOB_STATUS_BURNING_PAUSED)
             }
         }
       
     }
 
-    updateJobStatus(jobID, requestFile, status){
+    updateJobStatus(jobID, requestFile, status, tempZip = null){
+
         this.jobStatus[jobID] = {
             requestFile : requestFile,
-            status : status
+            status : status,
+            tempZip : (tempZip!==null) ? tempZip : this.jobStatus[jobID]['tempZip']
+        }
+
+        //If Done or Error remove temporary files
+        if(status === CdBurner.JOB_STATUS_BURNING_DONE || status === CdBurner.JOB_STATUS_BURNING_ERROR){
+            this.jobStatus[jobID]['tempZip'].cleanup()
         }
     }
 
