@@ -1,6 +1,10 @@
 'use strict'
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
+    id:{
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
     username: DataTypes.STRING,
     password: DataTypes.STRING,
     admin: DataTypes.BOOLEAN,

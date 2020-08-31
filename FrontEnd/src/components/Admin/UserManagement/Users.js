@@ -80,7 +80,7 @@ class Users extends Component {
             dataField: 'username', 
             text: 'Username', 
             sort: true, 
-            editable: false
+            editable: true
         }, {
             dataField: 'first_name', 
             text: 'First name', 

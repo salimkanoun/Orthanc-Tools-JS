@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../database/models')
+const AdClient = require('../ldap/adClient')
 
 class Users {
   constructor (username) {
@@ -24,22 +25,40 @@ class Users {
     }
   }
 
-  async checkLDAPPassword (plainPassword) {
+  async checkLDAPPassword (plainPassword, callback) {
     let username = this.username;
     if(this.username.indexOf('@') === 0) {
       username = username.substr(1)
     }
 
-    //ToDo
+    const option = await db.LdapOptions.findOne(({ where: { id: 1 }, attributes: ['TypeGroupe',
+        'protocole',
+        'adresse',
+        'port',
+        'DN',
+        'mdp','user','groupe','base'] }))
+
+        let client;
+        if(option.TypeGroupe === 'ad') {
+            client = new AdClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp, option.base, option.user, option.groupe )
+          } else if(option.TypeGroupe === 'ldap') {
+            //ToDo
+            throw 'ToDo'
+        } else {
+            throw 'inccorect TypeGroupe'
+        }
+        await client.autentification(username, plainPassword, function(response) { 
+          return callback(response)
+        })
   }
 
-  async checkLocalPassword (plainPassword) {
+  async checkLocalPassword (plainPassword, callback) {
     const user = await this._getUserEntity()
     const check = await bcrypt.compare(plainPassword, user.password).catch(() => { return false })
-    return check
+    return callback(check)
   }
 
-  async checkPassword (plainPassword) {
+  async checkPassword (plainPassword, callback) {
    
     const mode = await db.Option.findOne({ 
       attributes: ['ldap'],
@@ -49,14 +68,17 @@ class Users {
     try {
         if(mode.ldap && this.username.indexOf('@') !== -1) {
           //LDAP user
-          return this.checkLDAPPassword(plainPassword);
+          await this.checkLDAPPassword(plainPassword, async function(response) {
+            return await callback(response)
+          });
 
         } else {
           //Local user
-          return this.checkLocalPassword(plainPassword);
+          await this.checkLocalPassword(plainPassword, async function(response) {
+            return await callback(response)
+          });
           
         }
-
     } catch(err) {
       console.log(err)
     }
@@ -107,6 +129,7 @@ class Users {
   }
 
   static async modifyUser(data){
+    
     if(data.username.indexOf('@') !== -1) throw '@ is forbiden'
 
     let user = new Users(data.username)
@@ -127,16 +150,16 @@ class Users {
       }
     }
 
-  try { 
-    await db.User.upsert({
-      id: data.id,
-      username: data.username, 
-      isAdmin: data.admin, 
-      first_name: data.first_name, 
-      last_name: data.last_name, 
-      mail: data.mail, 
-      role: data.role
-    })
+  try {
+      const mod = await db.User.findOne(({ where: { id:data.id } }))
+      mod.id = data.id
+      mod.username = data.username, 
+      mod.isAdmin = data.admin, 
+      mod.first_name = data.first_name, 
+      mod.last_name = data.last_name, 
+      mod.mail = data.mail, 
+      mod.role = data.role
+      await mod.save()
   } catch (error) {
     console.log(error)
   }
@@ -179,7 +202,7 @@ class Users {
     
   }
 
-  async getLocalUserRight() {
+  async getLocalUserRight(callback) {
     let rights;
 
     try {
@@ -203,21 +226,85 @@ class Users {
       } catch (error) {
       console.log(error)
       } finally {
-        return rights
+        return callback(rights)
       }
   }
 
-  async getLDAPUserRight () { 
+  async getLDAPUserRight(callback) { 
     let username = this.username;
     if(this.username.indexOf('@') === 0) {
       username = username.substr(1)
     }
 
-    //ToDo
+    const option = await db.LdapOptions.findOne(({ where: { id: 1 }, attributes: ['TypeGroupe',
+        'protocole',
+        'adresse',
+        'port',
+        'DN',
+        'mdp','user','groupe','base'] }))
+
+        let client;
+        if(option.TypeGroupe === 'ad') {
+            client = new AdClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp, option.base, option.user, option.groupe )
+          } else if(option.TypeGroupe === 'ldap') {
+            //ToDo
+            throw 'ToDo'
+        } else {
+            throw 'inccorect TypeGroupe'
+        }
+
+        const opt = await db.DistantUser.findAll(({attributes: ['groupName'] }))
+        const roles = []; 
+        for(let u=0;u<opt.length;u++) {roles.push(opt[u].dataValues.groupName)}
+
+    await client.getPermission(username, roles, async function(response) { 
+      
+      let res = {
+        import:false,
+        content:false,
+        anon:false,
+        export_local:false,
+        export_extern:false,
+        query:false,
+        auto_query:false,
+        delete:false,
+        admin:false,
+        modify:false
+      }
+
+      for(let i=0;i<response.length;i++) {
+
+        let resp = await db.DistantUser.findOne(({where: {groupName: response[i]}, attributes: ['roleDistant'] }))
+        let role = await resp.dataValues.roleDistant; 
+
+        let option = await db.Role.findOne(({ where: { name: role }, attributes: ['import',
+        'content',
+        'anon',
+        'export_local',
+        'export_extern',
+        'query','auto_query','delete','admin','modify'] }))
+
+        res = {
+          import:res.import || option.dataValues.import,
+          content:res.content || option.dataValues.content,
+          anon:res.anon || option.dataValues.anon,
+          export_local:res.export_local || option.dataValues.export_local,
+          export_extern:res.export_extern || option.dataValues.export_extern,
+          query:res.query || option.dataValues.query,
+          auto_query:res.auto_query || option.dataValues.auto_query,
+          delete:res.delete || option.dataValues.delete,
+          admin:res.admin || option.dataValues.admin,
+          modify:res.modify || option.dataValues.modify
+        }
+
+        console.log(res)
+      }
+
+      return callback(res)
+    })
   }  
 
-  async getUserRight(){
-
+  async getUserRight(callback){
       const mode = await db.Option.findOne({ 
         attributes: ['ldap'],
         where: {id: '1'}
@@ -226,12 +313,15 @@ class Users {
       try {
           if(mode.ldap && this.username.indexOf('@') !== -1) {
             //LDAP user
-            return this.getLDAPUserRight();
+            await this.getLDAPUserRight(async function(response) {
+              return await callback(response)
+            });
 
           } else {
             //Local user
-            return this.getLocalUserRight();
-            
+            await this.getLocalUserRight(async function(response) {
+              return await callback(response)
+            });            
           }
 
     } catch(err) {

@@ -1,80 +1,110 @@
-const Orthanc = require('./Orthanc')
+const Orthanc = require('../Orthanc')
+const EventEmitter = require('events').EventEmitter;
 
-class Orthanc_Monitoring {
+class Orthanc_Monitoring extends EventEmitter {
     
     constructor () {
+        super()
+        this.orthanc = new Orthanc()
         this.done = false
         this.last = 0
-
-        //newStableStudyID = [];
-        //newStablePatientID = [];
-        //newStableSeriesID = [];
-        //newPatientID = [];
-        //newStudyID = [];
-        //newSerieID = [];
     }
 
-    makeMonitor() {
-        do {
-            this._parseOutput(this.last);
+    monitoringService = {
+        cdBurner: false
+    }
+
+    async startMonitoringifNeeded () {
+        //If already started skip
+        if(this.monitoringRunning) return
+
+        let startedServiceArray = Object.keys(this.monitoringService).filter(service=> (this.monitoringService[service] ===true) )
+
+        if(startedServiceArray.length >0 ){
+            this.monitoringRunning = true
+            //Get last change number at monitoring startup (monitoring will start at this index)
+            let changes = await this.orthanc.getChangesLast()
+            this.last = changes.Last
+            this.monitoringInterval = setInterval(()=>{this.makeMonitor()}, 2000)
+
         }
-        while(!done);
         
     }
 
-    getChangeLastLine() {
-		changes = Orthanc.getChangesLast();
-		last = parseInt(changes.get("Last"));
-		console.log(last);
-		
-		return last;
+    startMonitoringService(serviceName){
+        this.monitoringService[serviceName] = true
+        this.startMonitoringifNeeded()
     }
-    
-    setChangeLastLine(last) {
-        this.last = last
+
+    stopMonitoringService(serviceName){
+        this.monitoringService[serviceName] = false
+        this.stopMonitoringIfNeeded()
     }
-    
-    autoSetChangeLastLine() {
-        last = this.getChangeLastLine();
-		this.last=last;
+
+    stopMonitoringIfNeeded (){
+        if(!this.monitoringRunning) return
+
+        let startedServiceArray = Object.keys(this.monitoringService).filter(service=> (this.monitoringService[service] ===true) )
+        if(startedServiceArray.length === 0 ){
+            this.monitoringRunning = false
+            clearInterval(this.monitoringInterval)
+        }
+
+    }
+
+    async makeMonitor() {
+        do {
+            await this._parseOutput(this.last);
+        }
+        while(!this.done);
+        
     }
 
     async _parseOutput(last) {
-        let changes = await Orthanc.getChanges(last)
-        console.log(changes)
+        
+        let changes
+        try {
+            changes = await this.orthanc.getChanges(last)
+        } catch (err) {
+            console.log(err)
+        }
 
-        let changesArray=changes.get("Changes");
+        let changesArray=changes.Changes;
 
-        changesArray.forEach (function(changeEvent) {
-            ID = changeEvent.get("ID").getAsString();
+        changesArray.forEach(function(changeEvent) {
+            ID = changeEvent.ID;
             
             if (changeEvent.get("ChangeType") === "NewPatient") {
-				//newPatientID.push(ID);
+                this.emit('NewPatient')
 			}
 			 
 			else if (changeEvent.get("ChangeType") === "NewStudy") {
-				//newStudyID.push(ID);
-
+                this.emit('NewStudy')
 			}
 			
 			else if (changeEvent.get("ChangeType") === "NewSeries") {
-				//newSerieID.push(ID);
+                this.emit('NewSeries')
 			}
 			
 			else if (changeEvent.get("ChangeType") === "StablePatient") {
-				//newStablePatientID.push(ID);
+                this.emit('StablePatient')
 			}
 			
 			else if (changeEvent.get("ChangeType") === "StableStudy") {
-				//newStableStudyID.push(ID);
+                this.emit('StableStudy')
 			}
 
 			else if (changeEvent.get("ChangeType") === "StableSeries") {
-				//newStableSeriesID.push(ID);
+                this.emit('StableSeries')
 			}
-        })   
-        last = parseInt(changes.get("Last"));
-        done = parseBoolean(changes.get("Done")); 
+        }) 
+        
+        this.last = changes.Last
+        this.done = changes.Done
     }
         
 }
+
+const MONITORING_SERVICE_CDBURNER = "CdBurner"
+
+module.exports = Orthanc_Monitoring

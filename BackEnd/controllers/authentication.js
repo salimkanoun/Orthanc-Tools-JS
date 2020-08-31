@@ -5,32 +5,37 @@ authentication = async function (req, res) {
   const body = req.body
   try {
     const userObject = new Users(body.username)
-    const checkPassword = await userObject.checkPassword(body.password)
-    if (checkPassword) {
+    await userObject.checkPassword(body.password, async function(reponse) {
+      console.log(reponse)
+      if (reponse) {
+        let user = new Users(body.username)
 
-      let user = new Users(body.username)
-      let infosUser = await user.getUserRight()
+        await user.getUserRight(function(infosUser) {
 
-      let payload = {
-        username: body.username,
-        admin: infosUser.admin,
-        import: infosUser.import,
-        content: infosUser.content,
-        anon: infosUser.anon,
-        export_local: infosUser.export_local,
-        export_extern: infosUser.export_extern,
-        query: infosUser.query,
-        auto_query: infosUser.auto_query,
-        delete: infosUser.delete,
-        modify: infosUser.modify
+          let payload = {
+            username: body.username,
+            admin: infosUser.admin,
+            import: infosUser.import,
+            content: infosUser.content,
+            anon: infosUser.anon,
+            export_local: infosUser.export_local,
+            export_extern: infosUser.export_extern,
+            query: infosUser.query,
+            auto_query: infosUser.auto_query,
+            delete: infosUser.delete,
+            modify: infosUser.modify
+          }
+    
+          var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
+    
+          res.json(TOKEN);
+        })
+      } else {
+        res.status(401).send('Wrong Credential')
       }
 
-      var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
-
-      res.json(TOKEN);
-    } else {
-      res.status(401).send('Wrong Credential')
-    }
+    })
+    
   } catch (Error) {
     res.status(401).send('Unknown user')
   }

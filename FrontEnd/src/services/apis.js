@@ -15,6 +15,8 @@ import User from './User'
 import deleteRobot from './deleteRobot'
 import role from './role'
 import token from './token'
+import ldap from './ldap'
+import cdBurner from './cdBurner'
 
 export default {
   importDicom,
@@ -33,5 +35,7 @@ export default {
   User, 
   deleteRobot, 
   role, 
-  token
+  token,
+  ldap,
+  cdBurner
 }

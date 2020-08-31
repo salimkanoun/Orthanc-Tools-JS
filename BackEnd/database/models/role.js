@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     Role.hasOne(models.User, {
       foreignKey: 'role',
       as:'role'
+    }),
+    Role.hasOne(models.DistantUser, {
+      foreignKey: 'roleDistant',
+      as:'roleDistant'
     })
   };
   return Role;

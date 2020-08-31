@@ -10,17 +10,7 @@ function readCookie(name) {
   }
 
   function updateOptions(options) {
-    const update = { ...options };
-    
-    var token = readCookie('tokenOrthancJs');
-
-    if (token != null) {
-      update.headers = {
-        ...update.headers,
-        Authorization: `Bearer ${token}`,
-      };
-    }
-    return update;
+    return options
   }
 
   export default updateOptions

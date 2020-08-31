@@ -10,6 +10,10 @@ const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
 
+const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
+
+const { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames} = require('../controllers/ldap')
+
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
@@ -18,36 +22,6 @@ const { userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware
     exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware } = require('../midelwares/authentication')
 
 
-/**
- * @swagger
- * tags:
- *   name: Users
- *   description: User management
- */
-
-/**
- * @swagger
- * path:
- *  /authentication/:
- *    post:
- *      summary: Authentify User
- *      tags: [Users]
- *      requestBody:
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                  username:
- *                      type: string
- *                  password:
- *                      type: string
- *      responses:
- *        "200":
- *          description: Sucess
- *        "401":
- *          description: Unauthorized
- */
 router.post('/session/*', authentication)
 router.delete('/session', logOut)
 
@@ -157,5 +131,21 @@ router.get('/token', userAuthMidelware, getRoleFromToken)
 //Mode
 router.get('/mode', userAdminMidelware, getMode)
 router.put('/changeMode', userAdminMidelware, changeMode)
+
+//Ldap
+router.get('/ldapSettings', userAdminMidelware, getLdapSettings)
+router.put('/ldapSettings', userAdminMidelware, setLdapSettings)
+router.get('/ldapTestCo', userAdminMidelware, testLdapSettings)
+router.post('/ldapCorrespondences', userAdminMidelware, setLdapCorrespodence)
+router.get('/ldapCorrespondences', userAdminMidelware, getLdapCorrespodences)
+router.delete('/ldapCorrespondences', userAdminMidelware, deleteCorrespodence)
+router.get('/ldapGroupeName', userAdminMidelware, getLdapGroupeNames)
+
+
+//Monitoring
+router.post('/monitoring/burner', startBurner)
+router.delete('/monitoring/burner', stopBurner)
+router.get('/monitoring/burner', getBurner)
+router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
 
 module.exports = router

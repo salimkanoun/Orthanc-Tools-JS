@@ -21,10 +21,12 @@ import ContentRootPanel from '../OrthancContent/ContentRootPanel'
 import ExportPanel from '../Export/ExportPanel'
 import AnonRootPanel from '../Anonymize/AnonRootPanel'
 import Delete from '../Delete/Delete'
+import CDBurner from './../CDBurner/CDBurner'
 
 import { resetReducer } from '../../actions/LogOut'
 import { saveUsername } from '../../actions/Username'
 import { connect } from 'react-redux'
+
 
 class NavBar extends Component {
 
@@ -81,6 +83,7 @@ class NavBar extends Component {
           <Route exact path='/robot/:username' render = { (props) => <RobotView username={props.match.params.username} /> } />
           <Route exact path='/export' component={ExportPanel} />
           <Route exact path='/anonymize' component={AnonRootPanel} />
+          <Route exact path='/cd-burner' component={CDBurner} />
           <Route exact path='/delete' component={Delete} />
         </Switch>
       </CSSTransition>
@@ -101,6 +104,7 @@ class NavBar extends Component {
                       <Link className='nav-link' to='/import' hidden={!this.state.token.import}>Import</Link>
                       <Link className='nav-link' to='/query' hidden={!this.state.token.query}>Query</Link>
                       <Link className='nav-link' to='/auto-query' hidden={!this.state.token.auto_query}>Auto-Retrieve</Link>
+                      <Link className='nav-link' to='/cd-burner' hidden={false/*!this.state.token.cd_burner*/}>CD-burner</Link>
                       <Link className='nav-link' to='/options' hidden={!this.state.token.admin}>Administration</Link>
                       <Link className='nav-link' onClick={this.logout} to='/'>Log out</Link>
               </Nav>
