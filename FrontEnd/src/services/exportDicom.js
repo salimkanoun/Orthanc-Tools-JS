@@ -61,15 +61,24 @@ const exportDicom = {
       body: JSON.stringify(body)
     }
 
-    return fetch('/api/tools/create-media-extended/', updateOptions(exportDicomDirDicomsOption)).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    }).catch((error) => {
-      toastifyError(error)
-    })
-  },
+      const getZipOptions = {
+        method: 'GET', 
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    }
 
-  async downloadZip(jobID) {
+      const url = '/api/jobs/'+jobID+'/archive'
+      const fileStream = streamSaver.createWriteStream( jobID+".zip")
+
+      fetch(url, updateOptions(getZipOptions)).then(res => {
+        const readableStream = res.body
+        
+        if (window.WritableStream && readableStream.pipeTo) {
+          return readableStream.pipeTo(fileStream)
+            .then(() => console.log('done writing'))
+        }
 
     const url = '/api/jobs/' + jobID + '/archive'
     const fileStream = streamSaver.createWriteStream(jobID + ".zip")

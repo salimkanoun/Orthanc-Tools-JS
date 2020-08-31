@@ -16,6 +16,8 @@ services:
             OrthancPort: "8042"
             OrthancUsername: "salim"
             OrthancPassword: "salim"
+            DOMAIN_PROTOCOL: "http"
+            DOMAIN_ADDRESS: "212.47.232.65"
     
     orthanc:
         image: osimis/orthanc:20.4.2

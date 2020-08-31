@@ -18,7 +18,8 @@ class TableSeries extends Component{
     }, {
         dataField: 'SeriesDescription', 
         text: 'Series Description',
-        sort: true
+        sort: true,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'Modality', 
         text: 'Modality',

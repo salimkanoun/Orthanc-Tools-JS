@@ -1,17 +1,25 @@
 import React, { Component } from 'react'
+import { connect } from "react-redux"
+
 import BootstrapTable from 'react-bootstrap-table-next'
 import filterFactory, { textFilter, dateFilter, selectFilter } from 'react-bootstrap-table2-filter'
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import OhifLink from '../../Ohif/OhifLink';
-import apis from '../../../services/apis';
+
+import AnonExportDeleteSendButton from '../../Import/AnonExportDeleteSendButton'
+import OhifLink from '../../Ohif/OhifLink'
+import apis from '../../../services/apis'
+
+import {addStudiesToExportList} from '../../../actions/ExportList'
+import {addStudiesToDeleteList} from '../../../actions/DeleteList'
+import {addStudiesToAnonList} from '../../../actions/AnonList'
 
 /**
  * View page of a sigle Retrieve Robot content
  * With progress monitoring and delete item action
  */
-export default class RobotView extends Component {
+class RobotView extends Component {
 
     state = {
         rows : [],
@@ -24,6 +32,9 @@ export default class RobotView extends Component {
         this.refreshHandler=this.refreshHandler.bind(this)
         this.startProgressMonitoring = this.startProgressMonitoring.bind(this)
         this.stopProgressMonitoring = this.stopProgressMonitoring.bind(this)
+        this.sendToAnon = this.sendToAnon.bind(this)
+        this.sendToExport = this.sendToExport.bind(this)
+        this.sendToDelete = this.sendToDelete.bind(this)
         
     }
 
@@ -37,7 +48,7 @@ export default class RobotView extends Component {
     }
 
     columns = [{
-        dataField: 'key',
+        dataField: 'Key',
         hidden: true
     }, {
         dataField: 'Level',
@@ -51,11 +62,13 @@ export default class RobotView extends Component {
     }, {
         dataField: 'PatientName',
         text : 'Patient Name',
-        filter: textFilter()
+        filter: textFilter(),
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'PatientID',
         text : 'Patient ID',
-        filter: textFilter()
+        filter: textFilter(),
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField : 'StudyDate',
         text : 'Study Date',
@@ -67,11 +80,13 @@ export default class RobotView extends Component {
     }, {
         dataField : 'StudyDescription',
         text : 'Study Description',
-        filter: textFilter()
+        filter: textFilter(),
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField : 'SeriesDescription',
         text : 'Series Description',
-        filter: textFilter()
+        filter: textFilter(),
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField : 'AccessionNumber',
         text : 'Accession Number',
@@ -81,13 +96,17 @@ export default class RobotView extends Component {
         text : 'AET',
         filter: textFilter()
     }, {
+        dataField : 'Validated',
+        text : 'Validated',
+        filter: textFilter()
+    }, {
         dataField : 'Status',
         text : 'Status',
         filter: textFilter(),
         style: function callback(cell, row, rowIndex, colIndex) {
-            if(cell === 'Retrieved'){
+            if(cell === 'Success'){
                 return ({backgroundColor: 'green'})
-            }else if (cell === 'Failed'){
+            }else if (cell === 'Failure'){
                 return ({backgroundColor: 'red'})
             }
          }
@@ -104,7 +123,67 @@ export default class RobotView extends Component {
                 <OhifLink StudyInstanceUID = {row.StudyInstanceUID} />
             )
         }
-    }];
+    }, {
+        dataField : 'RetrievedOrthancId',
+        hidden : true
+    }]
+
+
+
+    selectRow = {
+        mode: 'checkbox',
+        clickToSelect: true,
+        onSelect: (row, isSelect, rowIndex, e) => {
+            console.log(row)
+            if (row.Status !== 'Success') {
+              return false
+            } else {
+              return true
+          }
+        }
+    }
+
+    async getSelectedItemsStudiesDetails(){
+
+        //get selected row keys
+        let selectedKeyRow = this.node.selectionContext.selected
+        //get array of selected rows
+        let seletectedRows = this.state.rows.filter(row =>{
+            if( selectedKeyRow.includes(row.Key) ) return true
+            else return false
+        })
+
+        let studyDataRetrieved = []
+        //Loop each item to retrieve study level
+        for(let row of seletectedRows){
+            let studyDetails
+            if(row.Level === 'study') {
+                studyDetails = await apis.content.getStudiesDetails(row.RetrievedOrthancId)
+            } else {
+                let seriesData = await apis.content.getSeriesDetailsByID(row.RetrievedOrthancId)
+                studyDetails = await apis.content.getStudiesDetails(seriesData.ParentStudy)
+            }
+            studyDataRetrieved.push(studyDetails)
+        }
+
+        return studyDataRetrieved
+
+    }
+
+    async sendToAnon(){
+        let studyArray  = await this.getSelectedItemsStudiesDetails()
+        this.props.addStudiesToAnonList(studyArray)
+    }
+
+    async sendToExport(){
+        let studyArray  = await this.getSelectedItemsStudiesDetails()
+        this.props.addStudiesToExportList(studyArray)
+    }
+
+    async sendToDelete(){
+        let studyArray  = await this.getSelectedItemsStudiesDetails()
+        this.props.addStudiesToDeleteList(studyArray)
+    }
 
     startProgressMonitoring(){
         this.intervalChcker = setInterval(this.refreshHandler, 2000)
@@ -123,10 +202,8 @@ export default class RobotView extends Component {
 
             answerData.items.forEach(robotJob => {
                 rowsRetrieveList.push({
-                    key : Math.random(),
                     //Merge Modalities (study level) to modality column
                     Modality : robotJob.ModalitiesInStudy,
-                    //SK PEUT ETRE MERGE SERIES ET STUDY DESCRIPTION
                     ...robotJob
                 })
             });
@@ -188,8 +265,18 @@ export default class RobotView extends Component {
                         </CircularProgressbarWithChildren>
                     </div>
                 </div>
-                <BootstrapTable wrapperClasses="table-responsive" keyField="key" striped={true} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
+                <BootstrapTable ref={n => this.node = n} wrapperClasses="table-responsive" keyField="Key" striped={true} rowClasses = {this.rowClasses} selectRow = {this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
+                <AnonExportDeleteSendButton onAnonClick = {this.sendToAnon} onExportClick={this.sendToExport} onDeleteClick={this.sendToDelete} />
             </div>
         )
     }
 }
+
+const mapDispatchToProps = {
+    addStudiesToExportList,
+    addStudiesToDeleteList,
+    addStudiesToAnonList
+
+}
+
+export default connect(null, mapDispatchToProps)(RobotView)

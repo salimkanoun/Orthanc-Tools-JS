@@ -71,7 +71,8 @@ class TableResultSeries extends Component {
     }, {
         dataField: 'SeriesDescription',
         text: 'Serie Description',
-        sort: true
+        sort: true,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'Modality',
         text: 'Modality',

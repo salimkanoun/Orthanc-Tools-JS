@@ -141,7 +141,8 @@ class TableResultsStudiesSeries extends Component {
         }), 
         filterRenderer: (onFilter) => {
             return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesStudyDesc'/>
-        }
+        },
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     },{
         dataField: 'StudyInstanceUID',
         hidden: true,
@@ -160,7 +161,8 @@ class TableResultsStudiesSeries extends Component {
         }), 
         filterRenderer: (onFilter) => {
             return <CustomFilter options={this.getOption('SeriesDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesDesc'/>
-        }
+        },
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'Modality',
         text: 'Modality',

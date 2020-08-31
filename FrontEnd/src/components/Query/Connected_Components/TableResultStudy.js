@@ -24,12 +24,14 @@ class TableResult extends Component {
         dataField: 'PatientName',
         text: 'Patient Name',
         sort: true,
-        filter: textFilter()
+        filter: textFilter(),
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'PatientID',
         text: 'Patient ID',
         sort: true,
-        filter: textFilter()
+        filter: textFilter(),
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'AccessionNumber',
         text: 'Accession Number',
@@ -44,7 +46,8 @@ class TableResult extends Component {
         dataField: 'StudyDescription',
         text: 'Study Description',
         sort: true,
-        filter: textFilter()
+        filter: textFilter(),
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'ModalitiesInStudy',
         text: 'Modalities',

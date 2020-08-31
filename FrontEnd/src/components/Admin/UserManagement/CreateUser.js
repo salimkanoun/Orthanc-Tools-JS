@@ -1,7 +1,8 @@
 
 import React, { Component, Fragment } from 'react'
-import Select from 'react-select'
 import Modal from 'react-bootstrap/Modal';
+
+import SelectRoles from './SelectRoles'
 
 import apis from '../../../services/apis';
 import { toastifyError } from '../../../services/toastify';
@@ -13,14 +14,13 @@ class CreateUser extends Component {
         data : {
             id: '',
             username: '',
-            first_name: '', 
-            last_name: '', 
+            firstname: '', 
+            lastname: '', 
             mail: '',
             role: '', 
             password: ''
         }, 
-        show: false, 
-        optionRoles: []
+        show: false
     }
 
     constructor(props) {
@@ -28,12 +28,8 @@ class CreateUser extends Component {
         this.handleChange = this.handleChange.bind(this)
         this.resetState = this.resetState.bind(this)
         this.createUser = this.createUser.bind(this)
+        this.onRolesChange  = this.onRolesChange.bind(this)
     }
-
-    componentDidMount() {
-        this.getRoles()
-    }
-    
 
     form(){
         return (
@@ -44,32 +40,45 @@ class CreateUser extends Component {
                 </fieldset>
 
                 <fieldset>
-                    <label>Password*</label>
-                    <input className='form-control' type='password' placeholder='password' name='password' value={this.state.data.password} onChange={this.handleChange} required />
-                </fieldset>
-
-                <fieldset>
-                    <label>Roles*</label>
-                    <Select single options={this.state.optionRoles} onChange={(val) => this.setState((prevState) => ({data: {...prevState.data, role: val.value}}))} name='role'/>
-                </fieldset>
-
-                <fieldset>
                     <label>First Name</label>
-                    <input className='form-control' type='text' placeholder='First Name' name='firstName' value={this.state.data.first_name} onChange={this.handleChange}  />
+                    <input className='form-control' type='text' placeholder='First Name' name='firstName' value={this.state.data.firstName} onChange={this.handleChange}  />
                 </fieldset>
 
                 <fieldset>
                     <label>Last Name</label>
-                    <input className='form-control' type='text' placeholder='Last Name' name='lastName' value={this.state.data.last_name} onChange={this.handleChange}  />
+                    <input className='form-control' type='text' placeholder='Last Name' name='lastName' value={this.state.data.lastName} onChange={this.handleChange}  />
                 </fieldset>
 
+                <fieldset>
+                    <label>Password*</label>
+                    <input className='form-control' type='password' placeholder='password' name='password' value={this.state.data.password} onChange={this.handleChange} required />
+                </fieldset>
+
+                
                 <fieldset>
                     <label>Mail</label>
                     <input className='form-control' type='text' placeholder='example@example.com' name='mail' value={this.state.data.mail} onChange={this.handleChange}  />
                 </fieldset>
+
+                <fieldset>
+                    <label>Roles*</label>
+                    <SelectRoles onChange = {this.onRolesChange} />
+                </fieldset>
+
             </Fragment>
             
         )
+    }
+
+    onRolesChange(event){
+        console.log(event)
+        this.setState(prevState => {
+            return {data : {
+                ...prevState.data,
+                role: event.value
+                }
+            }
+        })
     }
 
     handleChange(event) {
@@ -89,8 +98,8 @@ class CreateUser extends Component {
             data : {
                 id: '',
                 username: '',
-                first_name: '', 
-                last_name: '', 
+                firstName: '', 
+                lastName: '', 
                 mail: '',
                 role: '', 
                 password: ''
@@ -109,20 +118,6 @@ class CreateUser extends Component {
             await apis.User.createUser(this.state.data)
             this.resetState()
         }
-    }
-
-    async getRoles(){
-        let roles = await apis.role.getRoles()
-        let options =  []
-        roles.forEach((role) => {
-            options.push({
-                value: role.name, 
-                label: role.name
-            })
-        })
-        this.setState({
-            optionRoles: options
-        })
     }
 
     render() {

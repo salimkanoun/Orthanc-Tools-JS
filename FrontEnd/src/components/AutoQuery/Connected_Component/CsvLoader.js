@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Papa from 'papaparse'
 import moment from 'moment'
 
+import Dropzone from 'react-dropzone'
 import { connect } from 'react-redux'
 import { addQueryToList } from '../../../actions/TableQuery'
 
@@ -9,37 +10,59 @@ class CsvLoader extends Component {
 
     constructor(props) {
         super(props)
-        this.parseCSV = this.parseCSV.bind(this)
-        this.fileInput = React.createRef()
+        this.readCsv = this.readCsv.bind(this)
         this.completeFn= this.completeFn.bind(this)
     }
 
+    readCsv(files){
 
-    parseCSV(event) {
-        event.preventDefault();
-        let currentObject=this
-        Papa.parse(currentObject.fileInput.current.files[0],{
+        if(files.length === 1 ){
+            let self = this
+            Papa.parse(files[0],{
                 header: true,
-                complete: currentObject.completeFn// base config to use for each file
-        })
+                complete: self.completeFn// base config to use for each file
+            })
+        }
 
     }
 
     completeFn(result, file) {
+        console.log(result)
         let currentObject=this
         let csvData = result.data;
 
         csvData.forEach((query)=>{
-            let acquisitionDate = moment(query['Acquisition Date'], 'YYYYMMDD').format("YYYY-MM-DD");
+            console.log(query['Acquisition Date'])
+            let dateFrom, dateTo
+            if(query['Acquisition Date'] === undefined){
+
+                if(query['Date From'] === ''){
+                    dateFrom = ''
+                }else{
+                    dateFrom = moment(query['Date From'], 'YYYYMMDD').format("YYYY-MM-DD")
+                }
+
+                if(query['Date To'] === ''){
+                    dateTo = ''
+                }else{
+                    dateTo = moment(query['Date To'], 'YYYYMMDD').format("YYYY-MM-DD")
+                }
+                
+            }else{
+                //Case CSV comming from result list
+                dateFrom = moment(query['Acquisition Date'], 'YYYYMMDD').format("YYYY-MM-DD")
+                dateTo = moment(query['Acquisition Date'], 'YYYYMMDD').format("YYYY-MM-DD")
+
+            }
             let queryForList = {
-                patientName : query['Patient Name'],
-                patientId : query['Patient ID'],
-                accessionNumber : query['Accession Number'],
-                dateFrom : acquisitionDate,
-                dateTo : acquisitionDate,
-                studyDescription : query['Study Description'],
-                modalities: query['Modalities'],
-                aet : query['AET']
+                PatientName : query['Patient Name'],
+                PatientID : query['Patient ID'],
+                AccessionNumber : query['Accession Number'],
+                DateFrom : dateFrom,
+                DateTo : dateTo,
+                StudyDescription : query['Study Description'],
+                ModalitiesInStudy: query['Modalities'],
+                Aet : query['AET']
               }
               
             currentObject.props.addQueryToList(queryForList)
@@ -50,10 +73,16 @@ class CsvLoader extends Component {
 
     render() {
         return (
-            <form onSubmit={this.parseCSV}>
-                    <input type="file" id="files" className="m-2" multiple={false} ref={this.fileInput} accept='.csv'  />
-                    <input type="submit" className="btn btn-primary" id="parseBtn" value="Parse CSV" />
-            </form>
+            <Dropzone onDrop={acceptedFiles => this.readCsv(acceptedFiles)} >
+                        {({ getRootProps, getInputProps }) => (
+                            <section>
+                                <div className={"dropzone"} {...getRootProps()} >
+                                    <input {...getInputProps()} />
+                                    <p>{"Drop CSV File"}</p>
+                                </div>
+                            </section>
+                        )}
+            </Dropzone>
         )
     }
 }

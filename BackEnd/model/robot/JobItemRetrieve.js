@@ -7,10 +7,15 @@ class JobItemRetrieve extends JobItem {
         Object.assign(this, queryAnswer)
         this.Validated = false
         this.RetrievedOrthancId = null
+        this.Key = Math.random()
     }
 
     setRetrievedOrthancId(orthancId) {
         this.RetrievedOrthancId = orthancId
+    }
+
+    setValidation(validate){
+        this.Validated = validate
     }
 
     getRetrievedOrthancId() {

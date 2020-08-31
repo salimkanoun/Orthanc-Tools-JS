@@ -1,3 +1,4 @@
+import importDicom from './importDicom'
 import aets from './aets'
 import options from './options'
 import queryRobot from './queryRobot'
@@ -18,6 +19,7 @@ import ldap from './ldap'
 import cdBurner from './cdBurner'
 
 export default {
+  importDicom,
   aets,
   options,
   queryRobot,

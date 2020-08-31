@@ -2,9 +2,13 @@ const JobItem = require('./JobItem')
 
 class JobItemAnon extends JobItem{
     
-    constructor(sourceOrthancStudyID, anonProfile, newPatientName, newPatientID, newStudyDescription, newAccessionNumber){
+    constructor(sourceOrthancStudyID, anonProfile, newPatientName, newPatientID, newStudyDescription, newAccessionNumber, originalPatientName, originalPatientID, originalStudyDescription, originalAccessionNumber ){
         super()
         this.sourceOrthancStudyID = sourceOrthancStudyID
+        this.originalPatientName = originalPatientName
+        this.originalPatientID = originalPatientID
+        this.originalStudyDescription = originalStudyDescription
+        this.originalAccessionNumber = originalAccessionNumber
         this.anonProfile = anonProfile
         this.newPatientName = newPatientName
         this.newPatientID = newPatientID
