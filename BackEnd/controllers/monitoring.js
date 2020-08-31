@@ -18,4 +18,11 @@ var stopBurner = async function (req, res){
 
 }
 
-module.exports = { startBurner, getBurner, stopBurner }
+var cancelJobBurner = async function(req, res){
+    cdBurnerInstance = CdBurnerFactory.getInstance()
+    cdBurnerInstance.cancelCdJob(req.params.jobBurnerId)
+    res.json(true)
+
+}
+
+module.exports = { startBurner, getBurner, stopBurner, cancelJobBurner }

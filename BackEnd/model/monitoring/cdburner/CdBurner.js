@@ -557,14 +557,39 @@ class CdBurner {
 
         }
 
-        let id = lastName + "_" + firstName + "_" + formattedStudyDate + "_" + Math.round(Math.random() * 1000);
+        let id = lastName + "-" + firstName + "-" + formattedStudyDate.replace(new RegExp('[\/]', 'g'), '') + "-" + Math.round(Math.random() * 1000);
         //Remove Accent and space to match requirement of burners
         id = id.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); //stripAccents
         id = id.trim();
         //Remove non alpha numeric character (except let _)
-        id = id.replace("[^a-zA-Z0-9_]", "");
+        id = id.replace(new RegExp('[^a-zA-Z0-9_]', 'g'), "");
 
         return id;
+    }
+
+    async cancelCdJob(jobID){
+
+        let requestFile = this.jobStatus[jobID]['requestFile']
+        let requestFileWithoutExtension = path.parse(requestFile).name
+
+        if(this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA){
+
+            let ptmString = "Message = ABORT\n"
+                    + "ClientID = Orthanc-Tools";
+
+
+            await fsPromises.appendFile( path.join(this.monitoredFolder, requestFileWithoutExtension) + ".PTM", ptmString)
+
+        }else if(this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON){
+
+            let jcfString="[CANCEL]\n"
+                    + "JOB_ID="+jobID;
+                    
+            await fsPromises.appendFile( path.join(this.monitoredFolder, requestFileWithoutExtension) + ".JCF", jcfString)
+
+        }
+
+        this.updateJobStatus(jobID, requestFile, CdBurner.JOB_STATUS_REQUEST_CANCELING)
     }
 
     /**
@@ -613,5 +638,6 @@ CdBurner.JOB_STATUS_BURNING_IN_PROGRESS = "Burning In Progress"
 CdBurner.JOB_STATUS_BURNING_DONE = "Burning Done"
 CdBurner.JOB_STATUS_BURNING_PAUSED = "Burning Paused"
 CdBurner.JOB_STATUS_REQUEST_RECIEVED = "Burning Request Recieved"
+CdBurner.JOB_STATUS_REQUEST_CANCELING = "Burning Request Canceling"
 
 module.exports = CdBurner
