@@ -367,7 +367,7 @@ class CdBurner {
             files.forEach((file)=>{
                 let name  = path.parse(file).name
                 let extension = path.parse(file).ext
-                if(extension !== ".DAT") fileObject[name] = extension
+                if(extension !== ".DAT" && extension !== ".PTM" && extension !== ".JCF") fileObject[name] = extension
             })
             return fileObject
         })

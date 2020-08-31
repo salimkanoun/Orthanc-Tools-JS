@@ -6,6 +6,7 @@ import PeerRootPanel from './Peers/PeerRootPanel'
 import JobsRootPanel from './Jobs/JobsRootPanel'
 import Plugins from './Plugins'
 import UserManagement from './UserManagement/UserManagement'
+import BurnerOptions from './CDBurner/BurnerOptions'
 
 /**
  * Root Panel of Admin route
@@ -30,6 +31,8 @@ const AdminPanel = () => {
         return (<AutoRetrieveRootPanel />)
       case 'Jobs' :
         return (<JobsRootPanel />)
+      case 'CD Burner' :
+          return (<BurnerOptions />)
       case 'Plugins' :
         return (<Plugins />)
       case 'User Management' :
@@ -49,6 +52,7 @@ const AdminPanel = () => {
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Robots' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Jobs' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='CD Burner' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Plugins' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='User Management' />
           </div>
