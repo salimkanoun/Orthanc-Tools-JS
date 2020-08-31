@@ -30,6 +30,10 @@ class AnonymizePanelProgress extends Component {
         this.startMonitoring()
     }
 
+    componentWillUnmount(){
+        this.stopMonitoring()
+    }
+    
     startMonitoring(){
         this.intervalChcker = setInterval(() => this.getInfo(), 2000)
     }
