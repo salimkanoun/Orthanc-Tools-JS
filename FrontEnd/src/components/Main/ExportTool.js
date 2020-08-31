@@ -61,11 +61,13 @@ class ExportTool extends Component {
                 <Popover id='popover-export' style={ { maxWidth: '100%' } } >
                     <Popover.Title as='h3'>Export List</Popover.Title>
                     <Popover.Content>
-                        <div className="float-left mb-3">
-                            <Link className='btn btn-primary' to='/export' onClick={this.props.onHide}>Open Export Tools</Link>
-                        </div>
-                        <div className="float-right mb-3">
-                            <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
+                        <div className="row mb-3">
+                            <div className="col float-left">
+                                <Link className='btn btn-primary float-left' to='/export' onClick={this.props.onHide}>Open Export Tools</Link>
+                            </div>
+                            <div className="col float-right">
+                                <button type="button" className="btn btn-warning float-right" onClick={this.handleClickEmpty} >Empty List</button>
+                            </div>
                         </div>
                         <TableStudiesWithNestedSeries 
                             data={seriesArrayToStudyArray(this.props.seriesArray, this.props.studyArray)} 
