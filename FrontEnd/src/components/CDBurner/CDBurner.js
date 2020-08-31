@@ -8,12 +8,17 @@ import Toggle from 'react-toggle'
 
 import apis from '../../services/apis'
 
+import audioSuccess from '../../sounds/cd_Error.wav';
+import audioFailure from '../../sounds/cd_Success.wav';
+
 export default class CDBurner extends Component {
 
     constructor(props){
         super(props)
         this.toogleHandler = this.toogleHandler.bind(this)
         this.refreshTableData = this.refreshTableData.bind(this)
+        this.audioSuccess = new Audio('/sounds/cd_Error.wav')
+        this.audioFailure = new Audio('/sounds/cd_Success.wav')
     }
 
     state = {
@@ -21,6 +26,9 @@ export default class CDBurner extends Component {
         burnerJobs : [],
         firstRefresh : false
     }
+
+    audioSuccess = new Audio('/sounds/cd_Error.wav')
+    audioFailure = new Audio('/sounds/cd_Success.wav')
 
     async refreshTableData(){
 
@@ -48,7 +56,7 @@ export default class CDBurner extends Component {
     }
 
     async toogleHandler(event){
-
+       
         let startStatus = this.state.robotStarted
 
         try{
@@ -71,8 +79,11 @@ export default class CDBurner extends Component {
     }
 
    async componentDidMount(){
-
+    await this.audioFailure.play()
+        console.log(this.audioFailure)
+       
         this.updateInterval = setInterval(this.refreshTableData, 2000)
+
 
     }
 
@@ -126,7 +137,9 @@ export default class CDBurner extends Component {
     }
 
     render(){
+
         return (
+            
             <div className='jumbotron'>
                 <div className = "row container text-center mb-3">
                     <div className = "col align-middle">

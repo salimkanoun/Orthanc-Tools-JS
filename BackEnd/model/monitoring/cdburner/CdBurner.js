@@ -577,7 +577,6 @@ class CdBurner {
             let ptmString = "Message = ABORT\n"
                     + "ClientID = Orthanc-Tools";
 
-
             await fsPromises.appendFile( path.join(this.monitoredFolder, requestFileWithoutExtension) + ".PTM", ptmString)
 
         }else if(this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON){
