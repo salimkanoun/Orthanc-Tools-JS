@@ -162,7 +162,7 @@ class Ldap extends Component {
                     <div className="form-group mr-3">
                         <div className="row">
                             <div className="col-sm">
-                                <label htmlFor="typeGroupe">Type de connexion : </label>
+                                <label htmlFor="typeGroupe">Connexion type : </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info1' fontSize="small" color="action"/>
                                 <ReactTooltip place="right" effect="solid" id='info1' type='dark'>
                                     <span>Choix du type de connexion (en fonction de la nature de votre annuaire): </span>
