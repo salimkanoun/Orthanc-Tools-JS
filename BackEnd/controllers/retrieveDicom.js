@@ -6,7 +6,7 @@ var postRetrieve = async function (req, res) {
   const orthancAetName = await orthancInstance.getOrthancAetName()
 
   if( 'SeriesInstanceUID' in body){
-    orthancInstance.buildSeriesDicomQuery( '' , '' , '' , '' , '', body.SeriesInstanceUID )
+    orthancInstance.buildSeriesDicomQuery( body.StudyInstanceUID, '' , '' , '' , '', body.SeriesInstanceUID)
   }else if( 'StudyInstanceUID' in body){
     orthancInstance.buildStudyDicomQuery( '' , '' , '' , '' , '', '', body.StudyInstanceUID )
   }else{

@@ -89,18 +89,17 @@ class RetrieveButton extends Component {
     let uid = this.props.uid
     let queryAet = this.props.queryAet
 
-    const postData = {}
-
+    let jobID
     if( level ===  RetrieveButton.Study ){
-      postData.StudyInstanceUID = uid
-      postData.Aet = queryAet
+      jobID = await apis.retrieve.retrieveByUID(queryAet, this.props.studyInstanceUID, null)
+
 
     } else if ( level === RetrieveButton.Series ){
-      postData.SeriesInstanceUID = uid
-      postData.Aet = queryAet
+      jobID = await apis.retrieve.retrieveByUID(queryAet, this.props.studyInstanceUID, this.props.seriesInstanceUID)
+
     }
 
-    let jobID = await apis.retrieve.retrieveByUID(postData)
+    
 
     let monitorJob = new MonitorJob(jobID)
 
