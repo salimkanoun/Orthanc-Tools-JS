@@ -91,7 +91,7 @@ class TableResultSeries extends Component {
     }];
 
     retrieveButton(cell, row, rowIndex){
-        return (<RetrieveButton queryAet={row.OriginAET} seriesInstanceUID={row.SeriesInstanceUID} studyInstanceUID={this.props.StudyInstanceUID} level={RetrieveButton.Series} />)
+        return (<RetrieveButton queryAet={row.OriginAET} seriesInstanceUID={row.SeriesInstanceUID} studyInstanceUID={row.StudyInstanceUID} level={RetrieveButton.Series} />)
     }
 
     render() {
