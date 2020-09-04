@@ -162,7 +162,7 @@ class Ldap extends Component {
                     <div className="form-group mr-3">
                         <div className="row">
                             <div className="col-sm">
-                                <label htmlFor="typeGroupe">Type de connexion : </label>
+                                <label htmlFor="typeGroupe">Connexion type : </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info1' fontSize="small" color="action"/>
                                 <ReactTooltip place="right" effect="solid" id='info1' type='dark'>
                                     <span>Choix du type de connexion (en fonction de la nature de votre annuaire): </span>
@@ -177,7 +177,7 @@ class Ldap extends Component {
                         </div>    
                         <div className="row mt-2">
                             <div className='col-sm'>
-                                <label htmlFor="protocole">Protocole : </label>
+                                <label htmlFor="protocole">Protocol : </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info2' fontSize="small" color="action"/>
                                 <ReactTooltip place="right" effect="solid" id='info2' type='dark'>
                                     <span><i>ldap//:</i> pour une connexion non sécurisée </span>
@@ -209,7 +209,7 @@ class Ldap extends Component {
                         </div>
                         <div className="row mt-2">
                             <div className='col-sm'>
-                            <label htmlFor="base" >DN de base : </label>
+                            <label htmlFor="base" >Base DN : </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info9' fontSize="small" color="action"/>
                                 <ReactTooltip place="right" effect="solid" id='info9' type='dark'>
                                     <span>DN de base de l'annuaire à partir de laquel la connexion sera établie</span>
@@ -221,7 +221,7 @@ class Ldap extends Component {
                         </div>
                         <div className="row mt-5">
                             <div className='col-sm'>
-                                <label htmlFor="DN" >DN de la Liaison LDAP : </label>
+                                <label htmlFor="DN" >Bind DN :</label>
                                 <HelpIcon className="ml-1" data-tip data-for='info5' fontSize="small" color="action"/>
                                 <ReactTooltip place="right" effect="solid" id='info5' type='dark'>
                                     <span>DN de l'utilisateur ayant été accrédité par l'administrateur de l'annuaire pour effectuer les recherches</span>
@@ -229,7 +229,7 @@ class Ldap extends Component {
                                 <input type='text' disabled={!this.state.check} name="DN" className="form-control" value={this.state.DN} onChange={this.handleChange} />
                             </div>
                             <div className='col-sm'>
-                                <label htmlFor="mdp">Mot de Passe de la Liaison LDAP : </label>
+                                <label htmlFor="mdp">Bind DN password : </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info6' fontSize="small" color="action"/>
                                 <ReactTooltip place="right" effect="solid" id='info6' type='dark'>
                                     <span>Mot de Passe de l'utilisateur ayant été accrédité par l'administrateur de l'annuaire pour effectuer les recherches</span>
@@ -239,7 +239,7 @@ class Ldap extends Component {
                         </div>
                         <div className="row mt-5">
                             <div className='col-sm'>
-                                <label htmlFor="groupe">Filtre pour la recherche de groupe : </label>
+                                <label htmlFor="groupe">Group Filter : </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info7' fontSize="small" color="action"/>
                                 <ReactTooltip place="right" effect="solid" id='info7' type='dark'>
                                     <span>DN à partir duquel la recherche de groupe s'effectue</span>
@@ -247,7 +247,7 @@ class Ldap extends Component {
                                 <input type='text' disabled={!this.state.check} name="groupe" className="form-control" onChange={this.handleChange} value={this.state.groupe} />
                             </div>
                             <div className='col-sm'>
-                                <label htmlFor="user">Filtre pour la recherche d'utilisateur : </label>
+                                <label htmlFor="user">User filter </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info8' fontSize="small" color="action"/>
                                 <ReactTooltip place="right" effect="solid" id='info8' type='dark'>
                                     <span>DN à partir duquel la recherche d'utilisateur s'effectue</span>

@@ -75,7 +75,7 @@ class TableResult extends Component {
     }];
 
     retrieveButton(cell, row, rowIndex){
-        return (<RetrieveButton queryAet={row.OriginAET} uid={row.StudyInstanceUID} level={RetrieveButton.Study} />)
+        return (<RetrieveButton queryAet={row.OriginAET} studyInstanceUID={row.StudyInstanceUID} level={RetrieveButton.Study} />)
     }
 
     expandRow = {
