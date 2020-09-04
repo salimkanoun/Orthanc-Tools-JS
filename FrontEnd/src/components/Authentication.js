@@ -114,7 +114,7 @@ export default class Authentication extends Component {
                         Orthanc-Tools-JS
                       </div>
                       <div className='col-2'>
-                        <HelpIcon className="mb-1" data-tip data-for='info1' fontSize="small" color=""/>
+                        <HelpIcon className="mb-1" data-tip data-for='info1' fontSize="small"/>
                         <ReactTooltip place="right" effect="solid" id='info1' type='dark'>
                           <div className="text-left">
                           <span>1. Local user : your local username</span>

@@ -39,7 +39,10 @@ class ContentRootPanel extends Component {
     let studies
     if (dataFrom){
       studies = await apis.content.getContent(dataFrom)
-      this.setState({dataFrom: dataFrom})
+      this.setState({
+        dataFrom: dataFrom,
+        currentSelectedStudyId : ''
+      })
     } else {
       studies = await apis.content.getContent(this.state.dataFrom)
     }
@@ -168,7 +171,11 @@ class ContentRootPanel extends Component {
               />
             </div>
             <div className='col-sm'>
-                <TableSeriesFillFromParent studyID={this.state.currentSelectedStudyId} onDeleteStudy={this.onDeleteStudy} onEmptySeries={() => console.log('Plus de Series faire Refresh?')} refreshSerie={this.refreshSerie} />
+                <TableSeriesFillFromParent 
+                  studyID={this.state.currentSelectedStudyId} 
+                  onDeleteStudy={this.onDeleteStudy} 
+                  onEmptySeries={() => console.log('No Series')} 
+                  refreshSerie={this.refreshSerie} />
             </div>
           </div>
         </div>
