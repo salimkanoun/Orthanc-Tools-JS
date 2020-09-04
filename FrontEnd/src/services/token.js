@@ -1,6 +1,4 @@
 import { toastifyError } from './toastify'
-import updateOptions from '../authorizedOption'
-
 
 const token = {
 
@@ -13,7 +11,7 @@ const token = {
             }
         }
 
-        return fetch('/api/token', updateOptions(tokenOptions)).then((answer) => {
+        return fetch('/api/token', tokenOptions ).then((answer) => {
             if (!answer.ok) { throw answer }
             return answer.json()
           }).catch(error => {

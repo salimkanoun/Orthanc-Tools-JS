@@ -133,13 +133,13 @@ router.get('/mode', userAdminMidelware, getMode)
 router.put('/changeMode', userAdminMidelware, changeMode)
 
 //Ldap
-router.get('/ldapSettings', userAdminMidelware, getLdapSettings)
-router.put('/ldapSettings', userAdminMidelware, setLdapSettings)
-router.get('/ldapTestCo', userAdminMidelware, testLdapSettings)
-router.post('/ldapCorrespondences', userAdminMidelware, setLdapCorrespodence)
-router.get('/ldapCorrespondences', userAdminMidelware, getLdapCorrespodences)
-router.delete('/ldapCorrespondences', userAdminMidelware, deleteCorrespodence)
-router.get('/ldapGroupeName', userAdminMidelware, getLdapGroupeNames)
+router.get('/ldap/settings', userAdminMidelware, getLdapSettings)
+router.put('/ldap/settings', userAdminMidelware, setLdapSettings)
+router.get('/ldap/test', userAdminMidelware, testLdapSettings)
+router.post('/ldap/correspondences', userAdminMidelware, setLdapCorrespodence)
+router.get('/ldap/correspondences', userAdminMidelware, getLdapCorrespodences)
+router.delete('/ldap/correspondences', userAdminMidelware, deleteCorrespodence)
+router.get('/ldap/groupename', userAdminMidelware, getLdapGroupeNames)
 
 
 //Monitoring

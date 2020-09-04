@@ -1,5 +1,4 @@
 import { toastifyError, toastifySuccess } from './toastify'
-import updateOptions from '../authorizedOption'
 
 const ldap = {
 
@@ -13,7 +12,7 @@ const ldap = {
         body: JSON.stringify(LdapSettings)
       };
 
-        return fetch("/api/ldapSettings/", updateOptions(setLdapSettingsOption) ).then((answer) => {
+        return fetch("/api/ldap/settings/", setLdapSettingsOption ).then((answer) => {
             if (!answer.ok) { throw answer }
             toastifySuccess('Settings updated')
             return (answer.json())
@@ -30,7 +29,7 @@ const ldap = {
         }
       }
 
-        return fetch("/api/ldapSettings/", updateOptions(getLdapSettingsOption)).then((answer) => {
+        return fetch("/api/ldap/settings/", getLdapSettingsOption ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
           }).catch(error => toastifyError(error))
@@ -46,7 +45,7 @@ const ldap = {
         }
       }
 
-        return fetch("/api/ldapTestCo/", updateOptions(testLdapSettingsOption)).then(async (answer) => {
+        return fetch("/api/ldap/test", testLdapSettingsOption ).then(async (answer) => {
             if (!answer.ok) { throw answer }
             let ans = await answer.json()
             if(ans) {
@@ -69,7 +68,7 @@ const ldap = {
           body: JSON.stringify([Correspondence])
         };
   
-          return fetch("/api/ldapCorrespondences/", updateOptions(createCorrespondenceOption) ).then((answer) => {
+          return fetch("/api/ldap/correspondences/", createCorrespondenceOption ).then((answer) => {
               if (!answer.ok) { throw answer }
               toastifySuccess('Correspodence create with success')
               return (answer.json())
@@ -89,7 +88,7 @@ const ldap = {
             body: JSON.stringify({correspodence:Correspondence})
         };
     
-            return fetch("/api/ldapCorrespondences/", updateOptions(deleteCorrespondenceOption) ).then((answer) => {
+            return fetch("/api/ldap/correspondences/", deleteCorrespondenceOption ).then((answer) => {
                 if (!answer.ok) { throw answer }
                     toastifySuccess('Correspondence deleted with success')
                     return (answer.json())
@@ -106,7 +105,7 @@ const ldap = {
         }
       }
 
-        return fetch("/api/ldapCorrespondences/", updateOptions(getAllCorrespodencesOption)).then(async (answer) => {
+        return fetch("/api/ldap/correspondences/", getAllCorrespodencesOption ).then(async (answer) => {
             if (!answer.ok) { throw answer }
             return await (answer.json())
           }).catch(error => toastifyError(error))
@@ -121,7 +120,7 @@ const ldap = {
         }
       }
 
-        return fetch("/api/ldapGroupeName/", updateOptions(getAllCorrespodencesOption)).then(async (answer) => {
+        return fetch("/api/ldap/groupname/", getAllCorrespodencesOption ).then(async (answer) => {
             if (!answer.ok) { throw answer }
             let ans = await answer.json()
             return (ans)

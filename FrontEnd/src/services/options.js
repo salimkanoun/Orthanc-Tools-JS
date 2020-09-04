@@ -1,5 +1,4 @@
 import { toastifySuccess, toastifyError } from './toastify'
-import updateOptions from '../authorizedOption'
 
 var optionPlugin = { 
   method: 'GET'
@@ -34,7 +33,7 @@ const Options = {
       body: JSON.stringify({ hour: hour, min: min })
     }
 
-    return fetch('/api/options', updateOptions(setRobotScheduleHourOption) ).then((answer) => {
+    return fetch('/api/options', setRobotScheduleHourOption ).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).then(() => {
@@ -45,7 +44,7 @@ const Options = {
   },
 
   getRobotScheduledHour () {
-    return fetch('/api/options', updateOptions() )
+    return fetch('/api/options' )
       .then((answer) => {
         if (!answer.ok) { throw answer }
         return answer.json()
@@ -69,7 +68,7 @@ const Options = {
       body: JSON.stringify(postData)
     }
 
-    return fetch('/api/options/orthanc-server', updateOptions(setOrthancServerOption) ).then((answser) => {
+    return fetch('/api/options/orthanc-server', setOrthancServerOption ).then((answser) => {
       if ( ! answser.ok) throw answser
     })
       .then((answer) => toastifySuccess('Updated'))
@@ -77,14 +76,14 @@ const Options = {
   },
 
   getOrthancServer () {
-    return fetch('/api/options/orthanc-server', updateOptions(optionOrthancServer)).then((answer) => {
+    return fetch('/api/options/orthanc-server', optionOrthancServer ).then((answer) => {
       return (answer.json())
     }).then((answer) => { return answer })
     .catch(error =>{ toastifyError('No connexion to BackEnd')})
   },
 
   getOrthancSystem () {
-    return fetch('/api/system', updateOptions(optionOrthancSystem)).then((answer) => {
+    return fetch('/api/system', optionOrthancSystem ).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).then((answer) => {
@@ -100,7 +99,7 @@ const Options = {
       method: 'POST'
     } 
 
-    return fetch('/api/tools/reset', updateOptions(resetOrthancOption) ).then((answer) => {
+    return fetch('/api/tools/reset', resetOrthancOption ).then((answer) => {
       if (!answer.ok) {throw answer}
       return (answer.json())
     }).catch((error) => {
@@ -114,7 +113,7 @@ const Options = {
       method: 'POST'
     }
 
-    return fetch('/api/tools/shutdown', updateOptions(shutdownOrthancOption) ).then((answer) => {
+    return fetch('/api/tools/shutdown', shutdownOrthancOption ).then((answer) => {
       if (!answer.ok) {throw answer}
       return (answer.json())
     }).catch((error) => {
@@ -129,7 +128,7 @@ const Options = {
       method: 'GET'
     }
 
-    return fetch('/api/tools/log-level', updateOptions(getVerbosityOption) ).then(response => {
+    return fetch('/api/tools/log-level', getVerbosityOption ).then(response => {
         if (response.ok) {
           return response.text()
         }
@@ -147,7 +146,7 @@ const Options = {
       body: value
     }
 
-    return fetch('/api/tools/log-level', updateOptions(setVerbosityOption) ).then((answer) => {
+    return fetch('/api/tools/log-level', setVerbosityOption ).then((answer) => {
       if (!answer.ok) {throw answer}
       toastifySuccess("Verbosity have been updated")
     }).catch((error) => {
@@ -156,7 +155,7 @@ const Options = {
   },
 
   getPlugins(){
-    return fetch('/api/plugins',updateOptions(optionPlugin)).then(response => {
+    return fetch('/api/plugins', optionPlugin ).then(response => {
         if (response.ok) {
           return response.json()
         }
@@ -167,7 +166,7 @@ const Options = {
   },
 
   getMode() {
-    return fetch('/api/mode',updateOptions(optionPlugin)).then(response => {
+    return fetch('/api/mode', optionPlugin ).then(response => {
       if (response.ok) {
         return response.json()
       }
@@ -192,7 +191,7 @@ const Options = {
       body: JSON.stringify(payload)
     }
 
-    return fetch('/api/changeMode',updateOptions(changeModeOption)).then(response => {
+    return fetch('/api/changeMode', changeModeOption ).then(response => {
       if (response.ok) {
         return response.json()
       }

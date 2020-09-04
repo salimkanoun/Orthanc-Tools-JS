@@ -1,4 +1,3 @@
-import updateOptions from '../authorizedOption'
 
 const importDicom = {
 
@@ -13,7 +12,7 @@ const importDicom = {
             body: dicomFile
         }
 
-        return fetch('/api/instances', updateOptions(importDicomFile))
+        return fetch('/api/instances', importDicomFile )
             .then(async (answer) => {
                 if (!answer.ok) { throw await answer.json() }
                 return (answer.json())

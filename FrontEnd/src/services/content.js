@@ -1,5 +1,4 @@
-import { toastifyError } from "./toastify";
-import updateOptions from '../authorizedOption'
+import { toastifyError } from "./toastify"
 
 const query  = {
 
@@ -14,7 +13,7 @@ const query  = {
             body: JSON.stringify(contentSerch)
         }
 
-        return fetch('/api/tools/find', updateOptions(getContentOption)).then((response) => {
+        return fetch('/api/tools/find', getContentOption).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -32,7 +31,7 @@ const query  = {
             }
         }
 
-        return fetch('/api/patients/' + ID + '?expand', updateOptions(getPatientsDetailsOption)).then((response) => {
+        return fetch('/api/patients/' + ID + '?expand', getPatientsDetailsOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -50,7 +49,7 @@ const query  = {
             }
         }
 
-        return fetch('/api/studies/' + ID+ '?expand', updateOptions(getStudiesDetailsOption)).then((response) => {
+        return fetch('/api/studies/' + ID+ '?expand', getStudiesDetailsOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -72,7 +71,7 @@ const query  = {
             }
         }
 
-        return fetch('/api/studies/' + studyID + '/series?expand', updateOptions(getSeriesDetailsOption)).then((response) => {
+        return fetch('/api/studies/' + studyID + '/series?expand', getSeriesDetailsOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -90,7 +89,7 @@ const query  = {
             }
         }
 
-        return fetch('/api/series/' + serieID + '?expand', updateOptions(getSeriesDetailsByIDOption)).then((response) => {
+        return fetch('/api/series/' + serieID + '?expand', getSeriesDetailsByIDOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -108,7 +107,7 @@ const query  = {
             }
         }
 
-        return fetch('/api/series/' + serieID + '/instances', updateOptions(getSeriesInstancesOption) ).then((response) => {
+        return fetch('/api/series/' + serieID + '/instances', getSeriesInstancesOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -126,7 +125,7 @@ const query  = {
             }
         }
 
-        return fetch('/api/instances/' + instanceID + '/tags?simplify', updateOptions(getInstancesOption) ).then((response) => {
+        return fetch('/api/instances/' + instanceID + '/tags?simplify', getInstancesOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -144,7 +143,7 @@ const query  = {
             }
         }
 
-        return fetch('/api/series/' + serieID + '/shared-tags?simplify', updateOptions(getSharedTagsOption)).then((response) => {
+        return fetch('/api/series/' + serieID + '/shared-tags?simplify', getSharedTagsOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -162,7 +161,7 @@ const query  = {
             }
         }
 
-        return fetch('/api/instances/' + serieID + '/header?simplify', updateOptions(getHeaderOption)).then((response) => {
+        return fetch('/api/instances/' + serieID + '/header?simplify', getHeaderOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -176,7 +175,7 @@ const query  = {
             method: 'DELETE'
         }
 
-        return fetch('/api/patients/' + ID, updateOptions(deletePatientOption) ).then((answer) => {
+        return fetch('/api/patients/' + ID, deletePatientOption ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -191,7 +190,7 @@ const query  = {
             method: 'DELETE'
         }
 
-        return fetch('/api/studies/' + ID, updateOptions(deleteStudiesOption) ).then((answer) => {
+        return fetch('/api/studies/' + ID, deleteStudiesOption ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -206,7 +205,7 @@ const query  = {
             method: 'DELETE'
         }
 
-        return fetch('/api/series/' + ID, updateOptions(deleteSeriesOption) ).then((answer) => {
+        return fetch('/api/series/' + ID, deleteSeriesOption ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -227,7 +226,7 @@ const query  = {
             body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }
 
-        return fetch('/api/patients/' + ID + '/modify', updateOptions(modifyPatientsOption) ).then((answer) => {
+        return fetch('/api/patients/' + ID + '/modify', modifyPatientsOption ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -246,7 +245,7 @@ const query  = {
             body: JSON.stringify({Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }
 
-        return fetch('/api/studies/' + ID + '/modify', updateOptions(modifyStudyOption) ).then((answer) => {
+        return fetch('/api/studies/' + ID + '/modify', modifyStudyOption ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -265,7 +264,7 @@ const query  = {
             body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }
 
-        return fetch('/api/series/' + ID + '/modify', updateOptions(modifySeriesOption) ).then((answer) => {
+        return fetch('/api/series/' + ID + '/modify', modifySeriesOption ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {

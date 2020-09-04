@@ -1,10 +1,9 @@
 import { toastifySuccess, toastifyError } from './toastify'
-import updateOptions from '../authorizedOption'
 
 const peers = {
 
     getPeers(){
-        return fetch('/api/peers', updateOptions() )
+        return fetch('/api/peers' )
             .then((answer) => {
                 if (!answer.ok) { throw answer }
                 return (answer.json())
@@ -16,7 +15,7 @@ const peers = {
     },
 
     getPeersExpand(){
-        return fetch('/api/peers?expand', updateOptions())
+        return fetch('/api/peers?expand' )
             .then((answer) => {
                 if (!answer.ok) { throw answer }
                 return (answer.json())
@@ -37,7 +36,7 @@ const peers = {
             body: JSON.stringify(parameters)
         }
 
-        return fetch('/api/peers/'+ name, updateOptions(updatePeerOption)).then((answer) => {
+        return fetch('/api/peers/'+ name, updatePeerOption ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {
@@ -51,7 +50,7 @@ const peers = {
             method: 'DELETE'
         }
 
-        return fetch('/api/peers/' + name, updateOptions(deletePeerOption)).then((answer) => {
+        return fetch('/api/peers/' + name, deletePeerOption ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -60,7 +59,7 @@ const peers = {
     },
 
     echoPeer(peerName){
-        fetch ('/api/peers/' + peerName + '/system', updateOptions()).then(response => {
+        fetch ('/api/peers/' + peerName + '/system' ).then(response => {
             if (response.ok) return response.json()
             else throw response
         }).then((response) => {
@@ -82,7 +81,7 @@ const peers = {
             })
         }
 
-        return fetch ('/api/peers/' + name + '/store', updateOptions(storePeerOption)).then((answer) => {
+        return fetch ('/api/peers/' + name + '/store', storePeerOption ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch(error => {

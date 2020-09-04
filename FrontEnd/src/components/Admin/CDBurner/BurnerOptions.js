@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import TranscodeSelector from '../../Export/TranscodeSelector'
 
 export default class BurnerOptions extends Component{

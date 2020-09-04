@@ -86,7 +86,6 @@ class RetrieveButton extends Component {
     e.stopPropagation()
 
     let level = this.props.level
-    let uid = this.props.uid
     let queryAet = this.props.queryAet
 
     let jobID

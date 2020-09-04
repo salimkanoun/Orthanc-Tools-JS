@@ -1,5 +1,4 @@
 import { toastifyError } from './toastify'
-import updateOptions from '../authorizedOption'
 
 const query = {
 
@@ -14,7 +13,7 @@ const query = {
         body: JSON.stringify(queryDetails)
       };
 
-        return fetch("/api/modalities/" + aet + "/query", updateOptions(dicomQueryOption) ).then((answer) => {
+        return fetch("/api/modalities/" + aet + "/query", dicomQueryOption ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
           }).catch(error => toastifyError(error))
@@ -30,7 +29,7 @@ const query = {
         }
       }
 
-        return fetch("/api/queries/" + orthancIdQuery + "/parsedAnswers", updateOptions(retrieveAnswerOption)).then((answer) => {
+        return fetch("/api/queries/" + orthancIdQuery + "/parsedAnswers", retrieveAnswerOption ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
           }).catch(error => toastifyError(error))
