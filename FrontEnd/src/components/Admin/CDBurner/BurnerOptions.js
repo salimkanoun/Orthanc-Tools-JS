@@ -41,7 +41,7 @@ export default class BurnerOptions extends Component{
     ]
 
     transferSyntaxOptions = [
-        {value: 'none',                     label: 'None'},
+        {value: 'None',                     label: 'None (Original TS)'},
         {value: '1.2.840.10008.1.2',        label: 'Implicit VR Endian'},
         {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
         {value: '1.2.840.10008.1.2.1.99',   label: 'Deflated Explicit VR Little Endian'},
