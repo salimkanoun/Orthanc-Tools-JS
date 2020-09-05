@@ -163,10 +163,12 @@ code {
 }
 
 .nav-link {
-	color: rgba(255, 255, 255, 1) !important
+	color: rgba(255, 255, 255, 0.92) ! important;
 }
-.nav-link:hover {
-	color: black
+
+.nav-link.active {
+	font-weight: bold !important;
+	color: rgba(255, 255, 255, 1) !important;
 }
 
 
