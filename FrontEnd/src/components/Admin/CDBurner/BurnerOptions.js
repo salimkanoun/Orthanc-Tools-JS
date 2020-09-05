@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
 import TranscodeSelector from '../../Export/TranscodeSelector'
+import apis from '../../../services/apis'
 
 export default class BurnerOptions extends Component{
 
@@ -9,9 +10,20 @@ export default class BurnerOptions extends Component{
         this.handleChange = this.handleChange.bind(this)
     }
 
+    state = {
+        burner_monitored_path : '',
+        burner_viewer_path : '',
+        burner_label_path : '',
+        burner_manifacturer : '',
+        burner_monitoring_level : '',
+        burner_support_type : 'Auto',
+        burner_delete_study_after_sent : false
+
+    }
+
     manufacturerOptions = [
-        {value : 'epson', label : 'Epson'},
-        {value : 'primera', label : 'Primera'}
+        {value : 'Epson', label : 'Epson'},
+        {value : 'Primera', label : 'Primera'}
     ]
 
     levelOptions = [
@@ -20,7 +32,7 @@ export default class BurnerOptions extends Component{
     ]
     
     supportType = [
-        {value : 'auto', label : 'Auto'},
+        {value : 'Auto', label : 'Auto'},
         {value : 'CD', label : 'CD'},
         {value : 'DVD', label : 'DVD'}
     ]
@@ -36,27 +48,35 @@ export default class BurnerOptions extends Component{
     
     }
 
+    async componentDidMount(){
+        let options = await apis.options.getOptions()
+        this.setState( {
+            ...options
+        }, console.log(this.state))
+        console.log(options)
+    }
+
     render(){
         return (
             <div>
                 <h2 className="card-title">CD/DVD Burner Options</h2>
-                <label htmlFor="monitoredFolder">Monitored Folder : </label>
-                <input type = 'text'  className="row form-control" name='monitoredFolder' onChange={this.handleChange} placeholder="Example : C:\\myPath\Epson" />
-                <label htmlFor="viewerFolder">Viewer Folder : </label>
-                <input type = 'text'  className="row form-control" name='viewerFolder' onChange={this.handleChange} placeholder="Example : C:\\myPath\Viewer" />
-                <label htmlFor="labelPath">Label Path : </label>
-                <input type = 'text'  className="row form-control" name='labelPath' onChange={this.handleChange} placeholder="Example : C:\\myPath\label" />
+                <label htmlFor="burner_monitored_path">Monitored Folder : </label>
+                <input type = 'text'  className="row form-control" name='burner_monitored_path' value={this.state.burner_monitored_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Epson" />
+                <label htmlFor="burner_viewer_path">Viewer Folder : </label>
+                <input type = 'text'  className="row form-control" name='burner_viewer_path' value={this.state.burner_viewer_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Viewer" />
+                <label htmlFor="burner_label_path">Label Path : </label>
+                <input type = 'text'  className="row form-control" name='burner_label_path' value={this.state.burner_label_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\label" />
                 <label htmlFor="transcodeSelector">Transfer Syntax : </label>
-                <TranscodeSelector name='transcodeSelector'/>
-                <label htmlFor="manufacturer">Manufacturer : </label>
-                <Select options={this.manufacturerOptions} name="manufacturer"/>
-                <label htmlFor="monitoringLevel">Monitoring Level : </label>
-                <Select options={this.levelOptions} name = "monitoringLevel" />
-                <label htmlFor="supportType">Support Type : </label>
-                <Select options={this.supportType} name = "supportType" />
+                <TranscodeSelector /*value={this.state.burner_label_path}*/ name='transcodeSelector'/>
+                <label htmlFor="burner_manifacturer">Manufacturer : </label>
+                <Select options={this.manufacturerOptions} value={this.state.burner_manifacturer} name="burner_manifacturer"/>
+                <label htmlFor="burner_monitoring_level">Monitoring Level : </label>
+                <Select options={this.levelOptions} value={this.state.burner_monitoring_level} name = "burner_monitoring_level" />
+                <label htmlFor="burner_support_type">Support Type : </label>
+                <Select options={this.supportType} value={this.state.burner_support_type} name = "burner_support_type" />
                 <div className ="form-control" >
-                    <label htmlFor="deleteOriginal">Delete Original : </label>
-                    <input type = "checkbox"  name="deleteOriginal" value="Delete Original Study/Patient"/>
+                    <label htmlFor="burner_delete_study_after_sent">Delete Original : </label>
+                    <input type = "checkbox" value={this.state.burner_delete_study_after_sent} name="burner_delete_study_after_sent" value="Delete Original Study/Patient"/>
                 </div>
             </div>
         )

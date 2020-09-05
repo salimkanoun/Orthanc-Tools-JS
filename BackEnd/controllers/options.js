@@ -8,10 +8,12 @@ var changeSchedule = async function (req, res) {
   res.json(true)
 }
 
-var getSchedule = async function (req, res) {
+var getOptions = async function (req, res) {
   const optionsValues = await Options.getOptions()
   res.json(optionsValues)
 }
+
+
 
 var getOrthancServer = function (req, res) {
   const orthancSettings = Options.getOrthancConnexionSettings()
@@ -35,4 +37,4 @@ var changeMode = async function(req, res) {
   res.json(true)
 }  
 
-module.exports = { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getMode, changeMode }
+module.exports = { changeSchedule, getOptions, getOrthancServer, setOrthancServer, getMode, changeMode }

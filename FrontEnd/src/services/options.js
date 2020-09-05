@@ -43,7 +43,7 @@ const Options = {
     })
   },
 
-  getRobotScheduledHour () {
+  getOptions () {
     return fetch('/api/options' )
       .then((answer) => {
         if (!answer.ok) { throw answer }

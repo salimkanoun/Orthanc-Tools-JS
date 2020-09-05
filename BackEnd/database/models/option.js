@@ -5,10 +5,10 @@ module.exports = (sequelize, DataTypes) => {
     min: DataTypes.INTEGER,
     ldap: DataTypes.BOOLEAN,
     date_format:DataTypes.STRING,
-    burner_label_file:DataTypes.STRING,
+    burner_label_path:DataTypes.STRING,
     burner_monitoring_level:DataTypes.STRING,
-    burner_burner_manifacturer:DataTypes.STRING,
-    burner_monitored_folder:DataTypes.STRING,
+    burner_manifacturer:DataTypes.STRING,
+    burner_monitored_path:DataTypes.STRING,
     burner_delete_study_after_sent:DataTypes.BOOLEAN,
     burner_viewer_path:DataTypes.STRING,
     burner_support_type:DataTypes.STRING

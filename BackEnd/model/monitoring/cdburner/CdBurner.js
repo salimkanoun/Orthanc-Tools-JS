@@ -29,11 +29,7 @@ class CdBurner {
         //Date format
         this.dateOptions = { month: 'numeric', day: 'numeric', year : 'numeric' } //precision of the date
 
-        const options = await db.Option.findOne({
-            attributes: ['date_format',
-            'burner_label_file','burner_monitoring_level','burner_burner_manifacturer'
-            ,'burner_monitored_folder','burner_delete_study_after_sent','burner_viewer_path', 'burner_support_type', 'burner_transfer_syntax'],
-        });
+        const options = await db.Option.findOne(({ where: { id: 1 } }));
 
         //format of date (using contry convention)
         if (options.date_format === "fr") {
@@ -45,10 +41,10 @@ class CdBurner {
         }
 
         //Refresh parameter from DB
-        this.labelFile = options.burner_label_file
+        this.labelFile = options.burner_label_path
         this.monitoringLevel = options.burner_monitoring_level
-        this.burnerManifacturer = options.burner_burner_manifacturer
-        this.monitoredFolder = options.burner_monitored_folder
+        this.burnerManifacturer = options.burner_manifacturer
+        this.monitoredFolder = options.burner_monitored_path
         this.deleteStudyAfterSent = options.burner_delete_study_after_sent
         this.viewerPath = options.burner_viewer_path
         this.suportType = options.burner_support_type

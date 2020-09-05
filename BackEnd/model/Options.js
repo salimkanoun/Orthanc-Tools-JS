@@ -13,7 +13,7 @@ const Options = {
 
   getOptions: async () => {
     const option = await db.Option.findOne(({ where: { id: 1 } }))
-    return ({ hour: option.hour, min: option.min })
+    return option
   },
 
   setScheduleTime: async (hour, min) => {

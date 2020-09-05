@@ -5,7 +5,7 @@ require('express-async-errors')
 
 const { authentication, logOut } = require('../controllers/authentication')
 const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob, addAnonJob, getAnonJob, getDeleteJob, addDeleteJob } = require('../controllers/Robot2')
-const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getMode, changeMode } = require('../controllers/options')
+const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getMode, changeMode, getOptions } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
@@ -48,7 +48,7 @@ router.get('/robot/:username/delete', userAuthMidelware, getDeleteJob)
 router.delete('/robot/:username/:type', userAuthMidelware, deleteRobotJob)
 
 // OrthancToolsJS Options routes
-router.get('/options', userAdminMidelware, getSchedule)
+router.get('/options', /*userAdminMidelware,*/ getOptions)
 router.put('/options', userAdminMidelware, changeSchedule)
 // OrthancToolsJS Settings routes
 router.get('/options/orthanc-server', userAdminMidelware, getOrthancServer)
