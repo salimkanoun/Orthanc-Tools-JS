@@ -16,7 +16,7 @@ export default class BurnerOptions extends Component{
         burner_label_path : '',
         burner_manifacturer : '',
         burner_monitoring_level : '',
-        burner_support_type : 'Auto',
+        burner_support_type : '',
         burner_delete_study_after_sent : false,
         burner_transfer_syntax : null
 
@@ -55,6 +55,15 @@ export default class BurnerOptions extends Component{
             ...options
         }, console.log(this.state))
         console.log(options)
+        
+    }
+
+    getSelectedObject(objectArray, searchedValue){
+        let filteredArray = objectArray.filter(item => {
+            return item.value === searchedValue ? true : false
+        })
+
+        return filteredArray[0]
     }
 
     render(){
@@ -62,22 +71,25 @@ export default class BurnerOptions extends Component{
             <div>
                 <h2 className="card-title">CD/DVD Burner Options</h2>
                 <label htmlFor="burner_monitored_path">Monitored Folder : </label>
-                <input type = 'text'  className="row form-control" name='burner_monitored_path' value={this.state.burner_monitored_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Epson" />
+                <input type = 'text'  className="form-control" name='burner_monitored_path' value={this.state.burner_monitored_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Epson" />
                 <label htmlFor="burner_viewer_path">Viewer Folder : </label>
-                <input type = 'text'  className="row form-control" name='burner_viewer_path' value={this.state.burner_viewer_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Viewer" />
+                <input type = 'text'  className="form-control" name='burner_viewer_path' value={this.state.burner_viewer_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Viewer" />
                 <label htmlFor="burner_label_path">Label Path : </label>
-                <input type = 'text'  className="row form-control" name='burner_label_path' value={this.state.burner_label_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\label" />
+                <input type = 'text'  className="form-control" name='burner_label_path' value={this.state.burner_label_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Label" />
                 <label htmlFor="burner_transfer_syntax">Transfer Syntax : </label>
                 <TranscodeSelector value={this.state.burner_transfer_syntax} name='burner_transfer_syntax'/>
                 <label htmlFor="burner_manifacturer">Manufacturer : </label>
-                <Select options={this.manufacturerOptions} value={this.state.burner_manifacturer} name="burner_manifacturer"/>
+                <Select options={this.manufacturerOptions} value={this.getSelectedObject(this.manufacturerOptions, this.state.burner_manifacturer)} name="burner_manifacturer"/>
                 <label htmlFor="burner_monitoring_level">Monitoring Level : </label>
-                <Select options={this.levelOptions} value={this.state.burner_monitoring_level} name = "burner_monitoring_level" />
+                <Select options={this.levelOptions} value={this.getSelectedObject(this.levelOptions ,this.state.burner_monitoring_level)} name = "burner_monitoring_level" />
                 <label htmlFor="burner_support_type">Support Type : </label>
-                <Select options={this.supportType} value={this.state.burner_support_type} name = "burner_support_type" />
+                <Select options={this.supportType} value={this.getSelectedObject(this.supportType, this.state.burner_support_type)} name = "burner_support_type" />
                 <div className ="form-control mt-3" >
                     <label htmlFor="burner_delete_study_after_sent">Delete Original Images From Orthanc : </label>
-                    <input type = "checkbox" value={this.state.burner_delete_study_after_sent} name="burner_delete_study_after_sent" value="Delete Original Study/Patient"/>
+                    <input type = "checkbox" checked={this.state.burner_delete_study_after_sent} name="burner_delete_study_after_sent" value="Delete Original Study/Patient" onChange={this.handleChange}/>
+                </div>
+                <div className="float-right">
+                    <input type="button" className="btn btn-primary mt-3" value = "Send"/>
                 </div>
             </div>
         )
