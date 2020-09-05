@@ -215,7 +215,7 @@ class Users {
       }
 
         rights = await db.Role.findOne({
-        attributes: ['import', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin','modify'],
+        attributes: ['import', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin','modify', 'cd_burner'],
         where: {name: user.role}
       });
 

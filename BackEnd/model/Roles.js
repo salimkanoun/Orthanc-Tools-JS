@@ -21,6 +21,7 @@ class Roles {
             auto_query: payload.autoQuery,
             delete: payload.delete,
             modify: payload.modify,
+            cd_burner : payload.cd_burner, 
             admin: payload.admin
           }).catch(e => console.log(e))
     

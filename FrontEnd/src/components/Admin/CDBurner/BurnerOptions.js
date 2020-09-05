@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Select from 'react-select'
-import TranscodeSelector from '../../Export/TranscodeSelector'
 import apis from '../../../services/apis'
 
 export default class BurnerOptions extends Component{
@@ -10,6 +9,7 @@ export default class BurnerOptions extends Component{
         this.handleChange = this.handleChange.bind(this)
         this.handleChangeSelect = this.handleChangeSelect.bind(this)
         this.sendForm = this.sendForm.bind(this)
+        this.onTSChange = this.onTSChange.bind(this)
     }
 
     state = {
@@ -40,6 +40,26 @@ export default class BurnerOptions extends Component{
         {value : 'DVD', label : 'DVD'}
     ]
 
+    transferSyntaxOptions = [
+        {value: 'none',                     label: 'None'},
+        {value: '1.2.840.10008.1.2',        label: 'Implicit VR Endian'},
+        {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
+        {value: '1.2.840.10008.1.2.1.99',   label: 'Deflated Explicit VR Little Endian'},
+        {value: '1.2.840.10008.1.2.2',      label: 'Explicit VR Big Endian'},
+        {value: '1.2.840.10008.1.2.4.50',   label: 'JPEG 8-bit'},
+        {value: '1.2.840.10008.1.2.4.51',   label: 'JPEG 12-bit'},
+        {value: '1.2.840.10008.1.2.4.57',   label: 'JPEG Lossless'},
+        {value: '1.2.840.10008.1.2.4.70',   label: 'JPEG Lossless'},
+        {value: '1.2.840.10008.1.2.4.80',   label: 'JPEG-LS Lossless' },
+        {value: '1.2.840.10008.1.2.4.81',   label: 'JPEG-LS Lossy'},
+        {value: '1.2.840.10008.1.2.4.90',   label: 'JPEG 2000 (90)'},
+        {value: '1.2.840.10008.1.2.4.91',   label: 'JPEG 2000 (91)'},
+        {value: '1.2.840.10008.1.2.4.92',   label: 'JPEG 2000 (92)'},
+        {value: '1.2.840.10008.1.2.4.93',   label: 'JPEG 2000 (93)'}
+
+    ]
+
+
     handleChange(event){
         const target = event.target
         const name = target.name
@@ -56,6 +76,12 @@ export default class BurnerOptions extends Component{
             [metadata.name] : event.value
         })
 
+    }
+
+    onTSChange(TSValue){
+        this.setState({
+            burner_transfer_syntax : TSValue
+        })
     }
 
     async refreshData(){
@@ -94,14 +120,14 @@ export default class BurnerOptions extends Component{
                 <label htmlFor="burner_label_path">Label Path : </label>
                 <input type = 'text'  className="form-control" name='burner_label_path' value={this.state.burner_label_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Label" />
                 <label htmlFor="burner_transfer_syntax">Transfer Syntax : </label>
-                <TranscodeSelector value={this.state.burner_transfer_syntax} name='burner_transfer_syntax'/>
+                <Select single options={this.transferSyntaxOptions} name='burner_transfer_syntax' value={this.getSelectedObject(this.transferSyntaxOptions, this.state.burner_transfer_syntax)} onChange={this.handleChangeSelect} />
                 <label htmlFor="burner_manifacturer">Manufacturer : </label>
-                <Select options={this.manufacturerOptions} value={this.getSelectedObject(this.manufacturerOptions, this.state.burner_manifacturer)} onChange={this.handleChangeSelect} name="burner_manifacturer"/>
+                <Select single options={this.manufacturerOptions} value={this.getSelectedObject(this.manufacturerOptions, this.state.burner_manifacturer)} onChange={this.handleChangeSelect} name="burner_manifacturer"/>
                 <label htmlFor="burner_monitoring_level">Monitoring Level : </label>
                 <Select options={this.levelOptions} value={this.getSelectedObject(this.levelOptions ,this.state.burner_monitoring_level)} onChange={this.handleChangeSelect} name = "burner_monitoring_level" />
                 <label htmlFor="burner_support_type">Support Type : </label>
-                <Select options={this.supportType} value={this.getSelectedObject(this.supportType, this.state.burner_support_type)} onChange={this.handleChangeSelect} name = "burner_support_type" />
-                <div className ="form-control mt-3" >
+                <Select single options={this.supportType} value={this.getSelectedObject(this.supportType, this.state.burner_support_type)} onChange={this.handleChangeSelect} name = "burner_support_type" />
+                <div className ="mt-3" >
                     <label htmlFor="burner_delete_study_after_sent">Delete Original Images From Orthanc : </label>
                     <input type = "checkbox" checked={this.state.burner_delete_study_after_sent} name="burner_delete_study_after_sent" value="Delete Original Study/Patient" onChange={this.handleChange}/>
                 </div>
