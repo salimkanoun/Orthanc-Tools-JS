@@ -112,7 +112,6 @@ class NavBar extends Component {
           <Navbar.Toggle aria-controls='responsive_navbar' />
           <Navbar.Collapse id='responsive_navbvar'>
             {this.state.navbar === 'responsive' ? <div className='float-right'><ToolsPanel roles={this.state.token} apercu={false} /></div> : null}
-
             <Nav className='mr-auto'>
               <Link className={this.getLinkClass('content')} onClick = {this.selectTabHandler} name='content' to='/orthanc-content' hidden={!this.state.token.content}>Orthanc Content</Link>
               <Link className={this.getLinkClass('import')} onClick = {this.selectTabHandler} name = 'import' to='/import' hidden={!this.state.token.import}>Import</Link>
@@ -120,10 +119,9 @@ class NavBar extends Component {
               <Link className={this.getLinkClass('auto-query')} onClick = {this.selectTabHandler} name='auto-query' to='/auto-query' hidden={!this.state.token.auto_query}>Auto-Retrieve</Link>
               <Link className={this.getLinkClass('burner')} onClick = {this.selectTabHandler} name='burner' to='/cd-burner' hidden={false/*!this.state.token.cd_burner*/}>CD-burner</Link>
               <Link className={this.getLinkClass('administration')} onClick = {this.selectTabHandler} name='administration' to='/administration' hidden={!this.state.token.admin}>Administration</Link>
-              <Link className={this.getLinkClass('log-out')} onClick = {this.selectTabHandler} name='log-out' onClick={this.logout} to='/'>Log out</Link>
+              <Link className={this.getLinkClass('log-out')} name='log-out' onClick={this.logout} to='/'>Log out</Link>
             </Nav>
             {this.state.navbar === 'classique' ? <ToolsPanel roles={this.state.token} apercu={true} /> : null}
-
           </Navbar.Collapse>
         </Navbar>
         {<this.AnimatedSwitch />}
