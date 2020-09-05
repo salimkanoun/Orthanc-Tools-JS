@@ -46,18 +46,6 @@ class CdBurner {
         this.suportType = options.burner_support_type
         this.transferSyntax = options.burner_transfer_syntax
         this.jobStatus = {}
-
-        //TEST
-        this.transferSyntax = "1.2.840.10008.1.2.4.80"
-        this.monitoringLevel = CdBurner.MONITOR_STUDY
-        this.burnerManifacturer = CdBurner.MONITOR_CD_PRIMERA
-        this.monitoredFolder = 'C:\\Users\\kanoun_s\\Documents\\cdBurner'
-        this.deleteStudyAfterSent = false
-        this.viewerPath = 'C:\\Users\\kanoun_s\\Documents\\monitoring'
-        this.suportType = CdBurner.MONITOR_CD_TYPE_AUTO
-        this.labelFile = 'labelPath'
-        //this._makeCDFromPatient('b75b59a4-8ef08c76-6467f229-c88142c6-8041f9c8')
-        this._makeCDFromStudy('4197238a-fd8a087e-b411f628-693092b5-badcccd0')
         
     }
 

@@ -201,17 +201,7 @@ const Options = {
     })
   },
 
-  setBurnerOptions(formData ){
-    /*
-    body.burner_monitored_path,
-    body.burner_viewer_path,
-    body.burner_label_path,
-    body.burner_manifacturer,
-    body.burner_monitoring_level,
-    body.burner_support_type,
-    body.burner_delete_study_after_sent,
-    body.burner_transfer_syntax
-    */
+  setBurnerOptions ( formData ){
 
    const burnerOptions = {
     method: 'PUT',
@@ -224,7 +214,7 @@ const Options = {
 
    return fetch('/api/monitoring/burning/options', burnerOptions).then(response => {
       if (response.ok) {
-        return response.json()
+        toastifySuccess('Burner Options Updated')
       } else throw response
     }).catch(error => {
       toastifyError(error.statusText)

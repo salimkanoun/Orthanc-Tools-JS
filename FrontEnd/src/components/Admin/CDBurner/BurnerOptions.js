@@ -8,6 +8,7 @@ export default class BurnerOptions extends Component{
     constructor(props){
         super(props)
         this.handleChange = this.handleChange.bind(this)
+        this.handleChangeSelect = this.handleChangeSelect.bind(this)
         this.sendForm = this.sendForm.bind(this)
     }
 
@@ -50,12 +51,22 @@ export default class BurnerOptions extends Component{
     
     }
 
-    async componentDidMount(){
+    handleChangeSelect(event, metadata){
+        this.setState({
+            [metadata.name] : event.value
+        })
+
+    }
+
+    async refreshData(){
         let options = await apis.options.getOptions()
         this.setState( {
             ...options
-        }, console.log(this.state))
-        console.log(options)
+        })
+
+    }
+    async componentDidMount(){
+        await this.refreshData()
         
     }
 
@@ -69,7 +80,7 @@ export default class BurnerOptions extends Component{
 
     async sendForm(){
         await apis.options.setBurnerOptions(this.state)
-        console.log("send Done")
+        await this.refreshData()
     }
 
     render(){
@@ -85,11 +96,11 @@ export default class BurnerOptions extends Component{
                 <label htmlFor="burner_transfer_syntax">Transfer Syntax : </label>
                 <TranscodeSelector value={this.state.burner_transfer_syntax} name='burner_transfer_syntax'/>
                 <label htmlFor="burner_manifacturer">Manufacturer : </label>
-                <Select options={this.manufacturerOptions} value={this.getSelectedObject(this.manufacturerOptions, this.state.burner_manifacturer)} name="burner_manifacturer"/>
+                <Select options={this.manufacturerOptions} value={this.getSelectedObject(this.manufacturerOptions, this.state.burner_manifacturer)} onChange={this.handleChangeSelect} name="burner_manifacturer"/>
                 <label htmlFor="burner_monitoring_level">Monitoring Level : </label>
-                <Select options={this.levelOptions} value={this.getSelectedObject(this.levelOptions ,this.state.burner_monitoring_level)} name = "burner_monitoring_level" />
+                <Select options={this.levelOptions} value={this.getSelectedObject(this.levelOptions ,this.state.burner_monitoring_level)} onChange={this.handleChangeSelect} name = "burner_monitoring_level" />
                 <label htmlFor="burner_support_type">Support Type : </label>
-                <Select options={this.supportType} value={this.getSelectedObject(this.supportType, this.state.burner_support_type)} name = "burner_support_type" />
+                <Select options={this.supportType} value={this.getSelectedObject(this.supportType, this.state.burner_support_type)} onChange={this.handleChangeSelect} name = "burner_support_type" />
                 <div className ="form-control mt-3" >
                     <label htmlFor="burner_delete_study_after_sent">Delete Original Images From Orthanc : </label>
                     <input type = "checkbox" checked={this.state.burner_delete_study_after_sent} name="burner_delete_study_after_sent" value="Delete Original Study/Patient" onChange={this.handleChange}/>
