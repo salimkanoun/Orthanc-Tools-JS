@@ -1,6 +1,6 @@
 import { toastifySuccess, toastifyError } from './toastify'
 
-var optionPlugin = { 
+var optionPlugin = {
   method: 'GET'
 }
 
@@ -22,7 +22,7 @@ var optionOrthancServer = {
 
 const Options = {
 
-  setRobotScheduleHour (hour, min) {
+  setRobotScheduleHour(hour, min) {
 
     const setRobotScheduleHourOption = {
       method: 'PUT',
@@ -33,7 +33,7 @@ const Options = {
       body: JSON.stringify({ hour: hour, min: min })
     }
 
-    return fetch('/api/options', setRobotScheduleHourOption ).then((answer) => {
+    return fetch('/api/options', setRobotScheduleHourOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).then(() => {
@@ -43,15 +43,15 @@ const Options = {
     })
   },
 
-  getOptions () {
-    return fetch('/api/options' )
+  getOptions() {
+    return fetch('/api/options')
       .then((answer) => {
         if (!answer.ok) { throw answer }
         return answer.json()
       }).catch(error => { toastifyError(error.statusText) })
   },
 
-  setOrthancServer (address, port, username, password) {
+  setOrthancServer(address, port, username, password) {
     const postData = {
       OrthancAddress: address,
       OrthancPort: port,
@@ -68,22 +68,22 @@ const Options = {
       body: JSON.stringify(postData)
     }
 
-    return fetch('/api/options/orthanc-server', setOrthancServerOption ).then((answser) => {
-      if ( ! answser.ok) throw answser
+    return fetch('/api/options/orthanc-server', setOrthancServerOption).then((answser) => {
+      if (!answser.ok) throw answser
     })
       .then((answer) => toastifySuccess('Updated'))
       .catch((error) => toastifyError('Failure'))
   },
 
-  getOrthancServer () {
-    return fetch('/api/options/orthanc-server', optionOrthancServer ).then((answer) => {
+  getOrthancServer() {
+    return fetch('/api/options/orthanc-server', optionOrthancServer).then((answer) => {
       return (answer.json())
     }).then((answer) => { return answer })
-    .catch(error =>{ toastifyError('No connexion to BackEnd')})
+      .catch(error => { toastifyError('No connexion to BackEnd') })
   },
 
-  getOrthancSystem () {
-    return fetch('/api/system', optionOrthancSystem ).then((answer) => {
+  getOrthancSystem() {
+    return fetch('/api/system', optionOrthancSystem).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).then((answer) => {
@@ -91,30 +91,30 @@ const Options = {
     }).catch((error) => {
       toastifyError('Orthanc Server Error: ' + error.statusText)
     })
-  }, 
+  },
 
-  resetOrthanc(){
+  resetOrthanc() {
 
     const resetOrthancOption = {
       method: 'POST'
-    } 
+    }
 
-    return fetch('/api/tools/reset', resetOrthancOption ).then((answer) => {
-      if (!answer.ok) {throw answer}
+    return fetch('/api/tools/reset', resetOrthancOption).then((answer) => {
+      if (!answer.ok) { throw answer }
       return (answer.json())
     }).catch((error) => {
       toastifyError(error)
     })
   },
 
-  shutdownOrthanc(){
+  shutdownOrthanc() {
 
-    const shutdownOrthancOption =  {
+    const shutdownOrthancOption = {
       method: 'POST'
     }
 
-    return fetch('/api/tools/shutdown', shutdownOrthancOption ).then((answer) => {
-      if (!answer.ok) {throw answer}
+    return fetch('/api/tools/shutdown', shutdownOrthancOption).then((answer) => {
+      if (!answer.ok) { throw answer }
       return (answer.json())
     }).catch((error) => {
       toastifyError(error)
@@ -122,58 +122,58 @@ const Options = {
   },
 
   //return current verbosity in Orthanc log
-  getVerbosity(){
+  getVerbosity() {
 
-    const getVerbosityOption = { 
+    const getVerbosityOption = {
       method: 'GET'
     }
 
-    return fetch('/api/tools/log-level', getVerbosityOption ).then(response => {
-        if (response.ok) {
-          return response.text()
-        }
-        else throw response
-      }).catch(error => {
+    return fetch('/api/tools/log-level', getVerbosityOption).then(response => {
+      if (response.ok) {
+        return response.text()
+      }
+      else throw response
+    }).catch(error => {
       toastifyError(error.statusText)
     })
   },
 
   //set verbosity in Orthanc
-  setVerbosity(value){
+  setVerbosity(value) {
 
     const setVerbosityOption = {
-      method: 'PUT', 
+      method: 'PUT',
       body: value
     }
 
-    return fetch('/api/tools/log-level', setVerbosityOption ).then((answer) => {
-      if (!answer.ok) {throw answer}
+    return fetch('/api/tools/log-level', setVerbosityOption).then((answer) => {
+      if (!answer.ok) { throw answer }
       toastifySuccess("Verbosity have been updated")
     }).catch((error) => {
       toastifyError(error)
     })
   },
 
-  getPlugins(){
-    return fetch('/api/plugins', optionPlugin ).then(response => {
-        if (response.ok) {
-          return response.json()
-        }
-        else throw response
-      }).catch(error => {
-      toastifyError(error.statusText)
-    })
-  },
-
-  getMode() {
-    return fetch('/api/mode', optionPlugin ).then(response => {
+  getPlugins() {
+    return fetch('/api/plugins', optionPlugin).then(response => {
       if (response.ok) {
         return response.json()
       }
       else throw response
     }).catch(error => {
-    toastifyError(error.statusText)
-  })
+      toastifyError(error.statusText)
+    })
+  },
+
+  getMode() {
+    return fetch('/api/mode', optionPlugin).then(response => {
+      if (response.ok) {
+        return response.json()
+      }
+      else throw response
+    }).catch(error => {
+      toastifyError(error.statusText)
+    })
   },
 
   changeMode(mode) {
@@ -191,16 +191,46 @@ const Options = {
       body: JSON.stringify(payload)
     }
 
-    return fetch('/api/changeMode', changeModeOption ).then(response => {
+    return fetch('/api/changeMode', changeModeOption).then(response => {
       if (response.ok) {
         return response.json()
       }
       else throw response
     }).catch(error => {
-    toastifyError(error.statusText)
-  })
+      toastifyError(error.statusText)
+    })
+  },
+
+  setBurnerOptions(formData ){
+    /*
+    body.burner_monitored_path,
+    body.burner_viewer_path,
+    body.burner_label_path,
+    body.burner_manifacturer,
+    body.burner_monitoring_level,
+    body.burner_support_type,
+    body.burner_delete_study_after_sent,
+    body.burner_transfer_syntax
+    */
+
+   const burnerOptions = {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
   }
 
+   return fetch('/api/monitoring/burning/options', burnerOptions).then(response => {
+      if (response.ok) {
+        return response.json()
+      } else throw response
+    }).catch(error => {
+      toastifyError(error.statusText)
+    })
+
+  }
 }
 
 export default Options

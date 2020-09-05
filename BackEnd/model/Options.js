@@ -23,6 +23,24 @@ const Options = {
     await option.save()
   },
 
+  setBurnerOptions : async (burner_monitored_path, burner_viewer_path, burner_label_path, burner_manifacturer, burner_monitoring_level,
+    burner_support_type, burner_delete_study_after_sent, burner_transfer_syntax ) => {
+
+    const option = await db.Option.findOne(({ where: { id: 1 } }))
+
+    option.burner_monitored_path = burner_monitored_path
+    option.burner_viewer_path = burner_viewer_path
+    option.burner_label_path = burner_label_path
+    option.burner_manifacturer = burner_manifacturer
+    option.burner_monitoring_level = burner_monitoring_level
+    option.burner_support_type = burner_support_type
+    option.burner_delete_study_after_sent = burner_delete_study_after_sent
+    option.burner_transfer_syntax = burner_transfer_syntax
+    
+    await option.save()
+
+  },
+
   setOrthancConnexionSettings: (address, port, username, password) => {
     config.set('OrthancAddress', address)
     config.set('OrthancPort', port)

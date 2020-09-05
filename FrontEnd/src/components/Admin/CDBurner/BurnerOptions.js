@@ -8,6 +8,7 @@ export default class BurnerOptions extends Component{
     constructor(props){
         super(props)
         this.handleChange = this.handleChange.bind(this)
+        this.sendForm = this.sendForm.bind(this)
     }
 
     state = {
@@ -66,6 +67,11 @@ export default class BurnerOptions extends Component{
         return filteredArray[0]
     }
 
+    async sendForm(){
+        await apis.options.setBurnerOptions(this.state)
+        console.log("send Done")
+    }
+
     render(){
         return (
             <div>
@@ -89,7 +95,7 @@ export default class BurnerOptions extends Component{
                     <input type = "checkbox" checked={this.state.burner_delete_study_after_sent} name="burner_delete_study_after_sent" value="Delete Original Study/Patient" onChange={this.handleChange}/>
                 </div>
                 <div className="float-right">
-                    <input type="button" className="btn btn-primary mt-3" value = "Send"/>
+                    <input type="button" className="btn btn-primary mt-3" value = "Send" onClick={this.sendForm}/>
                 </div>
             </div>
         )

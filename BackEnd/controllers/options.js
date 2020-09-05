@@ -13,6 +13,20 @@ var getOptions = async function (req, res) {
   res.json(optionsValues)
 }
 
+var updateRobotOptions = async function(req, res){
+  let body = req.body
+  Options.setBurnerOptions(
+    body.burner_monitored_path,
+    body.burner_viewer_path,
+    body.burner_label_path,
+    body.burner_manifacturer,
+    body.burner_monitoring_level,
+    body.burner_support_type,
+    body.burner_delete_study_after_sent,
+    body.burner_transfer_syntax
+  )
+  res.json(true)
+}
 
 
 var getOrthancServer = function (req, res) {
@@ -37,4 +51,4 @@ var changeMode = async function(req, res) {
   res.json(true)
 }  
 
-module.exports = { changeSchedule, getOptions, getOrthancServer, setOrthancServer, getMode, changeMode }
+module.exports = { changeSchedule, getOptions, getOrthancServer, setOrthancServer, getMode, changeMode, updateRobotOptions }
