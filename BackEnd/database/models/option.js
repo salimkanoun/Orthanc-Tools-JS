@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     burner_monitored_path:DataTypes.STRING,
     burner_delete_study_after_sent:DataTypes.BOOLEAN,
     burner_viewer_path:DataTypes.STRING,
-    burner_support_type:DataTypes.STRING
+    burner_support_type:DataTypes.STRING,
+    burner_transfer_syntax : DataTypes.STRING
   }, {})
   Option.associate = function (models) {
     // associations can be defined here

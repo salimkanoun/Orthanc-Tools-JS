@@ -10,10 +10,6 @@ const recursive = require("recursive-readdir");
 //SK RESTE A FAIRE
 //Check Event multiple charge serveur
 
-//Front 
-//Options CD Burner
-//Main Interface : Lister les Job + Route pour Cancel un JOB (et backend) + Jouer sons en success/failure
-
 
 class CdBurner {
 
@@ -366,7 +362,9 @@ class CdBurner {
                 if(extension !== ".DAT" && extension !== ".PTM" && extension !== ".JCF") fileObject[name] = extension
             })
             return fileObject
-        })
+        })/Front 
+        //Options CD Burner
+        //Main Interface : Lister les Job + Route pour Cancel un JOB (et backend) + Jouer sons en success/failure
 
         //For each current JobID check if the file request extension has changed and update the status accordically
         for (let jobID of Object.keys(nonFinishedRequestFile) ){

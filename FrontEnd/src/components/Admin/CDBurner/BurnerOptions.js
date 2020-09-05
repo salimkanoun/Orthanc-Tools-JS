@@ -17,7 +17,8 @@ export default class BurnerOptions extends Component{
         burner_manifacturer : '',
         burner_monitoring_level : '',
         burner_support_type : 'Auto',
-        burner_delete_study_after_sent : false
+        burner_delete_study_after_sent : false,
+        burner_transfer_syntax : null
 
     }
 
@@ -66,16 +67,16 @@ export default class BurnerOptions extends Component{
                 <input type = 'text'  className="row form-control" name='burner_viewer_path' value={this.state.burner_viewer_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Viewer" />
                 <label htmlFor="burner_label_path">Label Path : </label>
                 <input type = 'text'  className="row form-control" name='burner_label_path' value={this.state.burner_label_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\label" />
-                <label htmlFor="transcodeSelector">Transfer Syntax : </label>
-                <TranscodeSelector /*value={this.state.burner_label_path}*/ name='transcodeSelector'/>
+                <label htmlFor="burner_transfer_syntax">Transfer Syntax : </label>
+                <TranscodeSelector value={this.state.burner_transfer_syntax} name='burner_transfer_syntax'/>
                 <label htmlFor="burner_manifacturer">Manufacturer : </label>
                 <Select options={this.manufacturerOptions} value={this.state.burner_manifacturer} name="burner_manifacturer"/>
                 <label htmlFor="burner_monitoring_level">Monitoring Level : </label>
                 <Select options={this.levelOptions} value={this.state.burner_monitoring_level} name = "burner_monitoring_level" />
                 <label htmlFor="burner_support_type">Support Type : </label>
                 <Select options={this.supportType} value={this.state.burner_support_type} name = "burner_support_type" />
-                <div className ="form-control" >
-                    <label htmlFor="burner_delete_study_after_sent">Delete Original : </label>
+                <div className ="form-control mt-3" >
+                    <label htmlFor="burner_delete_study_after_sent">Delete Original Images From Orthanc : </label>
                     <input type = "checkbox" value={this.state.burner_delete_study_after_sent} name="burner_delete_study_after_sent" value="Delete Original Study/Patient"/>
                 </div>
             </div>
