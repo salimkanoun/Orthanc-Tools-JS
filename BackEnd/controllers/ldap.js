@@ -27,37 +27,37 @@ var testLdapSettings = async function(req, res) {
 }
 
 var getLdapCorrespodences = async function(req, res) {
-  const correspondences = await Ldap.getAllCorrespodences()
-  res.json(correspondences)
+  const matches = await Ldap.getAllCorrespodences()
+  res.json(matches)
 }
 
 var setLdapCorrespodence = async function(req, res) {
   try {
-    const correspondences = req.body
-    await Ldap.setCorrespodence(correspondences)
+    const matches = req.body
+    await Ldap.setCorrespodence(matches)
     res.json(true)
 
   } catch (err) {
     console.log(err)
-    res.status(401).send('fail to create correspondence')
+    res.status(401).send('fail to create match')
   }
 }
 
 var deleteCorrespodence = async function(req, res){
   try{ 
-    const correspondence = req.body
-    await Ldap.deleteCorrespodence(correspondence)
+    const match = req.body
+    await Ldap.deleteCorrespodence(match)
     res.json(true)
   } catch (err) {
       console.log(err)
-      res.status(401).send('fait to delete correspondence')
+      res.status(401).send('fait to delete match')
   }
 }
 
 var getLdapGroupeNames = async function(req, res) {
   try {
-    await Ldap.getAllGroupeNames(async function(correspondences) {
-      await res.json(correspondences)
+    await Ldap.getAllGroupeNames(async function(matches) {
+      await res.json(matches)
     })
   } catch(err) {
     console.log(err)

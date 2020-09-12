@@ -57,18 +57,18 @@ const ldap = {
           }).catch(error => toastifyError('connexion failed'))
     },
 
-    async createCorrespondence(Correspondence){
+    async createMatch(Match){
 
-        const createCorrespondenceOption = {
+        const createMatchOption = {
           method: "POST",
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify([Correspondence])
+          body: JSON.stringify([Match])
         };
   
-          return fetch("/api/ldap/correspondences/", createCorrespondenceOption ).then((answer) => {
+          return fetch("/api/ldap/matches/", createMatchOption ).then((answer) => {
               if (!answer.ok) { throw answer }
               toastifySuccess('Correspodence create with success')
               return (answer.json())
@@ -78,19 +78,19 @@ const ldap = {
             })
       },
       
-    async deleteCorrespondence(Correspondence){
-      const deleteCorrespondenceOption = {
+    async deleteMatch(Match){
+      const deleteMatchOption = {
             method: 'DELETE',
             headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
             },
-            body: JSON.stringify({correspodence:Correspondence})
+            body: JSON.stringify({correspodence:Match})
         };
     
-            return fetch("/api/ldap/correspondences/", deleteCorrespondenceOption ).then((answer) => {
+            return fetch("/api/ldap/matches/", deleteMatchOption ).then((answer) => {
                 if (!answer.ok) { throw answer }
-                    toastifySuccess('Correspondence deleted with success')
+                    toastifySuccess('Match deleted with success')
                     return (answer.json())
             }).catch(error => toastifyError(error))
         }, 
@@ -105,7 +105,7 @@ const ldap = {
         }
       }
 
-        return fetch("/api/ldap/correspondences/", getAllCorrespodencesOption ).then(async (answer) => {
+        return fetch("/api/ldap/matches/", getAllCorrespodencesOption ).then(async (answer) => {
             if (!answer.ok) { throw answer }
             return await (answer.json())
           }).catch(error => toastifyError(error))

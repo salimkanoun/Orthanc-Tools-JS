@@ -5,7 +5,7 @@ import Select from 'react-select'
 import apis from '../../../services/apis'
 
 
-class CreateCorrespondence extends Component {
+class CreateMatch extends Component {
     state = { 
         show: false, 
         groupName:'',
@@ -55,8 +55,8 @@ class CreateCorrespondence extends Component {
     }
 
     async create(){
-            await apis.ldap.createCorrespondence({groupName:this.state.groupName.value, associedRole:this.state.associedRole.value}).then(()=>{
-                this.props.getCorrespondences()
+            await apis.ldap.createMatch({groupName:this.state.groupName.value, associedRole:this.state.associedRole.value}).then(()=>{
+                this.props.getMatches()
                 this.setState({
                     show: false, 
                 })
@@ -67,10 +67,10 @@ class CreateCorrespondence extends Component {
     render() {
         return (
             <Fragment>
-                <button type='button' hidden={this.props.show} className='btn btn-primary mr-3 mt-2' onClick={() => this.setState({show: true})} >New correspondence</button>
+                <button type='button' hidden={this.props.show} className='btn btn-primary mr-3 mt-2' onClick={() => this.setState({show: true})} >New match</button>
                 <Modal id='create' show={this.state.show} onHide={() => this.setState({show: false})}>
                     <Modal.Header closeButton>
-                        <h2 className='card-title'>Create new correspondence</h2>
+                        <h2 className='card-title'>Create new match</h2>
                     </Modal.Header>
                     <Modal.Body>   
                         <label>Group name</label>
@@ -91,4 +91,4 @@ class CreateCorrespondence extends Component {
     }
 }
 
-export default CreateCorrespondence;
+export default CreateMatch;

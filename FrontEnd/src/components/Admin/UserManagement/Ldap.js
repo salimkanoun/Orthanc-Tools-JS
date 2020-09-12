@@ -5,7 +5,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import Select from 'react-select'
 import ReactTooltip from "react-tooltip";
 import HelpIcon from '@material-ui/icons/HelpSharp';
-import CreateCorrespondence from "./CreateCorrespondence";
+import CreateMatch from "./CreateMatch";
 
 class Ldap extends Component {
 
@@ -17,7 +17,7 @@ class Ldap extends Component {
         adresse: '',
         changeType: { value: 'ad', label: 'Active Directory' },
         protocole: '',
-        correspondences: [],
+        matches: [],
         base: '',
         groupe: '',
         user:''
@@ -35,7 +35,7 @@ class Ldap extends Component {
         this.handleChange = this.handleChange.bind(this) 
         this.setLdapSetting = this.setLdapSetting.bind(this)
         this.testLdapSettings = this.testLdapSettings.bind(this)
-        this.getCorrespondences = this.getCorrespondences.bind(this)
+        this.getMatches = this.getMatches.bind(this)
         this.delete = this.delete.bind(this)
     }
 
@@ -67,7 +67,7 @@ class Ldap extends Component {
     }
 
     async componentDidMount() {
-        this.getCorrespondences()
+        this.getMatches()
         
         //Mode
         let value = await this.getModeFromDB()
@@ -116,15 +116,15 @@ class Ldap extends Component {
     }
 
     async delete(toDelete) {
-        await apis.ldap.deleteCorrespondence(toDelete).then(()=>{
-            this.getCorrespondences()
+        await apis.ldap.deleteMatch(toDelete).then(()=>{
+            this.getMatches()
         })
     }
 
-    async getCorrespondences() {
+    async getMatches() {
         let answer = await apis.ldap.getAllCorrespodences()
         this.setState({
-            correspondences: answer 
+            matches: answer 
         })
     }
 
@@ -262,9 +262,9 @@ class Ldap extends Component {
                     </div>         
                 </div>
 
-                <CreateCorrespondence show={!this.state.check} getCorrespondences={this.getCorrespondences} />
+                <CreateMatch show={!this.state.check} getMatches={this.getMatches} />
                 <div className="form-group mr-3 mt-3" hidden={!this.state.check}>
-                    <BootstrapTable keyField='groupName' data={this.state.correspondences} columns={this.columns} striped />
+                    <BootstrapTable keyField='groupName' data={this.state.matches} columns={this.columns} striped />
                 </div>
             </Fragment>         
         )
