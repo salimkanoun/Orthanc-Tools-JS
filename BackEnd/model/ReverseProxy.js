@@ -21,6 +21,9 @@ const ReverseProxy = {
       options = {
         method: method,
         url: serverString,
+        headers: {
+          'Forwarded' : 'by=localhost;for=localhost;host='+process.env.DOMAIN_ADDRESS+'/api;proto='+process.env.DOMAIN_PROTOCOL
+        },
         auth: {
           user: this.username,
           password: this.password
@@ -110,6 +113,20 @@ const ReverseProxy = {
         if (response.statusCode === 200) {
           response.pipe(streamWriter)
             .on('finish', function () { console.log('Writing Done') })
+        }
+      }).catch((error) => {
+        console.log(error)
+      })
+  },
+
+  streamToFileWithCallBack (api, method, data, streamWriter, finishCallBack) {
+    request(this.makeOptions(method, api, data))
+      .on('response', function (response) {
+        if (response.statusCode === 200) {
+          response.pipe(streamWriter)
+            .on('finish', ()=>{
+              finishCallBack()
+            } )
         }
       }).catch((error) => {
         console.log(error)

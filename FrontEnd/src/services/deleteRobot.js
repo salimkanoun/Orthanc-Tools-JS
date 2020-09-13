@@ -1,5 +1,4 @@
 import { toastifyError } from './toastify'
-import updateOptions from '../authorizedOption'
 
 const deleteRobot = {
 
@@ -14,7 +13,7 @@ const deleteRobot = {
             body: JSON.stringify(deleteArray)
         }
 
-        return fetch('/api/robot/' + username + '/delete', updateOptions(createDeleteRobotOption)).then(answer => {
+        return fetch('/api/robot/' + username + '/delete', createDeleteRobotOption ).then(answer => {
             if (!answer.ok) {throw answer}
             return answer.json()
         }).catch(error => {
@@ -32,7 +31,7 @@ const deleteRobot = {
             },
         }
 
-        return fetch('/api/robot/' + username + '/delete', updateOptions(getDeleteRobotOption)).then(answer => {
+        return fetch('/api/robot/' + username + '/delete', getDeleteRobotOption ).then(answer => {
             if (!answer.ok) {throw answer}
             return answer.json()
         }).catch(error => {

@@ -5,10 +5,14 @@ require('express-async-errors')
 
 const { authentication, logOut } = require('../controllers/authentication')
 const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob, addAnonJob, getAnonJob, getDeleteJob, addDeleteJob } = require('../controllers/Robot2')
-const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getMode, changeMode } = require('../controllers/options')
+const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, getMode, changeMode, getOptions } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
+
+const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
+
+const { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames} = require('../controllers/ldap')
 
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
@@ -18,36 +22,6 @@ const { userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware
     exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware } = require('../midelwares/authentication')
 
 
-/**
- * @swagger
- * tags:
- *   name: Users
- *   description: User management
- */
-
-/**
- * @swagger
- * path:
- *  /authentication/:
- *    post:
- *      summary: Authentify User
- *      tags: [Users]
- *      requestBody:
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                  username:
- *                      type: string
- *                  password:
- *                      type: string
- *      responses:
- *        "200":
- *          description: Sucess
- *        "401":
- *          description: Unauthorized
- */
 router.post('/session/*', authentication)
 router.delete('/session', logOut)
 
@@ -74,8 +48,9 @@ router.get('/robot/:username/delete', userAuthMidelware, getDeleteJob)
 router.delete('/robot/:username/:type', userAuthMidelware, deleteRobotJob)
 
 // OrthancToolsJS Options routes
-router.get('/options', userAdminMidelware, getSchedule)
+router.get('/options', userAdminMidelware, getOptions)
 router.put('/options', userAdminMidelware, changeSchedule)
+
 // OrthancToolsJS Settings routes
 router.get('/options/orthanc-server', userAdminMidelware, getOrthancServer)
 router.put('/options/orthanc-server', userAdminMidelware, setOrthancServer)
@@ -105,8 +80,8 @@ router.post('/instances', importMidelware, reverseProxyPostUploadDicom)
 
 // Orthanc DicomWebRoutes
 //SK ICI AJOUTER CONTENT MIDDELWARE QUAND OHIF POURRA INJECTER LE JWT DANS TOUTES LES REQUETES
-router.get('/dicom-web/*', reverseProxyGet)
-router.get('/wado/*', reverseProxyGet)
+router.get('/dicom-web/*' ,/*contentMidelware,*/ reverseProxyGet)
+router.get('/wado/*',/*contentMidelware,*/ reverseProxyGet)
 
 //Orthanc export routes
 router.post('/tools/create-archive', exportLocalMidelware , reverseProxyPost )
@@ -157,5 +132,22 @@ router.get('/token', userAuthMidelware, getRoleFromToken)
 //Mode
 router.get('/mode', userAdminMidelware, getMode)
 router.put('/changeMode', userAdminMidelware, changeMode)
+
+//Ldap
+router.get('/ldap/settings', userAdminMidelware, getLdapSettings)
+router.put('/ldap/settings', userAdminMidelware, setLdapSettings)
+router.get('/ldap/test', userAdminMidelware, testLdapSettings)
+router.post('/ldap/matches', userAdminMidelware, setLdapCorrespodence)
+router.get('/ldap/matches', userAdminMidelware, getLdapCorrespodences)
+router.delete('/ldap/matches', userAdminMidelware, deleteCorrespodence)
+router.get('/ldap/groupename', userAdminMidelware, getLdapGroupeNames)
+
+
+//Monitoring
+router.post('/monitoring/burner', startBurner)
+router.delete('/monitoring/burner', stopBurner)
+router.get('/monitoring/burner', getBurner)
+router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
+router.put('/monitoring/burning/options', userAdminMidelware, updateRobotOptions)
 
 module.exports = router

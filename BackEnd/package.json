@@ -22,6 +22,7 @@
     "build": "webpack OrthancToolsJS.js"
   },
   "dependencies": {
+    "activedirectory": "^0.7.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "configstore": "^5.0.1",
@@ -32,21 +33,26 @@
     "dotenv": "^8.2.0",
     "ejs": "^3.0.2",
     "eslint": "^6.8.0",
+    "events": "^3.2.0",
     "express": "~4.17.1",
     "express-async-errors": "^3.1.1",
     "express-session": "^1.17.1",
     "http-errors": "~1.7.3",
     "jsonwebtoken": "^8.5.1",
+    "jszip": "^3.5.0",
+    "moment": "^2.27.0",
     "morgan": "^1.10.0",
     "node-schedule": "^1.3.2",
     "open": "^7.0.4",
+    "recursive-readdir": "^2.2.2",
     "request": "^2.88.2",
     "request-promise-native": "^1.0.8",
     "rotating-file-stream": "^2.1.1",
     "sequelize": "^5.22.3",
     "sequelize-cli": "^5.5.1",
     "spdy": "^4.0.2",
-    "sqlite3": "^4.2.0"
+    "sqlite3": "^4.2.0",
+    "tmp-promise": "^3.0.2"
   },
   "engines": {
     "node": ">=12.0.0",

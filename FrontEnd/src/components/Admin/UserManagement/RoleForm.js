@@ -14,7 +14,8 @@ class RoleForm extends Component {
             auto_query: false, 
             delete: false, 
             admin: false, 
-            modify: false 
+            modify: false,
+            cd_burner : false 
         }
     }
 
@@ -28,7 +29,8 @@ class RoleForm extends Component {
         autoQuery: this.props.data.auto_query, 
         delete: this.props.data.delete, 
         admin: this.props.data.admin, 
-        modify: this.props.data.modify 
+        modify: this.props.data.modify,
+        cd_burner: this.props.data.cd_burner
     }
 
     constructor(props) {
@@ -121,6 +123,14 @@ class RoleForm extends Component {
                         </div>
                         <div className='col-auto'>
                             <Toggle checked={this.state.modify} onChange={()=>this.setState(prevState => ({modify: !prevState.modify}))}/>
+                        </div>
+                    </div>
+                    <div className="row mb-2">
+                        <div className='col-5'>
+                            <h5>CD Burner</h5>
+                        </div>
+                        <div className='col-auto'>
+                            <Toggle checked={this.state.cd_burner} onChange={()=>this.setState(prevState => ({cd_burner: !prevState.cd_burner}))}/>
                         </div>
                     </div>
             </Fragment>

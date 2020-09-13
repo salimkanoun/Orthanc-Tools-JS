@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken")
 class Roles {
 
     static async createRoles (payload) {
-        console.log(payload)
         const roles = await db.Role.findOne({ 
           where: { name: payload.name }})
         if(roles) {
@@ -22,6 +21,7 @@ class Roles {
             auto_query: payload.autoQuery,
             delete: payload.delete,
             modify: payload.modify,
+            cd_burner : payload.cd_burner, 
             admin: payload.admin
           }).catch(e => console.log(e))
     
@@ -39,16 +39,7 @@ class Roles {
     }
 
     static async getPermission (name) {
-        return await db.Role.findAll({ where: { name: name }, attributes: ['import',
-            'content',
-            'anon',
-            'export_local',
-            'export_extern',
-            'query',
-            'auto_query',
-            'delete',
-            'admin',
-            'modify']}).catch((error) => console.log(error)) //return a JSON
+        return await db.Role.findAll({ where: { name: name }}).catch((error) => console.log(error)) //return a JSON
     }
 
     static async deleteRole(name){
@@ -81,7 +72,8 @@ class Roles {
           delete: payload.delete,
           admin: payload.admin,
           modify: payload.modify,
-          import: payload.import
+          import: payload.import,
+          cd_burner : payload.cd_burner
         })
       } catch (error) {
         console.log(error)

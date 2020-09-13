@@ -21,7 +21,9 @@ const dotenv = require("dotenv");
   process.env.TOKEN_SECRET;
 
 // static routes
-app.use(express.static(path.join(__dirname, 'build')))
+app.use('/', express.static(path.join(__dirname, 'build')))
+app.use('/viewer/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer/assets/', express.static(path.join(__dirname, 'build')));
 
 app.use(logger('dev'))
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
@@ -62,13 +64,9 @@ logger.token('post', function (req, res) {
 
 app.use(unless('/', morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTPS/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ":post";', { stream: accessLogStream })))
 
-// Serve compiled React front end
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'))
-})
-
+//For routes containing study UID redirect to OHIF index
 app.get('/viewer/*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'ohif.html'))
+  res.sendFile(path.join(__dirname, 'build', 'viewer', 'index.html'))
 })
 
 app.use('/api', apisRouter)
@@ -76,7 +74,7 @@ app.use('/users', usersRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  console.log('error 404 salim')
+  console.log('error 404')
   next(createError(404))
 })
 

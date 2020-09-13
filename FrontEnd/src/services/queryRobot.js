@@ -1,5 +1,4 @@
 import { toastifySuccess, toastifyError } from './toastify'
-import updateOptions from '../authorizedOption'
 
 const queryRobot = {
 
@@ -17,7 +16,7 @@ const queryRobot = {
                 })
         }
 
-        return fetch('/api/robot/'+username+'/retrieve', updateOptions(createRobotOption) ).then((answer) => {
+        return fetch('/api/robot/'+username+'/retrieve', createRobotOption ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).then(() => toastifySuccess('Sent To Retrieve Robot'))
@@ -37,7 +36,7 @@ const queryRobot = {
             }
         }
 
-        return fetch("/api/robot/"+username+"/retrieve/validate", updateOptions(validateRobotOption) ).then((answer) => {
+        return fetch("/api/robot/"+username+"/retrieve/validate", validateRobotOption ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {
@@ -51,7 +50,7 @@ const queryRobot = {
             method: "DELETE",
         }
 
-        return fetch("/api/robot/"+username+"/retrieve", updateOptions(deleteRobotOption) ).catch((error) => {
+        return fetch("/api/robot/"+username+"/retrieve", deleteRobotOption ).catch((error) => {
             toastifyError(error)
         })
     },
@@ -66,7 +65,7 @@ const queryRobot = {
             }
         }
 
-        return fetch("/api/robot/retrieve", updateOptions(getAllRobotsDetails) ).then((answer) => {
+        return fetch("/api/robot/retrieve", getAllRobotsDetails ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {
@@ -84,7 +83,7 @@ const queryRobot = {
             }
         }
 
-        return fetch( "/api/robot/"+username+"/retrieve", updateOptions(getRobotDetailsOption) ).then((answer) => {
+        return fetch( "/api/robot/"+username+"/retrieve", getRobotDetailsOption ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {
@@ -102,7 +101,7 @@ const queryRobot = {
             }
         }
 
-        return fetch("/api/robot/"+username+"/retrieve/"+item, updateOptions(deleteRobotItemOption) ).then((answer) => {
+        return fetch("/api/robot/"+username+"/retrieve/"+item, deleteRobotItemOption ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {

@@ -1,5 +1,4 @@
 import { toastifyError, toastifySuccess } from './toastify'
-import updateOptions from '../authorizedOption'
 
 const role = {
 
@@ -13,7 +12,7 @@ const role = {
             }
         }
 
-        return fetch('/api/roles', updateOptions(getRolesOptions)).then((answer) => {
+        return fetch('/api/roles', getRolesOptions ).then((answer) => {
             if (!answer.ok) { throw answer }
                 return answer.json()
             }).catch(error => {
@@ -30,7 +29,7 @@ const role = {
             }
         }
 
-        return fetch('/api/roles/' + name, updateOptions(getPermissionOptions)).then((answer) => {
+        return fetch('/api/roles/' + name, getPermissionOptions ).then((answer) => {
             if (!answer.ok) { throw answer }
                 return answer.json()
             }).catch(error => {
@@ -49,7 +48,7 @@ const role = {
             body: JSON.stringify(payload)
         }
 
-        return fetch('/api/roles', updateOptions(createRoleOptions)).then((answer) => {
+        return fetch('/api/roles', createRoleOptions ).then((answer) => {
                 if (!answer.ok) { throw answer }
                 toastifySuccess('Role created with success')
                 return answer.json()
@@ -68,7 +67,7 @@ const role = {
             body: JSON.stringify(payload)
         }
 
-        return fetch('/api/roles', updateOptions(modifyRoleOptions)).then((answer) => {
+        return fetch('/api/roles', modifyRoleOptions ).then((answer) => {
             if (!answer.ok) { throw answer }
             toastifySuccess('Role have been motified with success')
                 return answer.json()
@@ -88,7 +87,7 @@ const role = {
             body: JSON.stringify([name])
         }
 
-        return fetch('/api/roles', updateOptions(deleteRoleOptions)).then((answer) => {
+        return fetch('/api/roles', deleteRoleOptions ).then((answer) => {
                 if (!answer.ok) { throw answer }
                 toastifySuccess('Role deleted with success')
                 return answer.json()

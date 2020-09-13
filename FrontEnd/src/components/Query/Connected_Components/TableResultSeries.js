@@ -71,7 +71,8 @@ class TableResultSeries extends Component {
     }, {
         dataField: 'SeriesDescription',
         text: 'Serie Description',
-        sort: true
+        sort: true,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'Modality',
         text: 'Modality',
@@ -90,7 +91,7 @@ class TableResultSeries extends Component {
     }];
 
     retrieveButton(cell, row, rowIndex){
-        return (<RetrieveButton queryAet={row.OriginAET} uid={row.SeriesInstanceUID} level={RetrieveButton.Series} />)
+        return (<RetrieveButton queryAet={row.OriginAET} seriesInstanceUID={row.SeriesInstanceUID} studyInstanceUID={row.StudyInstanceUID} level={RetrieveButton.Series} />)
     }
 
     render() {

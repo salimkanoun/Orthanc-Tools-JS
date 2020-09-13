@@ -4,6 +4,9 @@ import { Redirect } from 'react-router-dom'
 import apis from '../services/apis'
 import { CSSTransition } from "react-transition-group";
 
+import ReactTooltip from "react-tooltip";
+import HelpIcon from '@material-ui/icons/Info';
+
 export default class Authentication extends Component {
 
   state = {
@@ -41,7 +44,7 @@ export default class Authentication extends Component {
     
       // get token from fetch request
       const token = answer;
-
+      
       //cookie's options
       var d = new Date();
       d.setTime(d.getTime() + (7*24*60*60*1000)); // cookie expire in 7 days
@@ -49,6 +52,7 @@ export default class Authentication extends Component {
 
       // set token in cookie
       document.cookie = `tokenOrthancJs=${token}; expires=${expires}`
+      document.cookie = `tokenOrthancJs=${token}; expires=${expires};HttpOnly`
 
       newState =  {
         accessCheck : answer
@@ -62,8 +66,6 @@ export default class Authentication extends Component {
       }
 
     })
-    
-    
 
     this.setState({
       authenthified: newState.accessCheck,
@@ -104,7 +106,33 @@ export default class Authentication extends Component {
          <div className='vertical-center'>
             <div className='shadow text-center' id='login'> 
               <div className='alert alert-danger' id='error' style={{ display:  this.state.errorMessage === undefined ?  'none' : '' }}>{this.state.errorMessage}</div>
-                  <div className='block-title block block-400'>Orthanc-Tools-JS</div>
+                  <div className='block-title block block-400'>
+                    <div className='row'>
+                      <div className='col-2'>
+                      </div>
+                      <div className='col'>
+                        Orthanc-Tools-JS
+                      </div>
+                      <div className='col-2'>
+                        <HelpIcon className="mb-1" data-tip data-for='info1' fontSize="small"/>
+                        <ReactTooltip place="right" effect="solid" id='info1' type='dark'>
+                          <div className="text-left">
+                          <span>1. Local user : your local username</span>
+                          <br></br>
+                          <span>exemple : <i>durantLocal</i></span>
+                          <br></br>
+                          <span>2. Distant user (with domain name): your LDAP/AD username if it contains any domain </span>
+                          <br></br>
+                          <span>exemple : <i>durantDistant@chu.exemple.fr</i></span>
+                          <br></br>
+                          <span>3. Distant user (without domain name) : your LDAP/AD username precede to an @ if it not contains any domain </span>
+                          <br></br>
+                          <span>exemple : <i>@durantDistant</i></span>
+                          </div>
+                        </ReactTooltip>
+                      </div>  
+                    </div>   
+                  </div>
                   <div className='block-content block block-400'>
                     <form id='login-form' onKeyPress={this.handleKeyDown}>
                       <fieldset>

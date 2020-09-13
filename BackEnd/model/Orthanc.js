@@ -28,6 +28,75 @@ class Orthanc {
     ReverseProxy.streamToFile('/tools/create-archive', 'POST', orthancIds, streamWriter)
   }
 
+  getArchiveDicom(orthancIds, transcoding = null)  {
+
+    let payload
+    
+    if(transcoding){
+      payload ={
+        "Transcode": transcoding,
+        "Resources": orthancIds
+      }
+    }else{
+      payload ={
+        "Resources": orthancIds
+      }
+    }
+
+     return new Promise( (resolve, reject)=>{
+
+       try{
+
+        const destination = './data/export_dicom/' + Math.random().toString(36).substr(2, 5) + '.zip'
+        const streamWriter = fs.createWriteStream(destination)
+        ReverseProxy.streamToFileWithCallBack('/tools/create-archive', 'POST', payload, streamWriter, ()=>{
+          resolve(destination)
+        })
+
+       } catch (err) {
+         reject()
+       }
+
+
+    })
+    
+  } 
+
+  getArchiveDicomDir(orthancIds, transcoding = 'None')  {
+
+    let payload
+
+    if(transcoding !== 'None'){
+      payload ={
+        "Transcode": transcoding,
+        "Resources": orthancIds
+      }
+    }else{
+      payload ={
+        "Resources": orthancIds
+      }
+    }
+
+    return new Promise( (resolve, reject)=>{
+      try{
+       const destination = './data/export_dicom/' + Math.random().toString(36).substr(2, 5) + '.zip'
+       const streamWriter = fs.createWriteStream(destination)
+       ReverseProxy.streamToFileWithCallBack('/tools/create-media-extended', 'POST', payload, streamWriter, ()=>{
+         resolve(destination)
+       })
+
+      } catch (err) {
+        reject()
+      }
+
+   })
+   
+ } 
+
+  getArchiveDicomPath(filename){
+    return './data/export_dicom/' + filename + '.zip'
+  }
+
   /**
      * Prepare JSON query for DICOM query request in Orthanc
      * @param {string} level
@@ -270,6 +339,16 @@ class Orthanc {
     return answer
   }
 
+  async getStudiesDetailsOfPatient(orthancID){
+    const answer = await ReverseProxy.getAnswer('/patients/' + orthancID + '/studies?expand', 'GET', undefined)
+    return answer
+  }
+
+  async getSeriesDetailsOfStudy(orthancID){
+    const answer = await ReverseProxy.getAnswer('/studies/' + orthancID + '/series?expand', 'GET', undefined)
+    return answer
+  }
+
   /**
      * Delete a ressource in Orthanc
      * @param {string} level
@@ -383,15 +462,22 @@ class Orthanc {
     return answer
   }
 
-  async getChanges(last) {
-    outPutStream = "/changes?since=" + last
-    let changes = await ReverseProxy.getAnswer(outputStream, "GET", undefined)
+   async getChanges (last) {
+    //let outPutStream = this.getOrthancAetName() + "/changes?since=" + last
+    let outPutStream = "/changes?since=" + last
+    let changes = await ReverseProxy.getAnswer(outPutStream, "GET", undefined)
     return changes
   }
 
   async getChangesLast() {
-    outPutStream = "/changes?last"
-    let changes = await ReverseProxy.getAnswer(outputStream, "GET", undefined)
+    //let outPutStream = this.getOrthancAetName() + "/changes?last"
+    let outPutStream = "/changes?last"
+    let changes = await ReverseProxy.getAnswer(outPutStream, "GET", undefined)
+    return changes
+  }
+
+  async getSopClassUID(instanceID){
+    let changes = await ReverseProxy.getAnswerPlainText('/instances/'+instanceID+"/metadata/SopClassUid", "GET", undefined)
     return changes
   }
 }

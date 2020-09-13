@@ -55,7 +55,7 @@ class ToolsPanel extends Component {
                 <div className='mr-2' hidden={this.props.apercu}>
                     <Link id='delete' ref={refDelete} type='button' className='btn btn-danger' to='/delete'>
                         Delete <br/>
-                        <span className="badge badge-light">{(this.props.deleteList.length)}</span>
+                        <span className="badge badge-light">{this.props.deleteList.length}</span>
                     </Link>
                 </div>
                 <div className="mr-2" hidden={!this.props.roles.delete || !this.props.apercu} >
