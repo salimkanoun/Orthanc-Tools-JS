@@ -1,6 +1,5 @@
 import { toastifyError } from './toastify'
 import streamSaver from 'streamsaver'
-import updateOptions from '../authorizedOption'
 
 const exportDicom = {
 
@@ -28,7 +27,7 @@ const exportDicom = {
       body: JSON.stringify(body)
     }
 
-    return fetch('/api/tools/create-archive/', updateOptions(exportHirachicalDicomsOption)).then((answer) => {
+    return fetch('/api/tools/create-archive/', exportHirachicalDicomsOption ).then((answer) => {
       if (!answer.ok) { throw answer }
       return answer.json()
     })
@@ -61,7 +60,7 @@ const exportDicom = {
       body: JSON.stringify(body)
     }
 
-    return fetch('/api/tools/create-media-extended/', updateOptions(exportDicomDirDicomsOption)).then((answer) => {
+    return fetch('/api/tools/create-media-extended/', exportDicomDirDicomsOption ).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).catch((error) => {

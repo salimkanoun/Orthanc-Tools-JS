@@ -13,6 +13,7 @@ module.exports = {
       auto_query: true,
       delete: true, 
       admin: true,
+      cd_burner:true,
       createdAt: new Date().toDateString(),
       updatedAt: new Date().toDateString(),
       modify: true
@@ -27,6 +28,7 @@ module.exports = {
       auto_query: true,
       delete: true, 
       admin: false,
+      cd_burner:true,
       createdAt: new Date().toDateString(),
       updatedAt: new Date().toDateString(),
       modify: true

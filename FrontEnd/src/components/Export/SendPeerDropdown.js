@@ -61,7 +61,7 @@ export default class SendPeerDropdown extends Component{
 
     }
 
-    componentWillMount(){
+    componentWillUnmount(){
         if(this.job !== undefined) this.job.cancel()
     }
 

@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     auto_query: DataTypes.BOOLEAN,
     delete: DataTypes.BOOLEAN,
     admin: DataTypes.BOOLEAN,
+    cd_burner : DataTypes.BOOLEAN,
     name: {
       primaryKey: true,
       type: DataTypes.STRING},

@@ -26,7 +26,7 @@ module.exports = {
         type: Sequelize.BOOLEAN, 
         defaultValue: false
       },
-      burner_label_file: {
+      burner_label_path: {
         allowNull: false,
         type: Sequelize.STRING, 
         defaultValue: '',
@@ -34,14 +34,14 @@ module.exports = {
       burner_monitoring_level: {
         allowNull: false,
         type: Sequelize.STRING, 
-        defaultValue: '',
+        defaultValue: 'study',
       },
-      burner_burner_manifacturer: {
+      burner_manifacturer: {
         allowNull: false,
         type: Sequelize.STRING, 
-        defaultValue: '',
+        defaultValue: 'Epson',
       },
-      burner_monitored_folder: {
+      burner_monitored_path: {
         allowNull: false,
         type: Sequelize.STRING, 
         defaultValue: '',
@@ -62,9 +62,9 @@ module.exports = {
         defaultValue: '',
       },
       burner_transfer_syntax : {
-        allowNull: true,
+        allowNull: false,
         type: Sequelize.STRING, 
-        defaultValue: null,
+        defaultValue: 'None',
       }
 
     }).then(() => {

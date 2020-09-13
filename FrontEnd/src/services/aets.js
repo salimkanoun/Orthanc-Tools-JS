@@ -1,11 +1,10 @@
 import { toastifySuccess, toastifyError } from './toastify'
-import updateOptions from '../authorizedOption'
 
 
 const aets = {
 
   getAets () {
-    return fetch('/api/modalities', updateOptions())
+    return fetch('/api/modalities')
       .then((answer) => {
         if (!answer.ok) { throw answer }
         return (answer.json())
@@ -17,7 +16,7 @@ const aets = {
   },
 
   getAetsExpand () {
-    return fetch('/api/modalities?expand', updateOptions())
+    return fetch('/api/modalities?expand')
       .then((answer) => {
         if (!answer.ok) { throw answer }
         return (answer.json())
@@ -38,7 +37,7 @@ const aets = {
       body: JSON.stringify(parameters)
     } 
 
-    return fetch('/api/modalities/' + name, updateOptions(updateAetOption)).then((answer) => {
+    return fetch('/api/modalities/' + name, updateAetOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     })
@@ -53,7 +52,7 @@ const aets = {
       method: 'DELETE'
     }
 
-    return fetch('/api/modalities/' + name, updateOptions(deleteAetOption) ).then((answer) => {
+    return fetch('/api/modalities/' + name, deleteAetOption ).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     })
@@ -73,7 +72,7 @@ const aets = {
       body: JSON.stringify({})
     }
 
-    fetch('/api/modalities/' + aetName + '/echo', updateOptions(echoAetOption) ).then(response => {
+    fetch('/api/modalities/' + aetName + '/echo', echoAetOption ).then(response => {
       if (response.ok) response.json()
       else throw response
     }).then((answer) => {
@@ -95,7 +94,7 @@ const aets = {
         })
       }
 
-    return fetch ('/api/modalities/' + name + '/store', updateOptions(storeAETOption)).then((answer) => {
+    return fetch ('/api/modalities/' + name + '/store', storeAETOption ).then((answer) => {
           if (!answer.ok) {throw answer}
           return (answer.json())
       }).catch(error => {

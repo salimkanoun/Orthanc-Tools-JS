@@ -19,7 +19,7 @@ export default class AutoRetrieveSchedule extends Component {
    * Get defined schedule hour and min from backend
    */
   async componentDidMount () {
-    const response = await apis.options.getRobotScheduledHour()
+    const response = await apis.options.getOptions()
     this.setState({
       hour: response.hour,
       min: response.min

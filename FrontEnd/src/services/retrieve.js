@@ -1,4 +1,3 @@
-import updateOptions from '../authorizedOption'
 
 const retrieve = {
 

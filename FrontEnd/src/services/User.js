@@ -1,5 +1,4 @@
 import { toastifyError, toastifySuccess } from './toastify'
-import updateOptions from '../authorizedOption'
 
 const user = {
     getUsers(){
@@ -12,7 +11,7 @@ const user = {
         }
     } 
 
-        return fetch('/users/users', updateOptions(getUsersOption)).then((answer) => {
+        return fetch('/users/users', getUsersOption ).then((answer) => {
             if (!answer.ok) { throw answer }
               return answer.json()
           }).catch(async error => {
@@ -31,7 +30,7 @@ const user = {
         body: JSON.stringify(data)
       }
 
-      return fetch('/users/users', updateOptions(modifyUserOption)).then((answer) => {
+      return fetch('/users/users', modifyUserOption ).then((answer) => {
         if (!answer.ok) { throw answer }
           toastifySuccess('User Modify with success')
       }).catch(async error => {
@@ -50,7 +49,7 @@ const user = {
         body: JSON.stringify([username])
       }
       
-      return fetch('/users/users', updateOptions(deleteUserOption)).then((answer) => {
+      return fetch('/users/users', deleteUserOption ).then((answer) => {
         if (!answer.ok) { throw answer }
           toastifySuccess('User Delete with success')
       }).catch(async error => {
@@ -71,7 +70,7 @@ const user = {
 
       }
 
-      return fetch('/users/users', updateOptions(createUserOption)).then((answer) => {
+      return fetch('/users/users', createUserOption ).then((answer) => {
         if (!answer.ok) { throw answer }
           toastifySuccess('user created with success')
       }).catch(async error => {

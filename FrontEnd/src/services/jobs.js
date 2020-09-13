@@ -1,5 +1,4 @@
 import { toastifyError, toastifySuccess } from './toastify'
-import updateOptions from '../authorizedOption'
 
 const jobs = {
 
@@ -9,7 +8,7 @@ const jobs = {
         method: 'GET'
       }
 
-      return fetch('/api/jobs?expand', updateOptions(getJobsOption)).then((answer) => {
+      return fetch('/api/jobs?expand', getJobsOption ).then((answer) => {
         if (!answer.ok) { throw answer }
         return answer.json()
       }).catch(error => {
@@ -27,7 +26,7 @@ const jobs = {
         }
       }
 
-        return fetch('/api/jobs/' + jobId, updateOptions(getJobInfosOption) ).then((answer) => {
+        return fetch('/api/jobs/' + jobId, getJobInfosOption ).then((answer) => {
             if (!answer.ok) { throw answer }
             return answer.json()
           }).catch(error => {
@@ -47,7 +46,7 @@ const jobs = {
         body : JSON.stringify({})
       }
 
-      return fetch('/api/jobs/' + jobId + '/cancel', updateOptions(cancelJobOption) ).then((answer) => {
+      return fetch('/api/jobs/' + jobId + '/cancel', cancelJobOption ).then((answer) => {
         if (!answer.ok) { throw answer }
         toastifySuccess('Job Cancelled')
       }).catch(error => {
@@ -67,7 +66,7 @@ const jobs = {
         body : JSON.stringify({})
       }
 
-      return fetch('/api/jobs/' + jobId + '/pause', updateOptions(pauseJobOption) ).then((answer) => {
+      return fetch('/api/jobs/' + jobId + '/pause', pauseJobOption ).then((answer) => {
           if (!answer.ok) { throw answer }
           toastifySuccess('Job paused')
         }).catch(error => {
@@ -86,7 +85,7 @@ const jobs = {
         body : JSON.stringify({})
       }
 
-      return fetch('/api/jobs/' + jobId + '/resubmit', updateOptions(resumbitJobOption) ).then((answer) => {
+      return fetch('/api/jobs/' + jobId + '/resubmit', resumbitJobOption ).then((answer) => {
           if (!answer.ok) { throw answer }
           toastifySuccess('Job resubmited')
         }).catch(error => {
@@ -105,7 +104,7 @@ const jobs = {
         body : JSON.stringify({})
       } 
 
-      return fetch('/api/jobs/' + jobId + '/resume', updateOptions(resumeJobOption) ).then((answer) => {
+      return fetch('/api/jobs/' + jobId + '/resume', resumeJobOption ).then((answer) => {
           if (!answer.ok) { throw answer }
           toastifySuccess('Job resumed')
         }).catch(error => {

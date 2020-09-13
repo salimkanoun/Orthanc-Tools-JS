@@ -71,11 +71,11 @@ const Ldap = {
         return res
     },
 
-    setCorrespodence: async(correspondence) => {
+    setCorrespodence: async(match) => {
         try{
             const promise = db.DistantUser.create({
-                groupName: correspondence[0].groupName,
-                roleDistant : correspondence[0].associedRole,
+                groupName: match[0].groupName,
+                roleDistant : match[0].associedRole,
               }).catch(e => {console.log(e);throw new Error('db create error') })
         
             return promise
@@ -84,11 +84,11 @@ const Ldap = {
         }
     },
 
-    deleteCorrespodence: async(correspondence) => {
+    deleteCorrespodence: async(match) => {
         try {
             await db.DistantUser.destroy({
                 where: {
-                    groupName: correspondence.correspodence
+                    groupName: match.correspodence
                  }
               })
         } catch (err) {

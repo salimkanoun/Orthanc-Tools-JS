@@ -62,11 +62,11 @@ class Orthanc {
     
   } 
 
-  getArchiveDicomDir(orthancIds, transcoding = null)  {
+  getArchiveDicomDir(orthancIds, transcoding = 'None')  {
 
     let payload
 
-    if(transcoding){
+    if(transcoding !== 'None'){
       payload ={
         "Transcode": transcoding,
         "Resources": orthancIds

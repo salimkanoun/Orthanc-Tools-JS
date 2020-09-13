@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
+import Select from "react-select"
 
 import apis from '../../services/apis'
 import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy'
@@ -7,23 +8,23 @@ import TableSeries from '../CommonComponents/RessourcesDisplay/TableSeries'
 import DownloadDropdown from "./DownloadDropdown"
 import SendAetDropdown from "./SendAetDropdown"
 import SendPeerDropdown from "./SendPeerDropdown"
-import TranscodeSelector from './TranscodeSelector'
 import ModalWarning from './ModalWarning'
 
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 
+
 class ExportPanel extends Component {
-    
-    state={
-        currentStudy: '', 
+
+    state = {
+        currentStudy: '',
         aets: [],
-        peers: [], 
-        show: false, 
+        peers: [],
+        show: false,
         button: ''
     }
 
-    constructor(props){
+    constructor(props) {
         super(props)
         this.getStudies = this.getStudies.bind(this)
         this.emptyList = this.emptyList.bind(this)
@@ -31,11 +32,12 @@ class ExportPanel extends Component {
         this.removeStudy = this.removeStudy.bind(this)
         this.confirm = this.confirm.bind(this)
         this.setButton = this.setButton.bind(this)
+        this.onTSChange = this.onTSChange.bind(this)
     }
 
-    
-    
-    async componentDidMount(){
+
+
+    async componentDidMount() {
         let aets = await apis.aets.getAets()
         let peers = await apis.peers.getPeers()
         this.setState({
@@ -43,8 +45,8 @@ class ExportPanel extends Component {
             peers: peers
         })
     }
-    
-    getExportIDArray(){
+
+    getExportIDArray() {
         let ids = []
         this.props.exportList.seriesArray.forEach(serie => {
             ids.push(serie.ID)
@@ -52,35 +54,35 @@ class ExportPanel extends Component {
         return ids
     }
 
-    handleClickFTP(){
+    handleClickFTP() {
 
     }
 
-    handleClickWebDav(){
+    handleClickWebDav() {
 
     }
-    
-    removeSeries(serieID){
+
+    removeSeries(serieID) {
         this.props.removeSeriesFromExportList(serieID)
     }
 
-    removeStudy(){
+    removeStudy() {
         this.props.removeStudyFromExportList(this.state.currentStudy)
     }
 
-    emptyList(){
+    emptyList() {
         this.props.emptyExportList()
     }
 
     rowEvents = {
         onClick: (e, row, rowIndex) => {
-            this.setState({currentStudy: row.StudyOrthancID})
+            this.setState({ currentStudy: row.StudyOrthancID })
         }
     }
 
     rowStyle = (row, rowIndex) => {
         const style = {};
-        if (row.StudyOrthancID === this.state.currentStudy){
+        if (row.StudyOrthancID === this.state.currentStudy) {
             style.backgroundColor = 'rgba(255,153,51)'
         }
         style.borderTop = 'none';
@@ -88,81 +90,112 @@ class ExportPanel extends Component {
         return style;
     }
 
-    getStudies(){
+    getStudies() {
         let list = seriesArrayToStudyArray(this.props.exportList.seriesArray, this.props.exportList.studyArray)
         return list
     }
 
-    getSeries(){
-        
+    getSeries() {
+
         let studies = []
-        
+
         this.props.exportList.seriesArray.forEach(serie => {
-            if (serie.ParentStudy === this.state.currentStudy){
+            if (serie.ParentStudy === this.state.currentStudy) {
                 studies.push({
                     ...serie.MainDicomTags,
                     SeriesOrthancID: serie.ID,
                     Instances: serie.Instances.length
                 })
-            }})
-            return studies
-        }
+            }
+        })
+        return studies
+    }
 
-        confirm(){
-            let answer = false
-            this.props.exportList.studyArray.forEach(study => {
-                if (study.AnonymizedFrom === undefined || study.AnonymizedFrom === ''){
-                    answer = true
-                }
-            })
-            return answer
-        }
-    
-        setButton(button){
-            this.setState({
-                button: button
-            })
-        }
-    
-    
-        render() {
-            let idArray = this.getExportIDArray()
-            let confirm = this.confirm()
-            return (
-                <div className="jumbotron">
+    confirm() {
+        let answer = false
+        this.props.exportList.studyArray.forEach(study => {
+            if (study.AnonymizedFrom === undefined || study.AnonymizedFrom === '') {
+                answer = true
+            }
+        })
+        return answer
+    }
+
+    setButton(button) {
+        this.setState({
+            button: button
+        })
+    }
+
+    onTSChange(item) {
+        apis.localStorage.setlocalStorage('TS', item.value)
+    }
+
+    transferSyntaxOptions = [
+        {value: 'None',                     label: 'None'},
+        {value: '1.2.840.10008.1.2',        label: 'Implicit VR Endian'},
+        {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
+        {value: '1.2.840.10008.1.2.1.99',   label: 'Deflated Explicit VR Little Endian'},
+        {value: '1.2.840.10008.1.2.2',      label: 'Explicit VR Big Endian'},
+        {value: '1.2.840.10008.1.2.4.50',   label: 'JPEG 8-bit'},
+        {value: '1.2.840.10008.1.2.4.51',   label: 'JPEG 12-bit'},
+        {value: '1.2.840.10008.1.2.4.57',   label: 'JPEG Lossless'},
+        {value: '1.2.840.10008.1.2.4.70',   label: 'JPEG Lossless'},
+        {value: '1.2.840.10008.1.2.4.80',   label: 'JPEG-LS Lossless' },
+        {value: '1.2.840.10008.1.2.4.81',   label: 'JPEG-LS Lossy'},
+        {value: '1.2.840.10008.1.2.4.90',   label: 'JPEG 2000 (90)'},
+        {value: '1.2.840.10008.1.2.4.91',   label: 'JPEG 2000 (91)'},
+        {value: '1.2.840.10008.1.2.4.92',   label: 'JPEG 2000 (92)'},
+        {value: '1.2.840.10008.1.2.4.93',   label: 'JPEG 2000 (93)'}
+
+    ]
+
+    getSelectedTSObject (tsValue){
+        let filteredArray = this.transferSyntaxOptions.filter(item => {
+            return item.value === tsValue ? true : false
+        })
+
+        return filteredArray[0]
+    }
+
+    render() {
+        let idArray = this.getExportIDArray()
+        let confirm = this.confirm()
+        return (
+            <div className="jumbotron">
                 <h2 className="card-title mb-3">Export</h2>
                 <div className="row">
                     <div className="col-sm">
-                        <TableStudy 
+                        <TableStudy
                             ref={this.child}
                             wrapperClasses="table-responsive"
-                            data={this.getStudies()} 
-                            rowEvents={this.rowEvents} 
-                            rowStyle={this.rowStyle} 
-                            hiddenActionBouton={true} 
-                            hiddenRemoveRow={true} 
+                            data={this.getStudies()}
+                            rowEvents={this.rowEvents}
+                            rowStyle={this.rowStyle}
+                            hiddenActionBouton={true}
+                            hiddenRemoveRow={true}
                             hiddenName={false}
                             hiddenID={false}
-                            pagination={true} 
-                            hiddenAnonymized={false}/>
-                            <button type='button' className="btn btn-warning float-right" onClick={this.emptyList}>Empty List</button>
+                            pagination={true}
+                            hiddenAnonymized={false} />
+                        <button type='button' className="btn btn-warning float-right" onClick={this.emptyList}>Empty List</button>
                     </div>
 
                     <div className="col-sm">
-                        <TableSeries data={this.getSeries()} wrapperClasses="table-responsive" hiddenActionBouton={true} hiddenRemoveRow={false} onDelete={this.removeSeries}/>
+                        <TableSeries data={this.getSeries()} wrapperClasses="table-responsive" hiddenActionBouton={true} hiddenRemoveRow={false} onDelete={this.removeSeries} />
                         <button type='button' className="btn btn-danger float-right" onClick={this.removeStudy}>Remove Study</button>
                     </div>
                 </div>
                 <div className="row text-center mt-5">
                     <div className='col-sm'>
                         <DownloadDropdown exportIds={idArray} />
-                        <TranscodeSelector />
+                        <Select single options={this.transferSyntaxOptions} onChange={this.onTSChange} name="ts_selector" value={this.getSelectedTSObject(apis.localStorage.getLocalStorage('TS'))}/>
                     </div>
                     <div className='col-sm'>
                         <SendAetDropdown aets={this.state.aets} exportIds={idArray} />
                     </div>
                     <div className='col-sm'>
-                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm} setModal={() => this.setState({show: true})} setButton={this.setButton} />
+                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm} setModal={() => this.setState({ show: true })} setButton={this.setButton} />
                     </div>
                     <div className='col-sm'>
                         <button type='button' className="btn btn-info" onClick={this.handleClickFTP} disabled>Send To FTP</button>
@@ -171,7 +204,7 @@ class ExportPanel extends Component {
                         <button type='button' className="btn btn-info" onClick={this.handleClickWebDav} disabled>Send To WebDav</button>
                     </div>
                 </div>
-                <ModalWarning show={this.state.show} onHide={() => this.setState({show: false})} button={this.state.button} />
+                <ModalWarning show={this.state.show} onHide={() => this.setState({ show: false })} button={this.state.button} />
             </div>
         )
     }
@@ -179,14 +212,14 @@ class ExportPanel extends Component {
 
 const mapStateToProps = state => {
     return {
-        exportList: state.ExportList, 
-        orthancContent: state.OrthancContent.orthancContent 
+        exportList: state.ExportList,
+        orthancContent: state.OrthancContent.orthancContent
     }
 }
 
 const mapDispatchToProps = {
-    emptyExportList, 
-    removeStudyFromExportList, 
+    emptyExportList,
+    removeStudyFromExportList,
     removeSeriesFromExportList
 }
 

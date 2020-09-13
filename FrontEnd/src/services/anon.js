@@ -1,5 +1,4 @@
 import { toastifyError } from './toastify'
-import updateOptions from '../authorizedOption'
 
 const anon = {
 
@@ -14,7 +13,7 @@ const anon = {
               body: JSON.stringify(anonymizeArray)
         }
         
-        return fetch('/api/robot/' + username + '/anonymize', updateOptions(createAnonRobotOption) ).then(answer => {
+        return fetch('/api/robot/' + username + '/anonymize', createAnonRobotOption ).then(answer => {
             if (!answer.ok) {throw answer}
             return answer.json()
         }).catch(error => {
@@ -33,7 +32,7 @@ const anon = {
               }
         }
 
-        return fetch('/api/robot/' + username + '/anonymize', updateOptions(getAnonJobOption) ).then(answer => {
+        return fetch('/api/robot/' + username + '/anonymize', getAnonJobOption ).then(answer => {
             if (!answer.ok) {throw answer}
             return answer.json()
         }).catch(error => {

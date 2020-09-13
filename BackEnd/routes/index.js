@@ -5,7 +5,7 @@ require('express-async-errors')
 
 const { authentication, logOut } = require('../controllers/authentication')
 const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob, addAnonJob, getAnonJob, getDeleteJob, addDeleteJob } = require('../controllers/Robot2')
-const { changeSchedule, getSchedule, getOrthancServer, setOrthancServer, getMode, changeMode } = require('../controllers/options')
+const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, getMode, changeMode, getOptions } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
@@ -48,8 +48,9 @@ router.get('/robot/:username/delete', userAuthMidelware, getDeleteJob)
 router.delete('/robot/:username/:type', userAuthMidelware, deleteRobotJob)
 
 // OrthancToolsJS Options routes
-router.get('/options', userAdminMidelware, getSchedule)
+router.get('/options', userAdminMidelware, getOptions)
 router.put('/options', userAdminMidelware, changeSchedule)
+
 // OrthancToolsJS Settings routes
 router.get('/options/orthanc-server', userAdminMidelware, getOrthancServer)
 router.put('/options/orthanc-server', userAdminMidelware, setOrthancServer)
@@ -133,13 +134,13 @@ router.get('/mode', userAdminMidelware, getMode)
 router.put('/changeMode', userAdminMidelware, changeMode)
 
 //Ldap
-router.get('/ldapSettings', userAdminMidelware, getLdapSettings)
-router.put('/ldapSettings', userAdminMidelware, setLdapSettings)
-router.get('/ldapTestCo', userAdminMidelware, testLdapSettings)
-router.post('/ldapCorrespondences', userAdminMidelware, setLdapCorrespodence)
-router.get('/ldapCorrespondences', userAdminMidelware, getLdapCorrespodences)
-router.delete('/ldapCorrespondences', userAdminMidelware, deleteCorrespodence)
-router.get('/ldapGroupeName', userAdminMidelware, getLdapGroupeNames)
+router.get('/ldap/settings', userAdminMidelware, getLdapSettings)
+router.put('/ldap/settings', userAdminMidelware, setLdapSettings)
+router.get('/ldap/test', userAdminMidelware, testLdapSettings)
+router.post('/ldap/matches', userAdminMidelware, setLdapCorrespodence)
+router.get('/ldap/matches', userAdminMidelware, getLdapCorrespodences)
+router.delete('/ldap/matches', userAdminMidelware, deleteCorrespodence)
+router.get('/ldap/groupename', userAdminMidelware, getLdapGroupeNames)
 
 
 //Monitoring
@@ -147,5 +148,6 @@ router.post('/monitoring/burner', startBurner)
 router.delete('/monitoring/burner', stopBurner)
 router.get('/monitoring/burner', getBurner)
 router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
+router.put('/monitoring/burning/options', userAdminMidelware, updateRobotOptions)
 
 module.exports = router

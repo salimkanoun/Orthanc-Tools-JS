@@ -23,7 +23,8 @@ authentication = async function (req, res) {
             query: infosUser.query,
             auto_query: infosUser.auto_query,
             delete: infosUser.delete,
-            modify: infosUser.modify
+            modify: infosUser.modify,
+            cd_buner : infosUser.cd_burner
           }
     
           var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });

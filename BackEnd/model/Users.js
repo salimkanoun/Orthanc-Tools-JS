@@ -13,13 +13,11 @@ class Users {
     } else {
       try {
         const user = await db.User.findOne({ where: { username: this.username } })
-        if (user === null) {
-          throw new Error('User Not Found')
-        }
         this.user = user
         return this.user
       } catch (error) {
         console.log(error)
+        throw new Error('User Not Found')
       }
       
     }
@@ -53,8 +51,9 @@ class Users {
   }
 
   async checkLocalPassword (plainPassword, callback) {
-    const user = await this._getUserEntity()
-    const check = await bcrypt.compare(plainPassword, user.password).catch(() => { return false })
+    const check = await this._getUserEntity().then(user => {
+       return bcrypt.compare(plainPassword, user.password)
+    }).catch( () => callback(false))
     return callback(check)
   }
 
@@ -216,7 +215,7 @@ class Users {
       }
 
         rights = await db.Role.findOne({
-        attributes: ['import', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin','modify'],
+        attributes: ['import', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin','modify', 'cd_burner'],
         where: {name: user.role}
       });
 
