@@ -86,7 +86,7 @@ class Orthanc {
        })
 
       } catch (err) {
-        reject()
+        reject(err)
       }
 
    })

@@ -68,10 +68,11 @@ class CdBurner {
      * Set Event listener according to monitoring level
      */
     __makeListener() {
+        console.log(this.monitoringLevel)
         if (this.monitoringLevel === CdBurner.MONITOR_PATIENT) {
             this.monitoring.on('StablePatient', (orthancID) => { this._makeCDFromPatient(orthancID) })
         } else if (this.monitoringLevel === CdBurner.MONITOR_STUDY) {
-            this.monitoring.on('StableStudy', (orthancID) => { this._makeCD(orthancID) })
+            this.monitoring.on('StableStudy', (orthancID) => { this._makeCDFromStudy(orthancID) })
         }
         this.monitorJobInterval = setInterval(this.monitorJobs, 5000)
     }
@@ -148,7 +149,7 @@ class CdBurner {
         //If Patient has only one study get the study Orthanc ID and process it as a single study burning
         if (studies.length === 1) {
             let newStableStudyID = studies[0].ID 
-            this._makeCDFromStudy(newStableStudyID)
+            await this._makeCDFromStudy(newStableStudyID)
             return
         }
 
@@ -161,6 +162,8 @@ class CdBurner {
 
         let datInfos = []
         let uniqueModalitiesForPrimera = []
+
+        let modalitiesInPatient = []
 
         for (let i = 0; i < studies.length; i++) {
             let formattedDateExamen = "N/A";
@@ -183,6 +186,7 @@ class CdBurner {
 
             //Conctatenate modalities array to a string with "//" separator
             let modalitiesInStudy = modalities.join("//")
+            modalitiesInPatient.push(...modalities)
 
             datInfos.push( {
                 patientName: patient.MainDicomTags.PatientName,
@@ -195,6 +199,8 @@ class CdBurner {
             } )
         }
 
+        let uniqueModalitiesInPatient = [...new Set(modalitiesInPatient)]
+
         let studyDetailsToFront = {
             patientName: patient.MainDicomTags.PatientName,
             patientID: patient.MainDicomTags.PatientID,
@@ -202,7 +208,7 @@ class CdBurner {
             studyDescription: 'Multiples',
             accessionNumber: 'Multiples',
             patientDOB: formattedPatientDOB,
-            modalitiesInStudy: modalitiesInStudy
+            modalitiesInStudy: uniqueModalitiesInPatient.join("//")
         }
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, "Mutiples")
         this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING, 'None', studyDetailsToFront)
@@ -336,7 +342,8 @@ class CdBurner {
         Object.keys(this.jobStatus).forEach(jobID =>{
             if(this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_DONE && 
             this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_ERROR && 
-            this.jobStatus[jobID]['status'] !== null){
+            this.jobStatus[jobID]['status'] !== null &&
+            this.jobStatus[jobID]['requestFile'] !== null ){
                 nonFinishedRequestFile[jobID] = {...this.jobStatus[jobID]}
             }
         })
@@ -350,10 +357,8 @@ class CdBurner {
                 if(extension !== ".DAT" && extension !== ".PTM" && extension !== ".JCF") fileObject[name] = extension
             })
             return fileObject
-        })/Front 
-        //Options CD Burner
-        //Main Interface : Lister les Job + Route pour Cancel un JOB (et backend) + Jouer sons en success/failure
-
+        })
+       
         //For each current JobID check if the file request extension has changed and update the status accordically
         for (let jobID of Object.keys(nonFinishedRequestFile) ){
             let jobRequestFile = nonFinishedRequestFile[jobID]['requestFile']

@@ -117,7 +117,7 @@ class NavBar extends Component {
               <Link className={this.getLinkClass('import')} onClick = {this.selectTabHandler} name = 'import' to='/import' hidden={!this.state.token.import}>Import</Link>
               <Link className={this.getLinkClass('query')} onClick = {this.selectTabHandler} name='query' to='/query' hidden={!this.state.token.query}>Query</Link>
               <Link className={this.getLinkClass('auto-query')} onClick = {this.selectTabHandler} name='auto-query' to='/auto-query' hidden={!this.state.token.auto_query}>Auto-Retrieve</Link>
-              <Link className={this.getLinkClass('burner')} onClick = {this.selectTabHandler} name='burner' to='/cd-burner' hidden={false/*!this.state.token.cd_burner*/}>CD-burner</Link>
+              <Link className={this.getLinkClass('burner')} onClick = {this.selectTabHandler} name='burner' to='/cd-burner' hidden={!this.state.token.cd_burner}>CD-burner</Link>
               <Link className={this.getLinkClass('administration')} onClick = {this.selectTabHandler} name='administration' to='/administration' hidden={!this.state.token.admin}>Administration</Link>
               <Link className={this.getLinkClass('log-out')} name='log-out' onClick={this.logout} to='/'>Log out</Link>
             </Nav>

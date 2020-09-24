@@ -79,9 +79,8 @@ router.get('/queries/:orthancIdQuery/parsedAnswers', queryMidelware, getParsedAn
 router.post('/instances', importMidelware, reverseProxyPostUploadDicom)
 
 // Orthanc DicomWebRoutes
-//SK ICI AJOUTER CONTENT MIDDELWARE QUAND OHIF POURRA INJECTER LE JWT DANS TOUTES LES REQUETES
-router.get('/dicom-web/*' ,/*contentMidelware,*/ reverseProxyGet)
-router.get('/wado/*',/*contentMidelware,*/ reverseProxyGet)
+router.get('/dicom-web/*' ,contentMidelware, reverseProxyGet)
+router.get('/wado/*',contentMidelware, reverseProxyGet)
 
 //Orthanc export routes
 router.post('/tools/create-archive', exportLocalMidelware , reverseProxyPost )

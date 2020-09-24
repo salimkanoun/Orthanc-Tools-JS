@@ -68,6 +68,27 @@ const ReverseProxy = {
     return options
   },
 
+  makeOptionsDownload (method, api, data) {
+    const serverString = this.getOrthancAddress() + api
+
+    const options = {
+      method: method,
+      url: serverString,
+      auth: {
+        user: this.username,
+        password: this.password
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': data.length,
+        'Accept' : 'application/dicom'
+      },
+      body: JSON.stringify(data)
+    }
+
+    return options
+  },
+
   streamToRes (api, method, data, res) {
     request(this.makeOptions(method, api, data))
       .on('response', function (response) {
@@ -120,7 +141,7 @@ const ReverseProxy = {
   },
 
   streamToFileWithCallBack (api, method, data, streamWriter, finishCallBack) {
-    request(this.makeOptions(method, api, data))
+    request(this.makeOptionsDownload(method, api, data))
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(streamWriter)

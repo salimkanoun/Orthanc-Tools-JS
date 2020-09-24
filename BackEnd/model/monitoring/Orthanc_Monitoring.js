@@ -68,35 +68,13 @@ class Orthanc_Monitoring extends EventEmitter {
         } catch (err) {
             console.log(err)
         }
-
+        
         let changesArray=changes.Changes;
 
-        changesArray.forEach(function(changeEvent) {
-            ID = changeEvent.ID;
-            
-            if (changeEvent.get("ChangeType") === "NewPatient") {
-                this.emit('NewPatient')
-			}
-			 
-			else if (changeEvent.get("ChangeType") === "NewStudy") {
-                this.emit('NewStudy')
-			}
-			
-			else if (changeEvent.get("ChangeType") === "NewSeries") {
-                this.emit('NewSeries')
-			}
-			
-			else if (changeEvent.get("ChangeType") === "StablePatient") {
-                this.emit('StablePatient')
-			}
-			
-			else if (changeEvent.get("ChangeType") === "StableStudy") {
-                this.emit('StableStudy')
-			}
-
-			else if (changeEvent.get("ChangeType") === "StableSeries") {
-                this.emit('StableSeries')
-			}
+        changesArray.forEach( (changeEvent) => {
+            let orthancID = changeEvent.ID
+            let changeType = changeEvent.ChangeType
+            this.emit(changeType, orthancID)
         }) 
         
         this.last = changes.Last
