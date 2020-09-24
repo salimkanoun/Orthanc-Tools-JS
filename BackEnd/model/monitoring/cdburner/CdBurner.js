@@ -68,10 +68,11 @@ class CdBurner {
      * Set Event listener according to monitoring level
      */
     __makeListener() {
+        console.log(this.monitoringLevel)
         if (this.monitoringLevel === CdBurner.MONITOR_PATIENT) {
             this.monitoring.on('StablePatient', (orthancID) => { this._makeCDFromPatient(orthancID) })
         } else if (this.monitoringLevel === CdBurner.MONITOR_STUDY) {
-            this.monitoring.on('StableStudy', (orthancID) => { this._makeCD(orthancID) })
+            this.monitoring.on('StableStudy', (orthancID) => { this._makeCDFromStudy(orthancID) })
         }
         this.monitorJobInterval = setInterval(this.monitorJobs, 5000)
     }
@@ -242,6 +243,7 @@ class CdBurner {
     }
 
     async _makeCDFromStudy(newStableStudyID) {
+        console.log('ICI TRIGGERED CD')
         let study = await this.orthanc.getOrthancDetails('studies', newStableStudyID)
         let patient = await this.orthanc.getOrthancDetails('patients', study.ParentPatient)
         let series = await this.orthanc.getSeriesDetailsOfStudy(newStableStudyID)
@@ -350,10 +352,8 @@ class CdBurner {
                 if(extension !== ".DAT" && extension !== ".PTM" && extension !== ".JCF") fileObject[name] = extension
             })
             return fileObject
-        })/Front 
-        //Options CD Burner
-        //Main Interface : Lister les Job + Route pour Cancel un JOB (et backend) + Jouer sons en success/failure
-
+        })
+       
         //For each current JobID check if the file request extension has changed and update the status accordically
         for (let jobID of Object.keys(nonFinishedRequestFile) ){
             let jobRequestFile = nonFinishedRequestFile[jobID]['requestFile']

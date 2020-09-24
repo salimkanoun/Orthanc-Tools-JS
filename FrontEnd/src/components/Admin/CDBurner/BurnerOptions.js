@@ -30,8 +30,8 @@ export default class BurnerOptions extends Component{
     ]
 
     levelOptions = [
-        {value: 'study', label : 'Study'},
-        {value: 'patient', label: 'Patient'}
+        {value: 'Study', label : 'Study'},
+        {value: 'Patient', label: 'Patient'}
     ]
     
     supportType = [
