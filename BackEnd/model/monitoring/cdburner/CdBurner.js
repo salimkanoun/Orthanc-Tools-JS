@@ -163,6 +163,8 @@ class CdBurner {
         let datInfos = []
         let uniqueModalitiesForPrimera = []
 
+        let modalitiesInPatient = []
+
         for (let i = 0; i < studies.length; i++) {
             let formattedDateExamen = "N/A";
             try {
@@ -184,6 +186,7 @@ class CdBurner {
 
             //Conctatenate modalities array to a string with "//" separator
             let modalitiesInStudy = modalities.join("//")
+            modalitiesInPatient.push(...modalitiesInStudy)
 
             datInfos.push( {
                 patientName: patient.MainDicomTags.PatientName,
@@ -196,6 +199,8 @@ class CdBurner {
             } )
         }
 
+        let uniqueModalitiesInPatient = [...new Set(modalitiesInPatient)]
+
         let studyDetailsToFront = {
             patientName: patient.MainDicomTags.PatientName,
             patientID: patient.MainDicomTags.PatientID,
@@ -203,7 +208,7 @@ class CdBurner {
             studyDescription: 'Multiples',
             accessionNumber: 'Multiples',
             patientDOB: formattedPatientDOB,
-            modalitiesInStudy: modalitiesInStudy
+            modalitiesInStudy: uniqueModalitiesInPatient.join("//")
         }
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, "Mutiples")
         this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING, 'None', studyDetailsToFront)
