@@ -53,7 +53,6 @@ class Orthanc_Monitoring extends EventEmitter {
     }
 
     async makeMonitor() {
-        console.log(this.last)
         do {
             await this._parseOutput(this.last);
         }

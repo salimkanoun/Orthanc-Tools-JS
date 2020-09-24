@@ -186,7 +186,7 @@ class CdBurner {
 
             //Conctatenate modalities array to a string with "//" separator
             let modalitiesInStudy = modalities.join("//")
-            modalitiesInPatient.push(...modalitiesInStudy)
+            modalitiesInPatient.push(...modalities)
 
             datInfos.push( {
                 patientName: patient.MainDicomTags.PatientName,
@@ -248,7 +248,6 @@ class CdBurner {
     }
 
     async _makeCDFromStudy(newStableStudyID) {
-        console.log('ICI TRIGGERED CD')
         let study = await this.orthanc.getOrthancDetails('studies', newStableStudyID)
         let patient = await this.orthanc.getOrthancDetails('patients', study.ParentPatient)
         let series = await this.orthanc.getSeriesDetailsOfStudy(newStableStudyID)
@@ -343,7 +342,8 @@ class CdBurner {
         Object.keys(this.jobStatus).forEach(jobID =>{
             if(this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_DONE && 
             this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_ERROR && 
-            this.jobStatus[jobID]['status'] !== null){
+            this.jobStatus[jobID]['status'] !== null &&
+            this.jobStatus[jobID]['requestFile'] !== null ){
                 nonFinishedRequestFile[jobID] = {...this.jobStatus[jobID]}
             }
         })
