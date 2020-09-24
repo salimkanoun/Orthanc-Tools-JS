@@ -149,7 +149,7 @@ class CdBurner {
         //If Patient has only one study get the study Orthanc ID and process it as a single study burning
         if (studies.length === 1) {
             let newStableStudyID = studies[0].ID 
-            this._makeCDFromStudy(newStableStudyID)
+            await this._makeCDFromStudy(newStableStudyID)
             return
         }
 
