@@ -7,6 +7,7 @@
 
   # Define settings for JavaScript analysis
   ##########################################
+extraction: 
   javascript:
     # The `index` step extracts information from the files in the codebase.
     index:
