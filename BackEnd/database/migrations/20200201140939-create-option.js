@@ -34,7 +34,7 @@ module.exports = {
       burner_monitoring_level: {
         allowNull: false,
         type: Sequelize.STRING, 
-        defaultValue: 'study',
+        defaultValue: 'Study',
       },
       burner_manifacturer: {
         allowNull: false,
