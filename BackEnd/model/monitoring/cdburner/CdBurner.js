@@ -1,14 +1,19 @@
 var fsPromises = require('fs').promises
 var JSZip = require("jszip")
 const path = require('path');
+const Queue = require('promise-queue')
 const tmpPromise = require('tmp-promise')
+const {withFile} = require('tmp-promise')
+
 const orthanc_Monitoring = require('../Orthanc_Monitoring')
 const db = require('../../../database/models')
 const moment = require('moment')
 const recursive = require("recursive-readdir");
 
 //SK RESTE A FAIRE
-//Check Event multiple charge serveur
+//Le service CD Burner ne démarre pas automatiquement => Etat a stocker dans db
+//Frequence de monitoring dans DB + front end
+//Essayer de faire apparaitre la requette avant le unzip
 
 
 class CdBurner {
@@ -18,6 +23,7 @@ class CdBurner {
         this.monitoring = monitoring
         this.monitoringStarted = false
         this.monitorJobs = this.monitorJobs.bind(this)
+        this.jobQueue = new Queue(1, Infinity);
     }
 
     async setSettings() {
@@ -68,11 +74,20 @@ class CdBurner {
      * Set Event listener according to monitoring level
      */
     __makeListener() {
-        console.log(this.monitoringLevel)
         if (this.monitoringLevel === CdBurner.MONITOR_PATIENT) {
-            this.monitoring.on('StablePatient', (orthancID) => { this._makeCDFromPatient(orthancID) })
+            this.monitoring.on('StablePatient', (orthancID) => { 
+                this.jobQueue.add((requestInfo)=> {
+                    this._makeCDFromPatient(orthancID) 
+                })
+               
+            })
         } else if (this.monitoringLevel === CdBurner.MONITOR_STUDY) {
-            this.monitoring.on('StableStudy', (orthancID) => { this._makeCDFromStudy(orthancID) })
+            this.monitoring.on('StableStudy', (orthancID) => { 
+                this.jobQueue.add((requestInfo)=>{
+                    this._makeCDFromStudy(orthancID)
+                })
+                 
+            })
         }
         this.monitorJobInterval = setInterval(this.monitorJobs, 5000)
     }
@@ -117,23 +132,23 @@ class CdBurner {
         let unzipedFolder = await tmpPromise.dir({ unsafeCleanup : true }).then( (directory)=>{
             return fsPromises.readFile(zipFileName).then((data)=>{
                 return jsZip.loadAsync(data, {createFolders: true})
-            }).then ( (contents)=>{
-                let writeFileUnzipedPromises = []
+            }).then ( async (contents)=>{
+               
+                let files = Object.keys(contents.files)
 
-                Object.keys(contents.files).forEach( (filename) => {
-                    if(contents.files[filename].dir) return
-                    
-                    let writePromise = jsZip.file(filename).async('nodebuffer').then((content)=>{
+                for(let i=0; i<files.length; i++) {
+
+                    let filename = files[i]
+
+                    if(contents.files[filename].dir) continue
+
+                    await jsZip.file(filename).async('nodebuffer').then((content)=>{
                         var dest = path.join(directory.path, filename)
                         return fsPromises.mkdir(path.dirname(dest), { recursive: true }).then( () => fsPromises.appendFile(dest, content))
                     })
 
-                    writeFileUnzipedPromises.push(writePromise)
+                }
 
-                })
-                return writeFileUnzipedPromises
-            }).then((writepromises)=>{
-                return Promise.all(writepromises)
             }).then( ()=> fsPromises.unlink(zipFileName) ).then( ()=> directory)
 
         })
@@ -211,20 +226,20 @@ class CdBurner {
             modalitiesInStudy: uniqueModalitiesInPatient.join("//")
         }
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, "Mutiples")
-        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING, 'None', studyDetailsToFront)
+        this.updateJobStatus(jobID, null, null, CdBurner.JOB_STATUS_UNZIPING, 'None', studyDetailsToFront)
 
         let unzipedFolder = await this.__unzip(studies)
-        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
+        this.updateJobStatus(jobID, null, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
 
         let timeStamp = moment().format('YYYYMMDDTHHmmssSS')
 
         let requestFilePath 
-
+        let datFile = null
         if (this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON) {
             let discType = await this._determineDiscType(unzipedFolder.path)
             //Generation du Dat
-            let dat = await this._printDat(datInfos, timeStamp);
-            requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, unzipedFolder.path, timeStamp)
+            datFile = await this._printDat(datInfos, timeStamp);
+            requestFilePath = await this._createCdBurnerEpson(jobID, datFile, discType, unzipedFolder.path, timeStamp)
 
         } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
 
@@ -239,7 +254,7 @@ class CdBurner {
                 unzipedFolder.path)
         }
 
-        this.updateJobStatus(jobID ,requestFilePath, CdBurner.JOB_STATUS_SENT_TO_BURNER)
+        this.updateJobStatus(jobID ,requestFilePath, datFile, CdBurner.JOB_STATUS_SENT_TO_BURNER)
 
         if (this.deleteStudyAfterSent) {
             this.orthanc.deleteFromOrthanc('patients', newStablePatientID)
@@ -285,21 +300,22 @@ class CdBurner {
 
         //Creat ID for this JOB
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, formattedDateExamen)
-        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIPING, 'None', datInfos[0])
+        this.updateJobStatus(jobID, null, null, CdBurner.JOB_STATUS_UNZIPING, 'None', datInfos[0])
 
         //Generate the ZIP with Orthanc IDs dicom
         let unzipedFolder = await this.__unzip([study])
-        this.updateJobStatus(jobID, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
+        this.updateJobStatus(jobID, null, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
 
         
         let timeStamp = moment().format('YYYYMMDDTHHmmssSS')
         let requestFilePath
+        let datFile = null
 
         if (this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON) {
             let discType = await this._determineDiscType(unzipedFolder.path)
             //Generation du Dat
-            let dat = await this._printDat(datInfos, timeStamp);
-            requestFilePath = await this._createCdBurnerEpson(jobID, dat, discType, unzipedFolder.path, timeStamp);
+            datFile = await this._printDat(datInfos, timeStamp);
+            requestFilePath = await this._createCdBurnerEpson(jobID, datFile, discType, unzipedFolder.path, timeStamp);
 
         } else if (this.burnerManifacturer === CdBurner.MONITOR_CD_PRIMERA) {
             requestFilePath = await this._createCdBurnerPrimera(jobID, datInfos[0].patientName, 
@@ -313,7 +329,7 @@ class CdBurner {
                 unzipedFolder.path);
         }
 
-        this.updateJobStatus(jobID ,requestFilePath, CdBurner.JOB_STATUS_SENT_TO_BURNER)
+        this.updateJobStatus(jobID ,requestFilePath, datFile, CdBurner.JOB_STATUS_SENT_TO_BURNER)
 
         //On efface la study de Orthanc
         if (this.deleteStudyAfterSent) {
@@ -341,7 +357,7 @@ class CdBurner {
         //Keep only job which didn't reached Done or Error Status
         Object.keys(this.jobStatus).forEach(jobID =>{
             if(this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_DONE && 
-            this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_ERROR && 
+            this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_ERROR &&  
             this.jobStatus[jobID]['status'] !== null &&
             this.jobStatus[jobID]['requestFile'] !== null ){
                 nonFinishedRequestFile[jobID] = {...this.jobStatus[jobID]}
@@ -354,7 +370,11 @@ class CdBurner {
             files.forEach((file)=>{
                 let name  = path.parse(file).name
                 let extension = path.parse(file).ext
-                if(extension !== ".DAT" && extension !== ".PTM" && extension !== ".JCF") fileObject[name] = extension
+                if(extension === ".PTM" && extension === ".JCF"){
+                    //Ici pour prioriser les fichier cancels (2 fichier present pour le meme id)
+                    fileObject[name] = extension
+                }
+                else if (extension !== ".DAT" && fileObject[name] === undefined ) fileObject[name] = extension
             })
             return fileObject
         })
@@ -362,25 +382,33 @@ class CdBurner {
         //For each current JobID check if the file request extension has changed and update the status accordically
         for (let jobID of Object.keys(nonFinishedRequestFile) ){
             let jobRequestFile = nonFinishedRequestFile[jobID]['requestFile']
+            let datFile = nonFinishedRequestFile[jobID]['datFile']
             console.log(jobRequestFile)
             let name = path.parse(jobRequestFile).name
+
             if(currentRequestFiles[name] === '.DON'){
-                this.updateJobStatus(jobID, jobRequestFile, CdBurner.JOB_STATUS_BURNING_DONE)
+                this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_BURNING_DONE)
             }else if(currentRequestFiles[name] === '.INP'){
-                this.updateJobStatus(jobID, jobRequestFile, CdBurner.JOB_STATUS_BURNING_IN_PROGRESS)
+                this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_BURNING_IN_PROGRESS)
             }else if(currentRequestFiles[name] === '.ERR'){
-                this.updateJobStatus(jobID, jobRequestFile, CdBurner.JOB_STATUS_BURNING_ERROR)
+                this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_BURNING_ERROR)
             }else if(currentRequestFiles[name] === '.STP'){
-                this.updateJobStatus(jobID, jobRequestFile, CdBurner.JOB_STATUS_BURNING_PAUSED)
+                this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_BURNING_PAUSED)
+            }else if (currentRequestFiles[name] === '.JCF' || currentRequestFiles[name] === '.PTM'){
+                this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_REQUEST_CANCELING)
             }
+
+
+
         }
       
     }
 
-    updateJobStatus(jobID, requestFile, status, tempZip = null, jobDetails = null){
+    updateJobStatus(jobID, requestFile, datFile, status, tempZip = null, jobDetails = null){
 
         this.jobStatus[jobID] = {
             requestFile : requestFile,
+            datFile : datFile,
             status : status,
             tempZip : (tempZip!==null) ? tempZip : this.jobStatus[jobID]['tempZip'],
             details : (jobDetails !==null ) ? jobDetails  : this.jobStatus[jobID]['details']
@@ -389,6 +417,7 @@ class CdBurner {
         //If Done or Error remove temporary files
         if(status === CdBurner.JOB_STATUS_BURNING_DONE || status === CdBurner.JOB_STATUS_BURNING_ERROR){
             this.jobStatus[jobID]['tempZip'].cleanup()
+            fsPromises.unlink(this.jobStatus[jobID]['datFile'])
         }
     }
 
@@ -420,19 +449,7 @@ class CdBurner {
 
     async _printDat(infos, timeStampString) {
 
-        //On parse le nom pour enlever les ^ et passer le prenom en minuscule
-        let patientName
-        try{
-            patientName = infos[0].patientName;
-            let separationNomPrenom = patientName.indexOf("^", 0);
-            patientName = patientName.substring(0, separationNomPrenom + 2).toUpperCase() + patientName.substring(separationNomPrenom + 2).toLowerCase();
-        }catch (err) {
-
-        }
-
-        if(!patientName) patientName = "No Name"
-
-        let datFile = "patientName=" + patientName.replace("\\^", " ") + "\n"
+        let datFile = "patientName=" + this.formatPatientName(infos[0].patientName) + "\n"
             + "patientId=" + infos[0].patientID + "\n"
             + "patientDOB=" + infos[0].patientDOB + "\n"
             + "numberOfStudies=" + infos.length + "\n"
@@ -452,8 +469,7 @@ class CdBurner {
 
         }
 
-        let datFilePath = path.join(this.monitoredFolder, "CD" + "_" + timeStampString + ".DAT")
-        await fsPromises.appendFile(datFilePath, datFile )
+        let datFilePath = await this.__createFile(datFile, "CD" + "_" + timeStampString + ".DAT")
         return datFilePath;
     }
 
@@ -474,13 +490,52 @@ class CdBurner {
             + "REPLACE_FIELD=" + dat
 
         // Wrint JDF file in monitoring folder
-        let filePath = path.join(this.monitoredFolder, "CD_" + timeStampString + ".JDF")
-        await fsPromises.appendFile( filePath, txtRobot)
+        let filePath = await this.__createFile(txtRobot, "CD_" + timeStampString + ".JDF" )
 
         return filePath;
     }
 
-    async _createCdBurnerPrimera(jobId, nom, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities, dicomPath) {
+    /**
+     * Request file shouldn't be written directly in Epson folder (see epson documentation),
+     * File need to be written in a temporary file and then be copied to the monitored folder
+     * @param {} data 
+     * @param {*} destination 
+     */
+    __createFile(data, fileName){
+        //Create temporary file with data
+
+        return tmpPromise.withFile(async (fileObject) => {
+            // when this function returns or throws - release the file 
+            let filePath = fileObject.path
+            //write data in temporary file
+            await fsPromises.appendFile(filePath, data)
+            //Define definitive location
+            let destinationPath = path.join(this.monitoredFolder, fileName)
+            //Copy temporary file to definitive location
+            await fsPromises.copyFile(filePath, destinationPath)
+
+            return destinationPath
+        });
+        
+    }
+
+    formatPatientName(patientName){
+
+        //On parse le nom pour enlever les ^ et passer le prenom en minuscule
+        try{
+            let separationNomPrenom = patientName.indexOf("^", 0);
+            patientName = patientName.substring(0, separationNomPrenom).toUpperCase() +" "+ patientName.substring(separationNomPrenom + 1).toLowerCase();
+        }catch (err) {
+            patientName = null
+         }
+
+        if(!patientName) patientName = "No Name"
+
+        return patientName
+
+    }
+
+    async _createCdBurnerPrimera(jobId, patientName, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities, dicomPath) {
 
         let txtRobot = "JobID=" + jobId + "\n"
             + "ClientID = Orthanc-Tools" + "\n"
@@ -504,7 +559,7 @@ class CdBurner {
             and it must have been designed with a Merge File specified.
             Fields should be specified in the correct order to match the SureThing design.
             */
-            + "MergeField=" + nom + "\n"
+            + "MergeField=" + this.formatPatientName(patientName) + "\n"
             + "MergeField=" + id + "\n"
             + "MergeField=" + date + "\n"
             + "MergeField=" + studyDescription + "\n"
@@ -514,8 +569,7 @@ class CdBurner {
             + "MergeField=" + modalities + "\n";
 
         // Making a .JRQ file in the watched folder
-        let filePath = path.join(this.monitoredFolder, "CD_"+ moment().format('YYYYMMDDTHHmmssSS')) + ".JRQ"
-        await fsPromises.appendFile( filePath, txtRobot)
+        let filePath = await this.__createFile(txtRobot, ("CD_"+ moment().format('YYYYMMDDTHHmmssSS')+".JRQ") )
 
         return filePath;
     }
@@ -563,19 +617,17 @@ class CdBurner {
 
             let ptmString = "Message = ABORT\n"
                     + "ClientID = Orthanc-Tools";
-
-            await fsPromises.appendFile( path.join(this.monitoredFolder, requestFileWithoutExtension) + ".PTM", ptmString)
+            await this.__createFile(ptmString, requestFileWithoutExtension + ".PTM")
 
         }else if(this.burnerManifacturer === CdBurner.MONITOR_CD_EPSON){
 
             let jcfString="[CANCEL]\n"
                     + "JOB_ID="+jobID;
-                    
-            await fsPromises.appendFile( path.join(this.monitoredFolder, requestFileWithoutExtension) + ".JCF", jcfString)
+
+            await this.__createFile(jcfString, requestFileWithoutExtension + ".JCF")
 
         }
 
-        this.updateJobStatus(jobID, requestFile, CdBurner.JOB_STATUS_REQUEST_CANCELING)
     }
 
     /**

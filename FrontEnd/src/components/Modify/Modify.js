@@ -73,7 +73,7 @@ class Modify extends Component {
         this.checkRemember()
         let jobAnswer = ''
         switch(this.props.level){
-            case 'patient':
+            case 'patients':
                 if (!this.state.modification.PatientID || this.state.modification.PatientID === '')
                     alert('PatientID can\'t be empty or the same as before!')
                 else {

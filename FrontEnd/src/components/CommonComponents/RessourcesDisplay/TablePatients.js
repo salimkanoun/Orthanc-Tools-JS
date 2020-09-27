@@ -53,7 +53,7 @@ class TablePatients extends Component{
         text: 'Action',
         hidden: this.props.hiddenActionBouton,
         formatter: ( (value, row, index) => {
-            return <ActionBouton level='patient' orthancID={row.PatientOrthancID} onDelete={this.props.onDelete} onModify={this.props.onModify} row={row} refresh={this.props.refresh}/>
+            return <ActionBouton level='patients' orthancID={row.PatientOrthancID} onDelete={this.props.onDelete} onModify={this.props.onModify} row={row} refresh={this.props.refresh}/>
         })
     
     }, {

@@ -95,9 +95,7 @@ class JobRetrieve extends Job {
     
         const answer = answerDetails[0]
         const retrieveAnswer = await this.orthancObject.makeRetrieve(answer.AnswerId, answer.AnswerNumber, this.aetDestination, true)
-        console.log(retrieveAnswer)
         const orthancResults = await this.orthancObject.findInOrthancByUid(retrieveAnswer['Query'][0]['0020,000d'])
-        console.log(orthancResults)
         if (orthancResults.length === 1) {
             item.setStatus(JobItem.STATUS_SUCCESS)
             item.setRetrievedOrthancId(orthancResults[0].ID)
