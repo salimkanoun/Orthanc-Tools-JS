@@ -14,6 +14,8 @@ const recursive = require("recursive-readdir");
 //Le service CD Burner ne démarre pas automatiquement => Etat a stocker dans db
 //Frequence de monitoring dans DB + front end
 //Essayer de faire apparaitre la requette avant le unzip
+//Bug dans Edit patient (refresh envoi un tool find vide)
+//Edit patient Bug birthDate (apparait année 0000+1 dans burner)
 
 //Check Event multiple charge serveur => Test queue => A priori OK
 //Il y a un  ^ entre le nom de famille et le prénom dans le fichier .DAT (pour l’étiquette du CD Epson)
@@ -367,7 +369,7 @@ class CdBurner {
         //Keep only job which didn't reached Done or Error Status
         Object.keys(this.jobStatus).forEach(jobID =>{
             if(this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_DONE && 
-            this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_ERROR && 
+            this.jobStatus[jobID]['status'] !== CdBurner.JOB_STATUS_BURNING_ERROR &&  
             this.jobStatus[jobID]['status'] !== null &&
             this.jobStatus[jobID]['requestFile'] !== null ){
                 nonFinishedRequestFile[jobID] = {...this.jobStatus[jobID]}
@@ -380,7 +382,11 @@ class CdBurner {
             files.forEach((file)=>{
                 let name  = path.parse(file).name
                 let extension = path.parse(file).ext
-                if(extension !== ".DAT" && extension !== ".PTM" && extension !== ".JCF") fileObject[name] = extension
+                if(extension === ".PTM" && extension === ".JCF"){
+                    //Ici pour prioriser les fichier cancels (2 fichier present pour le meme id)
+                    fileObject[name] = extension
+                }
+                else if (extension !== ".DAT" && fileObject[name] === undefined ) fileObject[name] = extension
             })
             return fileObject
         })
@@ -391,17 +397,21 @@ class CdBurner {
             let datFile = nonFinishedRequestFile[jobID]['datFile']
             console.log(jobRequestFile)
             let name = path.parse(jobRequestFile).name
+
             if(currentRequestFiles[name] === '.DON'){
                 this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_BURNING_DONE)
             }else if(currentRequestFiles[name] === '.INP'){
                 this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_BURNING_IN_PROGRESS)
             }else if(currentRequestFiles[name] === '.ERR'){
                 this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_BURNING_ERROR)
-            }else if(currentRequestFiles[name] === '.JCF' || currentRequestFiles[name] === '.PTM' ){
-                this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_REQUEST_CANCELING)
             }else if(currentRequestFiles[name] === '.STP'){
                 this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_BURNING_PAUSED)
+            }else if (currentRequestFiles[name] === '.JCF' || currentRequestFiles[name] === '.PTM'){
+                this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_REQUEST_CANCELING)
             }
+
+
+
         }
       
     }
