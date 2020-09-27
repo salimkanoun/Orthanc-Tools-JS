@@ -13,6 +13,7 @@ const recursive = require("recursive-readdir");
 //SK RESTE A FAIRE
 //Le service CD Burner ne démarre pas automatiquement => Etat a stocker dans db
 //Frequence de monitoring dans DB + front end
+//Essayer de faire apparaitre la requette avant le unzip
 
 //Check Event multiple charge serveur => Test queue => A priori OK
 //Il y a un  ^ entre le nom de famille et le prénom dans le fichier .DAT (pour l’étiquette du CD Epson)
@@ -85,7 +86,7 @@ class CdBurner {
     __makeListener() {
         if (this.monitoringLevel === CdBurner.MONITOR_PATIENT) {
             this.monitoring.on('StablePatient', (orthancID) => { 
-                jobQueue.add((requestInfo)=> {
+                this.jobQueue.add((requestInfo)=> {
                     this._makeCDFromPatient(orthancID) 
                 })
                
@@ -396,6 +397,8 @@ class CdBurner {
                 this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_BURNING_IN_PROGRESS)
             }else if(currentRequestFiles[name] === '.ERR'){
                 this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_BURNING_ERROR)
+            }else if(currentRequestFiles[name] === '.JCF' || currentRequestFiles[name] === '.PTM' ){
+                this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_REQUEST_CANCELING)
             }else if(currentRequestFiles[name] === '.STP'){
                 this.updateJobStatus(jobID, jobRequestFile, datFile, CdBurner.JOB_STATUS_BURNING_PAUSED)
             }
@@ -627,7 +630,6 @@ class CdBurner {
 
         }
 
-        this.updateJobStatus(jobID, requestFile, CdBurner.JOB_STATUS_REQUEST_CANCELING)
     }
 
     /**
