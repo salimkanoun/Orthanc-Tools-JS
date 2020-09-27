@@ -9,8 +9,6 @@ var reverseProxyGet = async function (req, res) {
 var reverseProxyPost = function (req, res) {
   const apiAdress = req.originalUrl
   const orthancCalledApi = apiAdress.replace('/api', '')
-  console.log(req.body)
-  console.log(orthancCalledApi)
   ReverseProxy.streamToRes(orthancCalledApi, 'POST', req.body, res)
 }
 

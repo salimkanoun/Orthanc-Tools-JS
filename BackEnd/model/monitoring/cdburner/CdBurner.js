@@ -11,20 +11,18 @@ const moment = require('moment')
 const recursive = require("recursive-readdir");
 
 //SK RESTE A FAIRE
-//Voir si l'unzip peut pas etre dans une queue aussi
 //Le service CD Burner ne démarre pas automatiquement => Etat a stocker dans db
+//Frequence de monitoring dans DB + front end
+
 //Check Event multiple charge serveur => Test queue => A priori OK
 //Il y a un  ^ entre le nom de famille et le prénom dans le fichier .DAT (pour l’étiquette du CD Epson)
 //=>SK OK
-
 //Une fois le CD gravé, le fichier .DAT n’est pas supprimé du « monitored folder)
-//SK a voir documentation EPSON qui doit le supprimer vois source java
-//=> SK a tester
-
+//=> SK OK
 //est-ce qu’il serait possible de mettre le statut «burning » lorsque le fichier .JDF devient un .INP (in progress) ?
 //le statut ne change pas lorsque la gravure est terminée (malgré le fichier en .DON dans le dossier de travail). 
 //Je n’ai pas eu ce bug sur mon PC, mais sur le serveur de test en Windows Server 2016)
-//=> SK A VERIFIER
+//=> SK non duplique a faire verifier
 
 
 class CdBurner {
@@ -85,10 +83,8 @@ class CdBurner {
      * Set Event listener according to monitoring level
      */
     __makeListener() {
-        console.log(this.monitoringLevel)
         if (this.monitoringLevel === CdBurner.MONITOR_PATIENT) {
             this.monitoring.on('StablePatient', (orthancID) => { 
-                console.log('new cd patient')
                 jobQueue.add((requestInfo)=> {
                     this._makeCDFromPatient(orthancID) 
                 })
@@ -96,7 +92,6 @@ class CdBurner {
             })
         } else if (this.monitoringLevel === CdBurner.MONITOR_STUDY) {
             this.monitoring.on('StableStudy', (orthancID) => { 
-                console.log('new cd study')
                 this.jobQueue.add((requestInfo)=>{
                     this._makeCDFromStudy(orthancID)
                 })
@@ -146,23 +141,23 @@ class CdBurner {
         let unzipedFolder = await tmpPromise.dir({ unsafeCleanup : true }).then( (directory)=>{
             return fsPromises.readFile(zipFileName).then((data)=>{
                 return jsZip.loadAsync(data, {createFolders: true})
-            }).then ( (contents)=>{
-                let writeFileUnziped$Promises = []
+            }).then ( async (contents)=>{
+               
+                let files = Object.keys(contents.files)
 
-                Object.keys(contents.files).forEach( (filename) => {
-                    if(contents.files[filename].dir) return
-                    
-                    let writePromise = jsZip.file(filename).async('nodebuffer').then((content)=>{
+                for(let i=0; i<files.length; i++) {
+
+                    let filename = files[i]
+
+                    if(contents.files[filename].dir) continue
+
+                    await jsZip.file(filename).async('nodebuffer').then((content)=>{
                         var dest = path.join(directory.path, filename)
                         return fsPromises.mkdir(path.dirname(dest), { recursive: true }).then( () => fsPromises.appendFile(dest, content))
                     })
 
-                    writeFileUnzipedPromises.push(writePromise)
+                }
 
-                })
-                return writeFileUnzipedPromises
-            }).then((writepromises)=>{
-                return Promise.all(writepromises)
             }).then( ()=> fsPromises.unlink(zipFileName) ).then( ()=> directory)
 
         })
