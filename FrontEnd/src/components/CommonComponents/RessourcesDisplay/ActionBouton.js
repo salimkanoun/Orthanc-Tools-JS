@@ -32,7 +32,7 @@ class ActionBouton extends Component{
     async delete( ) {
         let orthancID = this.props.orthancID
         switch(this.props.level){
-            case 'patient':
+            case 'patients':
                 await apis.content.deletePatient(orthancID)
                 toastifySuccess("Patient " + orthancID + " have been deleted")
                 break

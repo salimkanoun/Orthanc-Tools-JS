@@ -14,18 +14,6 @@ const recursive = require("recursive-readdir");
 //Le service CD Burner ne démarre pas automatiquement => Etat a stocker dans db
 //Frequence de monitoring dans DB + front end
 //Essayer de faire apparaitre la requette avant le unzip
-//Bug dans Edit patient (refresh envoi un tool find vide)
-//Edit patient Bug birthDate (apparait année 0000+1 dans burner)
-
-//Check Event multiple charge serveur => Test queue => A priori OK
-//Il y a un  ^ entre le nom de famille et le prénom dans le fichier .DAT (pour l’étiquette du CD Epson)
-//=>SK OK
-//Une fois le CD gravé, le fichier .DAT n’est pas supprimé du « monitored folder)
-//=> SK OK
-//est-ce qu’il serait possible de mettre le statut «burning » lorsque le fichier .JDF devient un .INP (in progress) ?
-//le statut ne change pas lorsque la gravure est terminée (malgré le fichier en .DON dans le dossier de travail). 
-//Je n’ai pas eu ce bug sur mon PC, mais sur le serveur de test en Windows Server 2016)
-//=> SK non duplique a faire verifier
 
 
 class CdBurner {
