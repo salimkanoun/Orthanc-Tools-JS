@@ -125,7 +125,7 @@ const query  = {
             }
         }
 
-        return fetch('/api/instances/' + instanceID + '/tags?simplify', getInstancesOption ).then((response) => {
+        return fetch('/api/instances/' + instanceID + '/tags', getInstancesOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -161,7 +161,7 @@ const query  = {
             }
         }
 
-        return fetch('/api/instances/' + serieID + '/header?simplify', getHeaderOption ).then((response) => {
+        return fetch('/api/instances/' + serieID + '/header', getHeaderOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -223,7 +223,7 @@ const query  = {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
+            body: JSON.stringify({Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }
 
         return fetch('/api/patients/' + ID + '/modify', modifyPatientsOption ).then((answer) => {
