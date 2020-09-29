@@ -91,12 +91,12 @@ export default class CDBurner extends Component {
 
     }
 
-    soundHandler(){
-        let playSound = apis.localStorage.getLocalStorage('BurnerSounds') === 'true'
-        apis.localStorage.setlocalStorage('BurnerSounds', (!playSound).toString() )
+    soundHandler(e){
+        apis.localStorage.setlocalStorage('BurnerSounds', (e.target.checked).toString() )
         this.setState({
-            playSound : !playSound
+            playSound : (e.target.checked)
         })
+       
     }
 
    async componentDidMount(){

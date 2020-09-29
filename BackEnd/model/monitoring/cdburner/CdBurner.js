@@ -468,7 +468,7 @@ class CdBurner {
 
         }
 
-        let datFilePath = await this.__createFile(datFile, "CD_" + timeStampString + ".DAT")
+        let datFilePath = await this.__createFile(datFile, "DAT_" + timeStampString + ".DAT")
         return datFilePath;
     }
 
