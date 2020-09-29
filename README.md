@@ -24,7 +24,7 @@ Current Features :
   - Manual Query and Retrieve
   - Dicom Tag Edition
   - Automatic Retrieve : Define a list of studies /Series to retrieve and schedule a robot for automatic retrieval
-  - CD Burner Management (Epson and Primera) (Beta)
+  - CD Burner Management (Epson and Primera)
   - Administration panel : Declaration and echo of AETs, Orthanc Peers, Jobs management
 
 Roadmap : 
