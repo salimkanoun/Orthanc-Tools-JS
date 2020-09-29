@@ -27,7 +27,7 @@ class ModalModify extends Component {
         style: {background: 'red'}, 
         nonSelectable: ['PatientID', 'SeriesTime', 'SeriesDate', 'Modality', 'StudyDate', 'StudyTime'], 
         selectionRenderer: ({ mode, checked, disabled }) => {
-            if (disabled) return 'Mendatory'
+            if (disabled) return 'Mandatory'
             else return <input type = 'checkbox'/>
         },
         selectColumnPosition: 'right', 

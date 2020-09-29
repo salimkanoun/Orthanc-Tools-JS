@@ -116,7 +116,6 @@ class CdBurner {
     /**
      * download dicom from orthanc and unzip archive in a temporary folder
      * return temporary path (containings dicom)
-     * SK : A FAIRE LE TRANSCODING
      * @param {Array} studies 
      */
     async __unzip(studies){
@@ -231,7 +230,7 @@ class CdBurner {
         let unzipedFolder = await this.__unzip(studies)
         this.updateJobStatus(jobID, null, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
 
-        let timeStamp = moment().format('YYYYMMDDTHHmmssSS')
+        let timeStamp = this.getTimeStamp()
 
         let requestFilePath 
         let datFile = null
@@ -307,7 +306,7 @@ class CdBurner {
         this.updateJobStatus(jobID, null, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
 
         
-        let timeStamp = moment().format('YYYYMMDDTHHmmssSS')
+        let timeStamp = this.getTimeStamp()
         let requestFilePath
         let datFile = null
 
@@ -469,7 +468,7 @@ class CdBurner {
 
         }
 
-        let datFilePath = await this.__createFile(datFile, "CD" + "_" + timeStampString + ".DAT")
+        let datFilePath = await this.__createFile(datFile, "DAT_" + timeStampString + ".DAT")
         return datFilePath;
     }
 
@@ -535,6 +534,10 @@ class CdBurner {
 
     }
 
+    getTimeStamp(){
+        return moment().format('YYYYMMDDHHmmssSS')
+    }
+
     async _createCdBurnerPrimera(jobId, patientName, id, date, studyDescription, accessionNumber, patientDOB, nbStudies, modalities, dicomPath) {
 
         let txtRobot = "JobID=" + jobId + "\n"
@@ -569,7 +572,7 @@ class CdBurner {
             + "MergeField=" + modalities + "\n";
 
         // Making a .JRQ file in the watched folder
-        let filePath = await this.__createFile(txtRobot, ("CD_"+ moment().format('YYYYMMDDTHHmmssSS')+".JRQ") )
+        let filePath = await this.__createFile(txtRobot, ("CD_"+ this.getTimeStamp() +".JRQ") )
 
         return filePath;
     }

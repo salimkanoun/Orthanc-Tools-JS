@@ -1,0 +1,34 @@
+version: "2"
+services:
+    orthanctest:
+        build: orthanctest
+        container_name: orthanctest
+        restart: unless-stopped
+        ports: ["8042:8042"]
+        volumes: ["orthanctest:/var/lib/orthanc/db:Z"]
+        environment:
+            ORTHANC__NAME: "OrthancToolsJS"
+            ORTHANC__DICOM_SERVER_ENABLED: "true"
+            ORTHANC__DICOM_MODALITIES_IN_DATABASE: "true"
+            ORTHANC__ORTHANC_PEERS_IN_DATABASE: "true"
+            ORTHANC__LUA_SCRIPTS: |
+                ["/etc/share/orthanc/scripts/query.lua"]
+            DICOM_WEB_PLUGIN_ENABLED: "true"
+            OSIMIS_WEB_VIEWER1_PLUGIN_ENABLED: "true"
+            PYTHON_PLUGIN_ENABLED: "true"
+            TRANSFERS_PLUGIN_ENABLED: "true"
+            WORKLISTS_PLUGIN_ENABLED: "true"
+            ORTHANC__REGISTERED_USERS: |
+                {"salim": "salim"}
+            ORTHANC__DICOM_WEB__ENABLE: "true"
+            ORTHANC__DICOM_WEB__ROOT: "/dicom-web/"
+            ORTHANC__DICOM_WEB__ENABLEWADO: "true"
+            ORTHANC__DICOM_WEB__WADOROOT: "/wado"
+            ORTHANC__DICOM_WEB__SSL: "true"
+            ORTHANC__DICOM_WEB__STUDIESMETADATA: "MainDicomTags"
+            ORTHANC__DICOM_WEB__SERIESMETADATA: "Full"
+
+   
+
+volumes:
+        orthanctest:
