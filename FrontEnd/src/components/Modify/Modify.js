@@ -71,6 +71,12 @@ class Modify extends Component {
     }    
     async modify(){
         this.checkRemember()
+        //If no change done, simply return
+        if(Object.keys(this.state.modification).length === 0)  {
+            toastifyError('No Modification set')
+            return
+        }
+
         let jobAnswer = ''
         switch(this.props.level){
             case 'patients':

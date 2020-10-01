@@ -1,4 +1,6 @@
 version: "2"
+#if needed to map the orthancPACS to a different hard disk device (after mounting it in path)
+# volumes: ["/home/petctviewer/orthanc:/var/lib/orthanc/db:Z"]
 services:
 
     orthanctoolsjs:
@@ -15,7 +17,7 @@ services:
             OrthancUsername: "salim"
             OrthancPassword: "salim"
             DOMAIN_PROTOCOL: "http"
-            DOMAIN_ADDRESS: "serverAddress"
+            DOMAIN_ADDRESS: "212.47.232.65"
     
     orthanc:
         image: osimis/orthanc:20.4.2
@@ -43,8 +45,27 @@ services:
             ORTHANC__DICOM_WEB__STUDIESMETADATA: "MainDicomTags"
             ORTHANC__DICOM_WEB__SERIESMETADATA: "Full"
 
-   
+    orthanctoolsjspacs:
+        image: osimis/orthanc:20.4.2
+        ports: ["8043:8042"]
+        container_name: orthanctoolsjspacs
+        restart: unless-stopped
+        volumes: ["orthancpacs:/var/lib/orthanc/db:Z"]
+        environment:
+            ORTHANC__NAME: "OrthancPacs"
+            ORTHANC__DICOM_MODALITIES_IN_DATABASE: "true"
+            ORTHANC__REGISTERED_USERS: |
+                    {"salim": "salim"}
+
+    watchtower:
+        image: containrrr/watchtower
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        command: watchtower orthanctoolsjs
+        restart: unless-stopped
+
 
 volumes:
         orthanc:
+        orthancpacs:
         orthanctoolsjs:

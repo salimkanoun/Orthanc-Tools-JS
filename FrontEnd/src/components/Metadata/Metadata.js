@@ -59,9 +59,21 @@ class Metadata extends Component {
  
     prepareData(data){
         let answer = []
-        for (let id in data){
-            answer.push(Array.isArray(data[id]) ? {name: id, value: data[id].map(node => this.prepareData(node))} : {name: id, value: data[id]})
+        for (let dicomTag of Object.keys(data).sort()){
+            console.log(dicomTag)
+            let tagName = data[dicomTag]['Name']
+            let value = data[dicomTag]['Value']
+
+            let answerData = { name: (dicomTag +' - ' + tagName) }
+            if(Array.isArray(value)){
+                answerData['value'] = value.map(node => this.prepareData(node))
+            }else{
+                answerData['value'] = value
+            }
+            
+            answer.push(answerData)
         }
+
         return answer
     }
 
