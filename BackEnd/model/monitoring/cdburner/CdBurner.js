@@ -217,6 +217,8 @@ class CdBurner {
 
         let uniqueModalitiesInPatient = [...new Set(modalitiesInPatient)]
 
+        let timeStamp = this.getTimeStamp()
+
         let studyDetailsToFront = {
             patientName: patient.MainDicomTags.PatientName,
             patientID: patient.MainDicomTags.PatientID,
@@ -224,15 +226,16 @@ class CdBurner {
             studyDescription: 'Multiples',
             accessionNumber: 'Multiples',
             patientDOB: formattedPatientDOB,
-            modalitiesInStudy: uniqueModalitiesInPatient.join("//")
+            modalitiesInStudy: uniqueModalitiesInPatient.join("//"),
+            timeStamp : timeStamp
         }
+
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, "Mutiples")
+
         this.updateJobStatus(jobID, null, null, CdBurner.JOB_STATUS_UNZIPING, 'None', studyDetailsToFront)
 
         let unzipedFolder = await this.__unzip(studies)
         this.updateJobStatus(jobID, null, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
-
-        let timeStamp = this.getTimeStamp()
 
         let requestFilePath 
         let datFile = null
@@ -288,6 +291,8 @@ class CdBurner {
         //Conctatenate modalities array to a string with "//" separator
         let modalitiesInStudy = modalities.join("//")
 
+        let timeStamp = this.getTimeStamp()
+
         let datInfos = [{
             patientName: patient.MainDicomTags.PatientName,
             patientID: patient.MainDicomTags.PatientID,
@@ -295,9 +300,11 @@ class CdBurner {
             studyDescription: study.MainDicomTags.StudyDescription,
             accessionNumber: study.MainDicomTags.AccessionNumber,
             patientDOB: formattedPatientDOB,
-            modalitiesInStudy: modalitiesInStudy
+            modalitiesInStudy: modalitiesInStudy,
+            timeStamp : timeStamp
         }]
 
+        
 
         //Creat ID for this JOB
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, formattedDateExamen)
@@ -306,9 +313,7 @@ class CdBurner {
         //Generate the ZIP with Orthanc IDs dicom
         let unzipedFolder = await this.__unzip([study])
         this.updateJobStatus(jobID, null, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
-
-        
-        let timeStamp = this.getTimeStamp()
+       
         let requestFilePath
         let datFile = null
 

@@ -75,7 +75,7 @@ export default class CDBurner extends Component {
     async toogleHandler(event){
        
         let startStatus = this.state.robotStarted
-        
+
         let newStatus
         if(!startStatus){
             await apis.cdBurner.startCdBurnerService()
@@ -120,6 +120,11 @@ export default class CDBurner extends Component {
             hidden: true
         },
         {
+            dataField : 'timeStamp',
+            sort : true,
+            hidden : true
+        },
+        {
             dataField : 'patientName',
             text : 'Patient Name'
         },
@@ -159,13 +164,13 @@ export default class CDBurner extends Component {
         )
     }
 
-    defaultSorted = [{
-        dataField: 'cdJobID', // if dataField is not match to any column you defined, it will be ignored.
+    defaultSorted = {
+        dataField: 'timeStamp', // if dataField is not match to any column you defined, it will be ignored.
         order: 'desc' // desc or asc
-    }];
+    };
 
     render(){
-
+        console.log(this.state.burnerJobs)
         return (
             
             <div className='jumbotron'>
@@ -187,14 +192,14 @@ export default class CDBurner extends Component {
                     </div>
                 </div>
                 <div className="mb-3 float-right">
-                    <Badge variant="info"> Queuded Jobs : {this.state.queuededJobs} </Badge>
+                    <Badge variant="info" hidden> Queuded Jobs : {this.state.queuededJobs} </Badge>
                 </div>
                 <BootstrapTable 
                         keyField='cdJobID' 
                         data={this.state.burnerJobs} 
                         columns={this.columns} 
                         striped 
-                        defaultSorted = {this.defaultSorted}
+                        sort = {this.defaultSorted}
                         pagination={paginationFactory()} 
                         wrapperClasses="table-responsive"
                         />
