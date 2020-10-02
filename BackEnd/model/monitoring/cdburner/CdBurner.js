@@ -660,7 +660,6 @@ class CdBurner {
     }
 
     toJSON(){
-        console.log(this.jobQueue.getQueueLength())
         return {
             CdBurnerService : this.monitoringStarted,
             Jobs : {...this.jobStatus},
