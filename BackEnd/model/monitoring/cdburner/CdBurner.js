@@ -60,6 +60,7 @@ class CdBurner {
      */
     async startCDMonitoring() {
         if (this.monitoringStarted) return
+        if (!this.monitoredFolder) throw 'Monitoring folder not defined'
 
         this.monitoringStarted = true
         //Fill options value from DB
@@ -76,15 +77,16 @@ class CdBurner {
     __makeListener() {
         if (this.monitoringLevel === CdBurner.MONITOR_PATIENT) {
             this.monitoring.on('StablePatient', (orthancID) => { 
-                this.jobQueue.add((requestInfo)=> {
-                    this._makeCDFromPatient(orthancID) 
+                this.jobQueue.add( async ()=> {
+                    await this._makeCDFromPatient(orthancID) 
                 })
                
             })
+            
         } else if (this.monitoringLevel === CdBurner.MONITOR_STUDY) {
             this.monitoring.on('StableStudy', (orthancID) => { 
-                this.jobQueue.add((requestInfo)=>{
-                    this._makeCDFromStudy(orthancID)
+                this.jobQueue.add( async ()=>{
+                    await this._makeCDFromStudy(orthancID)
                 })
                  
             })
@@ -382,7 +384,7 @@ class CdBurner {
         for (let jobID of Object.keys(nonFinishedRequestFile) ){
             let jobRequestFile = nonFinishedRequestFile[jobID]['requestFile']
             let datFile = nonFinishedRequestFile[jobID]['datFile']
-            console.log(jobRequestFile)
+
             let name = path.parse(jobRequestFile).name
 
             if(currentRequestFiles[name] === '.DON'){
@@ -653,9 +655,11 @@ class CdBurner {
     }
 
     toJSON(){
+        console.log(this.jobQueue.getQueueLength())
         return {
             CdBurnerService : this.monitoringStarted,
-            Jobs : {...this.jobStatus}
+            Jobs : {...this.jobStatus},
+            QuededJobs : this.jobQueue.getQueueLength()
         }
     }
 }

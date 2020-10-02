@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react'
 
+import Badge from 'react-bootstrap/Badge'
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator'
 
@@ -8,6 +9,7 @@ import Toggle from 'react-toggle'
 
 import apis from '../../services/apis'
 import { ReactComponent as SpeakerSVG } from '../../images/sounds.svg'
+import { toastifyError } from "../../services/toastify"
 
 export default class CDBurner extends Component {
 
@@ -24,7 +26,8 @@ export default class CDBurner extends Component {
         robotStarted : false,
         burnerJobs : [],
         firstRefresh : false,
-        playSound : false
+        playSound : false,
+        queuededJobs : 0
     }
 
     async refreshTableData(){
@@ -63,7 +66,8 @@ export default class CDBurner extends Component {
         this.setState({
             firstRefresh : true,
             robotStarted : cdBurnerData.CdBurnerService,
-            burnerJobs : newTablearray 
+            burnerJobs : newTablearray,
+            queuededJobs : cdBurnerData.QuededJobs
         })
 
     }
@@ -71,23 +75,20 @@ export default class CDBurner extends Component {
     async toogleHandler(event){
        
         let startStatus = this.state.robotStarted
-
-        try{
-            let newStatus
-            if(!startStatus){
-                await apis.cdBurner.startCdBurnerService()
-                newStatus = true
-            }else{
-                await apis.cdBurner.stopCdBurnerService()
-                newStatus = false
-            }
-
-            this.setState({
-                robotStarted : newStatus
-            })
-        }catch (err){
-            console.log(err)
+        
+        let newStatus
+        if(!startStatus){
+            await apis.cdBurner.startCdBurnerService()
+            newStatus = true
+        }else{
+            await apis.cdBurner.stopCdBurnerService()
+            newStatus = false
         }
+
+        this.setState({
+            robotStarted : newStatus
+        })
+
 
     }
 
@@ -158,6 +159,11 @@ export default class CDBurner extends Component {
         )
     }
 
+    defaultSorted = [{
+        dataField: 'cdJobID', // if dataField is not match to any column you defined, it will be ignored.
+        order: 'desc' // desc or asc
+    }];
+
     render(){
 
         return (
@@ -180,11 +186,15 @@ export default class CDBurner extends Component {
                         
                     </div>
                 </div>
-                 <BootstrapTable 
+                <div className="mb-3 float-right">
+                    <Badge variant="info"> Queuded Jobs : {this.state.queuededJobs} </Badge>
+                </div>
+                <BootstrapTable 
                         keyField='cdJobID' 
                         data={this.state.burnerJobs} 
                         columns={this.columns} 
                         striped 
+                        defaultSorted = {this.defaultSorted}
                         pagination={paginationFactory()} 
                         wrapperClasses="table-responsive"
                         />

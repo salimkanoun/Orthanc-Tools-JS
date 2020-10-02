@@ -4,15 +4,17 @@ const Orthanc_Monitoring = require('../Orthanc_Monitoring')
 const CdBurnerFactory =  ( function () {
     var instance;
  
-    function createInstance() {
-        let instanceBurner = new CdBurner( MonitoringFactory.getInstance())
+    async function createInstance() {
+        let monitoring =  MonitoringFactory.getInstance();
+        await monitoring.setSettings()
+        let instanceBurner = new CdBurner( monitoring )
         return instanceBurner;
     }
  
     return {
-        getInstance: function () {
+        getInstance: async function () {
             if (!instance) {
-                instance = createInstance();
+                instance = await createInstance();
             }
             return instance;
         }

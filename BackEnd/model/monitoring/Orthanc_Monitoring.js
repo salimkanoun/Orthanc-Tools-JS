@@ -1,5 +1,6 @@
 const Orthanc = require('../Orthanc')
 const EventEmitter = require('events').EventEmitter;
+const db = require('../../database/models')
 
 class Orthanc_Monitoring extends EventEmitter {
     
@@ -14,6 +15,13 @@ class Orthanc_Monitoring extends EventEmitter {
         cdBurner: false
     }
 
+    async setSettings() {
+        const options = await db.Option.findOne(({ where: { id: 1 } }));
+        //set monitoring rate in secondes 
+        this.monitoringRate = (options.monitoring_rate * 1000)
+        
+    }
+
     async startMonitoringifNeeded () {
         //If already started skip
         if(this.monitoringRunning) return
@@ -25,7 +33,7 @@ class Orthanc_Monitoring extends EventEmitter {
             //Get last change number at monitoring startup (monitoring will start at this index)
             let changes = await this.orthanc.getChangesLast()
             this.last = changes.Last
-            this.monitoringInterval = setInterval(()=>{this.makeMonitor()}, 2000)
+            this.monitoringInterval = setInterval(()=>{this.makeMonitor()}, this.monitoringRate)
 
         }
         
