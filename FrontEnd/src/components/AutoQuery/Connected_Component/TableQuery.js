@@ -164,9 +164,11 @@ class TableQuery extends Component {
     editor: {
       type: Type.SELECT,
       getOptions: (setOptions, { row, column }) => {
-        return this.props.aets.map(function (aet) {
+        let availablesAets = this.props.aets.map(function (aet) {
           return { value: aet, label: aet }
         })
+
+        return availablesAets
       }
     },
     filter: textFilter(),
@@ -176,7 +178,7 @@ class TableQuery extends Component {
   rowStyle = (row, rowIndex) => {
 
     let nonEmptyColumns = Object.values(row).filter((rowValues) => {
-      if(rowValues !== '') return true
+      if(rowValues !== '' && rowValues !== 'Click To Choose' ) return true
       else return false
     })
 
