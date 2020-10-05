@@ -5,13 +5,12 @@ const Queue = require('promise-queue')
 const tmpPromise = require('tmp-promise')
 const {withFile} = require('tmp-promise')
 
+const Options = require('../../Options')
 const orthanc_Monitoring = require('../Orthanc_Monitoring')
-const db = require('../../../database/models')
 const moment = require('moment')
 const recursive = require("recursive-readdir");
 
 //SK RESTE A FAIRE
-//Le service CD Burner ne démarre pas automatiquement => Etat a stocker dans db
 //Frequence de monitoring dans DB + front end
 //Essayer de faire apparaitre la requette avant le unzip
 
@@ -31,7 +30,7 @@ class CdBurner {
         //Date format
         this.dateOptions = { month: 'numeric', day: 'numeric', year : 'numeric' } //precision of the date
 
-        const options = await db.Option.findOne(({ where: { id: 1 } }));
+        const options = await Options.getCdBurnerOptions()
 
         //format of date (using contry convention)
         if (options.date_format === "fr") {
@@ -51,8 +50,14 @@ class CdBurner {
         this.viewerPath = options.burner_viewer_path
         this.suportType = options.burner_support_type
         this.transferSyntax = options.burner_transfer_syntax
+        this.autoStart = options.burner_started
         this.jobStatus = {}
         
+    }
+
+    async autoStartIfNeeded() {
+        await this.setSettings()
+        if(this.autoStart) this.startCDMonitoring()
     }
 
     /**
@@ -63,6 +68,7 @@ class CdBurner {
         if (!this.monitoredFolder) throw 'Monitoring folder not defined'
 
         this.monitoringStarted = true
+        await Options.setBurnerStarted(true)
         //Fill options value from DB
         await this.setSettings()
         //Create listener
@@ -109,8 +115,9 @@ class CdBurner {
     /**
      * Stops Monitoring Process
      */
-    stopCDMonitoring() {
+    async stopCDMonitoring() {
         this.monitoringStarted = false
+        await Options.setBurnerStarted(false)
         this.__removeListener()
         this.monitoring.stopMonitoringService(orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
     }
@@ -660,6 +667,7 @@ class CdBurner {
     }
 
     toJSON(){
+        console.log(this.jobQueue)
         return {
             CdBurnerService : this.monitoringStarted,
             Jobs : {...this.jobStatus},

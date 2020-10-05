@@ -14,6 +14,8 @@ var usersRouter = require('./routes/users')
 
 var app = express()
 
+var autoStartMonitoring = require('./model/monitoring/AutoStartMonitoring')
+
 const dotenv = require("dotenv");
   // get config vars
   dotenv.config();
@@ -97,7 +99,11 @@ app.listen(port, (error) => {
           return process.exit(1)
         } else {
           console.log('Listening on port: ' + port)
-          if (app.get('env') === 'production') open('http://localhost:4000/')
+          if (app.get('env') === 'production') {
+            open('http://localhost:4000/')
+            //Autostart monitonring service if needed
+            autoStartMonitoring()
+          }
         }
       })
 

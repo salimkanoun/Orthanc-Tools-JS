@@ -19,7 +19,7 @@ var getBurner = async function(req, res) {
 
 var stopBurner = async function (req, res){
     let cdBurnerInstance = await CdBurnerFactory.getInstance()
-    cdBurnerInstance.stopCDMonitoring()
+    await cdBurnerInstance.stopCDMonitoring()
     res.json(true)
 
 }

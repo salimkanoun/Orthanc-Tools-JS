@@ -41,6 +41,12 @@ const Options = {
 
   },
 
+  setBurnerStarted : async (started) =>{
+    const option = await db.Option.findOne(({ where: { id: 1 } }))
+    option.burner_started = started
+    await option.save()
+  },
+
   setOrthancConnexionSettings: (address, port, username, password) => {
     config.set('OrthancAddress', address)
     config.set('OrthancPort', port)
@@ -60,6 +66,11 @@ const Options = {
     }
 
     return Options.configSettings
+  },
+
+  getCdBurnerOptions : async () => {
+    const options = await db.Option.findOne(({ where: { id: 1 } }));
+    return options
   },
 
   getMode: async () => {
