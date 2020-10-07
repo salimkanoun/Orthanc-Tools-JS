@@ -12,12 +12,12 @@ const cdBurner = {
                   body: JSON.stringify([])
             }
 
-            return fetch('/api/monitoring/burner/', options).then((answer) => {
+            return fetch('/api/monitoring/burner/', options).then( (answer) => {
                   if (!answer.ok) { throw answer }
                   return (answer.json())
-            }).catch((error) => {
-                  console.log(error)
-                  toastifyError(error)
+            }).catch(async error => {
+                  let errorText = await error.text()
+                  toastifyError(errorText)
             })
 
       },
@@ -34,9 +34,6 @@ const cdBurner = {
             return fetch('/api/monitoring/burner/', options).then((answer) => {
                   if (!answer.ok) { throw answer }
                   return (answer.json())
-            }).catch((error) => {
-                  console.log(error)
-                  toastifyError(error)
             })
 
       },

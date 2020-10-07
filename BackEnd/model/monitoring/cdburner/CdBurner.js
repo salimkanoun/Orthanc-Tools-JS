@@ -5,13 +5,12 @@ const Queue = require('promise-queue')
 const tmpPromise = require('tmp-promise')
 const {withFile} = require('tmp-promise')
 
+const Options = require('../../Options')
 const orthanc_Monitoring = require('../Orthanc_Monitoring')
-const db = require('../../../database/models')
 const moment = require('moment')
 const recursive = require("recursive-readdir");
 
 //SK RESTE A FAIRE
-//Le service CD Burner ne démarre pas automatiquement => Etat a stocker dans db
 //Frequence de monitoring dans DB + front end
 //Essayer de faire apparaitre la requette avant le unzip
 
@@ -31,7 +30,7 @@ class CdBurner {
         //Date format
         this.dateOptions = { month: 'numeric', day: 'numeric', year : 'numeric' } //precision of the date
 
-        const options = await db.Option.findOne(({ where: { id: 1 } }));
+        const options = await Options.getCdBurnerOptions()
 
         //format of date (using contry convention)
         if (options.date_format === "fr") {
@@ -51,8 +50,14 @@ class CdBurner {
         this.viewerPath = options.burner_viewer_path
         this.suportType = options.burner_support_type
         this.transferSyntax = options.burner_transfer_syntax
+        this.autoStart = options.burner_started
         this.jobStatus = {}
         
+    }
+
+    async autoStartIfNeeded() {
+        await this.setSettings()
+        if(this.autoStart) this.startCDMonitoring()
     }
 
     /**
@@ -60,8 +65,10 @@ class CdBurner {
      */
     async startCDMonitoring() {
         if (this.monitoringStarted) return
+        if (!this.monitoredFolder) throw 'Monitoring folder not defined'
 
         this.monitoringStarted = true
+        await Options.setBurnerStarted(true)
         //Fill options value from DB
         await this.setSettings()
         //Create listener
@@ -76,15 +83,16 @@ class CdBurner {
     __makeListener() {
         if (this.monitoringLevel === CdBurner.MONITOR_PATIENT) {
             this.monitoring.on('StablePatient', (orthancID) => { 
-                this.jobQueue.add((requestInfo)=> {
-                    this._makeCDFromPatient(orthancID) 
+                this.jobQueue.add( async ()=> {
+                    await this._makeCDFromPatient(orthancID) 
                 })
                
             })
+            
         } else if (this.monitoringLevel === CdBurner.MONITOR_STUDY) {
             this.monitoring.on('StableStudy', (orthancID) => { 
-                this.jobQueue.add((requestInfo)=>{
-                    this._makeCDFromStudy(orthancID)
+                this.jobQueue.add( async ()=>{
+                    await this._makeCDFromStudy(orthancID)
                 })
                  
             })
@@ -107,8 +115,9 @@ class CdBurner {
     /**
      * Stops Monitoring Process
      */
-    stopCDMonitoring() {
+    async stopCDMonitoring() {
         this.monitoringStarted = false
+        await Options.setBurnerStarted(false)
         this.__removeListener()
         this.monitoring.stopMonitoringService(orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
     }
@@ -215,6 +224,8 @@ class CdBurner {
 
         let uniqueModalitiesInPatient = [...new Set(modalitiesInPatient)]
 
+        let timeStamp = this.getTimeStamp()
+
         let studyDetailsToFront = {
             patientName: patient.MainDicomTags.PatientName,
             patientID: patient.MainDicomTags.PatientID,
@@ -222,15 +233,16 @@ class CdBurner {
             studyDescription: 'Multiples',
             accessionNumber: 'Multiples',
             patientDOB: formattedPatientDOB,
-            modalitiesInStudy: uniqueModalitiesInPatient.join("//")
+            modalitiesInStudy: uniqueModalitiesInPatient.join("//"),
+            timeStamp : timeStamp
         }
+
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, "Mutiples")
+
         this.updateJobStatus(jobID, null, null, CdBurner.JOB_STATUS_UNZIPING, 'None', studyDetailsToFront)
 
         let unzipedFolder = await this.__unzip(studies)
         this.updateJobStatus(jobID, null, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
-
-        let timeStamp = this.getTimeStamp()
 
         let requestFilePath 
         let datFile = null
@@ -286,6 +298,8 @@ class CdBurner {
         //Conctatenate modalities array to a string with "//" separator
         let modalitiesInStudy = modalities.join("//")
 
+        let timeStamp = this.getTimeStamp()
+
         let datInfos = [{
             patientName: patient.MainDicomTags.PatientName,
             patientID: patient.MainDicomTags.PatientID,
@@ -293,9 +307,11 @@ class CdBurner {
             studyDescription: study.MainDicomTags.StudyDescription,
             accessionNumber: study.MainDicomTags.AccessionNumber,
             patientDOB: formattedPatientDOB,
-            modalitiesInStudy: modalitiesInStudy
+            modalitiesInStudy: modalitiesInStudy,
+            timeStamp : timeStamp
         }]
 
+        
 
         //Creat ID for this JOB
         let jobID = this._createJobID(patient.MainDicomTags.PatientName, formattedDateExamen)
@@ -304,9 +320,7 @@ class CdBurner {
         //Generate the ZIP with Orthanc IDs dicom
         let unzipedFolder = await this.__unzip([study])
         this.updateJobStatus(jobID, null, null, CdBurner.JOB_STATUS_UNZIP_DONE, unzipedFolder)
-
-        
-        let timeStamp = this.getTimeStamp()
+       
         let requestFilePath
         let datFile = null
 
@@ -382,7 +396,7 @@ class CdBurner {
         for (let jobID of Object.keys(nonFinishedRequestFile) ){
             let jobRequestFile = nonFinishedRequestFile[jobID]['requestFile']
             let datFile = nonFinishedRequestFile[jobID]['datFile']
-            console.log(jobRequestFile)
+
             let name = path.parse(jobRequestFile).name
 
             if(currentRequestFiles[name] === '.DON'){
@@ -655,7 +669,8 @@ class CdBurner {
     toJSON(){
         return {
             CdBurnerService : this.monitoringStarted,
-            Jobs : {...this.jobStatus}
+            Jobs : this.jobStatus,
+            QuededJobs : this.jobQueue.queue.length
         }
     }
 }

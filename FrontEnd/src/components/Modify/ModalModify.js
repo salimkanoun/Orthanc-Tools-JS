@@ -75,14 +75,6 @@ class ModalModify extends Component {
                             <input className='form-check-input' type='checkbox' defaultChecked={this.props.defaultCheckedKeepSource} onClick={this.props.onClickKeepSource} />
                         </div>
                     </div>
-                    <div className='row'>
-                        <div className='col-auto'>
-                            <label htmlFor='rememberSettings'>Remember Settings</label>
-                        </div>
-                        <div className='col-sm'>
-                            <input className='form-check-input' type='checkbox' defaultChecked={this.props.defaultCheckedRemember} onClick={this.props.onClickRemember} />
-                        </div>
-                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <button type='button' className='btn btn-info' onClick={this.props.onHide}>Cancel</button>

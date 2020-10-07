@@ -26,6 +26,14 @@ module.exports = {
         type: Sequelize.BOOLEAN, 
         defaultValue: false
       },
+      monitoring_rate: {
+        type: Sequelize.INTEGER, 
+        defaultValue: 10
+      },
+      burner_started: {
+        type: Sequelize.BOOLEAN, 
+        defaultValue: false
+      },
       burner_label_path: {
         allowNull: false,
         type: Sequelize.STRING, 

@@ -14,7 +14,6 @@ class Modify extends Component {
         toasts: {}, 
         keepSource: apis.localStorage.getLocalStorage('remember') === 'true' ? apis.localStorage.getLocalStorage('keepSource') === 'true' : false, 
         removePrivateTags: apis.localStorage.getLocalStorage('remember') === 'true' ? apis.localStorage.getLocalStorage('removePrivateTags') === 'true' : false, 
-        remember: apis.localStorage.getLocalStorage('remember') === 'true'
      }
 
      constructor(props){
@@ -45,7 +44,7 @@ class Modify extends Component {
      openModify() {
         this.setState({modification: {}, show: true})
         let rows=[]
-        let forbidden = ['studies', 'Instances', 'StudyOrthancID', 'PatientOrthancID', 'SeriesOrthancID', 'StudyID', 'SeriesInstanceUID', 'StudyInstanceUID']
+        let forbidden = ['studies', 'OtherPatientIDs', 'Instances', 'StudyOrthancID', 'PatientOrthancID', 'SeriesOrthancID', 'StudyID', 'SeriesInstanceUID', 'StudyInstanceUID']
         for (let tag in this.props.row){
             if (!forbidden.includes(tag))
                 rows.push({'TagName': tag, 'Value': this.props.row[tag] ? this.props.row[tag] : ''})
@@ -55,16 +54,10 @@ class Modify extends Component {
 
     checkRemember(){
         console.log(this.state)
-        if (this.state.remember){
-            apis.localStorage.setlocalStorage('keepSource', this.state.keepSource)
-            apis.localStorage.setlocalStorage('removePrivateTags', this.state.removePrivateTags)
-        } else {
-            apis.localStorage.setlocalStorage('keepSource', false)
-            apis.localStorage.setlocalStorage('removePrivateTags', false)
-        }
-        apis.localStorage.setlocalStorage('remember', this.state.remember)
+        apis.localStorage.setlocalStorage('keepSource', this.state.keepSource)
+        apis.localStorage.setlocalStorage('removePrivateTags', this.state.removePrivateTags)
+
         this.setState({
-            remember: apis.localStorage.getLocalStorage('remember') === 'true', 
             removePrivateTags: apis.localStorage.getLocalStorage('removePrivateTags') === 'true', 
             keepSource: apis.localStorage.getLocalStorage('keepSource') === 'true'
         })
@@ -152,7 +145,6 @@ class Modify extends Component {
                     onClickPrivateTags={() => this.setState(prevState => ({removePrivateTags: !prevState.removePrivateTags}))}
                     defaultCheckedKeepSource={this.state.keepSource}
                     onClickKeepSource={() => this.setState(prevState => ({keepSource: !prevState.keepSource}))}
-                    defaultCheckedRemember={this.state.remember} 
                     onClickRemember={() => this.setState(prevState => ({remember: !prevState.remember}))}
                     modify={() => this.modify()}
                 />

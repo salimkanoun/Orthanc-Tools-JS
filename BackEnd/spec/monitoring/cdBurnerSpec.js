@@ -43,8 +43,8 @@ describe('Test CdBurner', () => {
         expect(spy.count()).toBe(2)
     })
 
-    it('stop monitoring should destroy listner', ()=>{
-        cdBurnerTest.stopCDMonitoring()
+    it('stop monitoring should destroy listner', async ()=>{
+        await cdBurnerTest.stopCDMonitoring()
         expect(cdBurner.monitoring).toBe("")
     })
 

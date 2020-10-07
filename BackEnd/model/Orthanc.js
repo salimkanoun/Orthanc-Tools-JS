@@ -424,7 +424,7 @@ class Orthanc {
     tagObjectArray.push(new TagAnon('0010,1030', body)) // Patient's weight
 
     // Others
-    tagObjectArray.push(new TagAnon('0008,0050', TagAnon.replace, newAccessionNumber)) // Accession Number hardcoded to our system name
+    tagObjectArray.push(new TagAnon('0008,0050', TagAnon.replace, newAccessionNumber)) // Accession Number
     tagObjectArray.push(new TagAnon('0010,0020', TagAnon.replace, newPatientID)) // new Patient Name
     tagObjectArray.push(new TagAnon('0010,0010', TagAnon.replace, newPatientName)) // new Patient Name
 
