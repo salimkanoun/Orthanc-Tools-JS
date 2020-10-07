@@ -9,7 +9,6 @@ import Toggle from 'react-toggle'
 
 import apis from '../../services/apis'
 import { ReactComponent as SpeakerSVG } from '../../images/sounds.svg'
-import { toastifyError } from "../../services/toastify"
 
 export default class CDBurner extends Component {
 
@@ -192,7 +191,7 @@ export default class CDBurner extends Component {
                     </div>
                 </div>
                 <div className="mb-3 float-right">
-                    <Badge variant="info" hidden> Queuded Jobs : {this.state.queuededJobs} </Badge>
+                    <Badge variant="info"> Queuded Jobs : {this.state.queuededJobs} </Badge>
                 </div>
                 <BootstrapTable 
                         keyField='cdJobID' 
