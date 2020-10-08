@@ -149,7 +149,7 @@ class Ldap extends Component {
     render() {
         return (
             <Fragment>
-                <h2 className='card-title'>Distant Users Panel</h2>
+                <h2 className='card-title'>Distant Users</h2>
                 <div>
                     <div className="row mt-5 mb-3">
                         <div className='col-auto'>

@@ -74,7 +74,7 @@ class ActionBouton extends Component{
 
                     <Dropdown.Menu>
                         <OhifLink className='dropdown-item bg-info' {...this.props} />
-                        <button className='dropdown-item bg-info' type='button' onClick={ this.setMetadata} hidden={this.props.hiddenMetadata}>Metadata</button>
+                        <button className='dropdown-item bg-info' type='button' onClick={ this.setMetadata} hidden={this.props.hiddenMetadata}>View Metadata</button>
                         <Modify {...this.props} />
                         <button className='dropdown-item bg-danger' type='button' onClick={ this.delete }>Delete</button>
                     </Dropdown.Menu>
