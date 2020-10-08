@@ -29,7 +29,8 @@ authentication = async function (req, res) {
     
           var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
     
-          res.json(TOKEN);
+          res.cookie("tokenOrthancJs", TOKEN, {secure: true, httpOnly: true})
+          res.json(true)
         })
       } else {
         res.status(401).send('Wrong Credential')
