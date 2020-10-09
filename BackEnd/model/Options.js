@@ -24,7 +24,7 @@ const Options = {
   },
 
   setBurnerOptions : async (burner_monitored_path, burner_viewer_path, burner_label_path, burner_manifacturer, burner_monitoring_level,
-    burner_support_type, burner_delete_study_after_sent, burner_transfer_syntax ) => {
+    burner_support_type, burner_delete_study_after_sent, burner_transfer_syntax, date_format ) => {
 
     const option = await db.Option.findOne(({ where: { id: 1 } }))
 
@@ -36,6 +36,7 @@ const Options = {
     option.burner_support_type = burner_support_type
     option.burner_delete_study_after_sent = burner_delete_study_after_sent
     option.burner_transfer_syntax = burner_transfer_syntax
+    option.date_format = date_format
     
     await option.save()
 

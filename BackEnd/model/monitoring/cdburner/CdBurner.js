@@ -31,7 +31,7 @@ class CdBurner {
         this.dateOptions = { month: 'numeric', day: 'numeric', year : 'numeric' } //precision of the date
 
         const options = await Options.getCdBurnerOptions()
-
+        
         //format of date (using contry convention)
         if (options.date_format === "fr") {
             this.format = "DD/MM/YYYY"

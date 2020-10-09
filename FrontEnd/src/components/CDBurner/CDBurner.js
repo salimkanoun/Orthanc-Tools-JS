@@ -169,7 +169,6 @@ export default class CDBurner extends Component {
     };
 
     render(){
-        console.log(this.state.burnerJobs)
         return (
             
             <div className='jumbotron'>
