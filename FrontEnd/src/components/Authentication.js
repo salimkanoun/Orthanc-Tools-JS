@@ -43,8 +43,6 @@ export default class Authentication extends Component {
     await apis.authentication.logIn(postData).then((answer)=>{
     
       console.log(answer)
-      // get token from fetch request
-      const token = answer;
 
       newState =  {
         accessCheck : true

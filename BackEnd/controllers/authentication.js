@@ -6,7 +6,7 @@ authentication = async function (req, res) {
   try {
     const userObject = new Users(body.username)
     await userObject.checkPassword(body.password, async function(reponse) {
-      console.log(reponse)
+      
       if (reponse) {
         let user = new Users(body.username)
 
@@ -29,7 +29,7 @@ authentication = async function (req, res) {
     
           var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
     
-          res.cookie("tokenOrthancJs", TOKEN, {secure: true, httpOnly: true})
+          res.cookie("tokenOrthancJs", TOKEN, {httpOnly: true})
           res.json(true)
         })
       } else {
