@@ -11,10 +11,12 @@ class TableImportError extends Component{
         dataField: 'filename', 
         text: 'FileName', 
         sort: true,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'error', 
         text: 'Error Message', 
         sort: true, 
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }]
 
     

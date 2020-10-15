@@ -16,6 +16,26 @@ import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList 
 
 class ExportPanel extends Component {
 
+
+    transferSyntaxOptions = [
+        {value: 'None',                     label: 'None'},
+        {value: '1.2.840.10008.1.2',        label: 'Implicit VR Endian'},
+        {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
+        {value: '1.2.840.10008.1.2.1.99',   label: 'Deflated Explicit VR Little Endian'},
+        {value: '1.2.840.10008.1.2.2',      label: 'Explicit VR Big Endian'},
+        {value: '1.2.840.10008.1.2.4.50',   label: 'JPEG 8-bit'},
+        {value: '1.2.840.10008.1.2.4.51',   label: 'JPEG 12-bit'},
+        {value: '1.2.840.10008.1.2.4.57',   label: 'JPEG Lossless'},
+        {value: '1.2.840.10008.1.2.4.70',   label: 'JPEG Lossless'},
+        {value: '1.2.840.10008.1.2.4.80',   label: 'JPEG-LS Lossless' },
+        {value: '1.2.840.10008.1.2.4.81',   label: 'JPEG-LS Lossy'},
+        {value: '1.2.840.10008.1.2.4.90',   label: 'JPEG 2000 (90)'},
+        {value: '1.2.840.10008.1.2.4.91',   label: 'JPEG 2000 (91)'},
+        {value: '1.2.840.10008.1.2.4.92',   label: 'JPEG 2000 (92)'},
+        {value: '1.2.840.10008.1.2.4.93',   label: 'JPEG 2000 (93)'}
+
+    ]
+
     state = {
         currentStudy: '',
         currentTS : {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
@@ -146,24 +166,7 @@ class ExportPanel extends Component {
         this.loadTS(item.value)
     }
 
-    transferSyntaxOptions = [
-        {value: 'None',                     label: 'None'},
-        {value: '1.2.840.10008.1.2',        label: 'Implicit VR Endian'},
-        {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
-        {value: '1.2.840.10008.1.2.1.99',   label: 'Deflated Explicit VR Little Endian'},
-        {value: '1.2.840.10008.1.2.2',      label: 'Explicit VR Big Endian'},
-        {value: '1.2.840.10008.1.2.4.50',   label: 'JPEG 8-bit'},
-        {value: '1.2.840.10008.1.2.4.51',   label: 'JPEG 12-bit'},
-        {value: '1.2.840.10008.1.2.4.57',   label: 'JPEG Lossless'},
-        {value: '1.2.840.10008.1.2.4.70',   label: 'JPEG Lossless'},
-        {value: '1.2.840.10008.1.2.4.80',   label: 'JPEG-LS Lossless' },
-        {value: '1.2.840.10008.1.2.4.81',   label: 'JPEG-LS Lossy'},
-        {value: '1.2.840.10008.1.2.4.90',   label: 'JPEG 2000 (90)'},
-        {value: '1.2.840.10008.1.2.4.91',   label: 'JPEG 2000 (91)'},
-        {value: '1.2.840.10008.1.2.4.92',   label: 'JPEG 2000 (92)'},
-        {value: '1.2.840.10008.1.2.4.93',   label: 'JPEG 2000 (93)'}
 
-    ]
 
     getSelectedTSObject (tsValue){
         let filteredArray = this.transferSyntaxOptions.filter(item => {
