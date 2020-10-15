@@ -18,6 +18,7 @@ class ExportPanel extends Component {
 
     state = {
         currentStudy: '',
+        currentTS : {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
         aets: [],
         peers: [],
         show: false,
@@ -38,6 +39,9 @@ class ExportPanel extends Component {
 
 
     async componentDidMount() {
+        
+        let currentTS = apis.localStorage.getLocalStorage('TS');
+        this.loadTS(currentTS);
         let aets = await apis.aets.getAets()
         let peers = await apis.peers.getPeers()
         this.setState({
@@ -121,6 +125,16 @@ class ExportPanel extends Component {
         return answer
     }
 
+    loadTS(tsValue){
+        if(tsValue){
+            this.setState({
+                currentTS : this.getSelectedTSObject(tsValue)
+            })
+        }
+
+    }
+    
+
     setButton(button) {
         this.setState({
             button: button
@@ -129,6 +143,7 @@ class ExportPanel extends Component {
 
     onTSChange(item) {
         apis.localStorage.setlocalStorage('TS', item.value)
+        this.loadTS(item.value)
     }
 
     transferSyntaxOptions = [
@@ -189,7 +204,7 @@ class ExportPanel extends Component {
                 <div className="row text-center mt-5">
                     <div className='col-sm'>
                         <DownloadDropdown exportIds={idArray} />
-                        <Select single options={this.transferSyntaxOptions} onChange={this.onTSChange} name="ts_selector" value={this.getSelectedTSObject(apis.localStorage.getLocalStorage('TS'))}/>
+                        <Select single options={this.transferSyntaxOptions} onChange={this.onTSChange} name="ts_selector" value={this.state.currentTS}/>
                     </div>
                     <div className='col-sm'>
                         <SendAetDropdown aets={this.state.aets} exportIds={idArray} />
