@@ -7,6 +7,7 @@ const fs = require("fs")
 const { error } = require("console")
 const tls = require('tls')
 
+// Declaration of clients
 let ftp = new FtpClient.Client()
 let sftp = new SftpClient()
 let orthancInstance = new Orthanc()
@@ -35,16 +36,13 @@ tls.createSecureContext = options => {
 
 const ftpConnectionOption = {
     host: 'localhost',
-    port: '21',
+    port: '22',
     username: 'legrand',
     password: 'Dnmts!',
     targetFolder : '/home/legrand/test',
-    protocol : 'ftps',
-    privateKey : {
-        path : '',
-        passphrase: ''
-    },
-    ca : ''
+    protocol : 'sftp',
+    privateKey : true,
+    privateKeyPassPhrase : 'devellopement'
 }
 
 const webdavConnectionOption = {
@@ -58,9 +56,6 @@ const webdavConnectionOption = {
 
 //TODO: 
 // Code cleanup
-// Implement permission middleware
-
-
 
 const exportFtp = async function(req, res){
     
@@ -74,12 +69,22 @@ const exportFtp = async function(req, res){
     //Checking used protocol
     if(ftpConnectionOption.protocol==='sftp'){
         //Creatingthe sftp connection
-        sftp.connect({
-            host: ftpConnectionOption.host,
-            port: ftpConnectionOption.port,
-            username: ftpConnectionOption.username,
-            password: ftpConnectionOption.password
-          }).then(async ()=>{
+        let connectioOptions = (ftpConnectionOption.privateKey?
+            {
+                host: ftpConnectionOption.host,
+                port: ftpConnectionOption.port,
+                username: ftpConnectionOption.username,
+                privateKey: fs.readFileSync(path.join(__dirname, '..', 'data', 'private_key', 'id_rsa')),
+                passphrase: ftpConnectionOption.privateKeyPassPhrase
+            }:
+            {
+                host: ftpConnectionOption.host,
+                port: ftpConnectionOption.port,
+                username: ftpConnectionOption.username,
+                password: ftpConnectionOption.password
+            }
+        )
+        sftp.connect(connectioOptions).then(async ()=>{
             await sftp.fastPut(archivePath,ftpConnectionOption.targetFolder+archiveName)
           }).then(()=>{
             res.json(true)
