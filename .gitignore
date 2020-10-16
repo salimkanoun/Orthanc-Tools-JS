@@ -12,4 +12,6 @@ BackEnd/data/export_dicom/*
 !BackEnd/data/export_dicom/README
 BackEnd/data/certificates/*
 !BackEnd/data/certificates/README
+BackEnd/data/private_key/*
+!BackEnd/data/private_key/README
 
