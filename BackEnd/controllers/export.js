@@ -10,6 +10,7 @@ const path = require("path")
 const fs = require("fs")
 const { error } = require("console")
 const tls = require('tls')
+const { connected } = require("process")
 
 
 //////////////////////////////////////////////////////////////////////
@@ -20,7 +21,7 @@ const ftp = new FtpClient.Client()
 const sftp = new SftpClient()
 const orthancInstance = new Orthanc()
 
-// tls hack to allow ca to be added 
+// tls hack to allow CA to be added 
 const origCreateSecureContext = tls.createSecureContext
 tls.createSecureContext = options => {
   const context = origCreateSecureContext(options)
@@ -41,6 +42,9 @@ tls.createSecureContext = options => {
 
   return context;
 };
+
+
+const exportProcesses = {}
 
 //////////////////////////////////////////////////////////////////////
 /////////////// Options TODO : integreate to options /////////////////
@@ -65,28 +69,127 @@ const webdavConnectionOption = {
     digest: false
 }
 
+class ExportTask{
+    constructor(archivePath){
+        this.uuid = -1
+        
+        let splitedPath =  archivePath.split('/')
+        this.archiveName = splitedPath[splitedPath.length -1]
+        this.archivePath = archivePath
+
+        this.status = 'PENDING';
+        
+        this.size = fs.statSync(archivePath)["size"];
+    }
+}
+
+class FtpExporter{
+    constructor(){
+        this.ftp = new FtpClient.Client()
+        this.sftp = new SftpClient()
+        this.ftpQueue = []
+        this.indexedTasks = {}
+        this.lastUuid = 0
+    }
+    
+    _getNextUuid(){
+        this.lastUuid+=1
+        return this.lastUuid
+    }
+
+    addFtpTask(task){
+        this.ftpQueue.prepend(task);
+        task.uuid = this._getNextUuid();
+        this.indexedTasks[uuid] = task;
+    }
+
+    _send(){
+        while(this.ftpQueue){
+
+        }
+    }
+}
+
 //////////////////////////////////////////////////////////////////////
 ////////////////////////////// Functions /////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+
+let lastUuid = 0;
+const getNextUuid = function() {
+    lastUuid = lastUuid + 1;
+    return lastUuid;
+}
+
+let awaitingTrackingFtp = [];
 const sendArchiveFtp  = function(archivePath, archiveName){
-    return ftp.access({
-        host : ftpConnectionOption.host,
-        user : ftpConnectionOption.username,
-        password : ftpConnectionOption.password,
-        secure : ftpConnectionOption.protocol==="ftps" 
-    }).then(async()=>{
-        // Uploading the archive to the server
-        await ftp.uploadFrom(archivePath, ftpConnectionOption.targetFolder + archiveName)
-    }).then(()=>ftp.close())
-    .catch(error=>{
-        ftp.close()
-        throw error
-    })
+    if (ftp.closed) {
+        return ftp.access({
+            host : ftpConnectionOption.host,
+            user : ftpConnectionOption.username,
+            password : ftpConnectionOption.password,
+            secure : ftpConnectionOption.protocol==="ftps" 
+        }).then(()=>{
+            // Manage tracking
+            let uuid = getNextUuid();
+            exportProcesses[uuid] = {
+                fileName : archiveName,
+                fileSize : fs.statSync(archivePath),
+                progress : 0
+            }
+            ftp.trackProgress(info=>{
+                exportProcesses[uuid].progress = info.bytesOverall
+                //Check if transfer is completed
+                if(exportProcesses[uuid].fileSize >=  info.bytesOverall){
+                    if(awaitingTrackingFtp.length>0){
+                        //If theres an other file awaiting to be send begin its tracking
+                        ftp.trackProgress(awaitingTrackingFtp.pop())
+                    }else{
+                        //Else close the connection
+                        ftp.trackProgress()
+                        ftp.close() 
+                    }
+                }
+            });
+            ftp.uploadFrom(archivePath, ftpConnectionOption.targetFolder + archiveName)
+        })
+        .catch(error=>{
+            ftp.close()
+            throw error
+        })
+    }else{
+        // Manage tracking
+        let uuid = getNextUuid();
+        exportProcesses[uuid] = {
+            fileName : archiveName,
+            fileSize : fs.statSync(archivePath),
+            progress : 0
+        }            
+        awaitingTrackingFtp.unshift(info=>{
+            exportProcesses[uuid].progress = info.bytesOverall
+            //Check if transfer is completed
+            if(exportProcesses[uuid].fileSize >=  info.bytesOverall){
+                if(awaitingTrackingFtp.length>0){
+                    //If theres an other file awaiting to be send begin its tracking
+                    ftp.trackProgress(awaitingTrackingFtp.pop())
+                }else{
+                    //Else close the connection
+                    ftp.trackProgress()
+                    ftp.close() 
+                }
+            }
+        })
+        return ftp.uploadFrom(archivePath, ftpConnectionOption.targetFolder + archiveName).catch(error=>{
+            ftp.close()
+            throw error
+        })
+    }
+    
+    
 }
 
 const sendArchiveSftp  =  function(archivePath, archiveName){
-    //Creatingthe sftp connection
+    // Create the options depending of authentification mode
     let connectioOptions = (ftpConnectionOption.privateKey?
         {
             host: ftpConnectionOption.host,
@@ -102,9 +205,24 @@ const sendArchiveSftp  =  function(archivePath, archiveName){
             password: ftpConnectionOption.password
         }
     )
+
+
     
+    //Creating the sftp connection
+    let uuid = getNextUuid();
+    exportProcesses[uuid] = {
+        fileName : archiveName,
+        fileSize : fs.statSync(archivePath),
+        progress : 0
+    }
+
+
     return sftp.connect(connectioOptions).then(async ()=>{
-        await sftp.fastPut(archivePath,ftpConnectionOption.targetFolder+archiveName)
+        sftp.fastPut(archivePath,ftpConnectionOption.targetFolder+archiveName,{
+            step: (total_transferred, chunk, total)=>{
+                exportProcesses[uuid].progress = total_transferred;
+            }
+        })
     }).then(()=>sftp.close())
     .catch(error=>{
         sftp.close()
@@ -153,7 +271,7 @@ const exportWebDav = async function(req, res){
     let archivePath = await orthancInstance.getArchiveDicom(studies)
     let splitedPath =  archivePath.split('/')
     let archiveName = splitedPath[splitedPath.length -1]
-
+    
     const client = createClient(
         webdavConnectionOption.host,
         {
@@ -162,8 +280,19 @@ const exportWebDav = async function(req, res){
             digest: webdavConnectionOption.digest
         })
 
-    fs.createReadStream(archivePath)
-        .pipe(client.createWriteStream(webdavConnectionOption.targetFolder+archiveName))
+    let uuid = getNextUuid();
+    exportProcesses[uuid] = {
+        fileName : archiveName,
+        fileSize : fs.statSync(archivePath),
+        progress : 0
+    }
+
+    let rs = fs.createReadStream(archivePath,{autoClose:true})
+    rs.on('data', (chunk)=>{
+        exportProcesses[uuid].progress += chunk.length;
+        console.log(exportProcesses[uuid].progress);
+    })
+    rs.pipe(client.createWriteStream(webdavConnectionOption.targetFolder+archiveName))
 
     res.json(true)
 }
