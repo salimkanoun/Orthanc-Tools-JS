@@ -1,5 +1,5 @@
 import { toastifyError } from './toastify'
-import streamSaver from 'streamsaver'
+import downloadjs from 'downloadjs'
 
 const exportDicom = {
 
@@ -71,27 +71,11 @@ const exportDicom = {
   async downloadZip(jobID) {
 
     const url = '/api/jobs/' + jobID + '/archive'
-    const fileStream = streamSaver.createWriteStream(jobID + ".zip")
-
-    fetch(url).then(res => {
-      const readableStream = res.body
-
-      if (window.WritableStream && readableStream.pipeTo) {
-        return readableStream.pipeTo(fileStream)
-          .then(() => console.log('done writing'))
-      }
-
-      let writer = fileStream.getWriter()
-
-      const reader = res.body.getReader()
-      const pump = () => reader.read()
-        .then(res => res.done
-          ? writer.close()
-          : writer.write(res.value).then(pump))
-
-      pump()
-    })
-
+    var x=new XMLHttpRequest();
+    x.open( "GET", url , true);
+    x.responseType="blob";
+    x.onload= function(e){downloadjs(e.target.response, jobID+".zip", "application/zip");};
+    x.send();
   }
 
 }
