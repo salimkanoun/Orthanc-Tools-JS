@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "activedirectory": "^0.7.2",
+    "basic-ftp": "^4.6.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "configstore": "^5.0.1",
@@ -53,7 +54,9 @@
     "sequelize-cli": "^5.5.1",
     "spdy": "^4.0.2",
     "sqlite3": "^4.2.0",
-    "tmp-promise": "^3.0.2"
+    "ssh2-sftp-client": "^5.3.1",
+    "tmp-promise": "^3.0.2",
+    "webdav": "^3.6.0"
   },
   "engines": {
     "node": ">=12.0.0",
