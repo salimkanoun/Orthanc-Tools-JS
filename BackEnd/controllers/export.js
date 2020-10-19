@@ -1,5 +1,5 @@
 
-const {Exporter} = require("../model/exporter");
+const {Exporter} = require("../model/Exporter");
 
 
 const exporter = new Exporter();
