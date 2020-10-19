@@ -1,8 +1,8 @@
-const exporter = require("../model/exporter");
+
 const {Exporter} = require("../model/exporter");
 
 
-exporter = new Exporter();
+const exporter = new Exporter();
 
 //////////////////////////////////////////////////////////////////////
 ////////////////////////////// Controllers ///////////////////////////
@@ -21,10 +21,9 @@ const exportWebDav = async function(req, res){
 }
 
 const getExportProgress = async function(req, res){
-    uuid = req.body.uuid
-
+    let uuid = req.body.uuid
     if(exporter.taskMap[uuid]===undefined){
-        res.code(400).send("Bad request the task uuid is unknown")
+        res.status(400).send("Bad request the task uuid is unknown")
         return
     }
 

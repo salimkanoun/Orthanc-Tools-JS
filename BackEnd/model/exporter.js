@@ -5,6 +5,7 @@ const SftpClient = require("ssh2-sftp-client")
 const FtpClient =  require("basic-ftp" )
 const tls = require("tls") 
 const path = require("path")
+const {createClient} = require("webdav")
 
 let orthanc = new Orthanc()
 const ftp = new FtpClient.Client()
@@ -15,7 +16,7 @@ const ftpConnectionOption = {
     username: 'legrand',
     password: 'Dnmts!',
     targetFolder : '/home/legrand/test',
-    protocol : 'sftp',
+    protocol : 'ftps',
     privateKey : true,
     privateKeyPassPhrase : 'devellopement'
 }
@@ -76,7 +77,6 @@ class Exporter{
             let task = this._sendTaskQueue.pop()
             task.status = SENDING
             task.sent = 0;
-            console.log(task);
             
             let promise;
             switch (task.protocol) {

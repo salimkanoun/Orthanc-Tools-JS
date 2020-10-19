@@ -20,6 +20,7 @@ class ExportTask{
 
     getWebDavProgressListener(){
         return (chunk)=>{
+            console.log(this)
             this.sent += chunk.length;
         }
     }
