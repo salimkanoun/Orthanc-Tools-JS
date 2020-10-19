@@ -9,7 +9,7 @@ const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, 
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
-const { exportFtp, exportWebDav } = require('../controllers/export')
+const { exportFtp, exportWebDav, getExportProgress} = require('../controllers/export')
 
 const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
 
@@ -154,5 +154,5 @@ router.put('/monitoring/burning/options', userAdminMidelware, updateRobotOptions
 //FTP & WebDav Exports
 router.post('/tools/export/ftp', exportExternMidelware, exportFtp)
 router.post('/tools/export/webdav', exportExternMidelware, exportWebDav)
-
+router.get('/tools/export/progress', exportExternMidelware, getExportProgress)
 module.exports = router
