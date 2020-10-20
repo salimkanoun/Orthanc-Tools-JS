@@ -1,4 +1,4 @@
-const {v4:uuidv4 }= require("uuid")
+const uuid = require('../utils/uuid')
 const fs =  require("fs")
 const path = require("path")
 
@@ -6,7 +6,7 @@ const path = require("path")
 
 class ExportTask{
     constructor(protocol){
-        this.uuid = uuidv4()
+        this.uuid = uuid.getUuid()
         if(![PROTOCOL_FTP,PROTOCOL_FTPS,PROTOCOL_SFTP,PROTOCOL_WEBDAV].includes(protocol)){
             throw("Unsuported export protocol")
         }
@@ -23,7 +23,6 @@ class ExportTask{
 
     getWebDavProgressListener(){
         return (chunk)=>{
-            console.log(this)
             this.sent += chunk.length;
         }
     }

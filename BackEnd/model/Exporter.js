@@ -35,6 +35,8 @@ class Exporter{
         if(!instance){
             instance = this
 
+            this.orthanc = new Orthanc()
+
             this.taskMap = {}
             this._sending = false;
             this._sendTaskQueue = []
@@ -169,7 +171,7 @@ class Exporter{
         let task = new ExportTask(ftpConnectionOption.protocol)
         task.status = CREATING
         this.taskMap[task.uuid] = task
-        orthanc.getArchiveDicom(ids).then(path=>{
+        this.orthanc.getArchiveDicom(ids).then(path=>{
             task.setArchive(path)
             this._queueForSend(task)
             task.status = PENDING_SENDING
@@ -186,7 +188,7 @@ class Exporter{
         let task = new ExportTask(PROTOCOL_WEBDAV)
         task.status = CREATING
         this.taskMap[task.uuid] = task
-        orthanc.getArchiveDicom(ids).then((path)=>{
+        this.orthanc.getArchiveDicom(ids).then((path)=>{
             task.setArchive(path)
             task.status = PENDING_SENDING
             this._queueForSend(task)
