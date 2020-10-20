@@ -51,12 +51,8 @@ class Exporter{
 
                     const certs = pem.match(/-----BEGIN CERTIFICATE-----\n[\s\S]+?\n-----END CERTIFICATE-----/g)
 
-                    if (!certs) {
-                        throw new Error(`Could not parse certificate ./rootCA.crt`)
-                    }
-
                     certs.forEach(cert => {
-                    context.context.addCACert(cert.trim())
+                        context.context.addCACert(cert.trim())
                     })
 
                 } catch (error) {
@@ -192,8 +188,8 @@ class Exporter{
         this.taskMap[task.uuid] = task
         orthanc.getArchiveDicom(ids).then((path)=>{
             task.setArchive(path)
-            this._queueForSend(task)
             task.status = PENDING_SENDING
+            this._queueForSend(task)
         }).catch(
             (e)=>{
                 task.status = CREATION_ERROR

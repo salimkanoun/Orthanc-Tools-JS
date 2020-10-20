@@ -7,6 +7,9 @@ const path = require("path")
 class ExportTask{
     constructor(protocol){
         this.uuid = uuidv4()
+        if(![PROTOCOL_FTP,PROTOCOL_FTPS,PROTOCOL_SFTP,PROTOCOL_WEBDAV].includes(protocol)){
+            throw("Unsuported export protocol")
+        }
         this.protocol = protocol
         this.status = CREATING
     }
@@ -41,8 +44,8 @@ class ExportTask{
         return {
             uuid: this.uuid,
             status: this.status,
-            sent: (this.sent || 0),
-            size: (this.size || NaN)
+            sent: this.sent,
+            size: this.size 
         }
     }
 }
