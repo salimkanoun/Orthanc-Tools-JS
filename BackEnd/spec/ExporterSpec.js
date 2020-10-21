@@ -2,7 +2,7 @@
 const {Exporter} = require("../model/Exporter")
 const Orthanc = require("../model/Orthanc")
 const FtpClient =  require("basic-ftp" )
-const {ExportTask, CREATING} = require("../model/ExportTask")
+const {ExportTask, CREATING, PENDING_SENDING} = require("../model/ExportTask")
 const uuid = require("../utils/uuid")
 const fs = require('fs')
 const { resolve } = require("path")
@@ -89,7 +89,8 @@ describe('Exporter',()=>{
             let t = new ExportTask('ftps');
             exporter._queueForSend(t)
             expect(exporter._sendTaskQueue).toContain(t)
-            expect(spies.exporterSend).toHaveBeenCalled()    
+            expect(spies.exporterSend).toHaveBeenCalled()   
+            expect(t.status).toBe(PENDING_SENDING) 
         })
 
         it('should prepend tasks',()=>{

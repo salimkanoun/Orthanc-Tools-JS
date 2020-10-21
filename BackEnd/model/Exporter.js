@@ -163,6 +163,7 @@ class Exporter{
     }
 
     _queueForSend(task){
+        task.status = PENDING_SENDING
         this._sendTaskQueue.unshift(task)
         this._sendArchives()
     }
@@ -174,7 +175,6 @@ class Exporter{
         this.orthanc.getArchiveDicom(ids).then(path=>{
             task.setArchive(path)
             this._queueForSend(task)
-            task.status = PENDING_SENDING
         }).catch(
             (e)=>{
                 task.status = CREATION_ERROR
@@ -190,7 +190,6 @@ class Exporter{
         this.taskMap[task.uuid] = task
         this.orthanc.getArchiveDicom(ids).then((path)=>{
             task.setArchive(path)
-            task.status = PENDING_SENDING
             this._queueForSend(task)
         }).catch(
             (e)=>{
