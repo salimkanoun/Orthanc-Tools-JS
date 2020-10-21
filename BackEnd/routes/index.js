@@ -152,7 +152,7 @@ router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
 router.put('/monitoring/burning/options', userAdminMidelware, updateRobotOptions)
 
 //FTP & WebDav Exports
-router.post('/tools/export/ftp', exportExternMidelware, exportFtp)
-router.post('/tools/export/webdav', exportExternMidelware, exportWebDav)
-router.get('/tools/export/progress', exportExternMidelware, getExportProgress)
+router.post('/export/ftp', exportExternMidelware, exportFtp)
+router.post('/export/webdav', exportExternMidelware, exportWebDav)
+router.get('/export/:uuid/progress', exportExternMidelware, getExportProgress)
 module.exports = router

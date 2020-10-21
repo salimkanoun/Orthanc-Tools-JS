@@ -11,17 +11,17 @@ const exporter = new Exporter();
 const exportFtp = async function(req, res){
     let studies = req.body.Resources
 
-    res.json(exporter.ftpExport(studies));
+    res.json({id : exporter.ftpExport(studies)});
 }
 
 
 const exportWebDav = async function(req, res){
     let studies = req.body.Resources
-    res.json(exporter.webdavExport(studies));
+    res.json({id : exporter.webdavExport(studies)});
 }
 
 const getExportProgress = async function(req, res){
-    let uuid = req.body.uuid
+    let uuid = req.params.uuid
     if(exporter.taskMap[uuid]===undefined){
         res.status(400).send("Bad request the task uuid is unknown")
         return
