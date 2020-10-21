@@ -12,6 +12,7 @@ import ModalWarning from './ModalWarning'
 
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
+import SendFtpDropdown from "./SendFtpDropdown"
 
 
 class ExportPanel extends Component {
@@ -198,7 +199,7 @@ class ExportPanel extends Component {
                         <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm} setModal={() => this.setState({ show: true })} setButton={this.setButton} />
                     </div>
                     <div className='col-sm'>
-                        <button type='button' className="btn btn-info" onClick={this.handleClickFTP} disabled>Send To FTP</button>
+                        <SendFtpDropdown exportIds={idArray}/>
                     </div>
                     <div className='col-sm'>
                         <button type='button' className="btn btn-info" onClick={this.handleClickWebDav} disabled>Send To WebDav</button>

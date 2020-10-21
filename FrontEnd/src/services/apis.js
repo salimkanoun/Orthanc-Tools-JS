@@ -17,6 +17,8 @@ import role from './role'
 import token from './token'
 import ldap from './ldap'
 import cdBurner from './cdBurner'
+import ftp from './ftp'
+import exportTask from './exportTask'
 
 export default {
   importDicom,
@@ -37,5 +39,7 @@ export default {
   role, 
   token,
   ldap,
-  cdBurner
+  cdBurner,
+  ftp,
+  exportTask
 }
