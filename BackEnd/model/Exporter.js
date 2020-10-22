@@ -16,7 +16,7 @@ const ftpConnectionOption = {
     username: 'legrand',
     password: 'Dnmts!',
     targetFolder : '/home/legrand/test',
-    protocol : 'ftps',
+    protocol : 'sftp',
     privateKey : true,
     privateKeyPassPhrase : 'devellopement'
 }
@@ -111,7 +111,7 @@ class Exporter{
             secure : ftpConnectionOption.protocol==="ftps" 
         }).then(async()=>{
             // Manage tracking
-            ftp.trackProgress(task.getFtpProgressListener());
+            ftp.trackProgress((ftpConnectionOption.protocol==="ftp"?task.getFtpProgressListener():task.getFtpsProgressListener()));
             await ftp.uploadFrom(task.path, ftpConnectionOption.targetFolder + task.name)
         })
     }

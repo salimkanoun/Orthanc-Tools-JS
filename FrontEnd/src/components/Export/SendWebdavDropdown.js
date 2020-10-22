@@ -6,11 +6,11 @@ import apis from "../../services/apis"
 import ExportMonitorJob from "../../tools/ExportMonitorJob"
 import MonitorJob from "../../tools/MonitorJob"
 
-export default class SendFtpDropdown extends Component{
+export default class SendWebdavDropdown extends Component{
 
     state = {
         disabled : false,
-        title : "Send To FTP"
+        title : "Send To Webdav"
     }
 
     constructor(props){
@@ -22,7 +22,7 @@ export default class SendFtpDropdown extends Component{
 
         if (this.props.needConfirm) {this.props.setModal()}
 
-        let taskAnswer =  await apis.ftp.storeFtp(this.props.exportIds)
+        let taskAnswer =  await apis.webdav.storeWebdav(this.props.exportIds)
         let jobMonitoring = new ExportMonitorJob(taskAnswer.id)
 
         let self = this
@@ -55,7 +55,7 @@ export default class SendFtpDropdown extends Component{
     resetProgress(){
         this.setState({
             disabled : false,
-            title : "Send To FTP"
+            title : "Send To Webdav"
         })
 
     }

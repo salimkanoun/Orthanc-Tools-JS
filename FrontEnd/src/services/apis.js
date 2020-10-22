@@ -19,6 +19,7 @@ import ldap from './ldap'
 import cdBurner from './cdBurner'
 import ftp from './ftp'
 import exportTask from './exportTask'
+import webdav from './webdav'
 
 export default {
   importDicom,
@@ -41,5 +42,6 @@ export default {
   ldap,
   cdBurner,
   ftp,
-  exportTask
+  exportTask,
+  webdav
 }

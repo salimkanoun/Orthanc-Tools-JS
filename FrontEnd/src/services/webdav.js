@@ -1,6 +1,6 @@
 import { toastifySuccess, toastifyError } from './toastify'
 
-const ftp = {
+const webdav = {
 
     /*getPeers(){
         return fetch('/api/peers' )
@@ -67,9 +67,9 @@ const ftp = {
         }).catch(error => toastifyError('Echo ' + peerName + ' Error'))
     },*/ 
 
-    storeFtp(orthancIDsArray){
+    storeWebdav(orthancIDsArray){
 
-        const storeFtpOption = {
+        const storeWebdavOption = {
             method: 'POST', 
             headers: {
               Accept: 'application/json',
@@ -81,7 +81,7 @@ const ftp = {
             })
         }
 
-        return fetch ('/api/export/ftp', storeFtpOption ).then((answer) => {
+        return fetch ('/api/export/webdav', storeWebdavOption ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch(error => {
@@ -90,4 +90,4 @@ const ftp = {
     }
 }
 
-export default ftp
+export default webdav

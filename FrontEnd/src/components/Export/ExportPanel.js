@@ -13,6 +13,7 @@ import ModalWarning from './ModalWarning'
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 import SendFtpDropdown from "./SendFtpDropdown"
+import SendWebdavDropdown from "./SendWebdavDropdown"
 
 
 class ExportPanel extends Component {
@@ -202,7 +203,7 @@ class ExportPanel extends Component {
                         <SendFtpDropdown exportIds={idArray}/>
                     </div>
                     <div className='col-sm'>
-                        <button type='button' className="btn btn-info" onClick={this.handleClickWebDav} disabled>Send To WebDav</button>
+                        <SendWebdavDropdown exportIds={idArray}/>
                     </div>
                 </div>
                 <ModalWarning show={this.state.show} onHide={() => this.setState({ show: false })} button={this.state.button} />

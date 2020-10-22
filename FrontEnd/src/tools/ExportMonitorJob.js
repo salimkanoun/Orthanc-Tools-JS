@@ -2,6 +2,10 @@ import apis from '../services/apis'
 import MonitorJob from './MonitorJob'
 
 export default class ExportMonitorJob extends MonitorJob{
+    constructor(jobID,interval=1000){
+        super(jobID,interval)
+    }
+
     cancel(){
         console.warn("export job supression not implemented")
     }
@@ -10,7 +14,7 @@ export default class ExportMonitorJob extends MonitorJob{
         const taskData = await apis.exportTask.getTaskInfos(jobUuid);
         const taskStatus = taskData.status
 
-        this.updateCallBack(taskData.sent/taskData.size*100)
+        this.updateCallBack((taskStatus === ExportMonitorJob.Sending ? Math.round(taskData.sent/taskData.size*100):0))
 
         if (taskStatus === ExportMonitorJob.Success || taskStatus < 0 ) {
             this.stopMonitoringJob()
@@ -20,3 +24,4 @@ export default class ExportMonitorJob extends MonitorJob{
 }
 
 ExportMonitorJob.Success = 3
+ExportMonitorJob.Sending = 2
