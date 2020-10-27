@@ -1,4 +1,4 @@
-const uuid = require('../utils/uuid')
+const uuid = require('../../utils/uuid')
 const fs =  require("fs")
 const path = require("path")
 

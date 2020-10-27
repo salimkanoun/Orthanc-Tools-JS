@@ -1,11 +1,13 @@
 const {ExportTask ,CREATING,PENDING_SENDING,SENDING, CREATION_ERROR, SEND_ERROR, SENT, PROTOCOL_FTP,PROTOCOL_SFTP,PROTOCOL_FTPS,PROTOCOL_WEBDAV} = require( "./ExportTask");
-const Orthanc = require("./Orthanc")
+const Orthanc = require("../Orthanc")
 const fs = require("fs")
 const SftpClient = require("ssh2-sftp-client") 
 const FtpClient =  require("basic-ftp" )
 const tls = require("tls") 
 const path = require("path")
 const {createClient} = require("webdav")
+
+// TODO : Check le changement de port webdav
 
 let orthanc = new Orthanc()
 const ftp = new FtpClient.Client()
