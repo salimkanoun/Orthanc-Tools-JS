@@ -1,9 +1,8 @@
 const crypto = require('crypto')
 const db = require('../../database/models')
+const convert = require('../../utils/convert')
 
 const algo = 'aes256'
-//TODO IMPORTANT! Remove the constant and change the key
-const key = '&F)J@NcRfUjXn2r5u8x/A?D(G-KaPdSg'
 
 class Endpoint{
     constructor (params){
@@ -139,34 +138,21 @@ class Endpoint{
         await db.Endpoint.destroy({where:{id:id}})
     }
 
-    static _toHexString(byteArray) {
-        return Array.prototype.map.call(byteArray, function(byte) {
-            return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-        }).join('');
-    }
-
-    static _toByteArray(hexString) {
-        var result = [];
-        for (var i = 0; i < hexString.length; i += 2) {
-            result.push(parseInt(hexString.substr(i, 2), 16));
-        }
-        return new Uint8Array(result);
-    }
 
     static _encryptIdentifiants(username, password){
         username = Buffer.from(username, 'utf8').toString('hex')
         password = Buffer.from(password, 'utf8').toString('hex')
         let iv = new Int8Array(16)
         crypto.randomFillSync(iv)
-        let cypher = crypto.createCipheriv(algo,key,iv)
+        let cypher = crypto.createCipheriv(algo,process.env.HASH_KEY,iv)
         let identifiant = cypher.update(username+':'+password,"utf8","hex")+ cypher.final('hex');
-        return this._toHexString(iv)+':'+identifiant
+        return convert.toHexString(iv)+':'+identifiant
     }
 
     static _decryptIdentifiants(ids){
         ids = ids.split(':')
-        let iv = this._toByteArray(ids[0])
-        let decypher = crypto.createDecipheriv(algo,key,iv)
+        let iv = convert.toByteArray(ids[0])
+        let decypher = crypto.createDecipheriv(algo,process.env.HASH_KEY,iv)
         let usernamePassword = (decypher.update(ids[1],"hex","utf8") + decypher.final('utf8')).split(':');
         let username = decodeURIComponent(usernamePassword[0].replace(/\s+/g, '').replace(/[0-9a-f]{2}/g, '%$&'))
         let password = decodeURIComponent(usernamePassword[1].replace(/\s+/g, '').replace(/[0-9a-f]{2}/g, '%$&'))

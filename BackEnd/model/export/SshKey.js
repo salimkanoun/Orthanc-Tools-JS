@@ -1,6 +1,9 @@
 const db = require("../../database/models");
 const fs = require('fs');
-const crypto = require('crypto')
+const crypto = require('crypto');
+const convert = require("../../utils/convert");
+
+const algo = 'aes256'
 
 class SshKey{
     constructor(params){
@@ -8,11 +11,49 @@ class SshKey{
         this.label = params.label
         this.path = params.path || null
         this.pass = params.pass || null
+
+        if(this.id!==null&&this.pass!==''){
+            ids = ids.split(':')
+            let iv = convert.toByteArray(ids[0])
+            let decypher = crypto.createDecipheriv(algo,process.env.HASH_KEY,iv)
+            let pass = (decypher.update(ids[1],"hex","utf8") + decypher.final('utf8')).split(':');
+            this.pass = decodeURIComponent(pass.replace(/\s+/g, '').replace(/[0-9a-f]{2}/g, '%$&'))
+        }
     }
 
     async createSshKey(){
+        
         this.id = await SshKey.createSshKey(this)
         return this.id;
+    }
+
+    static async createSshKey(key){
+        try {
+            let queryFields = {
+                ...key
+            }
+            if(this.pass){
+                let iv = new Int8Array(16)
+                crypto.randomFillSync(iv)
+                let cypher = crypto.createCipheriv(algo,process.env.HASH_KEY,iv)
+                let pass = cypher.update(Buffer.from(this.pass, 'utf8').toString('hex'),"utf8","hex")+ cypher.final('hex');
+                queryFields.pass = convert.toHexString(iv)+':'+pass
+            }
+
+            let sshKey = await db.SshKey.create(queryFields)
+            return sshKey.id
+        } catch (error) {
+            console.error(error)
+            throw error
+        }
+    }
+
+    static async getFromId(id){
+        return new SshKey(await db.SshKey.findOne({where:{id:id}}))
+    }
+
+    static async getAllSshKey(){
+        return await db.SshKey.findAll().map(x=>new SshKey(x));
     }
 
     async setKeyContent(chunk){
@@ -31,24 +72,6 @@ class SshKey{
         }
 
         this.set({path:path})
-    }
-
-    static async createSshKey(key){
-        try {
-            let sshKey = await db.SshKey.create(key)
-            return sshKey.id
-        } catch (error) {
-            console.error(error)
-            throw error
-        }
-    }
-
-    static async getFromId(id){
-        return new SshKey(await db.SshKey.findOne({where:{id:id}}))
-    }
-
-    static async getAllSshKey(){
-        return await db.SshKey.findAll().map(x=>new SshKey(x));
     }
 
     async set(params){
