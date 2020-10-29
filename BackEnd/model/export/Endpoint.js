@@ -1,7 +1,7 @@
 const crypto = require('crypto')
 const db = require('../../database/models')
 const convert = require('../../utils/convert')
-
+const SshKey = require('./SshKey')
 const algo = 'aes256'
 
 class Endpoint{
@@ -62,7 +62,7 @@ class Endpoint{
             fields.password = undefined;
             fields.username = undefined;
     
-            if(server.password === ''){
+            if(!server.password){
                 fields.identifiant = server.username
             }else{
                 fields.identifiant = Endpoint._encryptIdentifiants(server.username, server.password)
@@ -87,8 +87,8 @@ class Endpoint{
         }
         fields.password = undefined
         fields.username = undefined
-        fields.pass = server.password !== '' 
-        if(server.password === ''){
+        fields.pass = !!server.password
+        if(!server.password){
             fields.identifiants = server.username
         }else{
             fields.identifiants = Endpoint._encryptIdentifiants(server.username, server.password)
@@ -159,7 +159,8 @@ class Endpoint{
         return [username, password]
     }
     
-    getSendable(){
+    async getSendable(){
+        let sshKey = (this.sshKey!==null?(await SshKey.getFromId(this.sshKey)).getSendable():null)
         return {
             id:this.id,
             label:this.label,
@@ -169,7 +170,7 @@ class Endpoint{
             username: this.username,
             port: this.port,
             digest: this.digest,
-            sshKey:this.sshKey,
+            sshKey:sshKey ,
             ssl: this.ssl
         }
     }

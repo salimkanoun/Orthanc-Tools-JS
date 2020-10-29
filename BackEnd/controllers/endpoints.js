@@ -13,7 +13,13 @@ const newEndpoint = async function(req, res){
 
 const allEndpoints = async function(req, res){
     try {
-        res.json((await Endpoint.getAllEndpoints()).map(x=>x.getSendable()));
+        let endpoints = (await Endpoint.getAllEndpoints())
+        let response = []
+        for (let index = 0; index < endpoints.length; index++) {
+            const element = endpoints[index];
+            response.push(await element.getSendable())
+        }
+        res.json(response);
     } catch (error) {
         console.error(error)
         res.status(400).send(error)
@@ -31,7 +37,7 @@ const updateEndpoint = async function(){
     }
 }
 
-const removeEndpoint = async function(res,req){
+const removeEndpoint = async function(req,res){
     try {
         let endpoint = await Endpoint.getFromId(req.body.id)
         await endpoint.removeEndpoint()

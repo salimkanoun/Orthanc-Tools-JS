@@ -29,7 +29,7 @@ class Certificate{
         this.label = params.label || this.label
         this.path = params.path || this.path
 
-        this.id = await Certificate.upsert(this)
+        this.id = await db.Certificate.upsert(this)
         return this.id;
     }
 

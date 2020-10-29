@@ -2,6 +2,7 @@ const db = require("../../database/models");
 const fs = require('fs');
 const crypto = require('crypto');
 const convert = require("../../utils/convert");
+const { Console } = require("console");
 
 const algo = 'aes256'
 
@@ -12,11 +13,11 @@ class SshKey{
         this.path = params.path || null
         this.pass = params.pass || null
 
-        if(this.id!==null&&this.pass!==''){
-            ids = ids.split(':')
-            let iv = convert.toByteArray(ids[0])
+        if(this.id!==null&&this.pass){
+            let encryptedPass = this.pass.split(':')
+            let iv = convert.toByteArray(encryptedPass[0])
             let decypher = crypto.createDecipheriv(algo,process.env.HASH_KEY,iv)
-            let pass = (decypher.update(ids[1],"hex","utf8") + decypher.final('utf8')).split(':');
+            let pass = decypher.update(encryptedPass[1],"hex","utf8") + decypher.final('utf8');
             this.pass = decodeURIComponent(pass.replace(/\s+/g, '').replace(/[0-9a-f]{2}/g, '%$&'))
         }
     }
@@ -32,11 +33,11 @@ class SshKey{
             let queryFields = {
                 ...key
             }
-            if(this.pass){
+            if(key.pass){
                 let iv = new Int8Array(16)
                 crypto.randomFillSync(iv)
                 let cypher = crypto.createCipheriv(algo,process.env.HASH_KEY,iv)
-                let pass = cypher.update(Buffer.from(this.pass, 'utf8').toString('hex'),"utf8","hex")+ cypher.final('hex');
+                let pass = cypher.update(Buffer.from(key.pass, 'utf8').toString('hex'),"utf8","hex")+ cypher.final('hex');
                 queryFields.pass = convert.toHexString(iv)+':'+pass
             }
 
@@ -80,11 +81,16 @@ class SshKey{
         this.path = params.path || this.path
         this.pass = params.pass || this.pass
 
-        console.log(params)
-        console.log(this)
+        if(this.pass){
+            let iv = new Int8Array(16)
+            crypto.randomFillSync(iv)
+            let cypher = crypto.createCipheriv(algo,process.env.HASH_KEY,iv)
+            let pass = cypher.update(Buffer.from(this.pass, 'utf8').toString('hex'),"utf8","hex")+ cypher.final('hex');
+            this.pass = convert.toHexString(iv)+':'+pass
+        }
 
-        this.id = (await db.SshKey.upsert(this)).id
-        return this.id;
+        await db.SshKey.upsert(this)
+        return this.id
     }
 
     async deleteSshKey(){
@@ -100,7 +106,8 @@ class SshKey{
         return {
             id: this.id,
             label: this.label,
-            uploaded: !!this.path
+            uploaded: !!this.path,
+            pass: !!this.pass
         }
     }
 

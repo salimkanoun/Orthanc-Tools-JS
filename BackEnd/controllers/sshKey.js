@@ -49,7 +49,6 @@ const removeKey = async function(req,res){
         await key.deleteSshKey()
         res.send('Done')
     } catch(error){
-
         console.error(error)
         res.status(400).send(error)
     }

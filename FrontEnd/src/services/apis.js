@@ -20,6 +20,9 @@ import cdBurner from './cdBurner'
 import ftp from './ftp'
 import exportTask from './exportTask'
 import webdav from './webdav'
+import certificates from './certificates'
+import sshKeys from './sshKeys'
+import endpoints from './endpoints'
 
 export default {
   importDicom,
@@ -43,5 +46,8 @@ export default {
   cdBurner,
   ftp,
   exportTask,
-  webdav
+  webdav,
+  certificates,
+  sshKeys,
+  endpoints
 }
