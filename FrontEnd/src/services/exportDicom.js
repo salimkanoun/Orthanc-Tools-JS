@@ -1,5 +1,6 @@
 import { toastifyError } from './toastify'
 import streamSaver from 'streamsaver'
+streamSaver.mitm = window.location.origin+'/streamSaver/mitm.html'
 
 const exportDicom = {
 
@@ -76,7 +77,7 @@ const exportDicom = {
         }
 
     }).then((answer) => {
-        streamSaver.mitm = window.location.origin+'/streamSaver/mitm.html'
+        
         if (!answer.ok) throw answer
         const fileStream = streamSaver.createWriteStream('Dicom_'+jobID+'.zip')
 
