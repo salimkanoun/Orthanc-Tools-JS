@@ -41,6 +41,23 @@ const userAuthMidelware = function (req, res, next) {
   next() // pass the execution off to whatever request the client intended;
 }
 
+const isCurrentUserOrAdminMidelWare = function (req, res, next){
+
+  let decoded;
+
+  try {
+    decoded = decode(req, res);
+  }
+  catch(err) { return }
+
+  if(decoded.admin || decoded.username === req.params.username) {
+    next() // pass the execution off to whatever request the client intended
+  } else {
+    res.status(401).send('Unauthorized');
+  }
+
+}
+
 const userAdminMidelware = async function (req, res, next) {
   
   let decoded;
@@ -202,4 +219,4 @@ const modifyMidelware = async function (req, res, next) {
 }
 
 module.exports = { userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
-  exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware}    
+  exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, isCurrentUserOrAdminMidelWare}    

@@ -1,6 +1,6 @@
 import { toastifySuccess, toastifyError } from './toastify'
 
-const queryRobot = {
+const retrieveRobot = {
 
     createRobot(username, projectName, retrieveArray){
 
@@ -112,4 +112,4 @@ const queryRobot = {
 
 }
 
-export default queryRobot
+export default retrieveRobot

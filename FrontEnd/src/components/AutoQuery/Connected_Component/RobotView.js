@@ -35,6 +35,7 @@ class RobotView extends Component {
         this.sendToAnon = this.sendToAnon.bind(this)
         this.sendToExport = this.sendToExport.bind(this)
         this.sendToDelete = this.sendToDelete.bind(this)
+        this.handleClickDeleteRobot = this.handleClickDeleteRobot.bind(this)
         
     }
 
@@ -194,7 +195,7 @@ class RobotView extends Component {
     }
 
     refreshHandler(){
-        apis.queryRobot
+        apis.retrieveRobot
         .getRobotDetails(this.props.username)
         .then( (answerData) => {
             
@@ -210,7 +211,7 @@ class RobotView extends Component {
 
             let newTotalPercentageProgress = 0
             let newPercentageFailure = 0
-            if(answerData.totalInstances !== 0){
+            if(answerData.totalInstances !== 0 && answerData.totalInstances !== undefined){
                 newTotalPercentageProgress = Math.round((answerData.progression.Success / answerData.progression.TotalInstances)*100)
                 newPercentageFailure = Math.round((answerData.progression.Failure / answerData.progression.TotalInstances)*100)
             }
@@ -223,12 +224,12 @@ class RobotView extends Component {
             })
 
         }).catch(error =>{
-
+            console.log(error)
         })
     }
 
     deleteQueryHandler(rowIndex, refreshHandler){
-        apis.queryRobot
+        apis.retrieveRobot
         .deleteRobotItem(this.props.username, rowIndex)
         .then( () => {
             refreshHandler()
@@ -240,6 +241,12 @@ class RobotView extends Component {
         return (<div className="text-center">
             <input type="button" className='btn btn-danger' onClick = {() => formatExtraData.deleteQueryHandler(rowIndex, formatExtraData.refreshHandler)} value = "Remove" />
             </div>)
+    }
+
+    async handleClickDeleteRobot(){
+        console.log('delted Clicked')
+        await apis.retrieveRobot.deleteRobot(this.props.username);
+        await this.refreshHandler();
     }
 
     render() {
@@ -265,6 +272,7 @@ class RobotView extends Component {
                         </CircularProgressbarWithChildren>
                     </div>
                 </div>
+                <input type='button' className="btn btn-danger" onClick={this.handleClickDeleteRobot} value="Delete Robot" />
                 <BootstrapTable ref={n => this.node = n} wrapperClasses="table-responsive" keyField="Key" striped={true} rowClasses = {this.rowClasses} selectRow = {this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
                 <AnonExportDeleteSendButton onAnonClick = {this.sendToAnon} onExportClick={this.sendToExport} onDeleteClick={this.sendToDelete} />
             </div>

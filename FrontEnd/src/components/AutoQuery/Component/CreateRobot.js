@@ -23,7 +23,7 @@ export default class CreateRobot extends Component {
   async createRobot () {
     //Send the retrieve array to back end*
     //SK ICI USERNAME COURRANT A INJECTER
-    await apis.queryRobot.createRobot("salim", this.state.projectName, this.props.getResultArray())
+    await apis.retrieveRobot.createRobot("salim", this.state.projectName, this.props.getResultArray())
 
     this.props.switchTab(AutoQueryRoot.MyRobot)
 
