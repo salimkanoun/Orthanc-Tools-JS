@@ -144,6 +144,18 @@ class TableResultsStudiesSeries extends Component {
         },
         style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     },{
+        dataField: 'RequestedProcedureDescription',
+        text: 'Requested Procedure Description',
+        sort: true,
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }), 
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('RequestedProcedureDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='RequestedProcedureDescription' />
+        },
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+    },{
         dataField: 'StudyInstanceUID',
         hidden: true,
         csvExport: false
