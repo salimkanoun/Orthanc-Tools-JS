@@ -53,7 +53,6 @@ class Modify extends Component {
     }
 
     checkRemember(){
-        console.log(this.state)
         apis.localStorage.setlocalStorage('keepSource', this.state.keepSource)
         apis.localStorage.setlocalStorage('removePrivateTags', this.state.removePrivateTags)
 
@@ -102,7 +101,7 @@ class Modify extends Component {
             jobMonitoring.onFinish(function (state){
                 if(state === MonitorJob.Success){
                     self.successToast(id)
-                    self.props.refresh ? self.props.refresh() : self.props.refreshSerie()
+                    self.props.refresh()
                 }else if (state === MonitorJob.Failure){
                     self.failToast(id)
                 }
