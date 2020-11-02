@@ -76,8 +76,9 @@ const exportDicom = {
         }
 
     }).then((answer) => {
+        streamSaver.mitm = window.location.origin+'/streamSaver/mitm.html'
         if (!answer.ok) throw answer
-        const fileStream = streamSaver.createWriteStream('export.zip')
+        const fileStream = streamSaver.createWriteStream('Dicom'+jobID+'.zip')
 
         const readableStream = answer.body
 
