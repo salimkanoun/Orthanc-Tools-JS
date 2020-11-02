@@ -9,7 +9,7 @@ const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, 
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
-const { exportFtp, exportWebDav } = require('../controllers/export')
+const { exportFtp, exportWebDav, getExportProgress} = require('../controllers/export')
 
 const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
 
@@ -21,6 +21,12 @@ const { postExportDicom } = require('../controllers/exportDicom')
 
 const { userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
     exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware } = require('../midelwares/authentication')
+const { route } = require('express/lib/router')
+const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
+const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate} = require('../controllers/certificates')
+const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
+
+
 
 
 
@@ -152,7 +158,25 @@ router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
 router.put('/monitoring/burning/options', userAdminMidelware, updateRobotOptions)
 
 //FTP & WebDav Exports
-router.post('/tools/export/ftp', exportExternMidelware, exportFtp)
-router.post('/tools/export/webdav', exportExternMidelware, exportWebDav)
+router.post('/export/ftp', exportExternMidelware, exportFtp)
+router.post('/export/webdav', exportExternMidelware, exportWebDav)
+router.get('/export/:uuid/progress', exportExternMidelware, getExportProgress)
+
+router.get('/endpoints/', userAdminMidelware, allEndpoints)
+router.post('/endpoints/update', userAdminMidelware, updateEndpoint)
+router.post('/endpoints/create', userAdminMidelware, newEndpoint)
+router.delete('/endpoints/', userAdminMidelware, removeEndpoint)
+
+router.get('/certificates/', userAdminMidelware, allCertificates)
+router.post('/certificates/update', userAdminMidelware, updateCertificate)
+router.post('/certificates/create', userAdminMidelware, newCertificate)
+router.delete('/certificates/', userAdminMidelware, removeCertificate)
+router.post('/certificates/upload/:id',userAdminMidelware,uploadCertificate)
+
+router.get('/keys/', userAdminMidelware, allKeys)
+router.post('/keys/update', userAdminMidelware, updateKey)
+router.post('/keys/create', userAdminMidelware, newKey)
+router.delete('/keys/', userAdminMidelware, removeKey)
+router.post('/keys/upload/:id', userAdminMidelware, uploadKey)
 
 module.exports = router

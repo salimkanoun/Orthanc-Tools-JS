@@ -1,4 +1,4 @@
-const CdBurner = require('../../model/monitoring/cdBurner/CdBurner')
+const CdBurner = require('../../model/monitoring/cdburner/CdBurner')
 
 const Orthanc = require('../../model/Orthanc')
 const db = require('../../database/models')
