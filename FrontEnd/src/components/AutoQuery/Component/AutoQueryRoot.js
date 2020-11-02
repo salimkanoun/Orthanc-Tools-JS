@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import TableQuery from '../Connected_Component/TableQuery'
 import Results from '../Connected_Component/Results'
-import RobotView from './RobotView'
+import RobotView from '../Connected_Component/RobotView'
 
 /**
  * Root Panel of AutoQuery module

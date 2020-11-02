@@ -1,6 +1,12 @@
 version: "2"
 services:
 
+    redis:
+        image: "redis:alpine"
+        hostname: redis
+        ports:
+          - "6379:6379"
+          
     orthanctoolsjs:
         image: salimkanoun/orthanctoolsjs
         container_name: orthanctoolsjs
