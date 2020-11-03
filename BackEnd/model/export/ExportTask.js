@@ -40,7 +40,6 @@ class ExportTask{
     }
 
     getSendable(){
-        console.log(this)
         return {
             uuid: this.uuid,
             status: this.status,

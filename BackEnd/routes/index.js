@@ -9,7 +9,7 @@ const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, 
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
-const { exportFtp, exportWebDav, getExportProgress} = require('../controllers/export')
+const { exportFtp, exportWebDav, getExportProgress, exportArchive} = require('../controllers/export')
 
 const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
 
@@ -158,6 +158,7 @@ router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
 router.put('/monitoring/burning/options', userAdminMidelware, updateRobotOptions)
 
 //FTP & WebDav Exports
+router.post('/export/', exportExternMidelware, exportArchive)
 router.post('/export/ftp', exportExternMidelware, exportFtp)
 router.post('/export/webdav', exportExternMidelware, exportWebDav)
 router.get('/export/:uuid/progress', exportExternMidelware, getExportProgress)
