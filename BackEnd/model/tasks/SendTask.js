@@ -12,7 +12,6 @@ let exporter = new Exporter();
 class SendTask extends AbstractLeafTask{
     constructor(filePath, endpoint){
         super()
-        this.progress = 0
 
         this.file = {
             filePath,

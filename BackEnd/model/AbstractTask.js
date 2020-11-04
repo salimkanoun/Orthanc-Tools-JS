@@ -7,15 +7,15 @@ class AbstractTask{
     }
 
     async run(){
-        throw "Not Implemented"
+        throw typeof(this)+":run() Not Implemented"
     }
     
     async getProgress(){
-        throw "Not Implemented"
+        throw typeof(this)+":getProgress() : Not Implemented"
     }
 
     async getState(){
-        throw "Not Implemented"
+        throw typeof(this)+":getState() :  Not Implemented"
     }
 }
 

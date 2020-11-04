@@ -25,6 +25,7 @@ const { route } = require('express/lib/router')
 const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
 const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
+const { getTaskStatus, getTaskProgress } = require('../controllers/task')
 
 
 
@@ -162,6 +163,9 @@ router.post('/export/', exportExternMidelware, exportArchive)
 router.post('/export/ftp', exportExternMidelware, exportFtp)
 router.post('/export/webdav', exportExternMidelware, exportWebDav)
 router.get('/export/:uuid/progress', exportExternMidelware, getExportProgress)
+
+router.get('/tasks/:id/progress',getTaskProgress)
+router.get('/tasks/:id/status',getTaskStatus)
 
 router.get('/endpoints/', userAdminMidelware, allEndpoints)
 router.post('/endpoints/update', userAdminMidelware, updateEndpoint)

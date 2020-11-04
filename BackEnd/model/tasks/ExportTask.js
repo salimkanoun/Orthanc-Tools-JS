@@ -24,10 +24,10 @@ class ExportTask extends AbstractTask{
         let sendState = (this.createTask?await this.createTask.getState():'wait')
 
         if(createState==='wait' && createState===sendState) return 'pending archiving'
-        else if(createState==='active' && createState==='wait') return 'archiving'
-        else if(createState==='completed' && createState==='wait') return 'pending sending'
-        else if(createState==='completed' && createState==='active') return 'sending'
-        else if(createState==='completed' && createState==='complete') return 'sent'
+        else if(createState==='active' && sendState==='wait') return 'archiving'
+        else if(createState==='completed' && sendState==='wait') return 'pending sending'
+        else if(createState==='completed' && sendState==='active') return 'sending'
+        else if(createState==='completed' && createState===sendState) return 'sent'
         else return 'failed'
     }
 

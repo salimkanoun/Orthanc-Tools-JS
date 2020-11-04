@@ -17,6 +17,8 @@ class Exporter{
         if(instance)return instance
         instance = this
 
+        this._jobs = {}
+
         //Declaration for the send queue
         this._sendQueue = new Queue('send',{
             redis:{
@@ -24,6 +26,10 @@ class Exporter{
                 port: process.env.BULL_PORT,
                 password: process.env.BULL_PASSWORD
             }
+        })
+
+        this._sendQueue.on('progress', async (job,data)=>{
+            this._jobs[job.id]._progress = await job.progress()
         })
 
         //Adding a processor for ftp  export tasks  
@@ -69,7 +75,7 @@ class Exporter{
         await ftp.access(endpoint).then(async()=>{
             //Start tracking
             ftp.trackProgress(info=>{
-                job.progress(info.bytesOverall/archive.size)
+                job.progress(info.bytesOverall/archive.size*100)
             });
             //Start Uploading
             await ftp.uploadFrom(archive.filePath, path.join(endpoint.targetFolder,  archive.name))
@@ -88,7 +94,7 @@ class Exporter{
             //Starting the transfer
             sftp.fastPut(archive.filePath,path.join(endpoint.targetFolder, archive.name),{
                 step:  (total_transferred, chunk, total)=>{
-                    job.progress(total_transferred/archive.size);
+                    job.progress(total_transferred/archive.size*100);
                 }
             }).then(()=>sftp.end())
         })
@@ -115,7 +121,7 @@ class Exporter{
                 let sent = 0
                 rs.on('data', (chunk)=>{
                     sent += chunk.length
-                    job.progress(sent/archive.size)
+                    job.progress(sent/archive.size*100).catch((err=>console.error(err)))
                 })
                 rs.on('end', resolve)
                 rs.on('error', reject)
@@ -149,7 +155,12 @@ class Exporter{
                 break;
         }
         return this._sendQueue.add({'ftp':'send-over-ftp','sftp':'send-over-sftp','webdav':'send-over-webdav'}[protocol],
-            {endpoint:formatedEndpoint,archive})
+            {endpoint:formatedEndpoint,archive}).then((job)=>{
+                this._jobs[job.id] = job
+                return job
+            })
+
+        
     }
 
 

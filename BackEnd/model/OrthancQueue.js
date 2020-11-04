@@ -11,7 +11,12 @@ class OrthancQueue {
 
     instance = this
 
+    this._jobs = {}
+
     this.queue = new Queue('orthanc')
+    this.queue.on('progress', async (job,data)=>{
+      this._jobs[job.id]._progress = await job.progress()
+    })
     this.queue.process('create-archive',OrthancQueue._getArchiveDicom)
   }
   
@@ -55,6 +60,13 @@ class OrthancQueue {
       })
     }).catch((error)=>{
       done(error)
+    })
+  }
+
+  queueGetArchive(orthancIds,transcoding){
+    return this.queue.add('create-archive', {orthancIds, transcoding}).then((job)=>{
+      this._jobs[job.id] = job
+      return job
     })
   }
 }

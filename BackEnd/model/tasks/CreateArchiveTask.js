@@ -1,9 +1,9 @@
-const AbstractTask = require('../AbstractTask')
+const AbstractLeafTask = require('../AbstractLeafTask')
 const OrthancQueue = require('../OrthancQueue')
 
 let orthanc = new OrthancQueue();
 
-class CreateArchiveTask extends AbstractTask{
+class CreateArchiveTask extends AbstractLeafTask{
     constructor(studies, transcoding = null){
         super()
         this.studies = studies
@@ -11,7 +11,7 @@ class CreateArchiveTask extends AbstractTask{
     }
 
     async run(){
-        this.job = await orthanc.queue.add('create-archive',{orthancIds:this.studies,transcoding:this.transcoding})
+        this.job = await orthanc.queueGetArchive(this.studies,this.transcoding)
         return (await this.job.finished()).path
     }
 }
