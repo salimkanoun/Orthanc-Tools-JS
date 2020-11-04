@@ -12,9 +12,7 @@ import ModalWarning from './ModalWarning'
 
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
-import SendFtpDropdown from "./SendFtpDropdown"
-import SendWebdavDropdown from "./SendWebdavDropdown"
-
+import SendExternalDropdown from "./SendExternalDropdown"
 
 class ExportPanel extends Component {
 
@@ -22,6 +20,7 @@ class ExportPanel extends Component {
         currentStudy: '',
         aets: [],
         peers: [],
+        endpoints: [],
         show: false,
         button: ''
     }
@@ -42,9 +41,11 @@ class ExportPanel extends Component {
     async componentDidMount() {
         let aets = await apis.aets.getAets()
         let peers = await apis.peers.getPeers()
+        let endpoints = await apis.endpoints.getEndpoints()
         this.setState({
             aets: aets,
-            peers: peers
+            peers: peers,
+            endpoints: endpoints
         })
     }
 
@@ -200,10 +201,7 @@ class ExportPanel extends Component {
                         <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm} setModal={() => this.setState({ show: true })} setButton={this.setButton} />
                     </div>
                     <div className='col-sm'>
-                        <SendFtpDropdown exportIds={idArray}/>
-                    </div>
-                    <div className='col-sm'>
-                        <SendWebdavDropdown exportIds={idArray}/>
+                        <SendExternalDropdown endpoints={this.state.endpoints} exportIds={idArray}/>
                     </div>
                 </div>
                 <ModalWarning show={this.state.show} onHide={() => this.setState({ show: false })} button={this.state.button} />

@@ -18,11 +18,12 @@ import token from './token'
 import ldap from './ldap'
 import cdBurner from './cdBurner'
 import ftp from './ftp'
-import exportTask from './exportTask'
+import task from './task'
 import webdav from './webdav'
 import certificates from './certificates'
 import sshKeys from './sshKeys'
 import endpoints from './endpoints'
+import exportToExternal from './exportToExternal'
 
 export default {
   importDicom,
@@ -45,9 +46,10 @@ export default {
   ldap,
   cdBurner,
   ftp,
-  exportTask,
+  task,
   webdav,
   certificates,
   sshKeys,
-  endpoints
+  endpoints,
+  exportToExternal
 }

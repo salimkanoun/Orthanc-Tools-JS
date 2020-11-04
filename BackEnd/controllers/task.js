@@ -10,8 +10,7 @@ const getTaskProgress = async(req,res)=>{
         if(!(req.params.id in AbstractTask.taskIndex))
             throw "invalid task id"
         
-        console.log(await AbstractTask.taskIndex[req.params.id])
-        res.json(await AbstractTask.taskIndex[req.params.id].getProgress())
+            res.json(await AbstractTask.taskIndex[req.params.id].getProgress())
     } catch (error) {
         console.error(error)
         res.status(400).send(error)

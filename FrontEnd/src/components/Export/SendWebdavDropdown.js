@@ -3,7 +3,7 @@ import Dropdown from "react-bootstrap/Dropdown"
 import DropdownButton from "react-bootstrap/DropdownButton"
 
 import apis from "../../services/apis"
-import ExportMonitorJob from "../../tools/ExportMonitorJob"
+import MonitorTask from "../../tools/ExportMonitorJob"
 import MonitorJob from "../../tools/MonitorJob"
 
 export default class SendWebdavDropdown extends Component{
@@ -23,7 +23,7 @@ export default class SendWebdavDropdown extends Component{
         if (this.props.needConfirm) {this.props.setModal()}
 
         let taskAnswer =  await apis.webdav.storeWebdav(this.props.exportIds)
-        let jobMonitoring = new ExportMonitorJob(taskAnswer.id)
+        let jobMonitoring = new MonitorTask(taskAnswer.id)
 
         let self = this
         jobMonitoring.onUpdate(function (progress) {

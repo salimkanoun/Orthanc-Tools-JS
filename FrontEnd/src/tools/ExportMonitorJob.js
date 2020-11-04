@@ -1,7 +1,7 @@
 import apis from '../services/apis'
 import MonitorJob from './MonitorJob'
 
-export default class ExportMonitorJob extends MonitorJob{
+export default class MonitorTask extends MonitorJob{
     constructor(jobID,interval=1000){
         super(jobID,interval)
     }
@@ -11,17 +11,14 @@ export default class ExportMonitorJob extends MonitorJob{
     }
 
     async jobMonitoring(jobUuid){
-        const taskData = await apis.exportTask.getTaskInfos(jobUuid);
-        const taskStatus = taskData.status
+        const taskProgress = await apis.task.getTaskProgress(jobUuid);
+        const taskStatus = await apis.task.getTaskStatus(jobUuid)
 
-        this.updateCallBack((taskStatus === ExportMonitorJob.Sending ? Math.round(taskData.sent/taskData.size*100):0))
+        this.updateCallBack({taskProgress,taskStatus})
 
-        if (taskStatus === ExportMonitorJob.Success || taskStatus < 0 ) {
+        if (taskProgress.total === 100) {
             this.stopMonitoringJob()
-            this.finishCallback((taskStatus === ExportMonitorJob.Success ? MonitorJob.Success : MonitorJob.Failure))
+            this.finishCallback({taskProgress,taskStatus})
         }
     }
 }
-
-ExportMonitorJob.Success = 3
-ExportMonitorJob.Sending = 2
