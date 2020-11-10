@@ -1,5 +1,5 @@
 const exportToExternal = {
-    exportStudiesToExternal(orthancIDsArray, endpoint){
+    exportStudiesToExternal(username,orthancIDsArray, endpoint){
         const storeFtpOption = {
             method: 'POST', 
             headers: {
@@ -12,7 +12,7 @@ const exportToExternal = {
             })
         }
 
-        return fetch ('/api/export/', storeFtpOption ).then((answer) => {
+        return fetch ('/api/robot/'+username+'/export/', storeFtpOption ).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch(error => {

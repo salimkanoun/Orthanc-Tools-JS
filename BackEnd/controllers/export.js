@@ -34,7 +34,7 @@ const getExportProgress = async function(req, res){
 
 const exportArchive = async function(req,res){
     let studies = req.body.Resources
-    let task = new ExportTask(studies, await Endpoint.getFromId(req.body.endpoint))
+    let task = new ExportTask(req.params.user, studies, await Endpoint.getFromId(req.body.endpoint))
     task.run()
     res.json({id:task.id})
 }

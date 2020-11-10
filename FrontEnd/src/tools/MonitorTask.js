@@ -11,14 +11,13 @@ export default class MonitorTask extends MonitorJob{
     }
 
     async jobMonitoring(jobUuid){
-        const taskProgress = await apis.task.getTaskProgress(jobUuid);
-        const taskStatus = await apis.task.getTaskStatus(jobUuid)
+        const task = await apis.task.getTask(jobUuid)
 
-        this.updateCallBack({taskProgress,taskStatus})
+        this.updateCallBack(task)
 
-        if (taskProgress.total === 100) {
+        if (task.progress.total === 100) {
             this.stopMonitoringJob()
-            this.finishCallback({taskProgress,taskStatus})
+            this.finishCallback(task)
         }
     }
 }

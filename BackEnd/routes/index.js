@@ -4,12 +4,12 @@ var router = express.Router()
 require('express-async-errors')
 
 const { authentication, logOut } = require('../controllers/authentication')
-const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob, addAnonJob, getAnonJob, getDeleteJob, addDeleteJob } = require('../controllers/Robot2')
+const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob,  getAnonJob, getDeleteJob } = require('../controllers/Robot2')
 const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, getMode, changeMode, getOptions } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
-const { exportFtp, exportWebDav, getExportProgress, exportArchive} = require('../controllers/export')
+const { exportArchive} = require('../controllers/export')
 
 const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
 
@@ -25,7 +25,8 @@ const { route } = require('express/lib/router')
 const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
 const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
-const { getTaskStatus, getTaskProgress } = require('../controllers/task')
+const { getTask, getTasks, getTasksIds } = require('../controllers/task')
+const { addAnonTask,  addDeleteTask } = require('../controllers/robot')
 
 
 
@@ -45,11 +46,11 @@ router.delete('/robot/:username/retrieve/:index', autoQueryMidelware, removeQuer
 router.get('/robot/retrieve', userAdminMidelware, getAllRobotDetails)
 router.post('/robot/:username/retrieve/validate', userAdminMidelware, validateRobotJob)
 //AnonRobot
-router.post('/robot/:username/anonymize', anonMidelware, addAnonJob)
+router.post('/robot/:username/anonymize', anonMidelware, addAnonTask)
 router.get('/robot/:username/anonymize', anonMidelware, getAnonJob)
 //DeleteRobot
 //SK BUG MIDELWARE DELETE?
-router.post('/robot/:username/delete', userAuthMidelware, addDeleteJob)
+router.post('/robot/:username/delete', userAuthMidelware, addDeleteTask)
 router.get('/robot/:username/delete', userAuthMidelware, getDeleteJob)
 
 //Removal of Robots
@@ -159,13 +160,11 @@ router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
 router.put('/monitoring/burning/options', userAdminMidelware, updateRobotOptions)
 
 //FTP & WebDav Exports
-router.post('/export/', exportExternMidelware, exportArchive)
-router.post('/export/ftp', exportExternMidelware, exportFtp)
-router.post('/export/webdav', exportExternMidelware, exportWebDav)
-router.get('/export/:uuid/progress', exportExternMidelware, getExportProgress)
+router.post('/robot/:user/export/', exportExternMidelware, exportArchive)
 
-router.get('/tasks/:id/progress',getTaskProgress)
-router.get('/tasks/:id/status',getTaskStatus)
+router.get('/tasks/:id/',getTask)
+router.get('/tasks',getTasksIds)
+router.get('/tasks?expend',getTasks)
 
 router.get('/endpoints/', userAdminMidelware, allEndpoints)
 router.post('/endpoints/update', userAdminMidelware, updateEndpoint)

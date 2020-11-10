@@ -201,7 +201,7 @@ class ExportPanel extends Component {
                         <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm} setModal={() => this.setState({ show: true })} setButton={this.setButton} />
                     </div>
                     <div className='col-sm'>
-                        <SendExternalDropdown endpoints={this.state.endpoints} exportIds={idArray}/>
+                        <SendExternalDropdown endpoints={this.state.endpoints} exportIds={idArray} username={this.props.username}/>
                     </div>
                 </div>
                 <ModalWarning show={this.state.show} onHide={() => this.setState({ show: false })} button={this.state.button} />
@@ -213,7 +213,8 @@ class ExportPanel extends Component {
 const mapStateToProps = state => {
     return {
         exportList: state.ExportList,
-        orthancContent: state.OrthancContent.orthancContent
+        orthancContent: state.OrthancContent.orthancContent,
+        username: state.OrthancTools.username
     }
 }
 

@@ -480,6 +480,20 @@ class Orthanc {
     let changes = await ReverseProxy.getAnswerPlainText('/instances/'+instanceID+"/metadata/SopClassUid", "GET", undefined)
     return changes
   }
+
+  monitorJob(jobPath, updateCallback, updateInterval){
+    return new Promise((resolve, reject)=>{
+      let interval = setInterval(()=>{
+        ReverseProxy.getAnswer(jobPath, 'GET', null).then((response)=>{
+          updateCallback(response)
+          if(response.State==="Success"){
+            clearInterval(interval)
+            resolve(response)
+          }
+        })
+      },updateInterval)
+    })
+  }
 }
 
 module.exports = Orthanc

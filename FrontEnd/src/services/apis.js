@@ -17,9 +17,7 @@ import role from './role'
 import token from './token'
 import ldap from './ldap'
 import cdBurner from './cdBurner'
-import ftp from './ftp'
 import task from './task'
-import webdav from './webdav'
 import certificates from './certificates'
 import sshKeys from './sshKeys'
 import endpoints from './endpoints'
@@ -45,9 +43,7 @@ export default {
   token,
   ldap,
   cdBurner,
-  ftp,
   task,
-  webdav,
   certificates,
   sshKeys,
   endpoints,

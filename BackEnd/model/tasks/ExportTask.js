@@ -3,8 +3,8 @@ const CreateArchiveTask = require('./CreateArchiveTask')
 const SendTask = require('./SendTask')
 
 class ExportTask extends AbstractTask{
-    constructor(studies, endpoint){
-        super()
+    constructor(creator, studies, endpoint){
+        super(creator)
         this.studies = studies 
         this.endpoint = endpoint
 
@@ -35,9 +35,9 @@ class ExportTask extends AbstractTask{
     }
 
     async run(){
-        this.createTask = new CreateArchiveTask(this.studies)
+        this.createTask = new CreateArchiveTask(this.creator, this.studies)
         let path = await this.createTask.run()
-        this.sendTask = new SendTask(path, this.endpoint)
+        this.sendTask = new SendTask(this.creator, path, this.endpoint)
         await this.sendTask.run()
     }
 }

@@ -4,8 +4,8 @@ const OrthancQueue = require('../OrthancQueue')
 let orthanc = new OrthancQueue();
 
 class CreateArchiveTask extends AbstractLeafTask{
-    constructor(studies, transcoding = null){
-        super()
+    constructor(creator, studies, transcoding = null){
+        super(creator)
         this.studies = studies
         this.transcoding = transcoding
     }
