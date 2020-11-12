@@ -11,18 +11,18 @@ class DeleteTask extends AbstractTask{
 
     async getProgress(){
         let completed = 0
-        for (let i = 0; i < jobs.length; i++) {
-            const item = jobs[i];
-            if(await item.getState()==='complete') complete++
+        for (let i = 0; i < this.jobs.length; i++) {
+            const item = this.jobs[i];
+            if(await item.getState()==='completed') completed++
         }
-        return completed/this.orthancSeriesIds.length()
+        return completed/this.orthancSeriesIds.length*100
     }
 
     async getState(){
         if(await this.getProgress()===0) {
             return 'wait'
         }else if(await this.getProgress()===100) {
-            return 'complete'
+            return 'completed'
         }else {
             return 'active'
         }

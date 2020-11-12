@@ -15,7 +15,7 @@ export default class MonitorTask extends MonitorJob{
 
         this.updateCallBack(task)
 
-        if (task.progress.total === 100) {
+        if (task.state === 'completed') {
             this.stopMonitoringJob()
             this.finishCallback(task)
         }

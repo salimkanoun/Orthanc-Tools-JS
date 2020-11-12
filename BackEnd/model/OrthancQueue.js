@@ -73,19 +73,19 @@ class OrthancQueue {
       if (answer.Content.PatientID !== undefined) {
         //If default, remove the secondary capture SOPClassUID
         if(item.anonProfile === 'Default'){
-          let anonymizedStudyDetails  = await orthanc.getOrthancDetails('studies', answer.Content.PatientID)
+          let anonymizedStudyDetails  = await orthanc.getOrthancDetails('studies', answer.Content.ID)
           for(let seriesOrthancID of anonymizedStudyDetails['Series']){
             let seriesDetails = await orthanc.getOrthancDetails('series', seriesOrthancID)
             let firstInstanceID = seriesDetails['Instances'][0]
             let sopClassUID = await orthanc.getSopClassUID(firstInstanceID)
-            if(this.isSecondaryCapture(sopClassUID)){
+            if(OrthancQueue.isSecondaryCapture(sopClassUID)){
               await orthanc.deleteFromOrthanc('series', seriesOrthancID)
             }
           }
         }
   
         job.progress(100)
-        done(null, jobAnswer.ID)
+        done(null, answer.ID)
       } else {
         done("Orthanc Error Anonymizing")
       }

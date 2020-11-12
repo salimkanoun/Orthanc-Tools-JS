@@ -30,7 +30,7 @@ class ExportTask extends AbstractTask{
         else if(createState==='active' && sendState==='waiting') return 'archiving'
         else if(createState==='completed' && sendState==='waiting') return 'pending sending'
         else if(createState==='completed' && sendState==='active') return 'sending'
-        else if(createState==='completed' && createState===sendState) return 'sent'
+        else if(createState==='completed' && createState===sendState) return 'completed'
         else return 'failed'
     }
 

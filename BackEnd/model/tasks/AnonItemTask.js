@@ -25,6 +25,14 @@ class AnonItemTask extends AbstractLeafTask{
             return anonItemId
         })
     }
+
+    async getContent(){
+        return {
+            source: this.item.sourceOrthancStudyID,
+            state: await this.getState(),
+            result: this.item.anonymizedOrthancStudyID
+        }
+    }
 }
 
 module.exports = AnonItemTask

@@ -12,7 +12,7 @@ class AnonTask extends AbstractTask{
 
     async getProgress(){
         let sum = 0
-        let length = this.itemTasks.length()
+        let length = this.itemTasks.length
         for (let i = 0; i < length; i++) {
             const task = this.itemTasks[i]
             const progress = await task.getProgress()
@@ -25,9 +25,20 @@ class AnonTask extends AbstractTask{
         if(this.getProgress()===0) {
             return 'wait'
         }else if(this.getProgress()===100) {
-            return 'complete'
+            return 'completed'
         }else {
             return 'active'
+        }
+    }
+
+    async getContent(){
+        let items = []
+        for (let i = 0; i < this.itemTasks.length; i++) {
+            const item = this.itemTasks[i];
+            items.push(await item.getContent())
+        }
+        return{
+            items
         }
     }
 

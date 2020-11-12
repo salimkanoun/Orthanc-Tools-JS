@@ -5,14 +5,14 @@ const addAnonTask = async function (req, res) {
     let orthancIds = req.body
     let task = new AnonTask(req.params.user,orthancIds)
     task.run()
-    res.json({ id: task })
+    res.json({ id: task.id })
 }
 
 const addDeleteTask = async function (req, res) {
     let orthancIds = req.body
     let task = new DeleteTask(req.params.user, orthancIds)
     task.run()
-    res.json({ id: task })
+    res.json({ id: task.id })
 }
 
 module.exports = { addAnonTask, addDeleteTask }
