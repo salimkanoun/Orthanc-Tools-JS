@@ -20,6 +20,8 @@ class OrthancQueue {
     this.exportQueue = new Queue('orthanc-export')
     this.deleteQueue = new Queue('orthanc-delete')
     this.anonQueue = new Queue('orthanc-anon')
+    this.aetQueue = new Queue('orthanc-aet')
+    this.validationQueue = new Queue('orthanc-validation')
     
     //Hack to fix a quirk in bull
     this.exportQueue.on('progress', async (job,data)=>{
@@ -29,6 +31,8 @@ class OrthancQueue {
     this.exportQueue.process('create-archive',OrthancQueue._getArchiveDicom)
     this.deleteQueue.process('delete-item', OrthancQueue._deleteItem)
     this.anonQueue.process('anonymize-item',OrthancQueue._anonimiseItem)
+    this.validationQueue.process('validate-item',OrthancQueue._validateItem)
+    this.retrieveQueue.process('retrieve-item', OrthancQueue._retrieveItem)
   }
   
   static async _getArchiveDicom(job, done) {
@@ -97,6 +101,18 @@ class OrthancQueue {
     done()
   }
 
+  static async _validateItem(job, done) {
+
+    done()
+  }
+
+  static async _retreieveItem(job, done) {
+
+    done()
+  }
+
+
+
   queueGetArchive(orthancIds,transcoding){
     return this.exportQueue.add('create-archive', {orthancIds, transcoding}).then((job)=>{
       this._jobs[job.id] = job
@@ -123,6 +139,14 @@ class OrthancQueue {
       }
     }}))
   }
+
+  buildDicomQuery(item){
+    if(item.Level === OrthancQueryAnswer.LEVEL_STUDY){    
+        this.orthancObject.buildStudyDicomQuery('', '', '', '', '', '', item.StudyInstanceUID)
+    }else if(item.Level === OrthancQueryAnswer.LEVEL_SERIES){
+        this.orthancObject.buildSeriesDicomQuery(item.studyInstanceUID, '', '', '', '', item.SeriesInstanceUID)
+    }
+}
 
   static isSecondaryCapture(sopClassUid){
 
