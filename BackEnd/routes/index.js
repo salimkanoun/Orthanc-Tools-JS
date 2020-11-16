@@ -25,7 +25,7 @@ const { route } = require('express/lib/router')
 const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
 const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
-const { getTask, getTasks, getTasksIds } = require('../controllers/task')
+const { getTask, getTasks, getTasksIds, getTaskWithUser } = require('../controllers/task')
 const { addAnonTask, addDeleteTask, addRetrieveTask } = require('../controllers/robot')
 
 
@@ -47,11 +47,9 @@ router.get('/robot/retrieve', userAdminMidelware, getAllRobotDetails)
 router.post('/robot/:username/retrieve/validate', userAdminMidelware, validateRobotJob)
 //AnonRobot
 router.post('/robot/:username/anonymize', anonMidelware, addAnonTask)
-router.get('/robot/:username/anonymize', anonMidelware, getAnonJob)
 //DeleteRobot
 //SK BUG MIDELWARE DELETE?
 router.post('/robot/:username/delete', userAuthMidelware, addDeleteTask)
-router.get('/robot/:username/delete', userAuthMidelware, getDeleteJob)
 
 //Removal of Robots
 //SK ICI MIDELWARE EN FONCTION DU TYPE?
@@ -164,6 +162,7 @@ router.post('/robot/:user/export/', exportExternMidelware, exportArchive)
 
 router.get('/tasks/:id/',getTask)
 router.get('/tasks',getTasksIds)
+router.get('/tasks/:username/:type', getTaskWithUser)
 router.get('/tasks?expend',getTasks)
 
 router.get('/endpoints/', userAdminMidelware, allEndpoints)

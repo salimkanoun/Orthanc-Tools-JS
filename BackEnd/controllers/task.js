@@ -32,11 +32,20 @@ const getTasks = async(req, res)=>{
 
 const getTasksIds = async(req, res)=>{
     try {
-        res.json(AbstractTask.taskIndex.values().map(x=>x.id))
+        res.json(Object.values(AbstractTask.taskIndex).map(x=>x.id))
     } catch (error) {
         console.error(error)
         res.status(400).send(error)
     }
 }
 
-module.exports = {getTask, getTasks, getTasksIds}
+const getTaskWithUser = async(req, res)=>{
+    try {
+        res.json(await AbstractTask.taskTypeUserIndex[req.params.type][req.params.user].getFormated())
+    } catch (error) {
+        console.error(error)
+        res.status(400).send(error)
+    }
+}
+
+module.exports = {getTask, getTasks, getTasksIds, getTaskWithUser}

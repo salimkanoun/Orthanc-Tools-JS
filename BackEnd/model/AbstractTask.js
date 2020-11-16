@@ -6,6 +6,9 @@ class AbstractTask {
         this.creator = creator
         this.type = type
         AbstractTask.taskIndex[this.id] = this
+        if(Object.keys(AbstractTask.taskTypeUserIndex).includes(type)){
+            AbstractTask.taskTypeUserIndex[type][creator] = this;
+        }
     }
 
     async run() {
@@ -37,5 +40,10 @@ class AbstractTask {
 }
 
 AbstractTask.taskIndex = {}
+AbstractTask.taskTypeUserIndex = {}
+AbstractTask.taskTypeUserIndex['retrieve'] = {}
+AbstractTask.taskTypeUserIndex['anonymize'] = {}
+AbstractTask.taskTypeUserIndex['delete'] = {}
+AbstractTask.taskTypeUserIndex['export'] = {}
 
 module.exports = AbstractTask
