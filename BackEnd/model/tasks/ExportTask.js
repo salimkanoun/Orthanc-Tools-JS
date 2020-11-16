@@ -4,7 +4,7 @@ const SendTask = require('./SendTask')
 
 class ExportTask extends AbstractTask{
     constructor(creator, studies, endpoint){
-        super(creator)
+        super(creator, export)
         this.studies = studies 
         this.endpoint = endpoint
 

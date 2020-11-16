@@ -1,6 +1,7 @@
 const Queue = require('bull')
 const fs = require('fs')
 const Orthanc = require('./Orthanc')
+const OrthancQueryAnswer = require('./queries-answer/OrthancQueryAnswer')
 const ReverseProxy = require('./ReverseProxy')
 const Job = require('./robot/Job')
 
@@ -22,19 +23,28 @@ class OrthancQueue {
     this.anonQueue = new Queue('orthanc-anon')
     this.aetQueue = new Queue('orthanc-aet')
     this.validationQueue = new Queue('orthanc-validation')
-    
+
     //Hack to fix a quirk in bull
-    this.exportQueue.on('progress', async (job,data)=>{
+    this.exportQueue.on('progress', async (job, data) => {
       this._jobs[job.id]._progress = await job.progress()
     })
-    
-    this.exportQueue.process('create-archive',OrthancQueue._getArchiveDicom)
+    this.anonQueue.on('progress', async (job, data) => {
+      this._jobs[job.id]._progress = await job.progress()
+    })
+    this.aetQueue.on('progress', async (job, data) => {
+      this._jobs[job.id]._progress = await job.progress()
+    })
+    this.validationQueue.on('progress', async (job, data) => {
+      this._jobs[job.id]._progress = await job.progress()
+    })
+
+    this.exportQueue.process('create-archive', OrthancQueue._getArchiveDicom)
     this.deleteQueue.process('delete-item', OrthancQueue._deleteItem)
-    this.anonQueue.process('anonymize-item',OrthancQueue._anonimiseItem)
-    this.validationQueue.process('validate-item',OrthancQueue._validateItem)
-    this.retrieveQueue.process('retrieve-item', OrthancQueue._retrieveItem)
+    this.anonQueue.process('anonymize-item', OrthancQueue._anonimiseItem)
+    this.validationQueue.process('validate-item', OrthancQueue._validateItem)
+    this.aetQueue.process('retrieve-item', OrthancQueue._retrieveItem)
   }
-  
+
   static async _getArchiveDicom(job, done) {
     let orthancIds = job.data.orthancIds
     let transcoding = job.data.transcoding
@@ -43,13 +53,13 @@ class OrthancQueue {
 
     if (transcoding) {
       payload = {
-        "Synchronous":false,
+        "Synchronous": false,
         "Transcode": transcoding,
         "Resources": orthancIds
       }
     } else {
       payload = {
-        "Synchronous":false,
+        "Synchronous": false,
         "Resources": orthancIds
       }
     }
@@ -57,37 +67,37 @@ class OrthancQueue {
     let r = await ReverseProxy.getAnswer('/tools/create-archive', 'POST', payload)
     let jobPath = r.Path
 
-    await orthanc.monitorJob(jobPath, (response)=>{job.progress(response.Progress)}, JOBS_PROGRESS_INTERVAL).then((response)=>{
+    await orthanc.monitorJob(jobPath, (response) => { job.progress(response.Progress) }, JOBS_PROGRESS_INTERVAL).then((response) => {
       const destination = './data/export_dicom/' + Math.random().toString(36).substr(2, 5) + '.zip'
       const streamWriter = fs.createWriteStream(destination)
-      ReverseProxy.streamToFileWithCallBack(jobPath+'/archive', 'GET', {}, streamWriter, () => {
-        done(null, {path:destination})
+      ReverseProxy.streamToFileWithCallBack(jobPath + '/archive', 'GET', {}, streamWriter, () => {
+        done(null, { path: destination })
       })
-    }).catch((error)=>{
+    }).catch((error) => {
       done(error)
     })
   }
 
   static async _anonimiseItem(job, done) {
     let item = job.data.item
-    
+
     let anonAnswer = await orthanc.makeAnon('studies', item.sourceOrthancStudyID, item.anonProfile, item.newAccessionNumber, item.newPatientID, item.newPatientName, item.newStudyDescription, false)
 
-    orthanc.monitorJob(anonAnswer.Path, (response)=>{job.progress(response.Progress)}, JOBS_PROGRESS_INTERVAL).then(async(answer)=>{
+    orthanc.monitorJob(anonAnswer.Path, (response) => { job.progress(response.Progress) }, JOBS_PROGRESS_INTERVAL).then(async (answer) => {
       if (answer.Content.PatientID !== undefined) {
         //If default, remove the secondary capture SOPClassUID
-        if(item.anonProfile === 'Default'){
-          let anonymizedStudyDetails  = await orthanc.getOrthancDetails('studies', answer.Content.ID)
-          for(let seriesOrthancID of anonymizedStudyDetails['Series']){
+        if (item.anonProfile === 'Default') {
+          let anonymizedStudyDetails = await orthanc.getOrthancDetails('studies', answer.Content.ID)
+          for (let seriesOrthancID of anonymizedStudyDetails['Series']) {
             let seriesDetails = await orthanc.getOrthancDetails('series', seriesOrthancID)
             let firstInstanceID = seriesDetails['Instances'][0]
             let sopClassUID = await orthanc.getSopClassUID(firstInstanceID)
-            if(OrthancQueue.isSecondaryCapture(sopClassUID)){
+            if (OrthancQueue.isSecondaryCapture(sopClassUID)) {
               await orthanc.deleteFromOrthanc('series', seriesOrthancID)
             }
           }
         }
-  
+
         job.progress(100)
         done(null, answer.ID)
       } else {
@@ -102,53 +112,95 @@ class OrthancQueue {
   }
 
   static async _validateItem(job, done) {
+    OrthancQueue.buildDicomQuery(job.data.item)
 
-    done()
-  }
-
-  static async _retreieveItem(job, done) {
-
-    done()
-  }
-
-
-
-  queueGetArchive(orthancIds,transcoding){
-    return this.exportQueue.add('create-archive', {orthancIds, transcoding}).then((job)=>{
-      this._jobs[job.id] = job
-      return job
-    })
-  }
-
-  queueAnonymizeItem(item){
-    return this.anonQueue.add('anonymize-item', {item}).then((job)=>{
-      this._jobs[job.id] = job
-      return job
-    })
-  }
-
-  queueDeleteItem(orthancId){
-    return this.deleteQueue.add('delete-item', {orthancId})
-  }
-
-  queueDeleteItems(orthancIds){
-    return this.deleteQueue.addBulk(orthancIds.map(orthancId=>{return{
-      name:'delete-item',
-      data:{
-        orthancId
-      }
-    }}))
-  }
-
-  buildDicomQuery(item){
-    if(item.Level === OrthancQueryAnswer.LEVEL_STUDY){    
-        this.orthancObject.buildStudyDicomQuery('', '', '', '', '', '', item.StudyInstanceUID)
-    }else if(item.Level === OrthancQueryAnswer.LEVEL_SERIES){
-        this.orthancObject.buildSeriesDicomQuery(item.studyInstanceUID, '', '', '', '', item.SeriesInstanceUID)
+    const answerDetails = await orthanc.makeDicomQuery(job.data.item.OriginAET)
+    
+    if (answerDetails.length === 1) {
+      job.progress(100)
+      done(null, true)
+    }else{
+      job.progress(100)
+      done(null, false)
     }
-}
+    
+  }
 
-  static isSecondaryCapture(sopClassUid){
+  static async _retrieveItem(job, done) {
+    OrthancQueue.buildDicomQuery(job.data.item)
+    const answerDetails = await orthanc.makeDicomQuery(job.data.item.OriginAET)
+    const answer = answerDetails[0]
+    
+    const retrieveAnswer = await orthanc.makeRetrieve(answer.AnswerId, answer.AnswerNumber, job.data.item.aetDestination, false)
+    await orthanc.monitorJob(retrieveAnswer.Path,(response)=>{
+      job.progress(response.Progress)
+    }).then(async(response)=>{
+      const orthancResults = await orthanc.findInOrthancByUid(response['Query'][0]['0020,000d'])
+      done(null, orthancResults[0].ID)
+    }).catch((error)=>{
+      console.error(error)
+      done(error)
+    })
+  }
+
+
+
+  queueGetArchive(orthancIds, transcoding) {
+    return this.exportQueue.add('create-archive', { orthancIds, transcoding }).then((job) => {
+      this._jobs[job.id] = job
+      return job
+    })
+  }
+
+  queueAnonymizeItem(item) {
+    return this.anonQueue.add('anonymize-item', { item }).then((job) => {
+      this._jobs[job.id] = job
+      return job
+    })
+  }
+
+  queueDeleteItem(orthancId) {
+    return this.deleteQueue.add('delete-item', { orthancId })
+  }
+
+  queueValidateRetrieve(item) {
+    return this.validationQueue.add('validate-item', { item }).then((job) => {
+      this._jobs[job.id] = job
+      return job
+    }) 
+  }
+
+  queueRetrieveItem(item) {
+    return this.aetQueue.add('retrieve-item', { item }).then((job) => {
+      this._jobs[job.id] = job
+      return job
+    }) 
+  }
+
+  queueDeleteItems(orthancIds) {
+    return this.deleteQueue.addBulk(orthancIds.map(orthancId => {
+      return {
+        name: 'delete-item',
+        data: {
+          orthancId
+        }
+      }
+    }))
+  }
+
+  /**
+   * Prepare Orthanc Object Query according to Item QueryLevel
+   * @param {JobItemRetrieve} item 
+   */
+  static buildDicomQuery(item) {
+    if (item.Level === OrthancQueryAnswer.LEVEL_STUDY) {
+      orthanc.buildStudyDicomQuery('', '', '', '', '', '', item.StudyInstanceUID)
+    } else if (item.Level === OrthancQueryAnswer.LEVEL_SERIES) {
+      orthanc.buildSeriesDicomQuery(item.studyInstanceUID, '', '', '', '', item.SeriesInstanceUID)
+    }
+  }
+
+  static isSecondaryCapture(sopClassUid) {
 
     let secondaryCapturySopClass = [
       "1.2.840.10008.5.1.4.1.1.7",

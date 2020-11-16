@@ -1,21 +1,28 @@
+const AbstractLeafTask = require("../AbstractLeafTask");
+const OrthancQueue = require("../OrthancQueue");
+const orthancQueue = new OrthancQueue();
 
-class RetrieveItemTask extends AbstractTask{
-    constructor(creator, answer){
+
+class RetrieveItemTask extends AbstractLeafTask{
+    constructor(creator, querryAnswer){
         super(creator)
 
-        this.answer = answer;
+        this.job = null;
+
+        this.querryAnswer = querryAnswer;
+        this.retrievedOrthancId = '';
     }
 
-    async getProgress(){
-        
-    }
-
-    async getState(){
-        
+    async getContent(){
+        return {
+            querryAnswer: this.querryAnswer,
+            retrievedOrthancId: this.retrievedOrthancId
+        }
     }
 
     async run(){
-        
+        this.job = await orthancQueue.queueRetrieveItem(this.querryAnswer)
+        await this.job.finished().then((newId)=>{this.retrievedOrthancId = newId});
     }
 }
 

@@ -3,7 +3,7 @@ const AnonItemTask = require("./AnonItemTask");
 
 class AnonTask extends AbstractTask{
     constructor(creator, items){
-        super(creator)
+        super(creator, 'anonymise')
         this.itemTasks = []
         items.forEach(item => {
             this.itemTasks.push(new AnonItemTask(creator, item.orthancStudyID, item.profile, item.newPatientName, item.newPatientID, item.newStudyDescription, item.newAccessionNumber))

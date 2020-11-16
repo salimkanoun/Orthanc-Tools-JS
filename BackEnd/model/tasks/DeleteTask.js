@@ -4,7 +4,7 @@ const orthancQueue = new OrthancQueue()
 
 class DeleteTask extends AbstractTask{
     constructor(creator, orthancSeriesIds){
-        super(creator)
+        super(creator, 'delete')
         this.orthancSeriesIds = orthancSeriesIds
         this.jobs = [];
     }

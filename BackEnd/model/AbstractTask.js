@@ -1,9 +1,10 @@
 const uuid = require("../utils/uuid")
 
 class AbstractTask {
-    constructor(creator) {
+    constructor(creator, type = '') {
         this.id = uuid.getUuid()
         this.creator = creator
+        this.type = type
         AbstractTask.taskIndex[this.id] = this
     }
 

@@ -26,7 +26,7 @@ const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('.
 const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
 const { getTask, getTasks, getTasksIds } = require('../controllers/task')
-const { addAnonTask,  addDeleteTask } = require('../controllers/robot')
+const { addAnonTask, addDeleteTask, addRetrieveTask } = require('../controllers/robot')
 
 
 
@@ -40,7 +40,7 @@ router.delete('/session', logOut)
 
 //OrthancToolsJS Robot routes
 //Retrieve Robot
-router.post('/robot/:username/retrieve', autoQueryMidelware, addRobotJob)
+router.post('/robot/:username/retrieve', autoQueryMidelware, addRetrieveTask)
 router.get('/robot/:username/retrieve', autoQueryMidelware, getRobotDetails)
 router.delete('/robot/:username/retrieve/:index', autoQueryMidelware, removeQueryFromJob)
 router.get('/robot/retrieve', userAdminMidelware, getAllRobotDetails)
