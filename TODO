@@ -75,3 +75,8 @@ Executable windows avec wix ?
 -- Documentation
 https://medium.com/wolox-driving-innovation/documenting-a-nodejs-rest-api-with-openapi-3-swagger-5deee9f50420
 In Orthanc :  set "DicomModalitiesInDatabase" : true
+
+OHIF : => A integrer dans le docker build
+Build from source
+QUICK_BUILD=true PUBLIC_URL=/viewer/ yarn run build
+attention a garder App config dans ce repo
