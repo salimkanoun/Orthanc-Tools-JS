@@ -22,9 +22,9 @@ class Exporter{
         //Declaration for the send queue
         this._sendQueue = new Queue('send',{
             redis:{
-                host: process.env.BULL_HOST,
-                port: process.env.BULL_PORT,
-                password: process.env.BULL_PASSWORD
+                host: process.env.REDIS_HOST,
+                port: process.env.REDIS_PORT,
+                password: process.env.REDIS_PASSWORD
             }
         })
 

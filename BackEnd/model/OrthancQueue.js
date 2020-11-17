@@ -6,6 +6,12 @@ const ReverseProxy = require('./ReverseProxy')
 const Job = require('./robot/Job')
 
 const JOBS_PROGRESS_INTERVAL = 250
+const REDIS_OPTIONS = {
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+  password: process.env.REDIS_PASSWORD
+}
+
 
 let orthanc = new Orthanc()
 
@@ -18,11 +24,11 @@ class OrthancQueue {
 
     this._jobs = {}
 
-    this.exportQueue = new Queue('orthanc-export')
-    this.deleteQueue = new Queue('orthanc-delete')
-    this.anonQueue = new Queue('orthanc-anon')
-    this.aetQueue = new Queue('orthanc-aet')
-    this.validationQueue = new Queue('orthanc-validation')
+    this.exportQueue = new Queue('orthanc-export', {redis:REDIS_OPTIONS})
+    this.deleteQueue = new Queue('orthanc-delete', {redis:REDIS_OPTIONS})
+    this.anonQueue = new Queue('orthanc-anon', {redis:REDIS_OPTIONS})
+    this.aetQueue = new Queue('orthanc-aet', {redis:REDIS_OPTIONS})
+    this.validationQueue = new Queue('orthanc-validation', {redis:REDIS_OPTIONS})
 
     //Hack to fix a quirk in bull
     this.exportQueue.on('progress', async (job, data) => {
