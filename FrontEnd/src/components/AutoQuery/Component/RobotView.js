@@ -202,8 +202,6 @@ class RobotView extends Component {
             
         let rowsRetrieveList = []
 
-        console.log(info)
-
         info.content.items.forEach(item => {
             rowsRetrieveList.push({
                 //Merge Modalities (study level) to modality column
@@ -212,6 +210,7 @@ class RobotView extends Component {
             })
         });
 
+        console.log(rowsRetrieveList)
         let newTotalPercentageProgress = info.progress.retrieve
         let newPercentageFailure = 0
         

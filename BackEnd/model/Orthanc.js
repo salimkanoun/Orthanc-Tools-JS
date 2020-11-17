@@ -489,6 +489,9 @@ class Orthanc {
           if(response.State==="Success"){
             clearInterval(interval)
             resolve(response)
+          }else if(response.State==="Failed"){
+            clearInterval(interval)
+            reject(response)
           }
         })
       },updateInterval)

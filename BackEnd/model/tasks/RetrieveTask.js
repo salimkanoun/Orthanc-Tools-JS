@@ -19,16 +19,17 @@ class RetrieveTask extends AbstractTask {
             const task = this.validationTasks[i]
             validation += await task.getProgress()
         }
-        validation /= this.validationTasks.length
+        validation /= this.querryAnswers.length
         let retrieve = 0
         for (let i = 0; i < this.retrieveItemTasks.length; i++) {
             const task = this.retrieveItemTasks[i]
             retrieve += await task.getProgress()
         }
-        retrieve /= this.validationTasks.length
+        retrieve /= this.querryAnswers.length
+        
         return {
-            validation,
-            retrieve
+            validation: Math.round(validation),
+            retrieve: Math.round(retrieve)
         }
     }
 
@@ -60,15 +61,15 @@ class RetrieveTask extends AbstractTask {
         for (let i = 0; i < this.querryAnswers.length; i++) {
             let item = {
                 ...( this.retrieveItemTasks[i]?await this.retrieveItemTasks[i].getContent():this.querryAnswers[i]),
-                validated:this.validationTasks[i].validated
+                Validated:this.validationTasks[i].validated,
+                Status: ( this.retrieveItemTasks[i]?await this.retrieveItemTasks[i].getState():'waiting')
             }
-            
-            return{
-                projectName : this.projectName,
-                items
-            }
-            
+            items.push(item)   
         } 
+        return{
+            projectName : this.projectName,
+            items
+        }
     }
 
     async run() {
