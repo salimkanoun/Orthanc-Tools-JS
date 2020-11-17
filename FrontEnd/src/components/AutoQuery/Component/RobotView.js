@@ -15,6 +15,8 @@ import {addStudiesToExportList} from '../../../actions/ExportList'
 import {addStudiesToDeleteList} from '../../../actions/DeleteList'
 import {addStudiesToAnonList} from '../../../actions/AnonList'
 
+import MonitorTask from '../../../tools/MonitorTask'
+
 /**
  * View page of a sigle Retrieve Robot content
  * With progress monitoring and delete item action
@@ -39,7 +41,6 @@ class RobotView extends Component {
     }
 
     componentDidMount(){
-        this.refreshHandler()
         this.startProgressMonitoring()
     }
 
@@ -185,46 +186,42 @@ class RobotView extends Component {
         this.props.addStudiesToDeleteList(studyArray)
     }
 
-    startProgressMonitoring(){
-        this.intervalChcker = setInterval(this.refreshHandler, 2000)
+    async startProgressMonitoring(){
+        let response = await apis.task.getTaskOfType(this.props.username, 'retrieve')
+        this.refreshHandler(response)
+        this.task = new MonitorTask(response.id)
+        this.task.onUpdate(this.refreshHandler.bind(this))
+        this.task.startMonitoringJob()
     }
 
     stopProgressMonitoring(){
-        clearInterval(this.intervalChcker)
+        this.task.stopMonitoringJob();
     }
 
-    refreshHandler(){
-        apis.queryRobot
-        .getRobotDetails(this.props.username)
-        .then( (answerData) => {
+    refreshHandler(info){
             
-            let rowsRetrieveList = []
+        let rowsRetrieveList = []
 
-            answerData.items.forEach(robotJob => {
-                rowsRetrieveList.push({
-                    //Merge Modalities (study level) to modality column
-                    Modality : robotJob.ModalitiesInStudy,
-                    ...robotJob
-                })
-            });
+        console.log(info)
 
-            let newTotalPercentageProgress = 0
-            let newPercentageFailure = 0
-            if(answerData.totalInstances !== 0){
-                newTotalPercentageProgress = Math.round((answerData.progression.Success / answerData.progression.TotalInstances)*100)
-                newPercentageFailure = Math.round((answerData.progression.Failure / answerData.progression.TotalInstances)*100)
-            }
-
-            this.setState({
-                projectName : answerData.projectName,
-                rows : rowsRetrieveList,
-                totalPercentageProgress : newTotalPercentageProgress,
-                percentageFailure : newPercentageFailure
+        info.content.items.forEach(item => {
+            rowsRetrieveList.push({
+                //Merge Modalities (study level) to modality column
+                Modality : item.ModalitiesInStudy,
+                ...item
             })
+        });
 
-        }).catch(error =>{
-
+        let newTotalPercentageProgress = info.progress.retrieve
+        let newPercentageFailure = 0
+        
+        this.setState({
+            projectName : info.content.projectName,
+            rows : rowsRetrieveList,
+            totalPercentageProgress : newTotalPercentageProgress,
+            percentageFailure : newPercentageFailure
         })
+
     }
 
     deleteQueryHandler(rowIndex, refreshHandler){

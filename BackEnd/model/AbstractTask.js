@@ -7,6 +7,7 @@ class AbstractTask {
         this.type = type
         AbstractTask.taskIndex[this.id] = this
         if(Object.keys(AbstractTask.taskTypeUserIndex).includes(type)){
+            console.log('test')
             AbstractTask.taskTypeUserIndex[type][creator] = this;
         }
     }

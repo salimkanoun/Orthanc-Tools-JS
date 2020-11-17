@@ -130,11 +130,14 @@ class OrthancQueue {
     OrthancQueue.buildDicomQuery(job.data.item)
     const answerDetails = await orthanc.makeDicomQuery(job.data.item.OriginAET)
     const answer = answerDetails[0]
+
+    const retrieveAnswer = await orthanc.makeRetrieve(answer.AnswerId, answer.AnswerNumber, job.data.item.OriginAET, false)
+
     
-    const retrieveAnswer = await orthanc.makeRetrieve(answer.AnswerId, answer.AnswerNumber, job.data.item.aetDestination, false)
     await orthanc.monitorJob(retrieveAnswer.Path,(response)=>{
+      console.log(response)
       job.progress(response.Progress)
-    }).then(async(response)=>{
+    }, 2000).then(async(response)=>{
       const orthancResults = await orthanc.findInOrthancByUid(response['Query'][0]['0020,000d'])
       done(null, orthancResults[0].ID)
     }).catch((error)=>{

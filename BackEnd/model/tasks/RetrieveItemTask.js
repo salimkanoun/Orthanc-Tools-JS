@@ -15,7 +15,7 @@ class RetrieveItemTask extends AbstractLeafTask{
 
     async getContent(){
         return {
-            querryAnswer: this.querryAnswer,
+            ...this.querryAnswer,
             retrievedOrthancId: this.retrievedOrthancId
         }
     }

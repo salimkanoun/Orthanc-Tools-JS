@@ -3,10 +3,11 @@ const RetrieveItemTask = require("./RetrieveItemTask");
 const ValidateRetrieveTask = require("./ValidateRetrieveTask");
 
 class RetrieveTask extends AbstractTask {
-    constructor(creator, querryAnswers) {
+    constructor(creator, projectName, querryAnswers, target) {
         super(creator, 'retrieve')
 
-        this.querryAnswers = querryAnswers;
+        this.projectName = projectName
+        this.querryAnswers = querryAnswers
 
         this.validationTasks = []
         this.retrieveItemTasks = []
@@ -58,11 +59,12 @@ class RetrieveTask extends AbstractTask {
         let items = []
         for (let i = 0; i < this.querryAnswers.length; i++) {
             let item = {
-                ...(await this.retrieveItemTasks[i].getContent()),
+                ...( this.retrieveItemTasks[i]?await this.retrieveItemTasks[i].getContent():this.querryAnswers[i]),
                 validated:this.validationTasks[i].validated
             }
             
             return{
+                projectName : this.projectName,
                 items
             }
             

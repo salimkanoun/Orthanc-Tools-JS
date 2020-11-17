@@ -18,7 +18,7 @@ const addDeleteTask = async function (req, res) {
 
 const addRetrieveTask = async function (req, res) {
     let answers = req.body.retrieveArray
-    let task = new RetrieveTask(req.params.user, answers)
+    let task = new RetrieveTask(req.params.user, req.body.projectName, answers)
     task.run()
     res.json({ id: task.id })
 }
