@@ -135,7 +135,6 @@ class RobotView extends Component {
         mode: 'checkbox',
         clickToSelect: true,
         onSelect: (row, isSelect, rowIndex, e) => {
-            console.log(row)
             if (row.Status !== 'Success') {
               return false
             } else {
@@ -210,7 +209,6 @@ class RobotView extends Component {
             })
         });
 
-        console.log(rowsRetrieveList)
         let newTotalPercentageProgress = info.progress.retrieve
         let newPercentageFailure = 0
         
