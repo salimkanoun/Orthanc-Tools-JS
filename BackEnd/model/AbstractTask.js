@@ -37,13 +37,26 @@ class AbstractTask {
             content: await this.getContent()
         }
     }
+    
+    static getExistingTask(user,type){
+        if(!Object.values(AbstractTask.TaskType).includes(type))
+            throw new TypeError('Unkown Task Type')
+
+        return AbstractTask.taskTypeUserIndex[type][user]||null
+    }
+}
+
+AbstractTask.TaskType = {
+    RETRIEVE : 'retrieve',
+    EXPORT : 'export',
+    ANONYMIZE : 'anonymize',
+    DELETE : 'delete',
 }
 
 AbstractTask.taskIndex = {}
 AbstractTask.taskTypeUserIndex = {}
-AbstractTask.taskTypeUserIndex['retrieve'] = {}
-AbstractTask.taskTypeUserIndex['anonymize'] = {}
-AbstractTask.taskTypeUserIndex['delete'] = {}
-AbstractTask.taskTypeUserIndex['export'] = {}
+Object.values(AbstractTask.TaskType).forEach(type => {
+    AbstractTask.taskTypeUserIndex[type] = {}
+});
 
 module.exports = AbstractTask
