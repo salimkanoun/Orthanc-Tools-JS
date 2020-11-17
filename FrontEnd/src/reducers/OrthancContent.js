@@ -4,7 +4,7 @@ const initialState = {
     orthancContent: []
 }
 
-export default function deleteListReducer (state = initialState, action ) {
+export default function contentListReducer (state = initialState, action ) {
     switch (action.type) {
         case ADD_ORTHANC_CONTENT:
             return {orthancContent: action.payload }
@@ -19,6 +19,7 @@ export default function deleteListReducer (state = initialState, action ) {
             let newList = state.orthancContent.filter(study => {
                 return study.ParentPatient !== action.payload
             } )
+            console.log(newList)
             return {
                 orthancContent: newList
             }

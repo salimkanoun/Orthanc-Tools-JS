@@ -125,7 +125,8 @@ class Orthanc {
         AccessionNumber: accessionNb,
         StudyInstanceUID: studyInstanceUID,
         NumberOfStudyRelatedInstances: '',
-        NumberOfStudyRelatedSeries: ''
+        NumberOfStudyRelatedSeries: '',
+        RequestedProcedureDescription: ''
       }
     }
   }
@@ -222,7 +223,7 @@ class Orthanc {
 
   async getStudyAnswerDetails (answerId, aet) {
     const studyAnswers = await this._getAnswerDetails(answerId)
-
+    
     const answersObjects = []
 
     for (let i = 0; i < studyAnswers.length; i++) {
@@ -274,8 +275,15 @@ class Orthanc {
       if (element.hasOwnProperty('0008,0061')) {
         modalitiesInStudy = element['0008,0061'].Value
       }
+
+      let requestedProcedureDescription = 'N/A'
+      if (element.hasOwnProperty('0032,1060')) {
+        requestedProcedureDescription = element['0032,1060'].Value
+      }
+
+      
       const origineAET = aet
-      const queryAnswserObject = new QueryStudyAnswer(answerId, i, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate, numberOfStudyRelatedSeries, numberOfStudyRelatedInstances)
+      const queryAnswserObject = new QueryStudyAnswer(answerId, i, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate, numberOfStudyRelatedSeries, numberOfStudyRelatedInstances, requestedProcedureDescription)
       answersObjects.push(queryAnswserObject)
     }
 

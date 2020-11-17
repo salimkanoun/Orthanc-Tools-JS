@@ -16,8 +16,29 @@ import SendExternalDropdown from "./SendExternalDropdown"
 
 class ExportPanel extends Component {
 
+
+    transferSyntaxOptions = [
+        {value: 'None',                     label: 'None'},
+        {value: '1.2.840.10008.1.2',        label: 'Implicit VR Endian'},
+        {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
+        {value: '1.2.840.10008.1.2.1.99',   label: 'Deflated Explicit VR Little Endian'},
+        {value: '1.2.840.10008.1.2.2',      label: 'Explicit VR Big Endian'},
+        {value: '1.2.840.10008.1.2.4.50',   label: 'JPEG 8-bit'},
+        {value: '1.2.840.10008.1.2.4.51',   label: 'JPEG 12-bit'},
+        {value: '1.2.840.10008.1.2.4.57',   label: 'JPEG Lossless'},
+        {value: '1.2.840.10008.1.2.4.70',   label: 'JPEG Lossless'},
+        {value: '1.2.840.10008.1.2.4.80',   label: 'JPEG-LS Lossless' },
+        {value: '1.2.840.10008.1.2.4.81',   label: 'JPEG-LS Lossy'},
+        {value: '1.2.840.10008.1.2.4.90',   label: 'JPEG 2000 (90)'},
+        {value: '1.2.840.10008.1.2.4.91',   label: 'JPEG 2000 (91)'},
+        {value: '1.2.840.10008.1.2.4.92',   label: 'JPEG 2000 (92)'},
+        {value: '1.2.840.10008.1.2.4.93',   label: 'JPEG 2000 (93)'}
+
+    ]
+
     state = {
         currentStudy: '',
+        currentTS : {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
         aets: [],
         peers: [],
         endpoints: [],
@@ -39,6 +60,9 @@ class ExportPanel extends Component {
 
 
     async componentDidMount() {
+        
+        let currentTS = apis.localStorage.getLocalStorage('TS');
+        this.loadTS(currentTS);
         let aets = await apis.aets.getAets()
         let peers = await apis.peers.getPeers()
         let endpoints = await apis.endpoints.getEndpoints()
@@ -124,6 +148,16 @@ class ExportPanel extends Component {
         return answer
     }
 
+    loadTS(tsValue){
+        if(tsValue){
+            this.setState({
+                currentTS : this.getSelectedTSObject(tsValue)
+            })
+        }
+
+    }
+    
+
     setButton(button) {
         this.setState({
             button: button
@@ -132,26 +166,10 @@ class ExportPanel extends Component {
 
     onTSChange(item) {
         apis.localStorage.setlocalStorage('TS', item.value)
+        this.loadTS(item.value)
     }
 
-    transferSyntaxOptions = [
-        {value: 'None',                     label: 'None'},
-        {value: '1.2.840.10008.1.2',        label: 'Implicit VR Endian'},
-        {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
-        {value: '1.2.840.10008.1.2.1.99',   label: 'Deflated Explicit VR Little Endian'},
-        {value: '1.2.840.10008.1.2.2',      label: 'Explicit VR Big Endian'},
-        {value: '1.2.840.10008.1.2.4.50',   label: 'JPEG 8-bit'},
-        {value: '1.2.840.10008.1.2.4.51',   label: 'JPEG 12-bit'},
-        {value: '1.2.840.10008.1.2.4.57',   label: 'JPEG Lossless'},
-        {value: '1.2.840.10008.1.2.4.70',   label: 'JPEG Lossless'},
-        {value: '1.2.840.10008.1.2.4.80',   label: 'JPEG-LS Lossless' },
-        {value: '1.2.840.10008.1.2.4.81',   label: 'JPEG-LS Lossy'},
-        {value: '1.2.840.10008.1.2.4.90',   label: 'JPEG 2000 (90)'},
-        {value: '1.2.840.10008.1.2.4.91',   label: 'JPEG 2000 (91)'},
-        {value: '1.2.840.10008.1.2.4.92',   label: 'JPEG 2000 (92)'},
-        {value: '1.2.840.10008.1.2.4.93',   label: 'JPEG 2000 (93)'}
 
-    ]
 
     getSelectedTSObject (tsValue){
         let filteredArray = this.transferSyntaxOptions.filter(item => {
@@ -192,7 +210,7 @@ class ExportPanel extends Component {
                 <div className="row text-center mt-5">
                     <div className='col-sm'>
                         <DownloadDropdown exportIds={idArray} />
-                        <Select single options={this.transferSyntaxOptions} onChange={this.onTSChange} name="ts_selector" value={this.getSelectedTSObject(apis.localStorage.getLocalStorage('TS'))}/>
+                        <Select single options={this.transferSyntaxOptions} onChange={this.onTSChange} name="ts_selector" value={this.state.currentTS}/>
                     </div>
                     <div className='col-sm'>
                         <SendAetDropdown aets={this.state.aets} exportIds={idArray} />

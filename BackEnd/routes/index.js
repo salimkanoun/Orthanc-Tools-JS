@@ -20,16 +20,13 @@ const { postRetrieve } = require('../controllers/retrieveDicom')
 const { postExportDicom } = require('../controllers/exportDicom')
 
 const { userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
-    exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware } = require('../midelwares/authentication')
+    exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, isCurrentUserOrAdminMidelWare } = require('../midelwares/authentication')
 const { route } = require('express/lib/router')
 const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
 const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
 const { getTask, getTasks, getTasksIds, getTaskWithUser } = require('../controllers/task')
 const { addAnonTask, addDeleteTask, addRetrieveTask } = require('../controllers/robot')
-
-
-
 
 
 router.post('/session/*', authentication)
@@ -52,8 +49,7 @@ router.post('/robot/:username/anonymize', anonMidelware, addAnonTask)
 router.post('/robot/:username/delete', userAuthMidelware, addDeleteTask)
 
 //Removal of Robots
-//SK ICI MIDELWARE EN FONCTION DU TYPE?
-router.delete('/robot/:username/:type', userAuthMidelware, deleteRobotJob)
+router.delete('/robot/:username/:type', isCurrentUserOrAdminMidelWare, deleteRobotJob)
 
 // OrthancToolsJS Options routes
 router.get('/options', userAdminMidelware, getOptions)

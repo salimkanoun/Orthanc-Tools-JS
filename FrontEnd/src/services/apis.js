@@ -1,7 +1,7 @@
 import importDicom from './importDicom'
 import aets from './aets'
 import options from './options'
-import queryRobot from './queryRobot'
+import retrieveRobot from './retrieveRobot'
 import query from './query'
 import jobs from './jobs'
 import retrieve from './retrieve'
@@ -27,7 +27,7 @@ export default {
   importDicom,
   aets,
   options,
-  queryRobot,
+  retrieveRobot,
   query,
   jobs,
   retrieve,

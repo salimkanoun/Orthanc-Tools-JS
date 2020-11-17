@@ -26,6 +26,7 @@ const dotenv = require("dotenv");
 app.use('/', express.static(path.join(__dirname, 'build')))
 app.use('/viewer/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer/assets/', express.static(path.join(__dirname, 'build')));
+app.use('/streamSaver/', express.static(path.join(__dirname, 'build')));
 
 app.use(logger('dev'))
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))

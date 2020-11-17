@@ -88,21 +88,21 @@ export default class RobotStatus extends Component {
 
     validationRobotHandler(username, refreshHandler){
 
-        apis.queryRobot.validateRobot(username).then(()=>{
+        apis.retrieveRobot.validateRobot(username).then(()=>{
             refreshHandler()
         })
     }
 
     deleteJobHandler (username , refreshHandler) {
 
-        apis.queryRobot.deleteRobot(username).then(()=>{
+        apis.retrieveRobot.deleteRobot(username).then(()=>{
             refreshHandler()
         })
 
     }
 
     refreshHandler(){
-        apis.queryRobot.getAllRobotsDetails().then( (answerData) => {
+        apis.retrieveRobot.getAllRobotsDetails().then( (answerData) => {
             let rows = []
             answerData.forEach(robotJob => {
                 rows.push({

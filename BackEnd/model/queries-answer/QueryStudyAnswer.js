@@ -12,7 +12,8 @@ class QueryStudyAnswer extends OrthancQueryAnswer {
     studyInstanceUID,
     studyDate,
     numberOfStudyRelatedSeries,
-    numberOfStudyRelatedInstances
+    numberOfStudyRelatedInstances,
+    requestedProcedureDescription
   ) {
     super(answerId, answerNumber, OrthancQueryAnswer.LEVEL_STUDY , originAET, numberOfStudyRelatedInstances)
     this.PatientName = patientName
@@ -23,6 +24,7 @@ class QueryStudyAnswer extends OrthancQueryAnswer {
     this.StudyInstanceUID = studyInstanceUID
     this.StudyDate = studyDate
     this.NumberOfStudyRelatedSeries = numberOfStudyRelatedSeries
+    this.RequestedProcedureDescription = requestedProcedureDescription
   }
 }
 

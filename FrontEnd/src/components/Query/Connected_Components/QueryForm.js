@@ -10,21 +10,19 @@ import apis from '../../../services/apis'
 import Form from '../../CommonComponents/SearchForm/Form'
 
 class QueryForm extends Component {
-  
 
-  constructor (props) {
+  constructor(props){
     super(props)
-    this.child = createRef()
+    this.doQueryTo=this.doQueryTo.bind(this)
   }
 
   async componentDidMount(){
     this.props.loadAvailableAETS(await apis.aets.getAets())
   }
 
-  async doQueryTo (aet) {
-
-    //get Form state
-    let formData = this.child.current.getState()
+  async doQueryTo (formData, event) {
+    console.log(event.target)
+    let aet = event.target.value
 
     let dateFrom = formData.dateFrom
     let dateTo = formData.dateTo
@@ -79,7 +77,7 @@ class QueryForm extends Component {
 
   buildAetButtons () {
     return (this.props.aets.map((aet, key) =>
-      <AetButton key={key} aetName={aet} clickListner={() => this.doQueryTo(aet)} />
+      <AetButton key={key} aetName={aet} />
     ))
   }
 
@@ -90,7 +88,11 @@ class QueryForm extends Component {
       }
       return (
         <div className="jumbotron">
-          <Form ref={this.child} title='Query' buttons={aetButtons} />
+          <Form onFormValidate={this.doQueryTo} title='Query'>
+            <div>
+              {aetButtons}
+            </div>
+          </Form>
         </div>
       )
     }

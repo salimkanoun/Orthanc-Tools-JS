@@ -1,5 +1,6 @@
 import { toastifyError } from './toastify'
-import downloadjs from 'downloadjs'
+import streamSaver from 'streamsaver'
+streamSaver.mitm = window.location.origin+'/streamSaver/mitm.html'
 
 const exportDicom = {
 
@@ -68,14 +69,40 @@ const exportDicom = {
     })
   },
 
-  async downloadZip(jobID) {
+  downloadZip(jobID) {
+    return fetch('/api/jobs/' + jobID + '/archive', {
+        method: 'GET',
+        headers: {
+            Accept: 'application/zip'
+        }
 
-    const url = '/api/jobs/' + jobID + '/archive'
-    var x=new XMLHttpRequest();
-    x.open( "GET", url , true);
-    x.responseType="blob";
-    x.onload= function(e){downloadjs(e.target.response, jobID+".zip", "application/zip");};
-    x.send();
+    }).then((answer) => {
+        
+        if (!answer.ok) throw answer
+        const fileStream = streamSaver.createWriteStream('Dicom_'+jobID+'.zip')
+
+        const readableStream = answer.body
+
+        // more optimized
+        if (window.WritableStream && readableStream.pipeTo) {
+          return readableStream.pipeTo(fileStream)
+            .then(() => console.log('done writing'))
+        }
+
+        let writer = fileStream.getWriter()
+
+        const reader = answer.body.getReader()
+        const pump = () => reader.read()
+          .then(res => res.done
+            ? writer.close()
+            : writer.write(res.value).then(pump))
+
+        pump()
+
+    }).catch((error) => {
+        throw error
+    })
+
   }
 
 }

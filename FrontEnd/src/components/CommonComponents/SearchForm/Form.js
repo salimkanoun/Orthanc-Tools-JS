@@ -153,8 +153,9 @@ class Search extends Component{
                     </div>
                 </div>
                 <div className='mt-3 mb-3 text-center'>
-                        {this.props.buttons}
+                    { React.cloneElement( this.props.children, { onClick: (event)=>{this.props.onFormValidate(this.state, event)} } ) }
                 </div>
+                
             </div>
         )
     }

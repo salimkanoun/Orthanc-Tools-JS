@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import Dropdown from "react-bootstrap/Dropdown"
 import ButtonGroup from "react-bootstrap/ButtonGroup"
 import Button from "react-bootstrap/Button"
@@ -73,6 +74,7 @@ class RetrieveButton extends Component {
         <Dropdown.Menu>
           <Dropdown.Item onClick={this.toExport} disabled = {this.state.status !== MonitorJob.Success}>To Export</Dropdown.Item>
           <Dropdown.Item onClick={this.toAnon} disabled = {this.state.status !== MonitorJob.Success} >To Anon</Dropdown.Item>
+          <Link className = {this.state.status === MonitorJob.Success ? "dropdown-item" : "dropdown-item disabled"} to={'viewer/' + this.props.studyInstanceUID} target='_blank'>View on OHIF</Link>
         </Dropdown.Menu>
       </Dropdown>
     )
@@ -139,11 +141,11 @@ class RetrieveButton extends Component {
     }
 
     if( this.props.level ===  RetrieveButton.Study ){
-      contentSearch.Query.StudyInstanceUID = this.props.uid
+      contentSearch.Query.StudyInstanceUID = this.props.studyInstanceUID
       contentSearch.Level = 'Study'
     } else if ( this.props.level === RetrieveButton.Series ){
       contentSearch.Level = 'Series'
-      contentSearch.Query.SeriesInstanceUID = this.props.uid
+      contentSearch.Query.SeriesInstanceUID = this.props.seriesInstanceUID
     }
 
     let searchContent = await apis.content.getContent(contentSearch)
