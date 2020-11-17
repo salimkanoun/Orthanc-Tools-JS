@@ -1,10 +1,9 @@
-import React, { Component, Fragment } from "react"
+import React, { Component} from "react"
 import Dropdown from "react-bootstrap/Dropdown"
 import DropdownButton from "react-bootstrap/DropdownButton"
 
 import apis from "../../services/apis"
 import MonitorTask from "../../tools/MonitorTask"
-import MonitorJob from "../../tools/MonitorJob"
 
 export default class SendExternalDropdown extends Component{
 

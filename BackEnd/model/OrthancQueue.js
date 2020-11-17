@@ -3,7 +3,6 @@ const fs = require('fs')
 const Orthanc = require('./Orthanc')
 const OrthancQueryAnswer = require('./queries-answer/OrthancQueryAnswer')
 const ReverseProxy = require('./ReverseProxy')
-const Job = require('./robot/Job')
 
 const JOBS_PROGRESS_INTERVAL = 250
 const REDIS_OPTIONS = {

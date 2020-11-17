@@ -10,7 +10,6 @@ import {studyArrayToPatientArray} from '../../tools/processResponse'
 import apis from '../../services/apis'
 import ModalDelete from '../Main/ModalDelete';
 import MonitorTask from '../../tools/MonitorTask';
-import task from '../../services/task';
 
 class Delete extends Component {
 

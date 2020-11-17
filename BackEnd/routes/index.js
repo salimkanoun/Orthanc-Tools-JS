@@ -4,7 +4,7 @@ var router = express.Router()
 require('express-async-errors')
 
 const { authentication, logOut } = require('../controllers/authentication')
-const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob,  getAnonJob, getDeleteJob } = require('../controllers/Robot2')
+const { getRobotDetails, getAllRobotDetails, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot2')
 const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, getMode, changeMode, getOptions } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')

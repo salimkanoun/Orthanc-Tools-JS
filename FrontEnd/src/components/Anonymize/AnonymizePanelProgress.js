@@ -9,8 +9,6 @@ import { addToAnonymizedList, emptyAnonymizeList } from '../../actions/AnonList'
 
 import apis from '../../services/apis';
 import MonitorTask from '../../tools/MonitorTask';
-import task from '../../services/task';
-import { ThemeProvider } from '@material-ui/core';
 
 
 class AnonymizePanelProgress extends Component {

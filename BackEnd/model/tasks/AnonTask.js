@@ -22,9 +22,9 @@ class AnonTask extends AbstractTask{
     }
 
     async getState(){
-        if(this.getProgress()===0) {
+        if(await this.getProgress()===0) {
             return 'wait'
-        }else if(this.getProgress()===100) {
+        }else if(await this.getProgress()===100) {
             return 'completed'
         }else {
             return 'active'

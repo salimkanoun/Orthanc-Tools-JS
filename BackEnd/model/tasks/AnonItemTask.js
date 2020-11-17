@@ -1,5 +1,4 @@
 const AbstractLeafTask = require("../AbstractLeafTask");
-const Orthanc = require("../Orthanc");
 const OrthancQueue = require("../OrthancQueue");
 
 //const orthanc = new Orthanc()

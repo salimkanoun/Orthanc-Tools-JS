@@ -7,7 +7,6 @@ const tls = require("tls")
 const path = require("path")
 const {createClient} = require("webdav")
 
-let orthanc = new Orthanc()
 const ftp = new FtpClient.Client()
 
 const ftpConnectionOption = {

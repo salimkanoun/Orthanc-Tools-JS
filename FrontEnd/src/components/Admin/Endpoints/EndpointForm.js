@@ -85,9 +85,7 @@ export default class EndpointForm extends Component {
     }
 
     readyToSummit(){
-        let ready = true
-
-        ready = ready && (this.state.protocol)
+        let ready = (this.state.protocol)
         ready = ready && (this.state.label)
         ready = ready && (this.state.host)
         ready = ready && (this.state.port)
