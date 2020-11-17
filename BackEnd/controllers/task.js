@@ -41,7 +41,7 @@ const getTasksIds = async(req, res)=>{
 
 const getTaskWithUser = async(req, res)=>{
     try {
-        res.json(await AbstractTask.taskTypeUserIndex[req.params.type][req.params.user].getFormated())
+        res.json(await AbstractTask.getExistingTask(req.params.user, req.params.type).getFormated())
     } catch (error) {
         console.error(error)
         res.status(400).send(error)
