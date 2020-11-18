@@ -25,8 +25,8 @@ const { route } = require('express/lib/router')
 const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
 const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
-const { getTask, getTasks, getTasksIds, getTaskWithUser } = require('../controllers/task')
-const { addAnonTask, addDeleteTask, addRetrieveTask } = require('../controllers/robot')
+const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser } = require('../controllers/task')
+const { addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve} = require('../controllers/robot')
 
 
 router.post('/session/*', authentication)
@@ -40,8 +40,9 @@ router.delete('/session', logOut)
 router.post('/robot/:username/retrieve', autoQueryMidelware, addRetrieveTask)
 router.get('/robot/:username/retrieve', autoQueryMidelware, getRobotDetails)
 router.delete('/robot/:username/retrieve/:index', autoQueryMidelware, removeQueryFromJob)
-router.get('/robot/retrieve', userAdminMidelware, getAllRobotDetails)
-router.post('/robot/:username/retrieve/validate', userAdminMidelware, validateRobotJob)
+router.post('/robot/:username/retrieve/validate', userAdminMidelware, validateRetrieve)
+router.get('/robot/:type', userAdminMidelware, getTasksOfType)
+
 //AnonRobot
 router.post('/robot/:username/anonymize', anonMidelware, addAnonTask)
 //DeleteRobot
@@ -159,6 +160,8 @@ router.post('/robot/:user/export/', exportExternMidelware, exportArchive)
 router.get('/tasks/:id/',getTask)
 router.get('/tasks',getTasksIds)
 router.get('/tasks/:username/:type', getTaskWithUser)
+router.delete('/tasks/:username/:type', deleteTaskOfUser)
+router.delete('/tasks/:id/',deleteTask)
 router.get('/tasks?expend',getTasks)
 
 router.get('/endpoints/', userAdminMidelware, allEndpoints)

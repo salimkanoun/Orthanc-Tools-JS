@@ -19,7 +19,7 @@ const task = {
         
   },
 
-  getTaskOfType(username,type){
+  getTaskOfUser(username,type){
     const getJobInfosOption = {
       method: 'GET',
       headers: {

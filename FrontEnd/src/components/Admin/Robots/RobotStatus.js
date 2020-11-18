@@ -62,7 +62,8 @@ export default class RobotStatus extends Component {
     ];
 
     validationButton(cell, row, rowIndex, parentComponent){
-        if(row.validation !== 'Not Done'){
+        console.log(row)
+        if(row.validation !== 'Waiting Approbation'){
             return <div className="text-center">{row.validation}</div>
         }else{
             return (
@@ -107,10 +108,10 @@ export default class RobotStatus extends Component {
             answerData.forEach(robotJob => {
                 rows.push({
                     key : Math.random(),
-                    name : robotJob.projectName,
-                    username : robotJob.username,
-                    queriesNb : robotJob.items.length,
-                    validation : robotJob.validation
+                    name : robotJob.content.projectName,
+                    username : robotJob.creator,
+                    queriesNb : robotJob.content.items.length,
+                    validation : robotJob.content.isValidated
                 })
                 
             });

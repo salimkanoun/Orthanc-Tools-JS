@@ -187,7 +187,7 @@ class RobotView extends Component {
     }
 
     async startProgressMonitoring(){
-        let response = await apis.task.getTaskOfType(this.props.username, 'retrieve')
+        let response = await apis.task.getTaskOfUser(this.props.username, 'retrieve')
         this.refreshHandler(response)
         this.task = new MonitorTask(response.id)
         this.task.onUpdate(this.refreshHandler.bind(this))
@@ -201,7 +201,7 @@ class RobotView extends Component {
     refreshHandler(info){
             
         let rowsRetrieveList = []
-
+        
         info.content.items.forEach(item => {
             rowsRetrieveList.push({
                 //Merge Modalities (study level) to modality column
@@ -226,7 +226,7 @@ class RobotView extends Component {
         apis.retrieveRobot
         .deleteRobotItem(this.props.username, rowIndex)
         .then( () => {
-            refreshHandler()
+            apis.task.getTaskOfUser(this.props.username, 'retrieve').then(this.refreshHandler)
         })
 
     }

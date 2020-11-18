@@ -4,26 +4,31 @@ const orthancQueue = new OrthancQueue();
 
 
 class RetrieveItemTask extends AbstractLeafTask{
-    constructor(creator, querryAnswer){
+    constructor(creator, queryAnswer){
         super(creator)
 
         this.job = null;
 
-        this.querryAnswer = querryAnswer;
+        this.queryAnswer = queryAnswer;
         this.retrievedOrthancId = '';
     }
 
     async getContent(){
         return {
-            ...this.querryAnswer,
+            ...this.queryAnswer,
             retrievedOrthancId: this.retrievedOrthancId
         }
     }
 
     async run(){
-        this.job = await orthancQueue.queueRetrieveItem(this.querryAnswer)
+        this.job = await orthancQueue.queueRetrieveItem(this.queryAnswer)
         await this.job.finished().then((newId)=>{this.retrievedOrthancId = newId});
     }
+
+    async delete(){
+        await this.job.remove();
+    }
+    
 }
 
 module.exports = RetrieveItemTask

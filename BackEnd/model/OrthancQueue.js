@@ -1,5 +1,6 @@
 const Queue = require('bull')
 const fs = require('fs')
+const time = require('../utils/time')
 const Orthanc = require('./Orthanc')
 const OrthancQueryAnswer = require('./queries-answer/OrthancQueryAnswer')
 const ReverseProxy = require('./ReverseProxy')
@@ -45,9 +46,22 @@ class OrthancQueue {
 
     this.exportQueue.process('create-archive', OrthancQueue._getArchiveDicom)
     this.deleteQueue.process('delete-item', OrthancQueue._deleteItem)
-    this.anonQueue.process('anonymize-item', OrthancQueue._anonimiseItem)
+    this.anonQueue.process('anonymize-item', OrthancQueue._anonymizeItem)
     this.validationQueue.process('validate-item', OrthancQueue._validateItem)
     this.aetQueue.process('retrieve-item', OrthancQueue._retrieveItem)
+
+    
+  }
+
+  async setupTimePermitedTime(){
+    const optionsParameters = await Options.getOptions()
+    let now = Date.now()
+
+    if(time.isTimeInbetween(now.getHours(),now.getMinutes(),optionsParameters.hour,optionsParameters.minute,optionsParameters.hour+4,optionsParameters.minute)){
+      
+    }else{
+      
+    }
   }
 
   static async _getArchiveDicom(job, done) {
@@ -83,7 +97,7 @@ class OrthancQueue {
     })
   }
 
-  static async _anonimiseItem(job, done) {
+  static async _anonymizeItem(job, done) {
     let item = job.data.item
 
     let anonAnswer = await orthanc.makeAnon('studies', item.sourceOrthancStudyID, item.anonProfile, item.newAccessionNumber, item.newPatientID, item.newPatientName, item.newStudyDescription, false)

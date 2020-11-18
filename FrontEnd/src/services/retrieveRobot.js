@@ -17,7 +17,7 @@ const retrieveRobot = {
         }
 
         return fetch('/api/robot/'+username+'/retrieve', createRobotOption ).then((answer) => {
-            if (!answer.ok) { throw answer }
+            if (!answer.ok) { throw answer.status + ' : ' + answer.text() }
             return (answer.json())
         }).then(() => toastifySuccess('Sent To Retrieve Robot'))
         .catch((error) => {
@@ -50,7 +50,7 @@ const retrieveRobot = {
             method: "DELETE",
         }
 
-        return fetch("/api/robot/"+username+"/retrieve", deleteRobotOption ).catch((error) => {
+        return fetch("/api/tasks/"+username+"/retrieve", deleteRobotOption ).catch((error) => {
             toastifyError(error)
         })
     },

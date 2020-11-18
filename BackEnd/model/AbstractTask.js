@@ -23,6 +23,10 @@ class AbstractTask {
         throw typeof (this) + ":getState() :  Not Implemented"
     }
 
+    async delete(){
+        throw typeof (this) + ":delete() :  Not Implemented"
+    }
+
     async getContent(){
         return {}
     }
@@ -37,12 +41,24 @@ class AbstractTask {
             content: await this.getContent()
         }
     }
+
+    async onCompleted(){
+        if(Object.values(AbstractTask.TaskType).includes(type))
+            AbstractTask.taskTypeUserIndex[this.creator][this.type] = null
+    }
     
-    static getExistingTask(user,type){
+    static getTaskOfUser(user,type){
         if(!Object.values(AbstractTask.TaskType).includes(type))
             throw new TypeError('Unkown Task Type')
 
         return AbstractTask.taskTypeUserIndex[type][user]||null
+    }
+
+    static getTasksOfType(type){
+        if(!Object.values(AbstractTask.TaskType).includes(type))
+            throw new TypeError('Unkown Task Type')
+
+        return Object.values(AbstractTask.taskTypeUserIndex[type]).filter((v)=>!!v)
     }
 }
 

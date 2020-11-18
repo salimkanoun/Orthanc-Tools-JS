@@ -7,5 +7,11 @@ class AbstractLeafTask extends AbstractTask{
     async getState(){
         return (this.job? await this.job.getState():'wait')
     }
+
+    async delete(){
+        if(this.job){
+            await this.job.remove()
+        }
+    }
 }
 module.exports = AbstractLeafTask
