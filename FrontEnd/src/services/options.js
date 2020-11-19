@@ -22,7 +22,7 @@ var optionOrthancServer = {
 
 const Options = {
 
-  setRobotScheduleHour(hour, min) {
+  setRobotScheduleHour(hour_start, min_start, hour_stop, min_stop) {
 
     const setRobotScheduleHourOption = {
       method: 'PUT',
@@ -30,7 +30,7 @@ const Options = {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ hour: hour, min: min })
+      body: JSON.stringify({hour_start, min_start, hour_stop, min_stop})
     }
 
     return fetch('/api/options', setRobotScheduleHourOption).then((answer) => {

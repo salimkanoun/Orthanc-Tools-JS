@@ -4,6 +4,8 @@ const time = require('../utils/time')
 const Orthanc = require('./Orthanc')
 const OrthancQueryAnswer = require('./queries-answer/OrthancQueryAnswer')
 const ReverseProxy = require('./ReverseProxy')
+const schedule = require('node-schedule')
+const Options = require('./Options')
 
 const JOBS_PROGRESS_INTERVAL = 250
 const REDIS_OPTIONS = {
@@ -50,19 +52,36 @@ class OrthancQueue {
     this.validationQueue.process('validate-item', OrthancQueue._validateItem)
     this.aetQueue.process('retrieve-item', OrthancQueue._retrieveItem)
 
-    
+    this.pauser = null
+    this.resumer = null
+
+    Options.optionEventEmiter.on('schedule_change', ()=>{
+      this.setupRetrieveSchedule()
+    })
+    this.setupRetrieveSchedule()
   }
 
-  async setupTimePermitedTime(){
+  async setupRetrieveSchedule(){
     const optionsParameters = await Options.getOptions()
-    let now = Date.now()
+    let now = new Date(Date.now());
+    
+    if(this.pauser) this.pauser.cancel()
+    if(this.resumer) this.resumer.cancel()
 
     if(time.isTimeInbetween(now.getHours(),now.getMinutes(),optionsParameters.hour,optionsParameters.minute,optionsParameters.hour+4,optionsParameters.minute)){
-      
+      this.aetQueue.resume()
     }else{
-      
+      this.aetQueue.pause()
     }
+    this.resumer = schedule.scheduleJob(optionsParameters.min_start + ' ' + optionsParameters.hour_start + ' * * *', ()=>{
+      this.aetQueue.resume()
+    })
+    this.pauser = schedule.scheduleJob(optionsParameters.min_stop + ' ' + optionsParameters.hour_stop + ' * * *', ()=>{
+      this.aetQueue.pause()
+    })
   }
+
+  
 
   static async _getArchiveDicom(job, done) {
     let orthancIds = job.data.orthancIds
