@@ -10,7 +10,7 @@ RUN apt-get update -qy && \
     apt-get install -y --no-install-recommends apt-utils\
     git
 WORKDIR /ohif
-RUN git clone -b dev feat/scroll-sync https://github.com/OHIF/Viewers.git
+RUN git clone -b feat/scroll-sync https://github.com/OHIF/Viewers.git
 WORKDIR /ohif/Viewers
 RUN yarn install
 RUN QUICK_BUILD=true PUBLIC_URL=/viewer/ yarn run build
