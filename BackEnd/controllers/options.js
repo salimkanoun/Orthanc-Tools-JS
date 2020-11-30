@@ -24,7 +24,7 @@ var updateRobotOptions = async function(req, res){
     body.burner_support_type,
     body.burner_delete_study_after_sent,
     body.burner_transfer_syntax,
-    body.date_format
+    body.burner_date_format
   )
   res.json(true)
 }

@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     hour_stop: DataTypes.INTEGER,
     min_stop: DataTypes.INTEGER,
     ldap: DataTypes.BOOLEAN,
-    date_format:DataTypes.STRING,
+    burner_date_format:DataTypes.STRING,
     burner_label_path:DataTypes.STRING,
     burner_monitoring_level:DataTypes.STRING,
     burner_manifacturer:DataTypes.STRING,

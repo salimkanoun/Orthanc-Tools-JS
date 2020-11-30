@@ -1,4 +1,3 @@
-'use strict'
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('Options', {
@@ -79,6 +78,11 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING, 
         defaultValue: 'None',
+      },
+      burner_date_format : {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 'uk' 
       }
 
     }).then(() => {
