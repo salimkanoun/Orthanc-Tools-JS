@@ -1,5 +1,4 @@
 const Certificate = require("../model/export/Certificate");
-const fs = require('fs');
 
 const newCertificate = async function(req, res){
     try {

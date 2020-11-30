@@ -9,6 +9,7 @@ import { removeOrthancContentStudy } from '../../actions/OrthancContent'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
 import apis from '../../services/apis'
 import ModalDelete from '../Main/ModalDelete';
+import MonitorTask from '../../tools/MonitorTask';
 
 class Delete extends Component {
 
@@ -45,27 +46,6 @@ class Delete extends Component {
         toast.update(this.toast.current, {type: toast.TYPE.INFO, render: 'Delete done', className: 'bg-success', autoClose: 2000})
     }
 
-    startMonitoring(){
-        this.openToast()
-        this.intervalChcker = setInterval(() => this.getInfo(), 2000)
-    }
-
-    stopMonitoring(){
-        if(this.intervalChcker !== undefined) clearInterval(this.intervalChcker)
-        this.successToast()
-        this.props.deleteList.forEach(async (study) => {
-            this.props.removeStudyFromDeleteList(study.ID)
-            this.props.removeOrthancContentStudy(study.ID)
-        });
-    }
-
-    async getInfo(){
-        let progress = await apis.deleteRobot.getDeleteRobot(this.props.username)
-        let nb = 100*progress.progression.Success/progress.items.length
-        this.updateToast(nb)
-        if(progress.status === 'Finished') {this.stopMonitoring()}
-    }
-
     async handleClickDelete(){
         //close Modal
         this.handleConfirm()
@@ -78,7 +58,23 @@ class Delete extends Component {
         
         let answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
         if (answer){
-            this.startMonitoring()
+            this.task = new MonitorTask(answer.id, 2000)
+            this.task.startMonitoringJob()
+
+            this.openToast()
+
+            this.task.onUpdate((info)=>{
+                this.updateToast(info.progress)
+            })
+
+            this.task.onFinish((info)=>{
+                this.successToast()
+                
+                this.props.deleteList.forEach(async (study) => {
+                    this.props.removeStudyFromDeleteList(study.ID)
+                    this.props.removeOrthancContentStudy(study.ID)
+                });
+            })
         }
 
     }

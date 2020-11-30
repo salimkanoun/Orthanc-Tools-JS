@@ -7,9 +7,6 @@ const tls = require("tls")
 const path = require("path")
 const {createClient} = require("webdav")
 
-// TODO : Check le changement de port webdav
-
-let orthanc = new Orthanc()
 const ftp = new FtpClient.Client()
 
 const ftpConnectionOption = {
@@ -18,7 +15,7 @@ const ftpConnectionOption = {
     username: 'legrand',
     password: 'Dnmts!',
     targetFolder : '/home/legrand/test',
-    protocol : 'sftp',
+    protocol : 'ftps',
     privateKey : true,
     privateKeyPassPhrase : 'devellopement'
 }
@@ -42,6 +39,7 @@ class Exporter{
             this.taskMap = {}
             this._sending = false;
             this._sendTaskQueue = []
+
 
 
             // tls hack to allow CA to be add

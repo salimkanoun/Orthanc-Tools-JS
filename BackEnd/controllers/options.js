@@ -2,7 +2,7 @@ const Options = require('../model/Options')
 const {robot} = require('../model/robot/Robot')
 
 var changeSchedule = async function (req, res) {
-  await Options.setScheduleTime(req.body.hour, req.body.min)
+  await Options.setScheduleTime(req.body.hour_start, req.body.min_start, req.body.hour_stop, req.body.min_stop)
   // Refresh Retrieve Robot to the new time
   robot.updateRetrieveJobsSchelude()
   res.json(true)
@@ -24,7 +24,7 @@ var updateRobotOptions = async function(req, res){
     body.burner_support_type,
     body.burner_delete_study_after_sent,
     body.burner_transfer_syntax,
-    body.date_format
+    body.burner_date_format
   )
   res.json(true)
 }

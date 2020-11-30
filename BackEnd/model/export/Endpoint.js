@@ -2,7 +2,10 @@ const crypto = require('crypto')
 const db = require('../../database/models')
 const convert = require('../../utils/convert')
 const SshKey = require('./SshKey')
+const fs = require('fs')
+
 const algo = 'aes256'
+
 
 class Endpoint{
     constructor (params){
@@ -16,7 +19,6 @@ class Endpoint{
         this.protocol = params.protocol
         this.port = params.port || null
         this.digest = params.digest || null
-        this.sshKey = params.sshKey || null
         this.ssl = params.ssl || null
 
         //Setting the identifients
@@ -33,6 +35,17 @@ class Endpoint{
             this.username = params.username
             this.password = params.password
         }
+
+
+        if (params.sshKey) {
+            
+            this.sshKey = SshKey.getFromId(params.sshKey).then((result)=>{
+                this.sshKey = result
+                return result
+            }).catch((err)=>{
+                console.error(err)
+            })
+        }
     }
 
     static _checkParams(params){
@@ -41,7 +54,7 @@ class Endpoint{
         if(params.host===undefined || params.host===null || params.host==="")
             throw('Endpoint : Invalid host')
         if(params.protocol===undefined || params.protocol===null || !['ftp','sftp','ftps','webdav'].includes(params.protocol))
-            throw('Endpoint : Invalid host')
+            throw('Endpoint : Invalid protocol')
         
     }
 
@@ -73,6 +86,9 @@ class Endpoint{
                 console.error(error)
             }
         }
+        if(this.sshKey){
+            this.sshKey = await SshKey.getFromId(this.sshKey)
+        }
     }
 
     async createEndpoint(){
@@ -81,23 +97,25 @@ class Endpoint{
 
     }
 
-    static async createEndpoint(server){
+    static async createEndpoint(endpoint){
         let fields = {
-            ...server
+            ...endpoint
         }
         fields.password = undefined
         fields.username = undefined
-        fields.pass = !!server.password
-        if(!server.password){
-            fields.identifiants = server.username
+        fields.pass = !!endpoint.password   
+        if(!endpoint.password){
+            fields.identifiants = endpoint.username
         }else{
-            fields.identifiants = Endpoint._encryptIdentifiants(server.username, server.password)
+            fields.identifiants = Endpoint._encryptIdentifiants(endpoint.username, endpoint.password)
         }
         try {
-            let endpoint = await db.Endpoint.create(fields).then((endpoint)=>{
-                if(server.sshKey){
-                    endpoint.set('sshKey',server.sshKey)
-                    endpoint.save()
+            let entity = await db.Endpoint.create(fields).then((endpoint)=>{
+                if(endpoint.sshKey){
+                    endpoint.sshKey.then((result)=>{
+                        entity.set('sshKey',result.id)
+                        entity.save()
+                    })
                 }
                 return endpoint;
             })
@@ -114,7 +132,7 @@ class Endpoint{
         }}))[0])
     }
 
-    static async getAllEndpoints (){
+    static async getAllEndpoints(){
         try {
             let servers = [] 
             await db.Endpoint.findAll(
@@ -138,6 +156,49 @@ class Endpoint{
         await db.Endpoint.destroy({where:{id:id}})
     }
 
+    ftpOptionFormat(){
+        return {
+            host : this.host,
+            user : this.username,
+            password : this.password,
+            secure : this.ssl,
+            port: this.port,
+            targetFolder: this.targetFolder 
+        }
+    }
+
+    sftpOptionFormat(){
+        if (this.sshKey) {
+            return {
+                host: this.host,
+                username: this.username,
+                port: this.port,
+                targetFolder: this.targetFolder,
+                privateKey : fs.readFileSync(this.sshKey.path).toString(),
+                passphrase : this.sshKey.pass || null
+            }
+        }else{
+            return {
+                host: this.host,
+                username: this.username,
+                password: this.password,
+                port: this.port,
+                targetFolder: this.targetFolder
+            }
+        }
+    }
+
+    webdavOptionFormat(){
+        const url = new URL(this.host)
+        url.port = this.port
+        return {
+            url,
+            username: this.username,
+            password: this.password,
+            digest: this.digest,
+            targetFolder: this.targetFolder
+        }
+    }
 
     static _encryptIdentifiants(username, password){
         username = Buffer.from(username, 'utf8').toString('hex')
@@ -160,7 +221,6 @@ class Endpoint{
     }
     
     async getSendable(){
-        let sshKey = (this.sshKey!==null?(await SshKey.getFromId(this.sshKey)).getSendable():null)
         return {
             id:this.id,
             label:this.label,
@@ -170,10 +230,12 @@ class Endpoint{
             username: this.username,
             port: this.port,
             digest: this.digest,
-            sshKey:sshKey ,
+            sshKey:(this.sshKey?(await this.sshKey).getSendable():null) ,
             ssl: this.ssl
         }
     }
+
+    
 }
 
 module.exports = Endpoint;

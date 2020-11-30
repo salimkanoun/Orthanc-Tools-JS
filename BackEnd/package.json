@@ -26,6 +26,7 @@
     "basic-ftp": "^4.6.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "bull": "^3.18.1",
     "configstore": "^5.0.1",
     "cookie-parser": "^1.4.5",
     "cross-env": "^7.0.2",

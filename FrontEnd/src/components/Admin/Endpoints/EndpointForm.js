@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import Select from 'react-select'
 import apis from '../../../services/apis'
+
 /**
  * Form to declare or modify an Ssh Keys
  */
@@ -68,7 +69,7 @@ export default class EndpointForm extends Component {
         postData.port = this.state.port
         postData.username = this.state.username
         postData.password = this.state.password || null
-        postData.targetFolder = this.state.targetFolder
+        postData.targetFolder = this.state.targetFolder || ''
         if(this.state.protocol==='sftp'&&this.state.ssh){
             postData.sshKey = this.state.sshKey
         }else if(this.state.protocol==='ftp'){
@@ -84,14 +85,11 @@ export default class EndpointForm extends Component {
     }
 
     readyToSummit(){
-        let ready = true
-
-        ready = ready && (this.state.protocol)
+        let ready = (this.state.protocol)
         ready = ready && (this.state.label)
         ready = ready && (this.state.host)
         ready = ready && (this.state.port)
         ready = ready && (this.state.username)
-        ready = ready && (this.state.targetFolder)
         ready = ready && (this.state.sshKey || !(this.state.protocol==='sftp'&&this.state.ssh))
         
         return ready

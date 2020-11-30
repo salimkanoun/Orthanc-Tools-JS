@@ -19,7 +19,7 @@ export default class BurnerOptions extends Component{
         burner_manifacturer : '',
         burner_monitoring_level : '',
         burner_support_type : '',
-        date_format: '',
+        burner_date_format: '',
         burner_delete_study_after_sent : false,
         burner_transfer_syntax : null
 
@@ -117,7 +117,6 @@ export default class BurnerOptions extends Component{
 
     render(){
         return (
-            //date_format
             <div>
                 <h2 className="card-title">CD/DVD Burner Options</h2>
                 <label htmlFor="burner_monitored_path">Monitored Folder : </label>
@@ -132,8 +131,8 @@ export default class BurnerOptions extends Component{
                 <Select single options={this.manufacturerOptions} value={this.getSelectedObject(this.manufacturerOptions, this.state.burner_manifacturer)} onChange={this.handleChangeSelect} name="burner_manifacturer"/>
                 <label htmlFor="burner_monitoring_level">Monitoring Level : </label>
                 <Select options={this.levelOptions} value={this.getSelectedObject(this.levelOptions ,this.state.burner_monitoring_level)} onChange={this.handleChangeSelect} name = "burner_monitoring_level" />
-                <label htmlFor="date_format">Date Format : </label>
-                <Select options={this.dateFormatOptions} value={this.getSelectedObject(this.dateFormatOptions ,this.state.date_format)} onChange={this.handleChangeSelect} name = "date_format" />
+                <label htmlFor="burner_date_format">Date Format : </label>
+                <Select options={this.dateFormatOptions} value={this.getSelectedObject(this.dateFormatOptions ,this.state.burner_date_format)} onChange={this.handleChangeSelect} name = "burner_date_format" />
                 <label htmlFor="burner_support_type">Support Type : </label>
                 <Select single options={this.supportType} value={this.getSelectedObject(this.supportType, this.state.burner_support_type)} onChange={this.handleChangeSelect} name = "burner_support_type" />
                 <div className ="mt-3" >

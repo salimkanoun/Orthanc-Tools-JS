@@ -4,12 +4,12 @@ var router = express.Router()
 require('express-async-errors')
 
 const { authentication, logOut } = require('../controllers/authentication')
-const { getRobotDetails, getAllRobotDetails, addRobotJob, validateRobotJob, deleteRobotJob, removeQueryFromJob, addAnonJob, getAnonJob, getDeleteJob, addDeleteJob } = require('../controllers/Robot2')
+const { getRobotDetails, getAllRobotDetails, validateRobotJob, deleteRobotJob, removeQueryFromJob } = require('../controllers/Robot2')
 const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, getMode, changeMode, getOptions } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
-const { exportFtp, exportWebDav, getExportProgress} = require('../controllers/export')
+const { exportArchive} = require('../controllers/export')
 
 const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
 
@@ -25,6 +25,8 @@ const { route } = require('express/lib/router')
 const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
 const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
+const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser } = require('../controllers/task')
+const { addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve} = require('../controllers/robot')
 
 
 router.post('/session/*', authentication)
@@ -35,18 +37,17 @@ router.delete('/session', logOut)
 
 //OrthancToolsJS Robot routes
 //Retrieve Robot
-router.post('/robot/:username/retrieve', autoQueryMidelware, addRobotJob)
+router.post('/robot/:username/retrieve', autoQueryMidelware, addRetrieveTask)
 router.get('/robot/:username/retrieve', autoQueryMidelware, getRobotDetails)
 router.delete('/robot/:username/retrieve/:index', autoQueryMidelware, removeQueryFromJob)
-router.get('/robot/retrieve', userAdminMidelware, getAllRobotDetails)
-router.post('/robot/:username/retrieve/validate', userAdminMidelware, validateRobotJob)
+router.post('/robot/:username/retrieve/validate', userAdminMidelware, validateRetrieve)
+router.get('/robot/:type', userAdminMidelware, getTasksOfType)
+
 //AnonRobot
-router.post('/robot/:username/anonymize', anonMidelware, addAnonJob)
-router.get('/robot/:username/anonymize', anonMidelware, getAnonJob)
+router.post('/robot/:username/anonymize', anonMidelware, addAnonTask)
 //DeleteRobot
 //SK BUG MIDELWARE DELETE?
-router.post('/robot/:username/delete', userAuthMidelware, addDeleteJob)
-router.get('/robot/:username/delete', userAuthMidelware, getDeleteJob)
+router.post('/robot/:username/delete', userAuthMidelware, addDeleteTask)
 
 //Removal of Robots
 router.delete('/robot/:username/:type', isCurrentUserOrAdminMidelWare, deleteRobotJob)
@@ -154,9 +155,14 @@ router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
 router.put('/monitoring/burning/options', userAdminMidelware, updateRobotOptions)
 
 //FTP & WebDav Exports
-router.post('/export/ftp', exportExternMidelware, exportFtp)
-router.post('/export/webdav', exportExternMidelware, exportWebDav)
-router.get('/export/:uuid/progress', exportExternMidelware, getExportProgress)
+router.post('/robot/:user/export/', exportExternMidelware, exportArchive)
+
+router.get('/tasks/:id/',getTask)
+router.get('/tasks',getTasksIds)
+router.get('/tasks/:username/:type', getTaskWithUser)
+router.delete('/tasks/:username/:type', deleteTaskOfUser)
+router.delete('/tasks/:id/',deleteTask)
+router.get('/tasks?expend',getTasks)
 
 router.get('/endpoints/', userAdminMidelware, allEndpoints)
 router.post('/endpoints/update', userAdminMidelware, updateEndpoint)

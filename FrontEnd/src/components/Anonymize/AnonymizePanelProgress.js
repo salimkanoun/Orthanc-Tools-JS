@@ -8,21 +8,21 @@ import AnonymizeRobotDetails from './AnonymizeRobotDetails'
 import { addToAnonymizedList, emptyAnonymizeList } from '../../actions/AnonList'
 
 import apis from '../../services/apis';
+import MonitorTask from '../../tools/MonitorTask';
 
 
 class AnonymizePanelProgress extends Component {
 
     state = { 
-            showRobotDetails: false, 
-            success: 0, 
-            failures: 0,
-            numberOfItem : 0,
-            robotItems : []
+        showRobotDetails: false, 
+        success: 0, 
+        failures: 0,
+        numberOfItem : 0,
+        robotItems : []
     }
 
     constructor(props) {
         super(props);
-        this.getInfo = this.getInfo.bind(this)
         this.toogleModal = this.toogleModal.bind(this)
     }
 
@@ -41,48 +41,43 @@ class AnonymizePanelProgress extends Component {
     }
     
     startMonitoring(){
-        this.intervalChcker = setInterval(() => this.getInfo(), 2000)
+        this.task = new MonitorTask(this.props.task, 2000)
+        this.task.onUpdate((info)=>{
+            let success = 0
+            let failures = 0
+            info.content.items.forEach(async item=>{
+                switch (item.state) {
+                    case 'completed':
+                        success++
+                        let studyDetail = await apis.content.getStudiesDetails(item.result)
+                        if (studyDetail !== undefined)
+                            this.props.addToAnonymizedList([studyDetail])
+                        break
+                    case 'failed':
+                        failures++
+                        break
+                    default:
+                        break
+                }
+            })
+            this.setState({
+                success,
+                failures,
+                numberOfItem: info.content.items.length
+            })
+            if(success+failures===info.content.items.length){
+                this.stopMonitoring()
+            }
+        })
+        
+
+        this.task.startMonitoringJob()
     }
 
     stopMonitoring(){
-        if(this.intervalChcker !== undefined) clearInterval(this.intervalChcker)
+        if(this.task)this.task.stopMonitoringJob()
         this.props.emptyAnonymizeList()
-        this.props.setProgress(false)
-    }
-
-    async getInfo(){
-        let success = 0
-        let failures = 0
-        let robot = await apis.anon.getAnonJob(this.props.username)
-        console.log(robot.items)
-        this.setState({
-            robotItems : robot.items
-        })
-
-        robot.items.forEach(async item => {
-
-            
-            switch (item.Status) {
-                case 'Success':
-                    success = success + 1
-                    let studyDetail = await apis.content.getStudiesDetails(item.anonymizedOrthancStudyID)
-                    if (studyDetail !== undefined)
-                        this.props.addToAnonymizedList([studyDetail])
-                    break
-                case 'Failures':
-                    failures = failures + 1
-                    break
-                default:
-                    break
-            }
-        })
-
-        this.setState({
-            success: success, 
-            failures: failures,
-            numberOfItem : robot.items.length
-        })
-        if (robot.status === 'Finished') {this.stopMonitoring()}
+        this.props.setTask(null)
     }
 
     render() {

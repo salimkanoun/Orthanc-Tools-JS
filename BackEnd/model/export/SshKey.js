@@ -2,7 +2,6 @@ const db = require("../../database/models");
 const fs = require('fs');
 const crypto = require('crypto');
 const convert = require("../../utils/convert");
-const { Console } = require("console");
 
 const algo = 'aes256'
 

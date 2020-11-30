@@ -24,12 +24,6 @@ class AnonymizePanel extends Component {
         this.testAllId = this.testAllId.bind(this)
     }
 
-    async componentDidMount() {
-        let robot = await apis.anon.getAnonJob(this.props.username)
-        if (robot.status && robot.status !== 'Finished') 
-            this.props.setProgress(true)
-    }
-
     getPatients(){
         let patients = []
         patients = studyArrayToPatientArray(this.props.anonList)
@@ -84,7 +78,7 @@ class AnonymizePanel extends Component {
             })
 
             let answer = await apis.anon.createAnonRobot(listToAnonymize, this.props.username) //wait for the robot's answer to know what do to next
-            this.props.setProgress(answer)
+            this.props.setTask(answer.id)
         } else toastifyError('Fill all patient ID')
     }
 

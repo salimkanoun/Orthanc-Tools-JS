@@ -1,4 +1,3 @@
-'use strict'
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('Options', {
@@ -8,10 +7,16 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      hour: {
+      hour_start: {
         type: Sequelize.INTEGER
       },
-      min: {
+      min_start: {
+        type: Sequelize.INTEGER
+      },
+      hour_stop: {
+        type: Sequelize.INTEGER
+      },
+      min_stop: {
         type: Sequelize.INTEGER
       },
       createdAt: {
@@ -73,12 +78,19 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING, 
         defaultValue: 'None',
+      },
+      burner_date_format : {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 'uk' 
       }
 
     }).then(() => {
       queryInterface.bulkInsert('Options', [{
-        hour: 22,
-        min: 0,
+        hour_start: 22,
+        min_start: 0,
+        hour_stop: 24,
+        min_stop: 0,
         createdAt: new Date().toDateString(),
         updatedAt: new Date().toDateString(),
         ldap: false,

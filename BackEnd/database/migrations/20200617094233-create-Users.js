@@ -1,4 +1,6 @@
-'use strict'
+
+const bcrypt = require('bcryptjs')
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('Users', {
@@ -46,6 +48,22 @@ module.exports = {
       mail: {
         type: Sequelize.STRING
       },
+    }).then(() => {
+      return queryInterface.addConstraint('Users', ['username'], {
+        type: 'unique',
+        name: 'unique_username'
+      })
+    }).then( () => { return bcrypt.hash('admin', 10) 
+    }).then((hash) => {
+      queryInterface.bulkInsert('Users', [{
+        username: 'admin',
+        password: hash,
+        admin: true,
+        role: 'admin',
+        createdAt: new Date().toDateString(),
+        updatedAt: new Date().toDateString()
+      }], {})
+
     })
   },
   down: (queryInterface, Sequelize) => {
