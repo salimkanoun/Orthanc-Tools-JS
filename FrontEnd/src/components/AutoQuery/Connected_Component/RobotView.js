@@ -188,6 +188,10 @@ class RobotView extends Component {
 
     async startProgressMonitoring(){
         let response = await apis.task.getTaskOfUser(this.props.username, 'retrieve')
+        console.log(response)
+        //Case of task not existing, no data from backend
+        if(response === undefined) return
+
         this.refreshHandler(response)
         this.task = new MonitorTask(response.id)
         this.task.onUpdate(this.refreshHandler.bind(this))
@@ -195,14 +199,15 @@ class RobotView extends Component {
     }
 
     stopProgressMonitoring(){
-        this.task.stopMonitoringJob();
+        if(this.stask !== undefined) this.task.stopMonitoringJob();
     }
 
-    refreshHandler(info){
-            
+    refreshHandler(response){
+        console.log(response)
         let rowsRetrieveList = []
         
-        info.content.items.forEach(item => {
+        //SK ICI DIFFICULTE A SUIVRE LA PROGRESSION DU ROBOT
+        response.queryAnswers.forEach(item => {
             rowsRetrieveList.push({
                 //Merge Modalities (study level) to modality column
                 Modality : item.ModalitiesInStudy,
@@ -210,11 +215,12 @@ class RobotView extends Component {
             })
         });
 
-        let newTotalPercentageProgress = info.progress.retrieve
+        //SK MANQUANT A CALCULER FRONT OU BACK?
+        let newTotalPercentageProgress =0
         let newPercentageFailure = 0
         
         this.setState({
-            projectName : info.content.projectName,
+            projectName : response.projectName,
             rows : rowsRetrieveList,
             totalPercentageProgress : newTotalPercentageProgress,
             percentageFailure : newPercentageFailure

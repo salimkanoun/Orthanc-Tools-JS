@@ -8,7 +8,7 @@ const getTask = async (req, res) => {
         if (!(req.params.id in AbstractTask.taskIndex))
             throw "invalid task id"
 
-        res.json(await AbstractTask.taskIndex[req.params.id].getFormated())
+        res.json(await AbstractTask.taskIndex[req.params.id])
     } catch (error) {
         console.error(error)
         res.status(400).send(error)
@@ -20,7 +20,7 @@ const getTasks = async (req, res) => {
         let tasks = AbstractTask.taskIndex.values()
         let formatedTasks = []
         for (let i = 0; i < tasks.length; i++) {
-            formatedTasks.push(tasks[i].getFormated())
+            formatedTasks.push(tasks[i])
         }
         res.json(formatedTasks)
     } catch (error) {
@@ -34,22 +34,28 @@ const getTasksIds = async (req, res) => {
         res.json(Object.values(AbstractTask.taskIndex).map(x => x.id))
     } catch (error) {
         console.error(error)
-        res.status(400).send(error)
+        res.status(400).json([])
     }
 }
 
 const getTaskWithUser = async (req, res) => {
     try {
-        res.json(await AbstractTask.getTaskOfUser(req.params.username, req.params.type).getFormated())
+        let task = await AbstractTask.getTaskOfUser(req.params.username, req.params.type)
+        if(task !== null){
+            console.log(task)
+            res.json(task)
+        }else {
+            res.status(404).send()
+        }
     } catch (error) {
         console.error(error)
-        res.status(400).send(error)
+        res.status(500).send(error)
     }
 }
 
 const getTasksOfType = async (req, res) => {
     try {
-        res.json(await Promise.all(AbstractTask.getTasksOfType(req.params.type).map(x => x.getFormated())))
+        res.json(await Promise.all(AbstractTask.getTasksOfType(req.params.type) ))
     } catch (error) {
         console.error(error)
         res.status(400).send(error)

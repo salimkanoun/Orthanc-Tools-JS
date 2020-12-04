@@ -31,7 +31,7 @@ class AbstractTask {
         return {}
     }
 
-    async getFormated() {
+    async toJson() {
         return {
             id: this.id,
             type: this.type,

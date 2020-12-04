@@ -29,7 +29,7 @@ class RetrieveButton extends Component {
     if (this.state.status === 'Retrieve') return 'info'
     else if (this.state.status === MonitorJob.Pending ) return 'warning'
     else if (this.state.status === MonitorJob.Success ) return 'success'
-    else if (this.state.status === MonitorJob.Failure ) return 'error'
+    else if (this.state.status === MonitorJob.Failure ) return 'danger'
   }
 
   async toAnon(){

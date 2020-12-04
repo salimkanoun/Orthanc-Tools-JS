@@ -8,6 +8,7 @@ import { addManualQuerySeriesDetails } from '../../../actions/ManualQuery'
 
 import apis from '../../../services/apis'
 import RetrieveButton from '../Components/RetrieveButton';
+import { toastifyError } from '../../../services/toastify';
 
 
 class TableResultSeries extends Component {
@@ -42,11 +43,16 @@ class TableResultSeries extends Component {
             },
             Normalize: false
         }
+        
+        try{
+            let queryAnswers = await apis.query.dicomQuery(aet,queryData)
+            let seriesAnswers = await apis.query.retrieveAnswer(queryAnswers.ID)
+            this.props.addManualQuerySeriesDetails(seriesAnswers, studyUID)
+        }catch{
+            toastifyError('Dicom Failure')
+        }
 
-        let queryAnswers = await apis.query.dicomQuery(aet,queryData);
-        let seriesAnswers = await apis.query.retrieveAnswer(queryAnswers.ID)
-
-        this.props.addManualQuerySeriesDetails(seriesAnswers, studyUID)
+        
 
     }
 
