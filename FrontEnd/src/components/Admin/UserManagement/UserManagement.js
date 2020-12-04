@@ -44,14 +44,15 @@ class UserManagement extends Component {
     render() {
         return (
             <div>
-                <div id='navBar' className='mb-5'>
+                <div className='mb-5'>
                     <ul className='nav nav-pills nav-fill'>
+                    <li className='nav-item'>
+                        <button className={this.state.currentComponent === 'Users' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => this.switchTab('Users')}>Local Users</button>
+                    </li> 
                     <li className='nav-item'>
                         <button className={this.state.currentComponent === 'Roles' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => this.switchTab('Roles')}>Roles</button>
                     </li>    
-                    <li className='nav-item'>
-                        <button className={this.state.currentComponent === 'Users' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => this.switchTab('Users')}>Local Users</button>
-                    </li>
+
                     <li className='nav-item'>
                         <button className={this.state.currentComponent === 'Ldap' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => this.switchTab('Ldap')}>Distant Users</button>
                     </li>

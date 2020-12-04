@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import apis from '../../../services/apis'
 import CertificateForm from './CertificateForm'
 import Certificates from './CertificatesList'
 import SshKeyForm from './SshKeyForm'
 import SshKeys from './SshKeysList'
 
-const SecurityRootPanel = ()=>{
+const SecurityRootPanel = () => {
     const [certificates, setCertificates] = useState([])
     const [sshKeys, setSshKeys] = useState([])
+    const [currentComponent, setCurrentComponent] = useState("sshKeys")
     
     /**
      * Replacement of ComponentDidMount
@@ -18,24 +19,67 @@ const SecurityRootPanel = ()=>{
     refreshCertificates()
   }, [])
   
-  async function refreshSshKeys(){
+  let refreshSshKeys = async() => {
       const answere = await apis.sshKeys.getKeysExpend()
       setSshKeys(answere)
   }
 
-  async function refreshCertificates(){
-    const answere = await apis.certificates.getCertificatesExpend()
-    setCertificates(answere)
+  let refreshCertificates = async() => {
+    const answer = await apis.certificates.getCertificatesExpend()
+    setCertificates(answer)
   }  
+
+
+  let getComponentToDisplay = () => {
+    let component = null
+    switch(currentComponent){
+        case 'sshKeys':
+            component = 
+            <Fragment>
+                <h2>Ssh Private Keys : </h2>
+                <SshKeys sshKeysData={sshKeys} refreshSshKeysData={refreshSshKeys} />
+                <SshKeyForm refreshSshKeysData={refreshSshKeys} />
+            </Fragment>
+            break
+        case 'certificates':
+            component = 
+            <Fragment>
+                <h2>Certification Authorities : </h2>
+                <Certificates certificatesData={certificates} refreshCertificatesData={refreshCertificates} />
+                <CertificateForm refreshCertificatesData={refreshCertificates} />
+            </Fragment>
+            break 
+        default: 
+            break
+    }
+
+    return component
+  }
+
+  let switchTab = (tabName) => {
+    setCurrentComponent(tabName)
+  }
 
   return(
     <>
-        <h2>Ssh Private Keys : </h2>
-        <SshKeys sshKeysData={sshKeys} refreshSshKeysData={refreshSshKeys} />
-        <SshKeyForm refreshSshKeysData={refreshSshKeys} />
-        <h2>Certification Authorities : </h2>
-        <Certificates certificatesData={certificates} refreshCertificatesData={refreshCertificates} />
-        <CertificateForm refreshCertificatesData={refreshCertificates} />
+
+        <div>
+            <div className='mb-5'>
+                <ul className='nav nav-pills nav-fill'>
+                <li className='nav-item'>
+                    <button className={currentComponent === 'sshKeys' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => switchTab('sshKeys')}>Ssh Keys</button>
+                </li>    
+                <li className='nav-item'>
+                    <button className={currentComponent === 'certificates' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => switchTab('certificates')}>Certificates</button>
+                </li>
+                </ul>
+            </div>
+            <div>
+                {getComponentToDisplay()}
+            </div>
+        </div>
+
+
     </>
   )
 }

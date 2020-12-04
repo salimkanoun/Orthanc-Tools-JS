@@ -58,8 +58,6 @@ export default class CertificateForm extends Component {
             <Fragment>
                 <h3 className="card-title">Add Certificate Authority</h3>
                 <div className="form-group">
-                    <label htmlFor="label">Label : </label>
-                    <input type='text' name="label" className="row form-control" onChange={this.handleChange} />
                     <Dropzone onDrop={acceptedFile => this.setFile(acceptedFile)} >
                         {({ getRootProps, getInputProps }) => (
                             <section>
@@ -70,6 +68,8 @@ export default class CertificateForm extends Component {
                             </section>
                         )}
                     </Dropzone>
+                    <label htmlFor="label">Label : </label>
+                    <input type='text' name="label" className="form-control" onChange={this.handleChange} />
                 </div>
                 <div className="text-right mb-5">
                     <input disabled={!this.state.file||!this.state.label}  type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />

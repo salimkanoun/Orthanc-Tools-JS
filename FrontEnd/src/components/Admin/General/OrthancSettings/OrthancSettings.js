@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import apis from '../../../services/apis';
+import apis from '../../../../services/apis';
 import Select from 'react-select'
 
 import ModalRestart from './ModalRestart'
@@ -105,13 +105,13 @@ export default class OrthancSettings extends Component {
                 <div className="form-group">
                     <h2 className="card-title">Orthanc Server</h2>
                     <label htmlFor="address">Address : </label>
-                    <input type='text' name="OrthancAddress" className="row form-control" onChange={this.handleChange} value={this.state.OrthancAddress} placeholder="http://" />
+                    <input type='text' name="OrthancAddress" className="form-control" onChange={this.handleChange} value={this.state.OrthancAddress} placeholder="http://" />
                     <label htmlFor="port">Port : </label>
-                    <input type='number' min="0" max="999999" name="OrthancPort" className="row form-control" value={this.state.OrthancPort} onChange={this.handleChange} />
+                    <input type='number' min="0" max="999999" name="OrthancPort" className="form-control" value={this.state.OrthancPort} onChange={this.handleChange} />
                     <label htmlFor="username">Username : </label>
-                    <input type='text' name="OrthancUsername" className="row form-control" value={this.state.OrthancUsername} onChange={this.handleChange} />
+                    <input type='text' name="OrthancUsername" className="form-control" value={this.state.OrthancUsername} onChange={this.handleChange} />
                     <label htmlFor="password">Password : </label>
-                    <input type='password' name="OrthancPassword" className="row form-control" value={this.state.OrthancPassword} onChange={this.handleChange} />
+                    <input type='password' name="OrthancPassword" className="form-control" value={this.state.OrthancPassword} onChange={this.handleChange} />
                 </div>
                 <div className="form-group text-right">
                     <input type='button' className='btn btn-primary mr-1' onClick={this.submitOrthancSettings} value='Update' />

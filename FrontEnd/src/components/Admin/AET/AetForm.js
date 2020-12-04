@@ -73,13 +73,13 @@ export default class AetForm extends Component {
                 <h2 className="card-title">Add Aet</h2>
                 <div className="form-group">
                     <label htmlFor="name">Name : </label>
-                    <input type='text' name="name" className="row form-control" onChange={this.handleChange} />
+                    <input type='text' name="name" className="form-control" onChange={this.handleChange} />
                     <label htmlFor="aetName">Aet Name : </label>
-                    <input type='text' name="aetName" className="row form-control" onChange={this.handleChange} />
+                    <input type='text' name="aetName" className="form-control" onChange={this.handleChange} />
                     <label htmlFor="ip">IP : </label>
-                    <input type='text' name="ip" className="row form-control" onChange={this.handleChange} />
+                    <input type='text' name="ip" className="form-control" onChange={this.handleChange} />
                     <label htmlFor="port">Port : </label>
-                    <input type='number' min="0" max="999999" name="port" className="row form-control" onChange={this.handleChange} />
+                    <input type='number' min="0" max="999999" name="port" className="form-control" onChange={this.handleChange} />
                     <label htmlFor="manufacturer">Manufacturer : </label>
                     <Select className="col-sm" options={this.manufacturers} name="manufacturer" onChange={this.manufacturerChangeListener}/>
                 </div>

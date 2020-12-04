@@ -1,16 +1,11 @@
 import React, { Component } from 'react'
 import Modal from 'react-bootstrap/Modal'
 
-import apis from '../../../services/apis'
+import apis from '../../../../services/apis'
 
 class ModalRestart extends Component {
-
-    constructor(props){
-        super(props)
-        this.reset = this.reset.bind(this)
-    }
     
-    reset(){
+    reset = async () => {
         apis.options.resetOrthanc()
         this.props.onHide()
     }

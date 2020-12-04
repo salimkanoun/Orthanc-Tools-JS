@@ -58,12 +58,7 @@ export default class SshKeyForm extends Component {
         return (
             <Fragment>
                 <h3 className="card-title">Add Ssh Private Key</h3>
-                <div className="form-group">
-                    <label htmlFor="label">Label : </label>
-                    <input type='text' name="label" className="row form-control" onChange={this.handleChange} />
-                    <label htmlFor="pass">Passphrase : </label>
-                    <input type='text' name="pass" className="row form-control" onChange={this.handleChange} />
-                    <Dropzone onDrop={acceptedFile => this.setFile(acceptedFile)} >
+                <Dropzone onDrop={acceptedFile => this.setFile(acceptedFile)} >
                         {({ getRootProps, getInputProps }) => (
                             <section>
                                 <div className={this.state.inProgress ? "dropzone dz-parsing":"dropzone"} {...getRootProps()} >
@@ -72,7 +67,12 @@ export default class SshKeyForm extends Component {
                                 </div>
                             </section>
                         )}
-                    </Dropzone>
+                </Dropzone>
+                <div className="form-group">
+                    <label htmlFor="label">Label : </label>
+                    <input type='text' name="label" className="form-control" onChange={this.handleChange} />
+                    <label htmlFor="pass">Passphrase : </label>
+                    <input type='text' name="pass" className="form-control" onChange={this.handleChange} />
                 </div>
                 <div className="text-right mb-5">
                     <input disabled={!this.state.file||!this.state.label}  type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
