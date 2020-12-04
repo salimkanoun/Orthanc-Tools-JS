@@ -8,7 +8,8 @@ import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } fro
 import 'react-circular-progressbar/dist/styles.css';
 
 import AnonExportDeleteSendButton from '../../Import/AnonExportDeleteSendButton'
-import OhifLink from '../../Ohif/OhifLink'
+import OhifLink from '../../Viewers/OhifLink'
+import StoneLink from '../../Viewers/StoneLink';
 import apis from '../../../services/apis'
 
 import {addStudiesToExportList} from '../../../actions/ExportList'
@@ -16,6 +17,7 @@ import {addStudiesToDeleteList} from '../../../actions/DeleteList'
 import {addStudiesToAnonList} from '../../../actions/AnonList'
 
 import MonitorTask from '../../../tools/MonitorTask'
+
 
 /**
  * View page of a sigle Retrieve Robot content
@@ -123,6 +125,14 @@ class RobotView extends Component {
         formatter : function(cell, row, rowIndex, formatExtraData){
             return (
                 <OhifLink StudyInstanceUID = {row.StudyInstanceUID} />
+            )
+        }
+    }, {
+        dataField : 'Stone Of Orthanc',
+        text : 'View in Stone',
+        formatter : function(cell, row, rowIndex, formatExtraData){
+            return (
+                <StoneLink StudyInstanceUID = {row.StudyInstanceUID} />
             )
         }
     }, {

@@ -2,10 +2,12 @@ import React, { Component, Fragment } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
 import apis from '../../../services/apis'
 import { toastifySuccess, toastifyError } from '../../../services/toastify'
-import OhifLink from '../../Ohif/OhifLink'
+import OhifLink from '../../Viewers/OhifLink'
+import StoneLink from '../../Viewers/StoneLink'
 import Modal from 'react-bootstrap/Modal'
 import Metadata from '../../Metadata/Metadata'
 import Modify from '../../Modify/Modify'
+
 
 class ActionBouton extends Component{
 
@@ -74,6 +76,7 @@ class ActionBouton extends Component{
 
                     <Dropdown.Menu>
                         <OhifLink className='dropdown-item bg-info' {...this.props} />
+                        <StoneLink className='dropdown-item bg-info' {...this.props} />
                         <button className='dropdown-item bg-info' type='button' onClick={ this.setMetadata} hidden={this.props.hiddenMetadata}>View Metadata</button>
                         <Modify {...this.props} />
                         <button className='dropdown-item bg-danger' type='button' onClick={ this.delete }>Delete</button>

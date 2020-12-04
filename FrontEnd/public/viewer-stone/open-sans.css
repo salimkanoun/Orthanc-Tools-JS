@@ -1,0 +1,17 @@
+/* Web browsers will choose the last font-face that matches the
+   family. So, TTF must be the first definition, so that Web browsers
+   choose WOFF2 if they support it. */
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url(webfonts/2017-11-13-OpenSans-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url(webfonts/2017-11-13-OpenSans-Regular.woff2) format('woff2');
+}

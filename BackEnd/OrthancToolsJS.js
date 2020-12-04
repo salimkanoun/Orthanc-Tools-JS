@@ -26,6 +26,11 @@ const dotenv = require("dotenv");
 app.use('/', express.static(path.join(__dirname, 'build')))
 app.use('/viewer/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer/assets/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-stone/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-stone/css/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-stone/img/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-stone/js/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-stone/webfonts/', express.static(path.join(__dirname, 'build')));
 app.use('/streamSaver/', express.static(path.join(__dirname, 'build')));
 
 app.use(logger('dev'))
