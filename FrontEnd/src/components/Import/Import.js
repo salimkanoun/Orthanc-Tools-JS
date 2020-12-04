@@ -26,6 +26,7 @@ class Import extends Component {
         seriesObjects: {},
         showErrors: false,
         inProgress: false,
+        isDragging : false,
         numberOfFiles : 0,
         processedFiles : 0
     }
@@ -57,7 +58,7 @@ class Import extends Component {
 
     async addFile(files) {
         
-        this.setState({ inProgress: true, numberOfFiles : files.length, processedFiles : 0 })
+        this.setState({ isDragging : false, inProgress: true, numberOfFiles : files.length, processedFiles : 0 })
         let i = 1
         for (let file of files) {
 
@@ -83,7 +84,7 @@ class Import extends Component {
             i = ++i
         }
 
-        this.setState({ inProgress: false })
+        this.setState({ inProgress: false }, console.log(this.state.inProgress))
     }
 
     componentWillUnmount(){
@@ -228,16 +229,20 @@ class Import extends Component {
             showErrors: !this.state.showErrors
         })
     }
+
+    dragListener = (dragStarted) =>{
+        this.setState({isDragging : dragStarted})
+    }
     
     render() {
         return (
             <div className="jumbotron">
                 <h2 className="col card-title">Import Dicom Files</h2>
                 <div className="col mb-5">
-                    <Dropzone disabled = {this.state.inProgress} onDrop={acceptedFiles => this.addFile(acceptedFiles)} >
+                    <Dropzone onDragEnter={()=> this.dragListener(true)} onDragLeave={()=> this.dragListener(false)} disabled = {this.state.inProgress} onDrop={acceptedFiles => this.addFile(acceptedFiles)} >
                         {({ getRootProps, getInputProps }) => (
                             <section>
-                                <div className={this.state.inProgress ? "dropzone dz-parsing":"dropzone"} {...getRootProps()} >
+                                <div className={ (this.state.isDragging || this.state.inProgress) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
                                     <input directory="" webkitdirectory="" {...getInputProps()} />
                                     <p>{this.state.inProgress ? "Uploading" : "Drop Dicom Folder"}</p>
                                 </div>

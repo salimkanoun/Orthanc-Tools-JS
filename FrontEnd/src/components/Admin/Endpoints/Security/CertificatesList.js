@@ -1,7 +1,7 @@
 import BootstrapTable from "react-bootstrap-table-next";
 
 import React, { Component, Fragment } from "react";
-import apis from '../../../services/apis';
+import apis from '../../../../services/apis';
 
 export default class Certificates extends Component{
     columns = [{

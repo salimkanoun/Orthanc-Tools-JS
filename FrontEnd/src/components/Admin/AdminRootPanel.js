@@ -6,7 +6,6 @@ import JobsRootPanel from './Jobs/JobsRootPanel'
 import Plugins from './Plugins'
 import UserManagement from './UserManagement/UserManagement'
 import BurnerOptions from './CDBurner/BurnerOptions'
-import SecurityRootPanel from './Security/SecurityRootPanel'
 import EndpointsRootPanel from './Endpoints/EndpointsRootPanel'
 import GeneralRoot from './General/GeneralRoot'
 
@@ -29,10 +28,8 @@ const AdminPanel = () => {
         return (<AetRootPanel />)
       case 'Peers' :
         return (<PeerRootPanel />)
-      case 'External Exports' :
+      case 'External Endpoints' :
         return (<EndpointsRootPanel />)
-      case 'Security' :
-        return (<SecurityRootPanel />)
       case 'Robots' :
         return (<AutoRetrieveRootPanel />)
       case 'Jobs' :
@@ -56,8 +53,7 @@ const AdminPanel = () => {
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='General' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Aets' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers' />
-            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='External Exports' />
-            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Security' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='External Endpoints' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Robots' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Jobs' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='CD Burner' />

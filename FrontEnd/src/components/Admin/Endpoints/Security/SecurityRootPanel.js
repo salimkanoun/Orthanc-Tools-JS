@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react'
-import apis from '../../../services/apis'
+import apis from '../../../../services/apis'
 import CertificateForm from './CertificateForm'
 import Certificates from './CertificatesList'
 import SshKeyForm from './SshKeyForm'
@@ -62,7 +62,6 @@ const SecurityRootPanel = () => {
 
   return(
     <>
-
         <div>
             <div className='mb-5'>
                 <ul className='nav nav-pills nav-fill'>
@@ -78,8 +77,6 @@ const SecurityRootPanel = () => {
                 {getComponentToDisplay()}
             </div>
         </div>
-
-
     </>
   )
 }
