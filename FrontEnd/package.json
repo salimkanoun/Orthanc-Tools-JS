@@ -32,7 +32,8 @@
     "react-tooltip": "^4.2.7",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "streamsaver": "^2.0.5"
+    "streamsaver": "^2.0.5",
+    "web-streams-polyfill": "^3.0.1"
   },
   "scripts": {
     "start": "react-scripts start",

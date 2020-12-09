@@ -1,6 +1,8 @@
 import { toastifyError } from './toastify'
 import streamSaver from 'streamsaver'
+import { WritableStream } from "web-streams-polyfill/ponyfill";
 streamSaver.mitm = window.location.origin+'/streamSaver/mitm.html'
+streamSaver.WritableStream = WritableStream
 
 const exportDicom = {
 
@@ -70,6 +72,9 @@ const exportDicom = {
   },
 
   downloadZip(jobID) {
+
+    const fileStream = streamSaver.createWriteStream('Dicom_'+jobID+'.zip')
+
     return fetch('/api/jobs/' + jobID + '/archive', {
         method: 'GET',
         headers: {
@@ -79,8 +84,7 @@ const exportDicom = {
     }).then((answer) => {
         
         if (!answer.ok) throw answer
-        const fileStream = streamSaver.createWriteStream('Dicom_'+jobID+'.zip')
-
+      
         const readableStream = answer.body
 
         // more optimized
