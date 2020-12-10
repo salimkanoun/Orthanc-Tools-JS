@@ -47,9 +47,6 @@ class Robot {
         delete this.jobs[username][type]
     }
 
-    
-    
-
 }
 
 const robot = new Robot();

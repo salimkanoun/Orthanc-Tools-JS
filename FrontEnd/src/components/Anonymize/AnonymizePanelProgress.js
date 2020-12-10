@@ -43,6 +43,7 @@ class AnonymizePanelProgress extends Component {
     startMonitoring(){
         this.task = new MonitorTask(this.props.task, 2000)
         this.task.onUpdate((info)=>{
+            console.log(info)
             let success = 0
             let failures = 0
             info.content.items.forEach(async item=>{

@@ -34,6 +34,14 @@ class AnonymizedResults extends Component {
         return studies
     }
 
+    getCSV = () => {
+
+        //Level study ou series
+        //Get le anonymized from pour le level study
+        
+
+    }
+
     emptyAnonymizedList(){
         this.props.emptyAnonymizedList()
     }
