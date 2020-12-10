@@ -2,6 +2,8 @@ import React, { Component } from "react"
 import { connect } from "react-redux"
 import Select from "react-select"
 
+import papa from 'papaparse'
+
 import apis from '../../services/apis'
 import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy'
 import TableSeries from '../CommonComponents/RessourcesDisplay/TableSeries'
@@ -13,32 +15,33 @@ import ModalWarning from './ModalWarning'
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 import SendExternalDropdown from "./SendExternalDropdown"
+import { toastifyError } from "../../services/toastify"
 
 class ExportPanel extends Component {
 
 
     transferSyntaxOptions = [
-        {value: 'None',                     label: 'None'},
-        {value: '1.2.840.10008.1.2',        label: 'Implicit VR Endian'},
-        {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
-        {value: '1.2.840.10008.1.2.1.99',   label: 'Deflated Explicit VR Little Endian'},
-        {value: '1.2.840.10008.1.2.2',      label: 'Explicit VR Big Endian'},
-        {value: '1.2.840.10008.1.2.4.50',   label: 'JPEG 8-bit'},
-        {value: '1.2.840.10008.1.2.4.51',   label: 'JPEG 12-bit'},
-        {value: '1.2.840.10008.1.2.4.57',   label: 'JPEG Lossless'},
-        {value: '1.2.840.10008.1.2.4.70',   label: 'JPEG Lossless'},
-        {value: '1.2.840.10008.1.2.4.80',   label: 'JPEG-LS Lossless' },
-        {value: '1.2.840.10008.1.2.4.81',   label: 'JPEG-LS Lossy'},
-        {value: '1.2.840.10008.1.2.4.90',   label: 'JPEG 2000 (90)'},
-        {value: '1.2.840.10008.1.2.4.91',   label: 'JPEG 2000 (91)'},
-        {value: '1.2.840.10008.1.2.4.92',   label: 'JPEG 2000 (92)'},
-        {value: '1.2.840.10008.1.2.4.93',   label: 'JPEG 2000 (93)'}
+        { value: 'None', label: 'None' },
+        { value: '1.2.840.10008.1.2', label: 'Implicit VR Endian' },
+        { value: '1.2.840.10008.1.2.1', label: 'Explicit VR Little Endian' },
+        { value: '1.2.840.10008.1.2.1.99', label: 'Deflated Explicit VR Little Endian' },
+        { value: '1.2.840.10008.1.2.2', label: 'Explicit VR Big Endian' },
+        { value: '1.2.840.10008.1.2.4.50', label: 'JPEG 8-bit' },
+        { value: '1.2.840.10008.1.2.4.51', label: 'JPEG 12-bit' },
+        { value: '1.2.840.10008.1.2.4.57', label: 'JPEG Lossless' },
+        { value: '1.2.840.10008.1.2.4.70', label: 'JPEG Lossless' },
+        { value: '1.2.840.10008.1.2.4.80', label: 'JPEG-LS Lossless' },
+        { value: '1.2.840.10008.1.2.4.81', label: 'JPEG-LS Lossy' },
+        { value: '1.2.840.10008.1.2.4.90', label: 'JPEG 2000 (90)' },
+        { value: '1.2.840.10008.1.2.4.91', label: 'JPEG 2000 (91)' },
+        { value: '1.2.840.10008.1.2.4.92', label: 'JPEG 2000 (92)' },
+        { value: '1.2.840.10008.1.2.4.93', label: 'JPEG 2000 (93)' }
 
     ]
 
     state = {
         currentStudy: '',
-        currentTS : {value: '1.2.840.10008.1.2.1',      label: 'Explicit VR Little Endian'},
+        currentTS: { value: '1.2.840.10008.1.2.1', label: 'Explicit VR Little Endian' },
         aets: [],
         peers: [],
         endpoints: [],
@@ -60,7 +63,7 @@ class ExportPanel extends Component {
 
 
     async componentDidMount() {
-        
+
         let currentTS = apis.localStorage.getLocalStorage('TS');
         this.loadTS(currentTS);
         let aets = await apis.aets.getAets()
@@ -148,15 +151,15 @@ class ExportPanel extends Component {
         return answer
     }
 
-    loadTS(tsValue){
-        if(tsValue){
+    loadTS(tsValue) {
+        if (tsValue) {
             this.setState({
-                currentTS : this.getSelectedTSObject(tsValue)
+                currentTS: this.getSelectedTSObject(tsValue)
             })
         }
 
     }
-    
+
 
     setButton(button) {
         this.setState({
@@ -171,12 +174,54 @@ class ExportPanel extends Component {
 
 
 
-    getSelectedTSObject (tsValue){
+    getSelectedTSObject(tsValue) {
         let filteredArray = this.transferSyntaxOptions.filter(item => {
             return item.value === tsValue ? true : false
         })
 
         return filteredArray[0]
+    }
+
+    getCSV = () => {
+
+        if(this.props.exportList.seriesArray.length === 0){
+            toastifyError('Empty List')
+            return;
+        }
+
+        let csvData = []
+
+        this.props.exportList.seriesArray.forEach((series) => {
+            let studydata  = this.props.exportList.studyArray.filter((study)=>{
+                return study.ID === series.ParentStudy
+            })
+
+            csvData.push({
+                patientId: studydata[0].PatientMainDicomTags.PatientID,
+                patientName: studydata[0].PatientMainDicomTags.PatientName,
+                studyDescription: studydata[0].MainDicomTags.StudyDescription,
+                seriesNumber: series.MainDicomTags.SeriesNumber,
+                seriesDate: series.MainDicomTags.SeriesDate,
+                seriesTime: series.MainDicomTags.SeriesTime,
+                seriesModality : series.MainDicomTags.Modality,
+                numberOfInstances: series.Instances.length,
+                seriesDescription: series.MainDicomTags.SeriesDescription,
+                seriesInstanceUID: series.MainDicomTags.SeriesInstanceUID,
+                studyInstanceUID: studydata[0].MainDicomTags.StudyInstanceUID,
+
+            })
+        });
+
+        let csvString = papa.unparse(csvData)
+
+        const element = document.createElement("a");
+        const file = new Blob([csvString],    
+                    {type: 'text/csv;charset=utf-8'});
+        element.href = URL.createObjectURL(file);
+        element.download = "ExportDicomDetails.csv";
+        document.body.appendChild(element);
+        element.click();
+
     }
 
     render() {
@@ -210,7 +255,7 @@ class ExportPanel extends Component {
                 <div className="row text-center mt-5">
                     <div className='col-sm'>
                         <DownloadDropdown exportIds={idArray} />
-                        <Select single options={this.transferSyntaxOptions} onChange={this.onTSChange} name="ts_selector" value={this.state.currentTS}/>
+                        <Select single options={this.transferSyntaxOptions} onChange={this.onTSChange} name="ts_selector" value={this.state.currentTS} />
                     </div>
                     <div className='col-sm'>
                         <SendAetDropdown aets={this.state.aets} exportIds={idArray} />
@@ -219,7 +264,10 @@ class ExportPanel extends Component {
                         <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm} setModal={() => this.setState({ show: true })} setButton={this.setButton} />
                     </div>
                     <div className='col-sm'>
-                        <SendExternalDropdown endpoints={this.state.endpoints} exportIds={idArray} username={this.props.username}/>
+                        <SendExternalDropdown endpoints={this.state.endpoints} exportIds={idArray} username={this.props.username} />
+                    </div>
+                    <div className='col-sm'>
+                        <button type='button' className='btn btn-info' onClick={this.getCSV} > Download CSV Details </button>
                     </div>
                 </div>
                 <ModalWarning show={this.state.show} onHide={() => this.setState({ show: false })} button={this.state.button} />
