@@ -26,7 +26,7 @@ const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('.
 const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
 const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser } = require('../controllers/task')
-const { addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve} = require('../controllers/robot')
+const { addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve, deleteRetrieveItem} = require('../controllers/robot')
 
 
 router.post('/session/*', authentication)
@@ -159,6 +159,7 @@ router.post('/robot/:user/export/', exportExternMidelware, exportArchive)
 //Tasks
 router.get('/tasks/:username/:type', getTaskWithUser)
 router.delete('/tasks/:username/:type', deleteTaskOfUser)
+router.delete('/tasks/:username/retrieve/:id', deleteRetrieveItem)
 router.get('/tasks/:id/',getTask)
 router.delete('/tasks/:id/',deleteTask)
 router.get('/tasks',getTasksIds)

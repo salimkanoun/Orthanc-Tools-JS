@@ -55,7 +55,7 @@ const getTaskWithUser = async (req, res) => {
 
 const getTasksOfType = async (req, res) => {
     try {
-        res.json(await Promise.all(AbstractTask.getTasksOfType(req.params.type).getSendable() ))
+        res.json(await Promise.all(AbstractTask.getTasksOfType(req.params.type).map(x=>x.getSendable()) ))
     } catch (error) {
         console.error(error)
         res.status(400).send(error)
