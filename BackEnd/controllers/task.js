@@ -8,7 +8,7 @@ const getTask = async (req, res) => {
         if (!(req.params.id in AbstractTask.taskIndex))
             throw "invalid task id"
 
-        res.json(await AbstractTask.taskIndex[req.params.id])
+        res.json(await AbstractTask.taskIndex[req.params.id].getSendable())
     } catch (error) {
         console.error(error)
         res.status(400).send(error)
@@ -20,7 +20,7 @@ const getTasks = async (req, res) => {
         let tasks = AbstractTask.taskIndex.values()
         let formatedTasks = []
         for (let i = 0; i < tasks.length; i++) {
-            formatedTasks.push(tasks[i])
+            formatedTasks.push(tasks[i].getSendable())
         }
         res.json(formatedTasks)
     } catch (error) {
@@ -40,7 +40,7 @@ const getTasksIds = async (req, res) => {
 
 const getTaskWithUser = async (req, res) => {
     try {
-        let task = await AbstractTask.getTaskOfUser(req.params.username, req.params.type)
+        let task = await AbstractTask.getTaskOfUser(req.params.username, req.params.type).getSendable()
         if(task !== null){
             console.log(task)
             res.json(task)
@@ -55,7 +55,7 @@ const getTaskWithUser = async (req, res) => {
 
 const getTasksOfType = async (req, res) => {
     try {
-        res.json(await Promise.all(AbstractTask.getTasksOfType(req.params.type) ))
+        res.json(await Promise.all(AbstractTask.getTasksOfType(req.params.type).getSendable() ))
     } catch (error) {
         console.error(error)
         res.status(400).send(error)

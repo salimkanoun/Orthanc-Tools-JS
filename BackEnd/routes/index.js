@@ -32,25 +32,6 @@ const { addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve} = require
 router.post('/session/*', authentication)
 router.delete('/session', logOut)
 
-//OrthancToolsJS export to backend => SK A VOIR
-//router.post('/tools/orthanc-tools-js/create-archive', userAuthMidelware, postExportDicom)
-
-//OrthancToolsJS Robot routes
-//Retrieve Robot
-router.post('/robot/:username/retrieve', autoQueryMidelware, addRetrieveTask)
-router.get('/robot/:username/retrieve', autoQueryMidelware, getRobotDetails)
-router.delete('/robot/:username/retrieve/:index', autoQueryMidelware, removeQueryFromJob)
-router.post('/robot/:username/retrieve/validate', userAdminMidelware, validateRetrieve)
-router.get('/robot/:type', userAdminMidelware, getTasksOfType)
-
-//AnonRobot
-router.post('/robot/:username/anonymize', anonMidelware, addAnonTask)
-//DeleteRobot
-//SK BUG MIDELWARE DELETE?
-router.post('/robot/:username/delete', userAuthMidelware, addDeleteTask)
-
-//Removal of Robots
-router.delete('/robot/:username/:type', isCurrentUserOrAdminMidelWare, deleteRobotJob)
 
 // OrthancToolsJS Options routes
 router.get('/options', userAdminMidelware, getOptions)
@@ -154,27 +135,54 @@ router.get('/monitoring/burner', getBurner)
 router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
 router.put('/monitoring/burning/options', userAdminMidelware, updateRobotOptions)
 
+
+
+/*
+** TASKS
+*/
+
+//OrthancToolsJS Robot routes
+//Retrieve Robot
+router.post('/robot/:username/retrieve', autoQueryMidelware, addRetrieveTask)
+router.post('/robot/:username/retrieve/validate', userAdminMidelware, validateRetrieve)
+
+//AnonRobot
+router.post('/robot/:username/anonymize', anonMidelware, addAnonTask)
+
+//DeleteRobot
+//SK BUG MIDELWARE DELETE?
+router.post('/robot/:username/delete', userAuthMidelware, addDeleteTask)
+
 //FTP & WebDav Exports
 router.post('/robot/:user/export/', exportExternMidelware, exportArchive)
 
-router.get('/tasks/:id/',getTask)
-router.get('/tasks',getTasksIds)
+//Tasks
 router.get('/tasks/:username/:type', getTaskWithUser)
 router.delete('/tasks/:username/:type', deleteTaskOfUser)
+router.get('/tasks/:id/',getTask)
 router.delete('/tasks/:id/',deleteTask)
+router.get('/tasks',getTasksIds)
 router.get('/tasks?expend',getTasks)
+router.get('/robot/:type', userAdminMidelware, getTasksOfType)
 
+/*
+** REMOTE EXPORT
+*/
+
+// Export endpoints
 router.get('/endpoints/', userAdminMidelware, allEndpoints)
 router.post('/endpoints/update', userAdminMidelware, updateEndpoint)
 router.post('/endpoints/create', userAdminMidelware, newEndpoint)
 router.delete('/endpoints/', userAdminMidelware, removeEndpoint)
 
+// Certificates
 router.get('/certificates/', userAdminMidelware, allCertificates)
 router.post('/certificates/update', userAdminMidelware, updateCertificate)
 router.post('/certificates/create', userAdminMidelware, newCertificate)
 router.delete('/certificates/', userAdminMidelware, removeCertificate)
 router.post('/certificates/upload/:id',userAdminMidelware,uploadCertificate)
 
+//Ssh keys
 router.get('/keys/', userAdminMidelware, allKeys)
 router.post('/keys/update', userAdminMidelware, updateKey)
 router.post('/keys/create', userAdminMidelware, newKey)

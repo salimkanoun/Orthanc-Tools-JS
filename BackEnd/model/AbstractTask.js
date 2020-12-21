@@ -31,7 +31,7 @@ class AbstractTask {
         return {}
     }
 
-    async toJson() {
+    async getSendable() {
         return {
             id: this.id,
             type: this.type,
