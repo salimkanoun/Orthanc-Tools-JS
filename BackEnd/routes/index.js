@@ -8,7 +8,7 @@ const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, 
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
-const { exportArchive} = require('../controllers/export')
+
 
 const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
 
@@ -24,8 +24,7 @@ const { route } = require('express/lib/router')
 const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
 const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
-const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser } = require('../controllers/task')
-const { addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve, deleteRetrieveItem} = require('../controllers/robot')
+const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve, deleteRetrieveItem, addExportTask } = require('../controllers/task')
 
 
 router.post('/session/*', authentication)
@@ -153,7 +152,7 @@ router.post('/robot/:username/anonymize', anonMidelware, addAnonTask)
 router.post('/robot/:username/delete', userAuthMidelware, addDeleteTask)
 
 //FTP & WebDav Exports
-router.post('/robot/:user/export/', exportExternMidelware, exportArchive)
+router.post('/robot/:user/export/', exportExternMidelware, addExportTask)
 
 //Tasks
 router.get('/tasks/:username/:type', getTaskWithUser)

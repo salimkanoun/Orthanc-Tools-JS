@@ -4,7 +4,7 @@ const path = require('path')
 
 // Imports
 const AbstractLeafTask = require("../AbstractLeafTask");
-const Exporter = require("../export/Exporter2");
+const Exporter = require("../export/Exporter");
 
 let exporter = new Exporter();
 
