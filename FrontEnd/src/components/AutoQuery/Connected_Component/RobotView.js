@@ -216,18 +216,24 @@ class RobotView extends Component {
         console.log(response)
         let rowsRetrieveList = []
         
+        let newPercentageFailure = 0
+
         //SK ICI DIFFICULTE A SUIVRE LA PROGRESSION DU ROBOT
-        response.queryAnswers.forEach(item => {
+        response.content.items.forEach(item => {
             rowsRetrieveList.push({
                 //Merge Modalities (study level) to modality column
                 Modality : item.ModalitiesInStudy,
                 ...item
             })
+            if(item.state = "failure"){
+                newPercentageFailure ++;
+            }
         });
 
+        newPercentageFailure /= response.content.items.length
+
         //SK MANQUANT A CALCULER FRONT OU BACK?
-        let newTotalPercentageProgress =0
-        let newPercentageFailure = 0
+        let newTotalPercentageProgress = response.progress.retrieve
         
         this.setState({
             projectName : response.projectName,
