@@ -48,7 +48,7 @@ router.get('/modalities', userAuthMidelware, reverseProxyGet)
 router.get('/modalities*', userAuthMidelware, reverseProxyGet)
 router.delete('/modalities/*', userAuthMidelware, reverseProxyDelete)
 router.post('/modalities/:dicom/echo', userAuthMidelware, reverseProxyPost)
-router.put('/modalities/:dicom/', userAdminMidelware, reverseProxyPut)
+router.put('/modalities/:dicom', userAdminMidelware, reverseProxyPut)
 router.post('/modalities/*/store',exportLocalMidelware , reverseProxyPost )
 
 // Orthanc Query / Retrieve Routes
@@ -152,14 +152,14 @@ router.post('/robot/:username/anonymize', anonMidelware, addAnonTask)
 router.post('/robot/:username/delete', userAuthMidelware, addDeleteTask)
 
 //FTP & WebDav Exports
-router.post('/robot/:user/export/', exportExternMidelware, addExportTask)
+router.post('/robot/:user/export', exportExternMidelware, addExportTask)
 
 //Tasks
 router.get('/tasks/:username/:type', getTaskWithUser)
 router.delete('/tasks/:username/:type', deleteTaskOfUser)
 router.delete('/tasks/:username/retrieve/:id', deleteRetrieveItem)
-router.get('/tasks/:id/',getTask)
-router.delete('/tasks/:id/',deleteTask)
+router.get('/tasks/:id',getTask)
+router.delete('/tasks/:id',deleteTask)
 router.get('/tasks',getTasksIds)
 router.get('/tasks?expend',getTasks)
 router.get('/robot/:type', userAdminMidelware, getTasksOfType)
