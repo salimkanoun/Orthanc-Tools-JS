@@ -217,7 +217,7 @@ class RobotView extends Component {
         let rowsRetrieveList = []
         
         //SK ICI DIFFICULTE A SUIVRE LA PROGRESSION DU ROBOT
-        response.queryAnswers.forEach(item => {
+        response.content.items.forEach(item => {
             rowsRetrieveList.push({
                 //Merge Modalities (study level) to modality column
                 Modality : item.ModalitiesInStudy,
@@ -230,7 +230,7 @@ class RobotView extends Component {
         let newPercentageFailure = 0
         
         this.setState({
-            projectName : response.projectName,
+            projectName : response.content.projectName,
             rows : rowsRetrieveList,
             totalPercentageProgress : newTotalPercentageProgress,
             percentageFailure : newPercentageFailure
