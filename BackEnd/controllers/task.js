@@ -150,10 +150,10 @@ const getTasksIds = async (req, res) => {
  */
 const getTaskWithUser = async (req, res) => {
     try {
-        let task = await AbstractTask.getTaskOfUser(req.params.username, req.params.type).getSendable()
+        let task = await AbstractTask.getTaskOfUser(req.params.username, req.params.type)
         if(task !== null){
             console.log(task)
-            res.json(task)
+            res.json(task.getSendable())
         }else {
             res.status(404).send()
         }
