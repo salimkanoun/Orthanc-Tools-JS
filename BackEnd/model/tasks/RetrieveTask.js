@@ -15,12 +15,15 @@ class RetrieveTask extends AbstractTask {
     }
 
     async getProgress() {
+        // Average the progress of the validation
         let validation = 0
         for (let i = 0; i < this.validationTasks.length; i++) {
             const task = this.validationTasks[i]
             validation += await task.getProgress()
         }
         validation /= this.queryAnswers.length
+
+        // Average the progress of the retrieve
         let retrieve = 0
         for (let i = 0; i < this.retrieveItemTasks.length; i++) {
             const task = this.retrieveItemTasks[i]
@@ -50,6 +53,7 @@ class RetrieveTask extends AbstractTask {
     }
 
     isValidated() {
+        // Chack every items for validation
         let autoValidated = true;
         this.validationTasks.forEach(task => {
             autoValidated = autoValidated && (task ? task.validated : false);
@@ -81,30 +85,50 @@ class RetrieveTask extends AbstractTask {
         }
     }
 
+    /**
+     * Delete the task
+     */
     delete(){
         this.validationTasks.forEach(task => {
+            //Deleting all items
             task.delete()
         });
         this.retrieveItemTasks.forEach(task => {
+            //Deleting all items
             task.delete()
         });
         this.queryAnswers = []
     }
 
+    /**
+     * Drop an item from the task
+     * @param {integer} index 
+     */
     async deleteItem(index){
         this.queryAnswers.splice(index,1)
     }
 
+    /**
+     * Validate then Retrieve the items correspponding to the querry
+     */
     async run() {
+        //Set the administror validation
         this.validated = true;
+
+        //Validating the querry items
         this.validationTasks = this.queryAnswers.map(item => new ValidateRetrieveTask(this.creator, item));
         await Promise.all(this.validationTasks.map(task => task.run()));
+        
+        //Checking for the validation 
         if (!this.isValidated()=='Validated') {
             console.warn('Retrieve Task not validated')
             return;
         }
+
+        //Retrieving items 
         this.retrieveItemTasks = this.queryAnswers.map(item => new RetrieveItemTask(this.creator, item))
         await Promise.all(this.retrieveItemTasks.map(task => task.run()))
+        this.onCompleted()
     }
 
 }

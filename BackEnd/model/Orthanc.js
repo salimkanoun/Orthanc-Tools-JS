@@ -489,7 +489,7 @@ class Orthanc {
     return changes
   }
 
-  monitorJob(jobPath, updateCallback, updateInterval){
+   monitorJob(jobPath, updateCallback, updateInterval){
     return new Promise((resolve, reject)=>{
       let interval = setInterval(()=>{
         ReverseProxy.getAnswer(jobPath, 'GET', null).then((response)=>{

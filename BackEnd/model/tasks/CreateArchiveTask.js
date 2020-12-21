@@ -10,6 +10,9 @@ class CreateArchiveTask extends AbstractLeafTask{
         this.transcoding = transcoding
     }
 
+    /**
+     * Create an archive containing the studies of given ids
+     */
     async run(){
         this.job = await orthanc.queueGetArchive(this.studies,this.transcoding)
         return (await this.job.finished()).path

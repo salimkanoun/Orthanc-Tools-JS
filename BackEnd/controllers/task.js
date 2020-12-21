@@ -7,7 +7,11 @@ const RetrieveTask = require("../model/tasks/RetrieveTask")
 const ExportTask = require("../model/tasks/ExportTask")
 const Endpoint = require("../model/export/Endpoint")
 
-
+/**
+ * Creating anonymisation task based on the request
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const addAnonTask = async (req, res) => {
     let orthancIds = req.body
     if (AbstractTask.getTaskOfUser(req.params.username, TaskType.ANONYMIZE)) {
@@ -20,6 +24,11 @@ const addAnonTask = async (req, res) => {
     res.json({ id: task.id })
 }
 
+/**
+ * Creating deletion task based on the request
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const addDeleteTask = async (req, res) => {
     let orthancIds = req.body
     if (AbstractTask.getTaskOfUser(req.params.username, TaskType.DELETE)) {
@@ -32,6 +41,11 @@ const addDeleteTask = async (req, res) => {
     res.json({ id: task.id })
 }
 
+/**
+ * Creating retrieve task based on the request
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const addRetrieveTask = async (req, res) => {
     let answers = req.body.retrieveArray
     if (AbstractTask.getTaskOfUser(req.params.username, TaskType.RETRIEVE)) {
@@ -43,6 +57,11 @@ const addRetrieveTask = async (req, res) => {
     res.json({ id: task.id })
 }
 
+/**
+ * Creating export task based on the request
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const addExportTask = async function(req,res){
     let studies = req.body.Resources
     let task = new ExportTask(req.params.user, studies, await Endpoint.getFromId(req.body.endpoint))
@@ -50,18 +69,33 @@ const addExportTask = async function(req,res){
     res.json({id:task.id})
 }
 
+/**
+ * Validate the retrieve task based on the username
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const validateRetrieve = async (req, res) => {
     let task = AbstractTask.getTaskOfUser(req.params.username, TaskType.RETRIEVE)
     task.run();
     res.json(true)
 }
 
+/**
+ * Remove an item from the retrieve task
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const deleteRetrieveItem = async (req, res) => {
     let task = AbstractTask.getTaskOfUser(req.params.username, TaskType.RETRIEVE)
     task.deleteItem(req.params.id)
     res.json(true)
 }
 
+/**
+ * Response with the task corresponding to the requested id 
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const getTask = async (req, res) => {
     try {
         if (!req.params.id)
@@ -76,6 +110,11 @@ const getTask = async (req, res) => {
     }
 }
 
+/**
+ * Response with all the tasks
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const getTasks = async (req, res) => {
     try {
         let tasks = AbstractTask.taskIndex.values()
@@ -90,6 +129,11 @@ const getTasks = async (req, res) => {
     }
 }
 
+/**
+ * Response with all the tasks ids
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const getTasksIds = async (req, res) => {
     try {
         res.json(Object.values(AbstractTask.taskIndex).map(x => x.id))
@@ -99,6 +143,11 @@ const getTasksIds = async (req, res) => {
     }
 }
 
+/**
+ * Response with the task corresponding to the requested user and type 
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const getTaskWithUser = async (req, res) => {
     try {
         let task = await AbstractTask.getTaskOfUser(req.params.username, req.params.type).getSendable()
@@ -114,6 +163,11 @@ const getTaskWithUser = async (req, res) => {
     }
 }
 
+/**
+ * Response with all the tasks corresponding to the requested type 
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const getTasksOfType = async (req, res) => {
     try {
         res.json(await Promise.all(AbstractTask.getTasksOfType(req.params.type).map(x=>x.getSendable()) ))
@@ -123,6 +177,11 @@ const getTasksOfType = async (req, res) => {
     }
 }
 
+/**
+ * Response with the task corresponding to the requested user and type 
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const deleteTaskOfUser = async (req, res) => {
     try {
         let task = AbstractTask.getTaskOfUser(req.params.username, req.params.type)
@@ -136,6 +195,11 @@ const deleteTaskOfUser = async (req, res) => {
     }
 }
 
+/**
+ * Response with the task corresponding to the requested id
+ * @param {*} req express request
+ * @param {*} res request result
+ */
 const deleteTask = async (req, res) => {
     try {
         let task =  AbstractTask.taskIndex[req.params.id]

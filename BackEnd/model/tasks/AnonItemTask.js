@@ -17,6 +17,9 @@ class AnonItemTask extends AbstractLeafTask{
         
     }
 
+    /**
+     * Anonymise studie of a given id
+     */
     async run(){
         this.job = await orthancQueue.queueAnonymizeItem(this.item)
         return this.job.finished().then((anonItemId)=>{
