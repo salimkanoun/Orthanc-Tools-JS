@@ -236,7 +236,7 @@ class RobotView extends Component {
         let newTotalPercentageProgress = response.progress.retrieve
         
         this.setState({
-            projectName : response.projectName,
+            projectName : response.content.projectName,
             rows : rowsRetrieveList,
             totalPercentageProgress : newTotalPercentageProgress,
             percentageFailure : newPercentageFailure
