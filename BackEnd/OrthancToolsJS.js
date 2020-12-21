@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var logger = require('morgan')
 var rfs = require('rotating-file-stream')
-var session = require('express-session')
 var open = require('open')
 
 var apisRouter = require('./routes/index')
@@ -40,11 +39,13 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
+/*
 app.use(session({
   secret: 'ImageFetcher',
   resave: true,
   saveUninitialized: true
 }))
+*/
 
 var unless = function (path, middleware) {
   return function (req, res, next) {
@@ -61,9 +62,10 @@ var accessLogStream = rfs.createStream('access.log', {
   path: path.join(__dirname, '/data/log')
 })
 
+//SK SESSION ENLEVEE 
+//FAIRE METHODE POUR RECUPERER L USERNAME DEPUIS LE JWT
 logger.token('username', function (req, res) {
-  if (req.session)
-    return req.session.username
+  return 'Unknown'
 })
 
 logger.token('post', function (req, res) {

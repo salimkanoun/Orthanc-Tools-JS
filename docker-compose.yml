@@ -3,18 +3,20 @@ services:
 
     redis:
         image: "redis:alpine"
-        hostname: redis
         ports:
-          - "6379:6379"
+          - 6379:6379
           
     orthanctoolsjs:
         image: salimkanoun/orthanctoolsjs
         container_name: orthanctoolsjs
+        depends_on:
+            - redis
         ports: 
-            - 80:4000
             - 443:4000
+            - 8080:4000
         restart: unless-stopped
-        volumes: ["orthanctoolsjs:/OrthancToolsJs/data:Z"]
+        volumes:
+            - orthanctoolsjs:/OrthancToolsJs:Z
         environment:
             OrthancAddress: "http://orthanc"
             OrthancPort: "8042"
