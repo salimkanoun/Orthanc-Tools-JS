@@ -42,8 +42,12 @@ class AnonTask extends AbstractTask{
         }
     }
 
+    /**
+     * Anonymise studies of a given ids
+     */
     async run(){
         await Promise.all(this.itemTasks.map(task=>task.run()))
+        this.onCompleted()
     }
 }
 

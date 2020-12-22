@@ -23,9 +23,11 @@ class ExportTask extends AbstractTask{
     }
 
     async getState(){
+        //Get state based on child tasks
         let createState = (this.createTask?await this.createTask.getState():'waiting')
         let sendState = (this.sendTask?await this.sendTask.getState():'waiting')
 
+        //Return the state based on the child task state
         if(createState==='waiting' && createState===sendState) return 'pending archiving'
         else if(createState==='active' && sendState==='waiting') return 'archiving'
         else if(createState==='completed' && sendState==='waiting') return 'pending sending'
@@ -34,11 +36,18 @@ class ExportTask extends AbstractTask{
         else return 'failed'
     }
 
+    /**
+     * Export an archive containing the dicom of given studies
+     */
     async run(){
+        //Generate the archive based 
         this.createTask = new CreateArchiveTask(this.creator, this.studies)
         let path = await this.createTask.run()
+        
+        //Send the archive
         this.sendTask = new SendTask(this.creator, path, this.endpoint)
         await this.sendTask.run()
+        this.onCompleted()
     }
 }
 

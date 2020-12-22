@@ -4,7 +4,7 @@ const path = require('path')
 
 // Imports
 const AbstractLeafTask = require("../AbstractLeafTask");
-const Exporter = require("../export/Exporter2");
+const Exporter = require("../export/Exporter");
 
 let exporter = new Exporter();
 
@@ -20,6 +20,9 @@ class SendTask extends AbstractLeafTask{
         this.endpoint = endpoint
     }
 
+    /**
+     * Send the file to a given endpoint 
+     */
     async run(){
         this.job = await exporter.queue(this.endpoint.protocol, this.endpoint, this.file)
         return (await this.job.finished())

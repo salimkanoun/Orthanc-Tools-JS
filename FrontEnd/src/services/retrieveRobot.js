@@ -101,7 +101,7 @@ const retrieveRobot = {
             }
         }
 
-        return fetch("/api/robot/"+username+"/retrieve/"+item, deleteRobotItemOption ).then((answer) => {
+        return fetch("/api/tasks/"+username+"/retrieve/"+item, deleteRobotItemOption ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {

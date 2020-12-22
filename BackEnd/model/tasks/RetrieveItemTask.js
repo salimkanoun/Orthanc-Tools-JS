@@ -20,6 +20,9 @@ class RetrieveItemTask extends AbstractLeafTask{
         }
     }
 
+    /**
+     * Retrieve the item
+     */
     async run(){
         this.job = await orthancQueue.queueRetrieveItem(this.queryAnswer)
         await this.job.finished().then((newId)=>{this.retrievedOrthancId = newId});

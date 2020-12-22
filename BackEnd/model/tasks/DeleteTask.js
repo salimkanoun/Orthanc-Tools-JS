@@ -28,9 +28,13 @@ class DeleteTask extends AbstractTask{
         }
     }
 
+    /**
+     * Delete series base on the ids 
+     */
     async run(){
         this.jobs = await orthancQueue.queueDeleteItems(this.orthancSeriesIds)
         await Promise.all(this.jobs.map(job=>job.finished()))
+        this.onCompleted()
     }
 }
 

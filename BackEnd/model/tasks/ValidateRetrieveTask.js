@@ -11,6 +11,9 @@ class ValidateRetrieveTask extends AbstractLeafTask{
         this.validated = false
     }
 
+    /**
+     * Validate the request item
+     */
     async run(){
         this.job = await  orthancQueue.queueValidateRetrieve(this.queryAnswer)
         await this.job.finished().then((validated)=>{
