@@ -27,6 +27,7 @@ const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controll
 const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve, deleteRetrieveItem, addExportTask } = require('../controllers/task')
 
 
+//Authentication midelware
 router.post('/session/*', authentication)
 router.delete('/session', logOut)
 
@@ -38,16 +39,19 @@ router.put('/options', userAdminMidelware, changeSchedule)
 // OrthancToolsJS Settings routes
 router.get('/options/orthanc-server', userAdminMidelware, getOrthancServer)
 router.put('/options/orthanc-server', userAdminMidelware, setOrthancServer)
+
 // Orthanc System API
 router.get('/system', userAdminMidelware, reverseProxyGet)
+
 // Orthanc Job API
-router.get('/jobs*', userAuthMidelware, reverseProxyGet)
-router.post('/jobs/*', userAuthMidelware, reverseProxyPost)
+router.get('/jobs*', userAdminMidelware, reverseProxyGet)
+router.post('/jobs/*', userAdminMidelware, reverseProxyPost)
+
 // Orthanc Aets Routes
-router.get('/modalities', userAuthMidelware, reverseProxyGet)
-router.get('/modalities*', userAuthMidelware, reverseProxyGet)
-router.delete('/modalities/*', userAuthMidelware, reverseProxyDelete)
-router.post('/modalities/:dicom/echo', userAuthMidelware, reverseProxyPost)
+router.get('/modalities', userAdminMidelware, reverseProxyGet)
+router.get('/modalities*', userAdminMidelware, reverseProxyGet)
+router.delete('/modalities/*', userAdminMidelware, reverseProxyDelete)
+router.post('/modalities/:dicom/echo', userAdminMidelware, reverseProxyPost)
 router.put('/modalities/:dicom', userAdminMidelware, reverseProxyPut)
 router.post('/modalities/*/store',exportLocalMidelware , reverseProxyPost )
 
@@ -55,11 +59,11 @@ router.post('/modalities/*/store',exportLocalMidelware , reverseProxyPost )
 router.post('/modalities/:modality/query', queryMidelware, reverseProxyPost)
 router.get('/queries/:orthancIdQuery/answers*', queryMidelware, reverseProxyGet)
 router.post('/retrieve', queryMidelware, postRetrieve)
+
 // OrthancToolsJS API to get simplified results from Orthanc
 router.get('/queries/:orthancIdQuery/parsedAnswers', queryMidelware, getParsedAnswer)
 
 // Orthanc Dicom Import Route
-//SK Middelware manquant
 router.post('/instances', importMidelware, reverseProxyPostUploadDicom)
 
 // Orthanc DicomWebRoutes
@@ -71,9 +75,9 @@ router.post('/tools/create-archive', exportLocalMidelware , reverseProxyPost )
 router.post('/tools/create-media-extended', exportLocalMidelware , reverseProxyPost )
 
 //Orthanc Peers Routes
-router.get('/peers*', userAuthMidelware, reverseProxyGet)
-router.delete('/peers/*', userAuthMidelware, reverseProxyDelete)
-router.get('/peers/:peer/system', userAuthMidelware, reverseProxyGet)
+router.get('/peers*', userAdminMidelware, reverseProxyGet)
+router.delete('/peers/*', userAdminMidelware, reverseProxyDelete)
+router.get('/peers/:peer/system', userAdminMidelware, reverseProxyGet)
 router.put('/peers/:peer/', userAdminMidelware, reverseProxyPut)
 router.post('/peers/*/store', exportExternMidelware , reverseProxyPost )
 
@@ -99,6 +103,7 @@ router.delete('/patients/*', contentMidelware, reverseProxyDelete)
 router.delete('/studies/*', contentMidelware, reverseProxyDelete)
 router.delete('/series/*', contentMidelware, reverseProxyDelete)
 router.get('/instances/*', contentMidelware, reverseProxyGet)
+
 //plugins
 router.get('/plugins', userAdminMidelware, reverseProxyGet)
 
@@ -149,7 +154,7 @@ router.post('/robot/:username/anonymize', anonMidelware, addAnonTask)
 
 //DeleteRobot
 //SK BUG MIDELWARE DELETE?
-router.post('/robot/:username/delete', userAuthMidelware, addDeleteTask)
+router.post('/robot/:username/delete', deleteMidelware, addDeleteTask)
 
 //FTP & WebDav Exports
 router.post('/robot/:user/export', exportExternMidelware, addExportTask)

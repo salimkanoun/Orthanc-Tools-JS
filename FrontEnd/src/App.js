@@ -35,13 +35,8 @@ class App extends Component {
   state = {
     auth: true
   }
-
-  constructor (props) {
-    super(props)
-    this.setAuthPanel = this.setAuthPanel.bind(this)
-  }
   
-  setAuthPanel(location){
+  setAuthPanel = (location) => {
     this.setState({
       auth: location === '/'
     })
