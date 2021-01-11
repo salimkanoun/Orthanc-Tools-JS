@@ -7,7 +7,7 @@ const { authentication, logOut } = require('../controllers/authentication')
 const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, getMode, changeMode, getOptions } = require('../controllers/options')
 const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
-const { getRoles, createRole, modifyRole, deleteRole, getPermission, getRoleFromToken } = require('../controllers/role')
+const { getRoles, createRole, modifyRole, deleteRole, getPermission } = require('../controllers/role')
 
 
 const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
@@ -113,9 +113,6 @@ router.get('/roles/:name', userAdminMidelware, getPermission)
 router.put('/roles', userAdminMidelware, modifyRole)
 router.post('/roles', userAdminMidelware, createRole)
 router.delete('/roles', userAdminMidelware, deleteRole)
-
-//token
-router.get('/token', userAuthMidelware, getRoleFromToken)
 
 //Mode
 router.get('/mode', userAdminMidelware, getMode)

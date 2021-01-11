@@ -59,7 +59,6 @@ class Roles {
     static async modifyRoles(name, payload){
       if(name === 'admin') throw 'Can\'t modify role admin'
 
-      console.log(payload.import)
       try {
         await db.Role.upsert({
           name: name,
@@ -76,18 +75,7 @@ class Roles {
           cd_burner : payload.cd_burner
         })
       } catch (error) {
-        console.log(error)
-      }
-    }
-
-    static async getRoleFromToken(token){
-      
-      try { 
-        return jwt.verify(token, process.env.TOKEN_SECRET) 
-      } 
-      catch(err) {
-        console.log(err)
-        throw res.sendStatus(403)//if incorrect token
+        console.error(error)
       }
     }
 

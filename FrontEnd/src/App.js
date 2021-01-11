@@ -4,10 +4,13 @@ import {
 } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
-
-import Footer from './components/Main/Footer'
 import NavBar from './components/Main/NavBar'
 import Authentication from './components/Authentication'
+
+import { resetReducer } from './actions/LogOut'
+import { saveUsername } from './actions/Username'
+import { connect } from 'react-redux'
+import apis from './services/apis'
 
 //CSS Boostrap
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -33,28 +36,46 @@ toast.configure({
 class App extends Component {
 
   state = {
-    auth: true
+    authentified: false,
+    roles : {}
   }
   
-  setAuthPanel = (location) => {
+
+  login = (logInAnwser) => {
+    console.log(logInAnwser)
     this.setState({
-      auth: location === '/'
+      authentified: true,
+      roles : logInAnwser
     })
+    this.props.saveUsername(logInAnwser.username)
+
+  }
+
+  logout = async() => {
+    this.setState({
+      authentified: false
+    })
+    this.props.resetReducer() //empty all reducer
+    await apis.authentication.logOut() //ask backend to reset cookie http only
+
   }
 
   
 
   render() {
     return (
-      <div className={this.state.auth ? 'authentification' : 'app'}>
         <BrowserRouter>
-          {!this.state.auth ? <NavBar setLocation={this.setAuthPanel}/> : <Authentication setLocation={this.setAuthPanel}/>}
-          {this.state.auth ? null : <Footer />}
+          {this.state.authentified ? <NavBar onLogout = {this.logout} token = {this.state.roles} onLogout = {this.logout}/> : <Authentication onLogin = {this.login}/>  }
         </BrowserRouter>
-      </div>
     );
   }
 }
 
-export default App;
+
+const mapsDispatchToProps = {
+  resetReducer,
+  saveUsername
+}
+
+export default connect(null, mapsDispatchToProps)(App)
 

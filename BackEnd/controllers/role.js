@@ -53,18 +53,4 @@ var Roles = require('../model/Roles')
         }
     }
 
-    getRoleFromToken = async function(req, res){
-        try {
-            const token = req.cookies.tokenOrthancJs
-            if (!token) {
-                throw "No token"
-            }
-
-            let answer = await Roles.getRoleFromToken(token)
-            res.json(answer)
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-module.exports = { createRole, modifyRole, deleteRole, getRoles, getPermission, getRoleFromToken }
+module.exports = { createRole, modifyRole, deleteRole, getRoles, getPermission }
