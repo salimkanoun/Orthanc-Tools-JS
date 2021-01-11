@@ -230,7 +230,7 @@ const query  = {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     },
 

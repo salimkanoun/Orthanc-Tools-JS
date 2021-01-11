@@ -84,7 +84,7 @@ app.use('/users', usersRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  console.log('error 404')
+  console.error('error 404')
   next(createError(404))
 })
 
@@ -93,7 +93,7 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message
   res.locals.error = req.app.get('env') === 'development' ? err : {}
-  console.log(err)
+  console.error(err)
   // render the error page
   res.status(err.status || 500)
   res.end()
@@ -108,7 +108,6 @@ app.listen(port, (error) => {
         } else {
           console.log('Listening on port: ' + port)
           if (app.get('env') === 'production') {
-            open('http://localhost:4000/')
             //Autostart monitonring service if needed
             autoStartMonitoring()
           }

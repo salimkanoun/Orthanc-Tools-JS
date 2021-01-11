@@ -66,10 +66,10 @@ class TableQuery extends Component {
     mode: 'click',
     blurToSave: true,
     autoSelectText: true,
-    afterSaveCell: (oldValue, newValue, row, column) => { 
+    afterSaveCell: (oldValue, newValue, row, column) => {
       //Force rerender to get style update
       this.node.forceUpdate()
-     }
+    }
   });
 
   columns = [{
@@ -81,7 +81,7 @@ class TableQuery extends Component {
     text: 'Patient Name',
     sort: true,
     editor: {
-      placeholder : 'Set value'
+      placeholder: 'Set value'
     },
     filter: textFilter(),
     headerFormatter: this.customHeader
@@ -91,7 +91,7 @@ class TableQuery extends Component {
     sort: true,
     filter: textFilter(),
     editor: {
-      placeholder : 'Set value'
+      placeholder: 'Set value'
     },
     headerFormatter: this.customHeader
   }, {
@@ -99,7 +99,7 @@ class TableQuery extends Component {
     text: 'Accession Number',
     sort: true,
     editor: {
-      placeholder : 'Set value'
+      placeholder: 'Set value'
     },
     filter: textFilter(),
     headerFormatter: this.customHeader
@@ -112,7 +112,7 @@ class TableQuery extends Component {
       let dateObj
       if (cell !== '') {
         dateObj = moment(cell, "YYYYMMDD")
-      }else{
+      } else {
         return ''
       }
       return moment(dateObj).format("YYYYMMDD")
@@ -130,7 +130,7 @@ class TableQuery extends Component {
       let dateObj
       if (cell !== '') {
         dateObj = moment(cell, "YYYYMMDD")
-      }else{
+      } else {
         return ''
       }
       return moment(dateObj).format("YYYYMMDD")
@@ -144,7 +144,7 @@ class TableQuery extends Component {
     text: 'Study Description',
     sort: true,
     editor: {
-      placeholder : 'Set value'
+      placeholder: 'Set value'
     },
     filter: textFilter(),
     headerFormatter: this.customHeader
@@ -178,16 +178,16 @@ class TableQuery extends Component {
   rowStyle = (row, rowIndex) => {
 
     let nonEmptyColumns = Object.values(row).filter((rowValues) => {
-      if(rowValues !== '' && rowValues !== 'Click To Choose' ) return true
+      if (rowValues !== '' && rowValues !== 'Click To Choose') return true
       else return false
     })
 
-    if(nonEmptyColumns.length <= 1) {
-      return { background : 'LightBlue' };
-    }else{
-      return { background : rowIndex % 2 ===0 ? 'transparent' : 'rgba(0,0,0,.05)'}
+    if (nonEmptyColumns.length <= 1) {
+      return { background: 'LightBlue' };
+    } else {
+      return { background: rowIndex % 2 === 0 ? 'transparent' : 'rgba(0,0,0,.05)' }
     }
-    
+
   }
 
   render() {
@@ -200,24 +200,24 @@ class TableQuery extends Component {
       >{
           props => (
             <React.Fragment>
-                <div>
-                  <div className = "row">
-                    <div className = "col-sm">
-                      <CsvLoader />
-                      <input type="button" className="btn btn-success m-2" value="Add" onClick={this.props.addRow} />
-                      <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={this.removeRow} />
-                      <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
-                      <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
-                    </div>
-                  </div>
-                  <div className="mt-5">
-                    <BootstrapTable wrapperClasses="table-responsive" rowStyle = {this.rowStyle} ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} >
-                    </BootstrapTable>
+              <div>
+                <div className="row">
+                  <div className="col-sm">
+                    <CsvLoader />
+                    <input type="button" className="btn btn-success m-2" value="Add" onClick={this.props.addRow} />
+                    <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={this.removeRow} />
+                    <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
+                    <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
                   </div>
                 </div>
-                <div className="text-center">
-                  <input type="button" className="btn btn-primary" value="Query" onClick={this.query} />
+                <div className="mt-5">
+                  <BootstrapTable wrapperClasses="table-responsive" rowStyle={this.rowStyle} ref={n => this.node = n} {...props.baseProps} striped={true} filter={filterFactory()} selectRow={this.selectRow} pagination={paginationFactory()} cellEdit={this.cellEdit} >
+                  </BootstrapTable>
                 </div>
+              </div>
+              <div className="text-center">
+                <input type="button" className="btn btn-primary" value="Query" onClick={this.query} />
+              </div>
 
             </React.Fragment>
           )
@@ -234,19 +234,23 @@ class TableQuery extends Component {
     //SK ICI GERER LA PROGRESSION ET LA FIN FAIRE SWITCH DE TAB
     for (const query of data) {
       i++
-
-      //For each line make dicom query and return results
-      let answeredResults = await this.makeDicomQuery(query)
       toast.update(id, {
-        render : 'Queried study '+i+'/'+data.length
+        render: 'Query study ' + i + '/' + data.length
       });
-      //For each results, fill the result table through Redux
-      answeredResults.forEach((answer) => {
-        this.props.addStudyResult(answer)
-      })
+      //For each line make dicom query and return results
+      try {
+        let answeredResults = await this.makeDicomQuery(query)
+        toast.update(id, {
+          render: 'Queried study ' + i + '/' + data.length
+        });
+        //For each results, fill the result table through Redux
+        answeredResults.forEach((answer) => {
+          this.props.addStudyResult(answer)
+        })
+      } catch (err) { console.error(err) }
 
     }
-    
+
     this.props.switchTab(AutoQueryRoot.Results)
 
   }
@@ -262,7 +266,7 @@ class TableQuery extends Component {
     } else if (queryParams.DateFrom === '' && queryParams.DateTo !== '') {
       DateString = '-' + queryParams.DateTo
     } else if (queryParams.DateFrom !== '' && queryParams.DateTo === '') {
-      DateString =  queryParams.DateFrom+'-'
+      DateString = queryParams.DateFrom + '-'
     }
 
     //Prepare POST payload for query (follow Orthanc APIs)

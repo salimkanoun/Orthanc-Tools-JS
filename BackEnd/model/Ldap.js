@@ -28,7 +28,7 @@ const Ldap = {
                 base:options.base 
             })
           } catch (error) {
-            console.log(error)
+            console.error(error)
           }
     },
 

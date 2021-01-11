@@ -6,7 +6,7 @@ var Roles = require('../model/Roles')
             await Roles.createRoles(body)
             res.json(true)
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(401).send('Fail')
         }
     }
@@ -17,7 +17,7 @@ var Roles = require('../model/Roles')
             await Roles.modifyRoles(body.name, body)
             res.json(true)
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(401).send('Fail to modify role')
         }
     }
@@ -28,7 +28,7 @@ var Roles = require('../model/Roles')
             await Roles.deleteRole(name)
             res.json(true)
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(401).send('Fail to delete')
         }
     }
@@ -39,7 +39,7 @@ var Roles = require('../model/Roles')
             res.json(roles)
         } catch (error) {
             res.json('')
-            console.log(error)
+            console.error(error)
         }
     }
 
@@ -48,7 +48,7 @@ var Roles = require('../model/Roles')
             let permission = await Roles.getPermission(req.params.name)
             res.json(permission)
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(401).send('Fail to get Permission')
         }
     }
@@ -63,7 +63,7 @@ var Roles = require('../model/Roles')
             let answer = await Roles.getRoleFromToken(token)
             res.json(answer)
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
 

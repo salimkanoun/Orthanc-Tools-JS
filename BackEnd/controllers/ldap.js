@@ -11,7 +11,7 @@ var setLdapSettings = async function(req, res) {
     await Ldap.setLdapSettings(options)
     res.json(true)
   } catch(err) {
-    console.log(err)
+    console.error(err)
     res.status(401).send('settings fail')
   }
 }
@@ -22,7 +22,7 @@ var testLdapSettings = async function(req, res) {
     return res.json(result)
     })
   } catch(err) {
-    console.log(err)
+    console.error(err)
   }  
 }
 
@@ -38,7 +38,7 @@ var setLdapCorrespodence = async function(req, res) {
     res.json(true)
 
   } catch (err) {
-    console.log(err)
+    console.error(err)
     res.status(401).send('fail to create match')
   }
 }
@@ -49,7 +49,7 @@ var deleteCorrespodence = async function(req, res){
     await Ldap.deleteCorrespodence(match)
     res.json(true)
   } catch (err) {
-      console.log(err)
+      console.error(err)
       res.status(401).send('fait to delete match')
   }
 }
@@ -60,7 +60,7 @@ var getLdapGroupeNames = async function(req, res) {
       await res.json(matches)
     })
   } catch(err) {
-    console.log(err)
+    console.error(err)
   }
 }
 

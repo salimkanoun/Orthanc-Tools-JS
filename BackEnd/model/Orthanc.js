@@ -151,7 +151,6 @@ class Orthanc {
      * @param {String} aet
      */
   async makeDicomQuery (aet) {
-    console.log(this.preparedQuery)
     const answer = await ReverseProxy.getAnswer('/modalities/' + aet + '/query', 'POST', this.preparedQuery)
 
     if (this.preparedQuery.Level === 'Study') {
@@ -319,8 +318,6 @@ class Orthanc {
       }
     }
 
-    console.log(queryParameter)
-
     const answer = await ReverseProxy.getAnswer('/tools/find', 'POST', queryParameter)
 
     return answer
@@ -331,8 +328,6 @@ class Orthanc {
      * @param {string} studyUID
      */
   async findInOrthancByUid (studyUID) {
-
-    console.log(studyUID)
     const answer = await this.findInOrthanc('Study', '', '', '', '', '', '', studyUID)
     return answer
   }

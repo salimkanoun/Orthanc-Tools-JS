@@ -88,7 +88,7 @@ const Options = {
       mode = await db.Option.findOne()
 
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
 
     return mode.ldap
@@ -103,7 +103,7 @@ const Options = {
       })
 
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 

@@ -98,7 +98,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        console.log(error)
+        console.error(error)
         res.status(500).send(error.statusMessage)
       })
   },
@@ -112,7 +112,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        console.log(error)
+        console.error(error)
         res.status(500).send(error.statusMessage)
       })
   },
@@ -123,7 +123,7 @@ const ReverseProxy = {
         if(response.statusCode == 200)
           response.pipe(res)
       }).catch((error) => {
-        console.log(error)
+        console.error(error)
         res.status(error.statusCode).send(error)
       })
   },
@@ -136,7 +136,7 @@ const ReverseProxy = {
             .on('finish', function () { console.log('Writing Done') })
         }
       }).catch((error) => {
-        console.log(error)
+        console.error(error)
       })
   },
 
@@ -150,14 +150,14 @@ const ReverseProxy = {
             } )
         }
       }).catch((error) => {
-        console.log(error)
+        console.error(error)
       })
   },
 
   async getAnswer (api, method, data) {
     const requestPromise = request(this.makeOptions(method, api, data)).then(function (body) {
       return JSON.parse(body)
-    }).catch((error) => { console.log('Error Orthanc communication' + error); return false })
+    }).catch((error) => { console.error('Error Orthanc communication' + error); return false })
 
     return await requestPromise
   },
@@ -165,7 +165,7 @@ const ReverseProxy = {
   async getAnswerPlainText (api, method, data) {
     const requestPromise = request(this.makeOptions(method, api, data)).then(function (body) {
       return body
-    }).catch((error) => { console.log('Error Orthanc communication' + error); return false })
+    }).catch((error) => { console.error('Error Orthanc communication' + error); return false })
 
     return await requestPromise
   }

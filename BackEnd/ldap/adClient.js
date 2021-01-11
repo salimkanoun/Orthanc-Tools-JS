@@ -1,37 +1,38 @@
 var ActiveDirectory = require('activedirectory');
-var AbstractAnnuaire = require ('./abstractAnnuaire');
+var AbstractAnnuaire = require('./abstractAnnuaire');
 
 
 class ADClient extends AbstractAnnuaire {
-    
-    constructor(type, protocole,  adresse, port, DN, mdp, base, user, groupe) {
-            super()
-            this.type = type,
+
+    constructor(type, protocole, adresse, port, DN, mdp, base, user, groupe) {
+        super()
+        this.type = type,
             this.protocole = protocole
-            this.adresse = adresse,
+        this.adresse = adresse,
             this.port = port,
             this.DN = DN,
             this.mdp = mdp
-            this.base = base
-            this.user = user
-            
-            if(groupe === '') {
-                this.groupe = 'CN=*'
-            } else {
-                this.groupe = groupe
-            }
+        this.base = base
+        this.user = user
 
-            this.buildAD()
+        if (groupe === '') {
+            this.groupe = 'CN=*'
+        } else {
+            this.groupe = groupe
+        }
+
+        this.buildAD()
     }
 
     buildAD() {
-            var config = { url: this.protocole + this.adresse + ':' + this.port,
+        var config = {
+            url: this.protocole + this.adresse + ':' + this.port,
             baseDN: this.base,
             username: this.DN,
-            password: this.mdp 
-            }
+            password: this.mdp
+        }
 
-            this.ad = new ActiveDirectory(config);
+        this.ad = new ActiveDirectory(config);
     }
 
     testSettings(callback) {
@@ -39,26 +40,24 @@ class ADClient extends AbstractAnnuaire {
             var username = this.DN;
             var password = this.mdp;
 
-            this.ad.authenticate(username, password, function(err, auth) {
-            let res = false
-            if (err) {
-                console.log('ERROR: '+JSON.stringify(err));
-                res = false;
-            }
-            if (auth) {
-                console.log('Authenticated!');
-                res = true
-            }
-            else {
-                console.log('Authentication failed!');
-                res = false
-            }
-            return callback(res)
+            this.ad.authenticate(username, password, function (err, auth) {
+                let res = false
+                if (err) {
+                    console.error('ERROR: ' + JSON.stringify(err));
+                    res = false;
+                }
+                if (auth) {
+                    res = true
+                }
+                else {
+                    res = false
+                }
+                return callback(res)
             });
         } catch (err) {
-            console.log(err)
+            console.error(err)
             return callback(false)
-        }    
+        }
     }
 
     getAllCorrespodences(callback) {
@@ -67,18 +66,18 @@ class ADClient extends AbstractAnnuaire {
                 scope: 'sub',
                 filter: this.groupe
             }
-            
-            this.ad.findGroups(queryFindGroupsOptions, function(err, groups) {
+
+            this.ad.findGroups(queryFindGroupsOptions, function (err, groups) {
                 let res = []
                 if (err) {
-                console.log('ERROR: ' + err);
+                    console.log('ERROR: ' + err);
                 }
-            
-                if ((! groups) || (groups.length == 0)) {
-                console.log('No groups found.');
+
+                if ((!groups) || (groups.length == 0)) {
+                    console.log('No groups found.');
                 } else {
-                    for(let i=0; i<groups.length; i++) {
-                    res.push({ value: groups[i].cn, label: groups[i].cn });
+                    for (let i = 0; i < groups.length; i++) {
+                        res.push({ value: groups[i].cn, label: groups[i].cn });
                     }
                 }
                 return callback(res)
@@ -86,32 +85,32 @@ class ADClient extends AbstractAnnuaire {
         } catch (err) {
             console.log(err)
             return callback([])
-        }    
+        }
     }
 
     autentification(username, mdp, callback) {
-          try {
+        try {
             var username = username;
             var password = mdp;
 
-            this.ad.authenticate(username, password, function(err, auth) {
-            let res = false
-            if (err) {
-                console.log('ERROR: '+JSON.stringify(err));
-                res = false;
-            }
-            if (auth) {
-                console.log('Authenticated!');
-                res = true
-            }
-            else {
-                console.log('Authentication failed!');
-                res = false
-            }
-            return callback(res)
+            this.ad.authenticate(username, password, function (err, auth) {
+                let res = false
+                if (err) {
+                    console.log('ERROR: ' + JSON.stringify(err));
+                    res = false;
+                }
+                if (auth) {
+                    console.log('Authenticated!');
+                    res = true
+                }
+                else {
+                    console.log('Authentication failed!');
+                    res = false
+                }
+                return callback(res)
             });
 
-        } catch(err) {
+        } catch (err) {
             console.log(err)
             return callback(false)
         }
@@ -121,7 +120,7 @@ class ADClient extends AbstractAnnuaire {
         //Get username
         let usernameMemberOf;
 
-        try{
+        try {
             let words = username.split('@');
             usernameMemberOf = words[0];
 
@@ -132,31 +131,31 @@ class ADClient extends AbstractAnnuaire {
 
         //Get groups
         let res = []
-        let memberPromisesArray =[]
-        for(let i=0;i<groupes.length;i++) {
+        let memberPromisesArray = []
+        for (let i = 0; i < groupes.length; i++) {
 
-            let memberPromises = this.isMemberOfPromise(usernameMemberOf, groupes[i]).then((isMember)=>{
-                if (isMember) {res.push(groupes[i])}
-            }).catch((error)=> {console.log(error)})
+            let memberPromises = this.isMemberOfPromise(usernameMemberOf, groupes[i]).then((isMember) => {
+                if (isMember) { res.push(groupes[i]) }
+            }).catch((error) => { console.log(error) })
 
             memberPromisesArray.push(memberPromises)
-            
+
         }
 
-        Promise.all(memberPromisesArray).then(()=>{
+        Promise.all(memberPromisesArray).then(() => {
             callback(res)
         })
     }
 
-    isMemberOfPromise(usernameMemberOf, groupe){
+    isMemberOfPromise(usernameMemberOf, groupe) {
         return new Promise((resolve, reject) => {
 
-            this.ad.isUserMemberOf(usernameMemberOf, groupe, function(err, isMember) {
+            this.ad.isUserMemberOf(usernameMemberOf, groupe, function (err, isMember) {
                 if (err) {
-                    reject( 'ERROR: ' +JSON.stringify(err) )
+                    reject('ERROR: ' + JSON.stringify(err))
                 }
                 resolve(isMember)
-              })
+            })
 
         })
     }

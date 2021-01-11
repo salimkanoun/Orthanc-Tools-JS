@@ -180,7 +180,7 @@ class CdBurner {
         try {
             formattedPatientDOB = this.formatDicomDate(patient.MainDicomTags.PatientBirthDate)
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
 
         let datInfos = []
@@ -193,7 +193,7 @@ class CdBurner {
             try {
                 formattedDateExamen = this.formatDicomDate(studies[i].MainDicomTags.StudyDate)
             } catch (err) {
-                console.log(err)
+                console.error(err)
             }
             let studyDescription = studies[i].MainDicomTags.StudyDescription;
             let accessionNumber = studies[i].MainDicomTags.AccessionNumber;

@@ -33,6 +33,13 @@ class OrthancQueue {
     this.aetQueue = new Queue('orthanc-aet', {redis:REDIS_OPTIONS})
     this.validationQueue = new Queue('orthanc-validation', {redis:REDIS_OPTIONS})
 
+    //Clear queue to start with fresh queue (removing old instances items)
+    this.exportQueue.clean(0)
+    this.deleteQueue.clean(0)
+    this.anonQueue.clean(0)
+    this.aetQueue.clean(0)
+    this.validationQueue.clean(0)
+
     //Hack to fix a quirk in bull
     this.exportQueue.on('progress', async (job, data) => {
       this._jobs[job.id]._progress = await job.progress()

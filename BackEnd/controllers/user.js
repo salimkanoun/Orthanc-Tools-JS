@@ -6,7 +6,7 @@ var Users = require('../model/Users')
             await Users.createUser(body)
             res.json(true)
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(401).send('Fail to create user')
         }
     }
@@ -16,7 +16,7 @@ var Users = require('../model/Users')
         try {
             user = await Users.getUsers()
         } catch (error) {
-            console.log(error)
+            console.error(error)
             res.status(401).send('fail to get users')
         }
         res.json(user)
@@ -24,7 +24,6 @@ var Users = require('../model/Users')
 
     modifyUser = async function(req, res){
         const body = req.body
-        console.log('BODY : ', body)
         try {
             await Users.modifyUser(body)
             res.json(true)
