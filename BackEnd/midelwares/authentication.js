@@ -25,7 +25,7 @@ function decode (req, res) {
     return jwt.verify(token, process.env.TOKEN_SECRET) 
   } 
   catch(err) {
-    res.sendStatus(403).send('Invalid token')//if incorrect token
+    res.sendStatus(401).send('Invalid token')//if incorrect token
     console.log(err)
     throw 'Invalid token'
   }
@@ -53,7 +53,7 @@ const isCurrentUserOrAdminMidelWare = function (req, res, next){
   if(decoded.admin || decoded.username === req.params.username) {
     next() // pass the execution off to whatever request the client intended
   } else {
-    res.status(401).send('Unauthorized');
+    res.sendStatus(403);
   }
 
 }
@@ -70,7 +70,7 @@ const userAdminMidelware = async function (req, res, next) {
   if(decoded.admin) {
     next() // pass the execution off to whatever request the client intended
   } else {
-    res.status(401).send('Not admin');
+    res.sendStatus(403);
   }
 }
 
@@ -86,7 +86,7 @@ const importMidelware = async function (req, res, next) {
   if(decoded.import) {
     next() // pass the execution off to whatever request the client intended
   } else {
-    res.status(401).send('Not allowed to upload');
+    res.sendStatus(403);
   }
 }
 
@@ -102,7 +102,7 @@ const contentMidelware = async function (req, res, next) {
   if(decoded.content) {
     next() // pass the execution off to whatever request the client intended
   } else {
-    res.status(401).send('Not allowed to content');
+    res.sendStatus(403);
   }
 }
 
@@ -118,7 +118,7 @@ const anonMidelware = async function (req, res, next) {
   if(decoded.anon) {
     next() // pass the execution off to whatever request the client intended
   } else {
-    res.status(401).send('Not allowed to anonymize');
+    res.sendStatus(403);
   }
 }
 
@@ -134,7 +134,7 @@ const exportLocalMidelware = async function (req, res, next) {
   if(decoded.export_local) {
     next() // pass the execution off to whatever request the client intended
   } else {
-    res.status(401).send('Not allowed to export local');
+    res.sendStatus(403);
   }
 }
 
@@ -150,7 +150,7 @@ const exportExternMidelware = async function (req, res, next) {
   if(decoded.export_extern) {
     next() // pass the execution off to whatever request the client intended
   } else {
-    res.status(401).send('Not allowed to export extern');
+    res.sendStatus(403);
   }
 }
 
@@ -166,7 +166,7 @@ const queryMidelware = async function (req, res, next) {
   if(decoded.query) {
     next() // pass the execution off to whatever request the client intended
   } else {
-    res.status(401).send('Not allowed to query');
+    res.sendStatus(403);
   }
 }
 
@@ -182,7 +182,7 @@ const autoQueryMidelware = async function (req, res, next) {
   if(decoded.auto_query) {
     next() // pass the execution off to whatever request the client intended
   } else {
-    res.status(401).send('Not allowed to autoQuery');
+    res.sendStatus(403);
   }
 }
 
@@ -198,7 +198,7 @@ const deleteMidelware = async function (req, res, next) {
   if(decoded.delete) {
     next() // pass the execution off to whatever request the client intended
   } else {
-    res.status(401).send('Not allowed to delet');
+    res.sendStatus(403);
   }
 }
 
@@ -214,7 +214,7 @@ const modifyMidelware = async function (req, res, next) {
   if(decoded.modify) {
     next() // pass the execution off to whatever request the client intended
   } else {
-    res.status(401).send('Not allowed to modify');
+    res.sendStatus(403);
   }
 }
 

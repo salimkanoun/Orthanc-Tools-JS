@@ -22,6 +22,7 @@ import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css
 //Custom CSS
 import './style.css'
 import { BrowserRouter } from 'react-router-dom'
+import { toastifyError } from './services/toastify'
 
 // Configuring Toastify params that will be used all over the app
 toast.configure({
@@ -59,6 +60,7 @@ class App extends Component {
           this.setState({
             authentified: false
           })
+          toastifyError('Session exprired, please re-identify')
         }
         return response;
       },
