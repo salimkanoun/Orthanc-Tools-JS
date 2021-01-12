@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import {
-  BrowserRouter
-} from 'react-router-dom'
+
 import { toast } from 'react-toastify'
+import fetchIntercept from 'fetch-intercept'
 
 import NavBar from './components/Main/NavBar'
 import Authentication from './components/Authentication'
@@ -22,6 +21,7 @@ import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css
 
 //Custom CSS
 import './style.css'
+import { BrowserRouter } from 'react-router-dom'
 
 // Configuring Toastify params that will be used all over the app
 toast.configure({
@@ -37,24 +37,51 @@ class App extends Component {
 
   state = {
     authentified: false,
-    roles : {}
+    roles: {}
   }
-  
+
+  constructor(props){
+    super(props)
+
+    fetchIntercept.register({
+      request: function (url, config) {
+        // Modify the url or config here
+        return [url, config];
+      },
+    
+      requestError: function (error) {
+        // Called when an error occured during another 'request' interceptor call
+        return Promise.reject(error);
+      },
+    
+      response: async (response) => {
+        if (response.status === 401 ) {
+          this.setState({
+            authentified: false
+          })
+        }
+        return response;
+      },
+    
+      responseError: function (error) {
+        return Promise.reject(error);
+      }
+    });
+
+  }
+
 
   login = (logInAnwser) => {
     console.log(logInAnwser)
     this.setState({
       authentified: true,
-      roles : logInAnwser
+      roles: logInAnwser
     })
-   
-
-
     this.props.saveUsername(logInAnwser.username)
 
   }
 
-  logout = async() => {
+  logout = async () => {
     this.setState({
       authentified: false
     })
@@ -63,13 +90,13 @@ class App extends Component {
 
   }
 
-  
+
 
   render() {
     return (
-        <BrowserRouter>
-          {this.state.authentified ? <NavBar onLogout = {this.logout} token = {this.state.roles} /> : <Authentication onLogin = {this.login}/>  }
-        </BrowserRouter>
+      <BrowserRouter>
+        {this.state.authentified ? <NavBar onLogout={this.logout} token={this.state.roles} /> : <Authentication onLogin={this.login} />}
+      </BrowserRouter>
     );
   }
 }
