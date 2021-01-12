@@ -56,7 +56,7 @@ class App extends Component {
       },
     
       response: async (response) => {
-        if (response.status === 401 ) {
+        if (response.status === 401 && !response.url.includes('session')) {
           this.setState({
             authentified: false
           })
