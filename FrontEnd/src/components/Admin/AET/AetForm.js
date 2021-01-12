@@ -7,13 +7,6 @@ import apis from '../../../services/aets'
  */
 export default class AetForm extends Component {
 
-    constructor(props) {
-        super(props)
-        this.handleChange=this.handleChange.bind(this)
-        this.handleClick=this.handleClick.bind(this)
-        this.manufacturerChangeListener=this.manufacturerChangeListener.bind(this)
-    }
-
     manufacturers = [
         { value: 'Generic', label: 'Generic' },
         { value: 'GenericNoWildcardInDates', label: 'GenericNoWildcardInDates' },
@@ -28,7 +21,7 @@ export default class AetForm extends Component {
      * Fill input text of users in current state
      * @param {*} event 
      */
-    handleChange(event) {
+    handleChange = (event) => {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
@@ -43,7 +36,7 @@ export default class AetForm extends Component {
      * Fill manufacturer select choice in current state
      * @param {*} item 
      */
-    manufacturerChangeListener(item){
+    manufacturerChangeListener = (item) => {
         this.setState({
           manufacturer : item.value
         })
@@ -52,7 +45,7 @@ export default class AetForm extends Component {
     /**
      * Listener on form submission
      */
-    async handleClick() {
+    handleClick = async () => {
 
         let postData = {
             AET : this.state.aetName,
@@ -67,7 +60,7 @@ export default class AetForm extends Component {
 
     }
 
-    render() {
+    render = () => {
         return (
             <Fragment>
                 <h2 className="card-title">Add Aet</h2>

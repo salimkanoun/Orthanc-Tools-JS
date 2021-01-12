@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal'
 import apis from '../../../../services/apis'
 
 class ModalRestart extends Component {
-    
+
     reset = async () => {
         apis.options.resetOrthanc()
         this.props.onHide()

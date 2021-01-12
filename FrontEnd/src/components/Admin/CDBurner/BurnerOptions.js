@@ -3,15 +3,7 @@ import Select from 'react-select'
 import apis from '../../../services/apis'
 
 export default class BurnerOptions extends Component{
-
-    constructor(props){
-        super(props)
-        this.handleChange = this.handleChange.bind(this)
-        this.handleChangeSelect = this.handleChangeSelect.bind(this)
-        this.sendForm = this.sendForm.bind(this)
-        this.onTSChange = this.onTSChange.bind(this)
-    }
-
+    
     state = {
         burner_monitored_path : '',
         burner_viewer_path : '',
@@ -66,7 +58,7 @@ export default class BurnerOptions extends Component{
     ]
 
 
-    handleChange(event){
+    handleChange = (event) => {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
@@ -77,32 +69,32 @@ export default class BurnerOptions extends Component{
     
     }
 
-    handleChangeSelect(event, metadata){
+    handleChangeSelect = (event, metadata) => {
         this.setState({
             [metadata.name] : event.value
         })
 
     }
 
-    onTSChange(TSValue){
+    onTSChange = (TSValue) => {
         this.setState({
             burner_transfer_syntax : TSValue
         })
     }
 
-    async refreshData(){
+    refreshData = async() => {
         let options = await apis.options.getOptions()
         this.setState( {
             ...options
         })
 
     }
-    async componentDidMount(){
+    componentDidMount = async () => {
         await this.refreshData()
         
     }
 
-    getSelectedObject(objectArray, searchedValue){
+    getSelectedObject = (objectArray, searchedValue) => {
         let filteredArray = objectArray.filter(item => {
             return item.value === searchedValue ? true : false
         })
@@ -110,12 +102,12 @@ export default class BurnerOptions extends Component{
         return filteredArray[0]
     }
 
-    async sendForm(){
+    sendForm = async() => {
         await apis.options.setBurnerOptions(this.state)
         await this.refreshData()
     }
 
-    render(){
+    render = () => {
         return (
             <div>
                 <h2 className="card-title">CD/DVD Burner Options</h2>

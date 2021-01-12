@@ -1,6 +1,10 @@
-body {
+body {	
+	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 	background-image:  url(./images/wallpaper.jpg);
-  	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
   	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
@@ -33,9 +37,17 @@ body {
 }
 
 .authentification{
-	padding-bottom: 0px !important;
 	background-image:  url(./images/wallpaperAuth.jpg);
-	background-size: 100% 100%;
+	/* Background image is centered vertically and horizontally at all times */
+	background-position: center center;
+	/* Background image doesn't tile */
+	background-repeat: no-repeat;
+	/* Background image is fixed in the viewport so that it doesn't move when 
+		the content's height is greater than the image's height */
+	background-attachment: fixed;
+	/* This is what makes the background image rescale based
+		on the container's size */
+	background-size: cover;
 }
 
 a {

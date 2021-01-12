@@ -11,12 +11,11 @@ export default class RedisSettings extends Component {
     /**
      * Fetch value from BackEnd
      */
-    async componentDidMount(){
+    componentDidMount = async () => {
        //TO DO GET INFOS FROM BACKEND
-        
     }
 
-    render() {
+    render = () => {
         return (
             <Fragment>
                 <div className="form-group">

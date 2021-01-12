@@ -3,6 +3,7 @@ import OrthancSettings from './OrthancSettings/OrthancSettings'
 import RedisSettings from './Redis/RedisSettings'
 
 const GeneralRoot = () => {
+  
   const [selectedOptionMenu, setSelectedOptionMenu] = useState('orthancSettings')
 
   let switchTab = (optionName) => {

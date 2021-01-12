@@ -25,7 +25,14 @@ const peers = {
             })
     },
 
-    updatePeer(name, parameters){
+    updatePeer(name, hostname, port, username, password){
+
+        let putData = {
+            PeerName: name, 
+            Url: hostname + ":" + port, 
+            Username: username, 
+            Password: password
+        }
 
         const updatePeerOption = {
             method: 'PUT', 
@@ -33,14 +40,14 @@ const peers = {
                 Accept: 'application/json',
                 'Content-Type': 'application/json' 
             }, 
-            body: JSON.stringify(parameters)
+            body: JSON.stringify(putData)
         }
 
         return fetch('/api/peers/'+ name, updatePeerOption ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {
-            toastifyError(error)
+           throw error
         })
     },
 

@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal'
 import apis from '../../../../services/apis'
 
 class ModalShutdown extends Component {
-    
+
     shutdown = async () => {
         apis.options.shutdownOrthanc()
         this.props.onHide()

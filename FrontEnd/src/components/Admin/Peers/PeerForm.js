@@ -1,21 +1,17 @@
 import React, {Component, Fragment} from 'react'
 import apis from '../../../services/apis'
+import { toastifyError } from '../../../services/toastify'
 
 /**
  * Form to declare or modify an Orthanc Peer
  */
 export default class PeerForm extends Component{
 
-    constructor(props){
-        super(props)
-        this.handleClick=this.handleClick.bind(this)
-        this.handleChange=this.handleChange.bind(this)
-    }
     /**
      * Fill input text of users in current state
      * @param {*} event 
      */
-    handleChange(event) {
+    handleChange = (event) => {
         const target = event.target
         const name = target.name
         const value = target.value
@@ -29,22 +25,18 @@ export default class PeerForm extends Component{
     /**
      * Listener on form submission
      */
-    async handleClick(){
-        
-        let putData = {
-            PeerName: this.state.name, 
-            Url: this.state.ip + ":" + this.state.port, 
-            Username: this.state.username, 
-            Password: this.state.password
+    handleClick = async () => {
+        try{
+            await apis.peers.updatePeer(this.state.name, this.state.ip, this.state.port, this.state.username, this.state.password)
+            this.props.refreshPeerData()
+        } catch(error){
+            toastifyError(error.statusText)
         }
         
-        await apis.peers.updatePeer(this.state.name, putData)
-        
-        this.props.refreshPeerData()
     }
 
 
-    render(){
+    render = () => {
         return (
             <Fragment>
                 <h2 className="card-title">Add Peer</h2>

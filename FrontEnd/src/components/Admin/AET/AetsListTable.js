@@ -7,9 +7,6 @@ import apis from '../../../services/apis';
  */
 export default class Aets extends Component {
 
-    /**
-     * Column defition for Bootstrap Table
-     */
     columns = [{
         dataField: 'name',
         text : 'Name'
@@ -28,44 +25,27 @@ export default class Aets extends Component {
     }, {
         dataField : 'echo',
         text : 'Echo AET',
-        formatter : this.echoAetButton
+        formatter : (cell, row, rowIndex) => {
+            return (<div className="text-center">
+                <input type="button" className='btn btn-info' onClick = {() => apis.aets.echoAet(row.name)} value = "Echo" />
+            </div>)
+        }
     }, {
         dataField : 'remove',
         text : 'Remove AET',
-        formatter : this.deleteAetButton,
+        formatter : (cell, row, rowIndex, parentComponent) => {
+            return (
+            <div className="text-center">
+                <input type="button" className='btn btn-danger' onClick = {async () => {await apis.aets.deleteAet(row.name); parentComponent.props.refreshAetData()}} value = "Remove" />
+            </div>)
+        },
         formatExtraData : this
     }];
 
     /**
-     * Echo AET button nested in Bootstrap Table
-     * @param {*} cell 
-     * @param {*} row 
-     * @param {*} rowIndex
-     */
-    echoAetButton(cell, row, rowIndex) {
-        return (<div className="text-center">
-            <input type="button" className='btn btn-info' onClick = {() => apis.aets.echoAet(row.name)} value = "Echo" />
-        </div>)
-    }
-
-    /**
-     * Delete Button nested in BoostrapTable
-     * @param {*} cell 
-     * @param {*} row 
-     * @param {*} rowIndex 
-     * @param {*} parentComponent 
-     */
-    deleteAetButton(cell, row, rowIndex, parentComponent) {
-        return (
-        <div className="text-center">
-            <input type="button" className='btn btn-danger' onClick = {async () => {await apis.aets.deleteAet(row.name); parentComponent.props.refreshAetData()}} value = "Remove" />
-        </div>)
-    }
-
-    /**
      * Translate Orthanc API in array of Rows to be consumed by BootstrapTable
      */
-    orthancApisToRows() {
+    orthancApisToRows = () => {
 
         let aetsAnswer = this.props.aetsData
         let rows = []
@@ -81,7 +61,7 @@ export default class Aets extends Component {
         return rows
     }
 
-    render() {
+    render = () => {
         return (
             <Fragment>
                 <BootstrapTable keyField="name" striped={true} data={this.orthancApisToRows()} columns={this.columns} wrapperClasses='table-responsive' />

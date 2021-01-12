@@ -7,6 +7,7 @@ import apis from '../../../services/apis'
  * Root Panel of AETs options
  */
 const AetRootPanel = () => {
+
   const [aets, setAets] = useState([])
 
   /**
@@ -15,13 +16,12 @@ const AetRootPanel = () => {
      */
   useEffect(() => {
     refreshAetsData()
-  }, []
-  )
+  }, [])
 
   /**
      * Get Aets Data from backend
      */
-  async function refreshAetsData () {
+  const refreshAetsData = async () => {
     const aetsAnswer = await apis.aets.getAetsExpand()
     setAets(aetsAnswer)
   }

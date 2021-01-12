@@ -16,21 +16,11 @@ export default class OrthancSettings extends Component {
         showRestart: false, 
         showShutdown: false
     }
-    
-    constructor(props) {
-        super(props)
-        this.submitOrthancSettings = this.submitOrthancSettings.bind(this)
-        this.reset = this.reset.bind(this)
-        this.shutdown = this.shutdown.bind(this)
-        this.handleChange = this.handleChange.bind(this)
-        this.testConnexion = this.testConnexion.bind(this)
-        this.changeListener = this.changeListener.bind(this)
-    }
 
     /**
      * Fetch value from BackEnd
      */
-    async componentDidMount(){
+    componentDidMount = async() => {
         let answer = await apis.options.getOrthancServer()
         let verbosity = await apis.options.getVerbosity()
         this.setState({verbosity : verbosity, ...answer})
@@ -42,7 +32,7 @@ export default class OrthancSettings extends Component {
      * Store form values in state
      * @param {*} event 
      */
-    handleChange(event) {
+    handleChange = (event) => {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
@@ -56,7 +46,7 @@ export default class OrthancSettings extends Component {
     /**
      * Send new value to BackEnd
      */
-    async submitOrthancSettings() {
+    submitOrthancSettings = async () => {
         apis.options.setOrthancServer(this.state.OrthancAddress, this.state.OrthancPort, 
             this.state.OrthancUsername, this.state.OrthancPassword)
     }
@@ -64,21 +54,21 @@ export default class OrthancSettings extends Component {
     /**
      * Try to connect to Orthanc System API, response is shown in an toastify
      */
-    testConnexion () {
+    testConnexion  = () => {
         apis.options.getOrthancSystem()
     }
 
-    reset(){
+    reset = () => {
         apis.options.resetOrthanc()
         this.handleCloseRestart()
     }
 
-    shutdown(){
+    shutdown = () => {
         apis.options.shutdownOrthanc()
         this.handleCloseShutdown()
     }
 
-    changeListener(event){
+    changeListener = (event) => {
         apis.options.setVerbosity(event.value)
         this.setState({optionSelected: event})
     }
@@ -89,7 +79,7 @@ export default class OrthancSettings extends Component {
         { value: 'trace', label: 'Trace'}
     ]
 
-    getDefaultOption(){
+    getDefaultOption = () => {
         let index = -1
         this.verbosities.forEach(element => {
             if (element.value === this.state.verbosity) {
@@ -99,7 +89,7 @@ export default class OrthancSettings extends Component {
         this.setState({optionSelected: this.verbosities[index] })
     }
 
-    render() {
+    render = () => {
         return (
             <Fragment>
                 <div className="form-group">

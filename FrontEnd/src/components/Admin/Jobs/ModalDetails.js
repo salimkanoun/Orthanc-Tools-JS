@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Modal from "react-bootstrap/Modal";
 import BootstrapTable from "react-bootstrap-table-next";
 
-class ModalDetails extends Component {
+export default class ModalDetails extends Component {
 
     columnDetails = [
         {
@@ -37,7 +37,7 @@ class ModalDetails extends Component {
         }
     ]
 
-    render() {
+    render = () => {
         return (
             <Modal show={this.props.show} onHide={this.props.onHide} size='xl'>
                     <Modal.Header closeButton>
@@ -63,5 +63,3 @@ class ModalDetails extends Component {
         );
     }
 }
-
-export default ModalDetails;

@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react'
-import { Link } from 'react-router-dom'
+import React, { Component } from 'react'
+import { Link, Redirect } from 'react-router-dom'
 import ToolsPanel from './ToolsPanel'
 
 import {
@@ -28,7 +28,7 @@ export default class NavBar extends Component {
 
   state = {
     navBackground: null,
-    currentTabSelect: 'content'
+    currentTabSelect: null
   }
 
 
@@ -36,7 +36,8 @@ export default class NavBar extends Component {
     
     
     this.setState({
-      navbar: document.documentElement.clientWidth < 992 ? 'responsive' : 'classique'
+      navbar: document.documentElement.clientWidth < 992 ? 'responsive' : 'classique',
+      currentTabSelect: 'content'
     })
 
     window.addEventListener('resize', () => {
@@ -84,7 +85,7 @@ export default class NavBar extends Component {
 
   render = () => {
     return (
-      <Fragment>
+      <div className='app'>
         <Navbar fixed='top' collapseOnSelect expand='lg' bg={this.state.navBackground} variant='dark' >
           <Navbar.Toggle aria-controls='responsive_navbar' />
           <Navbar.Collapse id='responsive_navbvar'>
@@ -102,10 +103,11 @@ export default class NavBar extends Component {
           </Navbar.Collapse>
         </Navbar>
         <div className='content-panel'>
+          {this.state.currentTabSelect === null ? <Redirect to = '/orthanc-content'/> : null}
           {<this.AnimatedSwitch />}
         </div>
-        <Footer />
-      </Fragment>
+        <Footer/>
+      </div>
     )
   }
 
