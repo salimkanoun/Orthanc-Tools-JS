@@ -220,12 +220,14 @@ class RobotView extends Component {
 
         //SK ICI DIFFICULTE A SUIVRE LA PROGRESSION DU ROBOT
         response.content.items.forEach(item => {
+            
             rowsRetrieveList.push({
                 //Merge Modalities (study level) to modality column
                 Modality : item.ModalitiesInStudy,
                 ...item
             })
-            if(item.state = "failure"){
+
+            if(item.state === "failure"){
                 newPercentageFailure ++;
             }
         });

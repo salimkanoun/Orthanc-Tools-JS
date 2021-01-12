@@ -27,11 +27,11 @@ body {
 	border: 5px solid rgba(175, 54, 82, 0.8);
 }
 
-.app{
+.content-panel{
 	padding-top: 100px !important;
 	padding: 50px;
-	background-image:  url(./images/wallpaper.jpg);
 }
+
 .authentification{
 	padding-bottom: 0px !important;
 	background-image:  url(./images/wallpaperAuth.jpg);
@@ -175,7 +175,6 @@ code {
 .vertical-center {
 	min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
 	min-height: 100vh; /* These two lines are counted as one :-)       */
-	background-image:  url(./images/wallpaper.jpg);
 	display: flex;
 	align-items: center;
 	justify-content: center;

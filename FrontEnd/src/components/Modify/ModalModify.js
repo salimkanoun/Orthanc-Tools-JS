@@ -4,11 +4,7 @@ import BootstrapTable from 'react-bootstrap-table-next'
 import cellEditFactory from 'react-bootstrap-table2-editor'
 
 
-class ModalModify extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {  };
-    }
+export default class ModalModify extends Component {
 
     columns = [
         {
@@ -84,5 +80,3 @@ class ModalModify extends Component {
         );
     }
 }
-
-export default ModalModify;

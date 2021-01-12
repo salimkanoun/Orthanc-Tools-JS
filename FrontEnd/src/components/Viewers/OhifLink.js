@@ -6,12 +6,9 @@ import { Link } from 'react-router-dom'
  * The Backend redirect this destination to OHIF static HTML page integration
  */
 export default class OhifLink extends Component {
-  render () {
-    if(this.props.StudyInstanceUID === undefined) {
-      return (null)
-    }
+  render = () => {
     return (
-      <Link className={this.props.className} to={'viewer/' + this.props.StudyInstanceUID} target='_blank'>View in OHIF</Link>
+      this.props.StudyInstanceUID === undefined ? null : <Link className={this.props.className} to={'viewer/' + this.props.StudyInstanceUID} target='_blank'>View in OHIF</Link>
     )
   }
 }

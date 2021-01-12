@@ -47,6 +47,9 @@ class App extends Component {
       authentified: true,
       roles : logInAnwser
     })
+   
+
+
     this.props.saveUsername(logInAnwser.username)
 
   }
@@ -65,7 +68,7 @@ class App extends Component {
   render() {
     return (
         <BrowserRouter>
-          {this.state.authentified ? <NavBar onLogout = {this.logout} token = {this.state.roles} onLogout = {this.logout}/> : <Authentication onLogin = {this.login}/>  }
+          {this.state.authentified ? <NavBar onLogout = {this.logout} token = {this.state.roles} /> : <Authentication onLogin = {this.login}/>  }
         </BrowserRouter>
     );
   }

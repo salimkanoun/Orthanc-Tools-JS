@@ -1,16 +1,10 @@
 import React, { Component } from 'react'
 import Form from '../CommonComponents/SearchForm/Form'
 
-
 class SearchForm extends Component{
 
-    constructor(props){
-        super(props)
-        this.dataSearch = this.dataSearch.bind(this)
-    }
-
-    dataSearch(formData){
-        
+    dataSearch = (formData) => {
+         
         //dateForm
         let date = ""
         if (formData.dateFrom !== "" || formData.dateTo !== "") //if dateFrom or dateTo isn't empty 

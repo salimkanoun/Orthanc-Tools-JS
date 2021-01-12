@@ -12,17 +12,12 @@ import { toastifyError } from '../../../services/toastify'
 
 class QueryForm extends Component {
 
-  constructor(props){
-    super(props)
-    this.doQueryTo=this.doQueryTo.bind(this)
-  }
-
   async componentDidMount(){
     this.props.loadAvailableAETS(await apis.aets.getAets())
   }
 
-  async doQueryTo (formData, event) {
-    console.log(event.target)
+  doQueryTo = async (formData, event) => {
+
     let aet = event.target.value
 
     let dateFrom = formData.dateFrom
@@ -77,9 +72,6 @@ class QueryForm extends Component {
     }catch{
         toastifyError('Dicom Failure')
     }
-
-
-
     
   }
 
@@ -90,15 +82,11 @@ class QueryForm extends Component {
   }
 
   render () {
-      let aetButtons = null
-      if (this.props.aets !== undefined ) {
-        aetButtons = this.buildAetButtons()
-      }
       return (
         <div className="jumbotron">
           <Form onFormValidate={this.doQueryTo} title='Query'>
             <div>
-              {aetButtons}
+              {this.props.aets !== undefined ? this.buildAetButtons() : null}
             </div>
           </Form>
         </div>

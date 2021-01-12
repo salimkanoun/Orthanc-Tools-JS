@@ -3,7 +3,8 @@ import BootstrapTable from "react-bootstrap-table-next";
 import React, { Component, Fragment } from "react";
 import apis from '../../../services/apis';
 
-export default class SftpEndpoints extends Component{
+export default class SftpEndpoints extends Component {
+
     columns = [{
         dataField: 'label',
         text : 'Label'
@@ -32,14 +33,14 @@ export default class SftpEndpoints extends Component{
         formatExtraData : this
     }];
 
-    removeEndpointButton(cell, row, rowIndex, parentComponent) {
+    removeEndpointButton = (cell, row, rowIndex, parentComponent) => {
         return (
         <div className="text-center">
             <input type="button" className='btn btn-danger' onClick = {async () => {await apis.endpoints.deleteEndpoints(row.id); parentComponent.props.refreshEndpointsData()}} value = "Remove" />
         </div>)
     }
 
-    render() {
+    render = () => {
         return (
             <Fragment>
                 <h2>SFTP Export Endpoints</h2>

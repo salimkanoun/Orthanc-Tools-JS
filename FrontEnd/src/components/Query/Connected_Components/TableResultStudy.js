@@ -65,23 +65,21 @@ class TableResult extends Component {
     }, {
         dataField: 'NumberOfSeriesRelatedInstances',
         text: 'Instances'
-    },{
-        dataField: 'StudyOrthancID',
-        hidden : true
     }, {
-        dataField : 'Retrieve',
+        dataField: 'StudyOrthancID',
+        hidden: true
+    }, {
+        dataField: 'Retrieve',
         text: 'Retrieve',
-        formatter : this.retrieveButton
+        formatter: (cell, row, rowIndex) => {
+            return (<RetrieveButton queryAet={row.OriginAET} studyInstanceUID={row.StudyInstanceUID} level={RetrieveButton.Study} />)
+        }
     }];
-
-    retrieveButton(cell, row, rowIndex){
-        return (<RetrieveButton queryAet={row.OriginAET} studyInstanceUID={row.StudyInstanceUID} level={RetrieveButton.Study} />)
-    }
 
     expandRow = {
         showExpandColumn: true,
-        renderer : (row) => {
-            return(
+        renderer: (row) => {
+            return (
                 <TableResultSeries rowData={row}></TableResultSeries>
             )
         }
@@ -94,17 +92,17 @@ class TableResult extends Component {
                 data={this.props.results}
                 columns={this.columns}
             >{
-                props => (
-                    <React.Fragment>
-                        <div className="jumbotron" style={this.props.style}>
-                            <div className="mt-5">
-                                <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} expandRow={ this.expandRow } >
-                                </BootstrapTable>
+                    props => (
+                        <React.Fragment>
+                            <div className="jumbotron" style={this.props.style}>
+                                <div className="mt-5">
+                                    <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} expandRow={this.expandRow} >
+                                    </BootstrapTable>
+                                </div>
                             </div>
-                        </div>
-                    </React.Fragment>
-                )
-            }
+                        </React.Fragment>
+                    )
+                }
             </ToolkitProvider>
         )
     }

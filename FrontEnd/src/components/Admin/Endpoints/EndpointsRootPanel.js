@@ -6,7 +6,8 @@ import WebdavEndpoints from './WebdavEndpoint'
 import EndpointForm from './EndpointForm'
 import SecurityRootPanel from './Security/SecurityRootPanel'
 
-const EndpointsRootPanel = () => {
+export default () => {
+    
     const [endpoints, setEndpoints] = useState({
         ftp: [],
         sftp: [],
@@ -101,5 +102,3 @@ const EndpointsRootPanel = () => {
         </>
     )
 }
-
-export default EndpointsRootPanel

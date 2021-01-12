@@ -12,54 +12,11 @@ import { toastifyError } from '../../../services/toastify';
 
 
 class TableResultSeries extends Component {
-
-    async componentDidMount(){
-        await this.fetchDataIfUnknown(this.props.rowData.StudyInstanceUID, this.props.rowData.OriginAET)
-    }
-
-    async fetchDataIfUnknown(StudyInstanceUID, OriginAET){
-        
-        var result = this.props.results.filter(study => {
-            return study.StudyInstanceUID === StudyInstanceUID
-        })
-
-        if (result[0]['seriesDetails'].length === 0 ){
-            await this.getSeriesDetails(StudyInstanceUID, OriginAET)
-        } 
-    }
-
-    async getSeriesDetails(studyUID, aet){
-
-        let queryData = {
-            Level: 'Series',
-            Query: {
-                Modality: '',
-                ProtocolName: '',
-                SeriesDescription: '',
-                SeriesInstanceUID: '',
-                StudyInstanceUID: studyUID,
-                SeriesNumber: '',
-                NumberOfSeriesRelatedInstances: ''
-            },
-            Normalize: false
-        }
-        
-        try{
-            let queryAnswers = await apis.query.dicomQuery(aet,queryData)
-            let seriesAnswers = await apis.query.retrieveAnswer(queryAnswers.ID)
-            this.props.addManualQuerySeriesDetails(seriesAnswers, studyUID)
-        }catch{
-            toastifyError('Dicom Failure')
-        }
-
-        
-
-    }
-
+    
     columns = [{
         dataField: 'key',
         hidden: true
-    },{
+    }, {
         dataField: 'Level',
         hidden: true
     }, {
@@ -68,7 +25,7 @@ class TableResultSeries extends Component {
     }, {
         dataField: 'AnswerNumber',
         hidden: true
-    },{
+    }, {
         dataField: 'StudyInstanceUID',
         hidden: true
     }, {
@@ -91,35 +48,78 @@ class TableResultSeries extends Component {
         dataField: 'NumberOfSeriesRelatedInstances',
         text: 'Instances'
     }, {
-        dataField : 'Retrieve',
+        dataField: 'Retrieve',
         text: 'Retrieve',
-        formatter : this.retrieveButton
+        formatter: (cell, row, rowIndex) => {
+            return (<RetrieveButton queryAet={row.OriginAET} seriesInstanceUID={row.SeriesInstanceUID} studyInstanceUID={row.StudyInstanceUID} level={RetrieveButton.Series} />)
+        }
     }];
 
-    retrieveButton(cell, row, rowIndex){
-        return (<RetrieveButton queryAet={row.OriginAET} seriesInstanceUID={row.SeriesInstanceUID} studyInstanceUID={row.StudyInstanceUID} level={RetrieveButton.Series} />)
+    componentDidMount = async () => {
+        await this.fetchDataIfUnknown(this.props.rowData.StudyInstanceUID, this.props.rowData.OriginAET)
     }
 
-    render() {
+    fetchDataIfUnknown = async (StudyInstanceUID, OriginAET) => {
 
-        let currentStudy = this.props.results.filter( (studyData)=>{
-            if(studyData.StudyInstanceUID === this.props.rowData.StudyInstanceUID){
+        var result = this.props.results.filter(study => {
+            return study.StudyInstanceUID === StudyInstanceUID
+        })
+
+        if (result[0]['seriesDetails'].length === 0) {
+            await this.getSeriesDetails(StudyInstanceUID, OriginAET)
+        }
+    }
+
+    getSeriesDetails = async (studyUID, aet) => {
+
+        let queryData = {
+            Level: 'Series',
+            Query: {
+                Modality: '',
+                ProtocolName: '',
+                SeriesDescription: '',
+                SeriesInstanceUID: '',
+                StudyInstanceUID: studyUID,
+                SeriesNumber: '',
+                NumberOfSeriesRelatedInstances: ''
+            },
+            Normalize: false
+        }
+
+        try {
+            let queryAnswers = await apis.query.dicomQuery(aet, queryData)
+            let seriesAnswers = await apis.query.retrieveAnswer(queryAnswers.ID)
+            this.props.addManualQuerySeriesDetails(seriesAnswers, studyUID)
+        } catch {
+            toastifyError('Dicom Failure')
+        }
+
+    }
+
+    getCurrentStudySeries = () => {
+
+        let currentStudy = this.props.results.filter((studyData) => {
+            if (studyData.StudyInstanceUID === this.props.rowData.StudyInstanceUID) {
                 return true
             }
             return false
         })
 
-        let seriesDetails = currentStudy[0]['seriesDetails']
+        return currentStudy[0]['seriesDetails']
+
+    }
+
+    render() {
 
         return (
             <ToolkitProvider
                 keyField="key"
-                data={seriesDetails}
+                data={this.getCurrentStudySeries()}
                 columns={this.columns}
             >{
                     props => (
                         <React.Fragment>
-                            <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} bordered={ false } />
+                            <BootstrapTable ref={n => this.node = n} {...props.baseProps} striped={true} bordered={false} />
                         </React.Fragment>
                     )
                 }
@@ -130,8 +130,6 @@ class TableResultSeries extends Component {
 
 
 }
-
-
 
 const mapStateToProps = (state) => {
     return {

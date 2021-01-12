@@ -57,7 +57,7 @@ export default class Authentication extends Component {
   render = () => {
     return (
       <CSSTransition in={this.state.show} timeout={1500} classNames='auth'>
-        <div className='vertical-center'>
+        <div className='vertical-center authentification'>
           <div className='text-center' id='login'>
             <div className='alert alert-danger' id='error' style={{ display: this.state.errorMessage === undefined ? 'none' : '' }}>{this.state.errorMessage}</div>
             <div className='shadow block-title block block-400'>

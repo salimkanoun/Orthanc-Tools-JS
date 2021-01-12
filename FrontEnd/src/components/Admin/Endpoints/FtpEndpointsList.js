@@ -4,6 +4,7 @@ import React, { Component, Fragment } from "react";
 import apis from '../../../services/apis';
 
 export default class FtpEndpoints extends Component{
+
     columns = [{
         dataField: 'label',
         text : 'Label'
@@ -32,7 +33,7 @@ export default class FtpEndpoints extends Component{
         formatExtraData : this
     }];
 
-    removeEndpointButton(cell, row, rowIndex, parentComponent) {
+    removeEndpointButton = (cell, row, rowIndex, parentComponent) => {
         return (
         <div className="text-center">
             <input type="button" className='btn btn-danger' onClick = {async () => {await apis.endpoints.deleteEndpoints(row.id); parentComponent.props.refreshEndpointsData()}} value = "Remove" />
@@ -47,5 +48,6 @@ export default class FtpEndpoints extends Component{
             </Fragment>
         )
     }
+    
 }
 

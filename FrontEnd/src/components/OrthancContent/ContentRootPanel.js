@@ -24,18 +24,10 @@ class ContentRootPanel extends Component {
 
   constructor(props){
     super(props)
-    this.sendSearch = this.sendSearch.bind(this)
-    this.onDeletePatient = this.onDeletePatient.bind(this)
-    this.onDeleteStudy = this.onDeleteStudy.bind(this)
-    this.sendToDeleteList = this.sendToDeleteList.bind(this)
-    this.sendToExportList = this.sendToExportList.bind(this)
-    this.sendToAnonList = this.sendToAnonList.bind(this)
-    this.getStudySelectedDetails = this.getStudySelectedDetails.bind(this)
     this.child = createRef()
-    this.refreshSerie = this.refreshSerie.bind(this)
   }
 
-  async sendSearch(dataFrom){
+  sendSearch = async (dataFrom) => {
     let studies
     if (dataFrom){
       studies = await apis.content.getContent(dataFrom)
@@ -50,7 +42,7 @@ class ContentRootPanel extends Component {
     this.props.addOrthancContent(studies)
   }
 
-  refreshSerie(){
+  refreshSerie = () => {
     let id = this.state.currentSelectedStudyId
     this.setState({
       currentSelectedStudyId: ''
@@ -61,12 +53,12 @@ class ContentRootPanel extends Component {
   }
 
   //Rappelé par le dropdown lors du delete de Patietn sur Orthanc
-  onDeletePatient(idDeleted){
+  onDeletePatient = (idDeleted) => {
     this.props.removeOrthancContentPatient(idDeleted)
     this.setState({currentSelectedStudyId: ''})
   }
   //rappelé par le dropdow lors du delete de study sur Orthanc
-  onDeleteStudy(idDeleted){
+  onDeleteStudy = (idDeleted) => {
     this.props.removeOrthancContentStudy(idDeleted)
     this.setState({currentSelectedStudyId: ''})
   }
@@ -75,7 +67,7 @@ class ContentRootPanel extends Component {
    * return all study details
    * of selected items
    */
-  getStudySelectedDetails(){
+  getStudySelectedDetails = () => {
     let selectedIds = this.child.current.getSelectedRessources()
         
         let studiesOfSelectedPatients = []
@@ -105,15 +97,15 @@ class ContentRootPanel extends Component {
         return uniqueSelectedOrthancStudyId
   }
 
-  sendToDeleteList(){
+  sendToDeleteList = () => {
     this.props.addStudiesToDeleteList(this.getStudySelectedDetails())
   }
 
-  sendToAnonList(){
+  sendToAnonList = () => {
     this.props.addStudiesToAnonList(this.getStudySelectedDetails())
   }
 
-  async sendToExportList(){
+  sendToExportList = async() => {
     //Get selected studies array
     let selectedStudiesArray = treeToStudyArray(this.getStudySelectedDetails())
     //Send it to redux
@@ -136,7 +128,7 @@ class ContentRootPanel extends Component {
     return style;
   }
 
-  handleClick(e){
+  handleClick = (e) => {
     e.stopPropagation()
   }
   

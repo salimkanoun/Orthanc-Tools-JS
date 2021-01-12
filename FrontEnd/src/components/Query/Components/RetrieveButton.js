@@ -17,22 +17,14 @@ class RetrieveButton extends Component {
     status: 'Retrieve'
   }
 
-  constructor(props) {
-    super(props)
-    this.doRetrieve = this.doRetrieve.bind(this)
-    this.handleDropdownClick = this.handleDropdownClick.bind(this)
-    this.toExport = this.toExport.bind(this)
-    this.toAnon = this.toAnon.bind(this)
-  }
-
-  getVariant() {
+  getVariant = () => {
     if (this.state.status === 'Retrieve') return 'info'
     else if (this.state.status === MonitorJob.Pending ) return 'warning'
     else if (this.state.status === MonitorJob.Success ) return 'success'
     else if (this.state.status === MonitorJob.Failure ) return 'danger'
   }
 
-  async toAnon(){
+  toAnon = async () => {
     if(this.resultAnswer === undefined) return
     let studyDetails = []
     if( this.props.level ===  RetrieveButton.Study ){
@@ -45,7 +37,7 @@ class RetrieveButton extends Component {
 
   }
 
-  async toExport(){
+  toExport = async() => {
     if(this.resultAnswer === undefined) return
 
     let seriesDetails = []
@@ -84,7 +76,7 @@ class RetrieveButton extends Component {
     if(this.monitorJob !== undefined) this.monitorJob.stopMonitoringJob()
   }
 
-  async doRetrieve(e) {
+  doRetrieve = async (e) => {
     e.stopPropagation()
 
     let level = this.props.level
@@ -99,8 +91,6 @@ class RetrieveButton extends Component {
       jobID = await apis.retrieve.retrieveByUID(queryAet, this.props.studyInstanceUID, this.props.seriesInstanceUID)
 
     }
-
-    
 
     let monitorJob = new MonitorJob(jobID)
 
@@ -126,12 +116,11 @@ class RetrieveButton extends Component {
 
   }
 
-  handleDropdownClick(e){
+  handleDropdownClick = (e) => {
     e.stopPropagation()
-
   }
 
-  async getOrthancIDbyStudyUID(){
+  getOrthancIDbyStudyUID = async() => {
 
     let contentSearch = {
       CaseSensitive: false,

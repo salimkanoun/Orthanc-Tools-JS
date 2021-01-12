@@ -15,7 +15,6 @@ import Footer from './Footer'
 import Query from '../Query/Components/Query'
 import AutoQueryRoot from '../AutoQuery/Component/AutoQueryRoot'
 import RobotView from '../AutoQuery/Connected_Component/RobotView'
-import Authentication from '../Authentication'
 import AdminRootPanel from '../Admin/AdminRootPanel'
 import Import from '../Import/Import'
 import ContentRootPanel from '../OrthancContent/ContentRootPanel'
@@ -28,12 +27,14 @@ import CDBurner from './../CDBurner/CDBurner'
 export default class NavBar extends Component {
 
   state = {
-    navBackground: '#11ffee00',
+    navBackground: null,
     currentTabSelect: 'content'
   }
 
-  componentDidMount = async () => {
 
+  componentDidMount = async () => {
+    
+    
     this.setState({
       navbar: document.documentElement.clientWidth < 992 ? 'responsive' : 'classique'
     })
@@ -44,15 +45,14 @@ export default class NavBar extends Component {
     });
 
     document.addEventListener("scroll", () => {
-      const backgroundcolor = window.scrollY < 50 ? "null" : "primary";
+      const backgroundcolor = window.scrollY < 50 ? null : "primary";
       this.setState({ navBackground: backgroundcolor });
     });
-
   }
 
-  AnimatedSwitch = withRouter(({ location }) => {console.log(location); return (
+  AnimatedSwitch = withRouter(({ location }) => (
     <TransitionGroup>
-      <CSSTransition key={location.key} classNames={'slide'} timeout={500} onEnter={(variable)=>console.log(variable)}>
+      <CSSTransition key={location.key} classNames={'slide'} timeout={500} onEnter={() => {console.log('ici entree, modifier location')}}>
         <Switch location={location}>
           <Route exact path='/import' component={Import} />
           <Route exact path='/query' component={Query} />
@@ -67,7 +67,7 @@ export default class NavBar extends Component {
         </Switch>
       </CSSTransition>
     </TransitionGroup>
-  )})
+  ))
 
   getLinkClass = (tabName) => {
     if (this.state.currentTabSelect === tabName) return 'nav-link active'
@@ -85,7 +85,7 @@ export default class NavBar extends Component {
   render = () => {
     return (
       <Fragment>
-        <Navbar fixed='top' collapseOnSelect expand='lg' bg={'primary'} variant='dark' onRateChange={() => console.log('start')}>
+        <Navbar fixed='top' collapseOnSelect expand='lg' bg={this.state.navBackground} variant='dark' >
           <Navbar.Toggle aria-controls='responsive_navbar' />
           <Navbar.Collapse id='responsive_navbvar'>
             {this.state.navbar === 'responsive' ? <div className='float-right'><ToolsPanel roles={this.props.token} apercu={false} /></div> : null}
@@ -101,7 +101,9 @@ export default class NavBar extends Component {
             {this.state.navbar === 'classique' ? <ToolsPanel roles={this.props.token} apercu={true} /> : null}
           </Navbar.Collapse>
         </Navbar>
-        {<this.AnimatedSwitch />}
+        <div className='content-panel'>
+          {<this.AnimatedSwitch />}
+        </div>
         <Footer />
       </Fragment>
     )

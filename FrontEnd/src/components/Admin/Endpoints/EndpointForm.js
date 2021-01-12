@@ -6,6 +6,7 @@ import apis from '../../../services/apis'
  * Form to declare or modify an Ssh Keys
  */
 export default class EndpointForm extends Component {
+    
     state = {
         keys:[]
     }
@@ -16,14 +17,11 @@ export default class EndpointForm extends Component {
         { value: 'webdav', label: 'Webdav'}
     ]
 
-    constructor(props) {
-        super(props)
-        this.handleChange=this.handleChange.bind(this)
-        this.handleClick=this.handleClick.bind(this)
+    componentDidMount  = () => {
         this.loadKeys()
     }
 
-    async loadKeys(){
+    loadKeys = async () => {
         let sshKeys = []
         let response = await apis.sshKeys.getKeysExpend()
         response.forEach(key => {
@@ -32,21 +30,19 @@ export default class EndpointForm extends Component {
         this.setState({keys:sshKeys})
     }
 
-    handleSelectChange(name){
-        return ((value)=>{
-            console.log(this)
-            console.log(value)
+    handleSelectChange = (name) => {
+        return ( (value)=> {
             this.setState({
                 [name]: value.value
             })
-        }).bind(this)
+        })
     }
 
     /**
      * Fill input text of users in current state
      * @param {*} event 
      */
-    handleChange(event) {
+    handleChange = (event) => {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
@@ -60,7 +56,7 @@ export default class EndpointForm extends Component {
     /**
      * Listener on form submission
      */
-    async handleClick() {
+    handleClick = async () => {
         let postData = {}
         
         postData.protocol = this.state.protocol
@@ -84,7 +80,7 @@ export default class EndpointForm extends Component {
 
     }
 
-    readyToSummit(){
+    readyToSummit = () => {
         let ready = (this.state.protocol)
         ready = ready && (this.state.label)
         ready = ready && (this.state.host)
@@ -95,7 +91,7 @@ export default class EndpointForm extends Component {
         return ready
     }
 
-    render(){
+    render = () => {
         return (
             <Fragment>
                 <h2 className="card-title">Add Export Endpoint</h2>
