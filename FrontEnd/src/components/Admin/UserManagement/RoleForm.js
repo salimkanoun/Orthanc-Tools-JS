@@ -3,43 +3,42 @@ import Toggle from 'react-toggle'
 
 class RoleForm extends Component {
 
-    static defaultProps = {
-        data: {
-            import: false, 
-            content: false, 
-            anon: false, 
-            export_local: false, 
-            export_extern: false, 
-            query: false,
-            auto_query: false, 
-            delete: false, 
-            admin: false, 
-            modify: false,
-            cd_burner : false 
-        }
-    }
-
     state = {
-        import: this.props.data.import, 
-        content: this.props.data.content, 
-        anon: this.props.data.anon, 
-        exportLocal: this.props.data.export_local, 
-        exportExtern: this.props.data.export_extern, 
-        query: this.props.data.query,
-        autoQuery: this.props.data.auto_query, 
-        delete: this.props.data.delete, 
-        admin: this.props.data.admin, 
-        modify: this.props.data.modify,
-        cd_burner: this.props.data.cd_burner
+        import: false, 
+        content: false, 
+        anon: false, 
+        export_local: false, 
+        export_extern: false, 
+        query: false,
+        auto_query: false, 
+        delete: false, 
+        admin: false, 
+        modify: false,
+        cd_burner : false 
     }
 
-    constructor(props) {
-        super(props);
-        this.getState = this.getState.bind(this)
-    }
+    componentDidMount = () => {
 
-    getState(){
-        return this.state
+        if(this.props.data != null) {
+
+            this.setState(
+                {
+                import: this.props.data.import, 
+                content: this.props.data.content, 
+                anon: this.props.data.anon, 
+                exportLocal: this.props.data.export_local, 
+                exportExtern: this.props.data.export_extern, 
+                query: this.props.data.query,
+                autoQuery: this.props.data.auto_query, 
+                delete: this.props.data.delete, 
+                admin: this.props.data.admin, 
+                modify: this.props.data.modify,
+                cd_burner: this.props.data.cd_burner
+                }
+            )
+
+        }
+       
     }
 
     render() {
@@ -133,6 +132,8 @@ class RoleForm extends Component {
                             <Toggle checked={this.state.cd_burner} onChange={()=>this.setState(prevState => ({cd_burner: !prevState.cd_burner}))}/>
                         </div>
                     </div>
+
+                    <button type='button' name='create' className='btn btn-primary float-right' onClick={ () => {this.props.onSubmitRole(this.state)} }> Validate </button>
             </Fragment>
         );
     }

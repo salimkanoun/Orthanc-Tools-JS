@@ -6,7 +6,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import apis from "../../../services/apis";
 import ModalDetails from './ModalDetails'
 
-class JobsRootPanel extends Component {
+export default class JobsRootPanel extends Component {
 
     state = { 
         rows: [], 
@@ -105,5 +105,3 @@ class JobsRootPanel extends Component {
         );
     }
 }
-
-export default JobsRootPanel;

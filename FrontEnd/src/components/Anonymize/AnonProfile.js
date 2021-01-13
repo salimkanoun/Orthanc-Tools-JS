@@ -6,15 +6,13 @@ import Select from 'react-select'
 import { saveProfile } from '../../actions/AnonList'
 
 class AnonProfile extends Component {
-    state = {  }
-
     
     option = [
         {value: 'Default', label: 'Default'}, 
         {value: 'Full', label: 'Full'}
     ]
 
-    getProfileSelected(){
+    getProfileSelected = () => {
         let index = -1
         this.option.forEach(element => {
             if (element.value === this.props.profile){
@@ -24,7 +22,7 @@ class AnonProfile extends Component {
         return this.option[index]
     }
 
-    render() {
+    render = () => {
         return (
             <div className='row'>
                 <div className="col-auto" >

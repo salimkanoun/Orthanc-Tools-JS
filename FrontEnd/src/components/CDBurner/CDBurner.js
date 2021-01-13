@@ -8,7 +8,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator'
 import Toggle from 'react-toggle'
 
 import apis from '../../services/apis'
-import { ReactComponent as SpeakerSVG } from '../../images/sounds.svg'
+import { ReactComponent as SpeakerSVG } from '../../assets/images/sounds.svg'
 
 export default class CDBurner extends Component {
 

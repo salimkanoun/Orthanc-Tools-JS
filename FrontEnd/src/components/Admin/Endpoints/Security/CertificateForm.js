@@ -6,21 +6,16 @@ import Dropzone from 'react-dropzone'
  * Form to declare or modify an AET
  */
 export default class CertificateForm extends Component {
+
     state = {
         file: null
-    }
-
-    constructor(props) {
-        super(props)
-        this.handleChange=this.handleChange.bind(this)
-        this.handleClick=this.handleClick.bind(this)
     }
 
     /**
      * Fill input text of users in current state
      * @param {*} event 
      */
-    handleChange(event) {
+    handleChange = (event) => {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
@@ -34,7 +29,7 @@ export default class CertificateForm extends Component {
     /**
      * Listener on form submission
      */
-    async handleClick() {
+    handleClick = async() => {
 
         let postData = {
             label : this.state.label
@@ -47,13 +42,13 @@ export default class CertificateForm extends Component {
 
     }
 
-    setFile(file){
+    setFile = (file) => {
         this.setState({
             file:file[0]
         })
     }
 
-    render(){
+    render = () => {
         return (
             <Fragment>
                 <h3 className="card-title">Add Certificate Authority</h3>

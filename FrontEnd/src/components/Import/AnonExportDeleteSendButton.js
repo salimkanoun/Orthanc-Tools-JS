@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 export default class AnonExportDeleteSendButton extends Component{
 
-    render(){
+    render =() => {
         return (
             <div className="row text-center mt-3">
                 <div className="col">

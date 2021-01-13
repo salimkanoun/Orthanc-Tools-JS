@@ -6,34 +6,28 @@ import RoleForm from './RoleForm'
 import apis from '../../../services/apis'
 
 
-class CreateRole extends Component {
+export default class CreateRole extends Component {
     state = { 
         show: false, 
         name: ''
     }
 
-    constructor(props){
-        super(props)
-        this.child = React.createRef()
-        this.create = this.create.bind(this)
-    }
-
-    async create(){
+    create = async (formState) => {
         if (this.state.name === ''){
             toastifyError('Role name can\'t be empty')
         } else {
-            let permission = {...this.child.current.getState(), name: this.state.name}
-            await apis.role.createRole(permission).then(()=>{
+            let permission = {...formState, name: this.state.name}
+            apis.role.createRole(permission).then(()=>{
                 this.setState({
                     show: false, 
                     name: ''
                 })
-                this.props.getRoles()
+                this.props.onSubmitRole()
             }).catch(error => console.log(error))
         }
     }
 
-    render() {
+    render = () => {
         return (
             <Fragment>
                 <button type='button' className='btn btn-primary mb-3 float-right' onClick={() => this.setState({show: true})} >New Role</button>
@@ -44,17 +38,11 @@ class CreateRole extends Component {
                     <Modal.Body>   
                         <label>Name*</label>
                         <input className='form-control mb-4' type='text' placeholder='name' name='name' value={this.state.name} onChange={(e) => this.setState({name: e.target.value})} required />
-                        <RoleForm ref={this.child} />
+                        <RoleForm onSubmitRole = {this.create} />
                     </Modal.Body>
-                    <Modal.Footer>
-                        <button type='button' name='create' className='btn btn-primary' onClick={this.create} >Create</button>
-                        <button type='button' className='btn btn-info' onClick={() => this.setState({show: false})} >Cancel</button>
-                    </Modal.Footer>
                 </Modal>
             </Fragment>
             
         );
     }
 }
-
-export default CreateRole;

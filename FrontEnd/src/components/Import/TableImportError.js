@@ -20,7 +20,7 @@ class TableImportError extends Component{
     }]
 
     
-    render(){
+    render = () => {
         return (
             <Fragment>
                 <BootstrapTable keyField={'fileID'} striped={true} columns={this.columns} pagination={paginationFactory()} {...this.props} />

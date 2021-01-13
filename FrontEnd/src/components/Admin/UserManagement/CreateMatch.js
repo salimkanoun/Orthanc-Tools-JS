@@ -3,9 +3,11 @@ import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select'
 
 import apis from '../../../services/apis'
+import { toastifyError } from '../../../services/toastify';
 
 
-class CreateMatch extends Component {
+export default class CreateMatch extends Component {
+    
     state = { 
         show: false, 
         groupName:'',
@@ -14,36 +16,27 @@ class CreateMatch extends Component {
         optionsGroupeName: []
     }
 
-    constructor(props){
-        super(props)
-        this.create = this.create.bind(this)
-
-        this.changeRole = this.changeRole.bind(this)
-        this.changeGroupe = this.changeGroupe.bind(this)
-
-    }
-
-    componentDidMount() {
+    componentDidMount = () => {
         this.getGroupName()
         this.getAssociedRole()
     }
 
-    changeGroupe(event) {
+    changeGroupe = (event) => {
         this.setState({groupName: event})
     }
 
-    changeRole(event) {
+    changeRole = (event) => {
         this.setState({associedRole: event})
     }
 
-    async getGroupName() {
+    getGroupName = async () => {
         let list = await apis.ldap.getAllGroupName()
 
         this.setState({ optionsGroupeName:list
         })
     }
 
-    async getAssociedRole() {
+    getAssociedRole = async() => {
         let res = []
         let list = await apis.role.getRoles()
         for(let i=0; i<list.length; i++) {
@@ -54,17 +47,17 @@ class CreateMatch extends Component {
         })
     }
 
-    async create(){
-            await apis.ldap.createMatch({groupName:this.state.groupName.value, associedRole:this.state.associedRole.value}).then(()=>{
-                this.props.getMatches()
-                this.setState({
-                    show: false, 
-                })
-                
-            }).catch(error => console.log(error))
+    create = async() => {
+        await apis.ldap.createMatch({groupName:this.state.groupName.value, associedRole:this.state.associedRole.value}).then(()=>{
+            this.props.getMatches()
+            this.setState({
+                show: false, 
+            })
+            
+        }).catch( error => {toastifyError(error.message)})
     }
 
-    render() {
+    render = () => {
         return (
             <Fragment>
                 <button type='button' hidden={this.props.show} className='btn btn-primary mr-3 mt-2' onClick={() => this.setState({show: true})} >New match</button>
@@ -90,5 +83,3 @@ class CreateMatch extends Component {
         );
     }
 }
-
-export default CreateMatch;

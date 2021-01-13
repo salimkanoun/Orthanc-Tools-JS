@@ -6,7 +6,7 @@ import apis from '../../../services/apis'
 /**
  * Root Panel of AETs options
  */
-const AetRootPanel = () => {
+export default () => {
 
   const [aets, setAets] = useState([])
 
@@ -33,5 +33,3 @@ const AetRootPanel = () => {
     </>
   )
 }
-
-export default AetRootPanel

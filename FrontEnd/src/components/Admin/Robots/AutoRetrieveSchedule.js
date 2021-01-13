@@ -8,17 +8,12 @@ export default class AutoRetrieveSchedule extends Component {
     hour: '00',
     min: '00'
   }
-
-  constructor (props) {
-    super(props)
-    this.handleClick = this.handleClick.bind(this)
-    this.handleChange = this.handleChange.bind(this)
-  }
-
+  
+  
   /**
    * Get defined schedule hour and min from backend
    */
-  async componentDidMount () {
+  componentDidMount = async () => {
     const response = await apis.options.getOptions()
     this.setState({
       hour_start:response.hour_start, 
@@ -32,7 +27,7 @@ export default class AutoRetrieveSchedule extends Component {
    * Store written value in state
    * @param {*} event 
    */
-  handleChange (event) {
+  handleChange = (event) => {
     const target = event.target
     const name = target.name
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -45,11 +40,11 @@ export default class AutoRetrieveSchedule extends Component {
   /**
    * Submission of new values of schedule
    */
-  handleClick () {
+  handleClick = () => {
     apis.options.setRobotScheduleHour(this.state.hour_start, this.state.min_start, this.state.hour_stop, this.state.min_stop )
   }
 
-  render () {
+  render = () => {
     return (
         <div>
           <h2 className="card-title">Retrieve Schedule Time : </h2>

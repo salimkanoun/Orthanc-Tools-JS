@@ -4,19 +4,13 @@ import Users from './Users'
 import Roles from './Roles'
 import Ldap from './Ldap'
 
-
-class UserManagement extends Component {
+export default class UserManagement extends Component {
     
     state = {
         currentComponent: 'Users'
     }
 
-    constructor(props) {
-        super(props)
-        this.switchTab = this.switchTab.bind(this)
-    }
-
-    getComponentToDisplay(){
+    getComponentToDisplay = () => {
         let component = null
         switch(this.state.currentComponent){
             case 'Users':
@@ -35,13 +29,13 @@ class UserManagement extends Component {
         return component
     }
 
-    switchTab(tabName){
+    switchTab = (tabName) => {
         this.setState({
             currentComponent: tabName
         })
     }
 
-    render() {
+    render = () => {
         return (
             <div>
                 <div className='mb-5'>
@@ -65,5 +59,3 @@ class UserManagement extends Component {
         );
     }
 }
-
-export default UserManagement;

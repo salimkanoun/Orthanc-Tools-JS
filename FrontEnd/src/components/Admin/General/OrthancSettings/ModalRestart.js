@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal'
 
 import apis from '../../../../services/apis'
 
-class ModalRestart extends Component {
+export default class ModalRestart extends Component {
 
     reset = async () => {
         apis.options.resetOrthanc()
@@ -25,5 +25,3 @@ class ModalRestart extends Component {
         );
     }
 }
-
-export default ModalRestart;

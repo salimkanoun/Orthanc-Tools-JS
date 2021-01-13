@@ -20,7 +20,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
 //Custom CSS
-import './style.css'
+import './assets/styles/orthancToolsJs.css'
 import { BrowserRouter } from 'react-router-dom'
 import { toastifyError } from './services/toastify'
 

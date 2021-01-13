@@ -1,6 +1,6 @@
 body {	
 	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-	background-image:  url(./images/wallpaper.jpg);
+	background-image:  url(./../images/wallpaper.jpg);
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-attachment: fixed;
@@ -37,7 +37,7 @@ body {
 }
 
 .authentification{
-	background-image:  url(./images/wallpaperAuth.jpg);
+	background-image:  url(./../images/wallpaperAuth.jpg);
 	/* Background image is centered vertically and horizontally at all times */
 	background-position: center center;
 	/* Background image doesn't tile */

@@ -4,33 +4,24 @@ import Modal from 'react-bootstrap/Modal';
 import apis from '../../../services/apis'
 
 import RoleForm from './RoleForm'
-
-
-class ModifyRole extends Component {
+export default class ModifyRole extends Component {
 
     state = { 
         show: false,
         data: {}, 
      };
-    constructor(props) {
-        super(props);
-        this.handleClick = this.handleClick.bind(this)
-        this.modify = this.modify.bind(this)
-        this.child = React.createRef()
-    }
 
-    async modify(){
-        let permission = this.child.current.getState()
-        permission = {
-            ...permission, 
+    modify = (roleFormState) => {
+        let permission = {
+            ...roleFormState,
             name: this.props.name
         }
-        await apis.role.modifyRole(permission).then(() => this.setState({show: false})).catch(error => console.log(error))
+        apis.role.modifyRole(permission).then(() => this.setState({show: false})).catch(error => console.log(error))
     }
 
-    async handleClick(){
+    handleClick = ()=> {
         let permission = {}
-        await apis.role.getPermission(this.props.name).then(answer => permission = answer[0]).then(()=>{
+        apis.role.getPermission(this.props.name).then(answer => permission = answer[0]).then(()=>{
             this.setState({
                 data: {...permission}, 
                 show: true
@@ -47,17 +38,11 @@ class ModifyRole extends Component {
                         <h2 className='card-title'>Modify role {this.state.data.name}</h2>
                     </Modal.Header>
                     <Modal.Body>  
-                        <RoleForm data={this.state.data} ref={this.child}/>
+                        <RoleForm data={this.state.data} onSubmitRole = {this.modify}/>
                     </Modal.Body>
-                    <Modal.Footer>
-                        <button type='button' name='create' className='btn btn-primary' onClick={this.modify} >Save</button>
-                        <button type='button' className='btn btn-info' onClick={() => this.setState({show: false})} >Cancel</button>
-                    </Modal.Footer>
                 </Modal>
             </Fragment>
             
         );
     }
 }
-
-export default ModifyRole;

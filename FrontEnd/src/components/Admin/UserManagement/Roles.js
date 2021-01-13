@@ -6,7 +6,7 @@ import apis from '../../../services/apis'
 import ModifyRole from "./ModifyRole";
 import CreateRole from "./CreateRole";
 
-class Roles extends Component {
+export default class Roles extends Component {
 
     state = { 
         name: '',
@@ -14,28 +14,20 @@ class Roles extends Component {
         showDelete: false
     };
 
-    constructor(props) {
-        super(props);
-        this.delete = this.delete.bind(this)
-        this.getRoles = this.getRoles.bind(this)
-    }
-
-    componentDidMount() {
+    componentDidMount = () => {
         this.getRoles()
     }
 
-    async getRoles(){
+    getRoles = async () => {
         let roles = await apis.role.getRoles()
         this.setState({roles: roles})
     }
 
-    async delete(e){
+    delete = async () => {
         await apis.role.deleteRole(this.state.name).then(() => this.onHide()).catch(error => console.log(error))
     }
 
-    
-
-    onHide(){
+    onHide = () => {
         this.setState({
             name: '',
             showDelete: false
@@ -68,11 +60,11 @@ class Roles extends Component {
         }
     ]
     
-    render() {
+    render = () => {
         return (
             <Fragment>
                 <h2 className='card-title'>Roles Panel</h2>
-                <CreateRole getRoles={this.getRoles}/>
+                <CreateRole onSubmitRole={this.getRoles}/>
                 <BootstrapTable keyField='name' data={this.state.roles} columns={this.columns} striped wrapperClasses='table-responsive' />
 
                 <Modal id='delete' show={this.state.showDelete} onHide={() => this.setState({showDelete: false})} size='sm'>
@@ -88,8 +80,6 @@ class Roles extends Component {
                     </Modal.Footer>
                 </Modal>
             </Fragment>
-        );
+        )
     }
 }
-
-export default Roles;

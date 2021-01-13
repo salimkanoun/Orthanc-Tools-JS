@@ -3,7 +3,7 @@ import AetRootPanel from './AET/AetRootPanel'
 import AutoRetrieveRootPanel from './Robots/AutoRetrieveRootPanel'
 import PeerRootPanel from './Peers/PeerRootPanel'
 import JobsRootPanel from './Jobs/JobsRootPanel'
-import Plugins from './Plugins'
+import Plugins from './Plugins/Plugins'
 import UserManagement from './UserManagement/UserManagement'
 import BurnerOptions from './CDBurner/BurnerOptions'
 import EndpointsRootPanel from './Endpoints/EndpointsRootPanel'
@@ -13,44 +13,47 @@ import GeneralRoot from './General/GeneralRoot'
  * Root Panel of Admin route
  * Using React Hooks
  */
+
 const AdminPanel = () => {
+
   const [selectedOptionMenu, setSelectedOptionMenu] = useState('General')
 
-  function clickHandler (event) {
+  function clickHandler(event) {
     setSelectedOptionMenu(event.target.value)
   }
 
-  function getComponentToDisplay () {
+  function getComponentToDisplay() {
     switch (selectedOptionMenu) {
-      case 'General' :
+      case 'General':
         return (<GeneralRoot />)
-      case 'Aets' :
+      case 'Aets':
         return (<AetRootPanel />)
-      case 'Peers' :
+      case 'Peers':
         return (<PeerRootPanel />)
-      case 'External Endpoints' :
+      case 'External Endpoints':
         return (<EndpointsRootPanel />)
-      case 'Robots' :
+      case 'Robots':
         return (<AutoRetrieveRootPanel />)
-      case 'Jobs' :
+      case 'Jobs':
         return (<JobsRootPanel />)
-      case 'CD Burner' :
-          return (<BurnerOptions />)
-      case 'Orthanc Plugins' :
+      case 'CD Burner':
+        return (<BurnerOptions />)
+      case 'Orthanc Plugins':
         return (<Plugins />)
-      case 'User Management' :
+      case 'Users':
         return (<UserManagement />)
-      default :
+      default:
         return ([])
     }
   }
 
   return (
     <div className='jumbotron'>
-      <div className= "row">
+      <div className="row">
         <div className='col-3'>
           <div className='nav flex-column nav-pills' role='tablist' aria-orientation='vertical'>
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='General' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Users' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Aets' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='External Endpoints' />
@@ -58,7 +61,7 @@ const AdminPanel = () => {
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Jobs' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='CD Burner' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Orthanc Plugins' />
-            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='User Management' />
+
           </div>
         </div>
         <div className='col-sm'>

@@ -4,6 +4,7 @@ import React, { Component, Fragment } from "react";
 import apis from '../../../../services/apis';
 
 export default class SshKeys extends Component{
+
     columns = [{
         dataField: 'label',
         text : 'Label'
@@ -16,18 +17,17 @@ export default class SshKeys extends Component{
     {
         dataField : 'delete',
         text : 'Delete Key',
-        formatter : this.deleteSshKeyButton,
+        formatter : (cell, row, rowIndex, parentComponent) => {
+            return (
+                <div className="text-center">
+                    <input type="button" className='btn btn-danger' onClick = {async () => {await apis.sshKeys.deleteKey(row.id); parentComponent.props.refreshSshKeysData()}} value = "Remove" />
+                </div>
+            )
+        },
         formatExtraData : this
     }];
 
-    deleteSshKeyButton(cell, row, rowIndex, parentComponent) {
-        return (
-        <div className="text-center">
-            <input type="button" className='btn btn-danger' onClick = {async () => {await apis.sshKeys.deleteKey(row.id); parentComponent.props.refreshSshKeysData()}} value = "Remove" />
-        </div>)
-    }
-
-    render() {
+    render = () => {
         return (
             <Fragment>
                 <BootstrapTable keyField="name" striped={true} data={this.props.sshKeysData} columns={this.columns} wrapperClasses='table-responsive' />

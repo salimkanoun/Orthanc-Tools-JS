@@ -9,7 +9,7 @@ export default class SelectRoles extends Component {
         optionRoles : {}
     }
 
-    async componentDidMount(){
+    componentDidMount = async () => {
         let roles = await apis.role.getRoles()
         let options =  []
         roles.forEach((role) => {
@@ -24,7 +24,7 @@ export default class SelectRoles extends Component {
 
     }
 
-    render (){
+    render = () => {
         return (
             <Select single options={this.state.optionRoles} onChange={this.props.onChange} />
         )
