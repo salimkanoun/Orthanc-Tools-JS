@@ -12,14 +12,8 @@ import { ReactComponent as SpeakerSVG } from '../../assets/images/sounds.svg'
 
 export default class CDBurner extends Component {
 
-    constructor(props){
-        super(props)
-        this.toogleHandler = this.toogleHandler.bind(this)
-        this.refreshTableData = this.refreshTableData.bind(this)
-        this.soundHandler = this.soundHandler.bind(this)
-        this.audioFailure = new Audio('/sounds/cd_Error.wav')
-        this.audioSuccess = new Audio('/sounds/cd_Success.wav')
-    }
+    audioSuccess = new Audio('/sounds/cd_Success.wav')
+    audioFailure = new Audio('/sounds/cd_Error.wav')
 
     state = {
         robotStarted : false,
@@ -29,7 +23,60 @@ export default class CDBurner extends Component {
         queuededJobs : 0
     }
 
-    async refreshTableData(){
+    defaultSorted = {
+        dataField: 'timeStamp', // if dataField is not match to any column you defined, it will be ignored.
+        order: 'desc' // desc or asc
+    };
+
+    columns = [
+        {
+            dataField: 'cdJobID', 
+            hidden: true
+        },
+        {
+            dataField : 'timeStamp',
+            sort : true,
+            hidden : true
+        },
+        {
+            dataField : 'patientName',
+            text : 'Patient Name'
+        },
+        {
+            dataField : 'patientID',
+            text : 'Patient ID'
+        },
+        {
+            dataField : 'patientDOB',
+            text : 'Patient Birth Date'
+        },
+        {
+            dataField : 'studyDate',
+            text : 'Study Date'
+        },
+        {
+            dataField : 'studyDescription',
+            text : 'Study Description'
+        },
+        {
+            dataField : 'status',
+            text : 'CD Status'
+        },
+        {
+            dataField : 'cancelButton',
+            text : 'Cancel',
+            formatter : (cell, row, rowIndex) => {
+                let disable = (row.status === CDBurner.JOB_STATUS_BURNING_DONE || row.status === CDBurner.JOB_STATUS_BURNING_ERROR)
+                return (
+                    <div className="text-center">
+                        <input type="button" className='btn btn-danger' onClick = {() => apis.cdBurner.cancelCdBurner(row.cdJobID)} value = "Cancel" disabled = {disable} />
+                    </div>
+                )
+            }
+        }
+    ]
+
+    refreshTableData = async () => {
 
         let cdBurnerData = await apis.cdBurner.getCdBuner()
         let jobs = cdBurnerData.Jobs
@@ -71,7 +118,7 @@ export default class CDBurner extends Component {
 
     }
 
-    async toogleHandler(event){
+    toogleHandler = async (event) => {
        
         let startStatus = this.state.robotStarted
 
@@ -91,7 +138,7 @@ export default class CDBurner extends Component {
 
     }
 
-    soundHandler(e){
+    soundHandler = (e) => {
         apis.localStorage.setlocalStorage('BurnerSounds', (e.target.checked).toString() )
         this.setState({
             playSound : (e.target.checked)
@@ -99,7 +146,7 @@ export default class CDBurner extends Component {
        
     }
 
-   async componentDidMount(){
+   componentDidMount = async () => {
         let playSound = apis.localStorage.getLocalStorage('BurnerSounds') === 'true'
         this.setState({
             playSound : playSound
@@ -108,69 +155,12 @@ export default class CDBurner extends Component {
         this.updateInterval = setInterval(this.refreshTableData, 2000)
     }
 
-    componentWillUnmount(){
+    componentWillUnmount = () => {
         clearInterval(this.updateInterval)
     }
 
-
-    columns = [
-        {
-            dataField: 'cdJobID', 
-            hidden: true
-        },
-        {
-            dataField : 'timeStamp',
-            sort : true,
-            hidden : true
-        },
-        {
-            dataField : 'patientName',
-            text : 'Patient Name'
-        },
-        {
-            dataField : 'patientID',
-            text : 'Patient ID'
-        },
-        {
-            dataField : 'patientDOB',
-            text : 'Patient Birth Date'
-        },
-        {
-            dataField : 'studyDate',
-            text : 'Study Date'
-        },
-        {
-            dataField : 'studyDescription',
-            text : 'Study Description'
-        },
-        {
-            dataField : 'status',
-            text : 'CD Status'
-        },
-        {
-            dataField : 'cancelButton',
-            text : 'Cancel',
-            formatter : this.cancelCDButton
-        }
-    ]
-
-    cancelCDButton(cell, row, rowIndex, formatExtraData){
-        let disable = (row.status === CDBurner.JOB_STATUS_BURNING_DONE || row.status === CDBurner.JOB_STATUS_BURNING_ERROR)
+    render = () => {
         return (
-            <div className="text-center">
-                <input type="button" className='btn btn-danger' onClick = {() => apis.cdBurner.cancelCdBurner(row.cdJobID)} value = "Cancel" disabled = {disable} />
-            </div>
-        )
-    }
-
-    defaultSorted = {
-        dataField: 'timeStamp', // if dataField is not match to any column you defined, it will be ignored.
-        order: 'desc' // desc or asc
-    };
-
-    render(){
-        return (
-            
             <div className='jumbotron'>
                 <div className = "row mb-3">
                     <div className = "col-10">
@@ -204,8 +194,6 @@ export default class CDBurner extends Component {
             </div>
         )
     }
-
-    
 
 }
 

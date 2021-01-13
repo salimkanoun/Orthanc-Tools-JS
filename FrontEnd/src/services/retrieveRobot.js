@@ -18,7 +18,8 @@ const retrieveRobot = {
 
         return fetch('/api/robot/'+username+'/retrieve', createRobotOption ).then((answer) => {
             if (!answer.ok) { 
-                throw answer.status + ' : ' + answer.text() }
+                throw new Error(answer.status + ' : ' + answer.statusText) 
+            }
             return (answer.json())
         }).then(() => toastifySuccess('Sent To Retrieve Robot'))
         .catch((error) => {
