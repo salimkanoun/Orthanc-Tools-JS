@@ -6,7 +6,7 @@ import Dropzone from 'react-dropzone'
  * Form to declare or modify an Ssh Keys
  */
 export default class SshKeyForm extends Component {
-    
+
     state = {
         file: null
     }
@@ -19,7 +19,7 @@ export default class SshKeyForm extends Component {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
-        
+
         this.setState({
             [name]: value
         })
@@ -29,11 +29,11 @@ export default class SshKeyForm extends Component {
     /**
      * Listener on form submission
      */
-    handleClick = async() => {
+    handleClick = async () => {
 
         let postData = {
-            label : this.state.label,
-            pass : this.state.pass
+            label: this.state.label,
+            pass: this.state.pass
         }
 
         let response = await apis.sshKeys.createKey(postData)
@@ -45,7 +45,7 @@ export default class SshKeyForm extends Component {
 
     setFile = (file) => {
         this.setState({
-            file:file[0]
+            file: file[0]
         })
     }
 
@@ -54,14 +54,14 @@ export default class SshKeyForm extends Component {
             <Fragment>
                 <h3 className="card-title">Add Ssh Private Key</h3>
                 <Dropzone onDrop={acceptedFile => this.setFile(acceptedFile)} >
-                        {({ getRootProps, getInputProps }) => (
-                            <section>
-                                <div className={this.state.inProgress ? "dropzone dz-parsing":"dropzone"} {...getRootProps()} >
-                                    <input {...getInputProps()} />
-                                    <p>{!!this.state.file ? this.state.file.name : "Drop Private Key"}</p>
-                                </div>
-                            </section>
-                        )}
+                    {({ getRootProps, getInputProps }) => (
+                        <section>
+                            <div className={this.state.inProgress ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
+                                <input {...getInputProps()} />
+                                <p>{!!this.state.file ? this.state.file.name : "Drop Private Key"}</p>
+                            </div>
+                        </section>
+                    )}
                 </Dropzone>
                 <div className="form-group">
                     <label htmlFor="label">Label : </label>
@@ -70,7 +70,7 @@ export default class SshKeyForm extends Component {
                     <input type='text' name="pass" className="form-control" onChange={this.handleChange} />
                 </div>
                 <div className="text-right mb-5">
-                    <input disabled={!this.state.file||!this.state.label}  type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
+                    <input disabled={!this.state.file || !this.state.label} type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
                 </div>
             </Fragment>
         )

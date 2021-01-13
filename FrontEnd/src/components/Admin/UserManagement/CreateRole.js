@@ -7,19 +7,19 @@ import apis from '../../../services/apis'
 
 
 export default class CreateRole extends Component {
-    state = { 
-        show: false, 
+    state = {
+        show: false,
         name: ''
     }
 
     create = async (formState) => {
-        if (this.state.name === ''){
+        if (this.state.name === '') {
             toastifyError('Role name can\'t be empty')
         } else {
-            let permission = {...formState, name: this.state.name}
-            apis.role.createRole(permission).then(()=>{
+            let permission = { ...formState, name: this.state.name }
+            apis.role.createRole(permission).then(() => {
                 this.setState({
-                    show: false, 
+                    show: false,
                     name: ''
                 })
                 this.props.onSubmitRole()
@@ -30,19 +30,18 @@ export default class CreateRole extends Component {
     render = () => {
         return (
             <Fragment>
-                <button type='button' className='btn btn-primary mb-3 float-right' onClick={() => this.setState({show: true})} >New Role</button>
-                <Modal id='create' show={this.state.show} onHide={() => this.setState({show: false})}>
+                <button type='button' className='btn btn-primary mb-3 float-right' onClick={() => this.setState({ show: true })} >New Role</button>
+                <Modal id='create' show={this.state.show} onHide={() => this.setState({ show: false })}>
                     <Modal.Header closeButton>
                         <h2 className='card-title'>Create new role</h2>
                     </Modal.Header>
-                    <Modal.Body>   
+                    <Modal.Body>
                         <label>Name*</label>
-                        <input className='form-control mb-4' type='text' placeholder='name' name='name' value={this.state.name} onChange={(e) => this.setState({name: e.target.value})} required />
-                        <RoleForm onSubmitRole = {this.create} />
+                        <input className='form-control mb-4' type='text' placeholder='name' name='name' value={this.state.name} onChange={(e) => this.setState({ name: e.target.value })} required />
+                        <RoleForm onSubmitRole={this.create} />
                     </Modal.Body>
                 </Modal>
             </Fragment>
-            
         );
     }
 }

@@ -9,37 +9,37 @@ export default class Aets extends Component {
 
     columns = [{
         dataField: 'name',
-        text : 'Name'
+        text: 'Name'
     }, {
         dataField: 'AET',
-        text : 'AET'
+        text: 'AET'
     }, {
         dataField: 'Host',
-        text : 'Host'
+        text: 'Host'
     }, {
         dataField: 'Port',
-        text : 'Port'
-    },{
-        dataField : 'Manufacturer',
-        text : 'Manufacturer'
+        text: 'Port'
     }, {
-        dataField : 'echo',
-        text : 'Echo AET',
-        formatter : (cell, row, rowIndex) => {
+        dataField: 'Manufacturer',
+        text: 'Manufacturer'
+    }, {
+        dataField: 'echo',
+        text: 'Echo AET',
+        formatter: (cell, row, rowIndex) => {
             return (<div className="text-center">
-                <input type="button" className='btn btn-info' onClick = {() => apis.aets.echoAet(row.name)} value = "Echo" />
+                <input type="button" className='btn btn-info' onClick={() => apis.aets.echoAet(row.name)} value="Echo" />
             </div>)
         }
     }, {
-        dataField : 'remove',
-        text : 'Remove AET',
-        formatter : (cell, row, rowIndex, parentComponent) => {
+        dataField: 'remove',
+        text: 'Remove AET',
+        formatter: (cell, row, rowIndex, parentComponent) => {
             return (
-            <div className="text-center">
-                <input type="button" className='btn btn-danger' onClick = {async () => {await apis.aets.deleteAet(row.name); parentComponent.props.refreshAetData()}} value = "Remove" />
-            </div>)
+                <div className="text-center">
+                    <input type="button" className='btn btn-danger' onClick={async () => { await apis.aets.deleteAet(row.name); parentComponent.props.refreshAetData() }} value="Remove" />
+                </div>)
         },
-        formatExtraData : this
+        formatExtraData: this
     }];
 
     /**
@@ -52,7 +52,7 @@ export default class Aets extends Component {
 
         for (const aetName in aetsAnswer) {
             rows.push({
-                name : aetName,
+                name: aetName,
                 ...aetsAnswer[aetName]
             })
 

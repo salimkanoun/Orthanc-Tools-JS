@@ -6,18 +6,18 @@ import apis from '../../../services/apis'
  * Form to declare or modify an Ssh Keys
  */
 export default class EndpointForm extends Component {
-    
+
     state = {
-        keys:[]
+        keys: []
     }
 
     protocols = [
-        { value: 'sftp', label: 'Sftp'},
-        { value: 'ftp', label: 'Ftps/Ftp'},
-        { value: 'webdav', label: 'Webdav'}
+        { value: 'sftp', label: 'Sftp' },
+        { value: 'ftp', label: 'Ftps/Ftp' },
+        { value: 'webdav', label: 'Webdav' }
     ]
 
-    componentDidMount  = () => {
+    componentDidMount = () => {
         this.loadKeys()
     }
 
@@ -25,13 +25,13 @@ export default class EndpointForm extends Component {
         let sshKeys = []
         let response = await apis.sshKeys.getKeysExpend()
         response.forEach(key => {
-            sshKeys.push({value:key.id, label:key.label})
+            sshKeys.push({ value: key.id, label: key.label })
         });
-        this.setState({keys:sshKeys})
+        this.setState({ keys: sshKeys })
     }
 
     handleSelectChange = (name) => {
-        return ( (value)=> {
+        return ((value) => {
             this.setState({
                 [name]: value.value
             })
@@ -46,7 +46,7 @@ export default class EndpointForm extends Component {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
-        
+
         this.setState({
             [name]: value
         })
@@ -58,7 +58,7 @@ export default class EndpointForm extends Component {
      */
     handleClick = async () => {
         let postData = {}
-        
+
         postData.protocol = this.state.protocol
         postData.label = this.state.label
         postData.host = this.state.host
@@ -66,14 +66,14 @@ export default class EndpointForm extends Component {
         postData.username = this.state.username
         postData.password = this.state.password || null
         postData.targetFolder = this.state.targetFolder || ''
-        if(this.state.protocol==='sftp'&&this.state.ssh){
+        if (this.state.protocol === 'sftp' && this.state.ssh) {
             postData.sshKey = this.state.sshKey
-        }else if(this.state.protocol==='ftp'){
+        } else if (this.state.protocol === 'ftp') {
             postData.ssl = this.state.ssl || false
-        }else if(this.state.protocol==='webdav'){
+        } else if (this.state.protocol === 'webdav') {
             postData.digest = this.state.digest || false
         }
-        
+
         await apis.endpoints.createEndpoint(postData)
 
         this.props.refreshEndpointsData()
@@ -86,8 +86,8 @@ export default class EndpointForm extends Component {
         ready = ready && (this.state.host)
         ready = ready && (this.state.port)
         ready = ready && (this.state.username)
-        ready = ready && (this.state.sshKey || !(this.state.protocol==='sftp'&&this.state.ssh))
-        
+        ready = ready && (this.state.sshKey || !(this.state.protocol === 'sftp' && this.state.ssh))
+
         return ready
     }
 
@@ -97,7 +97,7 @@ export default class EndpointForm extends Component {
                 <h2 className="card-title">Add Export Endpoint</h2>
                 <div className="form-group grid-form-group">
                     <label htmlFor="protocol">Protocol </label>
-                    <Select classNamePrefix="select" name="protocol" single options={this.protocols} onChange={this.handleSelectChange('protocol')} value={this.protocols[this.state.protocol]}/>
+                    <Select classNamePrefix="select" name="protocol" single options={this.protocols} onChange={this.handleSelectChange('protocol')} value={this.protocols[this.state.protocol]} />
                     <label htmlFor="label">Label : </label>
                     <input type='text' name="label" className="form-control" onChange={this.handleChange} />
                     <label htmlFor="host">Host : </label>
@@ -107,35 +107,35 @@ export default class EndpointForm extends Component {
                     <label htmlFor="username">Username : </label>
                     <input type='text' name="username" className="form-control" onChange={this.handleChange} />
                     {
-                        this.state.protocol === 'sftp'?
-                        <><label htmlFor="ssh" >Use a private key?</label>
-                        <input type='checkbox' name="ssh" className="form-control" onChange={this.handleChange}/></>:
-                        <></>
+                        this.state.protocol === 'sftp' ?
+                            <><label htmlFor="ssh" >Use a private key?</label>
+                                <input type='checkbox' name="ssh" className="form-control" onChange={this.handleChange} /></> :
+                            <></>
                     }
                     {
-                        this.state.ssh&&this.state.protocol === 'sftp'?
-                        <><label htmlFor="sshKey">Ssh Key : </label>
-                        <Select classNamePrefix="select" name="sshKey" single options={this.state.keys} onChange={this.handleSelectChange('sshKey')} value={this.state.keys[this.state.sshKey]}/></>:
-                        <><label htmlFor="password">Password : </label>
-                        <input type='password' name="password" className="form-control" onChange={this.handleChange} /></>
+                        this.state.ssh && this.state.protocol === 'sftp' ?
+                            <><label htmlFor="sshKey">Ssh Key : </label>
+                                <Select classNamePrefix="select" name="sshKey" single options={this.state.keys} onChange={this.handleSelectChange('sshKey')} value={this.state.keys[this.state.sshKey]} /></> :
+                            <><label htmlFor="password">Password : </label>
+                                <input type='password' name="password" className="form-control" onChange={this.handleChange} /></>
                     }
                     <label htmlFor="targetFolder">Destination Folder : </label>
                     <input type='text' name="targetFolder" className="form-control" onChange={this.handleChange} />
                     {
-                        this.state.protocol === 'ftp'?
-                        <><label htmlFor="ssl">Use ssl?</label>
-                        <input type='checkbox' name="ssl" className="form-control" onChange={this.handleChange} /></>:
-                        <></>
+                        this.state.protocol === 'ftp' ?
+                            <><label htmlFor="ssl">Use ssl?</label>
+                                <input type='checkbox' name="ssl" className="form-control" onChange={this.handleChange} /></> :
+                            <></>
                     }
                     {
-                        this.state.protocol === 'webdav'?
-                        <><label htmlFor="digest">Use digest?</label>
-                        <input type='checkbox' name="digest" className="form-control" onChange={this.handleChange} /></>:
-                        <></>
+                        this.state.protocol === 'webdav' ?
+                            <><label htmlFor="digest">Use digest?</label>
+                                <input type='checkbox' name="digest" className="form-control" onChange={this.handleChange} /></> :
+                            <></>
                     }
                 </div>
                 <div className="text-right mb-5">
-                    <input disabled={!this.readyToSummit()}  type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
+                    <input disabled={!this.readyToSummit()} type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
                 </div>
             </Fragment>
         )

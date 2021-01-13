@@ -19,7 +19,7 @@ export default class CertificateForm extends Component {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
-        
+
         this.setState({
             [name]: value
         })
@@ -29,10 +29,10 @@ export default class CertificateForm extends Component {
     /**
      * Listener on form submission
      */
-    handleClick = async() => {
+    handleClick = async () => {
 
         let postData = {
-            label : this.state.label
+            label: this.state.label
         }
 
         let response = await apis.certificates.createCertificate(postData)
@@ -44,7 +44,7 @@ export default class CertificateForm extends Component {
 
     setFile = (file) => {
         this.setState({
-            file:file[0]
+            file: file[0]
         })
     }
 
@@ -56,7 +56,7 @@ export default class CertificateForm extends Component {
                     <Dropzone onDrop={acceptedFile => this.setFile(acceptedFile)} >
                         {({ getRootProps, getInputProps }) => (
                             <section>
-                                <div className={this.state.inProgress ? "dropzone dz-parsing":"dropzone"} {...getRootProps()} >
+                                <div className={this.state.inProgress ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
                                     <input {...getInputProps()} />
                                     <p>{!!this.state.file ? this.state.file.name : "Drop Certificate file"}</p>
                                 </div>
@@ -67,7 +67,7 @@ export default class CertificateForm extends Component {
                     <input type='text' name="label" className="form-control" onChange={this.handleChange} />
                 </div>
                 <div className="text-right mb-5">
-                    <input disabled={!this.state.file||!this.state.label}  type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
+                    <input disabled={!this.state.file || !this.state.label} type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
                 </div>
             </Fragment>
         )

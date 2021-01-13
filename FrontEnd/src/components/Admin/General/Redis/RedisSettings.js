@@ -4,15 +4,15 @@ export default class RedisSettings extends Component {
 
     /** Init State */
     state = {
-        redisAddress : 'localhost',
-        resdisPort : 6379
+        redisAddress: 'localhost',
+        resdisPort: 6379
     }
 
     /**
      * Fetch value from BackEnd
      */
     componentDidMount = async () => {
-       //TO DO GET INFOS FROM BACKEND
+        //TO DO GET INFOS FROM BACKEND
     }
 
     render = () => {

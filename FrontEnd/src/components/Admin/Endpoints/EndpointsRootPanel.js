@@ -7,7 +7,7 @@ import EndpointForm from './EndpointForm'
 import SecurityRootPanel from './Security/SecurityRootPanel'
 
 export default () => {
-    
+
     const [endpoints, setEndpoints] = useState({
         ftp: [],
         sftp: [],
@@ -41,7 +41,7 @@ export default () => {
                 component = <EndpointForm refreshEndpointsData={refreshEndpoints} />
                 break
             case 'security':
-                component = <SecurityRootPanel/>
+                component = <SecurityRootPanel />
                 break
             default:
                 break

@@ -3,22 +3,22 @@ import BootstrapTable from "react-bootstrap-table-next";
 import React, { Component, Fragment } from "react";
 import apis from '../../../../services/apis';
 
-export default class Certificates extends Component{
+export default class Certificates extends Component {
 
     columns = [{
         dataField: 'label',
-        text : 'Label'
+        text: 'Label'
     },
     {
-        dataField : 'delete',
-        text : 'Delete certificate',
-        formatter : (cell, row, rowIndex, parentComponent) => {
+        dataField: 'delete',
+        text: 'Delete certificate',
+        formatter: (cell, row, rowIndex, parentComponent) => {
             return (
-            <div className="text-center">
-                <input type="button" className='btn btn-danger' onClick = {async () => {await apis.certificates.deleteCertificate(row.id); parentComponent.props.refreshCertificatesData()}} value = "Remove" />
-            </div>)
+                <div className="text-center">
+                    <input type="button" className='btn btn-danger' onClick={async () => { await apis.certificates.deleteCertificate(row.id); parentComponent.props.refreshCertificatesData() }} value="Remove" />
+                </div>)
         },
-        formatExtraData : this
+        formatExtraData: this
     }];
 
     render() {

@@ -8,35 +8,35 @@ import ModalDetails from './ModalDetails'
 
 export default class JobsRootPanel extends Component {
 
-    state = { 
-        rows: [], 
-        showDetail: false, 
+    state = {
+        rows: [],
+        showDetail: false,
         currentRowIndex: ''
     }
-    
+
     column = [
         {
-            dataField: 'ID', 
-            text: 'ID', 
+            dataField: 'ID',
+            text: 'ID',
             sort: true
         }, {
             dataField: 'Progress',
-            text: 'Progress', 
+            text: 'Progress',
             sort: true
         }, {
             dataField: 'State',
-            text: 'State', 
+            text: 'State',
             sort: true
         }, {
-            dataField: 'Details', 
-            text: 'Details', 
-            formatter: ( (value, row, index) => {
-                return <button className='btn btn-info' type='button' onClick={() => this.setState({showDetail: true, currentRowIndex: index})}>Details</button>
+            dataField: 'Details',
+            text: 'Details',
+            formatter: ((value, row, index) => {
+                return <button className='btn btn-info' type='button' onClick={() => this.setState({ showDetail: true, currentRowIndex: index })}>Details</button>
             })
         }, {
-            dataField: 'Actions', 
-            text: 'Actions', 
-            formatter: ( (value, row, index) => {
+            dataField: 'Actions',
+            text: 'Actions',
+            formatter: ((value, row, index) => {
                 return this.dropDown(row.ID)
             })
         }
@@ -52,7 +52,7 @@ export default class JobsRootPanel extends Component {
     }
 
     startRefreshMonitoring = () => {
-        this.intervalChcker = setInterval(() => {this.getJobs()}, 2000)
+        this.intervalChcker = setInterval(() => { this.getJobs() }, 2000)
     }
 
     stopRefreshMonitoring = () => {
@@ -62,14 +62,14 @@ export default class JobsRootPanel extends Component {
     getJobs = async () => {
         let jobsDetails = await apis.jobs.getJobs()
 
-        let rows=[]
+        let rows = []
         jobsDetails.forEach(jobDetails => {
             rows.push({
                 ...jobDetails
             })
         })
 
-        this.setState({rows: rows})
+        this.setState({ rows: rows })
     }
 
     dropDown = (id) => {
@@ -79,10 +79,10 @@ export default class JobsRootPanel extends Component {
                     Actions
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    <button className='dropdown-item bg-danger' onClick={async () => {await apis.jobs.cancelJob(id); this.getJobs()}}>Cancel</button> 
-                    <button className='dropdown-item bg-warning' onClick={async () => {await apis.jobs.pauseJob(id); this.getJobs()}}>Pause</button>
-                    <button className='dropdown-item bg-primary' onClick={async () => {await apis.jobs.resumbitJob(id); this.getJobs()}}>Resumbit</button>
-                    <button className='dropdown-item bg-info' onClick={async () => {await apis.jobs.resumeJob(id); this.getJobs()}}>Resume</button>
+                    <button className='dropdown-item bg-danger' onClick={async () => { await apis.jobs.cancelJob(id); this.getJobs() }}>Cancel</button>
+                    <button className='dropdown-item bg-warning' onClick={async () => { await apis.jobs.pauseJob(id); this.getJobs() }}>Pause</button>
+                    <button className='dropdown-item bg-primary' onClick={async () => { await apis.jobs.resumbitJob(id); this.getJobs() }}>Resumbit</button>
+                    <button className='dropdown-item bg-info' onClick={async () => { await apis.jobs.resumeJob(id); this.getJobs() }}>Resume</button>
                 </Dropdown.Menu>
             </Dropdown>
         )
@@ -92,12 +92,12 @@ export default class JobsRootPanel extends Component {
         return (
             <Fragment>
                 <h2 className="card-title">Jobs</h2>
-                <ModalDetails show={this.state.showDetail} onHide={() => this.setState({showDetail: false})} data={[this.state.rows[this.state.currentRowIndex]]} />
-                <BootstrapTable 
-                    keyField='ID' 
-                    striped={true} 
-                    data={this.state.rows} 
-                    columns={this.column} 
+                <ModalDetails show={this.state.showDetail} onHide={() => this.setState({ showDetail: false })} data={[this.state.rows[this.state.currentRowIndex]]} />
+                <BootstrapTable
+                    keyField='ID'
+                    striped={true}
+                    data={this.state.rows}
+                    columns={this.column}
                     pagination={paginationFactory()}
                     wrapperClasses='table-responsive'
                 />

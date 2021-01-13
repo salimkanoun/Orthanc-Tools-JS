@@ -14,7 +14,7 @@ import GeneralRoot from './General/GeneralRoot'
  * Using React Hooks
  */
 
-const AdminPanel = () => {
+export default () => {
 
   const [selectedOptionMenu, setSelectedOptionMenu] = useState('General')
 
@@ -71,5 +71,3 @@ const AdminPanel = () => {
     </div>
   )
 }
-
-export default AdminPanel

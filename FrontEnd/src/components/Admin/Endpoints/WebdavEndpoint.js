@@ -3,39 +3,39 @@ import BootstrapTable from "react-bootstrap-table-next";
 import React, { Component, Fragment } from "react";
 import apis from '../../../services/apis';
 
-export default class WebdavEndpoints extends Component{
+export default class WebdavEndpoints extends Component {
 
     columns = [{
         dataField: 'label',
-        text : 'Label'
+        text: 'Label'
     },
     {
         dataField: 'host',
-        text : 'Host'
+        text: 'Host'
     },
     {
         dataField: 'username',
-        text : 'Username'
+        text: 'Username'
     },
     {
         dataField: 'targetFolder',
-        text : 'Target Folder'
+        text: 'Target Folder'
     },
     {
         dataField: 'digest',
-        text : 'Use Digest?',
-        formatter : (cell, row, rowIndex, parentComponent)=><p>{(row.digest?'✓':'✖')}</p>
+        text: 'Use Digest?',
+        formatter: (cell, row, rowIndex, parentComponent) => <p>{(row.digest ? '✓' : '✖')}</p>
     },
     {
-        dataField : 'delete',
-        text : 'Delete endpoint',
-        formatter : (cell, row, rowIndex, parentComponent) => {
+        dataField: 'delete',
+        text: 'Delete endpoint',
+        formatter: (cell, row, rowIndex, parentComponent) => {
             return (
-            <div className="text-center">
-                <input type="button" className='btn btn-danger' onClick = {async () => {await apis.endpoints.deleteEndpoints(row.id); parentComponent.props.refreshEndpointsData()}} value = "Remove" />
-            </div>)
+                <div className="text-center">
+                    <input type="button" className='btn btn-danger' onClick={async () => { await apis.endpoints.deleteEndpoints(row.id); parentComponent.props.refreshEndpointsData() }} value="Remove" />
+                </div>)
         },
-        formatExtraData : this
+        formatExtraData: this
     }];
 
     render = () => {

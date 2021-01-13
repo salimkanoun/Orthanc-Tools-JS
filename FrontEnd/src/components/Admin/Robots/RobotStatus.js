@@ -30,16 +30,16 @@ export default class RobotStatus extends Component {
         text: 'Validation Status',
         formatExtraData: this,
         formatter: (cell, row, rowIndex, parentComponent) => {
-                if (row.validation !== 'Waiting Approbation') {
-                    return <div className="text-center">{row.validation}</div>
-                } else {
-                    return (
-                        <div className="text-center">
-                            <input type="button" className='btn btn-success' onClick={() => parentComponent.validationRobotHandler(row.username, parentComponent.refreshHandler)} value="Validate" />
-                        </div>
-                    )
-                }
+            if (row.validation !== 'Waiting Approbation') {
+                return <div className="text-center">{row.validation}</div>
+            } else {
+                return (
+                    <div className="text-center">
+                        <input type="button" className='btn btn-success' onClick={() => parentComponent.validationRobotHandler(row.username, parentComponent.refreshHandler)} value="Validate" />
+                    </div>
+                )
             }
+        }
     }, {
         dataField: 'remove',
         text: 'Remove Robot',
@@ -85,9 +85,9 @@ export default class RobotStatus extends Component {
 
     refreshHandler = () => {
         apis.retrieveRobot.getAllRobotsDetails().then((answerData) => {
-            
+
             let rows = []
-            
+
             answerData.forEach(robotJob => {
                 rows.push({
                     key: Math.random(),

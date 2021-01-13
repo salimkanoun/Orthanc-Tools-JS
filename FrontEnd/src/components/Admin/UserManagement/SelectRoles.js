@@ -6,15 +6,15 @@ import apis from '../../../services/apis'
 export default class SelectRoles extends Component {
 
     state = {
-        optionRoles : {}
+        optionRoles: {}
     }
 
     componentDidMount = async () => {
         let roles = await apis.role.getRoles()
-        let options =  []
+        let options = []
         roles.forEach((role) => {
             options.push({
-                value: role.name, 
+                value: role.name,
                 label: role.name
             })
         })
@@ -29,5 +29,5 @@ export default class SelectRoles extends Component {
             <Select single options={this.state.optionRoles} onChange={this.props.onChange} />
         )
     }
-    
+
 }

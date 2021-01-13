@@ -13,8 +13,8 @@ export default class Plugins extends Component {
         apis.options.getPlugins().then(plugins => {
             let answer = []
             plugins.forEach(element => answer.push(<li key={element}>{element}</li>))
-            this.setState({plugins: answer})
-        }).catch((error) => {toastifyError(error.statusText)})
+            this.setState({ plugins: answer })
+        }).catch((error) => { toastifyError(error.statusText) })
     }
 
     render = () => {

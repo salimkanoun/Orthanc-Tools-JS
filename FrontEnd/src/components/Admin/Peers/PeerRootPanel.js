@@ -6,7 +6,7 @@ import apis from '../../../services/apis'
 /**
  * Root Panel of Peers options
  */
-const PeerRootPanel = () => {
+export default () => {
   const [peer, setPeers] = useState([])
 
   /**
@@ -33,5 +33,3 @@ const PeerRootPanel = () => {
     </Fragment>
   )
 }
-
-export default PeerRootPanel

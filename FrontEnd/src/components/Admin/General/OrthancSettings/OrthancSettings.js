@@ -9,23 +9,23 @@ export default class OrthancSettings extends Component {
 
     /** Init State */
     state = {
-        OrthancAddress : '',
-        OrthancPort : 0,
-        OrthancUsername : '',
-        OrthancPassword : '', 
-        showRestart: false, 
+        OrthancAddress: '',
+        OrthancPort: 0,
+        OrthancUsername: '',
+        OrthancPassword: '',
+        showRestart: false,
         showShutdown: false
     }
 
     /**
      * Fetch value from BackEnd
      */
-    componentDidMount = async() => {
+    componentDidMount = async () => {
         let answer = await apis.options.getOrthancServer()
         let verbosity = await apis.options.getVerbosity()
-        this.setState({verbosity : verbosity, ...answer})
+        this.setState({ verbosity: verbosity, ...answer })
         this.getDefaultOption()
-        
+
     }
 
     /**
@@ -36,25 +36,25 @@ export default class OrthancSettings extends Component {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
-        
+
         this.setState({
             [name]: value
         })
-        
+
     }
 
     /**
      * Send new value to BackEnd
      */
     submitOrthancSettings = async () => {
-        apis.options.setOrthancServer(this.state.OrthancAddress, this.state.OrthancPort, 
+        apis.options.setOrthancServer(this.state.OrthancAddress, this.state.OrthancPort,
             this.state.OrthancUsername, this.state.OrthancPassword)
     }
 
     /**
      * Try to connect to Orthanc System API, response is shown in an toastify
      */
-    testConnexion  = () => {
+    testConnexion = () => {
         apis.options.getOrthancSystem()
     }
 
@@ -70,13 +70,13 @@ export default class OrthancSettings extends Component {
 
     changeListener = (event) => {
         apis.options.setVerbosity(event.value)
-        this.setState({optionSelected: event})
+        this.setState({ optionSelected: event })
     }
 
     verbosities = [
-        { value: 'default', label: 'Default'},
-        { value: 'verbose', label: 'Verbose'},
-        { value: 'trace', label: 'Trace'}
+        { value: 'default', label: 'Default' },
+        { value: 'verbose', label: 'Verbose' },
+        { value: 'trace', label: 'Trace' }
     ]
 
     getDefaultOption = () => {
@@ -86,7 +86,7 @@ export default class OrthancSettings extends Component {
                 index = this.verbosities.indexOf(element)
             }
         })
-        this.setState({optionSelected: this.verbosities[index] })
+        this.setState({ optionSelected: this.verbosities[index] })
     }
 
     render = () => {
@@ -106,17 +106,17 @@ export default class OrthancSettings extends Component {
                 <div className="form-group text-right">
                     <input type='button' className='btn btn-primary mr-1' onClick={this.submitOrthancSettings} value='Update' />
                     <input type='button' className='btn btn-info mr-1' onClick={this.testConnexion} value='Check Connexion' />
-                    <input type='button' className='btn btn-warning mr-1' onClick={() => this.setState({showRestart: true})} value='Restart' />
-                    <ModalRestart show={this.state.showRestart} onHide={() => this.setState({showRestart: false})} />
-                    <input type='button' className='btn btn-danger mr-1' onClick={() => this.setState({showShutdown: true})} value='Shutdown' />
-                    <ModalShutdown show={this.state.showShutdown} onHide={() => this.setState({showShutdown: false})} />
+                    <input type='button' className='btn btn-warning mr-1' onClick={() => this.setState({ showRestart: true })} value='Restart' />
+                    <ModalRestart show={this.state.showRestart} onHide={() => this.setState({ showRestart: false })} />
+                    <input type='button' className='btn btn-danger mr-1' onClick={() => this.setState({ showShutdown: true })} value='Shutdown' />
+                    <ModalShutdown show={this.state.showShutdown} onHide={() => this.setState({ showShutdown: false })} />
                 </div>
                 <div className="row">
                     <div className="col-md-auto">
                         <label htmlFor="verbosity">Verbosity : </label>
                     </div>
                     <div className="col-sm">
-                        <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} value={this.state.optionSelected}/>
+                        <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} value={this.state.optionSelected} />
                     </div>
                 </div>
             </Fragment>

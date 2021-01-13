@@ -102,7 +102,7 @@ export default class BurnerOptions extends Component{
         return filteredArray[0]
     }
 
-    sendForm = async() => {
+    sendForm = async () => {
         await apis.options.setBurnerOptions(this.state)
         await this.refreshData()
     }

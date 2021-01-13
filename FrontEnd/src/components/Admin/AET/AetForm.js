@@ -25,7 +25,7 @@ export default class AetForm extends Component {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
-        
+
         this.setState({
             [name]: value
         })
@@ -38,7 +38,7 @@ export default class AetForm extends Component {
      */
     manufacturerChangeListener = (item) => {
         this.setState({
-          manufacturer : item.value
+            manufacturer: item.value
         })
     }
 
@@ -48,10 +48,10 @@ export default class AetForm extends Component {
     handleClick = async () => {
 
         let postData = {
-            AET : this.state.aetName,
-            Host : this.state.ip,
-            Port : this.state.port,
-            Manufacturer : this.state.manufacturer
+            AET: this.state.aetName,
+            Host: this.state.ip,
+            Port: this.state.port,
+            Manufacturer: this.state.manufacturer
         }
 
         await apis.updateAet(this.state.name, postData)
@@ -74,7 +74,7 @@ export default class AetForm extends Component {
                     <label htmlFor="port">Port : </label>
                     <input type='number' min="0" max="999999" name="port" className="form-control" onChange={this.handleChange} />
                     <label htmlFor="manufacturer">Manufacturer : </label>
-                    <Select className="col-sm" options={this.manufacturers} name="manufacturer" onChange={this.manufacturerChangeListener}/>
+                    <Select className="col-sm" options={this.manufacturers} name="manufacturer" onChange={this.manufacturerChangeListener} />
                 </div>
                 <div className="text-right mb-5">
                     <input type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
