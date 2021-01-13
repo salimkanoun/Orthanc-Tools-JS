@@ -16,7 +16,7 @@ const addAnonTask = async (req, res) => {
     let orthancIds = req.body
     if (AbstractTask.getTaskOfUser(req.params.username, TaskType.ANONYMIZE)) {
         console.error('Task already in progress')
-        res.status(401).send('Task already in progress')
+        res.status(403).send('Task already in progress')
         return;
     }
     let task = new AnonTask(req.params.username, orthancIds)
@@ -33,7 +33,7 @@ const addDeleteTask = async (req, res) => {
     let orthancIds = req.body
     if (AbstractTask.getTaskOfUser(req.params.username, TaskType.DELETE)) {
         console.error('Task already in progress')
-        res.status(401).send('Task already in progress')
+        res.status(403).send('Task already in progress')
         return;
     }
     let task = new DeleteTask(req.params.username, orthancIds)
@@ -50,7 +50,7 @@ const addRetrieveTask = async (req, res) => {
     let answers = req.body.retrieveArray
     if (AbstractTask.getTaskOfUser(req.params.username, TaskType.RETRIEVE)) {
         console.error('Task already in progress')
-        res.status(401).send('Task already in progress')
+        res.status(403).send('Task already in progress')
         return;
     }
     let task = new RetrieveTask(req.params.username, req.body.projectName, answers)

@@ -7,7 +7,7 @@ var Roles = require('../model/Roles')
             res.json(true)
         } catch (error) {
             console.error(error)
-            res.status(401).send('Fail')
+            res.status(500).send('Fail')
         }
     }
 
@@ -18,7 +18,7 @@ var Roles = require('../model/Roles')
             res.json(true)
         } catch (error) {
             console.error(error)
-            res.status(401).send('Fail to modify role')
+            res.status(500).send('Fail to modify role')
         }
     }
 
@@ -29,7 +29,7 @@ var Roles = require('../model/Roles')
             res.json(true)
         } catch (error) {
             console.error(error)
-            res.status(401).send('Fail to delete')
+            res.status(500).send('Fail to delete')
         }
     }
 
@@ -49,7 +49,7 @@ var Roles = require('../model/Roles')
             res.json(permission)
         } catch (error) {
             console.error(error)
-            res.status(401).send('Fail to get Permission')
+            res.status(500).send('Fail to get Permission')
         }
     }
 

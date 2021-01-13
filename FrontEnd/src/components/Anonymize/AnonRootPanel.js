@@ -11,7 +11,7 @@ class AnonRootPanel extends Component {
     state = {
         progress: false
     }
-    
+
     setTask = (task) => {
         this.setState({
             task: task
@@ -26,27 +26,27 @@ class AnonRootPanel extends Component {
                         <div className='jumbotron' >
                             <h2 className='card-title mb-3'>Anonymize in progress</h2>
                             <AnonymizePanelProgress setTask={this.setTask} task={this.state.task} />
-                        </div> 
-                    :
+                        </div>
+                        :
                         null
                 }
-                
+
                 <div className='jumbotron' hidden={this.state.progress}>
                     <h2 className='card-title mb-3'>Anonymize</h2>
-                    <AnonymizePanel setTask={this.setTask}/>
+                    <AnonymizePanel setTask={this.setTask} />
                 </div>
                 <div className='jumbotron' hidden={this.props.anonymizedList && this.props.anonymizedList.length === 0}>
                     <AnonymizedResults />
                 </div>
             </div>
-            
+
         )
     }
 }
 
 const mapStateToProps = state => {
     return {
-        anonList: state.AnonList.anonList, 
+        anonList: state.AnonList.anonList,
         anonymizedList: state.AnonList.anonymizedList
     }
 }

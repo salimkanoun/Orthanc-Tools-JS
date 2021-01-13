@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import TableResultsStudiesSeries from './TableResultsStudiesSeries'
 import TableResultStudy from './TableResultStudy'
 
-import CreateRobot from '../Component/CreateRobot'
-
+import CreateRobot from './CreateRobot'
 
 class Results extends Component {
 
@@ -13,29 +12,23 @@ class Results extends Component {
         seriesView: false
     }
 
-    constructor(props) {
-        super(props)
-        this.filterSeriesListener = this.filterSeriesListener.bind(this)
-        this.buildArrayRetrieve = this.buildArrayRetrieve.bind(this)
-    }
-
-    filterSeriesListener() {
+    filterSeriesListener = () => {
         this.setState(state => {
             return { seriesView: !state.seriesView }
         })
     }
 
-    buildArrayRetrieve() {
+    buildArrayRetrieve = () => {
 
         let retrieveArray = []
-        
+
         //If series details have been loaded robot will be defined at series level
-        if (Object.keys(this.props.resultsSeries).length > 0 ) {
-            let seriesUIDArray =[]
+        if (Object.keys(this.props.resultsSeries).length > 0) {
+            let seriesUIDArray = []
             //If exist filtered item send them, if no filtered item all series items are sent
-            if(this.props.seriesFiltered.length > 0){
+            if (this.props.seriesFiltered.length > 0) {
                 seriesUIDArray = this.props.seriesFiltered
-            }else{
+            } else {
                 seriesUIDArray = Object.keys(this.props.resultsSeries)
             }
             for (let seriesUID of seriesUIDArray) {
@@ -45,13 +38,13 @@ class Results extends Component {
                     ...seriesObject
                 })
             }
-        //Else only use the study results
+            //Else only use the study results
         } else {
-            
+
             let studiesUIDArray = []
-            if(this.props.studiesFiltered.length >0){
+            if (this.props.studiesFiltered.length > 0) {
                 studiesUIDArray = this.props.studiesFiltered
-            }else{
+            } else {
                 studiesUIDArray = Object.keys(this.props.results)
             }
 
@@ -64,7 +57,7 @@ class Results extends Component {
 
     }
 
-    render() {
+    render = () => {
         return (
             <Fragment>
                 <div >
@@ -91,4 +84,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, null)(Results);
+export default connect(mapStateToProps, null)(Results)

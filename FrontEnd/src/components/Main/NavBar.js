@@ -13,7 +13,7 @@ import { TransitionGroup, CSSTransition } from "react-transition-group";
 
 import Footer from './Footer'
 import Query from '../Query/Components/Query'
-import AutoQueryRoot from '../AutoQuery/Component/AutoQueryRoot'
+import AutoQueryRoot from '../AutoQuery/Connected_Component/AutoQueryRoot'
 import RobotView from '../AutoQuery/Connected_Component/RobotView'
 import AdminRootPanel from '../Admin/AdminRootPanel'
 import Import from '../Import/Import'

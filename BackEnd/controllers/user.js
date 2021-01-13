@@ -7,7 +7,7 @@ var Users = require('../model/Users')
             res.json(true)
         } catch (error) {
             console.error(error)
-            res.status(401).send('Fail to create user')
+            res.status(500).send('Fail to create user')
         }
     }
 
@@ -17,7 +17,7 @@ var Users = require('../model/Users')
             user = await Users.getUsers()
         } catch (error) {
             console.error(error)
-            res.status(401).send('fail to get users')
+            res.status(500).send('fail to get users')
         }
         res.json(user)
     }
@@ -28,7 +28,7 @@ var Users = require('../model/Users')
             await Users.modifyUser(body)
             res.json(true)
         } catch (error) {
-            res.status(401).send('Fail to modify user')
+            res.status(500).send('Fail to modify user')
         }
     }
 
@@ -38,7 +38,7 @@ var Users = require('../model/Users')
             await Users.deleteUser(name)
             res.json(true)
         } catch (error) {
-            res.status(401).send('Fail to user')
+            res.status(500).send('Fail to delete user')
         }
     }
 

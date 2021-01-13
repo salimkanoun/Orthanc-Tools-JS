@@ -17,7 +17,6 @@ import CsvLoader from './CsvLoader'
 import SelectModalities from '../../CommonComponents/SearchForm/SelectModalities';
 
 import apis from '../../../services/apis';
-import AutoQueryRoot from '../Component/AutoQueryRoot';
 
 const { ExportCSVButton } = CSVExport;
 
@@ -251,7 +250,7 @@ class TableQuery extends Component {
 
     }
 
-    this.props.switchTab(AutoQueryRoot.Results)
+    this.props.switchTab('Result')
 
   }
 

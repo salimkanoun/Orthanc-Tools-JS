@@ -12,7 +12,7 @@ var setLdapSettings = async function(req, res) {
     res.json(true)
   } catch(err) {
     console.error(err)
-    res.status(401).send('settings fail')
+    res.status(400).send('settings fail')
   }
 }
 
@@ -39,7 +39,7 @@ var setLdapCorrespodence = async function(req, res) {
 
   } catch (err) {
     console.error(err)
-    res.status(401).send('fail to create match')
+    res.status(500).send('fail to create match')
   }
 }
 
@@ -50,7 +50,7 @@ var deleteCorrespodence = async function(req, res){
     res.json(true)
   } catch (err) {
       console.error(err)
-      res.status(401).send('fait to delete match')
+      res.status(500).send('fait to delete match')
   }
 }
 

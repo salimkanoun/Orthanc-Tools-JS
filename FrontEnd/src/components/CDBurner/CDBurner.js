@@ -16,11 +16,11 @@ export default class CDBurner extends Component {
     audioFailure = new Audio('/sounds/cd_Error.wav')
 
     state = {
-        robotStarted : false,
-        burnerJobs : [],
-        firstRefresh : false,
-        playSound : false,
-        queuededJobs : 0
+        robotStarted: false,
+        burnerJobs: [],
+        firstRefresh: false,
+        playSound: false,
+        queuededJobs: 0
     }
 
     defaultSorted = {
@@ -30,46 +30,46 @@ export default class CDBurner extends Component {
 
     columns = [
         {
-            dataField: 'cdJobID', 
+            dataField: 'cdJobID',
             hidden: true
         },
         {
-            dataField : 'timeStamp',
-            sort : true,
-            hidden : true
+            dataField: 'timeStamp',
+            sort: true,
+            hidden: true
         },
         {
-            dataField : 'patientName',
-            text : 'Patient Name'
+            dataField: 'patientName',
+            text: 'Patient Name'
         },
         {
-            dataField : 'patientID',
-            text : 'Patient ID'
+            dataField: 'patientID',
+            text: 'Patient ID'
         },
         {
-            dataField : 'patientDOB',
-            text : 'Patient Birth Date'
+            dataField: 'patientDOB',
+            text: 'Patient Birth Date'
         },
         {
-            dataField : 'studyDate',
-            text : 'Study Date'
+            dataField: 'studyDate',
+            text: 'Study Date'
         },
         {
-            dataField : 'studyDescription',
-            text : 'Study Description'
+            dataField: 'studyDescription',
+            text: 'Study Description'
         },
         {
-            dataField : 'status',
-            text : 'CD Status'
+            dataField: 'status',
+            text: 'CD Status'
         },
         {
-            dataField : 'cancelButton',
-            text : 'Cancel',
-            formatter : (cell, row, rowIndex) => {
+            dataField: 'cancelButton',
+            text: 'Cancel',
+            formatter: (cell, row, rowIndex) => {
                 let disable = (row.status === CDBurner.JOB_STATUS_BURNING_DONE || row.status === CDBurner.JOB_STATUS_BURNING_ERROR)
                 return (
                     <div className="text-center">
-                        <input type="button" className='btn btn-danger' onClick = {() => apis.cdBurner.cancelCdBurner(row.cdJobID)} value = "Cancel" disabled = {disable} />
+                        <input type="button" className='btn btn-danger' onClick={() => apis.cdBurner.cancelCdBurner(row.cdJobID)} value="Cancel" disabled={disable} />
                     </div>
                 )
             }
@@ -84,72 +84,72 @@ export default class CDBurner extends Component {
         let newTablearray = []
 
         //this.audioFailure.play()
-        Object.keys(jobs).forEach(jobKey =>{
+        Object.keys(jobs).forEach(jobKey => {
 
             //If sounds enabled search for Failure or completion to play sound
-            if(this.state.playSound){
+            if (this.state.playSound) {
 
                 let jobItem = this.state.burnerJobs.filter(job => {
                     return (job.cdJobID === jobKey)
                 })
-    
-                if(jobItem.length ===1 && jobItem[0]['status'] !== jobs[jobKey]['status']){
-                    if(jobs[jobKey]['status'] === CDBurner.JOB_STATUS_BURNING_DONE){
+
+                if (jobItem.length === 1 && jobItem[0]['status'] !== jobs[jobKey]['status']) {
+                    if (jobs[jobKey]['status'] === CDBurner.JOB_STATUS_BURNING_DONE) {
                         this.audioSuccess.play()
-                    }else if(jobs[jobKey]['status'] === CDBurner.JOB_STATUS_BURNING_ERROR){
+                    } else if (jobs[jobKey]['status'] === CDBurner.JOB_STATUS_BURNING_ERROR) {
                         this.audioFailure.play()
                     }
                 }
             }
 
             newTablearray.push({
-                cdJobID : jobKey,
-                status : jobs[jobKey]['status'],
+                cdJobID: jobKey,
+                status: jobs[jobKey]['status'],
                 ...jobs[jobKey]['details']
             })
         })
 
         this.setState({
-            firstRefresh : true,
-            robotStarted : cdBurnerData.CdBurnerService,
-            burnerJobs : newTablearray,
-            queuededJobs : cdBurnerData.QuededJobs
+            firstRefresh: true,
+            robotStarted: cdBurnerData.CdBurnerService,
+            burnerJobs: newTablearray,
+            queuededJobs: cdBurnerData.QuededJobs
         })
 
     }
 
     toogleHandler = async (event) => {
-       
+
         let startStatus = this.state.robotStarted
 
         let newStatus
-        if(!startStatus){
+        if (!startStatus) {
             await apis.cdBurner.startCdBurnerService()
             newStatus = true
-        }else{
+        } else {
             await apis.cdBurner.stopCdBurnerService()
             newStatus = false
         }
 
         this.setState({
-            robotStarted : newStatus
+            robotStarted: newStatus
         })
 
 
     }
 
     soundHandler = (e) => {
-        apis.localStorage.setlocalStorage('BurnerSounds', (e.target.checked).toString() )
+        apis.localStorage.setlocalStorage('BurnerSounds', (e.target.checked).toString())
         this.setState({
-            playSound : (e.target.checked)
+            playSound: (e.target.checked)
         })
-       
+
     }
 
-   componentDidMount = async () => {
+    componentDidMount = async () => {
         let playSound = apis.localStorage.getLocalStorage('BurnerSounds') === 'true'
         this.setState({
-            playSound : playSound
+            playSound: playSound
         })
         await this.refreshTableData()
         this.updateInterval = setInterval(this.refreshTableData, 2000)
@@ -162,35 +162,35 @@ export default class CDBurner extends Component {
     render = () => {
         return (
             <div className='jumbotron'>
-                <div className = "row mb-3">
-                    <div className = "col-10">
-                            <div className = "row">
-                                <div className="col">
-                                    <h2>CD Burner Service</h2>
-                                </div>
-                                <div className="col">
-                                    <Toggle checked={this.state.robotStarted} onChange={this.toogleHandler} disabled = {!this.state.firstRefresh}/> 
-                                </div>
+                <div className="row mb-3">
+                    <div className="col-10">
+                        <div className="row">
+                            <div className="col">
+                                <h2>CD Burner Service</h2>
                             </div>
+                            <div className="col">
+                                <Toggle checked={this.state.robotStarted} onChange={this.toogleHandler} disabled={!this.state.firstRefresh} />
+                            </div>
+                        </div>
                     </div>
-                    <div className = "col-2">
-                        <SpeakerSVG className = "mr-3" style={{height:'30px', width: '30px'}} />
-                        <Toggle checked={this.state.playSound} onChange={this.soundHandler}/> 
-                        
+                    <div className="col-2">
+                        <SpeakerSVG className="mr-3" style={{ height: '30px', width: '30px' }} />
+                        <Toggle checked={this.state.playSound} onChange={this.soundHandler} />
+
                     </div>
                 </div>
                 <div className="mb-3 float-right">
                     <Badge variant="info"> Queuded Jobs : {this.state.queuededJobs} </Badge>
                 </div>
-                <BootstrapTable 
-                        keyField='cdJobID' 
-                        data={this.state.burnerJobs} 
-                        columns={this.columns} 
-                        striped 
-                        sort = {this.defaultSorted}
-                        pagination={paginationFactory()} 
-                        wrapperClasses="table-responsive"
-                        />
+                <BootstrapTable
+                    keyField='cdJobID'
+                    data={this.state.burnerJobs}
+                    columns={this.columns}
+                    striped
+                    sort={this.defaultSorted}
+                    pagination={paginationFactory()}
+                    wrapperClasses="table-responsive"
+                />
             </div>
         )
     }
