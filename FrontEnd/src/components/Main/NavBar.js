@@ -86,7 +86,7 @@ export default class NavBar extends Component {
   render = () => {
     return (
       <div className='app'>
-        <Navbar fixed='top' collapseOnSelect expand='lg' bg={this.state.navBackground} variant='dark' >
+        <Navbar fixed='top' collapseOnSelect expand='lg' bg={ this.state.navbar === 'responsive' ? 'primary' : this.state.navBackground} variant='dark' >
           <Navbar.Toggle aria-controls='responsive_navbar' />
           <Navbar.Collapse id='responsive_navbvar'>
             {this.state.navbar === 'responsive' ? <div className='float-right'><ToolsPanel roles={this.props.token} apercu={false} /></div> : null}
