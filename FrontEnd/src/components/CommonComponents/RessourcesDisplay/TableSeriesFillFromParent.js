@@ -7,12 +7,7 @@ export default class TableSeriesFillFromParent extends Component {
     state = {
         series: []
     }
-
-    constructor(props) {
-        super(props)
-        this.onDelete = this.onDelete.bind(this)
-    }
-
+    
     static defaultProps = {
         onEmptySeries: function () { }
     }
