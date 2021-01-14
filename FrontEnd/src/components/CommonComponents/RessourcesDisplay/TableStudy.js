@@ -125,7 +125,8 @@ export default class TableStudy extends Component {
                 columns={this.columns}
                 exportCSV
             >
-                {props => (<Fragment>
+                {props => (
+                <Fragment>
                     <ExportCSVButton className='btn btn-info float-right mr-3' hidden={this.props.hiddenCSV} {...props.csvProps} >To CSV</ExportCSVButton>
                     <BootstrapTable
                         {...this.props}
@@ -135,7 +136,6 @@ export default class TableStudy extends Component {
                         wrapperClasses="table-responsive"
                     />
                     {this.props.button}
-
                 </Fragment>)}
             </ToolkitProvider>
         )
