@@ -5,7 +5,6 @@ const { getUsers, createUser, modifyUser, deleteUser } = require('../controllers
 
 const { userAdminMidelware } = require('../midelwares/authentication')
 
-/* GET users listing. */
 router.get('/users', userAdminMidelware ,getUsers)
 router.post('/users', userAdminMidelware ,createUser)
 router.put('/users', userAdminMidelware ,modifyUser)

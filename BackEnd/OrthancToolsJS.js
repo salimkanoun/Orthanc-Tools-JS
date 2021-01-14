@@ -16,10 +16,10 @@ var app = express()
 var autoStartMonitoring = require('./model/monitoring/AutoStartMonitoring')
 
 const dotenv = require("dotenv");
-  // get config vars
-  dotenv.config();
-  // access config var
-  process.env.TOKEN_SECRET;
+// get config vars
+dotenv.config();
+// access config var
+process.env.TOKEN_SECRET;
 
 // static routes
 app.use('/', express.static(path.join(__dirname, 'build')))
@@ -34,18 +34,10 @@ app.use('/streamSaver/', express.static(path.join(__dirname, 'build')));
 
 app.use(logger('dev'))
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
-app.use(bodyParser.json({limit: '10mb'}));
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-
-/*
-app.use(session({
-  secret: 'ImageFetcher',
-  resave: true,
-  saveUninitialized: true
-}))
-*/
 
 var unless = function (path, middleware) {
   return function (req, res, next) {
@@ -100,18 +92,18 @@ app.use(function (err, req, res, next) {
 })
 
 const port = 4000
-  
+
 app.listen(port, (error) => {
-        if (error) {
-          console.error(error)
-          return process.exit(1)
-        } else {
-          console.log('Listening on port: ' + port)
-          if (app.get('env') === 'production') {
-            //Autostart monitonring service if needed
-            autoStartMonitoring()
-          }
-        }
-      })
+  if (error) {
+    console.error(error)
+    return process.exit(1)
+  } else {
+    console.log('Listening on port: ' + port)
+    if (app.get('env') === 'production') {
+      //Autostart monitonring service if needed
+      autoStartMonitoring()
+    }
+  }
+})
 
 module.exports = app

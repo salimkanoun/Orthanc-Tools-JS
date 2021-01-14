@@ -9,18 +9,16 @@ const { getParsedAnswer } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission } = require('../controllers/role')
 
-
 const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
 
 const { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames} = require('../controllers/ldap')
 
 // SK Probalement a enlenver ne passer que par le reverse proxy
 const { postRetrieve } = require('../controllers/retrieveDicom')
-const { postExportDicom } = require('../controllers/exportDicom')
 
 const { userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
     exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, isCurrentUserOrAdminMidelWare } = require('../midelwares/authentication')
-const { route } = require('express/lib/router')
+
 const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
 const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
@@ -28,6 +26,7 @@ const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteT
 
 
 //Authentication midelware
+//SK  : A REMPLACER PAR un api authentication
 router.post('/session/*', authentication)
 router.delete('/session', logOut)
 
@@ -91,18 +90,20 @@ router.post('/tools/shutdown', userAdminMidelware, reverseProxyPost)
 router.get('/tools/log-level', userAdminMidelware, reverseProxyGet)
 router.put('/tools/log-level', userAdminMidelware, reverseProxyPutPlainText)
 
+//Orthanc Modify
+router.post('/patients/*/modify', modifyMidelware, reverseProxyPost)
+router.post('/studies/*/modify', modifyMidelware, reverseProxyPost)
+router.post('/series/*/modify', modifyMidelware, reverseProxyPost)
+
 //Orthanc content
 router.post('/tools/find', contentMidelware, reverseProxyPost )
 router.get('/patients/*', contentMidelware, reverseProxyGet)
-router.post('/patients/*/modify', contentMidelware, reverseProxyPost)
 router.get('/studies/*', contentMidelware, reverseProxyGet)
-router.post('/studies/*/modify', contentMidelware, reverseProxyPost)
 router.get('/series/*', contentMidelware, reverseProxyGet)
-router.post('/series/*/modify', contentMidelware, reverseProxyPost)
+router.get('/instances/*', contentMidelware, reverseProxyGet)
 router.delete('/patients/*', contentMidelware, reverseProxyDelete)
 router.delete('/studies/*', contentMidelware, reverseProxyDelete)
 router.delete('/series/*', contentMidelware, reverseProxyDelete)
-router.get('/instances/*', contentMidelware, reverseProxyGet)
 
 //plugins
 router.get('/plugins', userAdminMidelware, reverseProxyGet)
@@ -135,8 +136,6 @@ router.get('/monitoring/burner', getBurner)
 router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
 router.put('/monitoring/burning/options', userAdminMidelware, updateRobotOptions)
 
-
-
 /*
 ** TASKS
 */
@@ -157,6 +156,7 @@ router.post('/robot/:username/delete', deleteMidelware, addDeleteTask)
 router.post('/robot/:user/export', exportExternMidelware, addExportTask)
 
 //Tasks
+//SK : ICI MANQUE LES MIDDELWARE
 router.get('/tasks/:username/:type', getTaskWithUser)
 router.delete('/tasks/:username/:type', deleteTaskOfUser)
 router.delete('/tasks/:username/retrieve/:id', deleteRetrieveItem)
