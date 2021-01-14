@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
 import apis from '../../../services/apis';
+import { toastifyError, toastifySuccess } from '../../../services/toastify';
 
 /**
  * Table with known AETs details with Echo and Remove button
@@ -27,7 +28,15 @@ export default class Aets extends Component {
         text: 'Echo AET',
         formatter: (cell, row, rowIndex) => {
             return (<div className="text-center">
-                <input type="button" className='btn btn-info' onClick={() => apis.aets.echoAet(row.name)} value="Echo" />
+                <input type="button" className='btn btn-info' onClick={async () => {
+                    try{
+                        await apis.aets.echoAet(row.name)
+                        toastifySuccess(row.name + ' Success')
+                    }catch(error){
+                        toastifyError(row.name + ' Echo Failure')
+                    }
+                    
+                    }} value="Echo" />
             </div>)
         }
     }, {
@@ -36,7 +45,14 @@ export default class Aets extends Component {
         formatter: (cell, row, rowIndex, parentComponent) => {
             return (
                 <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={async () => { await apis.aets.deleteAet(row.name); parentComponent.props.refreshAetData() }} value="Remove" />
+                    <input type="button" className='btn btn-danger' onClick={async () => { 
+                            try{
+                                await apis.aets.deleteAet(row.name); 
+                                parentComponent.props.refreshAetData() 
+                            }catch(error){
+                                toastifyError(error.statusText)
+                            }
+                        }} value="Remove" />
                 </div>)
         },
         formatExtraData: this

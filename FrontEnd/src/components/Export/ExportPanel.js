@@ -69,14 +69,20 @@ class ExportPanel extends Component {
     componentDidMount = async () => {
         let currentTS = apis.localStorage.getLocalStorage('TS');
         this.loadTS(currentTS);
-        let aets = await apis.aets.getAets()
-        let peers = await apis.peers.getPeers()
-        let endpoints = await apis.endpoints.getEndpoints()
-        this.setState({
-            aets: aets,
-            peers: peers,
-            endpoints: endpoints
-        })
+
+        try {
+            let aets = await apis.aets.getAets()
+            let peers = await apis.peers.getPeers()
+            let endpoints = await apis.endpoints.getEndpoints()
+            this.setState({
+                aets: aets,
+                peers: peers,
+                endpoints: endpoints
+            })
+        } catch (error) {
+            toastifyError(error.statusText)
+        }
+
     }
 
     getExportIDArray = () => {

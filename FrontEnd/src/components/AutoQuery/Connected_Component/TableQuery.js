@@ -17,37 +17,37 @@ import CsvLoader from './CsvLoader'
 import SelectModalities from '../../CommonComponents/SearchForm/SelectModalities';
 
 import apis from '../../../services/apis';
+import { toastifyError } from '../../../services/toastify';
 
 const { ExportCSVButton } = CSVExport;
 
 class TableQuery extends Component {
 
-  constructor(props) {
-    super(props)
-    this.removeRow = this.removeRow.bind(this)
-    this.query = this.query.bind(this)
-    this.emptyTable = this.emptyTable.bind(this)
-    this.deselectAll = this.deselectAll.bind(this)
+  componentDidMount = async () => {
+
+    try {
+      let aets = await apis.aets.getAets()
+      this.props.loadAvailableAETS(aets)
+    } catch (error) {
+      toastifyError(error.statusText)
+    }
+
   }
 
-  async componentDidMount() {
-    this.props.loadAvailableAETS(await apis.aets.getAets())
-  }
-
-  deselectAll() {
+  deselectAll = () => {
     this.node.selectionContext.selected = []
   }
 
-  removeRow() {
+  removeRow = () => {
     let selectedKeyRow = this.node.selectionContext.selected
     this.props.removeQuery(selectedKeyRow)
   }
 
-  emptyTable() {
+  emptyTable = () => {
     this.props.emptyQueryTable()
   }
 
-  customHeader(column, colIndex, { sortElement, filterElement }) {
+  customHeader = (column, colIndex, { sortElement, filterElement }) => {
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {column.text}
@@ -189,7 +189,7 @@ class TableQuery extends Component {
 
   }
 
-  render() {
+  render = () => {
     return (
       <ToolkitProvider
         keyField="key"
@@ -225,7 +225,7 @@ class TableQuery extends Component {
     )
   }
 
-  async query() {
+  query = async () => {
     let data = this.node.props.data
     const id = toast.info('Starting Studies Queries');
     let i = 0
@@ -254,7 +254,7 @@ class TableQuery extends Component {
 
   }
 
-  async makeDicomQuery(queryParams) {
+  makeDicomQuery = async (queryParams) => {
     //Prepare Date string for post data
     let DateString = '';
     queryParams.DateFrom = queryParams.DateFrom.split('-').join('')

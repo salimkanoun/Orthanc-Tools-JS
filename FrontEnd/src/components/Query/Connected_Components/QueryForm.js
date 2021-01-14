@@ -13,7 +13,14 @@ import { toastifyError } from '../../../services/toastify'
 class QueryForm extends Component {
 
   componentDidMount = async () => {
-    this.props.loadAvailableAETS(await apis.aets.getAets())
+    
+    try {
+      let aets = await apis.aets.getAets()
+      this.props.loadAvailableAETS(aets)
+    } catch (error) {
+      toastifyError(error.statusText)
+    }
+
   }
 
   doQueryTo = async (formData, event) => {

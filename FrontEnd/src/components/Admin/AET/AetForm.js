@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import Select from 'react-select'
 import apis from '../../../services/aets'
+import { toastifyError } from '../../../services/toastify'
 
 /**
  * Form to declare or modify an AET
@@ -46,18 +47,14 @@ export default class AetForm extends Component {
      * Listener on form submission
      */
     handleClick = async () => {
-
-        let postData = {
-            AET: this.state.aetName,
-            Host: this.state.ip,
-            Port: this.state.port,
-            Manufacturer: this.state.manufacturer
+        try{
+            await apis.updateAet(this.state.name, this.state.aetName,this.state.ip, this.state.port, this.state.manufacturer )
+            this.props.refreshAetData()
+        } catch(error){
+            console.log(error)
+            toastifyError(error.statusText)
         }
-
-        await apis.updateAet(this.state.name, postData)
-
-        this.props.refreshAetData()
-
+        
     }
 
     render = () => {

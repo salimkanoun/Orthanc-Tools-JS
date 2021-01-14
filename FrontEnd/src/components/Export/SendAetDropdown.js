@@ -15,7 +15,14 @@ export default class SendAetDropdown extends Component {
 
     handleClickDownload = async (event) => {
         let destinationAet = event.currentTarget.id
-        let jobAnswer = await apis.aets.storeAET(destinationAet, this.props.exportIds)
+        let jobAnswer
+        
+        try{
+            jobAnswer = await apis.aets.storeAET(destinationAet, this.props.exportIds)
+        }catch(error){
+            toastifyError(error.statusText)
+            return;
+        }
 
         let jobMonitoring = new MonitorJob(jobAnswer.ID)
         let self = this

@@ -11,6 +11,7 @@ import DownloadDropdown from "../Export/DownloadDropdown"
 
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
+import { toastifyError } from '../../services/toastify'
 
 class ExportTool extends Component {
 
@@ -19,10 +20,15 @@ class ExportTool extends Component {
     }
 
     componentDidMount = async () => {
-        let aets = await apis.aets.getAets()
-        this.setState({
-            aets: aets
-        })
+        try{
+            let aets = await apis.aets.getAets()
+            this.setState({
+                aets: aets
+            })
+        } catch (error){
+            toastifyError(error.statusText)
+        }
+
     }
 
     handleClickEmpty = () => {

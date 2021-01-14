@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Aets from './AetsListTable'
 import AetForm from './AetForm'
 import apis from '../../../services/apis'
+import { toastifyError } from '../../../services/toastify'
 
 /**
  * Root Panel of AETs options
@@ -22,8 +23,13 @@ export default () => {
      * Get Aets Data from backend
      */
   const refreshAetsData = async () => {
-    const aetsAnswer = await apis.aets.getAetsExpand()
-    setAets(aetsAnswer)
+    try {
+      let aets = await apis.aets.getAetsExpand()
+      setAets(aets)
+    } catch (error) {
+      toastifyError(error.statusText)
+    }
+
   }
 
   return (
