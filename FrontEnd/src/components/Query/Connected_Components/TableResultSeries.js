@@ -12,7 +12,7 @@ import { toastifyError } from '../../../services/toastify';
 
 
 class TableResultSeries extends Component {
-    
+
     columns = [{
         dataField: 'key',
         hidden: true
@@ -109,7 +109,7 @@ class TableResultSeries extends Component {
 
     }
 
-    render() {
+    render = () => {
 
         return (
             <ToolkitProvider
@@ -141,4 +141,4 @@ const mapDispatchToProps = {
     addManualQuerySeriesDetails
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TableResultSeries);
+export default connect(mapStateToProps, mapDispatchToProps)(TableResultSeries)

@@ -108,7 +108,6 @@ export default class Authentication extends Component {
           </div>
         </div>
       </CSSTransition>
-
     )
   }
 }

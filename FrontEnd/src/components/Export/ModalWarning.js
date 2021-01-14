@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
 import Modal from 'react-bootstrap/Modal'
 
-class ModalWarning extends Component {
+export default class ModalWarning extends Component {
 
-    render() {
+    render = () => {
         return (
             <Modal show={this.props.show} onHide={this.props.onHide} >
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm export</Modal.Title>
                 </Modal.Header>
-
                 <Modal.Body>
                     Some studies are not anonymized !
                 </Modal.Body>
@@ -18,8 +17,6 @@ class ModalWarning extends Component {
                     {this.props.button}
                 </Modal.Footer>
             </Modal>
-        );
+        )
     }
 }
-
-export default ModalWarning;

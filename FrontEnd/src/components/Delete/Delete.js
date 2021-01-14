@@ -17,39 +17,27 @@ class Delete extends Component {
         show: false
     }
 
-
-    constructor(props){
-        super(props)
-        this.handleClickEmpty = this.handleClickEmpty.bind(this)
-        this.handleClickDelete = this.handleClickDelete.bind(this)
-        this.onDeletePatient = this.onDeletePatient.bind(this)
-        this.onDeleteStudy = this.onDeleteStudy.bind(this)
-        this.handleConfirm = this.handleConfirm.bind(this)
-        this.toast = React.createRef(null)
-    }
-
-    handleConfirm(){
+    handleConfirm = () => {
         this.setState(prevState => ({
             show: !prevState.show
         }))
     }
     
-    openToast(){
-        this.toast.current = toast("Delete progress : 0%", { autoClose: false})
+    openToast = () => {
+        this.toast = toast.info("Delete progress : 0%", { autoClose: false})
     }
 
-    updateToast(progress){
-        toast.update(this.toast.current, {type: toast.TYPE.INFO, render: 'Delete progress : ' + progress + '%'})
+    updateToast = (progress) => {
+        toast.update(this.toast, {type: toast.TYPE.INFO, render: 'Delete progress : ' + progress + '%'})
     }
 
-    successToast(){
-        toast.update(this.toast.current, {type: toast.TYPE.INFO, render: 'Delete done', className: 'bg-success', autoClose: 2000})
+    successToast = () => {
+        toast.update(this.toast, {type: toast.TYPE.INFO, render: 'Delete done', className: 'bg-success', autoClose: 2000})
     }
 
-    async handleClickDelete(){
+    handleClickDelete = async() => {
         //close Modal
         this.handleConfirm()
-        //call API DELETE
 
         let deletedSeriesIdArray = []
         this.props.deleteList.forEach((item) => {
@@ -79,19 +67,19 @@ class Delete extends Component {
 
     }
 
-    handleClickEmpty(){
+    handleClickEmpty = () => {
         this.props.emptyDeleteList()
     }
 
-    onDeletePatient(patientOrthancID){
+    onDeletePatient = (patientOrthancID) => {
         this.props.removePatientFromDeleteList(patientOrthancID)
     }
 
-    onDeleteStudy(studyOrthancID){
+    onDeleteStudy = (studyOrthancID) => {
         this.props.removeStudyFromDeleteList(studyOrthancID)
     }
     
-    render(){
+    render = () => {
         return (
             <Fragment>
                 <div className='jumbotron'>

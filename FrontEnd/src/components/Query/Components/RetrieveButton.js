@@ -19,17 +19,17 @@ class RetrieveButton extends Component {
 
   getVariant = () => {
     if (this.state.status === 'Retrieve') return 'info'
-    else if (this.state.status === MonitorJob.Pending ) return 'warning'
-    else if (this.state.status === MonitorJob.Success ) return 'success'
-    else if (this.state.status === MonitorJob.Failure ) return 'danger'
+    else if (this.state.status === MonitorJob.Pending) return 'warning'
+    else if (this.state.status === MonitorJob.Success) return 'success'
+    else if (this.state.status === MonitorJob.Failure) return 'danger'
   }
 
   toAnon = async () => {
-    if(this.resultAnswer === undefined) return
+    if (this.resultAnswer === undefined) return
     let studyDetails = []
-    if( this.props.level ===  RetrieveButton.Study ){
+    if (this.props.level === RetrieveButton.Study) {
       studyDetails.push(this.resultAnswer)
-    } else if ( this.props.level === RetrieveButton.Series ){
+    } else if (this.props.level === RetrieveButton.Series) {
       let retrievedStudy = await apis.content.getStudiesDetails(this.resultAnswer.ParentStudy)
       studyDetails.push(retrievedStudy)
     }
@@ -37,26 +37,26 @@ class RetrieveButton extends Component {
 
   }
 
-  toExport = async() => {
-    if(this.resultAnswer === undefined) return
+  toExport = async () => {
+    if (this.resultAnswer === undefined) return
 
     let seriesDetails = []
-    let studyDetails =[]
-    if( this.props.level ===  RetrieveButton.Study ){
-        let retrievedSeries = await apis.content.getSeriesDetails(this.resultAnswer['ID'])
-        seriesDetails = retrievedSeries
-        studyDetails.push(this.resultAnswer)
-    } else if ( this.props.level === RetrieveButton.Series ){
+    let studyDetails = []
+    if (this.props.level === RetrieveButton.Study) {
+      let retrievedSeries = await apis.content.getSeriesDetails(this.resultAnswer['ID'])
+      seriesDetails = retrievedSeries
+      studyDetails.push(this.resultAnswer)
+    } else if (this.props.level === RetrieveButton.Series) {
       seriesDetails = [this.resultAnswer]
       let retrievedStudy = await apis.content.getStudiesDetails(this.resultAnswer.ParentStudy)
       studyDetails.push(retrievedStudy)
     }
-    
-    this.props.addToExportList(seriesDetails,studyDetails)
-    
+
+    this.props.addToExportList(seriesDetails, studyDetails)
+
   }
 
-  render() {
+  render = () => {
     return (
       <Dropdown as={ButtonGroup} onClick={this.handleDropdownClick} >
         <Button variant={this.getVariant()} onClick={this.doRetrieve} >{this.state.status}</Button>
@@ -64,16 +64,16 @@ class RetrieveButton extends Component {
         <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
 
         <Dropdown.Menu>
-          <Dropdown.Item onClick={this.toExport} disabled = {this.state.status !== MonitorJob.Success}>To Export</Dropdown.Item>
-          <Dropdown.Item onClick={this.toAnon} disabled = {this.state.status !== MonitorJob.Success} >To Anon</Dropdown.Item>
-          <Link className = {this.state.status === MonitorJob.Success ? "dropdown-item" : "dropdown-item disabled"} to={'viewer/' + this.props.studyInstanceUID} target='_blank'>View on OHIF</Link>
+          <Dropdown.Item onClick={this.toExport} disabled={this.state.status !== MonitorJob.Success}>To Export</Dropdown.Item>
+          <Dropdown.Item onClick={this.toAnon} disabled={this.state.status !== MonitorJob.Success} >To Anon</Dropdown.Item>
+          <Link className={this.state.status === MonitorJob.Success ? "dropdown-item" : "dropdown-item disabled"} to={'viewer/' + this.props.studyInstanceUID} target='_blank'>View on OHIF</Link>
         </Dropdown.Menu>
       </Dropdown>
     )
   }
 
-  componentWillUnmount(){
-    if(this.monitorJob !== undefined) this.monitorJob.stopMonitoringJob()
+  componentWillUnmount = () => {
+    if (this.monitorJob !== undefined) this.monitorJob.stopMonitoringJob()
   }
 
   doRetrieve = async (e) => {
@@ -83,11 +83,11 @@ class RetrieveButton extends Component {
     let queryAet = this.props.queryAet
 
     let jobID
-    if( level ===  RetrieveButton.Study ){
+    if (level === RetrieveButton.Study) {
       jobID = await apis.retrieve.retrieveByUID(queryAet, this.props.studyInstanceUID, null)
 
 
-    } else if ( level === RetrieveButton.Series ){
+    } else if (level === RetrieveButton.Series) {
       jobID = await apis.retrieve.retrieveByUID(queryAet, this.props.studyInstanceUID, this.props.seriesInstanceUID)
 
     }
@@ -96,17 +96,17 @@ class RetrieveButton extends Component {
 
     let self = this
 
-    monitorJob.onUpdate(function(progress){
+    monitorJob.onUpdate(function (progress) {
       self.setState({
         status: MonitorJob.Pending
       })
     })
 
-    monitorJob.onFinish(function(status){
+    monitorJob.onFinish(function (status) {
       self.setState({
         status: status
       })
-      if(status === MonitorJob.Success){
+      if (status === MonitorJob.Success) {
         self.getOrthancIDbyStudyUID()
       }
     })
@@ -120,26 +120,26 @@ class RetrieveButton extends Component {
     e.stopPropagation()
   }
 
-  getOrthancIDbyStudyUID = async() => {
+  getOrthancIDbyStudyUID = async () => {
 
     let contentSearch = {
       CaseSensitive: false,
-      Expand: true, 
+      Expand: true,
       Query: {
       }
     }
 
-    if( this.props.level ===  RetrieveButton.Study ){
+    if (this.props.level === RetrieveButton.Study) {
       contentSearch.Query.StudyInstanceUID = this.props.studyInstanceUID
       contentSearch.Level = 'Study'
-    } else if ( this.props.level === RetrieveButton.Series ){
+    } else if (this.props.level === RetrieveButton.Series) {
       contentSearch.Level = 'Series'
       contentSearch.Query.SeriesInstanceUID = this.props.seriesInstanceUID
     }
 
     let searchContent = await apis.content.getContent(contentSearch)
     this.resultAnswer = searchContent[0]
-    
+
   }
 
 }

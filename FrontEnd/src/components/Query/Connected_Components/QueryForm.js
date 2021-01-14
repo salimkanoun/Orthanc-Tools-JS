@@ -12,7 +12,7 @@ import { toastifyError } from '../../../services/toastify'
 
 class QueryForm extends Component {
 
-  async componentDidMount(){
+  componentDidMount = async () => {
     this.props.loadAvailableAETS(await apis.aets.getAets())
   }
 
@@ -31,7 +31,7 @@ class QueryForm extends Component {
       dateString = dateFrom + '-' + dateTo
     } else if (dateFrom === '' && dateTo !== '') {
       dateString = '-' + dateTo
-    } else if (dateFrom !== '' && dateTo === ''){
+    } else if (dateFrom !== '' && dateTo === '') {
       dateString = dateFrom + '-'
     }
 
@@ -40,14 +40,14 @@ class QueryForm extends Component {
     let inputLastName = formData.lastName
     let inputFirstName = formData.firstName
 
-    if(inputLastName === '' && inputFirstName !== ''){
-      patientName = '^'+inputFirstName
-    } else if (inputLastName !== '' && inputFirstName === ''){
+    if (inputLastName === '' && inputFirstName !== '') {
+      patientName = '^' + inputFirstName
+    } else if (inputLastName !== '' && inputFirstName === '') {
       patientName = inputLastName
-    }else if (inputLastName !== '' && inputFirstName !== '') {
-      patientName = inputLastName+'^'+inputFirstName
+    } else if (inputLastName !== '' && inputFirstName !== '') {
+      patientName = inputLastName + '^' + inputFirstName
     }
-  
+
     //Prepare POST payload for query (follow Orthanc APIs)
     let queryPost = {
       Level: 'Study',
@@ -61,37 +61,37 @@ class QueryForm extends Component {
         NumberOfStudyRelatedInstances: '',
         NumberOfStudyRelatedSeries: ''
       },
-      Normalize : false
+      Normalize: false
     }
-    
 
-    try{
-      let queryAnswer = await apis.query.dicomQuery(aet,queryPost)
+
+    try {
+      let queryAnswer = await apis.query.dicomQuery(aet, queryPost)
       let answers = await apis.query.retrieveAnswer(queryAnswer['ID'])
       this.props.addManualQueryStudyResult(answers)
-    }catch{
-        toastifyError('Dicom Failure')
+    } catch {
+      toastifyError('Dicom Failure')
     }
-    
+
   }
 
-  buildAetButtons () {
+  buildAetButtons = () => {
     return (this.props.aets.map((aet, key) =>
       <AetButton key={key} aetName={aet} />
     ))
   }
 
-  render () {
-      return (
-        <div className="jumbotron">
-          <Form onFormValidate={this.doQueryTo} title='Query'>
-            <div>
-              {this.props.aets !== undefined ? this.buildAetButtons() : null}
-            </div>
-          </Form>
-        </div>
-      )
-    }
+  render = () => {
+    return (
+      <div className="jumbotron">
+        <Form onFormValidate={this.doQueryTo} title='Query'>
+          <div>
+            {this.props.aets !== undefined ? this.buildAetButtons() : null}
+          </div>
+        </Form>
+      </div>
+    )
+  }
 
 }
 

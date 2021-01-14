@@ -85,7 +85,7 @@ class TableResult extends Component {
         }
     }
 
-    render() {
+    render = () => {
         return (
             <ToolkitProvider
                 keyField="key"

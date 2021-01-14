@@ -33,8 +33,7 @@ export default class NavBar extends Component {
 
 
   componentDidMount = async () => {
-    
-    
+
     this.setState({
       navbar: document.documentElement.clientWidth < 992 ? 'responsive' : 'classique',
       currentTabSelect: 'content'
@@ -53,7 +52,7 @@ export default class NavBar extends Component {
 
   AnimatedSwitch = withRouter(({ location }) => (
     <TransitionGroup>
-      <CSSTransition key={location.key} classNames={'slide'} timeout={500} onEnter={() => {console.log('ici entree, modifier location')}}>
+      <CSSTransition key={location.key} classNames={'slide'} timeout={500} >
         <Switch location={location}>
           <Route exact path='/import' component={Import} />
           <Route exact path='/query' component={Query} />
@@ -86,7 +85,7 @@ export default class NavBar extends Component {
   render = () => {
     return (
       <div className='app'>
-        <Navbar fixed='top' collapseOnSelect expand='lg' bg={ this.state.navbar === 'responsive' ? 'primary' : this.state.navBackground} variant='dark' >
+        <Navbar fixed='top' collapseOnSelect expand='lg' bg={this.state.navbar === 'responsive' ? 'primary' : this.state.navBackground} variant='dark' >
           <Navbar.Toggle aria-controls='responsive_navbar' />
           <Navbar.Collapse id='responsive_navbvar'>
             {this.state.navbar === 'responsive' ? <div className='float-right'><ToolsPanel roles={this.props.token} apercu={false} /></div> : null}
@@ -103,10 +102,10 @@ export default class NavBar extends Component {
           </Navbar.Collapse>
         </Navbar>
         <div className='content-panel'>
-          {this.state.currentTabSelect === null ? <Redirect to = '/orthanc-content'/> : null}
+          {this.state.currentTabSelect === null ? <Redirect to='/orthanc-content' /> : null}
           {<this.AnimatedSwitch />}
         </div>
-        <Footer/>
+        <Footer />
       </div>
     )
   }

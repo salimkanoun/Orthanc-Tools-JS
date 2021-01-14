@@ -7,31 +7,23 @@ import StoneLink from '../../Viewers/StoneLink'
 import Modal from 'react-bootstrap/Modal'
 import Metadata from '../../Metadata/Metadata'
 import Modify from '../../Modify/Modify'
-
-
-class ActionBouton extends Component{
+export default class ActionBouton extends Component{
 
     state = {
         showMetadata: false
-    }
-
-    constructor(props){
-        super(props)
-        this.delete = this.delete.bind(this)
-        this.setMetadata = this.setMetadata.bind(this)
     }
 
     static defaultProps = {
         hiddenMetadata: true
     }
 
-    setMetadata(){
+    setMetadata = () => {
         this.setState({
             showMetadata: !this.state.showMetadata
         })
     }
 
-    async delete( ) {
+    delete = async () => {
         let orthancID = this.props.orthancID
         switch(this.props.level){
             case 'patients':
@@ -52,11 +44,11 @@ class ActionBouton extends Component{
         this.props.onDelete(orthancID, this.props.parentID)
     }
 
-    handleClick(e){
+    handleClick = (e) => {
         e.stopPropagation()
     }
 
-    render(){
+    render = () => {
         return (
             <Fragment>
                 {/*modal pour metadata*/}
@@ -88,5 +80,3 @@ class ActionBouton extends Component{
 
 
 }
-
-export default ActionBouton

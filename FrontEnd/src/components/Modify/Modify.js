@@ -8,7 +8,7 @@ import ModalModify from './ModalModify';
 
 
 export default class Modify extends Component {
-    
+
     state = {
         show: false,
         modification: {},
@@ -143,6 +143,6 @@ export default class Modify extends Component {
                     modify={() => this.modify()}
                 />
             </Fragment>
-        );
+        )
     }
 }

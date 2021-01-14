@@ -30,7 +30,7 @@ export default class ModalModify extends Component {
         selectionHeaderRenderer: () => {return 'Delete'}
     }
     
-    render() {
+    render = () => {
         return (
             <Modal show={this.props.show} onHide={this.props.onHide} onClick={(e) => e.stopPropagation()} size='xl'>
                 <Modal.Header closeButton>
@@ -77,6 +77,6 @@ export default class ModalModify extends Component {
                     <button type='button' className='btn btn-warning' onClick={this.props.modify}>Modify</button>
                 </Modal.Footer>
             </Modal>
-        );
+        )
     }
 }

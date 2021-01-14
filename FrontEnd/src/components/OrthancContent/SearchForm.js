@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Form from '../CommonComponents/SearchForm/Form'
 
-class SearchForm extends Component{
+export default class SearchForm extends Component{
 
     dataSearch = (formData) => {
          
@@ -46,5 +46,3 @@ class SearchForm extends Component{
         )
     }
 }
-
-export default SearchForm

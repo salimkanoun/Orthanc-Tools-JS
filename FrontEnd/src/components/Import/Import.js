@@ -26,48 +26,35 @@ class Import extends Component {
         seriesObjects: {},
         showErrors: false,
         inProgress: false,
-        isDragging : false,
-        numberOfFiles : 0,
-        processedFiles : 0
+        isDragging: false,
+        numberOfFiles: 0,
+        processedFiles: 0
     }
 
     cancelImport = false
 
-    currentTree = {}
-
-    constructor(props) {
-
-        super(props)
-        this.handleShowErrorClick = this.handleShowErrorClick.bind(this)
-        this.sendImportedToAnon = this.sendImportedToAnon.bind(this)
-        this.sendImportedToExport = this.sendImportedToExport.bind(this)
-        this.sendImportedToDelete = this.sendImportedToDelete.bind(this)
-        this.addFile = this.addFile.bind(this)
-
-    }
-
-    __pFileReader(file) {
+    __pFileReader = (file) => {
         return new Promise((resolve, reject) => {
-          var fr = new FileReader()
-          fr.readAsArrayBuffer(file)
-          fr.onload = () => {
-            resolve(fr)
-          }
+            var fr = new FileReader()
+            fr.readAsArrayBuffer(file)
+            fr.onload = () => {
+                resolve(fr)
+            }
         });
     }
 
-    async addFile(files) {
-        
-        this.setState({ isDragging : false, inProgress: true, numberOfFiles : files.length, processedFiles : 0 })
+    addFile = async (files) => {
+
+        this.setState({ isDragging: false, inProgress: true, numberOfFiles: files.length, processedFiles: 0 })
         let i = 1
         for (let file of files) {
 
-            if( this.cancelImport ) {
+            if (this.cancelImport) {
                 console.log('Upload Interrupted')
                 return
             }
 
-            await this.__pFileReader(file).then(async (reader) =>{
+            await this.__pFileReader(file).then(async (reader) => {
                 const stringBuffer = new Uint8Array(reader.result)
 
                 try {
@@ -80,14 +67,14 @@ class Import extends Component {
                 }
 
             })
-            this.setState((state) => { return {processedFiles: ++state.processedFiles} })
+            this.setState((state) => { return { processedFiles: ++state.processedFiles } })
             i = ++i
         }
 
         this.setState({ inProgress: false }, console.log(this.state.inProgress))
     }
 
-    componentWillUnmount(){
+    componentWillUnmount = () => {
         this.cancelImport = true
     }
 
@@ -97,7 +84,7 @@ class Import extends Component {
      * @param {string} file 
      * @param {string} error 
      */
-    addErrorToState(filename, error) {
+    addErrorToState = (filename, error) => {
         let errors = this.state.errors
         errors.push({
             fileID: Math.random(),
@@ -111,9 +98,9 @@ class Import extends Component {
 
     }
 
-    async addUploadedFileToState(orthancAnswer) {
+    addUploadedFileToState = async (orthancAnswer) => {
         let isExistingSerie = this.isKnownSeries(orthancAnswer.ParentSeries)
-        console.log(isExistingSerie)
+
         if (isExistingSerie) {
             this.setState(state => {
                 console.log(state.seriesObjects[orthancAnswer.ParentSeries]['Instances'])
@@ -135,7 +122,7 @@ class Import extends Component {
 
     }
 
-    addStudyToState(studyDetails) {
+    addStudyToState = (studyDetails) => {
         this.setState(state => {
             state.studiesObjects[studyDetails.ID] = studyDetails
             state.patientsObjects[studyDetails.ParentPatient] = studyDetails.PatientMainDicomTags
@@ -143,7 +130,7 @@ class Import extends Component {
         })
     }
 
-    addSeriesToState(seriesDetails) {
+    addSeriesToState = (seriesDetails) => {
         this.setState(state => {
             state.seriesObjects[seriesDetails.ID] = {
                 ...seriesDetails,
@@ -153,7 +140,7 @@ class Import extends Component {
         })
     }
 
-    buildImportTree() {
+    buildImportTree = () => {
         let importedSeries = this.state.seriesObjects
         let importedTree = {}
 
@@ -189,8 +176,6 @@ class Import extends Component {
             }
         }
 
-        this.currentTree = importedTree
-
         let resultArray = treeToPatientArray(importedTree)
 
         return resultArray
@@ -201,55 +186,55 @@ class Import extends Component {
      * check if study is already known
      * @param {string} studyID 
      */
-    isKnownStudy(studyID) {
+    isKnownStudy = (studyID) => {
         return Object.keys(this.state.studiesObjects).includes(studyID)
     }
 
-    isKnownSeries(seriesID) {
+    isKnownSeries = (seriesID) => {
         return Object.keys(this.state.seriesObjects).includes(seriesID)
     }
 
-    sendImportedToExport() {
+    sendImportedToExport = () => {
         this.props.addStudiesToExportList(treeToStudyArray(this.state.studiesObjects))
     }
 
-    sendImportedToAnon() {
+    sendImportedToAnon = () => {
         this.props.addStudiesToAnonList(treeToStudyArray(this.state.studiesObjects))
     }
 
-    sendImportedToDelete() {
+    sendImportedToDelete = () => {
         this.props.addStudiesToDeleteList(treeToStudyArray(this.state.studiesObjects))
     }
 
     /**
      * Trigger the display of the error table
      */
-    handleShowErrorClick() {
+    handleShowErrorClick = () => {
         this.setState({
             showErrors: !this.state.showErrors
         })
     }
 
-    dragListener = (dragStarted) =>{
-        this.setState({isDragging : dragStarted})
+    dragListener = (dragStarted) => {
+        this.setState({ isDragging: dragStarted })
     }
-    
-    render() {
+
+    render = () => {
         return (
             <div className="jumbotron">
                 <h2 className="col card-title">Import Dicom Files</h2>
                 <div className="col mb-5">
-                    <Dropzone onDragEnter={()=> this.dragListener(true)} onDragLeave={()=> this.dragListener(false)} disabled = {this.state.inProgress} onDrop={acceptedFiles => this.addFile(acceptedFiles)} >
+                    <Dropzone onDragEnter={() => this.dragListener(true)} onDragLeave={() => this.dragListener(false)} disabled={this.state.inProgress} onDrop={acceptedFiles => this.addFile(acceptedFiles)} >
                         {({ getRootProps, getInputProps }) => (
                             <section>
-                                <div className={ (this.state.isDragging || this.state.inProgress) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
+                                <div className={(this.state.isDragging || this.state.inProgress) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
                                     <input directory="" webkitdirectory="" {...getInputProps()} />
                                     <p>{this.state.inProgress ? "Uploading" : "Drop Dicom Folder"}</p>
                                 </div>
                             </section>
                         )}
                     </Dropzone>
-                    <ProgressBar variant='info' now={this.state.processedFiles} min={0} max= {this.state.numberOfFiles} label={this.state.processedFiles>0 ? 'Uploading '+this.state.processedFiles+'/'+this.state.numberOfFiles : null} />
+                    <ProgressBar variant='info' now={this.state.processedFiles} min={0} max={this.state.numberOfFiles} label={this.state.processedFiles > 0 ? 'Uploading ' + this.state.processedFiles + '/' + this.state.numberOfFiles : null} />
                     <div className="float-right mt-3">
                         <input type="button" className="btn btn-warning" value={"See Errors (" + this.state.errors.length + ")"} onClick={this.handleShowErrorClick} />
                     </div>

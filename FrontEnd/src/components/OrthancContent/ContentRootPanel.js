@@ -57,6 +57,7 @@ class ContentRootPanel extends Component {
     this.props.removeOrthancContentPatient(idDeleted)
     this.setState({currentSelectedStudyId: ''})
   }
+  
   //rappelé par le dropdow lors du delete de study sur Orthanc
   onDeleteStudy = (idDeleted) => {
     this.props.removeOrthancContentStudy(idDeleted)

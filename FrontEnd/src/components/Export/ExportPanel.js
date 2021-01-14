@@ -49,60 +49,6 @@ class ExportPanel extends Component {
         button: ''
     }
 
-    constructor(props) {
-        super(props)
-        this.getStudies = this.getStudies.bind(this)
-        this.emptyList = this.emptyList.bind(this)
-        this.removeSeries = this.removeSeries.bind(this)
-        this.removeStudy = this.removeStudy.bind(this)
-        this.confirm = this.confirm.bind(this)
-        this.setButton = this.setButton.bind(this)
-        this.onTSChange = this.onTSChange.bind(this)
-    }
-
-
-
-    async componentDidMount() {
-
-        let currentTS = apis.localStorage.getLocalStorage('TS');
-        this.loadTS(currentTS);
-        let aets = await apis.aets.getAets()
-        let peers = await apis.peers.getPeers()
-        let endpoints = await apis.endpoints.getEndpoints()
-        this.setState({
-            aets: aets,
-            peers: peers,
-            endpoints: endpoints
-        })
-    }
-
-    getExportIDArray() {
-        let ids = []
-        this.props.exportList.seriesArray.forEach(serie => {
-            ids.push(serie.ID)
-        })
-        return ids
-    }
-
-    handleClickFTP() {
-
-    }
-
-    handleClickWebDav() {
-
-    }
-
-    removeSeries(serieID) {
-        this.props.removeSeriesFromExportList(serieID)
-    }
-
-    removeStudy() {
-        this.props.removeStudyFromExportList(this.state.currentStudy)
-    }
-
-    emptyList() {
-        this.props.emptyExportList()
-    }
 
     rowEvents = {
         onClick: (e, row, rowIndex) => {
@@ -120,12 +66,54 @@ class ExportPanel extends Component {
         return style;
     }
 
-    getStudies() {
+    componentDidMount = async () => {
+        let currentTS = apis.localStorage.getLocalStorage('TS');
+        this.loadTS(currentTS);
+        let aets = await apis.aets.getAets()
+        let peers = await apis.peers.getPeers()
+        let endpoints = await apis.endpoints.getEndpoints()
+        this.setState({
+            aets: aets,
+            peers: peers,
+            endpoints: endpoints
+        })
+    }
+
+    getExportIDArray = () => {
+        let ids = []
+        this.props.exportList.seriesArray.forEach(serie => {
+            ids.push(serie.ID)
+        })
+        return ids
+    }
+
+    handleClickFTP = () => {
+
+    }
+
+    handleClickWebDav = () => {
+
+    }
+
+    removeSeries = (serieID) => {
+        this.props.removeSeriesFromExportList(serieID)
+    }
+
+    removeStudy = () => {
+        this.props.removeStudyFromExportList(this.state.currentStudy)
+    }
+
+    emptyList = () => {
+        this.props.emptyExportList()
+    }
+
+
+    getStudies = () => {
         let list = seriesArrayToStudyArray(this.props.exportList.seriesArray, this.props.exportList.studyArray)
         return list
     }
 
-    getSeries() {
+    getSeries = () => {
 
         let studies = []
 
@@ -141,7 +129,7 @@ class ExportPanel extends Component {
         return studies
     }
 
-    confirm() {
+    confirm = () => {
         let answer = false
         this.props.exportList.studyArray.forEach(study => {
             if (study.AnonymizedFrom === undefined || study.AnonymizedFrom === '') {
@@ -151,7 +139,7 @@ class ExportPanel extends Component {
         return answer
     }
 
-    loadTS(tsValue) {
+    loadTS = (tsValue) => {
         if (tsValue) {
             this.setState({
                 currentTS: this.getSelectedTSObject(tsValue)
@@ -160,21 +148,20 @@ class ExportPanel extends Component {
 
     }
 
-
-    setButton(button) {
+    setButton = (button) => {
         this.setState({
             button: button
         })
     }
 
-    onTSChange(item) {
+    onTSChange = (item) => {
         apis.localStorage.setlocalStorage('TS', item.value)
         this.loadTS(item.value)
     }
 
 
 
-    getSelectedTSObject(tsValue) {
+    getSelectedTSObject = (tsValue) => {
         let filteredArray = this.transferSyntaxOptions.filter(item => {
             return item.value === tsValue ? true : false
         })
@@ -184,7 +171,7 @@ class ExportPanel extends Component {
 
     getCSV = () => {
 
-        if(this.props.exportList.seriesArray.length === 0){
+        if (this.props.exportList.seriesArray.length === 0) {
             toastifyError('Empty List')
             return;
         }
@@ -192,7 +179,7 @@ class ExportPanel extends Component {
         let csvData = []
 
         this.props.exportList.seriesArray.forEach((series) => {
-            let studydata  = this.props.exportList.studyArray.filter((study)=>{
+            let studydata = this.props.exportList.studyArray.filter((study) => {
                 return study.ID === series.ParentStudy
             })
 
@@ -203,7 +190,7 @@ class ExportPanel extends Component {
                 seriesNumber: series.MainDicomTags.SeriesNumber,
                 seriesDate: series.MainDicomTags.SeriesDate,
                 seriesTime: series.MainDicomTags.SeriesTime,
-                seriesModality : series.MainDicomTags.Modality,
+                seriesModality: series.MainDicomTags.Modality,
                 numberOfInstances: series.Instances.length,
                 seriesDescription: series.MainDicomTags.SeriesDescription,
                 seriesInstanceUID: series.MainDicomTags.SeriesInstanceUID,
@@ -215,8 +202,8 @@ class ExportPanel extends Component {
         let csvString = papa.unparse(csvData)
 
         const element = document.createElement("a");
-        const file = new Blob([csvString],    
-                    {type: 'text/csv;charset=utf-8'});
+        const file = new Blob([csvString],
+            { type: 'text/csv;charset=utf-8' });
         element.href = URL.createObjectURL(file);
         element.download = "ExportDicomDetails.csv";
         document.body.appendChild(element);
@@ -224,7 +211,7 @@ class ExportPanel extends Component {
 
     }
 
-    render() {
+    render = () => {
         let idArray = this.getExportIDArray()
         let confirm = this.confirm()
         return (

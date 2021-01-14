@@ -3,57 +3,57 @@ import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
 
 
-class TableSeries extends Component{
-    
+export default class TableSeries extends Component {
+
     static defaultProps = {
-        onDelete : function(id){
+        onDelete: function (id) {
             console.log('Deleted Series ID' + id)
-        }, 
-        hiddenActionBouton: false, 
+        },
+        hiddenActionBouton: false,
         hiddenRemoveRow: true
     }
     columns = [{
-        dataField: 'SeriesOrthancID', 
+        dataField: 'SeriesOrthancID',
         hidden: true,
     }, {
-        dataField: 'SeriesDescription', 
+        dataField: 'SeriesDescription',
         text: 'Series Description',
         sort: true,
         style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
-        dataField: 'Modality', 
+        dataField: 'Modality',
         text: 'Modality',
         sort: true
-    },{
-        dataField: 'Instances', 
+    }, {
+        dataField: 'Instances',
         text: 'Instances',
         sort: true
     }, {
         dataField: 'SeriesNumber',
-        text: 'Series Number', 
+        text: 'Series Number',
         sort: true
     }, {
-        dataField: 'Action', 
+        dataField: 'Action',
         text: 'Action',
         hidden: this.props.hiddenActionBouton,
         formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.SeriesOrthancID} parentID={row.StudyID} onDelete={this.props.onDelete} row={row} refresh={this.props.refreshSerie} hiddenMetadata={false} />)
     }, {
-        dataField: 'Remove', 
+        dataField: 'Remove',
         text: 'Remove',
         hidden: this.props.hiddenRemoveRow,
         formatter: (cell, row, index) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {e.stopPropagation(); this.props.onDelete(row.SeriesOrthancID)}}>Remove</button>
+            return <button type="button" className="btn btn-danger" onClick={(e) => { e.stopPropagation(); this.props.onDelete(row.SeriesOrthancID) }}>Remove</button>
         }
-    
+
     }]
 
 
-    render(){
+    render = () => {
         return (
-            <BootstrapTable 
-                keyField="SeriesOrthancID" 
-                striped={true} 
-                data={this.props.series} 
+            <BootstrapTable
+                keyField="SeriesOrthancID"
+                striped={true}
+                data={this.props.series}
                 columns={this.columns}
                 {...this.props}
                 pagination={undefined}
@@ -62,5 +62,3 @@ class TableSeries extends Component{
         )
     }
 }
-
-export default TableSeries

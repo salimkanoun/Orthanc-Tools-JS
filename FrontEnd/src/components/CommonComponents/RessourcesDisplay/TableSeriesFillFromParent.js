@@ -2,72 +2,70 @@ import React, { Component } from 'react'
 import apis from '../../../services/apis'
 import TableSeries from './TableSeries'
 
-class TableSeriesFillFromParent extends Component {
+export default class TableSeriesFillFromParent extends Component {
 
     state = {
-        series : []
+        series: []
     }
 
-    constructor(props){
+    constructor(props) {
         super(props)
-        this.onDelete=this.onDelete.bind(this)
+        this.onDelete = this.onDelete.bind(this)
     }
 
     static defaultProps = {
-        onEmptySeries : function () {}
+        onEmptySeries: function () { }
     }
 
-    onDelete(idDeleted, parentID){
+    onDelete = (idDeleted, parentID) => {
 
-        let newSeriesRows = this.state.series.filter((serie) =>{
+        let newSeriesRows = this.state.series.filter((serie) => {
             return serie.SeriesOrthancID !== idDeleted
         })
 
         this.setState({
-            series : newSeriesRows
+            series: newSeriesRows
         })
-        if(this.state.series.length ===0){
+        if (this.state.series.length === 0) {
             this.props.onEmptySeries()
             this.props.onDeleteStudy(parentID)
         }
 
     }
 
-    async componentDidUpdate(prevProps){
-        if(this.props.studyID !== prevProps.studyID){
-            if(this.props.studyID === "") {
+    componentDidUpdate = (prevProps) => {
+        if (this.props.studyID !== prevProps.studyID) {
+            if (this.props.studyID === "") {
                 this.setState({
-                    series : []
+                    series: []
                 })
-            }else{
+            } else {
                 this.loadSeriesInState(this.props.studyID)
             }
         }
     }
 
-    async loadSeriesInState(studyID) {
+    loadSeriesInState = async (studyID) => {
         let seriesAnswer = await apis.content.getSeriesDetails(studyID)
         let seriesData = []
-        seriesAnswer.forEach( (serie) => {
+        seriesAnswer.forEach((serie) => {
             seriesData.push({
-                StudyID: studyID, 
-                SeriesOrthancID : serie.ID,
-                Instances : serie.Instances.length,
+                StudyID: studyID,
+                SeriesOrthancID: serie.ID,
+                Instances: serie.Instances.length,
                 ...serie.MainDicomTags
             })
 
         })
         this.setState({
-            series : seriesData
+            series: seriesData
         })
 
     }
-    
-    render(){
-        return(
+
+    render = () => {
+        return (
             <TableSeries series={this.state.series} onDelete={this.onDelete} {...this.props} />
         )
     }
 }
-
-export default TableSeriesFillFromParent
