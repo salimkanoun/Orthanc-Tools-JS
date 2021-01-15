@@ -25,10 +25,9 @@ const { newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controll
 const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve, deleteRetrieveItem, addExportTask } = require('../controllers/task')
 
 
-//Authentication midelware
-//SK  : A REMPLACER PAR un api authentication
-router.post('/session/*', authentication)
-router.delete('/session', logOut)
+//Authentication APIs
+router.post('/login/*', authentication)
+router.delete('/login', logOut)
 
 
 // OrthancToolsJS Options routes

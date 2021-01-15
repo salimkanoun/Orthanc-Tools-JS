@@ -75,24 +75,6 @@ const retrieveRobot = {
         })
     },
 
-    getRobotDetails(username){
-
-        const getRobotDetailsOption =  {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }
-
-        return fetch( "/api/robot/"+username+"/retrieve", getRobotDetailsOption ).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return (answer.json())
-        }).catch((error) => {
-            toastifyError(error)
-        })
-    },
-
     deleteRobotItem(username, item){
 
         const deleteRobotItemOption =  {

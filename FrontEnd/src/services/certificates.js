@@ -1,7 +1,5 @@
-
-const { toastifyError } = require("./toastify")
-
-const certificates = {
+export default {
+  
     getCertificatesExpend(){
         return fetch('/api/certificates')
         .then((answer) => {
@@ -9,7 +7,7 @@ const certificates = {
           return (answer.json())
         })
         .catch((error) => {
-          toastifyError(error)
+          throw error
         })
     },
     
@@ -24,10 +22,9 @@ const certificates = {
           } ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
+          }).catch((error) => {
+              throw error
           })
-            .catch((error) => {
-              toastifyError(error)
-            })
     },
 
     createCertificate(postData){
@@ -41,10 +38,9 @@ const certificates = {
           } ).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
+          }).catch((error) => {
+              throw error
           })
-            .catch((error) => {
-              toastifyError(error)
-            })
     },
 
     async uploadCertificate(id, file){
@@ -60,9 +56,7 @@ const certificates = {
         }).then((answer) => {
             if (!answer.ok) { throw answer }
         }).catch((error) => {
-            toastifyError(error)
+            throw error
         })
     }
 }
-
-export default certificates

@@ -1,6 +1,4 @@
-import { toastifyError } from './toastify'
-
-const cdBurner = {
+export default {
 
       startCdBurnerService() {
             let options = {
@@ -12,17 +10,16 @@ const cdBurner = {
                   body: JSON.stringify([])
             }
 
-            return fetch('/api/monitoring/burner/', options).then( (answer) => {
+            return fetch('/api/monitoring/burner/', options).then((answer) => {
                   if (!answer.ok) { throw answer }
                   return (answer.json())
-            }).catch(async error => {
-                  let errorText = await error.text()
-                  toastifyError(errorText)
+            }).catch(error => {
+                  throw error
             })
-
       },
 
       stopCdBurnerService() {
+
             let options = {
                   method: 'DELETE',
                   headers: {
@@ -33,8 +30,7 @@ const cdBurner = {
 
             return fetch('/api/monitoring/burner/', options).then((answer) => {
                   if (!answer.ok) { throw answer }
-                  return (answer.json())
-            })
+            }).catch((error) => { throw error })
 
       },
 
@@ -51,7 +47,7 @@ const cdBurner = {
                   if (!answer.ok) { throw answer }
                   return (answer.json())
             }).catch((error) => {
-                  toastifyError(error)
+                  throw error
             })
 
       },
@@ -67,17 +63,12 @@ const cdBurner = {
                   body: JSON.stringify([])
             }
 
-            return fetch('/api/monitoring/burner/jobs/'+jobBurnerID+'/cancel', options).then((answer) => {
+            return fetch('/api/monitoring/burner/jobs/' + jobBurnerID + '/cancel', options).then((answer) => {
                   if (!answer.ok) { throw answer }
-                  return (answer.json())
             }).catch((error) => {
-                  console.error(error)
-                  toastifyError(error)
+                  throw error
             })
 
       }
 
 }
-
-
-export default cdBurner; 

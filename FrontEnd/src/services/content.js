@@ -1,8 +1,8 @@
 import { toastifyError } from "./toastify"
 
-const query  = {
+export default {
 
-    getContent(contentSerch){
+    getOrthancFind(contentSerch){
 
         const getContentOption = {
             method: 'POST', 
@@ -17,25 +17,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
-        })
-    },
-
-    getPatientsDetails(ID){
-
-        const getPatientsDetailsOption = {
-            method: 'GET', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }
-
-        return fetch('/api/patients/' + ID + '?expand', getPatientsDetailsOption ).then((response) => {
-            if (!response.ok) {throw response}
-            return response.json()
-        }).catch((error) => {
-            toastifyError(error)
+            throw(error)
         })
     },
 
@@ -143,7 +125,7 @@ const query  = {
             }
         }
 
-        return fetch('/api/series/' + serieID + '/shared-tags?simplify', getSharedTagsOption ).then((response) => {
+        return fetch('/api/series/' + serieID + '/shared-tags', getSharedTagsOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -272,6 +254,4 @@ const query  = {
         })
     }
 }
-
-export default query
 

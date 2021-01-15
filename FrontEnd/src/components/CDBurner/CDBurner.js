@@ -9,6 +9,7 @@ import Toggle from 'react-toggle'
 
 import apis from '../../services/apis'
 import { ReactComponent as SpeakerSVG } from '../../assets/images/sounds.svg'
+import { toastifyError } from '../../services/toastify';
 
 export default class CDBurner extends Component {
 
@@ -69,7 +70,14 @@ export default class CDBurner extends Component {
                 let disable = (row.status === CDBurner.JOB_STATUS_BURNING_DONE || row.status === CDBurner.JOB_STATUS_BURNING_ERROR)
                 return (
                     <div className="text-center">
-                        <input type="button" className='btn btn-danger' onClick={() => apis.cdBurner.cancelCdBurner(row.cdJobID)} value="Cancel" disabled={disable} />
+                        <input type="button" className='btn btn-danger' onClick={async () => {
+                                try{
+                                    await apis.cdBurner.cancelCdBurner(row.cdJobID)
+                                } catch( error ){
+                                    toastifyError(error.statusText)
+                                }
+                            
+                            }} value="Cancel" disabled={disable} />
                     </div>
                 )
             }
@@ -78,7 +86,14 @@ export default class CDBurner extends Component {
 
     refreshTableData = async () => {
 
-        let cdBurnerData = await apis.cdBurner.getCdBuner()
+        let cdBurnerData
+        try{
+            cdBurnerData = await apis.cdBurner.getCdBuner()
+        } catch (error){
+            toastifyError(error.statusText)
+            return
+        }
+
         let jobs = cdBurnerData.Jobs
 
         let newTablearray = []
@@ -120,20 +135,28 @@ export default class CDBurner extends Component {
 
     toogleHandler = async (event) => {
 
+        console.log(event)
         let startStatus = this.state.robotStarted
 
-        let newStatus
-        if (!startStatus) {
-            await apis.cdBurner.startCdBurnerService()
-            newStatus = true
-        } else {
-            await apis.cdBurner.stopCdBurnerService()
-            newStatus = false
-        }
+        try{
+            let newStatus
+            if (!startStatus) {
+                await apis.cdBurner.startCdBurnerService()
+                newStatus = true
+            } else {
+                await apis.cdBurner.stopCdBurnerService()
+                newStatus = false
+            }
+    
+            this.setState({
+                robotStarted: newStatus
+            })
 
-        this.setState({
-            robotStarted: newStatus
-        })
+        }catch(error) {
+            let message = await error.text()
+            toastifyError(message)
+        }
+       
 
 
     }

@@ -71,8 +71,13 @@ class AnonymizePanel extends Component {
                 listToAnonymize.push(anonItem)
             })
 
-            let answer = await apis.anon.createAnonRobot(listToAnonymize, this.props.username) //wait for the robot's answer to know what do to next
-            this.props.setTask(answer.id)
+            try{
+                let answer = await apis.anon.createAnonRobot(listToAnonymize, this.props.username) //wait for the robot's answer to know what do to next
+                this.props.setTask(answer.id)
+            } catch (error){
+                toastifyError(error.statusText)
+            }
+
         } else toastifyError('Fill all patient ID')
     }
 

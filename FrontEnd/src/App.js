@@ -56,7 +56,7 @@ class App extends Component {
       },
     
       response: async (response) => {
-        if (response.status === 401 && !response.url.includes('session')) {
+        if (response.status === 401 && !response.url.includes('login')) {
           this.setState({
             authentified: false
           })
@@ -74,7 +74,6 @@ class App extends Component {
 
 
   login = (logInAnwser) => {
-    console.log(logInAnwser)
     this.setState({
       authentified: true,
       roles: logInAnwser
@@ -83,12 +82,13 @@ class App extends Component {
 
   }
 
-  logout = async () => {
-    this.setState({
-      authentified: false
-    })
+  logout = () => {
     this.props.resetReducer() //empty all reducer
-    await apis.authentication.logOut() //ask backend to reset cookie http only
+    apis.authentication.logOut()//ask backend to reset cookie http only
+    this.setState({
+      authentified: false,
+      roles : {}
+    })
 
   }
 

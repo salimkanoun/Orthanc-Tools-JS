@@ -1,7 +1,6 @@
-import { toastifyError } from './toastify'
+export default {
 
-const anon = {
-
+    //SK ICI DOIT REJOINDRE TASK DU COUP ?
     createAnonRobot(anonymizeArray, username){
         
         const createAnonRobotOption = {
@@ -17,28 +16,9 @@ const anon = {
             if (!answer.ok) {throw answer}
             return answer.json()
         }).catch(error => {
-            toastifyError(error)
+            throw error
         })
 
-    },
-
-    getAnonJob(username){
-
-        const getAnonJobOption = {
-            method: 'GET', 
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-              }
-        }
-
-        return fetch('/api/robot/' + username + '/anonymize', getAnonJobOption ).then(answer => {
-            if (!answer.ok) {throw answer}
-            return answer.json()
-        }).catch(error => {
-            toastifyError(error)
-        })
     }
-}
 
-export default anon
+}

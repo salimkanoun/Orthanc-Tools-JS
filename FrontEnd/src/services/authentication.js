@@ -1,34 +1,30 @@
-const authentication = {
+export default {
 
-    logIn(username, password){
-        return fetch('/api/session/' + username, {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              username : username,
-              password : password
-            })
-          }).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return (answer.json())
-          })
-    },
-
-    logOut(){
-      return fetch('/api/session/', {
-        method: 'DELETE',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-      }).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return (answer.json())
+  logIn(username, password) {
+    return fetch('/api/login/' + username, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password
       })
-    }
-}
+    }).then((answer) => {
+      if (!answer.ok) { throw answer }
+      return (answer.json())
+    }).catch((error) => { throw error })
+  },
 
-export default authentication; 
+  logOut() {
+    return fetch('/api/login/', {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+    }).catch((error) => { console.error(error) })
+  }
+  
+}

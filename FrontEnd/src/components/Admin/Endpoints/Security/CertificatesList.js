@@ -2,6 +2,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 
 import React, { Component, Fragment } from "react";
 import apis from '../../../../services/apis';
+import { toastifyError } from "../../../../services/toastify";
 
 export default class Certificates extends Component {
 
@@ -15,7 +16,15 @@ export default class Certificates extends Component {
         formatter: (cell, row, rowIndex, parentComponent) => {
             return (
                 <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={async () => { await apis.certificates.deleteCertificate(row.id); parentComponent.props.refreshCertificatesData() }} value="Remove" />
+                    <input type="button" className='btn btn-danger' onClick={ async () => { 
+                            try{
+                                await apis.certificates.deleteCertificate(row.id); 
+                                parentComponent.props.refreshCertificatesData() 
+                            } catch(error){
+                                toastifyError(error.statusText)
+                            }
+
+                        }} value="Remove" />
                 </div>)
         },
         formatExtraData: this

@@ -22,7 +22,7 @@ dotenv.config();
 process.env.TOKEN_SECRET;
 
 // static routes
-app.use('/', express.static(path.join(__dirname, 'build')))
+app.use('/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer/assets/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer-stone/', express.static(path.join(__dirname, 'build')));

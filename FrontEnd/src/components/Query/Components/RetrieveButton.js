@@ -10,11 +10,13 @@ import { addStudiesToAnonList } from '../../../actions/AnonList'
 
 import MonitorJob from '../../../tools/MonitorJob'
 import apis from '../../../services/apis'
+import { toastifyError } from '../../../services/toastify'
 
 class RetrieveButton extends Component {
 
   state = {
-    status: 'Retrieve'
+    status: 'Retrieve',
+    resultAnswer: {}
   }
 
   getVariant = () => {
@@ -25,12 +27,11 @@ class RetrieveButton extends Component {
   }
 
   toAnon = async () => {
-    if (this.resultAnswer === undefined) return
     let studyDetails = []
     if (this.props.level === RetrieveButton.Study) {
-      studyDetails.push(this.resultAnswer)
+      studyDetails.push(this.state.resultAnswer)
     } else if (this.props.level === RetrieveButton.Series) {
-      let retrievedStudy = await apis.content.getStudiesDetails(this.resultAnswer.ParentStudy)
+      let retrievedStudy = await apis.content.getStudiesDetails(this.state.resultAnswer.ParentStudy)
       studyDetails.push(retrievedStudy)
     }
     this.props.addStudiesToAnonList(studyDetails)
@@ -38,17 +39,15 @@ class RetrieveButton extends Component {
   }
 
   toExport = async () => {
-    if (this.resultAnswer === undefined) return
-
     let seriesDetails = []
     let studyDetails = []
     if (this.props.level === RetrieveButton.Study) {
-      let retrievedSeries = await apis.content.getSeriesDetails(this.resultAnswer['ID'])
+      let retrievedSeries = await apis.content.getSeriesDetails(this.state.resultAnswer['ID'])
       seriesDetails = retrievedSeries
-      studyDetails.push(this.resultAnswer)
+      studyDetails.push(this.state.resultAnswer)
     } else if (this.props.level === RetrieveButton.Series) {
-      seriesDetails = [this.resultAnswer]
-      let retrievedStudy = await apis.content.getStudiesDetails(this.resultAnswer.ParentStudy)
+      seriesDetails = [this.state.resultAnswer]
+      let retrievedStudy = await apis.content.getStudiesDetails(this.state.resultAnswer.ParentStudy)
       studyDetails.push(retrievedStudy)
     }
 
@@ -125,8 +124,7 @@ class RetrieveButton extends Component {
     let contentSearch = {
       CaseSensitive: false,
       Expand: true,
-      Query: {
-      }
+      Query: {}
     }
 
     if (this.props.level === RetrieveButton.Study) {
@@ -136,9 +134,14 @@ class RetrieveButton extends Component {
       contentSearch.Level = 'Series'
       contentSearch.Query.SeriesInstanceUID = this.props.seriesInstanceUID
     }
-
-    let searchContent = await apis.content.getContent(contentSearch)
-    this.resultAnswer = searchContent[0]
+    try {
+      let searchContent = await apis.content.getOrthancFind(contentSearch)
+      this.setState({
+        resultAnswer: searchContent[0]
+      })
+    } catch (error) {
+      toastifyError(error.statusText)
+    }
 
   }
 

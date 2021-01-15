@@ -6,6 +6,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import NumericInput from 'react-numeric-input';
 
 import apis from '../../services/apis'
+import { toastifyError } from '../../services/toastify';
 
 export default class Metadata extends Component {
 
@@ -27,32 +28,39 @@ export default class Metadata extends Component {
     }
 
     componentDidMount = async () => {
-        let array = await apis.content.getSeriesInstances(this.props.serieID)
-        let id = []
-        array.forEach(element => id.push(element.ID))
+        let instanceArray  = await this.getInstancesArray(this.props.serieID)
         this.setState({
-            InstancesArray: id
+            InstancesArray: instanceArray
         })
-        this.data()
+        this.updateData()
     }
 
     getInstancesArray = async (serieID) => {
-        let array = await apis.content.getSeriesInstances(serieID)
-        let id = []
-        array.forEach(element => id.push(element.ID))
-        this.setState({
-            InstancesArray: id
-        })
+        try{
+            let array = await apis.content.getSeriesInstances(serieID)
+            let idArray = array.map(element => (element.ID))
+            return idArray
+        } catch(error){
+            toastifyError(error.statusText)
+            return []
+        }
+
     }
 
 
-    data = async () => {
-        let data = await apis.content.getInstances(this.state.InstancesArray[this.state.currentKey])
-        let header = await apis.content.getHeader(this.state.InstancesArray[this.state.currentKey])
-        data = { ...data, ...header }
+    updateData = async () => {
+        let data
+        try{
+            let instances = await apis.content.getInstances(this.state.InstancesArray[this.state.currentKey])
+            let header = await apis.content.getHeader(this.state.InstancesArray[this.state.currentKey])
+            data = { ...instances, ...header }
+
+        }catch(error){
+            toastifyError(error.statusText)
+            return;
+        }
         let prepare = this.prepareData(data)
         this.setState({ data: prepare, InstancesTags: true })
-        return prepare
     }
 
     prepareData = (data) => {
@@ -92,29 +100,34 @@ export default class Metadata extends Component {
 
     setSharedTags = async () => {
         if (this.state.text === 'disabled') {
-            let data = await apis.content.getSharedTags(this.props.serieID)
-            this.setState({ data: this.prepareData(data), text: 'enabled' })
+            try{
+                this.setState({ data: [], text: 'Fetching...' })
+                let data = await apis.content.getSharedTags(this.props.serieID)
+                console.log(data)
+                this.setState({ data: this.prepareData(data), text: 'enabled' })
+            }catch (error) {
+                toastifyError(error.statusText)
+            }
         } else {
-            this.data()
+            this.updateData()
             this.setState({ text: 'disabled' })
         }
     }
 
-    handleChange = async (num) => {
-        await this.setState(prevState => ({
+    handleChange = (num) => {
+        this.setState(prevState => ({
             currentKey: num >= prevState.InstancesArray.length ? prevState.InstancesArray.length - 1 : num < 0 ? 0 : num
-        }))
-        this.data()
+        }), () => this.updateData())
     }
 
     render = () => {
         return (
             <div className='jumbotron'>
                 <div className='row mb-4'>
-                    <div className='col-auto'>
+                    <div className='col'>
                         <button type='button' className='btn btn-primary' onClick={() => this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared Tags: {this.state.text}</button>
                     </div>
-                    <div className='col-auto ml-3'>
+                    <div className='col ml-3'>
                         <div className='row'>
                             <label htmlFor='numberInstances' className='text-center'>Number of instances : {this.state.InstancesArray.length}</label>
                         </div>
