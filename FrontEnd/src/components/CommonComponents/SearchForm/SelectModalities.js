@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Select from 'react-select'
+import Select from 'react-select/creatable'
 
 /**
  * Component for a Select modality input
@@ -11,14 +11,96 @@ export default class SelectModalities extends Component {
     selectedModalities: []
   }
 
-  modalities = [
-    { value: 'CT', label: 'CT' },
-    { value: 'PT', label: 'PT' },
-    { value: 'NM', label: 'NM' },
+  modalitiesRadiology = [
+    { value: 'CT', label: 'CT', explanation: 'Computed Tomography' },
+    { value: 'DX', label: 'DX' },
+    { value: 'CR', label: 'CR' },
     { value: 'MR', label: 'MR' },
     { value: 'US', label: 'US' },
-    { value: 'MG', label: 'MG' }
+    { value: 'MG', label: 'MG' },
+    { value: 'XA', label: 'XA' }
   ]
+
+  modalitiesNuclearMedicine = [
+    { value: 'PT', label: 'PT' },
+    { value: 'NM', label: 'NM' }
+  ]
+
+  modalitiesRadiotherapy = [
+    { value: 'RTDOSE', label: 'RTDOSE' },
+    { value: 'RTIMAGE', label: 'RTIMAGE' },
+    { value: 'RTPLAN', label: 'RTPLAN' },
+    { value: 'RTRECORD', label: 'RTRECORD' },
+    { value: 'RTSTRUCT', label: 'RTSTRUCT' },
+    { value: 'SEG', label: 'SEG' },
+  ]
+
+  modalitiesOther = [
+    { value: 'AR', label: 'AR' },
+    { value: 'ASMT', label: 'ASMT' },
+    { value: 'AU', label: 'AU' },
+    { value: 'BDUS', label: 'BDUS' },
+    { value: 'BI', label: 'BI' },
+    { value: 'BMD', label: 'BMD' },
+    { value: 'DG', label: 'DG' },
+    { value: 'DOC', label: 'DOC' },
+    { value: 'ECG', label: 'ECG' },
+    { value: 'EPS', label: 'EPS' },
+    { value: 'ES', label: 'ES' },
+    { value: 'FID', label: 'FID' },
+    { value: 'GM', label: 'GM' },
+  ]
+
+  groupStyles = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  }
+
+  groupBadgeStyles = {
+    backgroundColor: '#EBECF0',
+    borderRadius: '2em',
+    color: '#172B4D',
+    display: 'inline-block',
+    fontSize: 12,
+    fontWeight: 'normal',
+    lineHeight: '1',
+    minWidth: 1,
+    padding: '0.16666666666667em 0.5em',
+    textAlign: 'center',
+  }
+
+  groupedOptions = [
+    {
+      label: 'Radiology',
+      options: this.modalitiesRadiology,
+    },
+    {
+      label: 'NuclearMedicine',
+      options: this.modalitiesNuclearMedicine,
+    },
+    {
+      label: 'Radiotherapy',
+      options: this.modalitiesRadiotherapy,
+    },
+  ]
+
+  formatOptionLabel = ({ value, label, explanation }) => (
+    <div style={{ display: "flex" }}>
+      <div>{label}</div>
+      <div style={{ marginLeft: "10px", color: "#ccc" }}>
+        {explanation}
+      </div>
+    </div>
+  );
+
+  formatGroupLabel = data => (
+    <div style={this.groupStyles}>
+      <span> {data.label} </span>
+      <span> {data.details} </span>
+    </div>
+  );
+
 
   componentDidMount = () => {
     //If we recieve a previous modality input in props, load it in the state
@@ -54,10 +136,12 @@ export default class SelectModalities extends Component {
 
   render = () => {
     return (
-      <Select isMulti options={this.modalities}
+      <Select isMulti options={this.groupedOptions}
+        formatOptionLabel={this.formatOptionLabel}
         value={this.state.selectedModalities}
         onBlur={this.saveListener}
         onChange={this.changeListener}
+        formatGroupLabel={this.formatGroupLabel}
       />
     )
   }
