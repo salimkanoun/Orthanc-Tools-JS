@@ -14,7 +14,6 @@ import localStorage from './localStorage'
 import User from './User'
 import deleteRobot from './deleteRobot'
 import role from './role'
-import token from './token'
 import ldap from './ldap'
 import cdBurner from './cdBurner'
 import task from './task'
@@ -39,8 +38,7 @@ export default {
   localStorage, 
   User, 
   deleteRobot, 
-  role, 
-  token,
+  role,
   ldap,
   cdBurner,
   task,
