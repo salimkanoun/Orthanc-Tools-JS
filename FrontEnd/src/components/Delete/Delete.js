@@ -8,8 +8,8 @@ import { removePatientFromDeleteList, removeStudyFromDeleteList, emptyDeleteList
 import { removeOrthancContentStudy } from '../../actions/OrthancContent'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
 import apis from '../../services/apis'
-import ModalDelete from '../Main/ModalDelete';
-import MonitorTask from '../../tools/MonitorTask';
+import ModalDelete from '../Main/ModalDelete'
+import MonitorTask from '../../tools/MonitorTask'
 
 class Delete extends Component {
 
@@ -44,26 +44,33 @@ class Delete extends Component {
             deletedSeriesIdArray = [...deletedSeriesIdArray, ...item.Series]
         })
         
-        let answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
-        if (answer){
-            this.task = new MonitorTask(answer.id, 2000)
-            this.task.startMonitoringJob()
+        let answer
 
-            this.openToast()
-
-            this.task.onUpdate((info)=>{
-                this.updateToast(info.progress)
-            })
-
-            this.task.onFinish((info)=>{
-                this.successToast()
-                
-                this.props.deleteList.forEach(async (study) => {
-                    this.props.removeStudyFromDeleteList(study.ID)
-                    this.props.removeOrthancContentStudy(study.ID)
-                });
-            })
+        try {
+            answer  = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
+        } catch( error ){
+            toast.error(error.statusText)
+            return
         }
+
+        this.task = new MonitorTask(answer.id, 2000)
+        this.task.startMonitoringJob()
+
+        this.openToast()
+
+        this.task.onUpdate( (info) => {
+            this.updateToast(info.progress)
+        })
+
+        this.task.onFinish( (info) => {
+            this.successToast()
+            
+            this.props.deleteList.forEach(async (study) => {
+                this.props.removeStudyFromDeleteList(study.ID)
+                this.props.removeOrthancContentStudy(study.ID)
+            })
+        })
+        
 
     }
 

@@ -42,7 +42,13 @@ class DeleteTool extends Component {
             deletedSeriesIdArray = [...deletedSeriesIdArray, ...item.Series]
         })
 
-        let answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
+        let answer
+        try {
+            answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
+        } catch (error) {
+            toast.error(error.statusText)
+            return
+        }
         if (answer) {
             this.task = new MonitorTask(answer.id, 2000)
             this.task.startMonitoringJob()

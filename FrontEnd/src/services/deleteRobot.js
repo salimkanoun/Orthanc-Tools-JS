@@ -1,6 +1,4 @@
-import { toastifyError } from './toastify'
-
-const deleteRobot = {
+export default {
 
     createDeleteRobot(deleteArray, username){
 
@@ -15,11 +13,9 @@ const deleteRobot = {
 
         return fetch('/api/robot/' + username + '/delete', createDeleteRobotOption ).then(answer => {
             if (!answer.ok) {throw answer}
-            return answer.json()
+            return true
         }).catch(error => {
-            toastifyError('error', error)
+            throw error
         })
     }
 }
-
-export default deleteRobot

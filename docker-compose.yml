@@ -31,7 +31,7 @@ services:
         restart: unless-stopped
         ports: 
             -"8042:8042"
-            -"4242:4242"
+            #-"4242:4242"
         volumes: ["orthanc:/var/lib/orthanc/db:Z"]
         environment:
             ORTHANC__NAME: "OrthancToolsJS"
