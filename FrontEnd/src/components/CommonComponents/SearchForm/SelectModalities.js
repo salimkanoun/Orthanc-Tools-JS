@@ -13,42 +13,26 @@ export default class SelectModalities extends Component {
 
   modalitiesRadiology = [
     { value: 'CT', label: 'CT', explanation: 'Computed Tomography' },
-    { value: 'DX', label: 'DX' },
-    { value: 'CR', label: 'CR' },
-    { value: 'MR', label: 'MR' },
-    { value: 'US', label: 'US' },
-    { value: 'MG', label: 'MG' },
-    { value: 'XA', label: 'XA' }
+    { value: 'DX', label: 'DX', explanation: 'Digital Radiography' },
+    { value: 'CR', label: 'CR', explanation: 'Computed Radiography' },
+    { value: 'MR', label: 'MR', explanation: 'Magnetic Resonance' },
+    { value: 'US', label: 'US', explanation: 'Ultrasound' },
+    { value: 'MG', label: 'MG', explanation: 'Mammography' },
+    { value: 'XA', label: 'XA', explanation: 'X-Ray Angiography' }
   ]
 
   modalitiesNuclearMedicine = [
-    { value: 'PT', label: 'PT' },
-    { value: 'NM', label: 'NM' }
+    { value: 'PT', label: 'PT', explanation: 'Positron emission tomography' },
+    { value: 'NM', label: 'NM', explanation: 'Nuclear Medicine' }
   ]
 
   modalitiesRadiotherapy = [
-    { value: 'RTDOSE', label: 'RTDOSE' },
-    { value: 'RTIMAGE', label: 'RTIMAGE' },
-    { value: 'RTPLAN', label: 'RTPLAN' },
-    { value: 'RTRECORD', label: 'RTRECORD' },
-    { value: 'RTSTRUCT', label: 'RTSTRUCT' },
-    { value: 'SEG', label: 'SEG' },
-  ]
-
-  modalitiesOther = [
-    { value: 'AR', label: 'AR' },
-    { value: 'ASMT', label: 'ASMT' },
-    { value: 'AU', label: 'AU' },
-    { value: 'BDUS', label: 'BDUS' },
-    { value: 'BI', label: 'BI' },
-    { value: 'BMD', label: 'BMD' },
-    { value: 'DG', label: 'DG' },
-    { value: 'DOC', label: 'DOC' },
-    { value: 'ECG', label: 'ECG' },
-    { value: 'EPS', label: 'EPS' },
-    { value: 'ES', label: 'ES' },
-    { value: 'FID', label: 'FID' },
-    { value: 'GM', label: 'GM' },
+    { value: 'RTDOSE', label: 'RTDOSE', explanation: 'Radiotherapy Dose' },
+    { value: 'RTIMAGE', label: 'RTIMAGE', explanation: 'Radiotherapy Image' },
+    { value: 'RTPLAN', label: 'RTPLAN', explanation: 'Radiotherapy Plan' },
+    { value: 'RTRECORD', label: 'RTRECORD', explanation: 'RT Treatment Record' },
+    { value: 'RTSTRUCT', label: 'RTSTRUCT', explanation: 'Radiotherapy Structure Set' },
+    { value: 'SEG', label: 'SEG', explanation: 'Segmentation' },
   ]
 
   groupStyles = {
