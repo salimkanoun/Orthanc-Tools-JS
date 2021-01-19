@@ -1,12 +1,12 @@
-import { toastifyError } from './toastify'
 import streamSaver from 'streamsaver'
 import { WritableStream } from "web-streams-polyfill/ponyfill";
-streamSaver.mitm = window.location.origin+'/streamSaver/mitm.html'
+streamSaver.mitm = window.location.origin + '/streamSaver/mitm.html'
 streamSaver.WritableStream = WritableStream
 
-const exportDicom = {
+export default {
 
   exportHirachicalDicoms(OrthancIDsArray, TS) {
+
     let body = {}
     if (TS !== 'none') {
       body = {
@@ -30,13 +30,12 @@ const exportDicom = {
       body: JSON.stringify(body)
     }
 
-    return fetch('/api/tools/create-archive/', exportHirachicalDicomsOption ).then((answer) => {
+    return fetch('/api/tools/create-archive/', exportHirachicalDicomsOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return answer.json()
+    }).catch((error) => {
+      throw error
     })
-      .catch((error) => {
-        toastifyError(error)
-      })
   },
 
   exportDicomDirDicoms(OrthancIDsArray, TS) {
@@ -63,52 +62,71 @@ const exportDicom = {
       body: JSON.stringify(body)
     }
 
-    return fetch('/api/tools/create-media-extended/', exportDicomDirDicomsOption ).then((answer) => {
+    return fetch('/api/tools/create-media-extended/', exportDicomDirDicomsOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).catch((error) => {
-      toastifyError(error)
+      throw error
     })
   },
 
   downloadZip(jobID) {
 
-    const fileStream = streamSaver.createWriteStream('Dicom_'+jobID+'.zip')
+    const fileStream = streamSaver.createWriteStream('Dicom_' + jobID + '.zip')
 
     return fetch('/api/jobs/' + jobID + '/archive', {
-        method: 'GET',
-        headers: {
-            Accept: 'application/zip'
-        }
+      method: 'GET',
+      headers: {
+        Accept: 'application/zip'
+      }
 
     }).then((answer) => {
-        
-        if (!answer.ok) throw answer
-      
-        const readableStream = answer.body
 
-        // more optimized
-        if (window.WritableStream && readableStream.pipeTo) {
-          return readableStream.pipeTo(fileStream)
-            .then(() => console.log('done writing'))
-        }
+      if (!answer.ok) throw answer
 
-        let writer = fileStream.getWriter()
+      const readableStream = answer.body
 
-        const reader = answer.body.getReader()
-        const pump = () => reader.read()
-          .then(res => res.done
-            ? writer.close()
-            : writer.write(res.value).then(pump))
+      // more optimized
+      if (window.WritableStream && readableStream.pipeTo) {
+        return readableStream.pipeTo(fileStream)
+          .then(() => console.log('done writing'))
+      }
 
-        pump()
+      let writer = fileStream.getWriter()
+
+      const reader = answer.body.getReader()
+      const pump = () => reader.read()
+        .then(res => res.done
+          ? writer.close()
+          : writer.write(res.value).then(pump))
+
+      pump()
 
     }).catch((error) => {
-        throw error
+      throw error
     })
 
+  },
+
+  exportStudiesToExternal(username, orthancIDsArray, endpoint) {
+    const storeFtpOption = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        Resources: orthancIDsArray,
+        endpoint: endpoint
+      })
+    }
+
+    return fetch('/api/robot/' + username + '/export/', storeFtpOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+      return (answer.json())
+    }).catch(error => {
+        throw error
+    })
   }
 
 }
-
-export default exportDicom

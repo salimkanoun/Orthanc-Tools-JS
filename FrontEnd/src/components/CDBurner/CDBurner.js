@@ -162,7 +162,7 @@ export default class CDBurner extends Component {
     }
 
     soundHandler = (e) => {
-        apis.localStorage.setlocalStorage('BurnerSounds', (e.target.checked).toString())
+        localStorage.setItem('BurnerSounds', (e.target.checked).toString())
         this.setState({
             playSound: (e.target.checked)
         })
@@ -170,7 +170,7 @@ export default class CDBurner extends Component {
     }
 
     componentDidMount = async () => {
-        let playSound = apis.localStorage.getLocalStorage('BurnerSounds') === 'true'
+        let playSound = localStorage.getItem('BurnerSounds') === 'true'
         this.setState({
             playSound: playSound
         })

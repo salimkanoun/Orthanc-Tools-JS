@@ -67,7 +67,7 @@ class ExportPanel extends Component {
     }
 
     componentDidMount = async () => {
-        let currentTS = apis.localStorage.getLocalStorage('TS');
+        let currentTS = localStorage.getItem('TS');
         this.loadTS(currentTS);
 
         try {
@@ -161,7 +161,7 @@ class ExportPanel extends Component {
     }
 
     onTSChange = (item) => {
-        apis.localStorage.setlocalStorage('TS', item.value)
+        localStorage.setItem('TS', item.value)
         this.loadTS(item.value)
     }
 

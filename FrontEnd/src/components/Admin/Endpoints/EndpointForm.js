@@ -56,7 +56,7 @@ export default class EndpointForm extends Component {
     /**
      * Listener on form submission
      */
-    handleClick = async () => {
+    handleClick = () => {
         let postData = {}
 
         postData.protocol = this.state.protocol
@@ -74,13 +74,11 @@ export default class EndpointForm extends Component {
             postData.digest = this.state.digest || false
         }
 
-        await apis.endpoints.createEndpoint(postData)
-
-        this.props.refreshEndpointsData()
+        this.props.onCreateEndpoint(postData)
 
     }
 
-    readyToSummit = () => {
+    readyToSubmit = () => {
         let ready = (this.state.protocol)
         ready = ready && (this.state.label)
         ready = ready && (this.state.host)
@@ -135,7 +133,7 @@ export default class EndpointForm extends Component {
                     }
                 </div>
                 <div className="text-right mb-5">
-                    <input disabled={!this.readyToSummit()} type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
+                    <input disabled={!this.readyToSubmit()} type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
                 </div>
             </Fragment>
         )

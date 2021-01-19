@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import Dropdown from "react-bootstrap/Dropdown"
 import DropdownButton from "react-bootstrap/DropdownButton"
+import { toast } from "react-toastify"
 
 import apis from '../../services/apis'
 import MonitorJob from '../../tools/MonitorJob'
@@ -38,16 +39,21 @@ export default class DownloadDropdown extends Component {
     }
 
     handleClickDownload = async (e) => {
-        let TS = apis.localStorage.getLocalStorage('TS')
+        let TS = localStorage.getItem('TS')
         e.stopPropagation()
 
         let jobAnswer
 
-        if (e.currentTarget.id === 'hirarchical') {
-            jobAnswer = await apis.exportDicom.exportHirachicalDicoms(this.props.exportIds, TS)
-        } else {
-            jobAnswer = await apis.exportDicom.exportDicomDirDicoms(this.props.exportIds, TS)
+        try{
+            if (e.currentTarget.id === 'hirarchical') {
+                jobAnswer = await apis.exportDicom.exportHirachicalDicoms(this.props.exportIds, TS)
+            } else {
+                jobAnswer = await apis.exportDicom.exportDicomDirDicoms(this.props.exportIds, TS)
+            }
+        } catch (error){
+            toast.error(error.statusText)
         }
+
 
         let jobMonitoring = new MonitorJob(jobAnswer.ID)
         let self = this

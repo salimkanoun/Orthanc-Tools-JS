@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import Dropdown from "react-bootstrap/Dropdown"
 import DropdownButton from "react-bootstrap/DropdownButton"
+import { toast } from "react-toastify"
 
 import apis from "../../services/apis"
 import MonitorTask from "../../tools/MonitorTask"
@@ -15,7 +16,14 @@ export default class SendExternalDropdown extends Component {
     handleClickDownload = async (event) => {
         let endpointId = event.currentTarget.id
 
-        let taskAnswer = await apis.exportToExternal.exportStudiesToExternal(this.props.username, this.props.exportIds, endpointId)
+        let taskAnswer
+        
+        try{
+            taskAnswer = await apis.exportDicom.exportStudiesToExternal(this.props.username, this.props.exportIds, endpointId)
+        } catch (error) {
+            toast.error(error.statusText)
+        }
+        
         let jobMonitoring = new MonitorTask(taskAnswer.id)
 
         let self = this

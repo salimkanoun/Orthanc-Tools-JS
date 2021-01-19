@@ -1,8 +1,6 @@
 import BootstrapTable from "react-bootstrap-table-next";
 
 import React, { Component, Fragment } from "react";
-import apis from '../../../services/apis';
-
 export default class FtpEndpoints extends Component {
 
     columns = [{
@@ -32,7 +30,7 @@ export default class FtpEndpoints extends Component {
         formatter: (cell, row, rowIndex, parentComponent) => {
             return (
                 <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={async () => { await apis.endpoints.deleteEndpoints(row.id); parentComponent.props.refreshEndpointsData() }} value="Remove" />
+                    <input type="button" className='btn btn-danger' onClick={async () => { await parentComponent.props.onDeleteEndpoint(row.id) }} value="Remove" />
                 </div>)
         },
         formatExtraData: this

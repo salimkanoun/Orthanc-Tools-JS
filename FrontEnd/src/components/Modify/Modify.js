@@ -13,8 +13,8 @@ export default class Modify extends Component {
         show: false,
         modification: {},
         toasts: {},
-        keepSource: apis.localStorage.getLocalStorage('remember') === 'true' ? apis.localStorage.getLocalStorage('keepSource') === 'true' : false,
-        removePrivateTags: apis.localStorage.getLocalStorage('remember') === 'true' ? apis.localStorage.getLocalStorage('removePrivateTags') === 'true' : false,
+        keepSource: localStorage.getItem('remember') === 'true' ? localStorage.getItem('keepSource') === 'true' : false,
+        removePrivateTags: localStorage.getItem('remember') === 'true' ? localStorage.getItem('removePrivateTags') === 'true' : false,
     }
 
     updateToast = (id, progress) => {
@@ -47,12 +47,12 @@ export default class Modify extends Component {
     }
 
     checkRemember = () => {
-        apis.localStorage.setlocalStorage('keepSource', this.state.keepSource)
-        apis.localStorage.setlocalStorage('removePrivateTags', this.state.removePrivateTags)
+        localStorage.setItem('keepSource', this.state.keepSource)
+        localStorage.setItem('removePrivateTags', this.state.removePrivateTags)
 
         this.setState({
-            removePrivateTags: apis.localStorage.getLocalStorage('removePrivateTags') === 'true',
-            keepSource: apis.localStorage.getLocalStorage('keepSource') === 'true'
+            removePrivateTags: localStorage.getItem('removePrivateTags') === 'true',
+            keepSource: localStorage.getItem('keepSource') === 'true'
         })
     }
 
