@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Dropdown from "react-bootstrap/Dropdown";
+import { toast } from "react-toastify";
 
 import apis from "../../../services/apis";
 import ModalDetails from './ModalDetails'
@@ -60,9 +61,18 @@ export default class JobsRootPanel extends Component {
     }
 
     getJobs = async () => {
-        let jobsDetails = await apis.jobs.getJobs()
 
         let rows = []
+
+        let jobsDetails
+
+        try {
+            jobsDetails = await apis.jobs.getJobs()
+        } catch (error){
+            toast.error(error.statusText)
+            return rows
+        }
+
         jobsDetails.forEach(jobDetails => {
             rows.push({
                 ...jobDetails
@@ -79,10 +89,10 @@ export default class JobsRootPanel extends Component {
                     Actions
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    <button className='dropdown-item bg-danger' onClick={async () => { await apis.jobs.cancelJob(id); this.getJobs() }}>Cancel</button>
-                    <button className='dropdown-item bg-warning' onClick={async () => { await apis.jobs.pauseJob(id); this.getJobs() }}>Pause</button>
-                    <button className='dropdown-item bg-primary' onClick={async () => { await apis.jobs.resumbitJob(id); this.getJobs() }}>Resumbit</button>
-                    <button className='dropdown-item bg-info' onClick={async () => { await apis.jobs.resumeJob(id); this.getJobs() }}>Resume</button>
+                    <Dropdown.Item className='bg-danger' onClick={async () => { await apis.jobs.cancelJob(id).catch(error => toast.error(error.statusText) ); this.getJobs() }}>Cancel</Dropdown.Item>
+                    <Dropdown.Item className='bg-warning' onClick={async () => { await apis.jobs.pauseJob(id).catch(error => toast.error(error.statusText) ); this.getJobs() }}>Pause</Dropdown.Item>
+                    <Dropdown.Item className='bg-primary' onClick={async () => { await apis.jobs.resumbitJob(id).catch(error => toast.error(error.statusText) ); this.getJobs() }}>Resumbit</Dropdown.Item>
+                    <Dropdown.Item className='bg-info' onClick={async () => { await apis.jobs.resumeJob(id).catch(error => toast.error(error.statusText) ); this.getJobs() }}>Resume</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         )

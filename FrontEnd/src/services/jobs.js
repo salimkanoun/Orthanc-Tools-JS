@@ -1,6 +1,4 @@
-import { toastifyError, toastifySuccess } from './toastify'
-
-const jobs = {
+export default {
 
   getJobs() {
 
@@ -12,7 +10,7 @@ const jobs = {
       if (!answer.ok) { throw answer }
       return answer.json()
     }).catch(error => {
-      toastifyError(error)
+      throw error
     })
   },
 
@@ -30,7 +28,7 @@ const jobs = {
       if (!answer.ok) { throw answer }
       return answer.json()
     }).catch(error => {
-      toastifyError(error)
+      throw error
     })
 
   },
@@ -48,9 +46,6 @@ const jobs = {
 
     return fetch('/api/jobs/' + jobId + '/cancel', cancelJobOption).then((answer) => {
       if (!answer.ok) { throw answer }
-      toastifySuccess('Job Cancelled')
-    }).catch(error => {
-      toastifyError('error')
     })
 
   },
@@ -68,9 +63,6 @@ const jobs = {
 
     return fetch('/api/jobs/' + jobId + '/pause', pauseJobOption).then((answer) => {
       if (!answer.ok) { throw answer }
-      toastifySuccess('Job paused')
-    }).catch(error => {
-      toastifyError('error')
     })
   },
 
@@ -87,9 +79,6 @@ const jobs = {
 
     return fetch('/api/jobs/' + jobId + '/resubmit', resumbitJobOption).then((answer) => {
       if (!answer.ok) { throw answer }
-      toastifySuccess('Job resubmited')
-    }).catch(error => {
-      toastifyError('error')
     })
   },
 
@@ -106,12 +95,7 @@ const jobs = {
 
     return fetch('/api/jobs/' + jobId + '/resume', resumeJobOption).then((answer) => {
       if (!answer.ok) { throw answer }
-      toastifySuccess('Job resumed')
-    }).catch(error => {
-      toastifyError('error')
     })
   },
 }
-
-export default jobs
 
