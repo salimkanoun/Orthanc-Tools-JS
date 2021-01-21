@@ -120,13 +120,13 @@ export default class SelectModalities extends Component {
 
   render = () => {
     return (
-      <Select isMulti options={this.groupedOptions}
-        formatOptionLabel={this.formatOptionLabel}
-        value={this.state.selectedModalities}
-        onBlur={this.saveListener}
-        onChange={this.changeListener}
-        formatGroupLabel={this.formatGroupLabel}
-      />
+        <Select isMulti options={this.groupedOptions}
+          formatOptionLabel={this.formatOptionLabel}
+          value={this.state.selectedModalities}
+          onBlur={this.saveListener}
+          onChange={this.changeListener}
+          formatGroupLabel={this.formatGroupLabel}
+        />
     )
   }
 

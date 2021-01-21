@@ -150,15 +150,28 @@ class TableQuery extends Component {
     dataField: 'ModalitiesInStudy',
     text: 'Modalities',
     sort: true,
+    editCellStyle : {minWidth : '250px'},
     filter: textFilter(),
     headerFormatter: this.customHeader,
     editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => (
-      <SelectModalities {...editorProps} previousModalities={value} />
+        <SelectModalities {...editorProps} previousModalities={value} />
     )
   }, {
     dataField: 'Aet',
     text: 'AET',
     sort: true,
+    formatter : (cell, row, rowIndex, colIndex) => { 
+      if( cell === '' ){
+        return 'Click To Choose'
+      }else{
+        return cell
+      }
+     },
+    style: (cell, row, rowIndex, colIndex) => { 
+      if(cell === ''){
+        return { backgroundColor: '#dc3545' }
+      }
+     },
     editor: {
       type: Type.SELECT,
       getOptions: (setOptions, { row, column }) => {
@@ -176,7 +189,7 @@ class TableQuery extends Component {
   rowStyle = (row, rowIndex) => {
 
     let nonEmptyColumns = Object.values(row).filter((rowValues) => {
-      if (rowValues !== '' && rowValues !== 'Click To Choose') return true
+      if (rowValues !== '') return true
       else return false
     })
 
