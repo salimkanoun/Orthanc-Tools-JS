@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from 'react'
 import PeerListTable from './PeerListTable'
 import PeerForm from './PeerForm'
 import apis from '../../../services/apis'
+import { toast } from 'react-toastify'
 
 /**
  * Root Panel of Peers options
@@ -22,8 +23,14 @@ export default () => {
      * Get Peer Data from backend
      */
   const refreshPeersData = async () => {
-    const peersAnswer = await apis.peers.getPeersExpand()
-    setPeers(peersAnswer)
+
+    try{
+      const peersAnswer = await apis.peers.getPeersExpand()
+      setPeers(peersAnswer)
+    } catch (error){
+      toast.error(error.statusText)
+    }
+
   }
 
   return (

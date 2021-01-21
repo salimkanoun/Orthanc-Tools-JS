@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react"
 import Dropdown from "react-bootstrap/Dropdown"
 import DropdownButton from "react-bootstrap/DropdownButton"
+import { toast } from "react-toastify"
 
 import apis from "../../services/apis"
 import { toastifyError, toastifySuccess } from "../../services/toastify"
@@ -18,7 +19,14 @@ export default class SendPeerDropdown extends Component {
         if (this.props.needConfirm) { this.props.setModal() }
 
         let destinationPeer = event.currentTarget.id
-        let jobAnswer = await apis.peers.storePeer(destinationPeer, this.props.exportIds)
+        let jobAnswer
+        try{
+            jobAnswer = await apis.peers.storePeer(destinationPeer, this.props.exportIds)
+        }catch(error){
+            toast.error(error.statusText)
+            return
+        }
+
 
         let jobMonitoring = new MonitorJob(jobAnswer.ID)
         let self = this

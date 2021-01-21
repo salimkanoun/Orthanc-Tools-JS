@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
+import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
 
 /**
@@ -22,7 +23,12 @@ export default class Peer extends Component {
         text: 'Echo Peer',
         formatter: (cell, row, rowIndex) => {
             return (<div className="text-center">
-                <input type="button" className='btn btn-info' onClick={() => apis.peers.echoPeer(row.name)} value="Echo" />
+                <input type="button" className='btn btn-info' onClick={() => {
+                        apis.peers.echoPeer(row.name).then((response) => {
+                            toast.success('Version ' + row.name + ' = ' + response.Version)
+                        }).catch( (error) => toast.error(error.statusText))
+                    }
+                } value="Echo" />
             </div>)
         }
     }, {
@@ -31,7 +37,14 @@ export default class Peer extends Component {
         formatter: (cell, row, rowIndex, parentComponent) => {
             return (
                 <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={async () => { await apis.peers.deletePeer(row.name); parentComponent.props.refreshPeerData() }} value="Remove" />
+                    <input type="button" className='btn btn-danger' onClick={async () => {
+                        try {
+                            await apis.peers.deletePeer(row.name);
+                            parentComponent.props.refreshPeerData()
+                        } catch (error) {
+                            toast.error(error.statusText)
+                        }
+                    }} value="Remove" />
                 </div>)
         },
         formatExtraData: this
