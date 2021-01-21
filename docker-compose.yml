@@ -18,6 +18,7 @@ services:
         volumes:
             - orthanctoolsjs:/OrthancToolsJs:Z
         environment:
+            TZ: "Europe/Paris"
             OrthancAddress: "http://orthanc"
             OrthancPort: "8042"
             OrthancUsername: "salim"
