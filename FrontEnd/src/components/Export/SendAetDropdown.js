@@ -1,9 +1,9 @@
 import React, { Component } from "react"
 import Dropdown from "react-bootstrap/Dropdown"
 import DropdownButton from "react-bootstrap/DropdownButton"
+import { toast } from "react-toastify"
 
 import apis from "../../services/apis"
-import { toastifyError, toastifySuccess } from "../../services/toastify"
 import MonitorJob from "../../tools/MonitorJob"
 
 export default class SendAetDropdown extends Component {
@@ -20,7 +20,7 @@ export default class SendAetDropdown extends Component {
         try{
             jobAnswer = await apis.aets.storeAET(destinationAet, this.props.exportIds)
         }catch(error){
-            toastifyError(error.statusText)
+            toast.error(error.statusText)
             return;
         }
 
@@ -33,11 +33,11 @@ export default class SendAetDropdown extends Component {
         jobMonitoring.onFinish(async function (state) {
             if (state === MonitorJob.Success) {
                 self.resetProgress()
-                toastifySuccess('DicomTransfer Done')
+                toast.success('DicomTransfer Done')
 
             } else if (state === MonitorJob.Failure) {
                 self.resetProgress()
-                toastifyError('DicomTransfer Failed')
+                toast.error('DicomTransfer Failed')
 
             }
         })

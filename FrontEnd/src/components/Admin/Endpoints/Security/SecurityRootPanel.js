@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react'
+import { toast } from 'react-toastify'
 import apis from '../../../../services/apis'
-import { toastifyError } from '../../../../services/toastify'
 import CertificateForm from './CertificateForm'
 import Certificates from './CertificatesList'
 import SshKeyForm from './SshKeyForm'
@@ -31,7 +31,7 @@ export default () => {
             const answer = await apis.certificates.getCertificatesExpend()
             setCertificates(answer)
         } catch (error) {
-            toastifyError(error.statusText)
+            toast.error(error.statusText)
         }
 
     }

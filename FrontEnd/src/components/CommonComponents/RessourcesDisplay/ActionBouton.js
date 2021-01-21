@@ -1,12 +1,13 @@
 import React, { Component, Fragment } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
 import apis from '../../../services/apis'
-import { toastifySuccess, toastifyError } from '../../../services/toastify'
+
 import OhifLink from '../../Viewers/OhifLink'
 import StoneLink from '../../Viewers/StoneLink'
 import Modal from 'react-bootstrap/Modal'
 import Metadata from '../../Metadata/Metadata'
 import Modify from '../../Modify/Modify'
+import { toast } from 'react-toastify'
 export default class ActionBouton extends Component{
 
     state = {
@@ -28,18 +29,18 @@ export default class ActionBouton extends Component{
         switch(this.props.level){
             case 'patients':
                 await apis.content.deletePatient(orthancID)
-                toastifySuccess("Patient " + orthancID + " have been deleted")
+                toast.success("Patient " + orthancID + " have been deleted")
                 break
             case 'studies':
                 await apis.content.deleteStudies(orthancID)
-                toastifySuccess("Studies " + orthancID + " have been deleted")
+                toast.success("Studies " + orthancID + " have been deleted")
                 break
             case 'series':
                 await apis.content.deleteSeries(orthancID)
-                toastifySuccess("Series " + orthancID + " have been deleted")
+                toast.success("Series " + orthancID + " have been deleted")
                 break
             default:
-                toastifyError("Wrong level")
+                toast.error("Wrong level")
         }
         this.props.onDelete(orthancID, this.props.parentID)
     }

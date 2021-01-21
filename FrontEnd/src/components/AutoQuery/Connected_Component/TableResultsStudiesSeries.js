@@ -36,10 +36,15 @@ class TableResultsStudiesSeries extends Component {
             //Load All series details of studies answers
             for (let studyResults of emptyResultArray) {
                 i++
-                await this.getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET)
-                toast.update(id, {
-                    render: 'Queried series ' + i + '/' + (emptyResultArray.length)
-                });
+                try{
+                    await this.getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET)
+                    toast.update(id, {
+                        render: 'Queried series ' + i + '/' + (emptyResultArray.length)
+                    });
+                } catch(error){
+                    console.error(error)
+                }
+
             }
         }
 

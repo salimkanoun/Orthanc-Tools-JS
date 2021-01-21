@@ -14,7 +14,7 @@ import { addStudiesToDeleteList } from '../../actions/DeleteList'
 import { addStudiesToExportList } from '../../actions/ExportList'
 import { addStudiesToAnonList } from '../../actions/AnonList'
 import { addOrthancContent, removeOrthancContentStudy, removeOrthancContentPatient } from '../../actions/OrthancContent'
-import { toastifyError } from '../../services/toastify'
+import { toast } from 'react-toastify'
 
 
 class ContentRootPanel extends Component {
@@ -48,7 +48,7 @@ class ContentRootPanel extends Component {
       let studies = await apis.content.getOrthancFind(dataForm)
       this.props.addOrthancContent(studies)
     } catch (error) {
-      toastifyError(error.statusText)
+      toast.error(error.statusText)
     }
 
   }

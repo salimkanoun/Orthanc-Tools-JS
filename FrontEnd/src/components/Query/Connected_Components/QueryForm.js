@@ -8,7 +8,7 @@ import AetButton from '../Components/AetButton'
 import apis from '../../../services/apis'
 
 import Form from '../../CommonComponents/SearchForm/Form'
-import { toastifyError } from '../../../services/toastify'
+import { toast } from 'react-toastify'
 
 class QueryForm extends Component {
 
@@ -18,7 +18,7 @@ class QueryForm extends Component {
       let aets = await apis.aets.getAets()
       this.props.loadAvailableAETS(aets)
     } catch (error) {
-      toastifyError(error.statusText)
+      toast.error(error.statusText)
     }
 
   }
@@ -76,8 +76,8 @@ class QueryForm extends Component {
       let queryAnswer = await apis.query.dicomQuery(aet, queryPost)
       let answers = await apis.query.retrieveAnswer(queryAnswer['ID'])
       this.props.addManualQueryStudyResult(answers)
-    } catch {
-      toastifyError('Dicom Failure')
+    } catch (error) {
+        toast.error('Dicom Failure')
     }
 
   }

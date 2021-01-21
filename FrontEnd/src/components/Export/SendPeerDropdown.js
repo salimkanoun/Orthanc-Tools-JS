@@ -4,7 +4,6 @@ import DropdownButton from "react-bootstrap/DropdownButton"
 import { toast } from "react-toastify"
 
 import apis from "../../services/apis"
-import { toastifyError, toastifySuccess } from "../../services/toastify"
 import MonitorJob from "../../tools/MonitorJob"
 
 export default class SendPeerDropdown extends Component {
@@ -37,11 +36,11 @@ export default class SendPeerDropdown extends Component {
         jobMonitoring.onFinish(async function (state) {
             if (state === MonitorJob.Success) {
                 self.resetProgress()
-                toastifySuccess('Peer Trasnfer Success')
+                toast.success('Peer Trasnfer Success')
 
             } else if (state === MonitorJob.Failure) {
                 self.resetProgress()
-                toastifyError('Peer Transfer Error')
+                toast.error('Peer Transfer Error')
 
             }
         })

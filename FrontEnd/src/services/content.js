@@ -1,4 +1,4 @@
-import { toastifyError } from "./toastify"
+import { toast } from "react-toastify"
 
 export default {
 
@@ -35,7 +35,7 @@ export default {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     }, 
 
@@ -57,7 +57,7 @@ export default {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -75,7 +75,7 @@ export default {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -93,7 +93,7 @@ export default {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -111,7 +111,7 @@ export default {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -129,7 +129,7 @@ export default {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -147,7 +147,7 @@ export default {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -161,7 +161,7 @@ export default {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
 
     },
@@ -176,7 +176,7 @@ export default {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
 
     },
@@ -191,7 +191,7 @@ export default {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
 
     },
@@ -231,7 +231,7 @@ export default {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     },
 
@@ -250,7 +250,7 @@ export default {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     }
 }

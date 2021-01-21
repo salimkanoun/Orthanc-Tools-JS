@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import Select from 'react-select'
+import { toast } from 'react-toastify'
 import apis from '../../../services/aets'
-import { toastifyError } from '../../../services/toastify'
 
 /**
  * Form to declare or modify an AET
@@ -52,7 +52,7 @@ export default class AetForm extends Component {
             this.props.refreshAetData()
         } catch(error){
             console.log(error)
-            toastifyError(error.statusText)
+            toast.error(error.statusText)
         }
         
     }

@@ -9,7 +9,8 @@ import AnonProfile from './AnonProfile'
 
 import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList, saveNewValues, autoFill } from '../../actions/AnonList'
 import { studyArrayToPatientArray } from '../../tools/processResponse'
-import { toastifyError } from "../../services/toastify"
+
+import { toast } from "react-toastify"
 
 class AnonymizePanel extends Component {
 
@@ -75,10 +76,10 @@ class AnonymizePanel extends Component {
                 let answer = await apis.anon.createAnonRobot(listToAnonymize, this.props.username) //wait for the robot's answer to know what do to next
                 this.props.setTask(answer.id)
             } catch (error){
-                toastifyError(error.statusText)
+                toast.error(error.statusText)
             }
 
-        } else toastifyError('Fill all patient ID')
+        } else toast.error('Fill all patient ID')
     }
 
     rowStyle = (row) => {

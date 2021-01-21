@@ -6,7 +6,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import NumericInput from 'react-numeric-input';
 
 import apis from '../../services/apis'
-import { toastifyError } from '../../services/toastify';
+import { toast } from 'react-toastify';
 
 export default class Metadata extends Component {
 
@@ -41,7 +41,7 @@ export default class Metadata extends Component {
             let idArray = array.map(element => (element.ID))
             return idArray
         } catch(error){
-            toastifyError(error.statusText)
+            toast.error(error.statusText)
             return []
         }
 
@@ -56,8 +56,8 @@ export default class Metadata extends Component {
             data = { ...instances, ...header }
 
         }catch(error){
-            toastifyError(error.statusText)
-            return;
+            toast.error(error.statusText)
+            return
         }
         let prepare = this.prepareData(data)
         this.setState({ data: prepare, InstancesTags: true })
@@ -106,7 +106,7 @@ export default class Metadata extends Component {
                 console.log(data)
                 this.setState({ data: this.prepareData(data), text: 'enabled' })
             }catch (error) {
-                toastifyError(error.statusText)
+                toast.error(error.statusText)
             }
         } else {
             this.updateData()

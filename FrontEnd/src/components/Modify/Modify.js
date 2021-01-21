@@ -1,6 +1,5 @@
 import React, { Component, Fragment, createRef } from 'react'
 import apis from '../../services/apis';
-import { toastifyError } from '../../services/toastify';
 import { toast } from 'react-toastify';
 
 import MonitorJob from '../../tools/MonitorJob'
@@ -60,7 +59,7 @@ export default class Modify extends Component {
         this.checkRemember()
         //If no change done, simply return
         if (Object.keys(this.state.modification).length === 0) {
-            toastifyError('No Modification set')
+            toast.error('No Modification set')
             return
         }
 
@@ -83,7 +82,7 @@ export default class Modify extends Component {
                 this.onHide()
                 break
             default:
-                toastifyError("Wrong level")
+                toast.error("Wrong level")
         }
         if (jobAnswer !== '') {
             let id = jobAnswer.ID

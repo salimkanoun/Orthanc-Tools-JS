@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
+import { toast } from 'react-toastify'
 import apis from '../../../services/apis'
-import { toastifyError } from '../../../services/toastify'
 
 /**
  * Form to declare or modify an Orthanc Peer
@@ -30,7 +30,7 @@ export default class PeerForm extends Component {
             await apis.peers.updatePeer(this.state.name, this.state.ip, this.state.port, this.state.username, this.state.password)
             this.props.refreshPeerData()
         } catch (error) {
-            toastifyError(error.statusText)
+            toast.error(error.statusText)
         }
 
     }

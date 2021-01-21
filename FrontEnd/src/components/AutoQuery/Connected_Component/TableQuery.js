@@ -17,7 +17,6 @@ import CsvLoader from './CsvLoader'
 import SelectModalities from '../../CommonComponents/SearchForm/SelectModalities';
 
 import apis from '../../../services/apis';
-import { toastifyError } from '../../../services/toastify';
 
 const { ExportCSVButton } = CSVExport;
 
@@ -29,7 +28,7 @@ class TableQuery extends Component {
       let aets = await apis.aets.getAets()
       this.props.loadAvailableAETS(aets)
     } catch (error) {
-      toastifyError(error.statusText)
+      toast.error(error.statusText)
     }
 
   }

@@ -2,7 +2,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 
 import React, { Component, Fragment } from "react";
 import apis from '../../../../services/apis';
-import { toastifyError } from "../../../../services/toastify";
+import { toast } from "react-toastify";
 
 export default class Certificates extends Component {
 
@@ -21,7 +21,7 @@ export default class Certificates extends Component {
                                 await apis.certificates.deleteCertificate(row.id); 
                                 parentComponent.props.refreshCertificatesData() 
                             } catch(error){
-                                toastifyError(error.statusText)
+                                toast.error(error.statusText)
                             }
 
                         }} value="Remove" />

@@ -15,7 +15,7 @@ import ModalWarning from './ModalWarning'
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 import SendExternalDropdown from "./SendExternalDropdown"
-import { toastifyError } from "../../services/toastify"
+import { toast } from "react-toastify"
 
 class ExportPanel extends Component {
 
@@ -80,7 +80,7 @@ class ExportPanel extends Component {
                 endpoints: endpoints
             })
         } catch (error) {
-            toastifyError(error.statusText)
+            toast.error(error.statusText)
         }
 
     }
@@ -178,8 +178,8 @@ class ExportPanel extends Component {
     getCSV = () => {
 
         if (this.props.exportList.seriesArray.length === 0) {
-            toastifyError('Empty List')
-            return;
+            toast.error('Empty List')
+            return
         }
 
         let csvData = []

@@ -8,7 +8,7 @@ import { addManualQuerySeriesDetails } from '../../../actions/ManualQuery'
 
 import apis from '../../../services/apis'
 import RetrieveButton from '../Components/RetrieveButton';
-import { toastifyError } from '../../../services/toastify';
+import { toast } from 'react-toastify';
 
 
 class TableResultSeries extends Component {
@@ -91,7 +91,7 @@ class TableResultSeries extends Component {
             let seriesAnswers = await apis.query.retrieveAnswer(queryAnswers.ID)
             this.props.addManualQuerySeriesDetails(seriesAnswers, studyUID)
         } catch {
-            toastifyError('Dicom Failure')
+            toast.error('Dicom Failure')
         }
 
     }

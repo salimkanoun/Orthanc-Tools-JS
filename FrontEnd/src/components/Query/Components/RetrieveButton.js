@@ -10,7 +10,7 @@ import { addStudiesToAnonList } from '../../../actions/AnonList'
 
 import MonitorJob from '../../../tools/MonitorJob'
 import apis from '../../../services/apis'
-import { toastifyError } from '../../../services/toastify'
+import { toast } from 'react-toastify'
 
 class RetrieveButton extends Component {
 
@@ -82,14 +82,20 @@ class RetrieveButton extends Component {
     let queryAet = this.props.queryAet
 
     let jobID
-    if (level === RetrieveButton.Study) {
-      jobID = await apis.retrieve.retrieveByUID(queryAet, this.props.studyInstanceUID, null)
 
+    try{
 
-    } else if (level === RetrieveButton.Series) {
-      jobID = await apis.retrieve.retrieveByUID(queryAet, this.props.studyInstanceUID, this.props.seriesInstanceUID)
+      if (level === RetrieveButton.Study) {
+        jobID = await apis.retrieve.retrieveByUID(queryAet, this.props.studyInstanceUID, null)
+      } else if (level === RetrieveButton.Series) {
+        jobID = await apis.retrieve.retrieveByUID(queryAet, this.props.studyInstanceUID, this.props.seriesInstanceUID)
+      }
 
+    } catch (error){
+      toast.error(error.statusText)
+      return
     }
+
 
     let monitorJob = new MonitorJob(jobID)
 
@@ -140,7 +146,7 @@ class RetrieveButton extends Component {
         resultAnswer: searchContent[0]
       })
     } catch (error) {
-      toastifyError(error.statusText)
+      toast.error(error.statusText)
     }
 
   }

@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react'
-import Modal from 'react-bootstrap/Modal';
-import { toastifyError } from '../../../services/toastify'
+import Modal from 'react-bootstrap/Modal'
 
 import RoleForm from './RoleForm'
 import apis from '../../../services/apis'
+import { toast } from 'react-toastify'
 
 
 export default class CreateRole extends Component {
@@ -14,7 +14,7 @@ export default class CreateRole extends Component {
 
     create = async (formState) => {
         if (this.state.name === '') {
-            toastifyError('Role name can\'t be empty')
+            toast.error('Role name can\'t be empty')
         } else {
             let permission = { ...formState, name: this.state.name }
             apis.role.createRole(permission).then(() => {

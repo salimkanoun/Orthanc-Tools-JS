@@ -9,7 +9,7 @@ import Toggle from 'react-toggle'
 
 import apis from '../../services/apis'
 import { ReactComponent as SpeakerSVG } from '../../assets/images/sounds.svg'
-import { toastifyError } from '../../services/toastify';
+import { toast } from 'react-toastify';
 
 export default class CDBurner extends Component {
 
@@ -74,7 +74,7 @@ export default class CDBurner extends Component {
                                 try{
                                     await apis.cdBurner.cancelCdBurner(row.cdJobID)
                                 } catch( error ){
-                                    toastifyError(error.statusText)
+                                    toast.error(error.statusText)
                                 }
                             
                             }} value="Cancel" disabled={disable} />
@@ -90,7 +90,7 @@ export default class CDBurner extends Component {
         try{
             cdBurnerData = await apis.cdBurner.getCdBuner()
         } catch (error){
-            toastifyError(error.statusText)
+            toast.error(error.statusText)
             return
         }
 
@@ -154,7 +154,7 @@ export default class CDBurner extends Component {
 
         }catch(error) {
             let message = await error.text()
-            toastifyError(message)
+            toast.error(message)
         }
        
 

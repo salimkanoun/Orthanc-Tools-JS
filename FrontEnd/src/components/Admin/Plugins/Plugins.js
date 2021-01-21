@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
+import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
-import { toastifyError } from '../../../services/toastify';
 
 export default class Plugins extends Component {
 
@@ -14,7 +14,7 @@ export default class Plugins extends Component {
             let answer = []
             plugins.forEach(element => answer.push(<li key={element}>{element}</li>))
             this.setState({ plugins: answer })
-        }).catch((error) => { toastifyError(error.statusText) })
+        }).catch((error) => { toast.error(error.statusText) })
     }
 
     render = () => {

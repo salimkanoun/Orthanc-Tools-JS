@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
-import { toastifyError } from '../../../services/toastify';
 
 export default class RobotStatus extends Component {
 
@@ -103,7 +103,7 @@ export default class RobotStatus extends Component {
                 rows: rows
             })
 
-        }).catch(error => { toastifyError(error.statusText) })
+        }).catch(error => { toast.error(error.statusText) })
     }
 
     render = () => {

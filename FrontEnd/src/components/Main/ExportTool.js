@@ -11,7 +11,7 @@ import DownloadDropdown from "../Export/DownloadDropdown"
 
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
-import { toastifyError } from '../../services/toastify'
+import { toast } from 'react-toastify'
 
 class ExportTool extends Component {
 
@@ -26,7 +26,7 @@ class ExportTool extends Component {
                 aets: aets
             })
         } catch (error){
-            toastifyError(error.statusText)
+            toast.error(error.statusText)
         }
 
     }

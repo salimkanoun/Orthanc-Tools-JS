@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
+import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
-import { toastifyError, toastifySuccess } from '../../../services/toastify';
 
 /**
  * Table with known AETs details with Echo and Remove button
@@ -31,9 +31,9 @@ export default class Aets extends Component {
                 <input type="button" className='btn btn-info' onClick={async () => {
                     try{
                         await apis.aets.echoAet(row.name)
-                        toastifySuccess(row.name + ' Success')
+                        toast.success(row.name + ' Success')
                     }catch(error){
-                        toastifyError(row.name + ' Echo Failure')
+                        toast.error(row.name + ' Echo Failure')
                     }
                     
                     }} value="Echo" />
@@ -50,7 +50,7 @@ export default class Aets extends Component {
                                 await apis.aets.deleteAet(row.name); 
                                 parentComponent.props.refreshAetData() 
                             }catch(error){
-                                toastifyError(error.statusText)
+                                toast.error(error.statusText)
                             }
                         }} value="Remove" />
                 </div>)

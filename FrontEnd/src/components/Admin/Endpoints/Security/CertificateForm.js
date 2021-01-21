@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import apis from '../../../../services/apis'
 import Dropzone from 'react-dropzone'
-import { toastifyError } from '../../../../services/toastify'
+import { toast } from 'react-toastify'
 
 /**
  * Form to declare or modify an AET
@@ -40,7 +40,7 @@ export default class CertificateForm extends Component {
             await apis.certificates.uploadCertificate(response.id, this.state.file)
             this.props.refreshCertificatesData()
         }catch(error){
-            toastifyError(error.statusText)
+            toast.error(error.statusText)
         }
         
 
