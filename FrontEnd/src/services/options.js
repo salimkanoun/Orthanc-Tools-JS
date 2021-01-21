@@ -1,26 +1,4 @@
-import { toastifySuccess, toastifyError } from './toastify'
-
-var optionPlugin = {
-  method: 'GET'
-}
-
-var optionOrthancSystem = {
-  method: 'GET',
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
-  }
-}
-
-var optionOrthancServer = {
-  method: 'GET',
-  headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json'
-  }
-}
-
-const Options = {
+export default {
 
   setRobotScheduleHour(hour_start, min_start, hour_stop, min_stop) {
 
@@ -30,16 +8,12 @@ const Options = {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({hour_start, min_start, hour_stop, min_stop})
+      body: JSON.stringify({ hour_start, min_start, hour_stop, min_stop })
     }
 
     return fetch('/api/options', setRobotScheduleHourOption).then((answer) => {
       if (!answer.ok) { throw answer }
-      return (answer.json())
-    }).then(() => {
-      toastifySuccess('Done')
-    }).catch(error => {
-      toastifyError(error.statusText)
+      return true
     })
   },
 
@@ -48,7 +22,7 @@ const Options = {
       .then((answer) => {
         if (!answer.ok) { throw answer }
         return answer.json()
-      }).catch(error => { toastifyError(error.statusText) })
+      }).catch(error => { throw error })
   },
 
   setOrthancServer(address, port, username, password) {
@@ -70,26 +44,38 @@ const Options = {
 
     return fetch('/api/options/orthanc-server', setOrthancServerOption).then((answser) => {
       if (!answser.ok) throw answser
+      return true
     })
-      .then((answer) => toastifySuccess('Updated'))
-      .catch((error) => toastifyError('Failure'))
   },
 
   getOrthancServer() {
+
+    let optionOrthancServer = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }
+
     return fetch('/api/options/orthanc-server', optionOrthancServer).then((answer) => {
       return (answer.json())
-    }).then((answer) => { return answer })
-      .catch(error => { toastifyError('No connexion to BackEnd') })
+    }).catch(error => { throw error })
   },
 
   getOrthancSystem() {
+
+    let optionOrthancSystem = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }
+
     return fetch('/api/system', optionOrthancSystem).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
-    }).then((answer) => {
-      toastifySuccess('Orthanc Version: ' + answer.Version)
-    }).catch((error) => {
-      toastifyError('Orthanc Server Error: ' + error.statusText)
     })
   },
 
@@ -102,8 +88,6 @@ const Options = {
     return fetch('/api/tools/reset', resetOrthancOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
-    }).catch((error) => {
-      toastifyError(error)
     })
   },
 
@@ -116,8 +100,6 @@ const Options = {
     return fetch('/api/tools/shutdown', shutdownOrthancOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
-    }).catch((error) => {
-      toastifyError(error)
     })
   },
 
@@ -134,7 +116,7 @@ const Options = {
       }
       else throw response
     }).catch(error => {
-      toastifyError(error.statusText)
+      throw error
     })
   },
 
@@ -148,31 +130,27 @@ const Options = {
 
     return fetch('/api/tools/log-level', setVerbosityOption).then((answer) => {
       if (!answer.ok) { throw answer }
-      toastifySuccess("Verbosity have been updated")
-    }).catch((error) => {
-      toastifyError(error)
+      return true
     })
   },
 
   getPlugins() {
-    return fetch('/api/plugins', optionPlugin).then(response => {
+    return fetch('/api/plugins').then(response => {
       if (response.ok) {
         return response.json()
       }
       else throw response
-    }).catch(error => {
-      toastifyError(error.statusText)
     })
   },
 
   getMode() {
-    return fetch('/api/mode', optionPlugin).then(response => {
+    return fetch('/api/mode').then(response => {
       if (response.ok) {
         return response.json()
       }
       else throw response
     }).catch(error => {
-      toastifyError(error.statusText)
+      throw error
     })
   },
 
@@ -197,30 +175,41 @@ const Options = {
       }
       else throw response
     }).catch(error => {
-      toastifyError(error.statusText)
+      throw error
     })
   },
 
-  setBurnerOptions ( formData ){
+  setBurnerOptions(monitoredPath, viewerPath, labelPath, manufacturer, monitoringLevel, supportType, dateFormat, deleteAfterSend, transferSyntax) {
 
-   const burnerOptions = {
-    method: 'PUT',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(formData)
-  }
+    let payload = {
+      burner_monitored_path: monitoredPath,
+      burner_viewer_path: viewerPath,
+      burner_label_path: labelPath,
+      burner_manifacturer: manufacturer,
+      burner_monitoring_level: monitoringLevel,
+      burner_support_type: supportType,
+      burner_date_format: dateFormat,
+      burner_delete_study_after_sent: deleteAfterSend,
+      burner_transfer_syntax: transferSyntax
 
-   return fetch('/api/monitoring/burning/options', burnerOptions).then(response => {
+    }
+
+    const burnerOptions = {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    }
+
+    return fetch('/api/monitoring/burning/options', burnerOptions).then(response => {
       if (response.ok) {
-        toastifySuccess('Burner Options Updated')
+        return true
       } else throw response
     }).catch(error => {
-      toastifyError(error.statusText)
+      throw error
     })
 
   }
 }
-
-export default Options

@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select'
+import { toast } from 'react-toastify';
 
 import apis from '../../../services/apis'
-import { toastifyError } from '../../../services/toastify';
 
 
 export default class CreateMatch extends Component {
@@ -13,12 +13,22 @@ export default class CreateMatch extends Component {
         groupName: '',
         associedRole: '',
         optionsAssociedRole: [],
-        optionsGroupeName: []
+        optionsGroupName: []
     }
 
-    componentDidMount = () => {
-        this.getGroupName()
-        this.getAssociedRole()
+    componentDidMount = async () => {
+        try{
+            let groupName  = await apis.ldap.getAllGroupName()
+            let roles = await this.getAssociedRole()
+
+            this.setState({
+                optionsAssociedRole: roles,
+                optionsGroupName: groupName
+            })
+        }catch(error){
+            toast.error(error.statusText)
+        }
+
     }
 
     changeGroupe = (event) => {
@@ -29,33 +39,26 @@ export default class CreateMatch extends Component {
         this.setState({ associedRole: event })
     }
 
-    getGroupName = async () => {
-        let list = await apis.ldap.getAllGroupName()
-
-        this.setState({
-            optionsGroupeName: list
-        })
-    }
-
     getAssociedRole = async () => {
-        let res = []
+        let roles = []
         let list = await apis.role.getRoles()
         for (let i = 0; i < list.length; i++) {
-            res.push({ value: list[i].name, label: list[i].name })
+            roles.push({ value: list[i].name, label: list[i].name })
         }
-        this.setState({
-            optionsAssociedRole: res
-        })
+
+        return roles 
+
     }
 
     create = async () => {
-        await apis.ldap.createMatch({ groupName: this.state.groupName.value, associedRole: this.state.associedRole.value }).then(() => {
+        await apis.ldap.createMatch(this.state.groupName.value, this.state.associedRole.value).then(() => {
+            toast.success('Ldap Match Created')
             this.props.getMatches()
             this.setState({
                 show: false,
             })
 
-        }).catch(error => { toastifyError(error.message) })
+        }).catch(error => { toast.error(error.statusText) })
     }
 
     render = () => {
@@ -68,7 +71,7 @@ export default class CreateMatch extends Component {
                     </Modal.Header>
                     <Modal.Body>
                         <label>Group name</label>
-                        <Select name="typeGroupe" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsGroupeName} onChange={this.changeGroupe} value={this.state.groupName} required />
+                        <Select name="typeGroupe" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsGroupName} onChange={this.changeGroupe} value={this.state.groupName} required />
 
                         <label className='mt-3'>Associed role</label>
                         <Select name="typeGroupe" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsAssociedRole} onChange={this.changeRole} value={this.state.associedRole} required />

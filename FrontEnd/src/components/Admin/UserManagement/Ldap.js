@@ -6,6 +6,7 @@ import Select from 'react-select'
 import ReactTooltip from "react-tooltip";
 import HelpIcon from '@material-ui/icons/HelpSharp';
 import CreateMatch from "./CreateMatch";
+import { toast } from "react-toastify";
 
 export default class Ldap extends Component {
 
@@ -13,75 +14,82 @@ export default class Ldap extends Component {
         check: false,
         LDAPport: 389,
         DN: '',
-        mdp: '',
-        adresse: '',
+        password: '',
+        address: '',
         changeType: { value: 'ad', label: 'Active Directory' },
-        protocole: '',
+        protocol: '',
         matches: [],
         base: '',
-        groupe: '',
+        group: '',
         user: ''
-
     }
 
-    optionsTypeGroupe = [
+    optionsTypeGroup = [
         { value: 'ad', label: 'Active Directory' },
         { value: 'ldap', label: 'LDAP' }
     ]
 
-    getLdapSetting = async () => {
-        return await apis.ldap.getLdapSettings()
+    setLdapSetting = () => {
+
+        apis.ldap.setLdapSettings(this.state.changeType.value,
+            this.state.address,
+            this.state.LDAPport,
+            this.state.DN,
+            this.state.password,
+            this.state.protocol,
+            this.state.base,
+            this.state.group,
+            this.state.user)
+            .then(() => { toast.success('LDAP Settings updated') })
+            .catch((error) => { toast.error(error.statusText) })
     }
 
-    setLdapSetting = async () => {
-        const options = {
-            TypeGroupe: this.state.changeType.value,
-            adresse: this.state.adresse,
-            port: this.state.LDAPport,
-            DN: this.state.DN,
-            mdp: this.state.mdp,
-            protocole: this.state.protocole,
-            base: this.state.base,
-            groupe: this.state.groupe,
-            user: this.state.user
-        }
-        await apis.ldap.setLdapSettings(options)
-    }
+    testLdapSettings = () => {
 
-    testLdapSettings = async () => {
-        await apis.ldap.testLdapSettings()
-    }
-
-    getModeFromDB = async () => {
-        return await apis.options.getMode()
+        apis.ldap.testLdapSettings().then(answer => {
+            if (answer) {
+                toast.success('Connexion established')
+            } else {
+                toast.error('connexion failed')
+            }
+        }).catch((error) => {
+            toast.error(error.statusText)
+        })
     }
 
     componentDidMount = async () => {
         this.getMatches()
 
-        //Mode
-        let value = await this.getModeFromDB()
-        this.setState({ check: value })
+        let value, options
 
-        //Ldap
-        let options = await this.getLdapSetting()
+        try {
+            //Mode
+            value = await apis.options.getMode()
+            //Ldap
+            options = await apis.ldap.getLdapSettings()
+        } catch (error) {
+            toast.error(error.statusText)
+            return
+        }
 
-        let typeGroupe
+
+        let typeGroup
         if (options.TypeGroupe === 'ad') {
-            typeGroupe = { value: 'ad', label: 'Active Directory' }
+            typeGroup = { value: 'ad', label: 'Active Directory' }
         } else if (options.TypeGroupe === 'ldap') {
-            typeGroupe = { value: 'ldap', label: 'LDAP' }
+            typeGroup = { value: 'ldap', label: 'LDAP' }
         } else {
-            typeGroupe = { value: '', label: '' }
+            typeGroup = { value: '', label: '' }
         }
 
         this.setState({
-            protocole: options.protocoles,
-            changeType: typeGroupe,
+            check: value,
+            protocol: options.protocoles,
+            changeType: typeGroup,
             LDAPport: options.port,
             DN: options.DN,
-            mdp: options.mdp,
-            groupe: options.groupe,
+            password: options.mdp,
+            group: options.groupe,
             user: options.user,
             base: options.base
         })
@@ -89,8 +97,12 @@ export default class Ldap extends Component {
     }
 
     changeMode = async () => {
-        this.setState(prevState => ({ check: !prevState.check }))
-        await apis.options.changeMode(!this.state.check)
+        try {
+            await apis.options.changeMode(!this.state.check)
+            this.setState(prevState => ({ check: !prevState.check }))
+        } catch (error) {
+            toast.error(error.statusText)
+        }
     }
 
     handleChange = (event) => {
@@ -107,17 +119,25 @@ export default class Ldap extends Component {
         this.setState({ changeType: event })
     }
 
-    delete = async (toDelete) => {
-        await apis.ldap.deleteMatch(toDelete).then(() => {
+    delete = (groupName) => {
+        apis.ldap.deleteMatch(groupName).then(() => {
+            toast.success('Match deleted with success')
             this.getMatches()
+        }).catch(error => {
+            toast.error(error.statusText)
         })
     }
 
     getMatches = async () => {
-        let answer = await apis.ldap.getAllCorrespodences()
-        this.setState({
-            matches: answer
-        })
+        try {
+            let answer = await apis.ldap.getAllCorrespodences()
+            this.setState({
+                matches: answer
+            })
+        } catch (error) {
+            toast.error(error.statusText)
+        }
+
     }
 
     columns = [
@@ -155,7 +175,7 @@ export default class Ldap extends Component {
                     <div className="form-group mr-3">
                         <div className="row">
                             <div className="col-sm">
-                                <label htmlFor="typeGroupe">Connexion type : </label>
+                                <label htmlFor="typeGroup">Connexion type : </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info1' fontSize="small" color="action" />
                                 <ReactTooltip place="right" effect="solid" id='info1' type='dark'>
                                     <span>Choix du type de connexion (en fonction de la nature de votre annuaire): </span>
@@ -164,30 +184,30 @@ export default class Ldap extends Component {
                                     <br></br>
                                     <span>2. Ldap (Open Souce Softaware)</span>
                                 </ReactTooltip>
-                                <Select name="typeGroupe" isDisabled={!this.state.check} controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.optionsTypeGroupe} onChange={this.changeListener} value={this.state.changeType} />
+                                <Select name="typeGroup" isDisabled={!this.state.check} controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.optionsTypeGroup} onChange={this.changeListener} value={this.state.changeType} />
                             </div>
                             <div className="col-sm"></div>
                         </div>
                         <div className="row mt-2">
                             <div className='col-sm'>
-                                <label htmlFor="protocole">Protocol : </label>
+                                <label htmlFor="protocol">Protocol : </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info2' fontSize="small" color="action" />
                                 <ReactTooltip place="right" effect="solid" id='info2' type='dark'>
                                     <span><i>ldap//:</i> no secure connexion </span>
                                     <br></br>
                                     <span><i>ldaps//:</i> secure connexion </span>
                                 </ReactTooltip>
-                                <input type='text' disabled={!this.state.check} name="protocole" className="form-control" onChange={this.handleChange} value={this.state.protocole} placeholder="ldap(s)://" />
+                                <input type='text' disabled={!this.state.check} name="protocol" className="form-control" onChange={this.handleChange} value={this.state.protocol} placeholder="ldap(s)://" />
                             </div>
                             <div className='col-sm'>
-                                <label htmlFor="adresse">Adresse : </label>
+                                <label htmlFor="address">Address : </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info3' fontSize="small" color="action" />
                                 <ReactTooltip place="right" effect="solid" id='info3' type='dark'>
                                     <span>Domain name or IP of the online directory</span>
                                     <br></br>
                                     <span>example : <i>127.0.0.1</i> or <i>chu.exemple.fr</i></span>
                                 </ReactTooltip>
-                                <input type='text' disabled={!this.state.check} name="adresse" className="form-control" onChange={this.handleChange} value={this.state.adresse} />
+                                <input type='text' disabled={!this.state.check} name="address" className="form-control" onChange={this.handleChange} value={this.state.address} />
                             </div>
                             <div className='col-sm'>
                                 <label htmlFor="LDAPPort">Port : </label>
@@ -222,22 +242,22 @@ export default class Ldap extends Component {
                                 <input type='text' disabled={!this.state.check} name="DN" className="form-control" value={this.state.DN} onChange={this.handleChange} />
                             </div>
                             <div className='col-sm'>
-                                <label htmlFor="mdp">Bind DN password : </label>
+                                <label htmlFor="password">Bind DN password : </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info6' fontSize="small" color="action" />
                                 <ReactTooltip place="right" effect="solid" id='info6' type='dark'>
                                     <span>Password of the user from witch researchs will be made</span>
                                 </ReactTooltip>
-                                <input type='password' disabled={!this.state.check} name="mdp" className="form-control" value={this.state.mdp} onChange={this.handleChange} />
+                                <input type='password' disabled={!this.state.check} name="password" className="form-control" value={this.state.password} onChange={this.handleChange} />
                             </div>
                         </div>
                         <div className="row mt-5">
                             <div className='col-sm'>
-                                <label htmlFor="groupe">Group Filter : </label>
+                                <label htmlFor="group">Group Filter : </label>
                                 <HelpIcon className="ml-1" data-tip data-for='info7' fontSize="small" color="action" />
                                 <ReactTooltip place="right" effect="solid" id='info7' type='dark'>
                                     <span>DN for groups researchs</span>
                                 </ReactTooltip>
-                                <input type='text' disabled={!this.state.check} name="groupe" className="form-control" onChange={this.handleChange} value={this.state.groupe} />
+                                <input type='text' disabled={!this.state.check} name="group" className="form-control" onChange={this.handleChange} value={this.state.group} />
                             </div>
                             <div className='col-sm'>
                                 <label htmlFor="user">User filter </label>

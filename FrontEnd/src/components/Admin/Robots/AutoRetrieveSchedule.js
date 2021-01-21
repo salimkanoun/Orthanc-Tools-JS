@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
 
 export default class AutoRetrieveSchedule extends Component {
@@ -13,13 +14,20 @@ export default class AutoRetrieveSchedule extends Component {
    * Get defined schedule hour and min from backend
    */
   componentDidMount = async () => {
-    const response = await apis.options.getOptions()
-    this.setState({
-      hour_start: response.hour_start,
-      min_start: response.min_start,
-      hour_stop: response.hour_stop,
-      min_stop: response.min_stop
-    })
+    try {
+      
+      const response = await apis.options.getOptions()
+      this.setState({
+        hour_start: response.hour_start,
+        min_start: response.min_start,
+        hour_stop: response.hour_stop,
+        min_stop: response.min_stop
+      })
+
+    } catch (error) {
+      toast.error(error.statusText)
+    }
+
   }
 
   /**
@@ -41,6 +49,8 @@ export default class AutoRetrieveSchedule extends Component {
    */
   handleClick = () => {
     apis.options.setRobotScheduleHour(this.state.hour_start, this.state.min_start, this.state.hour_stop, this.state.min_stop)
+      .then(() => { toast.success('schedule updated') })
+      .catch(error => { toast.error(error.statusText) })
   }
 
   render = () => {
