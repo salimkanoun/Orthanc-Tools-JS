@@ -102,7 +102,6 @@ export default class Users extends Component {
                         })
                         setOptions(options)
                     })
-
                 }
             }
         }, {

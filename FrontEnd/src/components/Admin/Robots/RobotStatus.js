@@ -74,13 +74,16 @@ export default class RobotStatus extends Component {
     validationRobotHandler = (username, refreshHandler) => {
         apis.retrieveRobot.validateRobot(username).then(() => {
             refreshHandler()
-        })
+        }).catch ( error => { toast.error(error.statusText) })
     }
 
-    deleteJobHandler = (username, refreshHandler) => {
-        apis.retrieveRobot.deleteRobot(username).then(() => {
+    deleteJobHandler = async (username, refreshHandler) => {
+        try{
+            await apis.retrieveRobot.deleteRobot(username)
             refreshHandler()
-        })
+        }catch(error){
+            toast.error(error.statusText)
+        }
     }
 
     refreshHandler = () => {

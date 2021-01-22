@@ -5,6 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import apis from '../../../services/apis'
 import ModifyRole from "./ModifyRole";
 import CreateRole from "./CreateRole";
+import { toast } from "react-toastify";
 
 export default class Roles extends Component {
 
@@ -19,12 +20,20 @@ export default class Roles extends Component {
     }
 
     getRoles = async () => {
-        let roles = await apis.role.getRoles()
-        this.setState({ roles: roles })
+        try {
+            let roles = await apis.role.getRoles()
+            this.setState({ roles: roles })
+        } catch (error) {
+            toast.error(error.statusText)
+        }
+
     }
 
-    delete = async () => {
-        await apis.role.deleteRole(this.state.name).then(() => this.onHide()).catch(error => console.log(error))
+    delete = () => {
+        apis.role.deleteRole(this.state.name).then(() => {
+            toast.success('Deleted')
+            this.onHide()
+        }).catch(error => toast.error(error.statusText))
     }
 
     onHide = () => {

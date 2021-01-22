@@ -17,15 +17,15 @@ export default class CreateMatch extends Component {
     }
 
     componentDidMount = async () => {
-        try{
-            let groupName  = await apis.ldap.getAllGroupName()
+        try {
+            let groupName = await apis.ldap.getAllGroupName()
             let roles = await this.getAssociedRole()
 
             this.setState({
                 optionsAssociedRole: roles,
                 optionsGroupName: groupName
             })
-        }catch(error){
+        } catch (error) {
             toast.error(error.statusText)
         }
 
@@ -41,12 +41,16 @@ export default class CreateMatch extends Component {
 
     getAssociedRole = async () => {
         let roles = []
-        let list = await apis.role.getRoles()
-        for (let i = 0; i < list.length; i++) {
-            roles.push({ value: list[i].name, label: list[i].name })
+        try {
+            let list = await apis.role.getRoles()
+            for (let i = 0; i < list.length; i++) {
+                roles.push({ value: list[i].name, label: list[i].name })
+            }
+        } catch (error) {
+            toast.error(error.statusText)
         }
-
-        return roles 
+        
+        return roles
 
     }
 

@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import Modal from 'react-bootstrap/Modal';
+import { toast } from 'react-toastify';
 
 import apis from '../../../services/apis'
 
@@ -16,7 +17,10 @@ export default class ModifyRole extends Component {
             ...roleFormState,
             name: this.props.name
         }
-        apis.role.modifyRole(permission).then(() => this.setState({ show: false })).catch(error => console.log(error))
+        apis.role.modifyRole(permission).then( () => {
+            toast.success('Modified')
+            this.setState({ show: false })
+        }).catch(error => toast.error(error.statusText))
     }
 
     handleClick = () => {
@@ -26,7 +30,7 @@ export default class ModifyRole extends Component {
                 data: { ...permission },
                 show: true
             })
-        }).catch(error => console.log(error))
+        }).catch(error => toast.error(error.statusText))
     }
 
     render = () => {

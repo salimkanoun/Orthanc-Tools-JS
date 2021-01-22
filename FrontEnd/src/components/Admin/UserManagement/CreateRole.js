@@ -22,8 +22,9 @@ export default class CreateRole extends Component {
                     show: false,
                     name: ''
                 })
+                toast.success('Crated Role')
                 this.props.onSubmitRole()
-            }).catch(error => console.log(error))
+            }).catch(error => toast.error(error.statusText))
         }
     }
 

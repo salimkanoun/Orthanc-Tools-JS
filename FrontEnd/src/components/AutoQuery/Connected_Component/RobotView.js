@@ -17,6 +17,7 @@ import { addStudiesToDeleteList } from '../../../actions/DeleteList'
 import { addStudiesToAnonList } from '../../../actions/AnonList'
 
 import MonitorTask from '../../../tools/MonitorTask'
+import { toast } from 'react-toastify';
 
 
 /**
@@ -236,12 +237,14 @@ class RobotView extends Component {
 
     }
 
-    deleteQueryHandler = (rowIndex, refreshHandler) => {
-        apis.retrieveRobot
-            .deleteRobotItem(this.props.username, rowIndex)
-            .then(() => {
-                apis.task.getTaskOfUser(this.props.username, 'retrieve').then(this.refreshHandler)
-            })
+    deleteQueryHandler = async (rowIndex, refreshHandler) => {
+
+        try {
+            await apis.retrieveRobot.deleteRobotItem(this.props.username, rowIndex)
+            await apis.task.getTaskOfUser(this.props.username, 'retrieve').then(this.refreshHandler)
+        } catch (error) {
+            toast.error(error)
+        }
 
     }
 

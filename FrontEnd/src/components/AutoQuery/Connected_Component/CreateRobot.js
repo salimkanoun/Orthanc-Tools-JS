@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
+import { toast } from 'react-toastify'
 
 import apis from '../../../services/apis'
 
@@ -16,9 +17,15 @@ class CreateRobot extends Component {
    * Take array of retrieve from Redux and build a retrieve Array to send to API
    */
   createRobot = async () => {
-    //Send the retrieve array to back end*
-    await apis.retrieveRobot.createRobot( this.props.username, this.state.projectName, this.props.getResultArray())
-    this.props.switchTab('MyRobot')
+    //Send the retrieve array to back end
+    try{
+      await apis.retrieveRobot.createRobot( this.props.username, this.state.projectName, this.props.getResultArray())
+      this.props.switchTab('MyRobot')
+      toast.success('sent to robot')
+    }catch(error){
+      toast.error(error.statusText)
+    }
+
   }
 
   /**
