@@ -1,17 +1,23 @@
 import apis from '../services/apis'
 import MonitorJob from './MonitorJob'
 
-export default class MonitorTask extends MonitorJob{
-    constructor(jobID,interval=1000){
-        super(jobID,interval)
+export default class MonitorTask extends MonitorJob {
+    constructor(jobID, interval = 1000) {
+        super(jobID, interval)
     }
 
-    cancel(){
+    cancel() {
         console.warn("export job supression not implemented")
     }
+    
+    async jobMonitoring(jobUuid) {
 
-    async jobMonitoring(jobUuid){
-        const task = await apis.task.getTask(jobUuid)
+        let task
+        try {
+            task = await apis.task.getTask(jobUuid)
+        } catch (error) {
+            return
+        }
 
         this.updateCallBack(task)
 
@@ -19,5 +25,6 @@ export default class MonitorTask extends MonitorJob{
             this.stopMonitoringJob()
             this.finishCallback(task)
         }
+
     }
 }

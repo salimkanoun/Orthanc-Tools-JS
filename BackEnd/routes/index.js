@@ -125,7 +125,7 @@ router.get('/ldap/test', userAdminMidelware, testLdapSettings)
 router.post('/ldap/matches', userAdminMidelware, setLdapCorrespodence)
 router.get('/ldap/matches', userAdminMidelware, getLdapCorrespodences)
 router.delete('/ldap/matches', userAdminMidelware, deleteCorrespodence)
-router.get('/ldap/groupename', userAdminMidelware, getLdapGroupeNames)
+router.get('/ldap/groupname', userAdminMidelware, getLdapGroupeNames)
 
 
 //Monitoring

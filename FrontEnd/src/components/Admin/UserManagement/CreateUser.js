@@ -67,8 +67,14 @@ export default class CreateUser extends Component {
             this.state.data.password === '') {
             toast.error('Please fill all required input')
         } else {
-            await apis.User.createUser(this.state.data)
-            this.resetState()
+            
+            try{
+                await apis.User.createUser(this.state.data)
+                this.resetState()
+            }catch(error){
+                toast.error(error.statusText)
+            }
+
         }
     }
 

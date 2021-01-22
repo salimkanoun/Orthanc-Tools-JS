@@ -37,7 +37,6 @@ const uploadKey = async function(req, res){
         await key.setKeyContent(req.body)
         res.send('Done')
     } catch(error){
-
         console.error(error)
         res.status(400).send(error)
     }

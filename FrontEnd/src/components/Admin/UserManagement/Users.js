@@ -8,6 +8,7 @@ import apis from '../../../services/apis';
 
 import CreateUser from './CreateUser'
 import InputPassword from './InputPassword'
+import { toast } from 'react-toastify';
 
 
 export default class Users extends Component {
@@ -23,14 +24,20 @@ export default class Users extends Component {
     }
 
     getUsers = async () => {
-        let answer = await apis.User.getUsers()
         let users = []
-        answer.forEach((user) => {
-            users.push({
-                ...user,
-                password: ''
+
+        try {
+            let answer = await apis.User.getUsers()
+            answer.forEach((user) => {
+                users.push({
+                    ...user,
+                    password: ''
+                })
             })
-        })
+        } catch (error) {
+            toast.error(error.statusText)
+        }
+
         this.setState({
             users: users,
         })
@@ -52,15 +59,18 @@ export default class Users extends Component {
             }
         }
         await apis.User.modifyUser(payload).then(() => {
+            toast.success('User modified')
             this.resetState()
-        }).catch((error) => console.log(error))
+        }).catch((error) => toast.error(error.statusText))
     }
 
-    delete = async () => {
+    delete = () => {
         if (this.state.username !== '') {
-            await apis.User.deleteUser(this.state.username).then(() => {
+
+            apis.User.deleteUser(this.state.username).then(() => {
+                toast.success('Deleted User')
                 this.resetState()
-            })
+            }).catch( (error) => {toast.error(error.statusText)} )
         }
     }
 

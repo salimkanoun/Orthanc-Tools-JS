@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import Select from 'react-select'
+import { toast } from 'react-toastify'
 import apis from '../../../services/apis'
 
 /**
@@ -23,10 +24,15 @@ export default class EndpointForm extends Component {
 
     loadKeys = async () => {
         let sshKeys = []
-        let response = await apis.sshKeys.getKeysExpend()
-        response.forEach(key => {
-            sshKeys.push({ value: key.id, label: key.label })
-        });
+        try{
+            let response = await apis.sshKeys.getKeysExpend()
+            response.forEach(key => {
+                sshKeys.push({ value: key.id, label: key.label })
+            })
+        } catch (error){
+            toast.error(error.statusText)
+        }
+
         this.setState({ keys: sshKeys })
     }
 

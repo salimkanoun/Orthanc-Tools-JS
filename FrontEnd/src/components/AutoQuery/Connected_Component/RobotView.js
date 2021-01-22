@@ -190,11 +190,14 @@ class RobotView extends Component {
     }
 
     startProgressMonitoring = async () => {
-        let response = await apis.task.getTaskOfUser(this.props.username, 'retrieve')
-
-        //Case of task not existing, no data from backend
-        if (response === undefined) return
-
+        let response
+        try{
+            response = await apis.task.getTaskOfUser(this.props.username, 'retrieve')
+        } catch (error){
+            toast.error(error.statusText)
+            return
+        }
+        
         this.refreshHandler(response)
         this.task = new MonitorTask(response.id)
         this.task.onUpdate(this.refreshHandler.bind(this))

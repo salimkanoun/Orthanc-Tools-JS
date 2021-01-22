@@ -56,11 +56,11 @@ var deleteCorrespodence = async function(req, res){
 
 var getLdapGroupeNames = async function(req, res) {
   try {
-    await Ldap.getAllGroupeNames(async function(matches) {
-      await res.json(matches)
-    })
+    let matches = await Ldap.getAllGroupeNames()
+    res.json(matches)
   } catch(err) {
     console.error(err)
+    res.status(500)
   }
 }
 

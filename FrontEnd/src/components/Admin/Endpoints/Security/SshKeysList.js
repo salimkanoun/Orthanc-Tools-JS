@@ -2,6 +2,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 
 import React, { Component, Fragment } from "react";
 import apis from '../../../../services/apis';
+import { toast } from "react-toastify";
 
 export default class SshKeys extends Component {
 
@@ -20,7 +21,15 @@ export default class SshKeys extends Component {
         formatter: (cell, row, rowIndex, parentComponent) => {
             return (
                 <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={async () => { await apis.sshKeys.deleteKey(row.id); parentComponent.props.refreshSshKeysData() }} value="Remove" />
+                    <input type="button" className='btn btn-danger' onClick={async () => {
+                        try {
+                            await apis.sshKeys.deleteKey(row.id);
+                            parentComponent.props.refreshSshKeysData()
+                        } catch (error) {
+                            toast.error(error.statusText)
+                        }
+
+                    }} value="Remove" />
                 </div>
             )
         },

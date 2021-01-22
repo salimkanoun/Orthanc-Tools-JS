@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import apis from '../../../../services/apis'
 import Dropzone from 'react-dropzone'
+import { toast } from 'react-toastify'
 
 /**
  * Form to declare or modify an Ssh Keys
@@ -30,16 +31,13 @@ export default class SshKeyForm extends Component {
      * Listener on form submission
      */
     handleClick = async () => {
-
-        let postData = {
-            label: this.state.label,
-            pass: this.state.pass
+        try{
+            let response = await apis.sshKeys.createKey(this.state.label, this.state.pass)
+            await apis.sshKeys.uploadKey(response.id, this.state.file)
+            this.props.refreshSshKeysData()
+        } catch(error){
+            toast.error(error.statusText)
         }
-
-        let response = await apis.sshKeys.createKey(postData)
-        await apis.sshKeys.uploadKey(response.id, this.state.file)
-
-        this.props.refreshSshKeysData()
 
     }
 

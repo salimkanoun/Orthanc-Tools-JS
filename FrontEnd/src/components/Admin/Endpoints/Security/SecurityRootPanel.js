@@ -22,8 +22,12 @@ export default () => {
     }, [])
 
     let refreshSshKeys = async () => {
-        const answere = await apis.sshKeys.getKeysExpend()
-        setSshKeys(answere)
+        try{
+            const answer = await apis.sshKeys.getKeysExpend()
+            setSshKeys(answer)
+        }catch(error){
+            toast.error(error.statusText)
+        }
     }
 
     let refreshCertificates = async () => {

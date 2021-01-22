@@ -1,6 +1,6 @@
-const task = {
+export default {
 
-  getTask(taskId){
+  getTask(taskId) {
 
     const getJobInfosOption = {
       method: 'GET',
@@ -10,16 +10,16 @@ const task = {
       }
     }
 
-    return fetch('/api/tasks/' + taskId , getJobInfosOption ).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return answer.json()
-      }).catch(error => {
-        console.error(error)
-      })
-        
+    return fetch('/api/tasks/' + taskId, getJobInfosOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+      return answer.json()
+    }).catch(error => {
+      throw error
+    })
+
   },
 
-  getTaskOfUser(username,type){
+  getTaskOfUser(username, type) {
     const getJobInfosOption = {
       method: 'GET',
       headers: {
@@ -28,13 +28,11 @@ const task = {
       }
     }
 
-    return fetch('/api/tasks/' + username + '/' + type, getJobInfosOption ).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return answer.json()
-      }).catch(error => {
-        console.error(error)
-      })
+    return fetch('/api/tasks/' + username + '/' + type, getJobInfosOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+      return answer.json()
+    }).catch(error => {
+      throw error
+    })
   }
 }
-
-export default task
