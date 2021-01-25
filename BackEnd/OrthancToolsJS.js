@@ -55,11 +55,15 @@ var accessLogStream = rfs.createStream('access.log', {
   path: path.join(__dirname, '/data/log')
 })
 
-//logger.token('post', function (req, res) {
-//  return JSON.stringify(req.body)
-//})
+morgan.token('username', function (req, res) { 
+  return req.roles == null ? 'Not Authentified' : req.roles.username
+})
 
-//app.use(unless('/', morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTPS/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ":post";', { stream: accessLogStream })))
+app.use(
+  unless('/',
+    morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTPS/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ;', { stream: accessLogStream })
+  )
+)
 
 //For routes containing study UID redirect to OHIF index
 app.get('/viewer/*', function (req, res) {
@@ -71,11 +75,9 @@ app.use('/api/users', usersRouter)
 app.use('/api', apisRouter)
 app.use('/api', adminRouter)
 
-
-
-// catch 404 and forward to error handler
+// If didn't found route catch 404 and forward to error handler
+//SK A améliorer ne tient pas compte des routes dans le subrouter
 app.use(function (req, res, next) {
-  console.error('error 404')
   next(createError(404))
 })
 
