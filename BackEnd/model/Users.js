@@ -53,11 +53,10 @@ class Users {
     })
   }
 
-  async checkLocalPassword(plainPassword, callback) {
-    const check = await this._getUserEntity().then(user => {
+  checkLocalPassword(plainPassword) {
+    return this._getUserEntity().then(user => {
       return bcrypt.compare(plainPassword, user.password)
-    }).catch(() => callback(false))
-    return callback(check)
+    }).catch(() => false)
   }
 
   async checkPassword(plainPassword, callback) {
@@ -70,19 +69,18 @@ class Users {
     try {
       if (mode.ldap && this.username.indexOf('@') !== -1) {
         //LDAP user
-        await this.checkLDAPPassword(plainPassword, async function (response) {
-          return await callback(response)
+        this.checkLDAPPassword(plainPassword, function (response) {
+          callback(response)
         });
 
       } else {
         //Local user
-        await this.checkLocalPassword(plainPassword, async function (response) {
-          return await callback(response)
-        });
+        let checkLocal = await this.checkLocalPassword(plainPassword)
+        callback(checkLocal)
 
       }
     } catch (err) {
-      console.log(err)
+      callback(false)
     }
   }
 

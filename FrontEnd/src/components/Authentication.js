@@ -5,6 +5,7 @@ import { CSSTransition } from "react-transition-group";
 
 import ReactTooltip from "react-tooltip";
 import HelpIcon from '@material-ui/icons/Info';
+import { toast } from 'react-toastify';
 
 export default class Authentication extends Component {
 
@@ -24,12 +25,16 @@ export default class Authentication extends Component {
 
   handleClick = async () => {
 
-    try{
+    try {
       let answer = await apis.authentication.logIn(this.state.username, this.state.password)
       this.props.onLogin(answer)
-    } catch (error){
-      this.setState({
-        errorMessage: await error.text()
+    } catch (error) {
+      error.json().then(answer => {
+        this.setState({
+          errorMessage: answer.errorMessage
+        })
+      }).catch( error => {
+        toast.error(error)
       })
     }
 

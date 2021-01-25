@@ -9,7 +9,7 @@ export default {
       }
     }
 
-    return fetch('/users/users', getUsersOption).then((answer) => {
+    return fetch('/api/users', getUsersOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return answer.json()
     }).catch(async error => {
@@ -27,7 +27,7 @@ export default {
       body: JSON.stringify(data)
     }
 
-    return fetch('/users/users', modifyUserOption).then((answer) => {
+    return fetch('/api/users', modifyUserOption).then((answer) => {
       if (!answer.ok) { throw answer }
     }).catch(async error => {
       throw error
@@ -44,7 +44,7 @@ export default {
       body: JSON.stringify([username])
     }
 
-    return fetch('/users/users', deleteUserOption).then((answer) => {
+    return fetch('/api/users', deleteUserOption).then((answer) => {
       if (!answer.ok) { throw answer }
     })
   },
@@ -61,7 +61,7 @@ export default {
 
     }
 
-    return fetch('/users/users', createUserOption).then((answer) => {
+    return fetch('/api/users', createUserOption).then((answer) => {
       if (!answer.ok) { throw answer }
     }).catch(error => {
       throw error

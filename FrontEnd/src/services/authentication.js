@@ -1,7 +1,7 @@
 export default {
 
   logIn(username, password) {
-    return fetch('/api/login/' + username, {
+    return fetch('/api/authentication/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -18,7 +18,7 @@ export default {
   },
 
   logOut() {
-    return fetch('/api/login/', {
+    return fetch('/api/authentication/', {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',

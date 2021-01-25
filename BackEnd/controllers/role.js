@@ -1,6 +1,6 @@
 var Roles = require('../model/Roles')
 
-    createRole = async function (req, res) {
+    const createRole = async function (req, res) {
         const body = req.body
         try {
             await Roles.createRoles(body)
@@ -11,7 +11,7 @@ var Roles = require('../model/Roles')
         }
     }
 
-    modifyRole = async function(req, res){
+    const modifyRole = async function(req, res){
         const body = req.body
         try {
             await Roles.modifyRoles(body.name, body)
@@ -22,7 +22,7 @@ var Roles = require('../model/Roles')
         }
     }
 
-    deleteRole = async function(req, res){
+    const deleteRole = async function(req, res){
         const name = req.body
         try {
             await Roles.deleteRole(name)
@@ -33,7 +33,7 @@ var Roles = require('../model/Roles')
         }
     }
 
-    getRoles = async function(req, res){
+    const getRoles = async function(req, res){
         try {
             let roles = await Roles.getAllRoles()
             res.json(roles)
@@ -43,7 +43,7 @@ var Roles = require('../model/Roles')
         }
     }
 
-    getPermission = async function(req, res){
+    const getPermission = async function(req, res){
         try {
             let permission = await Roles.getPermission(req.params.name)
             res.json(permission)

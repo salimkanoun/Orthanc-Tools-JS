@@ -6,10 +6,11 @@ var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
 var logger = require('morgan')
 var rfs = require('rotating-file-stream')
-var open = require('open')
 
 var apisRouter = require('./routes/index')
+var adminRouter = require('./routes/admin')
 var usersRouter = require('./routes/users')
+var authenticationRouter = require('./routes/authentication')
 
 var app = express()
 
@@ -54,25 +55,23 @@ var accessLogStream = rfs.createStream('access.log', {
   path: path.join(__dirname, '/data/log')
 })
 
-//SK SESSION ENLEVEE 
-//FAIRE METHODE POUR RECUPERER L USERNAME DEPUIS LE JWT
-logger.token('username', function (req, res) {
-  return 'Unknown'
-})
+//logger.token('post', function (req, res) {
+//  return JSON.stringify(req.body)
+//})
 
-logger.token('post', function (req, res) {
-  return JSON.stringify(req.body)
-})
-
-app.use(unless('/', morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTPS/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ":post";', { stream: accessLogStream })))
+//app.use(unless('/', morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTPS/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ":post";', { stream: accessLogStream })))
 
 //For routes containing study UID redirect to OHIF index
 app.get('/viewer/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'viewer', 'index.html'))
 })
 
+app.use('/api/authentication', authenticationRouter)
+app.use('/api/users', usersRouter)
 app.use('/api', apisRouter)
-app.use('/users', usersRouter)
+app.use('/api', adminRouter)
+
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
