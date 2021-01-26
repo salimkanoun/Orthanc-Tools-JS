@@ -10,25 +10,23 @@ import { toast } from 'react-toastify';
 export default class CreateUser extends Component {
 
     state = {
-        data: {
-            id: '',
-            username: '',
-            firstname: '',
-            lastname: '',
-            mail: '',
-            role: '',
-            password: ''
-        },
+        id: '',
+        username: '',
+        firstname: '',
+        lastname: '',
+        email: '',
+        role: '',
+        password: '',
+        superAdmin : false,
         show: false
+
     }
 
     onRolesChange = (event) => {
         this.setState(prevState => {
             return {
-                data: {
-                    ...prevState.data,
-                    role: event.value
-                }
+                ...prevState,
+                role: event.value
             }
         })
     }
@@ -37,39 +35,38 @@ export default class CreateUser extends Component {
         const target = event.target
         const name = target.name
         const value = target.value
+
         this.setState(prevState => ({
-            data: {
-                ...prevState.data,
-                [name]: value
-            }
+            ...prevState.data,
+            [name]: value
         }))
     }
 
     resetState = () => {
-        this.setState({
-            data: {
+        this.setState(
+            {
                 id: '',
                 username: '',
                 firstName: '',
                 lastName: '',
-                mail: '',
+                email: '',
                 role: '',
-                password: ''
-            },
-            show: false
-        })
+                password: '',
+                show: false
+            }
+        )
         this.props.getUsers()
     }
 
     createUser = async () => {
-        if (this.state.data.role === '' ||
-            this.state.data.username === '' ||
-            this.state.data.password === '') {
+        if (this.state.role === '' ||
+            this.state.username === '' ||
+            this.state.password === '') {
             toast.error('Please fill all required input')
         } else {
             
             try{
-                await apis.User.createUser(this.state.data)
+                await apis.User.createUser(this.state.username, this.state.firstname, this.state.lastname, this.state.password, this.state.email, this.state.role, this.state.superAdmin)
                 this.resetState()
             }catch(error){
                 toast.error(error.statusText)
@@ -90,27 +87,33 @@ export default class CreateUser extends Component {
                         <div>
                             <fieldset>
                                 <label>Username*</label>
-                                <input className='form-control' type='text' placeholder='username' name='username' value={this.state.data.username} onChange={this.handleChange} required />
+                                <input className='form-control' type='text' placeholder='username' name='username' value={this.state.username} onChange={this.handleChange} required />
                             </fieldset>
 
                             <fieldset>
                                 <label>First Name</label>
-                                <input className='form-control' type='text' placeholder='First Name' name='firstName' value={this.state.data.firstName} onChange={this.handleChange} />
+                                <input className='form-control' type='text' placeholder='First Name' name='firstname' value={this.state.firstname} onChange={this.handleChange} />
                             </fieldset>
 
                             <fieldset>
                                 <label>Last Name</label>
-                                <input className='form-control' type='text' placeholder='Last Name' name='lastName' value={this.state.data.lastName} onChange={this.handleChange} />
+                                <input className='form-control' type='text' placeholder='Last Name' name='lastname' value={this.state.lastname} onChange={this.handleChange} />
                             </fieldset>
 
                             <fieldset>
                                 <label>Password*</label>
-                                <input className='form-control' type='password' placeholder='password' name='password' value={this.state.data.password} onChange={this.handleChange} required />
+                                <input className='form-control' type='password' placeholder='password' name='password' value={this.state.password} onChange={this.handleChange} required />
                             </fieldset>
 
                             <fieldset>
                                 <label>Mail</label>
-                                <input className='form-control' type='text' placeholder='example@example.com' name='mail' value={this.state.data.mail} onChange={this.handleChange} />
+                                <input className='form-control' type='text' placeholder='example@example.com' name='email' value={this.state.email} onChange={this.handleChange} />
+                            </fieldset>
+
+                            
+                            <fieldset>
+                                <label>Super Admin</label>
+                                <input className='form-control' type='checkbox' name='superAdmin' value={this.state.superAdmin} onChange={this.handleChange}/>
                             </fieldset>
 
                             <fieldset>
@@ -121,7 +124,6 @@ export default class CreateUser extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <button type='button' className='btn btn-primary' onClick={this.createUser}>Create</button>
-                        <button type='button' className='btn btn-info' onClick={this.resetState}>Close</button>
                     </Modal.Footer>
                 </Modal>
             </Fragment>

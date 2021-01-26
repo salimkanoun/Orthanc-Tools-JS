@@ -2,12 +2,13 @@ var Users = require('../model/Users')
 
     createUser = async function (req, res) {
         const body = req.body
+        console.log(body)
         try {
-            await Users.createUser(body)
-            res.json(true)
+            await Users.createUser(body.username, body.firstname, body.lastname, body.email, body.password, body.role, body.super_admin)
+            res.sendStatus(201)
         } catch (error) {
             console.error(error)
-            res.status(500).send('Fail to create user')
+            res.status(400).json({errorMessage : error.message})
         }
     }
 
@@ -15,30 +16,34 @@ var Users = require('../model/Users')
         let user
         try {
             user = await Users.getUsers()
+            res.json(user)
         } catch (error) {
             console.error(error)
-            res.status(500).send('fail to get users')
+            res.status(400).send({errorMessage : error.message})
         }
-        res.json(user)
+        
     }
 
     modifyUser = async function(req, res){
+        const id = req.params.id
         const body = req.body
         try {
-            await Users.modifyUser(body)
-            res.json(true)
+            await Users.modifyUser(id, body.username, body.firstname, body.lastname, body.password, body.email, body.role, body.superAdmin)
+            res.sendStatus(200)
         } catch (error) {
-            res.status(500).send('Fail to modify user')
+            console.error(error)
+            res.status(400).send({errorMessage : error.message})
         }
     }
 
     deleteUser = async function(req, res){
-        const name = req.body
+        const username = req.params.username
         try {
-            await Users.deleteUser(name)
-            res.json(true)
+            await Users.deleteUser(username)
+            res.sendStatus(200)
         } catch (error) {
-            res.status(500).send('Fail to delete user')
+            console.error(error)
+            res.status(400).json({errorMessage : error.message})
         }
     }
 

@@ -3,13 +3,15 @@ const jwt = require("jsonwebtoken")
 
 const login = async function (req, res) {
   const body = req.body
-
+  console.log(body)
   const userObject = new Users(body.username)
-  await userObject.checkPassword(body.password, async function (reponse) {
+  await userObject.checkPassword(body.password, async function (response) {
 
-    if (reponse) {
+    console.log(response)
+    if (response) {
       let user = new Users(body.username)
       user.getUserRight(function (infosUser) {
+        
         let payload = {
           username: body.username,
           admin: infosUser.admin,

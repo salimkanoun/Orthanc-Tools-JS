@@ -5,22 +5,29 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('Users', {
       id: {
-        allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
-        unique:true
+        type: Sequelize.INTEGER
       },
       username: {
         allowNull: false,
         type: Sequelize.STRING,
         unique: true
       },
+      firstname: {
+        type: Sequelize.STRING
+      },
+      lastname: {
+        type: Sequelize.STRING
+      },
+      email: {
+        type: Sequelize.STRING
+      },
       password: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      admin: {
+      super_admin: {
         type: Sequelize.BOOLEAN
       },
       createdAt: {
@@ -38,16 +45,7 @@ module.exports = {
           key: 'name'
         }, 
         type: Sequelize.STRING
-      },
-      first_name: {
-        type: Sequelize.STRING
-      },
-      last_name: {
-        type: Sequelize.STRING
-      },
-      mail: {
-        type: Sequelize.STRING
-      },
+      }
     }).then(() => {
       return queryInterface.addConstraint('Users', ['username'], {
         type: 'unique',
@@ -58,7 +56,7 @@ module.exports = {
       queryInterface.bulkInsert('Users', [{
         username: 'admin',
         password: hash,
-        admin: true,
+        super_admin: true,
         role: 'admin',
         createdAt: new Date().toDateString(),
         updatedAt: new Date().toDateString()

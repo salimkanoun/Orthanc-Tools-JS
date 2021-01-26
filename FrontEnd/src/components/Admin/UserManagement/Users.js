@@ -51,26 +51,31 @@ export default class Users extends Component {
     }
 
     modify = async (row) => {
-        let payload = { ...row }
-        if (row.password === '') {
-            payload = {
-                ...payload,
-                password: null
-            }
-        }
-        await apis.User.modifyUser(payload).then(() => {
+
+        let password = row.password == null ? null : row.password
+
+        await apis.User.modifyUser(
+            row.id,
+            row.username,
+            row.firstname,
+            row.lastname,
+            row.email,
+            row.role,
+            password,
+            row.isSuperAdmin
+        ).then(() => {
             toast.success('User modified')
             this.resetState()
         }).catch((error) => toast.error(error.statusText))
     }
 
     delete = () => {
-        if (this.state.username !== '') {
+        if (this.state.userId !== '') {
 
-            apis.User.deleteUser(this.state.username).then(() => {
+            apis.User.deleteUser(this.state.userId).then(() => {
                 toast.success('Deleted User')
                 this.resetState()
-            }).catch( (error) => {toast.error(error.statusText)} )
+            }).catch((error) => { toast.error(error.statusText) })
         }
     }
 
@@ -84,16 +89,16 @@ export default class Users extends Component {
             sort: true,
             editable: true
         }, {
-            dataField: 'first_name',
+            dataField: 'firstname',
             text: 'First name',
             sort: true
         }, {
-            dataField: 'last_name',
+            dataField: 'lastname',
             text: 'Last name',
             sort: true
         }, {
-            dataField: 'mail',
-            text: 'Mail',
+            dataField: 'email',
+            text: 'E-Mail',
             sort: true
         }, {
             dataField: 'role',
@@ -124,6 +129,13 @@ export default class Users extends Component {
                 <InputPassword {...editorProps} previousPassword={value} />
             )
         }, {
+            dataField: 'superAdmin',
+            text: 'Super Admin',
+            editable : true,
+            editor: {
+                type: Type.CHECKBOX
+            }
+        }, {
             dataField: 'edit',
             text: 'Edit',
             editable: false,
@@ -138,7 +150,7 @@ export default class Users extends Component {
             editable: false,
             formatter: (cell, row, index) => {
                 return <button type='button' name='delete' className='btn btn-danger' onClick={(event) => {
-                    this.setState({ username: row.username, showDelete: true })
+                    this.setState({ username: row.username, userId : row.id, showDelete: true })
                 }} >Delete</button>
             }
         }

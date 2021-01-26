@@ -17,39 +17,58 @@ export default {
     })
   },
 
-  modifyUser(data) {
+  modifyUser(id, username, firstname, lastname, email, role, password, isSuperAdmin) {
+
+    let payload = {
+      username : username,
+      firstname : firstname,
+      lastname : lastname,
+      email : email,
+      role : role,
+      password : password,
+      superAdmin : isSuperAdmin
+    }
+
     const modifyUserOption = {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(payload)
     }
 
-    return fetch('/api/users', modifyUserOption).then((answer) => {
+    return fetch('/api/users/'+id, modifyUserOption).then((answer) => {
       if (!answer.ok) { throw answer }
     }).catch(async error => {
       throw error
     })
   },
 
-  deleteUser(username) {
+  deleteUser(id) {
+
     const deleteUserOption = {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify([username])
+      method: 'DELETE'
     }
 
-    return fetch('/api/users', deleteUserOption).then((answer) => {
+    return fetch('/api/users/'+id, deleteUserOption).then((answer) => {
       if (!answer.ok) { throw answer }
     })
   },
 
-  createUser(data) {
+  createUser(username, firstname, lastname, password, email, role, isSuperAdmin) {
+
+    let payload = {
+      username : username,
+      firstname : firstname,
+      lastname : lastname,
+      password : password,
+      email : email,
+      role : role,
+      superAdmin : isSuperAdmin
+    }
+
+    console.log(payload)
 
     const createUserOption = {
       method: 'POST',
@@ -57,8 +76,7 @@ export default {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(data)
-
+      body: JSON.stringify(payload)
     }
 
     return fetch('/api/users', createUserOption).then((answer) => {

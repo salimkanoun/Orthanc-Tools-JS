@@ -3,25 +3,17 @@ const db = require('../database/models')
 const AdClient = require('../ldap/adClient')
 
 class Users {
-  
+
   constructor(username) {
     this.username = username
   }
 
   async _getUserEntity() {
-    if (this.user !== undefined) {
-      return this.user
-    } else {
-      try {
-        const user = await db.User.findOne({ where: { username: this.username } })
-        this.user = user
-        return this.user
-      } catch (error) {
-        console.log(error)
-        throw new Error('User Not Found')
-      }
+    return db.User.findOne({ where: { username: this.username } })
+  }
 
-    }
+  isAdmin() {
+    return this._getUserEntity().then(user => user.super_admin).catch(() => false)
   }
 
   async checkLDAPPassword(plainPassword, callback) {
@@ -48,15 +40,17 @@ class Users {
     } else {
       throw 'inccorect TypeGroupe'
     }
-    await client.autentification(username, plainPassword, function (response) {
+
+    client.autentification(username, plainPassword, function (response) {
       return callback(response)
     })
+
   }
 
   checkLocalPassword(plainPassword) {
     return this._getUserEntity().then(user => {
       return bcrypt.compare(plainPassword, user.password)
-    }).catch(() => false)
+    }).catch((error) => { console.log(error); return false })
   }
 
   async checkPassword(plainPassword, callback) {
@@ -80,127 +74,76 @@ class Users {
 
       }
     } catch (err) {
+      console.error(err)
       callback(false)
     }
   }
 
-  async isAdmin() {
-    const user = await this._getUserEntity()
-    return user.admin
-  }
 
-  static async createUser(body) {
+  static async createUser(username, firstname, lastname, email, password, role, super_admin) {
 
-    if (body.username.indexOf('@') !== -1) throw new Error('@ is forbiden')
+    if (username.indexOf('@') !== -1) throw new Error('@ is forbiden')
 
     const saltRounds = 10
-    let id = null
-    await db.User.max('id').then(max => id = max + 1).catch((error) => console.log(error))
-    const promise = bcrypt.hash(body.password, saltRounds).then(function (hash) {
+    return bcrypt.hash(password, saltRounds).then(function (hash) {
       db.User.create({
-        id: id,
-        username: body.username,
-        first_name: body.firstName,
-        last_name: body.lastName,
-        mail: body.mail,
+        username: username,
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
         password: hash,
-        role: body.role,
-        admin: false
-      }).catch(e => console.log(e))
-    })
+        role: role,
+        super_admin: super_admin
+      }
+      ).catch(e => { throw e })
 
-    return promise
+    })
   }
 
   static async deleteUser(username) {
     let user = new Users(username)
 
-    if (await user.isAdmin()) throw 'Can\'t delete superAdmin'
-
-    try {
-      await db.User.destroy({
-        where: {
-          username: username
-        }
-      })
-    } catch (error) {
-      console.log(error)
+    if (await user.isAdmin()) {
+      let superUserCount = await db.User.findAndCountAll({ where: { super_admin: true } })
+      if (superUserCount <= 1) throw 'Can\'t delete last super user'
     }
+
+    await db.User.destroy({
+      where: {
+        username: username
+      }
+    })
+
   }
 
-  static async modifyUser(data) {
+  static async modifyUser(id, username, firstname, lastname, password, email, role, isSuperAdmin) {
 
-    if (data.username.indexOf('@') !== -1) throw '@ is forbiden'
+    if (username.indexOf('@') !== -1) throw '@ is forbiden'
 
-    let user = new Users(data.username)
+    let user = new Users(username)
 
-    if (await user.isAdmin() && data.role !== 'admin') throw 'Can\'t modify superAdmin\'s role'
+    if (await user.isAdmin() && role !== 'admin') throw 'Can\'t modify superAdmin\'s role'
 
-    const saltRounds = 10
+    const mod = await db.User.findOne(({ where: { id: id } }))
+    mod.username = username
+    mod.firstname = firstname
+    mod.lastname = lastname
+    mod.super_admin = isSuperAdmin
+    mod.email = email
 
-    if (data.password !== null) {
-
-      bcrypt.hash(data.password, saltRounds).then(function (hash) {
-        db.User.upsert({
-          id: data.id,
-          password: hash
-        })
-      }).catch((error) => {
+    if (password !== null) {
+      mod.password = await bcrypt.hash(password, 10).catch((error) => {
         console.error(error)
       })
-
     }
 
-    try {
-      const mod = await db.User.findOne(({ where: { id: data.id } }))
-      mod.id = data.id
-      mod.username = data.username,
-        mod.isAdmin = data.admin,
-        mod.first_name = data.first_name,
-        mod.last_name = data.last_name,
-        mod.mail = data.mail,
-        mod.role = data.role
-      await mod.save()
-    } catch (error) {
-      console.log(error)
-    }
+    mod.role = role
+    await mod.save()
+
   }
 
   static async getUsers() {
-
-    let users;
-
-    try {
-      users = await db.User.findAll({
-        attributes: ['id', 'username', 'first_name', 'last_name', 'admin', 'mail', 'role']
-      })
-      if (users === null) {
-        throw new Error('User Not Found')
-      }
-    } catch (error) {
-      console.log(error)
-    } finally {
-      return users
-    }
-
-  }
-
-  async getInfoUser() {
-    let user;
-
-    try {
-      user = await db.User.findOne({
-        where: { username: this.username }
-      });
-      if (user === null) {
-        throw new Error('User Not Found')
-      }
-    } catch (error) {
-      console.log(error)
-    } finally {
-      return user
-    }
-
+    return await db.User.findAll()
   }
 
   async getLocalUserRight(callback) {
@@ -330,7 +273,7 @@ class Users {
       }
 
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
