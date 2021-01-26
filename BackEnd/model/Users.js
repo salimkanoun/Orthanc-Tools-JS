@@ -50,7 +50,7 @@ class Users {
   checkLocalPassword(plainPassword) {
     return this._getUserEntity().then(user => {
       return bcrypt.compare(plainPassword, user.password)
-    }).catch((error) => { console.log(error); return false })
+    }).catch((error) => { console.error(error); return false })
   }
 
   async checkPassword(plainPassword, callback) {

@@ -2,7 +2,6 @@ var Users = require('../model/Users')
 
     createUser = async function (req, res) {
         const body = req.body
-        console.log(body)
         try {
             await Users.createUser(body.username, body.firstname, body.lastname, body.email, body.password, body.role, body.super_admin)
             res.sendStatus(201)

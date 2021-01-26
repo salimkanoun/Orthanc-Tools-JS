@@ -60,7 +60,6 @@ const Ldap = {
                 return callback(response)
             })
         } catch (err) {
-            console.log(err)
             return callback(false)
         }
     },
