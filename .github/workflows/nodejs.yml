@@ -27,18 +27,19 @@ jobs:
       working-directory: FrontEnd
     - name: build OHIF
       run: |
-        ls
+        mkdir ohif
+        cd ohif
         git clone https://github.com/OHIF/Viewers.git
         cd Viewers
         yarn install
         QUICK_BUILD=true PUBLIC_URL=/viewer/ yarn run build
-      working-directory: ohif
+      working-directory: FrontEnd
     - name: copy FrontEnd build to BackEnd
       run : mv build ../BackEnd
       working-directory: FrontEnd
     - name : copy OHIF
-      run : mv dist ../BackEnd/build/viewer/
-      working-directory: /ohif/Viewers/platform/viewer
+      run : mv ./ohif/Viewers/platform/viewer/dist ../BackEnd/build/viewer/
+      working-directory: FrontEnd
     - name: copy Stone Of Orthanc
       run: |
         wget https://lsb.orthanc-server.com/stone-webviewer/1.0/wasm-binaries.zip
