@@ -17,6 +17,7 @@ var app = express()
 var autoStartMonitoring = require('./model/monitoring/AutoStartMonitoring')
 
 const dotenv = require("dotenv");
+const OTJSError = require('./Exceptions/OTJSError')
 // get config vars
 dotenv.config();
 // access config var
@@ -83,18 +84,25 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message
-  res.locals.error = req.app.get('env') === 'development' ? err : {}
+  
   console.error(err)
-  // render the error page
-  res.status(err.status || 500)
-  res.end()
+
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  if(err instanceof OTJSError){
+    res.status( err.getStatusCode() ).json( err.getJsonPayload() );
+    return
+  }else{
+    return next(err);
+  }
 })
 
 const port = 4000
 
 app.listen(port, (error) => {
+  
   if (error) {
     console.error(error)
     return process.exit(1)

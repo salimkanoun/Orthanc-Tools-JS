@@ -1,15 +1,21 @@
 const Users = require('../model/Users')
 const jwt = require("jsonwebtoken")
+const { OTJSBadRequestException } = require('../Exceptions/OTJSErrors')
 
-const login = async function (req, res) {
+const login = function (req, res) {
   const body = req.body
+
+  if (!body.username || !body.password) {
+    throw new OTJSBadRequestException('Missing Username / Password payload')
+  }
+
   const userObject = new Users(body.username)
-  await userObject.checkPassword(body.password, async function (response) {
+
+  userObject.checkPassword(body.password, function (response) {
 
     if (response) {
-      let user = new Users(body.username)
-      user.getUserRight(function (infosUser) {
-        
+      userObject.getUserRight(function (infosUser) {
+
         let payload = {
           username: body.username,
           admin: infosUser.admin,
@@ -26,15 +32,16 @@ const login = async function (req, res) {
         }
 
         var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
-
         res.cookie("tokenOrthancJs", TOKEN, { httpOnly: true })
         res.json(payload)
       })
+
     } else {
-      res.status(401).json({ errorMessage: 'Wrong Credential' })
+      res.status(401).json({ errorMessage: "Wrong Credentials" })
     }
 
   })
+
 
 }
 

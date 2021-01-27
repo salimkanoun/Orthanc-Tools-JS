@@ -55,7 +55,6 @@ export default class Users extends Component {
         let password = row.password == null ? null : row.password
 
         await apis.User.modifyUser(
-            row.id,
             row.username,
             row.firstname,
             row.lastname,
@@ -72,7 +71,7 @@ export default class Users extends Component {
     delete = () => {
         if (this.state.userId !== '') {
 
-            apis.User.deleteUser(this.state.userId).then(() => {
+            apis.User.deleteUser(this.state.username).then(() => {
                 toast.success('Deleted User')
                 this.resetState()
             }).catch((error) => { toast.error(error.statusText) })

@@ -17,10 +17,9 @@ export default {
     })
   },
 
-  modifyUser(id, username, firstname, lastname, email, role, password, isSuperAdmin) {
+  modifyUser(username, firstname, lastname, email, role, password, isSuperAdmin) {
 
     let payload = {
-      username : username,
       firstname : firstname,
       lastname : lastname,
       email : email,
@@ -38,20 +37,20 @@ export default {
       body: JSON.stringify(payload)
     }
 
-    return fetch('/api/users/'+id, modifyUserOption).then((answer) => {
+    return fetch('/api/users/'+username, modifyUserOption).then((answer) => {
       if (!answer.ok) { throw answer }
     }).catch(async error => {
       throw error
     })
   },
 
-  deleteUser(id) {
+  deleteUser(username) {
 
     const deleteUserOption = {
       method: 'DELETE'
     }
 
-    return fetch('/api/users/'+id, deleteUserOption).then((answer) => {
+    return fetch('/api/users/'+username, deleteUserOption).then((answer) => {
       if (!answer.ok) { throw answer }
     })
   },
@@ -67,8 +66,6 @@ export default {
       role : role,
       superAdmin : isSuperAdmin
     }
-
-    console.log(payload)
 
     const createUserOption = {
       method: 'POST',

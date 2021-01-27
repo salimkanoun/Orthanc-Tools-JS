@@ -8,7 +8,7 @@ userRouter.use([userAuthMidelware, userAdminMidelware])
 
 userRouter.get('/', userAdminMidelware ,getUsers)
 userRouter.post('/', userAdminMidelware ,createUser)
-userRouter.put('/:id', userAdminMidelware ,modifyUser)
-userRouter.delete('/:id', userAdminMidelware, deleteUser)
+userRouter.put('/:username', userAdminMidelware ,modifyUser)
+userRouter.delete('/:username', userAdminMidelware, deleteUser)
 
 module.exports = userRouter
