@@ -16,7 +16,6 @@ var getParsedAnswer = async function (req, res) {
   } else if (level === 'Series') {
     answerDetails = await orthanc.getSeriesAnswerDetails(req.params.orthancIdQuery, originAET)
   }
-
   res.json(answerDetails)
 }
 
