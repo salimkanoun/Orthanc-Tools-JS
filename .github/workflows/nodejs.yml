@@ -27,6 +27,7 @@ jobs:
       working-directory: FrontEnd
     - name: build OHIF
       run: |
+        ls
         git clone https://github.com/OHIF/Viewers.git
         cd Viewers
         yarn install
