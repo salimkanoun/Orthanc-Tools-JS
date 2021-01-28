@@ -38,7 +38,8 @@ class Certificate{
     }
 
     static async getAllCertificate(){
-        return await db.Certificate.findAll().map(x=>new Certificate(x));
+        let certificates = await db.Certificate.findAll().catch((error) => {throw error})
+        return certificates.map(x=>new Certificate(x))
     }
 
     async deleteCertificate(){
