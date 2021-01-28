@@ -9,7 +9,7 @@ import RobotView from './RobotView'
  * Root Panel of AutoQuery module
  * Using Hooks
  */
-export default () => {
+const AutoQueryRoot = () => {
 
   const Query = 'Query'
   const Result = 'Result'
@@ -63,3 +63,5 @@ export default () => {
     </div>
   )
 }
+
+export default AutoQueryRoot

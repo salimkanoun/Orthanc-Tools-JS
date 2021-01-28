@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 /**
  * Root Panel of AETs options
  */
-export default () => {
+const AetRootPanel = () => {
 
   const [aets, setAets] = useState([])
 
@@ -39,3 +39,5 @@ export default () => {
     </>
   )
 }
+
+export default AetRootPanel

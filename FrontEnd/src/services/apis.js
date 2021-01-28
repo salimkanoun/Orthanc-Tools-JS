@@ -20,7 +20,7 @@ import certificates from './certificates'
 import sshKeys from './sshKeys'
 import endpoints from './endpoints'
 
-export default {
+const apis = {
   importDicom,
   aets,
   options,
@@ -43,3 +43,5 @@ export default {
   sshKeys,
   endpoints
 }
+
+export default apis

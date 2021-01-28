@@ -7,7 +7,7 @@ import { toast } from 'react-toastify'
 /**
  * Root Panel of Peers options
  */
-export default () => {
+const PeerRootPanel = () => {
   const [peer, setPeers] = useState([])
 
   /**
@@ -40,3 +40,5 @@ export default () => {
     </Fragment>
   )
 }
+
+export default PeerRootPanel

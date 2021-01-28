@@ -7,7 +7,7 @@ import EndpointForm from './EndpointForm'
 import SecurityRootPanel from './Security/SecurityRootPanel'
 import { toast } from 'react-toastify'
 
-export default () => {
+const EndpointRootPanel = () => {
 
     const [endpoints, setEndpoints] = useState({
         ftp: [],
@@ -135,3 +135,5 @@ export default () => {
         </>
     )
 }
+
+export default EndpointRootPanel

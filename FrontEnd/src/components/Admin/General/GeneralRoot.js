@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import OrthancSettings from './OrthancSettings/OrthancSettings'
 import RedisSettings from './Redis/RedisSettings'
 
-export default () => {
+const GeneralRoot = () => {
 
   const [selectedOptionMenu, setSelectedOptionMenu] = useState('orthancSettings')
 
@@ -40,3 +40,5 @@ export default () => {
   )
 
 }
+
+export default GeneralRoot

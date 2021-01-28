@@ -6,7 +6,7 @@ import Certificates from './CertificatesList'
 import SshKeyForm from './SshKeyForm'
 import SshKeys from './SshKeysList'
 
-export default () => {
+const SecurityRootPanel = () => {
 
     const [certificates, setCertificates] = useState([])
     const [sshKeys, setSshKeys] = useState([])
@@ -91,3 +91,5 @@ export default () => {
         </>
     )
 }
+
+export default SecurityRootPanel
