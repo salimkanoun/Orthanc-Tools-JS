@@ -39,7 +39,7 @@ jobs:
       working-directory: FrontEnd
     - name : copy OHIF
       run : |
-        mv ./ohif/Viewers/platform/viewer/dist/ ../BackEnd/build/viewer-ohif/
+        mv ./ohif/Viewers/platform/viewer/dist/* ../BackEnd/build/viewer-ohif/
         mv ../BackEnd/build/viewer-ohif/app-config.js  ../BackEnd/build/viewer-ohif/dist
       working-directory: FrontEnd
     - name: copy Stone Of Orthanc
@@ -50,7 +50,7 @@ jobs:
         unzip wasm-binaries.zip -d .
         rm wasm-binaries.zip
         mv ../../BackEnd/build/viewer-stone/configuration.json  ./wasm-binaries/StoneWebViewer
-        mv ./wasm-binaries/StoneWebViewer/ ../../BackEnd/build/viewer-stone/
+        mv ./wasm-binaries/StoneWebViewer/* ../../BackEnd/build/viewer-stone/
       working-directory: FrontEnd
     - name: create ZIP distribution
       run : zip -r OrthancToolsJS.zip .
