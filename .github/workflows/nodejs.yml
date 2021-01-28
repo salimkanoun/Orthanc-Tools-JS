@@ -47,6 +47,9 @@ jobs:
         wget https://lsb.orthanc-server.com/stone-webviewer/1.0/wasm-binaries.zip
         mkdir stone
         unzip wasm-binaries.zip -d ./stone
+        ls
+        ls ../BackEnd
+        ls ../BackEnd/build
         mkdir ../BackEnd/build/viewer-stone
         mv ./stone ../BackEnd/build/viewer-stone/
       working-directory: FrontEnd
