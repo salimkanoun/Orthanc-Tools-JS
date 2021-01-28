@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14.x]
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -45,9 +45,10 @@ jobs:
         mkdir stone
         cd stone
         wget https://lsb.orthanc-server.com/stone-webviewer/1.0/wasm-binaries.zip
-        mkdir stone
-        unzip wasm-binaries.zip -d ./stone
-        mv ./stone ../../BackEnd/build/viewer-stone/
+        unzip wasm-binaries.zip -d .
+        rm wasm-binaries.zip
+        mv ../../BackEnd/build/viewer-stone/configuration.json  ./wasm-binaries/StoneWebViewer
+        mv ./wasm-binaries/StoneWebViewer ../../BackEnd/build/viewer-stone/
       working-directory: FrontEnd
     - name: create ZIP distribution
       run : zip -r OrthancToolsJS.zip .
