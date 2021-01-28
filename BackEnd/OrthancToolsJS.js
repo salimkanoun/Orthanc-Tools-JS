@@ -25,8 +25,8 @@ process.env.TOKEN_SECRET;
 
 // static routes
 app.use('/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer/assets/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-ohif/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-ohif/assets/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer-stone/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer-stone/css/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer-stone/img/', express.static(path.join(__dirname, 'build')));

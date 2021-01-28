@@ -12,8 +12,8 @@ WORKDIR /ohif
 RUN git clone -b feat/scroll-sync https://github.com/OHIF/Viewers.git
 WORKDIR /ohif/Viewers
 RUN yarn install
-RUN QUICK_BUILD=true PUBLIC_URL=/viewer/ yarn run build
-WORKDIR /ohif/Viewers/platform/viewer/dist
+RUN QUICK_BUILD=true PUBLIC_URL=/viewer-ohif/ yarn run build
+WORKDIR /ohif/Viewers/platform/viewer-ohif/dist
 
 FROM alpine as stone
 RUN apk --no-cache add wget
@@ -27,9 +27,9 @@ WORKDIR /OrthancToolsJs
 RUN mkdir build
 RUN ls
 COPY --from=react /app/build ./build/
-COPY --from=ohif /ohif/Viewers/platform/viewer/dist ./build/viewer
+COPY --from=ohif /ohif/Viewers/platform/viewer/dist ./build/viewer-ohif
 COPY --from=stone /stone ./build/viewer-stone
-COPY --from=react /app/build/viewer/app-config.js ./build/viewer
+COPY --from=react /app/build/viewer/app-config.js ./build/viewer-ohif
 COPY --from=react /app/build/viewer-stone/configuration.json ./build/viewer-stone
 
 COPY ./BackEnd .

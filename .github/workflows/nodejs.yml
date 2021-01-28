@@ -32,13 +32,15 @@ jobs:
         git clone https://github.com/OHIF/Viewers.git
         cd Viewers
         yarn install
-        QUICK_BUILD=true PUBLIC_URL=/viewer/ yarn run build
+        QUICK_BUILD=true PUBLIC_URL=/viewer-ohif/ yarn run build
       working-directory: FrontEnd
     - name: copy FrontEnd build to BackEnd
       run : mv build ../BackEnd
       working-directory: FrontEnd
     - name : copy OHIF
-      run : mv ./ohif/Viewers/platform/viewer/dist ../BackEnd/build/viewer/
+      run : |
+        mv ./ohif/Viewers/platform/viewer/dist ../BackEnd/build/viewer-ohif/
+        mv ../../BackEnd/build/viewer-ohif/app-config.js  ../BackEnd/build/viewer-ohif/dist
       working-directory: FrontEnd
     - name: copy Stone Of Orthanc
       run: |
