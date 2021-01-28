@@ -1,4 +1,4 @@
-export default {
+const options = {
 
   setRobotScheduleHour(hour_start, min_start, hour_stop, min_stop) {
 
@@ -213,3 +213,5 @@ export default {
 
   }
 }
+
+export default options

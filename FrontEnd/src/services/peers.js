@@ -1,4 +1,4 @@
-export default {
+const peers = {
 
     getPeers() {
         return fetch('/api/peers')
@@ -91,3 +91,5 @@ export default {
         })
     }
 }
+
+export default peers

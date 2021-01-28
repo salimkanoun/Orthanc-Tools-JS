@@ -1,5 +1,4 @@
-
-export default {
+const endpoints =  {
 
   getEndpoints() {
     return fetch('/api/endpoints')
@@ -44,3 +43,5 @@ export default {
     })
   },
 }
+
+export default endpoints

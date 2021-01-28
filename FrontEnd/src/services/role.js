@@ -1,4 +1,4 @@
-export default {
+const role = {
 
     getRoles() {
         const getRolesOptions = {
@@ -81,3 +81,5 @@ export default {
     }
 
 }
+
+export default role

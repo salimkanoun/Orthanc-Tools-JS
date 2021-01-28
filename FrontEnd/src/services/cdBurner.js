@@ -1,4 +1,4 @@
-export default {
+const cdBurner = {
 
       startCdBurnerService() {
             let options = {
@@ -72,3 +72,5 @@ export default {
       }
 
 }
+
+export default cdBurner

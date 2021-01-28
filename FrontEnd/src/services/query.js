@@ -1,4 +1,4 @@
-export default {
+const query = {
 
   dicomQuery(aet, queryDetails) {
 
@@ -34,3 +34,5 @@ export default {
   }
   
 }
+
+export default query

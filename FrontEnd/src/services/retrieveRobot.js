@@ -1,4 +1,4 @@
-export default {
+const retrieveRobot = {
 
     createRobot(username, projectName, retrieveArray) {
 
@@ -88,3 +88,5 @@ export default {
     }
 
 }
+
+export default retrieveRobot

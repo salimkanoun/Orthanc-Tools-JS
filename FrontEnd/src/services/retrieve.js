@@ -1,4 +1,4 @@
-export default {
+const retrieve = {
 
   retrieveByUID(aet, studyInstanceUID, seriesInstanceUID = null) {
 
@@ -29,3 +29,5 @@ export default {
   }
   
 }
+
+export default retrieve

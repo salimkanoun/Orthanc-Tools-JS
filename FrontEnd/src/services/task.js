@@ -1,4 +1,4 @@
-export default {
+const task = {
 
   getTask(taskId) {
 
@@ -36,3 +36,5 @@ export default {
     })
   }
 }
+
+export default task

@@ -1,4 +1,4 @@
-export default {
+const user = {
   getUsers() {
 
     const getUsersOption = {
@@ -83,3 +83,5 @@ export default {
     })
   }
 }
+
+export default user

@@ -1,4 +1,4 @@
-export default {
+const certificates = {
   
     getCertificatesExpend(){
         return fetch('/api/certificates')
@@ -60,3 +60,5 @@ export default {
         })
     }
 }
+
+export default certificates

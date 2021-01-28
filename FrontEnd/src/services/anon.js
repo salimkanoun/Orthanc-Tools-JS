@@ -1,4 +1,4 @@
-export default {
+const anonymize =  {
 
     //SK ICI DOIT REJOINDRE TASK DU COUP ?
     createAnonRobot(anonymizeArray, username){
@@ -22,3 +22,5 @@ export default {
     }
 
 }
+
+export default anonymize

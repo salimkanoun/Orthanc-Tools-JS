@@ -1,4 +1,4 @@
-export default {
+const authentication = {
 
   logIn(username, password) {
     return fetch('/api/authentication/', {
@@ -28,3 +28,5 @@ export default {
   }
   
 }
+
+export default authentication

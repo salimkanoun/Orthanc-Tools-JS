@@ -1,6 +1,6 @@
 import { toast } from "react-toastify"
 
-export default {
+const orthancContent = {
 
     getOrthancFind(contentSerch){
 
@@ -254,4 +254,6 @@ export default {
         })
     }
 }
+
+export default orthancContent
 

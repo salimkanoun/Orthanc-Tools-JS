@@ -1,4 +1,4 @@
-export default {
+const sshKeys = {
 
   getKeysExpend() {
     return fetch('/api/keys')
@@ -66,3 +66,5 @@ export default {
     })
   }
 }
+
+export default sshKeys

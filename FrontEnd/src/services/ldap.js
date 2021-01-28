@@ -1,4 +1,4 @@
-export default {
+const ldap = {
 
   setLdapSettings(typeGroup, address, port, DN, password, protocol, base, group, user) {
 
@@ -133,3 +133,5 @@ export default {
   }
 
 }
+
+export default ldap

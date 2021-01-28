@@ -1,5 +1,4 @@
-
-export default {
+const importDicom = {
 
     importDicom(dicomFile) {
 
@@ -22,3 +21,5 @@ export default {
     }
 
 }
+
+export default importDicom

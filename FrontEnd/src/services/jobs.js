@@ -1,4 +1,4 @@
-export default {
+const jobs = {
 
   getJobs() {
 
@@ -99,3 +99,4 @@ export default {
   },
 }
 
+export default jobs

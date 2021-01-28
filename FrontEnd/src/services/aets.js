@@ -1,4 +1,4 @@
-export default {
+const aets = {
 
   getAets() {
     return fetch('/api/modalities')
@@ -104,3 +104,5 @@ export default {
     })
   }
 }
+
+export default aets

@@ -1,4 +1,4 @@
-export default {
+const deleteRobot = {
 
     createDeleteRobot(deleteArray, username){
 
@@ -19,3 +19,5 @@ export default {
         })
     }
 }
+
+export default deleteRobot

@@ -3,7 +3,7 @@ import { WritableStream } from "web-streams-polyfill/ponyfill";
 streamSaver.mitm = window.location.origin + '/streamSaver/mitm.html'
 streamSaver.WritableStream = WritableStream
 
-export default {
+const exportDicom = {
 
   exportHirachicalDicoms(OrthancIDsArray, TS) {
 
@@ -130,3 +130,5 @@ export default {
   }
 
 }
+
+export default exportDicom
