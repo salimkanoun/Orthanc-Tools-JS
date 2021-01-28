@@ -48,6 +48,8 @@ jobs:
         mkdir stone
         unzip wasm-binaries.zip -d ./stone
         ls
+        cd ..
+        ls
         ls ../BackEnd
         ls ../BackEnd/build
         mkdir ../BackEnd/build/viewer-stone
