@@ -22,7 +22,7 @@ RUN wget https://lsb.orthanc-server.com/stone-webviewer/1.0/wasm-binaries.zip
 RUN mkdir /stone
 RUN unzip wasm-binaries.zip -d /stone
 
-FROM node:12.16.2
+FROM node:14.15.4
 WORKDIR /OrthancToolsJs
 RUN mkdir build
 RUN ls
