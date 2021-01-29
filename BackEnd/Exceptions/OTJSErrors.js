@@ -8,6 +8,14 @@ class OTJSBadRequestException extends OTJSError {
 
 }
 
+class OTJSConflictException extends OTJSError {
+
+    constructor(message){
+        super(message, 209)
+    }
+
+}
+
 class OTJSForbiddenException extends OTJSError {
 
     constructor(message){
@@ -32,4 +40,4 @@ class OTJSNotFoundException extends OTJSError {
 
 }
 
-module.exports = {OTJSBadRequestException, OTJSForbiddenException, OTJSUnauthorizedException, OTJSNotFoundException}
+module.exports = {OTJSBadRequestException, OTJSForbiddenException, OTJSUnauthorizedException, OTJSNotFoundException, OTJSConflictException}

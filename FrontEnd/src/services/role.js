@@ -1,3 +1,6 @@
+import anonymize from "./anon"
+import cdBurner from "./cdBurner"
+
 const role = {
 
     getRoles() {
@@ -33,6 +36,7 @@ const role = {
     },
 
     createRole(payload) {
+
         const createRoleOptions = {
             method: 'POST',
             headers: {
@@ -44,7 +48,7 @@ const role = {
 
         return fetch('/api/roles', createRoleOptions).then((answer) => {
             if (!answer.ok) { throw answer }
-            return answer.json()
+            return true
         })
     },
 

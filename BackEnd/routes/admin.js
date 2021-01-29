@@ -7,7 +7,8 @@ const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, 
 const { reverseProxyGet, reverseProxyPost, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission } = require('../controllers/role')
 
-const { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames } = require('../controllers/ldap')
+const { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, 
+        setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames } = require('../controllers/ldap')
 
 const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authentication')
 

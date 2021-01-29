@@ -3,12 +3,13 @@ var router = express.Router()
 // Handle controller errors
 require('express-async-errors')
 
-const { getParsedAnswer, postRetrieve } = require('../controllers/query')
+const { getParsedAnswer, postRetrieve } = require('../controllers/queryRetrieve')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
 
 const { importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
-    exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, isCurrentUserOrAdminMidelWare, userAuthMidelware } = require('../midelwares/authentication')
+        exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, 
+        modifyMidelware, isCurrentUserOrAdminMidelWare, userAuthMidelware } = require('../midelwares/authentication')
 
 const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve, deleteRetrieveItem, addExportTask } = require('../controllers/task')
 

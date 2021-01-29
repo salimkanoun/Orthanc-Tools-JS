@@ -42,7 +42,6 @@ const login = function (req, res) {
 
   })
 
-
 }
 
 const logOut = function (req, res) {
