@@ -239,19 +239,19 @@ class TableQuery extends Component {
 
   query = async () => {
     let data = this.node.props.data
-    const id = toast.info('Starting Studies Queries');
+    const toastId = toast.info('Starting Studies Queries', {autoClose : false} );
     let i = 0
     console.log(data)
     //SK ICI GERER LA PROGRESSION ET LA FIN FAIRE SWITCH DE TAB
     for (const query of data) {
       i++
-      toast.update(id, {
+      toast.update(toastId, {
         render: 'Query study ' + i + '/' + data.length
       });
       //For each line make dicom query and return results
       try {
         let answeredResults = await this.makeDicomQuery(query)
-        toast.update(id, {
+        toast.update(toastId, {
           render: 'Queried study ' + i + '/' + data.length
         });
         //For each results, fill the result table through Redux
@@ -261,6 +261,9 @@ class TableQuery extends Component {
       } catch (err) { console.error(err) }
 
     }
+
+    toast.dismiss(toastId)
+    toast.success('Queries completed')
 
     this.props.switchTab('Result')
 
