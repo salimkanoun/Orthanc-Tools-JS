@@ -1,6 +1,3 @@
-import anonymize from "./anon"
-import cdBurner from "./cdBurner"
-
 const role = {
 
     getRoles() {
