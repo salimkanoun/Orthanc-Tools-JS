@@ -21,7 +21,6 @@ var Users = require('../model/Users')
         const body = req.body
         await Users.modifyUser(username, body.firstname, body.lastname, body.password, body.email, body.role, body.superAdmin)
         res.sendStatus(200)
-
     }
 
     deleteUser = async function(req, res){

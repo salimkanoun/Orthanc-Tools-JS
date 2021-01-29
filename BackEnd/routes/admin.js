@@ -104,14 +104,14 @@ adminRouter.post('/endpoints/create', newEndpoint)
 adminRouter.delete('/endpoints/', removeEndpoint)
 
 // Certificates
-adminRouter.get('/certificates/', allCertificates)
-adminRouter.post('/certificates/update', updateCertificate)
-adminRouter.post('/certificates/create', newCertificate)
-adminRouter.delete('/certificates/', removeCertificate)
+adminRouter.get('/certificates', allCertificates)
+adminRouter.put('/certificates/:id', updateCertificate)
+adminRouter.post('/certificates', newCertificate)
+adminRouter.delete('/certificates/:id', removeCertificate)
 adminRouter.post('/certificates/upload/:id', uploadCertificate)
 
 //Ssh keys
-adminRouter.get('/keys/', allKeys)
+adminRouter.get('/keys', allKeys)
 adminRouter.post('/keys/update', updateKey)
 adminRouter.post('/keys/create', newKey)
 adminRouter.delete('/keys/', removeKey)

@@ -1,58 +1,34 @@
+const { OTJSForbiddenException } = require("../Exceptions/OTJSErrors");
 const Certificate = require("../model/export/Certificate");
 
 const newCertificate = async function(req, res){
-    try {
-        let cert = new Certificate(req.body)
-        await cert.createCertificate()
-        res.send(cert.getSendable());
-    } catch (error) {
-        console.error(error)
-        res.status(400).send(error)
-    }
+    await Certificate.createCertificate(req.body.label)
+    res.status(201)
 }
 
 const allCertificates = async function(req, res){
-    try {
-        res.json((await Certificate.getAllCertificate()).map(x=>x.getSendable()));
-    } catch (error) {
-        console.error(error)
-        res.status(400).send(error)
-    }
+    let certificates = await Certificate.getAllCertificate()
+    res.send(certificates)
 }
 
+//SK Pas utilisee ? 
 const updateCertificate = async function(req,res){
-    try {
-        let cert = await Certificate.getFromId(req.body.id);
-        cert.set(res.body)
-        res.send(cert.id)
-    } catch (error) {
-        console.error(error)
-        res.status(400).send(error)
-    }
+    await Certificate.updateCertificate(req.params.id, req.body.label, req.body.path)
+    res.status(200)
 }
 
 const uploadCertificate = async function(req,res){
-    try {
-        let cert = await Certificate.getFromId(req.params.id)
-        await cert.setCertContent(req.body)
-        res.send('Done')
-    } catch(error){
-
-        console.error(error)
-        res.status(400).send(error)
+    let certificate = await Certificate.getFromId(req.params.id)
+    if( certificate.path ){
+        throw OTJSForbiddenException('Certificate already existing, delete first')
     }
+    cert.setCertContent(req.body)
+    res.status(201)
 }
 
 const removeCertificate = async function(req,res){
-    try {
-        let cert = await Certificate.getFromId(req.body.id)
-        await cert.deleteCertificate()
-        res.send('Done')
-    } catch(error){
-
-        console.error(error)
-        res.status(400).send(error)
-    }
+    await cert.deleteCertificate(req.params.id)
+    res.status(200)
 }
 
 module.exports = {newCertificate, allCertificates, updateCertificate, uploadCertificate, removeCertificate}

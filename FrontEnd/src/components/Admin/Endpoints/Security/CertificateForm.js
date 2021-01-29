@@ -31,12 +31,8 @@ export default class CertificateForm extends Component {
      * Listener on form submission
      */
     handleClick = async () => {
-
-        let postData = {
-            label: this.state.label
-        }
         try{
-            let response = await apis.certificates.createCertificate(postData)
+            let response = await apis.certificates.createCertificate(this.state.label)
             await apis.certificates.uploadCertificate(response.id, this.state.file)
             this.props.refreshCertificatesData()
         }catch(error){

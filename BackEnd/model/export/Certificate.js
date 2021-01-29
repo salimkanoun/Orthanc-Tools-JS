@@ -1,6 +1,5 @@
-const db = require("../../database/models");
+const db = require("../../database/models")
 const fs = require('fs')
-const { randomInt } = require("crypto");
 
 class Certificate{
     constructor(params){
@@ -9,72 +8,51 @@ class Certificate{
         this.path = params.path || null
     }
 
-    async createCertificate(){
-        this.id = await Certificate.createCertificate(this)
-        return this.id;
+    static createCertificate(label){
+        return db.Certificate.create({
+            lablel : label
+        }).catch((error) => {throw error})
     }
 
-    static async createCertificate(cert){
-        try {
-            let certificate = await db.Certificate.create(cert)
-            return certificate.id
-        } catch (error) {
-            console.error(error)
-            throw error
-        }
+    static updateCertificate(id, label, path){
+        let certificate = await Certificate.getFromId(id)
+        certificate.label = label
+        certificate.path = path
+        await certificate.save()
     }
 
-    async set(params){
-        this.id = params.id || this.id
-        this.label = params.label || this.label
-        this.path = params.path || this.path
-
-        this.id = await db.Certificate.upsert(this)
-        return this.id;
-    }
-
-    static async getFromId(id){
-        return new Certificate(await db.Certificate.findOne({where:{id:id}}))
+    static getFromId(id){
+        return db.Certificate.findOne({where:{id:id}}.catch((error) => {throw error}))
     }
 
     static async getAllCertificate(){
-        let certificates = await db.Certificate.findAll().catch((error) => {throw error})
-        return certificates.map(x=>new Certificate(x))
+        return await db.Certificate.findAll().catch((error) => {throw error})
+
     }
 
-    async deleteCertificate(){
-        if(this.path&&fs.existsSync(this.path)){
-            fs.unlinkSync(this.path)
+    //Sk ici eviter de bloker l'event loop
+    static async deleteCertificate(id){
+        let certificate = await Certificate.getFromId(id)
+        if( certificate.path && fs.existsSync(certificate.path)){
+            fs.unlinkSync(certificate.path)
         }
         await db.Certificate.destroy({where:{
-            id:this.id
+            id : certificate.id
         }})
     }
 
-    async setCertContent(chunk){
-        let path
-        do{
-            path = 'data/certificates/cert-'+randomInt(99999)+'.cert';
-        }while(fs.existsSync(path))
-        let stream = fs.createWriteStream(path,{
+    //SK ici eviter de bloquer l event loop
+    //Passer en promise car ici en callback soit faire passer un callback 
+    //Soit passer en prmomise
+    //Pour declancher une errur si ecriture fail (mieux vaut utiliser fsPromise)
+    static setCertContent(chunk){
+        let path = 'data/certificates/cert-'+Date.now()+'.cert'
+        let stream = fs.createWriteStream( path, {
             autoClose:true
         });
         stream.write(chunk)
-
-        if(fs.existsSync(this.path)){
-            fs.unlinkSync(this.path)
-        }
-
-        this.set({path:path})
     }
 
-    getSendable(){
-        return {
-            id: this.id,
-            label: this.label,
-            uploaded: !!this.path
-        }
-    }
 }
 
 module.exports = Certificate
