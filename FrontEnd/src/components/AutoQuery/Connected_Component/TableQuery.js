@@ -285,7 +285,7 @@ class TableQuery extends Component {
       Level: 'Study',
       Query: {
         PatientName: queryParams.PatientName,
-        PatientID: queryParams.PatientId,
+        PatientID: queryParams.PatientID,
         StudyDate: DateString,
         ModalitiesInStudy: queryParams.ModalitiesInStudy,
         StudyDescription: queryParams.StudyDescription,
