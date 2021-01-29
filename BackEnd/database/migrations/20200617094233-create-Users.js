@@ -39,17 +39,24 @@ module.exports = {
         type: Sequelize.DATE
       }, 
       role: {
-        allowNull: false, 
-        references: {
-          model: 'Roles', 
-          key: 'name'
-        }, 
+        allowNull: false,
         type: Sequelize.STRING
       }
     }).then(() => {
-      return queryInterface.addConstraint('Users', ['username'], {
+      return queryInterface.addConstraint('Users', {
+        fields: ['username'],
         type: 'unique',
         name: 'unique_username'
+      })
+    }).then(() => {
+      return queryInterface.addConstraint('Users', {
+        type: 'foreign key',
+        fields: ['role'],
+        references: {
+          fields: ['name'],
+          table: 'Roles',
+        },
+        name: 'roles_name_fkey',
       })
     }).then( () => { return bcrypt.hash('admin', 10) 
     }).then((hash) => {

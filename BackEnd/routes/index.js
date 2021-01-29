@@ -3,12 +3,9 @@ var router = express.Router()
 // Handle controller errors
 require('express-async-errors')
 
-const { getParsedAnswer } = require('../controllers/query')
+const { getParsedAnswer, postRetrieve } = require('../controllers/query')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
-
-// SK Probalement a enlenver ne passer que par le reverse proxy
-const { postRetrieve } = require('../controllers/retrieveDicom')
 
 const { importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
     exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, isCurrentUserOrAdminMidelWare, userAuthMidelware } = require('../midelwares/authentication')

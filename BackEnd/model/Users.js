@@ -213,12 +213,18 @@ class Users {
         let role = await resp.dataValues.roleDistant;
 
         let option = await db.Role.findOne(({
-          where: { name: role }, attributes: ['import',
+          where: { name: role }, attributes: [
+            'import',
             'content',
             'anon',
             'export_local',
             'export_extern',
-            'query', 'auto_query', 'delete', 'admin', 'modify']
+            'query',
+            'auto_query', 
+            'delete', 
+            'admin', 
+            'modify'
+          ]
         }))
 
         res = {
