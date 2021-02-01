@@ -6,6 +6,7 @@ const DeleteTask = require("../model/tasks/DeleteTask")
 const RetrieveTask = require("../model/tasks/RetrieveTask")
 const ExportTask = require("../model/tasks/ExportTask")
 const Endpoint = require("../model/export/Endpoint")
+const { OTJSNotFoundException } = require("../Exceptions/OTJSErrors")
 
 /**
  * Creating anonymisation task based on the request
@@ -14,11 +15,6 @@ const Endpoint = require("../model/export/Endpoint")
  */
 const addAnonTask = async (req, res) => {
     let orthancIds = req.body
-    if (AbstractTask.getTaskOfUser(req.params.username, TaskType.ANONYMIZE)) {
-        console.error('Task already in progress')
-        res.status(403).send('Task already in progress')
-        return;
-    }
     let task = new AnonTask(req.params.username, orthancIds)
     task.run()
     res.json({ id: task.id })
@@ -31,11 +27,6 @@ const addAnonTask = async (req, res) => {
  */
 const addDeleteTask = async (req, res) => {
     let orthancIds = req.body
-    if (AbstractTask.getTaskOfUser(req.params.username, TaskType.DELETE)) {
-        console.error('Task already in progress')
-        res.status(403).send('Task already in progress')
-        return;
-    }
     let task = new DeleteTask(req.params.username, orthancIds)
     task.run()
     res.json({ id: task.id })
@@ -48,11 +39,6 @@ const addDeleteTask = async (req, res) => {
  */
 const addRetrieveTask = async (req, res) => {
     let answers = req.body.retrieveArray
-    if (AbstractTask.getTaskOfUser(req.params.username, TaskType.RETRIEVE)) {
-        console.error('Task already in progress')
-        res.status(403).send('Task already in progress')
-        return;
-    }
     let task = new RetrieveTask(req.params.username, req.body.projectName, answers)
     res.json({ id: task.id })
 }
@@ -97,17 +83,9 @@ const deleteRetrieveItem = async (req, res) => {
  * @param {*} res request result
  */
 const getTask = async (req, res) => {
-    try {
-        if (!req.params.id)
-            throw "task id expect"
-        if (!(req.params.id in AbstractTask.taskIndex))
-            throw "invalid task id"
-
-        res.json(await AbstractTask.taskIndex[req.params.id].getSendable())
-    } catch (error) {
-        console.error(error)
-        res.status(400).send(error)
-    }
+    if (!(req.params.id in AbstractTask.taskIndex))
+        throw OTJSNotFoundException("invalid task id");
+    res.json(await AbstractTask.taskIndex[req.params.id].getSendable())
 }
 
 /**
@@ -115,18 +93,13 @@ const getTask = async (req, res) => {
  * @param {*} req express request
  * @param {*} res request result
  */
-const getTasks = async (req, res) => {
-    try {
-        let tasks = AbstractTask.taskIndex.values()
-        let formatedTasks = []
-        for (let i = 0; i < tasks.length; i++) {
-            formatedTasks.push(tasks[i].getSendable())
-        }
-        res.json(formatedTasks)
-    } catch (error) {
-        console.error(error)
-        res.status(400).send(error)
+const getTasks = async (req, res) => {    
+    let tasks = AbstractTask.taskIndex.values()
+    let formatedTasks = []
+    for (let i = 0; i < tasks.length; i++) {
+        formatedTasks.push(tasks[i].getSendable())
     }
+    res.json(formatedTasks)
 }
 
 /**
@@ -135,12 +108,7 @@ const getTasks = async (req, res) => {
  * @param {*} res request result
  */
 const getTasksIds = async (req, res) => {
-    try {
-        res.json(Object.values(AbstractTask.taskIndex).map(x => x.id))
-    } catch (error) {
-        console.error(error)
-        res.status(400).json([])
-    }
+    res.json(Object.values(AbstractTask.taskIndex).map(x => x.id))
 }
 
 /**
@@ -149,16 +117,11 @@ const getTasksIds = async (req, res) => {
  * @param {*} res request result
  */
 const getTaskWithUser = async (req, res) => {
-    try {
-        let task = await AbstractTask.getTaskOfUser(req.params.username, req.params.type)
-        if(task !== null){
-            res.json( await task.getSendable())
-        }else {
-            res.status(404).send()
-        }
-    } catch (error) {
-        console.error(error)
-        res.status(500).send(error)
+    let task = await AbstractTask.getTaskOfUser(req.params.username, req.params.type)
+    if(task !== null){
+        res.json( await task.getSendable())
+    }else {
+        throw OTJSNotFoundException("No task of this type for this user");
     }
 }
 
@@ -168,12 +131,7 @@ const getTaskWithUser = async (req, res) => {
  * @param {*} res request result
  */
 const getTasksOfType = async (req, res) => {
-    try {
-        res.json(await Promise.all(AbstractTask.getTasksOfType(req.params.type).map(x=>x.getSendable()) ))
-    } catch (error) {
-        console.error(error)
-        res.status(400).send(error)
-    }
+    res.json(await Promise.all(AbstractTask.getTasksOfType(req.params.type).map(x=>x.getSendable())))
 }
 
 /**
@@ -182,16 +140,12 @@ const getTasksOfType = async (req, res) => {
  * @param {*} res request result
  */
 const deleteTaskOfUser = async (req, res) => {
-    try {
-        let task = AbstractTask.getTaskOfUser(req.params.username, req.params.type)
-        task.delete()
-        AbstractTask.taskTypeUserIndex[req.params.type][req.params.username] = null;
-        AbstractTask.taskIndex[task.id] = null 
-        res.send('done')
-    } catch (error) {
-        console.error(error)
-        res.status(400).send(error)
-    }
+    let task = AbstractTask.getTaskOfUser(req.params.username, req.params.type)
+    if(task === null) throw OTJSNotFoundException("No task of this type for this user");
+    task.delete()
+    AbstractTask.taskTypeUserIndex[req.params.type][req.params.username] = null;
+    AbstractTask.taskIndex[task.id] = null 
+    res.send('done')
 }
 
 /**
@@ -200,15 +154,11 @@ const deleteTaskOfUser = async (req, res) => {
  * @param {*} res request result
  */
 const deleteTask = async (req, res) => {
-    try {
-        let task =  AbstractTask.taskIndex[req.params.id]
-        await task.delete()
-        delete task
-        res.send('done')
-    } catch (error) {
-        console.error(error)
-        res.status(400).send(error)
-    }
+    let task =  AbstractTask.taskIndex[req.params.id]
+    if(task === null) throw OTJSNotFoundException("No task with this id");
+    await task.delete()
+    delete task
+    res.send('done')
 }
 
 

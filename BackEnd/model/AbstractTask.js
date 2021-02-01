@@ -1,3 +1,4 @@
+const { OTJSConflictException, OTJSNotFoundException } = require("../Exceptions/OTJSErrors")
 const uuid = require("../utils/uuid")
 
 
@@ -11,6 +12,9 @@ class AbstractTask {
         this.type = type
         AbstractTask.taskIndex[this.id] = this
         if(Object.keys(AbstractTask.taskTypeUserIndex).includes(type)){
+            if (AbstractTask.getTaskOfUser(req.params.username, TaskType.ANONYMIZE)) {
+                throw OTJSConflictException("Task of this type already in progress for this user");
+            }
             AbstractTask.taskTypeUserIndex[type][creator] = this;
         }
     }
@@ -79,7 +83,7 @@ class AbstractTask {
      */
     static getTaskOfUser(user,type){
         if(!Object.values(AbstractTask.TaskType).includes(type))
-            throw new TypeError('Unkown Task Type')
+            throw OTJSBadRequestException('Unkown Task Type')
         return AbstractTask.taskTypeUserIndex[type][user]||null
     }
 
@@ -90,8 +94,7 @@ class AbstractTask {
      */
     static getTasksOfType(type){
         if(!Object.values(AbstractTask.TaskType).includes(type))
-            throw new TypeError('Unkown Task Type')
-
+            throw OTJSBadRequestException('Unkown Task Type')
         return Object.values(AbstractTask.taskTypeUserIndex[type]).filter((v)=>!!v)
     }
 }
