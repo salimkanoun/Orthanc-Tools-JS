@@ -15,10 +15,12 @@ class Certificate{
     }
 
     static updateCertificate(id, label, path){
-        let certificate = await Certificate.getFromId(id)
-        certificate.label = label
-        certificate.path = path
-        await certificate.save()
+        return Certificate.getFromId(id).then(async (certificate) => 
+            {
+                certificate.label = label;
+                certificate.path = path;
+                await certificate.save();
+            });
     }
 
     static getFromId(id){

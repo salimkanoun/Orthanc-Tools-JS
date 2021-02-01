@@ -11,7 +11,7 @@ const deleteRobot = {
             body: JSON.stringify(deleteArray)
         }
 
-        return fetch('/api/robot/' + username + '/delete', createDeleteRobotOption ).then(answer => {
+        return fetch('/api/tasks/' + username + '/delete', createDeleteRobotOption ).then(answer => {
             if (!answer.ok) {throw answer}
             return true
         }).catch(error => {

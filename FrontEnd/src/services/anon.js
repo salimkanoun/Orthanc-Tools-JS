@@ -12,7 +12,7 @@ const anonymize =  {
               body: JSON.stringify(anonymizeArray)
         }
         
-        return fetch('/api/robot/' + username + '/anonymize', createAnonRobotOption ).then(answer => {
+        return fetch('/api/tasks/' + username + '/anonymize', createAnonRobotOption ).then(answer => {
             if (!answer.ok) {throw answer}
             return answer.json()
         }).catch(error => {
