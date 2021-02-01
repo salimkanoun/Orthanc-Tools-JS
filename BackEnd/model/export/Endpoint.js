@@ -3,6 +3,7 @@ const db = require('../../database/models')
 const convert = require('../../utils/convert')
 const SshKey = require('./SshKey')
 const fs = require('fs')
+const { OTJSBadRequestException } = require('../../Exceptions/OTJSErrors')
 
 const algo = 'aes256'
 
@@ -38,23 +39,20 @@ class Endpoint{
 
 
         if (params.sshKey) {
-            
             this.sshKey = SshKey.getFromId(params.sshKey).then((result)=>{
                 this.sshKey = result
                 return result
-            }).catch((err)=>{
-                console.error(err)
             })
         }
     }
 
     static _checkParams(params){
         if(params.label===undefined || params.label===null || params.label==="")
-            throw('Endpoint : Invalid label')
+            throw OTJSBadRequestException('Endpoint : Invalid label')
         if(params.host===undefined || params.host===null || params.host==="")
-            throw('Endpoint : Invalid host')
+            throw OTJSBadRequestException('Endpoint : Invalid host')
         if(params.protocol===undefined || params.protocol===null || !['ftp','sftp','ftps','webdav'].includes(params.protocol))
-            throw('Endpoint : Invalid protocol')
+            throw OTJSBadRequestException('Endpoint : Invalid protocol')
         
     }
 
@@ -133,19 +131,15 @@ class Endpoint{
     }
 
     static async getAllEndpoints(){
-        try {
-            let servers = [] 
-            await db.Endpoint.findAll(
-                {attributes: ['id', 'label', 'host', 'protocol', 'port', 'identifiants', 'pass', 'targetFolder', 'digest', 'ssl', 'sshKey']}
-            ).then((results)=>{
-                results.forEach(element => {
-                    servers.push(new Endpoint(element.dataValues))
-                });
-            })
-            return servers
-        } catch (error) {
-            console.error(error)
-        }
+        let servers = [] 
+        await db.Endpoint.findAll(
+            {attributes: ['id', 'label', 'host', 'protocol', 'port', 'identifiants', 'pass', 'targetFolder', 'digest', 'ssl', 'sshKey']}
+        ).then((results)=>{
+            results.forEach(element => {
+                servers.push(new Endpoint(element.dataValues))
+            });
+        })
+        return servers
     }
 
     async removeEndpoint(){
