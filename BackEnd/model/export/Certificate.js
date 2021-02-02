@@ -14,11 +14,13 @@ class Certificate{
         }).catch((error) => {throw error})
     }
 
-    static async updateCertificate(id, label, path){
-        let certificate = await Certificate.getFromId(id)
-        certificate.label = label
-        certificate.path = path
-        await certificate.save()
+    static updateCertificate(id, label, path){
+        return Certificate.getFromId(id).then(async ()=>
+            {
+                certificate.label = label
+                certificate.path = path
+                await certificate.save()  
+            })
     }
 
     static getFromId(id){

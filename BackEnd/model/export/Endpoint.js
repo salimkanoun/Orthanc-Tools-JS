@@ -3,6 +3,7 @@ const db = require('../../database/models')
 const convert = require('../../utils/convert')
 const SshKey = require('./SshKey')
 const fs = require('fs')
+const { OTJSBadRequestException } = require('../../Exceptions/OTJSErrors')
 
 const algo = 'aes256'
 
@@ -20,6 +21,7 @@ class Endpoint{
         this.port = params.port || null
         this.digest = params.digest || null
         this.ssl = params.ssl || null
+        this.sshKey = params.sshKey || null
 
         //Setting the identifients
         if(this.id!==null){
@@ -35,27 +37,15 @@ class Endpoint{
             this.username = params.username
             this.password = params.password
         }
-
-
-        if (params.sshKey) {
-            
-            this.sshKey = SshKey.getFromId(params.sshKey).then((result)=>{
-                this.sshKey = result
-                return result
-            }).catch((err)=>{
-                console.error(err)
-            })
-        }
     }
 
     static _checkParams(params){
         if(params.label===undefined || params.label===null || params.label==="")
-            throw('Endpoint : Invalid label')
+            throw OTJSBadRequestException('Endpoint : Invalid label')
         if(params.host===undefined || params.host===null || params.host==="")
-            throw('Endpoint : Invalid host')
+            throw OTJSBadRequestException('Endpoint : Invalid host')
         if(params.protocol===undefined || params.protocol===null || !['ftp','sftp','ftps','webdav'].includes(params.protocol))
-            throw('Endpoint : Invalid protocol')
-        
+            throw OTJSBadRequestException('Endpoint : Invalid protocol')    
     }
 
     async set(params){
@@ -86,9 +76,10 @@ class Endpoint{
                 console.error(error)
             }
         }
-        if(this.sshKey){
-            this.sshKey = await SshKey.getFromId(this.sshKey)
-        }
+    }
+
+    async getSshKey(){
+        return await SshKey.getFromId(this.sshKey);
     }
 
     async createEndpoint(){
@@ -103,22 +94,14 @@ class Endpoint{
         }
         fields.password = undefined
         fields.username = undefined
-        fields.pass = !!endpoint.password   
+        fields.pass = !!endpoint.password
         if(!endpoint.password){
             fields.identifiants = endpoint.username
         }else{
             fields.identifiants = Endpoint._encryptIdentifiants(endpoint.username, endpoint.password)
         }
         try {
-            let entity = await db.Endpoint.create(fields).then((endpoint)=>{
-                if(endpoint.sshKey){
-                    endpoint.sshKey.then((result)=>{
-                        entity.set('sshKey',result.id)
-                        entity.save()
-                    })
-                }
-                return endpoint;
-            })
+            let entity = await db.Endpoint.create(fields)
             return endpoint.id
         } catch (error) {
             console.error(error)
@@ -133,19 +116,16 @@ class Endpoint{
     }
 
     static async getAllEndpoints(){
-        try {
-            let servers = [] 
-            await db.Endpoint.findAll(
-                {attributes: ['id', 'label', 'host', 'protocol', 'port', 'identifiants', 'pass', 'targetFolder', 'digest', 'ssl', 'sshKey']}
-            ).then((results)=>{
-                results.forEach(element => {
-                    servers.push(new Endpoint(element.dataValues))
-                });
-            })
-            return servers
-        } catch (error) {
-            console.error(error)
-        }
+    
+        let servers = [] 
+        await db.Endpoint.findAll(
+            {attributes: ['id', 'label', 'host', 'protocol', 'port', 'identifiants', 'pass', 'targetFolder', 'digest', 'ssl', 'sshKey']}
+        ).then((results)=>{
+            results.forEach(element => {
+                servers.push(new Endpoint(element.dataValues))
+            });
+        })
+        return servers
     }
 
     async removeEndpoint(){
@@ -167,15 +147,17 @@ class Endpoint{
         }
     }
 
-    sftpOptionFormat(){
+    async sftpOptionFormat(){
+        
         if (this.sshKey) {
+            let keyObject = await this.getSshKey();
             return {
                 host: this.host,
                 username: this.username,
                 port: this.port,
                 targetFolder: this.targetFolder,
-                privateKey : fs.readFileSync(this.sshKey.path).toString(),
-                passphrase : this.sshKey.pass || null
+                privateKey : fs.readFileSync( keyObject.path).toString(),
+                passphrase : keyObject.pass || null
             }
         }else{
             return {
@@ -230,7 +212,7 @@ class Endpoint{
             username: this.username,
             port: this.port,
             digest: this.digest,
-            sshKey:(this.sshKey?(await this.sshKey).getSendable():null) ,
+            sshKey:(this.sshKey?(await this.getSshKey()).getSendable():null) ,
             ssl: this.ssl
         }
     }
