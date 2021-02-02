@@ -6,6 +6,9 @@ const OrthancQueryAnswer = require('./queries-answer/OrthancQueryAnswer')
 const ReverseProxy = require('./ReverseProxy')
 const schedule = require('node-schedule')
 const Options = require('./Options')
+const Exporter = require('./export/Exporter')
+const Endpoint = require('./export/Endpoint');
+const {v4:uuid} = require('uuid');
 
 const JOBS_PROGRESS_INTERVAL = 250
 const REDIS_OPTIONS = {
@@ -13,6 +16,8 @@ const REDIS_OPTIONS = {
   port: process.env.REDIS_PORT,
   password: process.env.REDIS_PASSWORD
 }
+
+let exporter = new Exporter();
 
 
 let orthanc = new Orthanc()
@@ -34,25 +39,11 @@ class OrthancQueue {
     this.validationQueue = new Queue('orthanc-validation', {redis:REDIS_OPTIONS})
 
     //Clear queue to start with fresh queue (removing old instances items)
-    this.exportQueue.clean(0)
-    this.deleteQueue.clean(0)
-    this.anonQueue.clean(0)
-    this.aetQueue.clean(0)
-    this.validationQueue.clean(0)
-
-    //Hack to fix a quirk in bull
-    this.exportQueue.on('progress', async (job, data) => {
-      this._jobs[job.id]._progress = await job.progress()
-    })
-    this.anonQueue.on('progress', async (job, data) => {
-      this._jobs[job.id]._progress = await job.progress()
-    })
-    this.aetQueue.on('progress', async (job, data) => {
-      this._jobs[job.id]._progress = await job.progress()
-    })
-    this.validationQueue.on('progress', async (job, data) => {
-      this._jobs[job.id]._progress = await job.progress()
-    })
+    this.exportQueue.clean(1)
+    this.deleteQueue.clean(1)
+    this.anonQueue.clean(1)
+    this.aetQueue.clean(1)
+    this.validationQueue.clean(1)
 
     //adding processor to queues
     this.exportQueue.process('create-archive', OrthancQueue._getArchiveDicom)
@@ -60,6 +51,11 @@ class OrthancQueue {
     this.anonQueue.process('anonymize-item', OrthancQueue._anonymizeItem)
     this.validationQueue.process('validate-item', OrthancQueue._validateItem)
     this.aetQueue.process('retrieve-item', OrthancQueue._retrieveItem)
+
+    this.exportQueue.on("completed",(job, result)=>{
+      let endpoint = Endpoint.getFromId(job.data.endpoint);
+      exporter.queue(endpoint.protocol, endpoint, result);
+    })
 
     this.pauser = null
     this.resumer = null
@@ -242,6 +238,12 @@ class OrthancQueue {
       this._jobs[job.id] = job
       return job
     })
+  }
+
+  exportToEndpoint(orthancIds, transcoding, endpoint) {
+    let task_id = uuid();
+    this.exportQueue.add('create-archive', {task_id, orthancIds, transcoding, endpoint});
+    return task_id;
   }
 
   /**

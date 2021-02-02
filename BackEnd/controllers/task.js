@@ -4,8 +4,9 @@ const TaskType = AbstractTask.TaskType;
 const AnonTask = require("../model/tasks/AnonTask")
 const DeleteTask = require("../model/tasks/DeleteTask")
 const RetrieveTask = require("../model/tasks/RetrieveTask")
-const ExportTask = require("../model/tasks/ExportTask")
-const Endpoint = require("../model/export/Endpoint")
+const OrthancQueue = require("../model/OrthancQueue")
+
+let orthancQueue = new OrthancQueue();
 
 /**
  * Creating anonymisation task based on the request
@@ -63,10 +64,10 @@ const addRetrieveTask = async (req, res) => {
  * @param {*} res request result
  */
 const addExportTask = async function(req,res){
-    let studies = req.body.Resources
-    let task = new ExportTask(req.params.user, studies, await Endpoint.getFromId(req.body.endpoint))
-    task.run()
-    res.json({id:task.id})
+    let studies = req.body.Resources;
+    let endpoint = req.body.endpoint;
+    let id = orthancQueue.exportToEndpoint(studies, null, endpoint);
+    res.json({id})
 }
 
 /**

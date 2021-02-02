@@ -76,10 +76,12 @@ class Exporter{
             //Start tracking
             ftp.trackProgress(info=>{
                 job.progress(info.bytesOverall/archive.size*100)
+                console.log(info);
             });
             //Start Uploading
             await ftp.uploadFrom(archive.filePath, path.join(endpoint.targetFolder,  archive.name))
         })
+        console.log("exported");
         done()
     }
 
@@ -89,15 +91,18 @@ class Exporter{
 
         const sftp = new SftpClient();
 
+
         //Creating the sftp connection
         await sftp.connect(endpoint).then(()=>{
             //Starting the transfer
             sftp.fastPut(archive.filePath,path.join(endpoint.targetFolder, archive.name),{
                 step:  (total_transferred, chunk, total)=>{
                     job.progress(total_transferred/archive.size*100);
+                    console.log(total_transferred/archive.size*100);
                 }
             }).then(()=>sftp.end())
         })
+        console.log("exported");
         done()
     }
 

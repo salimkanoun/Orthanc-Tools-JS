@@ -53,7 +53,7 @@ class SshKey{
     }
 
     static async getAllSshKey(){
-        return await db.SshKey.findAll().map(x=>new SshKey(x));
+        return (await db.SshKey.findAll()).map(x=>new SshKey(x));
     }
 
     async setKeyContent(chunk){

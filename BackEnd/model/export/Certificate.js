@@ -14,7 +14,7 @@ class Certificate{
         }).catch((error) => {throw error})
     }
 
-    static updateCertificate(id, label, path){
+    static async updateCertificate(id, label, path){
         let certificate = await Certificate.getFromId(id)
         certificate.label = label
         certificate.path = path
