@@ -38,12 +38,13 @@ class DeleteTask extends AbstractTask{
     }
 
     static async getDeleteTask(id){
+
         let jobs = await orthancQueue.getDeleteJobs(id);
         
-        if(jobs.length = 0) return null;
+        if(jobs.length === 0) return null;
 
         let progress = 0;
-        for (const job in jobs) {
+        for (const job of jobs) {
             progress += ((await job.getState())==='completed'?100:0);
         }
         progress/=jobs.length;
@@ -60,7 +61,7 @@ class DeleteTask extends AbstractTask{
                 state = "active";
                 break;
         }
-
+        
         return {
             id,
             type: 'delete',

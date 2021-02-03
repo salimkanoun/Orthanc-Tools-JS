@@ -1,9 +1,9 @@
 const deleteRobot = {
 
-    createDeleteRobot(deleteArray, username){
+    createDeleteRobot(deleteArray, username) {
 
         const createDeleteRobotOption = {
-            method: 'POST', 
+            method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
@@ -11,9 +11,9 @@ const deleteRobot = {
             body: JSON.stringify(deleteArray)
         }
 
-        return fetch('/api/robot/' + username + '/delete', createDeleteRobotOption ).then(answer => {
-            if (!answer.ok) {throw answer}
-            return true
+        return fetch('/api/robot/' + username + '/delete', createDeleteRobotOption).then(answer => {
+            if (!answer.ok) { throw answer }
+            return answer.json()
         }).catch(error => {
             throw error
         })

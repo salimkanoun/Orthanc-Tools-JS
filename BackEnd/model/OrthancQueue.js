@@ -283,7 +283,7 @@ class OrthancQueue {
   }
 
   async getDeleteJobs(taskId){
-    let jobs = await this.deleteItems.getJobs(["completed","active","waiting","delayed","paused"]);
+    let jobs = await this.deleteQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.taskId === taskId);
   }
 
