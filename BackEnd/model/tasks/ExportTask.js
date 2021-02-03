@@ -1,6 +1,11 @@
 const AbstractTask = require("../AbstractTask");
+const Exporter = require("../export/Exporter");
+const OrthancQueue = require("../OrthancQueue");
 const CreateArchiveTask = require('./CreateArchiveTask')
 const SendTask = require('./SendTask')
+
+let orthanc =new OrthancQueue();
+let exporter = new Exporter();
 
 class ExportTask extends AbstractTask{
     constructor(creator, studies, endpoint){
@@ -48,6 +53,38 @@ class ExportTask extends AbstractTask{
         this.sendTask = new SendTask(this.creator, path, this.endpoint)
         await this.sendTask.run()
         this.onCompleted()
+    }
+
+    static async getTask(id){
+        //Seraching for the relevant Jobs
+        let archiveJob = await orthanc.getArchiveCreationJobs(id);
+        let sendJob = await exporter.getUploadJobs(id);
+        
+        if(!archiveJob[0] && !sendJob[0])return null;
+        
+
+        //Computing the state
+        let archiveState = (archiveJob[0]?await archiveJob[0].getState():'waiting')
+        let sendState = (sendJob[0]?await sendJob[0].getState():'waiting')
+        let state;
+        if(archiveState==='waiting' && archiveState===sendState) state = 'pending archiving'
+        else if(archiveState==='active' && sendState==='waiting') state = 'archiving'
+        else if(archiveState==='completed' && sendState==='waiting') state = 'pending sending'
+        else if(archiveState==='completed' && sendState==='active') state = 'sending'
+        else if(archiveState==='completed' && archiveState===sendState) state = 'completed'
+        else state = 'failed'
+        
+        return {
+            id,
+            type: "export",
+            creator: archiveJob[0].data.creator,
+            progress: {
+                archiving : (archiveJob[0]?await archiveJob[0].progress():0),
+                sending : (sendJob[0]?await sendJob[0].progress():0)
+            },
+            state,
+            content: {}
+        }
     }
 }
 

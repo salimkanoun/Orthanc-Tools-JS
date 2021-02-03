@@ -1,5 +1,8 @@
 const AbstractTask = require("../AbstractTask");
+const OrthancQueue = require("../OrthancQueue");
 const AnonItemTask = require("./AnonItemTask");
+
+let orthancQueue = new OrthancQueue;
 
 class AnonTask extends AbstractTask{
     constructor(creator, items){
@@ -48,6 +51,47 @@ class AnonTask extends AbstractTask{
     async run(){
         await Promise.all(this.itemTasks.map(task=>task.run()))
         this.onCompleted()
+    }
+
+    static async getTask(id){
+        let jobs = await orthancQueue.getAnonimizationJobs(id);
+        if (jobs.length === 0) return null;
+        
+        let progress = 0
+        let length = jobs.length
+        for (let i = 0; i < length; i++) {
+            const job = jobs[i]
+            progress += await job.progress()
+        }
+        progress /= length;
+        
+        let state 
+        if(progress == 0) {
+            state = 'wait'
+        }else if(progress==100) {
+            state = 'completed'
+        }else {
+            state = 'active'
+        }
+
+        return {
+            id,
+            type: "anonymize",
+            creator: jobs[0].data.creator,
+            progress,
+            state,
+            content: {
+                items : await Promise.all(jobs.map(async job=>{
+                    let state = await job.getState()
+                    let item={
+                        source: job.data.item.sourceOrthancStudyID,
+                        state,
+                        result: (state === "completed"? await job.finished(): null)
+                    }
+                    return item;
+                }))
+            }
+        }
     }
 }
 

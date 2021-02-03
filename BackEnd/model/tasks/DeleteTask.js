@@ -36,6 +36,40 @@ class DeleteTask extends AbstractTask{
         await Promise.all(this.jobs.map(job=>job.finished()))
         this.onCompleted()
     }
+
+    static async getDeleteTask(id){
+        let jobs = await orthancQueue.getDeleteJobs(id);
+        
+        if(jobs.length = 0) return null;
+
+        let progress = 0;
+        for (const job in jobs) {
+            progress += ((await job.getState())==='completed'?100:0);
+        }
+        progress/=jobs.length;
+
+        let state;
+        switch(progress){
+            case 0 :
+                state = 'wait'; 
+                break;
+            case 100 : 
+                state = 'completed';
+                break;
+            default : 
+                state = "active";
+                break;
+        }
+
+        return {
+            id,
+            type: 'delete',
+            creator: jobs[0].data.creator,
+            progress,
+            state,
+            content: {}
+        }
+    }
 }
 
 module.exports = DeleteTask

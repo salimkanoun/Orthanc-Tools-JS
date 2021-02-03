@@ -4,7 +4,9 @@ const TaskType = AbstractTask.TaskType;
 const AnonTask = require("../model/tasks/AnonTask")
 const DeleteTask = require("../model/tasks/DeleteTask")
 const RetrieveTask = require("../model/tasks/RetrieveTask")
-const OrthancQueue = require("../model/OrthancQueue")
+const OrthancQueue = require("../model/OrthancQueue");
+const ExportTask = require("../model/tasks/ExportTask");
+const { OTJSNotFoundException } = require("../Exceptions/OTJSErrors");
 
 let orthancQueue = new OrthancQueue();
 
@@ -20,9 +22,7 @@ const addAnonTask = async (req, res) => {
         res.status(403).send('Task already in progress')
         return;
     }
-    let task = new AnonTask(req.params.username, orthancIds)
-    task.run()
-    res.json({ id: task.id })
+    res.json({id:orthancQueue.anonimizeItems(req.roles.username, orthancIds)});
 }
 
 /**
@@ -37,9 +37,8 @@ const addDeleteTask = async (req, res) => {
         res.status(403).send('Task already in progress')
         return;
     }
-    let task = new DeleteTask(req.params.username, orthancIds)
-    task.run()
-    res.json({ id: task.id })
+    let id = orthancQueue.deleteItems(req.roles.username, orthancIds);
+    res.json({ id })
 }
 
 /**
@@ -66,7 +65,7 @@ const addRetrieveTask = async (req, res) => {
 const addExportTask = async function(req,res){
     let studies = req.body.Resources;
     let endpoint = req.body.endpoint;
-    let id = orthancQueue.exportToEndpoint(studies, null, endpoint);
+    let id = orthancQueue.exportToEndpoint(req.roles.username,studies, null, endpoint);
     res.json({id})
 }
 
@@ -101,10 +100,27 @@ const getTask = async (req, res) => {
     try {
         if (!req.params.id)
             throw "task id expect"
-        if (!(req.params.id in AbstractTask.taskIndex))
-            throw "invalid task id"
-
-        res.json(await AbstractTask.taskIndex[req.params.id].getSendable())
+        //if (!(req.params.id in AbstractTask.taskIndex))
+        //    throw "invalid task id"
+        if(AbstractTask.taskIndex[req.params.id]){
+            res.json(await AbstractTask.taskIndex[req.params.id].getSendable())
+        }else{
+            let task = null;
+            switch(req.params.id[0]){
+                case 'a' :
+                    task = await AnonTask.getTask(req.params.id);
+                    break;
+                case 'e' :
+                    task = await ExportTask.getTask(req.params.id);
+                    break;
+                case 'd' : 
+                    task = await DeleteTask.getDeleteTask(req.params.id);
+            }
+            if(task === null) {
+                throw OTJSNotFoundException("Unknown task");
+            } 
+            res.json(task);
+        }
     } catch (error) {
         console.error(error)
         res.status(400).send(error)

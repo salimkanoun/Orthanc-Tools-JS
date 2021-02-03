@@ -165,7 +165,7 @@ class Endpoint{
                 username: this.username,
                 password: this.password,
                 port: this.port,
-                targetFolder: this.targetFolder
+                path: this.targetFolder
             }
         }
     }

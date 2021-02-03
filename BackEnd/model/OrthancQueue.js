@@ -38,13 +38,6 @@ class OrthancQueue {
     this.aetQueue = new Queue('orthanc-aet', {redis:REDIS_OPTIONS})
     this.validationQueue = new Queue('orthanc-validation', {redis:REDIS_OPTIONS})
 
-    //Clear queue to start with fresh queue (removing old instances items)
-    this.exportQueue.clean(1)
-    this.deleteQueue.clean(1)
-    this.anonQueue.clean(1)
-    this.aetQueue.clean(1)
-    this.validationQueue.clean(1)
-
     //adding processor to queues
     this.exportQueue.process('create-archive', OrthancQueue._getArchiveDicom)
     this.deleteQueue.process('delete-item', OrthancQueue._deleteItem)
@@ -52,9 +45,9 @@ class OrthancQueue {
     this.validationQueue.process('validate-item', OrthancQueue._validateItem)
     this.aetQueue.process('retrieve-item', OrthancQueue._retrieveItem)
 
-    this.exportQueue.on("completed",(job, result)=>{
-      let endpoint = Endpoint.getFromId(job.data.endpoint);
-      exporter.queue(endpoint.protocol, endpoint, result);
+    this.exportQueue.on("completed",async(job, result)=>{
+      let endpoint = await Endpoint.getFromId(job.data.endpoint);
+      exporter.uploadFile(job.data.taskId, endpoint, result.path);
     })
 
     this.pauser = null
@@ -144,7 +137,7 @@ class OrthancQueue {
     let item = job.data.item
 
     //Requesting orthanc API to anonymize a study  
-    let anonAnswer = await orthanc.makeAnon('studies', item.sourceOrthancStudyID, item.anonProfile, item.newAccessionNumber, item.newPatientID, item.newPatientName, item.newStudyDescription, false)
+    let anonAnswer = await orthanc.makeAnon('studies', item.orthancStudyID, item.anonProfile, item.newAccessionNumber, item.newPatientID, item.newPatientName, item.newStudyDescription, false)
 
     //Monitor orthanc job 
     orthanc.monitorJob(anonAnswer.Path, (response) => { job.progress(response.Progress) }, JOBS_PROGRESS_INTERVAL).then(async (answer) => {
@@ -161,9 +154,8 @@ class OrthancQueue {
             }
           }
         }
-
         job.progress(100)
-        done(null, answer.ID)
+        done(null, answer.Content.ID)
       } else {
         done("Orthanc Error Anonymizing")
       }
@@ -240,10 +232,59 @@ class OrthancQueue {
     })
   }
 
-  exportToEndpoint(orthancIds, transcoding, endpoint) {
-    let task_id = uuid();
-    this.exportQueue.add('create-archive', {task_id, orthancIds, transcoding, endpoint});
-    return task_id;
+  exportToEndpoint(creator, orthancIds, transcoding, endpoint) {
+    let taskId = 'e-'+uuid();
+    this.exportQueue.add('create-archive', {creator, taskId, orthancIds, transcoding, endpoint});
+    return taskId;
+  }
+
+  anonimizeItems(creator, items){
+    let taskId = 'a-'+uuid();
+    let jobs = items.map(item=>{
+      return {
+        name : "anonymize-item",
+        data : {
+          taskId,
+          creator,
+          item
+        }
+      }
+    });
+    this.anonQueue.addBulk(jobs);
+    return taskId;
+  }
+
+  deleteItems(creator, items){
+    let taskId = 'd-'+uuid();
+    let jobs = items.map(item=>{
+      return {
+        name : "delete-item",
+        data : {
+          taskId,
+          creator,
+          orthancId : item
+        }
+      }
+    });
+    this.deleteQueue.addBulk(jobs);
+    return taskId;
+    
+  }
+
+
+  async getArchiveCreationJobs(taskId){
+    let jobs = await this.exportQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    return jobs.filter(job=>job.data.taskId === taskId);
+  }
+
+  async getAnonimizationJobs(taskId){
+    let jobs = await this.anonQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    return jobs.filter(job=>job.data.taskId === taskId);
+  }
+
+  async getDeleteJobs(taskId){
+    let jobs = await this.deleteItems.getJobs(["completed","active","waiting","delayed","paused"]);
+    return jobs.filter(job=>job.data.taskId === taskId);
   }
 
   /**
