@@ -50,7 +50,6 @@ const sshKeys = {
   },
 
   async uploadKey(id, file) {
-    console.log(file);
     let fileText = await file.text()
     return fetch('api/keys/upload/' + id, {
       method: 'POST',

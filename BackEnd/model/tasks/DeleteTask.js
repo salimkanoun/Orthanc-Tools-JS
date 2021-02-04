@@ -37,7 +37,7 @@ class DeleteTask extends AbstractTask{
         this.onCompleted()
     }
 
-    static async getDeleteTask(id){
+    static async getTask(id){
 
         let jobs = await orthancQueue.getDeleteJobs(id);
         
@@ -47,7 +47,7 @@ class DeleteTask extends AbstractTask{
         for (const job of jobs) {
             progress += ((await job.getState())==='completed'?100:0);
         }
-        progress/=jobs.length;
+        progress /= jobs.length;
 
         let state;
         switch(progress){
@@ -61,7 +61,7 @@ class DeleteTask extends AbstractTask{
                 state = "active";
                 break;
         }
-        
+
         return {
             id,
             type: 'delete',
@@ -70,6 +70,23 @@ class DeleteTask extends AbstractTask{
             state,
             content: {}
         }
+    }
+
+    static async getUserTask(user){
+        let deleteJobs = await orthancQueue.getDeleteJobs(user);
+        if(deleteJobs.length === 0) return null;
+        return DeleteTask.getTask(deleteJobs[0].length);
+    }
+
+    static async getTasks(){
+        let jobs = await orthancQueue.deleteQueue.getJobs()
+        let ids = [];
+        for (const job of jobs) {
+            if (!(job.data.id in ids)) {
+                ids.push(job.data.id);
+            }
+        }
+        return await Promise.all(ids.map(id=>DeleteTask.getTask(id)));
     }
 }
 

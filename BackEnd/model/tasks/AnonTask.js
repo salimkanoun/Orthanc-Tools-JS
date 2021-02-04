@@ -93,6 +93,23 @@ class AnonTask extends AbstractTask{
             }
         }
     }
+
+    static async getUserTask(user){
+        let validateJobs = await orthancQueue.getUserAnonimizationJobs(user);
+        if(validateJobs.length === 0) return null;
+        return AnonTask.getTask(validateJobs[0].length);
+    }
+
+    static async getTasks(){
+        let jobs = await orthancQueue.anonQueue.getJobs()
+        let ids = [];
+        for (const job of jobs) {
+            if (!(job.data.id in ids)) {
+                ids.push(job.data.id);
+            }
+        }
+        return await Promise.all(ids.map(id=>AnonTask.getTask(id)));
+    }
 }
 
 module.exports = AnonTask

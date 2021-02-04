@@ -6,7 +6,8 @@ const DeleteTask = require("../model/tasks/DeleteTask")
 const RetrieveTask = require("../model/tasks/RetrieveTask")
 const OrthancQueue = require("../model/OrthancQueue");
 const ExportTask = require("../model/tasks/ExportTask");
-const { OTJSNotFoundException } = require("../Exceptions/OTJSErrors");
+const { OTJSNotFoundException, OTJSBadRequestException } = require("../Exceptions/OTJSErrors");
+const { getTaskOfUser } = require("../model/AbstractTask");
 
 let orthancQueue = new OrthancQueue();
 
@@ -17,11 +18,6 @@ let orthancQueue = new OrthancQueue();
  */
 const addAnonTask = async (req, res) => {
     let orthancIds = req.body
-    if (AbstractTask.getTaskOfUser(req.params.username, TaskType.ANONYMIZE)) {
-        console.error('Task already in progress')
-        res.status(403).send('Task already in progress')
-        return;
-    }
     res.json({id:orthancQueue.anonimizeItems(req.roles.username, orthancIds)});
 }
 
@@ -32,11 +28,6 @@ const addAnonTask = async (req, res) => {
  */
 const addDeleteTask = async (req, res) => {
     let orthancIds = req.body
-    if (AbstractTask.getTaskOfUser(req.params.username, TaskType.DELETE)) {
-        console.error('Task already in progress')
-        res.status(403).send('Task already in progress')
-        return;
-    }
     let id = orthancQueue.deleteItems(req.roles.username, orthancIds);
     res.json({ id })
 }
@@ -48,13 +39,8 @@ const addDeleteTask = async (req, res) => {
  */
 const addRetrieveTask = async (req, res) => {
     let answers = req.body.retrieveArray
-    if (AbstractTask.getTaskOfUser(req.params.username, TaskType.RETRIEVE)) {
-        console.error('Task already in progress')
-        res.status(403).send('Task already in progress')
-        return;
-    }
-    let task = new RetrieveTask(req.params.username, req.body.projectName, answers)
-    res.json({ id: task.id })
+    let id = orthancQueue.validateItems(req.roles.username, req.body.projectName, answers)
+    res.json({ id })
 }
 
 /**
@@ -75,8 +61,8 @@ const addExportTask = async function(req,res){
  * @param {*} res request result
  */
 const validateRetrieve = async (req, res) => {
-    let task = AbstractTask.getTaskOfUser(req.params.username, TaskType.RETRIEVE)
-    task.run();
+    let task = await RetrieveTask.getUserTask(req.roles.username);
+    orthancQueue.approveTask(task.id);
     res.json(true)
 }
 
@@ -86,8 +72,8 @@ const validateRetrieve = async (req, res) => {
  * @param {*} res request result
  */
 const deleteRetrieveItem = async (req, res) => {
-    let task = AbstractTask.getTaskOfUser(req.params.username, TaskType.RETRIEVE)
-    task.deleteItem(req.params.id)
+    let task = await RetrieveTask.getUserTask(req.roles.username);
+    RetrieveTask.deleteItem(task.id, req.params.id);
     res.json(true)
 }
 
@@ -114,10 +100,14 @@ const getTask = async (req, res) => {
                     task = await ExportTask.getTask(req.params.id);
                     break;
                 case 'd' : 
-                    task = await DeleteTask.getDeleteTask(req.params.id);
+                    task = await DeleteTask.getTask(req.params.id);
+                    break;
+                case 'r' : 
+                    task = await RetrieveTask.getTask(req.params.id);
+                    break;
             }
             if(task === null) {
-                throw OTJSNotFoundException("Unknown task");
+                throw new OTJSNotFoundException("Unknown task");
             } 
             res.json(task);
         }
@@ -166,17 +156,28 @@ const getTasksIds = async (req, res) => {
  * @param {*} res request result
  */
 const getTaskWithUser = async (req, res) => {
-    try {
-        let task = await AbstractTask.getTaskOfUser(req.params.username, req.params.type)
-        if(task !== null){
-            res.json( await task.getSendable())
-        }else {
-            res.status(404).send()
-        }
-    } catch (error) {
-        console.error(error)
-        res.status(500).send(error)
+    let task;
+    switch (req.params.type) {
+        case 'retrieve':
+            task = await RetrieveTask.getUserTask(req.roles.username);
+            break;
+        case 'export':
+            task = await ExportTask.getUserTask(req.roles.username);
+            break;
+        case 'anonymize':
+            task = await AnonTask.getUserTask(req.roles.username);
+            break;
+        case 'delete':
+            task = await DeleteTask.getUserTask(req.roles.username);
+            break;
+        default:
+            throw new OTJSBadRequestException('Unknown type of task');
     }
+
+
+    if(task===null) throw new OTJSNotFoundException("Unknown task");
+    
+    res.json(task);
 }
 
 /**
@@ -185,12 +186,25 @@ const getTaskWithUser = async (req, res) => {
  * @param {*} res request result
  */
 const getTasksOfType = async (req, res) => {
-    try {
-        res.json(await Promise.all(AbstractTask.getTasksOfType(req.params.type).map(x=>x.getSendable()) ))
-    } catch (error) {
-        console.error(error)
-        res.status(400).send(error)
+    let tasks;
+    switch (req.params.type) {
+        case 'retrieve':
+            tasks = await RetrieveTask.getTasks();
+            break;
+        case 'export':
+            tasks = await ExportTask.getTasks();
+            break;
+        case 'anonymize':
+            tasks = await AnonTask.getTasks();
+            break;
+        case 'delete':
+            tasks = await DeleteTask.getTasks();
+            break;
+        default:
+            throw new OTJSBadRequestException('Unknown type of task');
     }
+
+    res.json(tasks);
 }
 
 /**
@@ -199,15 +213,14 @@ const getTasksOfType = async (req, res) => {
  * @param {*} res request result
  */
 const deleteTaskOfUser = async (req, res) => {
-    try {
-        let task = AbstractTask.getTaskOfUser(req.params.username, req.params.type)
-        task.delete()
-        AbstractTask.taskTypeUserIndex[req.params.type][req.params.username] = null;
-        AbstractTask.taskIndex[task.id] = null 
-        res.send('done')
-    } catch (error) {
-        console.error(error)
-        res.status(400).send(error)
+    let task;
+    switch (req.params.type) {
+        case 'retrieve':
+            task = await RetrieveTask.getUserTask(req.roles.username);
+            RetrieveTask.deleteTask(task);
+            break;
+        default:
+            throw new OTJSBadRequestException('Cant delete this task');
     }
 }
 
@@ -217,14 +230,13 @@ const deleteTaskOfUser = async (req, res) => {
  * @param {*} res request result
  */
 const deleteTask = async (req, res) => {
-    try {
-        let task =  AbstractTask.taskIndex[req.params.id]
-        await task.delete()
-        delete task
-        res.send('done')
-    } catch (error) {
-        console.error(error)
-        res.status(400).send(error)
+    let task = null;
+    switch(req.params.id[0]){
+        case 'r' : 
+            task = await RetrieveTask.deleteTask(req.params.id);
+            break;
+        default:
+            throw new OTJSBadRequestException('Cant delete this task');
     }
 }
 

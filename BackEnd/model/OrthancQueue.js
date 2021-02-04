@@ -168,7 +168,6 @@ class OrthancQueue {
    * @param {object} done 
    */
   static async _deleteItem(job, done) {
-
     await orthanc.deleteFromOrthanc('series', job.data.orthancId)
     done()
   }
@@ -268,7 +267,38 @@ class OrthancQueue {
     });
     this.deleteQueue.addBulk(jobs);
     return taskId;
-    
+  }
+  
+  validateItems(creator, projectName, items){
+    let taskId = 'r-'+uuid();
+    let jobs = items.map(item=>{
+      return {
+        name : "validate-item",
+        data : {
+          taskId,
+          creator,
+          projectName,
+          item
+        }
+      }
+    });
+    this.validationQueue.addBulk(jobs);
+    return taskId;
+  }
+
+  async approveTask(taskId){
+    let jobs = await this.getValidationJobs(taskId);
+
+    let datas = [];
+    for (const job of jobs) {
+      datas.push(
+        {
+          name:'retrieve-item',
+          data:job.data
+        });
+      if(!await job.finished()) return;
+    }
+    this.aetQueue.addBulk(datas);
   }
 
 
@@ -285,6 +315,41 @@ class OrthancQueue {
   async getDeleteJobs(taskId){
     let jobs = await this.deleteQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.taskId === taskId);
+  }
+
+  async getValidationJobs(taskId){
+    let jobs = await this.validationQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    return jobs.filter(job=>job.data.taskId === taskId);
+  }
+
+  async getRetrieveItem(taskId){
+    let jobs = await this.aetQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    return jobs.filter(job=>job.data.taskId === taskId);
+  }
+
+  async getUserArchiveCreationJobs(user){
+    let jobs = await this.exportQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    return jobs.filter(job=>job.data.creator === user);
+  }
+
+  async getUserAnonimizationJobs(user){
+    let jobs = await this.anonQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    return jobs.filter(job=>job.data.creator === user);
+  }
+
+  async getUserDeleteJobs(user){
+    let jobs = await this.deleteQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    return jobs.filter(job=>job.data.creator === user);
+  }
+
+  async getUserValidationJobs(user){
+    let jobs = await this.validationQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    return jobs.filter(job=>job.data.creator === user);
+  }
+
+  async getUserRetrieveItem(user){
+    let jobs = await this.aetQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    return jobs.filter(job=>job.data.creator === user);
   }
 
   /**

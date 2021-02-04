@@ -86,6 +86,23 @@ class ExportTask extends AbstractTask{
             content: {}
         }
     }
+
+    static async getUserTask(user){
+        let archiveJobs = await orthancQueue.getUserArchiveCreationJobs(user);
+        if(archiveJobs.length === 0) return null;
+        return ExportTask.getTask(archiveJobs[0].data.taskId);
+    }
+
+    static async getTasks(){
+        let jobs = await orthancQueue.createState.getJobs()
+        let ids = [];
+        for (const job of jobs) {
+            if (!(job.data.id in ids)) {
+                ids.push(job.data.id);
+            }
+        }
+        return await Promise.all(ids.map(id=>ExportTask.getTask(id)));
+    }
 }
 
 module.exports = ExportTask
