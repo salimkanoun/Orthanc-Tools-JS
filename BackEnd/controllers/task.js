@@ -1,11 +1,9 @@
 const Task = require("../model/Task");
-const AnonTask = require("../model/tasks/AnonTask")
-const DeleteTask = require("../model/tasks/DeleteTask")
-const RetrieveTask = require("../model/tasks/RetrieveTask")
-const OrthancQueue = require("../model/OrthancQueue");
+const AnonTask = require("../model/tasks/AnonTask");
+const DeleteTask = require("../model/tasks/DeleteTask");
+const RetrieveTask = require("../model/tasks/RetrieveTask");
 const ExportTask = require("../model/tasks/ExportTask");
 
-let orthancQueue = new OrthancQueue();
 
 /**
  * Creating anonymisation task based on the request
@@ -75,15 +73,6 @@ const deleteRetrieveItem = async (req, res) => {
 
 /**
  * Response with the task corresponding to the requested id 
- * @param {*} req express request
- * @param {*} res request result
- */
-const getTask = async (req, res) => {
-    res.json(await Task.getTask(req.params.id));
-}
-
-/**
- * Response with all the tasks
  * @param {*} req express request
  * @param {*} res request result
  */

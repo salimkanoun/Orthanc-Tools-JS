@@ -90,8 +90,8 @@ adminRouter.get('/ldap/groupname', getLdapGroupeNames)
 //OrthancToolsJS Robot routes
 //Retrieve Robot
 //SK A UNIFORMISER
-adminRouter.post('/robot/:username/retrieve/validate', validateRetrieve)
-adminRouter.get('/robot/:type', getTasksOfType)
+adminRouter.post('/tasks/:username/retrieve/validate', validateRetrieve)
+adminRouter.get('/tasks/:type', getTasksOfType)
 
 /*
 ** REMOTE EXPORT

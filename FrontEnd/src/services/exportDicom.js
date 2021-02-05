@@ -121,7 +121,7 @@ const exportDicom = {
       })
     }
 
-    return fetch('/api/robot/' + username + '/export/', storeFtpOption).then((answer) => {
+    return fetch('/api/tasks/' + username + '/export/', storeFtpOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).catch(error => {

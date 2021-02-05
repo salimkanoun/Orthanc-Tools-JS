@@ -68,17 +68,17 @@ router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
 
 //OrthancToolsJS Robot routes
 //Retrieve Robot
-router.post('/robot/:username/retrieve', [isCurrentUserOrAdminMidelWare, autoQueryMidelware], addRetrieveTask)
+router.post('/tasks/:username/retrieve', [isCurrentUserOrAdminMidelWare, autoQueryMidelware], addRetrieveTask)
 
 //AnonRobot
-router.post('/robot/:username/anonymize', anonMidelware, addAnonTask)
+router.post('/tasks/:username/anonymize', anonMidelware, addAnonTask)
 
 //DeleteRobot
 //SK BUG MIDELWARE DELETE?
-router.post('/robot/:username/delete', deleteMidelware, addDeleteTask)
+router.post('/tasks/:username/delete', deleteMidelware, addDeleteTask)
 
 //FTP & WebDav Exports
-router.post('/robot/:user/export', exportExternMidelware, addExportTask)
+router.post('/tasks/:user/export', exportExternMidelware, addExportTask)
 
 //Tasks
 //SK : ICI MANQUE LES MIDDELWARE
