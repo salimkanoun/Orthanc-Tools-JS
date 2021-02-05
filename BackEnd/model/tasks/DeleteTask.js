@@ -1,40 +1,21 @@
-const AbstractTask = require("../AbstractTask");
+const { OTJSForbiddenException } = require("../../Exceptions/OTJSErrors");
 const OrthancQueue = require("../OrthancQueue");
+const TaskType = require("../TaskType");
 const orthancQueue = new OrthancQueue()
 
-class DeleteTask extends AbstractTask{
-    constructor(creator, orthancSeriesIds){
-        super(creator, 'delete')
-        this.orthancSeriesIds = orthancSeriesIds
-        this.jobs = [];
-    }
+class DeleteTask {
 
-    async getProgress(){
-        let completed = 0
-        for (let i = 0; i < this.jobs.length; i++) {
-            const item = this.jobs[i];
-            if(await item.getState()==='completed') completed++
+    static async createTask(creator, orthancIds){
+        let task = await DeleteTask.getUserTask(creator);
+        if(!!task){
+            if(['completed','failed'].includes(task.state)){
+                DeleteTask.delete(task.id);
+            }
+            else{
+                throw new OTJSForbiddenException("Cant create two deletion simulteanously");
+            }
         }
-        return completed/this.orthancSeriesIds.length*100
-    }
-
-    async getState(){
-        if(await this.getProgress()===0) {
-            return 'wait'
-        }else if(await this.getProgress()===100) {
-            return 'completed'
-        }else {
-            return 'active'
-        }
-    }
-
-    /**
-     * Delete series base on the ids 
-     */
-    async run(){
-        this.jobs = await orthancQueue.queueDeleteItems(this.orthancSeriesIds)
-        await Promise.all(this.jobs.map(job=>job.finished()))
-        this.onCompleted()
+        return orthancQueue.deleteItems(creator, orthancIds);
     }
 
     static async getTask(id){
@@ -64,7 +45,7 @@ class DeleteTask extends AbstractTask{
 
         return {
             id,
-            type: 'delete',
+            type: TaskType.DELETE,
             creator: jobs[0].data.creator,
             progress,
             state,

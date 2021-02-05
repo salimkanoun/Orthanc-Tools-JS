@@ -18,8 +18,6 @@ const REDIS_OPTIONS = {
 }
 
 let exporter = new Exporter();
-
-
 let orthanc = new Orthanc()
 
 let instance
@@ -28,8 +26,6 @@ class OrthancQueue {
     if (instance) return instance
 
     instance = this
-
-    this._jobs = {}
 
     //Creating Queues
     this.exportQueue = new Queue('orthanc-export', {redis:REDIS_OPTIONS})
@@ -273,19 +269,21 @@ class OrthancQueue {
     let taskId = 'r-'+uuid();
 
     let curratedItems = items.reduce((agregation, item)=>{
+      console.log(agregation);
       if (item.Level === OrthancQueryAnswer.LEVEL_STUDY) {
         for (const existingItem of agregation) {
-          if (item.studyInstanceUID===existingItem.studyInstanceUID) return;
+          if (item.studyInstanceUID===existingItem.studyInstanceUID) return agregation;
         }
         agregation.push(item);
       } else if (item.Level === OrthancQueryAnswer.LEVEL_SERIES) {
         for (const existingItem of agregation) {
-          if (item.studyInstanceUID===existingItem.studyInstanceUID && item.SeriesInstanceUID===existingItem.SeriesInstanceUID) return;
+          if (item.studyInstanceUID===existingItem.studyInstanceUID && item.SeriesInstanceUID===existingItem.SeriesInstanceUID) return agregation;
         }
         agregation.push(item);
       }
+      return agregation;
     }, []);
-    
+
     let jobs = curratedItems.map(item=>{
       return {
         name : "validate-item",
@@ -365,62 +363,6 @@ class OrthancQueue {
   async getUserRetrieveItem(user){
     let jobs = await this.aetQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.creator === user);
-  }
-
-  /**
-   * Add an item to the anonymisation queue
-   * @param {string} orthancIds item uuid to be queued
-   */
-  queueAnonymizeItem(item) {
-    return this.anonQueue.add('anonymize-item', { item }).then((job) => {
-      this._jobs[job.id] = job
-      return job
-    })
-  }
-
-  /**
-   * Add an item to the deletion queue
-   * @param {string} orthancIds item uuid to be queued
-   */
-  queueDeleteItem(orthancId) {
-    return this.deleteQueue.add('delete-item', { orthancId })
-  }
-
-  /**
-   * Add an item to the validation queue
-   * @param {string} orthancIds item uuid to be queued
-   */
-  queueValidateRetrieve(item) {
-    return this.validationQueue.add('validate-item', { item }).then((job) => {
-      this._jobs[job.id] = job
-      return job
-    }) 
-  }
-
-  /**
-   * Add an item to the retrieve queue
-   * @param {string} orthancIds item uuid to be queued
-   */
-  queueRetrieveItem(item) {
-    return this.aetQueue.add('retrieve-item', { item }).then((job) => {
-      this._jobs[job.id] = job
-      return job
-    }) 
-  }
-
-  /**
-   * Add an items to the deletion queue
-   * @param {string[]} orthancIds items uuids to be queued
-   */
-  queueDeleteItems(orthancIds) {
-    return this.deleteQueue.addBulk(orthancIds.map(orthancId => {
-      return {
-        name: 'delete-item',
-        data: {
-          orthancId
-        }
-      }
-    }))
   }
 
   /**

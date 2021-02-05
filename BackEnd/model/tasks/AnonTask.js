@@ -1,56 +1,22 @@
-const AbstractTask = require("../AbstractTask");
+const { OTJSForbiddenException } = require("../../Exceptions/OTJSErrors");
 const OrthancQueue = require("../OrthancQueue");
-const AnonItemTask = require("./AnonItemTask");
+const TaskType = require("../TaskType");
 
 let orthancQueue = new OrthancQueue;
 
-class AnonTask extends AbstractTask{
-    constructor(creator, items){
-        super(creator, 'anonymize')
-        this.itemTasks = []
-        items.forEach(item => {
-            this.itemTasks.push(new AnonItemTask(creator, item.orthancStudyID, item.profile, item.newPatientName, item.newPatientID, item.newStudyDescription, item.newAccessionNumber))
-        })
-    }
-
-    async getProgress(){
-        let sum = 0
-        let length = this.itemTasks.length
-        for (let i = 0; i < length; i++) {
-            const task = this.itemTasks[i]
-            const progress = await task.getProgress()
-            sum += progress
+class AnonTask {
+    
+    static async createTask(creator, orthancIds){
+        let task = await AnonTask.getUserTask(creator);
+        if(!!task){
+            if(['completed','failed'].includes(task.state)){
+                AnonTask.delete(task.id);
+            }
+            else{
+                throw new OTJSForbiddenException("Cant create two anonymiztion simulteanously");
+            }
         }
-        return sum/length
-    }
-
-    async getState(){
-        if(await this.getProgress()===0) {
-            return 'wait'
-        }else if(await this.getProgress()===100) {
-            return 'completed'
-        }else {
-            return 'active'
-        }
-    }
-
-    async getContent(){
-        let items = []
-        for (let i = 0; i < this.itemTasks.length; i++) {
-            const item = this.itemTasks[i];
-            items.push(await item.getContent())
-        }
-        return{
-            items
-        }
-    }
-
-    /**
-     * Anonymise studies of a given ids
-     */
-    async run(){
-        await Promise.all(this.itemTasks.map(task=>task.run()))
-        this.onCompleted()
+        return orthancQueue.anonimizeItems(creator, orthancIds)
     }
 
     static async getTask(id){
@@ -76,7 +42,7 @@ class AnonTask extends AbstractTask{
 
         return {
             id,
-            type: "anonymize",
+            type: TaskType.ANONYMIZE,
             creator: jobs[0].data.creator,
             progress,
             state,
