@@ -9,7 +9,7 @@ const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../cont
 
 const { importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
         exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, 
-        modifyMidelware, isCurrentUserOrAdminMidelWare, userAuthMidelware } = require('../midelwares/authentication')
+        modifyMidelware, isCurrentUserOrAdminMidelWare, userAuthMidelware, userAdminMidelware, ownTaskOrIsAdminMidelware } = require('../midelwares/authentication')
 
 const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve, deleteRetrieveItem, addExportTask } = require('../controllers/task')
 
@@ -85,9 +85,9 @@ router.post('/tasks/:user/export', exportExternMidelware, addExportTask)
 router.get('/tasks/:username/:type', getTaskWithUser)
 router.delete('/tasks/:username/:type', isCurrentUserOrAdminMidelWare, deleteTaskOfUser)
 router.delete('/tasks/:username/retrieve/:id', [isCurrentUserOrAdminMidelWare, autoQueryMidelware], deleteRetrieveItem)
-router.get('/tasks/:id', getTask)
-router.delete('/tasks/:id', deleteTask)
-router.get('/tasks', getTasksIds)
-router.get('/tasks?expend', getTasks)
+router.get('/tasks/:id', ownTaskOrIsAdminMidelware, getTask)
+router.delete('/tasks/:id', ownTaskOrIsAdminMidelware, deleteTask)
+router.get('/tasks', userAdminMidelware,  getTasksIds)
+router.get('/tasks?expend', userAdminMidelware, getTasks)
 
 module.exports = router

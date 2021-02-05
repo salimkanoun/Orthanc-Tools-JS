@@ -133,10 +133,6 @@ const deleteTaskOfUser = async (req, res) => {
  * @param {*} res request result
  */
 const deleteTask = async (req, res) => {
-    let task = await Task.getTask(req.params.id);
-
-    if(task.creator !== req.roles.username && !req.roles.admin) throw new OTJSForbiddenException("Cant delete a task you does own");
-
     await Task.deleteTask(req.params.id);
     res.json(true);
 }

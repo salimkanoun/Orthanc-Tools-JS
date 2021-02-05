@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken")
+const Task = require("../model/Task")
 
 const userAuthMidelware = function (req, res, next) {
 
@@ -116,7 +117,15 @@ const modifyMidelware = async function (req, res, next) {
   }
 }
 
+const ownTaskOrIsAdminMidelware = async function (req,res,next){
+  let task = await Task.getTask(req.params.id);
+  if(task.creator !== req.roles.username && !req.roles.admin) throw new OTJSForbiddenException("Task not owned");
+  next();
+}
+
+
 module.exports = {
   userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
-  exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, isCurrentUserOrAdminMidelWare
+  exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, isCurrentUserOrAdminMidelWare,
+  ownTaskOrIsAdminMidelware
 }    
