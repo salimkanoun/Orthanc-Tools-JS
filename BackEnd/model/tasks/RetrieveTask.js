@@ -120,7 +120,7 @@ class RetrieveTask {
         validateJobs.filter(job => job.data.item.AnswerNumber == itemId)[0].remove();
     }
 
-    static async  delete(taskId){
+    static async delete(taskId){
         let retrieveJobs = await orthancQueue.getRetrieveItem(taskId);
 
         let stateComplete = (await Promise.all(retrieveJobs.map(job=>job.getState()))).reduce((acc,x)=>acc=acc&&x==='completed',true);

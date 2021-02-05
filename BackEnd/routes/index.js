@@ -83,8 +83,8 @@ router.post('/tasks/:user/export', exportExternMidelware, addExportTask)
 //Tasks
 //SK : ICI MANQUE LES MIDDELWARE
 router.get('/tasks/:username/:type', getTaskWithUser)
-router.delete('/tasks/:username/:type', deleteTaskOfUser)
-router.delete('/tasks/:username/retrieve/:id', deleteRetrieveItem)
+router.delete('/tasks/:username/:type', isCurrentUserOrAdminMidelWare, deleteTaskOfUser)
+router.delete('/tasks/:username/retrieve/:id', [isCurrentUserOrAdminMidelWare, autoQueryMidelware], deleteRetrieveItem)
 router.get('/tasks/:id', getTask)
 router.delete('/tasks/:id', deleteTask)
 router.get('/tasks', getTasksIds)
