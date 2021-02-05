@@ -88,6 +88,11 @@ class DeleteTask extends AbstractTask{
         }
         return await Promise.all(ids.map(id=>DeleteTask.getTask(id)));
     }
+
+    static async  delete(taskId){
+        let deleteJobs = await orthancQueue.getDeleteJobs(taskId);
+        deleteJobs.forEach(job=>job.remove());
+    }
 }
 
 module.exports = DeleteTask

@@ -73,7 +73,7 @@ class OrthancQueue {
     if(this.resumer) this.resumer.cancel()
     
     //Pausing or unpausing the aet queue 
-    if(time.isTimeInbetween(now.getHours(),now.getMinutes(),optionsParameters.hour,optionsParameters.minute,optionsParameters.hour+4,optionsParameters.minute)){
+    if(time.isTimeInbetween(now.getHours(),now.getMinutes(),optionsParameters.hour_start,optionsParameters.min_start,optionsParameters.min_stop,optionsParameters.hour_stop)){
       this.aetQueue.resume()
     }else{
       this.aetQueue.pause()
@@ -271,7 +271,22 @@ class OrthancQueue {
   
   validateItems(creator, projectName, items){
     let taskId = 'r-'+uuid();
-    let jobs = items.map(item=>{
+
+    let curratedItems = items.reduce((agregation, item)=>{
+      if (item.Level === OrthancQueryAnswer.LEVEL_STUDY) {
+        for (const existingItem of agregation) {
+          if (item.studyInstanceUID===existingItem.studyInstanceUID) return;
+        }
+        agregation.push(item);
+      } else if (item.Level === OrthancQueryAnswer.LEVEL_SERIES) {
+        for (const existingItem of agregation) {
+          if (item.studyInstanceUID===existingItem.studyInstanceUID && item.SeriesInstanceUID===existingItem.SeriesInstanceUID) return;
+        }
+        agregation.push(item);
+      }
+    }, []);
+    
+    let jobs = curratedItems.map(item=>{
       return {
         name : "validate-item",
         data : {

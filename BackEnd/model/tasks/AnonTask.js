@@ -110,6 +110,11 @@ class AnonTask extends AbstractTask{
         }
         return await Promise.all(ids.map(id=>AnonTask.getTask(id)));
     }
+
+    static async  delete(taskId){
+        let anonJobs = await orthancQueue.getAnonimizationJobs(taskId);
+        anonJobs.forEach(job=>job.remove());
+    }
 }
 
 module.exports = AnonTask

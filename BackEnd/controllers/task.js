@@ -1,4 +1,3 @@
-const { remove } = require("jszip")
 const AbstractTask = require("../model/AbstractTask")
 const TaskType = AbstractTask.TaskType;
 const AnonTask = require("../model/tasks/AnonTask")
@@ -6,8 +5,7 @@ const DeleteTask = require("../model/tasks/DeleteTask")
 const RetrieveTask = require("../model/tasks/RetrieveTask")
 const OrthancQueue = require("../model/OrthancQueue");
 const ExportTask = require("../model/tasks/ExportTask");
-const { OTJSNotFoundException, OTJSBadRequestException } = require("../Exceptions/OTJSErrors");
-const { getTaskOfUser } = require("../model/AbstractTask");
+const { OTJSNotFoundException, OTJSBadRequestException, OTJSForbiddenException } = require("../Exceptions/OTJSErrors");
 
 let orthancQueue = new OrthancQueue();
 
@@ -18,6 +16,15 @@ let orthancQueue = new OrthancQueue();
  */
 const addAnonTask = async (req, res) => {
     let orthancIds = req.body
+    let task = await AnonTask.getUserTask(req.roles.username);
+    if(!!task){
+        if(['completed','failed'].includes(task.state)){
+            AnonTask.delete(task.id);
+        }
+        else{
+            throw new OTJSForbiddenException("Cant create two anonymiztion simulteanously");
+        }
+    }
     res.json({id:orthancQueue.anonimizeItems(req.roles.username, orthancIds)});
 }
 
@@ -28,6 +35,15 @@ const addAnonTask = async (req, res) => {
  */
 const addDeleteTask = async (req, res) => {
     let orthancIds = req.body
+    let task = await DeleteTask.getUserTask(req.roles.username);
+    if(!!task){
+        if(['completed','failed'].includes(task.state)){
+            DeleteTask.delete(task.id);
+        }
+        else{
+            throw new OTJSForbiddenException("Cant create two deletion simulteanously");
+        }
+    }
     let id = orthancQueue.deleteItems(req.roles.username, orthancIds);
     res.json({ id })
 }
@@ -39,6 +55,15 @@ const addDeleteTask = async (req, res) => {
  */
 const addRetrieveTask = async (req, res) => {
     let answers = req.body.retrieveArray
+    let task = await RetrieveTask.getUserTask(req.roles.username);
+    if(!!task){
+        if(['completed','failed'].includes(task.state)){
+            RetrieveTask.delete(task.id);
+        }
+        else{
+            throw new OTJSForbiddenException("Cant create two retrieval simulteanously");
+        }
+    }
     let id = orthancQueue.validateItems(req.roles.username, req.body.projectName, answers)
     res.json({ id })
 }
@@ -83,37 +108,28 @@ const deleteRetrieveItem = async (req, res) => {
  * @param {*} res request result
  */
 const getTask = async (req, res) => {
-    try {
-        if (!req.params.id)
-            throw "task id expect"
-        //if (!(req.params.id in AbstractTask.taskIndex))
-        //    throw "invalid task id"
-        if(AbstractTask.taskIndex[req.params.id]){
-            res.json(await AbstractTask.taskIndex[req.params.id].getSendable())
-        }else{
-            let task = null;
-            switch(req.params.id[0]){
-                case 'a' :
-                    task = await AnonTask.getTask(req.params.id);
-                    break;
-                case 'e' :
-                    task = await ExportTask.getTask(req.params.id);
-                    break;
-                case 'd' : 
-                    task = await DeleteTask.getTask(req.params.id);
-                    break;
-                case 'r' : 
-                    task = await RetrieveTask.getTask(req.params.id);
-                    break;
-            }
-            if(task === null) {
-                throw new OTJSNotFoundException("Unknown task");
-            } 
-            res.json(task);
+    if(AbstractTask.taskIndex[req.params.id]){
+        res.json(await AbstractTask.taskIndex[req.params.id].getSendable())
+    }else{
+        let task = null;
+        switch(req.params.id[0]){
+            case 'a' :
+                task = await AnonTask.getTask(req.params.id);
+                break;
+            case 'e' :
+                task = await ExportTask.getTask(req.params.id);
+                break;
+            case 'd' : 
+                task = await DeleteTask.getTask(req.params.id);
+                break;
+            case 'r' : 
+                task = await RetrieveTask.getTask(req.params.id);
+                break;
         }
-    } catch (error) {
-        console.error(error)
-        res.status(400).send(error)
+        if(task === null) {
+            throw new OTJSNotFoundException("Unknown task");
+        } 
+        res.json(task);
     }
 }
 
@@ -217,11 +233,20 @@ const deleteTaskOfUser = async (req, res) => {
     switch (req.params.type) {
         case 'retrieve':
             task = await RetrieveTask.getUserTask(req.roles.username);
-            RetrieveTask.deleteTask(task);
+            RetrieveTask.delete(task.id);
+            break;
+        case 'delete':
+            task = await DeleteTask.getUserTask(req.roles.username);
+            DeleteTask.delete(task.id);
+            break;
+        case 'anonymize':
+            task = await AnonTask.getUserTask(req.roles.username);
+            AnonTask.delete(task.id);
             break;
         default:
             throw new OTJSBadRequestException('Cant delete this task');
     }
+    res.json(true);
 }
 
 /**
@@ -233,11 +258,18 @@ const deleteTask = async (req, res) => {
     let task = null;
     switch(req.params.id[0]){
         case 'r' : 
-            task = await RetrieveTask.deleteTask(req.params.id);
+            task = await RetrieveTask.delete(req.params.id);
+            break;
+        case 'a' : 
+            task = await AnonTask.delete(req.params.id);
+            break;
+        case 'd' : 
+            task = await DeleteTask.delete(req.params.id);
             break;
         default:
             throw new OTJSBadRequestException('Cant delete this task');
     }
+    res.json(true);
 }
 
 

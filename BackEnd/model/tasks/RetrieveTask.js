@@ -147,12 +147,12 @@ class RetrieveTask extends AbstractTask {
             validation += await job.progress();
         }
         validation /= validateJobs.length;
-
+        
         let retrieve = 0;
         for (const job of retrieveJobs) {
             retrieve += await job.progress();
         }
-        retrieve /= (retrieveJobs.length === 0 ? 1 : validateJobs.length);
+        retrieve /= (retrieveJobs.length === 0 ? 1 : retrieveJobs.length);
 
         let state 
         if (validation === 0) {
@@ -229,7 +229,6 @@ class RetrieveTask extends AbstractTask {
         if (retrieveJobs.length !== 0) throw new OTJSForbiddenException("Can't delete an robot already in progress");
         let validateJobs = await orthancQueue.getValidationJobs(taskId);
         
-        console.log(itemId);
         validateJobs.filter(job => job.data.item.AnswerNumber == itemId)[0].remove();
         
 
@@ -237,11 +236,14 @@ class RetrieveTask extends AbstractTask {
 
     static async  delete(taskId){
         let retrieveJobs = await orthancQueue.getRetrieveItem(taskId);
-        if (retrieveJobs.length !== 0) throw new OTJSForbiddenException("Can't delete an robot already in progress");
-        let validateJobs = await orthancQueue.getValidationJobs(taskId);
-        
-        validateJobs.forEach(job=>job.remove());
 
+        let stateComplete = (await Promise.all(retrieveJobs.map(job=>job.getState()))).reduce((acc,x)=>acc=acc&&x==='completed',true);
+
+        if (retrieveJobs.length !== 0 && !stateComplete) throw new OTJSForbiddenException("Can't delete an robot already in progress");
+        let validateJobs = await orthancQueue.getValidationJobs(taskId);
+
+        validateJobs.forEach(job=>job.remove());
+        retrieveJobs.forEach(job=>job.remove());
     }
 }
 
