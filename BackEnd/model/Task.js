@@ -1,5 +1,9 @@
-const TaskType = require('TaskType');
+const TaskType = require('./TaskType');
 const { OTJSBadRequestException } = require("../Exceptions/OTJSErrors");
+const AnonTask = require('./tasks/AnonTask');
+const ExportTask = require('./tasks/ExportTask');
+const DeleteTask = require('./tasks/DeleteTask');
+const RetrieveTask = require('./tasks/RetrieveTask');
 
 /**
  * Represents a task to be executed by Orthanc Tool js

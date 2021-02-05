@@ -4,7 +4,7 @@ const OrthancQueue = require("../OrthancQueue");
 const TaskType = require("../TaskType");
 
 
-let orthanc =new OrthancQueue();
+let orthancQueue =new OrthancQueue();
 let exporter = new Exporter();
 
 class ExportTask {
@@ -15,7 +15,7 @@ class ExportTask {
 
     static async getTask(id){
         //Seraching for the relevant Jobs
-        let archiveJob = await orthanc.getArchiveCreationJobs(id);
+        let archiveJob = await orthancQueue.getArchiveCreationJobs(id);
         let sendJob = await exporter.getUploadJobs(id);
         
         if(!archiveJob[0] && !sendJob[0])return null;

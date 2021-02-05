@@ -72,12 +72,21 @@ const deleteRetrieveItem = async (req, res) => {
 }
 
 /**
- * Response with the task corresponding to the requested id 
+ * Response with all the tasks 
  * @param {*} req express request
  * @param {*} res request result
  */
 const getTasks = async (req, res) => {
     res.json(await Task.getTasks());
+}
+
+/**
+ * Response with the task corresponding to the requested id 
+ * @param {*} req express request
+ * @param {*} res request result
+ */
+const getTask = async (req, res) => {
+    res.json(await Task.getTask(req.params.id));
 }
 
 /**
