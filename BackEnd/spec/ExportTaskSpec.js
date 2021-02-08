@@ -1,110 +1,430 @@
-const {ExportTask} = require('../model/ExportTask')
-const uuid = require('../utils/uuid')
-const fs = require('fs')
+const Exporter = require('../model/export/Exporter');
+const OrthancQueue = require('../model/OrthancQueue');
+const ExportTask = require('../model/tasks/ExportTask');
 
-describe('ExportTask',()=>{
-    let exportTask
+describe('ExportTask', () => {
+    let exporter = new Exporter();
+    let orthancQueue = new OrthancQueue();
+    let orthancQueueExportToEndpointSpy;
+    let orthancQueueGetArchiveCreationJobsSpy;
+    let exporterGetUploadJobsSpy;
+    let orthancQueueGetUserArchiveCreationJobsSpy;
+    let exportQueueGetJobsSpy;
 
-    describe('#Constructor', ()=>{
+    beforeEach(()=>{
+        orthancQueueExportToEndpointSpy = spyOn(orthancQueue, 'exportToEndpoint');
+        orthancQueueGetArchiveCreationJobsSpy = spyOn(orthancQueue, 'getArchiveCreationJobs');
+        exporterGetUploadJobsSpy = spyOn(exporter, 'getUploadJobs');
+        orthancQueueGetUserArchiveCreationJobsSpy = spyOn(orthancQueue, 'getUserArchiveCreationJobs');
+        exportQueueGetJobsSpy = spyOn(orthancQueue.exportQueue, 'getJobs');
+    });
 
-        spies = {}
-
-        beforeAll(()=>{
-            spies.getUuid = spyOn(uuid, 'getUuid').and.returnValue("7d8a9022-7e2b-4351-8e4a-15c2a41d9024")
+    describe('createTask(creator, studies, endpoint, transcoding)', ()=>{
+        it('should create a task',async ()=>{
+            orthancQueueExportToEndpointSpy.and.returnValue("an uuid");
+            let uuid = await ExportTask.createTask("creator", ["1","2","3","4"], { id:0 }, null );
+            expect(uuid).toEqual("an uuid");
+            expect(orthancQueueExportToEndpointSpy).toHaveBeenCalledWith('creator', ["1","2","3","4"], null, { id:0 });
         })
+    });
 
-        it('should create export task', ()=>{
-            exportTask = new ExportTask("ftp")
-            expect(exportTask.uuid).toBe("7d8a9022-7e2b-4351-8e4a-15c2a41d9024")
-            expect(exportTask.protocol).toBe('ftp')
-            expect(exportTask.sent).toBe(undefined)
-            expect(exportTask.size).toBe(undefined)
-            expect(exportTask.status).toBe(0)
-            expect(uuid.getUuid).toHaveBeenCalled()
-        })
+    describe('getTask(id)',()=>{
+        it('should return null', async ()=>{
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([]);
+            exporterGetUploadJobsSpy.and.returnValue([]);
+            let task = await ExportTask.getTask("uuid");
+            expect(task).toEqual(null);
+            expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
+            expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
+        });
 
-        it('should fail to create an export task', ()=>{
-            expect(()=>{new ExportTask('')}).toThrow("Unsuported export protocol")
-        })
-    })
+        it('should return task 1/4', async ()=>{
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator'
+                }
+            }]);
+            exporterGetUploadJobsSpy.and.returnValue([]);
+            let task = await ExportTask.getTask("uuid");
+            expect(task).toEqual({
+                id : "uuid",
+                type: "export",
+                creator: "creator",
+                progress: {
+                    archiving : 20,
+                    sending : 0
+                },
+                state : 'archiving',
+                content: {}
+            });
+            expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
+            expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
+        });
 
-    
+        it('should return task 2/4', async ()=>{
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'completed';
+                },
+                progress:async ()=>{
+                    return 100
+                },
+                data:{
+                    creator:'creator'
+                }
+            }]);
+            exporterGetUploadJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator'
+                }
+            }]);
+            let task = await ExportTask.getTask("uuid");
+            expect(task).toEqual({
+                id : "uuid",
+                type: "export",
+                creator: "creator",
+                progress: {
+                    archiving : 100,
+                    sending : 20
+                },
+                state : 'sending',
+                content: {}
+            });
+            expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
+            expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
+        });
 
-    describe('setArchive(path)',()=>{
+        it('should return task 3/4', async ()=>{
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'completed';
+                },
+                progress:async ()=>{
+                    return 100
+                },
+                data:{
+                    creator:'creator'
+                }
+            }]);
+            exporterGetUploadJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'completed';
+                },
+                progress:async ()=>{
+                    return 100
+                },
+                data:{
+                    creator:'creator'
+                }
+            }]);
+            let task = await ExportTask.getTask("uuid");
+            expect(task).toEqual({
+                id : "uuid",
+                type: "export",
+                creator: "creator",
+                progress: {
+                    archiving : 100,
+                    sending : 100
+                },
+                state : 'completed',
+                content: {}
+            });
+            expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
+            expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
+        });
 
-        spies = {}
+        it('should return task 4/4', async ()=>{
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator'
+                }
+            }]);
+            exporterGetUploadJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'complete';
+                },
+                progress:async ()=>{
+                    return 100
+                },
+                data:{
+                    creator:'creator'
+                }
+            }]);
+            let task = await ExportTask.getTask("uuid");
+            expect(task).toEqual({
+                id : "uuid",
+                type: "export",
+                creator: "creator",
+                progress: {
+                    archiving : 20,
+                    sending : 100
+                },
+                state : 'failed',
+                content: {}
+            });
+            expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
+            expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
+        });
+    });
 
-        beforeAll(()=>{
-            spies.fsStat = spyOn(fs, "stat").and.callFake((path,callback)=>{callback(null,{size:45})})
-        })
+    describe('getUserTask(user)',()=>{
+        it('should return null', async ()=>{
+            orthancQueueGetUserArchiveCreationJobsSpy.and.returnValue([]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([]);
+            exporterGetUploadJobsSpy.and.returnValue([]);
+            let task = await ExportTask.getUserTask("user");
+            expect(task).toEqual(null);
+        });
 
-        it('should set the archive info',()=>{
-            exportTask.setArchive("testfolder/testarchive.zip")
-            expect(exportTask.size).toBe(45)
-            expect(exportTask.path).toBe("testfolder/testarchive.zip")
-            expect(exportTask.name).toBe('testarchive.zip')
-            expect(spies.fsStat).toHaveBeenCalled()
-        })
-    })
+        it('should return task 1/2', async ()=>{
+            orthancQueueGetUserArchiveCreationJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator',
+                    taskId:"uuid"
+                }
+            }]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator',
+                    taskId:"uuid"
+                }
+            }]);
+            exporterGetUploadJobsSpy.and.returnValue([]);
+            let task = await ExportTask.getUserTask("creator");
+            expect(task).toEqual({
+                id : "uuid",
+                type: "export",
+                creator: "creator",
+                progress: {
+                    archiving : 20,
+                    sending : 0
+                },
+                state : 'archiving',
+                content: {}
+            });
+            expect(orthancQueueGetUserArchiveCreationJobsSpy).toHaveBeenCalledWith("creator");
+            expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
+            expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
+        });
 
+        it('should return task 2/2', async()=>{
+            orthancQueueGetUserArchiveCreationJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 100
+                },
+                data:{
+                    creator:'creator',
+                    taskId:"uuid"
+                }
+            }]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'completed';
+                },
+                progress:async ()=>{
+                    return 100
+                },
+                data:{
+                    creator:'creator',
+                    taskId:"uuid"
+                }
+            }]);
+            exporterGetUploadJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator',
+                    taskId:"uuid"
+                }
+            }]);
+            let task = await ExportTask.getUserTask("creator");
+            expect(task).toEqual({
+                id : "uuid",
+                type: "export",
+                creator: "creator",
+                progress: {
+                    archiving : 100,
+                    sending : 20
+                },
+                state : 'sending',
+                content: {}
+            });
+            expect(orthancQueueGetUserArchiveCreationJobsSpy).toHaveBeenCalledWith("creator");
+            expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
+            expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
+        });
+    });
 
-    describe('getSendable',()=>{
-        it('should return object destined to be sent to the front', ()=>{
-            exportTask.uuid = "7d8a9022-7e2b-4351-8e4a-15c2a41d9024"
-            exportTask.status = 3
-            exportTask.sent = 12
-            exportTask.size = 45
-    
-            expect(exportTask.getSendable()).toEqual(
-                {
-                    uuid : "7d8a9022-7e2b-4351-8e4a-15c2a41d9024",
-                    status: 3,
-                    sent: 12,
-                    size: 45
-                })
-            
-        })
-    })
+    describe('getTasks()', ()=>{
 
+        it('should return []', async ()=>{
+            exportQueueGetJobsSpy.and.returnValue([]);
+            let tasks = await ExportTask.getTasks();
+            expect(tasks).toEqual([]);
+        });
 
-    describe('listeners', ()=>{
+        it('should return tasks 1/2', async ()=>{
+            exportQueueGetJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator',
+                    taskId:"uuid"
+                }
+            }]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator',
+                    taskId:"uuid"
+                }
+            }]);
+            exporterGetUploadJobsSpy.and.returnValue([]);
+            let tasks = await ExportTask.getTasks();
+            expect(tasks).toEqual([{
+                id : "uuid",
+                type: "export",
+                creator: "creator",
+                progress: {
+                    archiving : 20,
+                    sending : 0
+                },
+                state : 'archiving',
+                content: {}
+            }]);
+        });
 
-        beforeEach(()=>{
-            exportTask.sent = 0
-        })
+        it('should return tasks 2/2', async ()=>{
+            exportQueueGetJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator',
+                    taskId:"uuid"
+                }
+            },
+            {
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator',
+                    taskId:"uuid"
+                }
+            },
+            {
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator',
+                    taskId:"uuid2"
+                }
+            },
+            ]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator',
+                    taskId:"uuid"
+                }
+            },{
+                getState:async ()=>{
+                    return 'active';
+                },
+                progress:async ()=>{
+                    return 20
+                },
+                data:{
+                    creator:'creator',
+                    taskId:"uuid2"
+                }
+            }]);
+            exporterGetUploadJobsSpy.and.returnValue([]);
+            let tasks = await ExportTask.getTasks();
+            expect(tasks).toEqual([{
+                id : "uuid",
+                type: "export",
+                creator: "creator",
+                progress: {
+                    archiving : 20,
+                    sending : 0
+                },
+                state : 'archiving',
+                content: {}
+            }, {
+                id : "uuid2",
+                type: "export",
+                creator: "creator",
+                progress: {
+                    archiving : 20,
+                    sending : 0
+                },
+                state : 'archiving',
+                content: {}
+            }]);
+        });
 
-        describe('getFtpProgressListener()',()=>{
-
-            it('should return the listener for progress callback for ftp', ()=>{
-                let f = exportTask.getFtpProgressListener()
-                f({bytesOverall:12})
-                expect(exportTask.sent).toBe(12)
-                f({bytesOverall:14})
-                expect(exportTask.sent).toBe(14)
-            })
-        })
-
-        describe('getSftpProgressListener()',()=>{
-            it('should return the listener for progress callback for sftp', ()=>{
-                let f = exportTask.getSftpProgressListener()
-                f(12,2,0)
-        
-                expect(exportTask.sent).toBe(12)
-                f(14,2,0)
-                expect(exportTask.sent).toBe(14)
-                exportTask.sent = 0
-            })
-        })
-
-        describe('getWebDavProgressListener()',()=>{
-            it('should return the listener for progress callback for webdav', ()=>{
-                let f = exportTask.getWebDavProgressListener()
-                f("chunk")
-                expect(exportTask.sent).toBe(5)
-                f("chunk")
-                expect(exportTask.sent).toBe(10)
-                exportTask.sent = 0
-            })
-        })
-    })
+    });
 })
