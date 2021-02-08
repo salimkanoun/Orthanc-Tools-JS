@@ -109,7 +109,7 @@ class AnonTask {
         //Makes a set of the ids of the task
         let ids = [];
         for (const job of jobs) {
-            if (!(job.data.taskId in ids)) {
+            if (!(ids.includes(job.data.taskId))) {
                 ids.push(job.data.taskId);
             }
         }
