@@ -96,7 +96,7 @@ class AnonTask {
     static async getUserTask(user){
         let validateJobs = await orthancQueue.getUserAnonimizationJobs(user);
         if(validateJobs.length === 0) return null;
-        return AnonTask.getTask(validateJobs[0].length);
+        return AnonTask.getTask(validateJobs[0].data.taskId);
     }
 
     /**
