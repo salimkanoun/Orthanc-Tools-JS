@@ -13,7 +13,7 @@ class DeleteTask {
     static async getProgress(jobs){
         let progress = 0;
         for (const job of jobs) {
-            progress += ((await job.getState())==='completed'?100:0);
+            progress += (['completed','failed'].includes(await job.getState())?100:0);
         }
         return progress / jobs.length;
     }
@@ -55,13 +55,16 @@ class DeleteTask {
         let progress = await DeleteTask.getProgress(jobs);
 
         //Making the state
-        let state;
+        let state = null;
         switch(progress){
             case 0 :
                 state = 'wait'; 
                 break;
             case 100 : 
-                state = 'completed';
+                for (const job of jobs) {
+                    if(job.getState()==='failed') state = 'failed';
+                }
+                if(state === null) state = 'completed';
                 break;
             default : 
                 state = "active";

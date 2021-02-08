@@ -16,7 +16,7 @@ class AnonTask {
         let length = jobs.length
         for (let i = 0; i < length; i++) {
             const job = jobs[i]
-            progress += await job.progress()
+            progress += (['completed','failed'].includes(await job.getState())?100:await job.progress())
         }
         return progress / length;
     }
@@ -58,11 +58,14 @@ class AnonTask {
         let progress = await AnonTask.getProgress(jobs);
         
         //making state
-        let state 
+        let state = null;
         if(progress == 0) {
             state = 'wait'
         }else if(progress==100) {
-            state = 'completed'
+            for (const job of jobs) {
+                if(job.getState()==='failed') state = 'failed';
+            }
+            if(state === null) state = 'completed';
         }else {
             state = 'active'
         }

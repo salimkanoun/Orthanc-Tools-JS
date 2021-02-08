@@ -15,13 +15,13 @@ class RetrieveTask {
     static async getProgress(validationJobs, retrieveJobs){
         let validation = 0;
         for (const job of validationJobs) {
-            validation += await job.progress();
+            validation +=  (['completed','failed'].includes(await job.getState())?100:await job.progress());
         }
         validation /= validationJobs.length;
 
         let retrieve = 0;
         for (const job of retrieveJobs) {
-            retrieve += await job.progress();
+            retrieve +=  (['completed','failed'].includes(await job.getState())?100:await job.progress());
         }
         retrieve /= (retrieveJobs.length === 0 ? 1 : retrieveJobs.length);
         return{
@@ -77,7 +77,7 @@ class RetrieveTask {
         let progress = await RetrieveTask.getProgress(validationJobs, retrieveJobs);
 
         //Making state
-        let state;
+        let state = null;
         if (progress.validation === 0) {
             state = 'waiting validation';
         } else if (progress.validation < 100) {
@@ -87,6 +87,12 @@ class RetrieveTask {
         } else if (progress.validation === 100 && progress.retrieve < 100 && validationJobs.length !== 0) {
             state = 'retireve';
         } else if (progress.validation === 100 && progress.retrieve === 100 && validationJobs.length !== 0) {
+            for (const job of validationJobs) {
+                if(job.getState()==='failed') state = 'failed';
+            }
+            for (const job of retrieveJobs) {
+                if(job.getState()==='failed') state = 'failed';
+            }
             state = 'completed';
         } else state = 'failed';
 
