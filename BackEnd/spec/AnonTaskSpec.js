@@ -282,7 +282,7 @@ describe('AnonTask', () => {
                     return 'active';
                 },
                 progress:async ()=>{
-                    return 100
+                    return 20
                 },
                 data:{
                     creator:'creator',
@@ -309,7 +309,7 @@ describe('AnonTask', () => {
                 id : "uuid",
                 type: "anonymize",
                 creator: "creator",
-                progress: 15,
+                progress: 20,
                 state : 'active',
                 content: {
                     items : [
@@ -393,8 +393,7 @@ describe('AnonTask', () => {
                     }
                 }
             }]);
-            exporterGetUploadJobsSpy.and.returnValue([]);
-            let tasks = await ExportTask.getTasks();
+            let tasks = await AnonTask.getTasks();
             expect(tasks).toEqual([{
                 id : "uuid",
                 type: "anonymize",
@@ -477,8 +476,7 @@ describe('AnonTask', () => {
                     }
                 }
             }]);
-            exporterGetUploadJobsSpy.and.returnValue([]);
-            let tasks = await ExportTask.getTasks();
+            let tasks = await AnonTask.getTasks();
             expect(tasks).toEqual([{
                 id : "uuid",
                 type: "anonymize",
