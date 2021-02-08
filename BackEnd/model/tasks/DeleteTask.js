@@ -99,8 +99,8 @@ class DeleteTask {
         //Makes a set of the ids of the task
         let ids = [];
         for (const job of jobs) {
-            if (!(job.data.id in ids)) {
-                ids.push(job.data.id);
+            if (!(job.data.taskId in ids)) {
+                ids.push(job.data.taskId);
             }
         }
         return await Promise.all(ids.map(id=>DeleteTask.getTask(id)));
