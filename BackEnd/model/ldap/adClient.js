@@ -35,44 +35,24 @@ class ADClient extends AbstractAnnuaire {
         this.ad = new ActiveDirectory(config);
     }
 
-    testSettings(callback) {
-        try {
-            var username = this.DN;
-            var password = this.mdp;
-
-            this.ad.authenticate(username, password, function (err, auth) {
-                let res = false
-                if (err) {
-                    console.error('ERROR: ' + JSON.stringify(err));
-                    res = false;
-                }
-                if (auth) {
-                    res = true
-                }
-                else {
-                    res = false
-                }
-                return callback(res)
-            });
-        } catch (err) {
-            console.error(err)
-            return callback(false)
-        }
+    testSettings() {
+        return this.autentification(this.DN, this.mdp);
     }
 
-    getAllCorrespodences(callback) {
-        try {
-            var queryFindGroupsOptions = {
-                scope: 'sub',
-                filter: this.groupe
-            }
+    getAllCorrespodences() {
+        var queryFindGroupsOptions = {
+            scope: 'sub',
+            filter: this.groupe
+        }
 
+        return new Promise((resolve, reject) => {
             this.ad.findGroups(queryFindGroupsOptions, function (err, groups) {
-                let res = []
+
                 if (err) {
-                    console.log('ERROR: ' + err);
+                    reject(err)
                 }
 
+                let res = []
                 if ((!groups) || (groups.length == 0)) {
                     console.log('No groups found.');
                 } else {
@@ -80,54 +60,28 @@ class ADClient extends AbstractAnnuaire {
                         res.push({ value: groups[i].cn, label: groups[i].cn });
                     }
                 }
-                return callback(res)
-            });
-        } catch (err) {
-            console.log(err)
-            return callback([])
-        }
+                resolve(res)
+            })
+
+        })
+
     }
 
-    autentification(username, mdp, callback) {
-        try {
-            var username = username;
-            var password = mdp;
-
+    autentification(username, password) {
+        return new Promise((resolve, reject) => {
             this.ad.authenticate(username, password, function (err, auth) {
-                let res = false
                 if (err) {
-                    console.log('ERROR: ' + JSON.stringify(err));
-                    res = false;
+                    reject(err)
                 }
-                if (auth) {
-                    console.log('Authenticated!');
-                    res = true
-                }
-                else {
-                    console.log('Authentication failed!');
-                    res = false
-                }
-                return callback(res)
-            });
-
-        } catch (err) {
-            console.log(err)
-            return callback(false)
-        }
+                resolve(auth)
+            })
+        })
     }
 
-    async getPermission(username, groupes, callback) {
+    async getPermission(username, groupes) {
         //Get username
-        let usernameMemberOf;
-
-        try {
-            let words = username.split('@');
-            usernameMemberOf = words[0];
-
-        } catch (err) {
-            console.log(err)
-            return callback([])
-        }
+        let words = username.split('@');
+        let usernameMemberOf = words[0];
 
         //Get groups
         let res = []
@@ -136,14 +90,14 @@ class ADClient extends AbstractAnnuaire {
 
             let memberPromises = this.isMemberOfPromise(usernameMemberOf, groupes[i]).then((isMember) => {
                 if (isMember) { res.push(groupes[i]) }
-            }).catch((error) => { console.log(error) })
+            }).catch((error) => { console.error(error) })
 
             memberPromisesArray.push(memberPromises)
 
         }
 
         Promise.all(memberPromisesArray).then(() => {
-            callback(res)
+            return res
         })
     }
 
