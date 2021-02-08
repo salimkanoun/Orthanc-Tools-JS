@@ -61,5 +61,21 @@ module.exports = [
                 sourceOrthancStudyID : "source2"
             }
         }
+    },
+    {
+        getState:async ()=>{
+            return 'active';
+        },
+        progress:async ()=>{
+            return 10
+        },
+        data:{
+            creator:'creator',
+            taskId : 'uuid',
+            item : {
+                sourceOrthancStudyID : "source2"
+            }
+        },
+        remove: async()=>{}
     }
 ]

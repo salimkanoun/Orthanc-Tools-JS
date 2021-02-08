@@ -2,6 +2,7 @@ const OrthancQueue = require('../model/OrthancQueue');
 const AnonTask = require('../model/tasks/AnonTask');
 const anon_jobs = require('./ressources/anon_jobs');
 const anon_tasks = require('./ressources/anon_tasks');
+const {OTJSForbiddenException} = require('../Exceptions/OTJSErrors');
 
 describe('AnonTask', () => {
     let orthancQueue = new OrthancQueue();
@@ -24,6 +25,17 @@ describe('AnonTask', () => {
             let uuid = await AnonTask.createTask("creator", ["1","2","3","4"]);
             expect(uuid).toEqual("an uuid");
             expect(orthancQueueAnonimizeItems).toHaveBeenCalledWith('creator', ["1","2","3","4"]);
+        });
+
+        it('should throw OTJSForbidenException',async ()=>{
+            orthancQueueGetUserAnonimiaztionJobsSpy.and.returnValue([anon_jobs[0]]);
+            orthancQueueGetAnonimizationJobsSpy.and.returnValue([anon_jobs[0]]);
+            try {
+                await AnonTask.createTask("creator", ["1","2","3","4"]);
+                expect(false).toBe(true, 'createTask should rasie an exception')
+            } catch (e) {
+                expect(e).toEqual(new OTJSForbiddenException("Cant create two anonymiztion simulteanously"));
+            }
         })
     });
 
@@ -107,4 +119,13 @@ describe('AnonTask', () => {
         });
 
     });
+
+    describe('delete(id)', ()=>{
+        it('should delete call job.remove()', async ()=>{
+            let removeSpy = spyOn(anon_jobs[4],"remove");
+            orthancQueueGetAnonimizationJobsSpy.and.returnValue([anon_jobs[4],anon_jobs[4],anon_jobs[4],anon_jobs[4]]);
+            await AnonTask.delete('uuid');
+            expect(removeSpy.calls.count()).toBe(4);
+        })
+    })
 })
