@@ -110,6 +110,7 @@ class Task {
 
     static async deleteTask(id){
         let task = null;
+        //Checking for task type with the first character of the task id
         switch(id[0]){
             case 'r' : 
                 task = await RetrieveTask.delete(id);

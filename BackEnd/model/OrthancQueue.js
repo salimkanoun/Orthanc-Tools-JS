@@ -215,24 +215,26 @@ class OrthancQueue {
     })
   }
 
-
   /**
-   * Add an item to the anonymisation queue
-   * @param {string} orthancIds item uuid to be queued
+   * Create the job for the export task
+   * @param {string} creator username of the creator of the jobs
+   * @param {[string]} orthancIds ids to be exported
+   * @param {string} transcoding transcoding used to create the archive
+   * @param {Endpoint} endpoint target endpoint
+   * @returns {string} the task uuid
    */
-  queueGetArchive(orthancIds, transcoding) {
-    return this.exportQueue.add('create-archive', { orthancIds, transcoding }).then((job) => {
-      this._jobs[job.id] = job
-      return job
-    })
-  }
-
   exportToEndpoint(creator, orthancIds, transcoding, endpoint) {
     let taskId = 'e-'+uuid();
     this.exportQueue.add('create-archive', {creator, taskId, orthancIds, transcoding, endpoint});
     return taskId;
   }
 
+  /**
+   * Create the jobs for the anonimisation task
+   * @param {string} creator username of the creator of the jobs
+   * @param {[any]} items items to be anonymised
+   * @returns {string} the task uuid
+   */
   anonimizeItems(creator, items){
     let taskId = 'a-'+uuid();
     let jobs = items.map(item=>{
@@ -249,6 +251,12 @@ class OrthancQueue {
     return taskId;
   }
 
+  /**
+   * Create the jobs for the deletion task
+   * @param {string} creator username of the creator of the jobs
+   * @param {[any]} items items to be deleted
+   * @returns {string} the task uuid
+   */
   deleteItems(creator, items){
     let taskId = 'd-'+uuid();
     let jobs = items.map(item=>{
@@ -265,9 +273,17 @@ class OrthancQueue {
     return taskId;
   }
   
+  /**
+   * Create the jobs for the retrieve task
+   * @param {string} creator username of the creator of the jobs
+   * @param {string} projectName name of the retrieve project
+   * @param {[any]} items items to be retrieved
+   * @returns {string} the task uuid
+   */
   validateItems(creator, projectName, items){
     let taskId = 'r-'+uuid();
 
+    // Checking for duplicate
     let curratedItems = items.reduce((agregation, item)=>{
       console.log(agregation);
       if (item.Level === OrthancQueryAnswer.LEVEL_STUDY) {
@@ -299,6 +315,10 @@ class OrthancQueue {
     return taskId;
   }
 
+  /**
+   * allow the retrieve task to procede to retrieval
+   * @param {string} taskId uuid of the task to approved
+   */
   async approveTask(taskId){
     let jobs = await this.getValidationJobs(taskId);
 
@@ -315,51 +335,101 @@ class OrthancQueue {
   }
 
 
+  /**
+   * get the jobs part of the task of the givent id
+   * @param {string} taskId uuid of the task
+   * @returns {[Job]} return bull jobs
+   */
   async getArchiveCreationJobs(taskId){
     let jobs = await this.exportQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.taskId === taskId);
   }
 
+  /**
+   * get the jobs part of the task of the givent id
+   * @param {string} taskId uuid of the task
+   * @returns {[Job]} return bull jobs
+   */
   async getAnonimizationJobs(taskId){
     let jobs = await this.anonQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.taskId === taskId);
   }
 
+  /**
+   * get the jobs part of the task of the givent id
+   * @param {string} taskId uuid of the task
+   * @returns {[Job]} return bull jobs
+   */
   async getDeleteJobs(taskId){
     let jobs = await this.deleteQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.taskId === taskId);
   }
 
+  /**
+   * get the jobs part of the task of the givent id
+   * @param {string} taskId uuid of the task
+   * @returns {[Job]} return bull jobs
+   */
   async getValidationJobs(taskId){
     let jobs = await this.validationQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.taskId === taskId);
   }
 
+  /**
+   * get the jobs part of the task of the givent id
+   * @param {string} taskId uuid of the task
+   * @returns {[Job]} return bull jobs
+   */
   async getRetrieveItem(taskId){
     let jobs = await this.aetQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.taskId === taskId);
   }
 
+  /**
+   * get the jobs part of the tasks of a given user
+   * @param {string} user username of the task creator
+   * @returns {[Job]} return bull jobs
+   */
   async getUserArchiveCreationJobs(user){
     let jobs = await this.exportQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.creator === user);
   }
 
+  /**
+   * get the jobs part of the tasks of a given user
+   * @param {string} user username of the task creator
+   * @returns {[Job]} return bull jobs
+   */
   async getUserAnonimizationJobs(user){
     let jobs = await this.anonQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.creator === user);
   }
 
+  /**
+   * get the jobs part of the tasks of a given user
+   * @param {string} user username of the task creator
+   * @returns {[Job]} return bull jobs
+   */
   async getUserDeleteJobs(user){
     let jobs = await this.deleteQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.creator === user);
   }
 
+  /**
+   * get the jobs part of the tasks of a given user
+   * @param {string} user username of the task creator
+   * @returns {[Job]} return bull jobs
+   */
   async getUserValidationJobs(user){
     let jobs = await this.validationQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.creator === user);
   }
 
+  /**
+   * get the jobs part of the tasks of a given user
+   * @param {string} user username of the task creator
+   * @returns {[Job]} return bull jobs
+   */
   async getUserRetrieveItem(user){
     let jobs = await this.aetQueue.getJobs(["completed","active","waiting","delayed","paused"]);
     return jobs.filter(job=>job.data.creator === user);
