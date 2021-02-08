@@ -1,6 +1,9 @@
 const Exporter = require('../model/export/Exporter');
 const OrthancQueue = require('../model/OrthancQueue');
 const ExportTask = require('../model/tasks/ExportTask');
+const archive_jobs = require('./ressources/archive_jobs');
+const send_jobs = require('./ressources/send_jobs');
+const export_tasks = require('./ressources/export_tasks');
 
 describe('ExportTask', () => {
     let exporter = new Exporter();
@@ -39,147 +42,37 @@ describe('ExportTask', () => {
         });
 
         it('should return task 1/4', async ()=>{
-            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator'
-                }
-            }]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([archive_jobs[0]]);
             exporterGetUploadJobsSpy.and.returnValue([]);
             let task = await ExportTask.getTask("uuid");
-            expect(task).toEqual({
-                id : "uuid",
-                type: "export",
-                creator: "creator",
-                progress: {
-                    archiving : 20,
-                    sending : 0
-                },
-                state : 'archiving',
-                content: {}
-            });
+            expect(task).toEqual(export_tasks[0]);
             expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
             expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
         });
 
         it('should return task 2/4', async ()=>{
-            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'completed';
-                },
-                progress:async ()=>{
-                    return 100
-                },
-                data:{
-                    creator:'creator'
-                }
-            }]);
-            exporterGetUploadJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator'
-                }
-            }]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([archive_jobs[1]]);
+            exporterGetUploadJobsSpy.and.returnValue([send_jobs[0]]);
             let task = await ExportTask.getTask("uuid");
-            expect(task).toEqual({
-                id : "uuid",
-                type: "export",
-                creator: "creator",
-                progress: {
-                    archiving : 100,
-                    sending : 20
-                },
-                state : 'sending',
-                content: {}
-            });
+            expect(task).toEqual(export_tasks[1]);
             expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
             expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
         });
 
         it('should return task 3/4', async ()=>{
-            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'completed';
-                },
-                progress:async ()=>{
-                    return 100
-                },
-                data:{
-                    creator:'creator'
-                }
-            }]);
-            exporterGetUploadJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'completed';
-                },
-                progress:async ()=>{
-                    return 100
-                },
-                data:{
-                    creator:'creator'
-                }
-            }]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([archive_jobs[1]]);
+            exporterGetUploadJobsSpy.and.returnValue([send_jobs[1]]);
             let task = await ExportTask.getTask("uuid");
-            expect(task).toEqual({
-                id : "uuid",
-                type: "export",
-                creator: "creator",
-                progress: {
-                    archiving : 100,
-                    sending : 100
-                },
-                state : 'completed',
-                content: {}
-            });
+            expect(task).toEqual(export_tasks[3]);
             expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
             expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
         });
 
         it('should return task 4/4', async ()=>{
-            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator'
-                }
-            }]);
-            exporterGetUploadJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'complete';
-                },
-                progress:async ()=>{
-                    return 100
-                },
-                data:{
-                    creator:'creator'
-                }
-            }]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([archive_jobs[0]]);
+            exporterGetUploadJobsSpy.and.returnValue([send_jobs[1]]);
             let task = await ExportTask.getTask("uuid");
-            expect(task).toEqual({
-                id : "uuid",
-                type: "export",
-                creator: "creator",
-                progress: {
-                    archiving : 20,
-                    sending : 100
-                },
-                state : 'failed',
-                content: {}
-            });
+            expect(task).toEqual(export_tasks[4]);
             expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
             expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
         });
@@ -195,97 +88,22 @@ describe('ExportTask', () => {
         });
 
         it('should return task 1/2', async ()=>{
-            orthancQueueGetUserArchiveCreationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid"
-                }
-            }]);
-            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid"
-                }
-            }]);
+            orthancQueueGetUserArchiveCreationJobsSpy.and.returnValue([archive_jobs[0]]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([archive_jobs[0]]);
             exporterGetUploadJobsSpy.and.returnValue([]);
             let task = await ExportTask.getUserTask("creator");
-            expect(task).toEqual({
-                id : "uuid",
-                type: "export",
-                creator: "creator",
-                progress: {
-                    archiving : 20,
-                    sending : 0
-                },
-                state : 'archiving',
-                content: {}
-            });
+            expect(task).toEqual(export_tasks[0]);
             expect(orthancQueueGetUserArchiveCreationJobsSpy).toHaveBeenCalledWith("creator");
             expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
             expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
         });
 
         it('should return task 2/2', async()=>{
-            orthancQueueGetUserArchiveCreationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 100
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid"
-                }
-            }]);
-            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'completed';
-                },
-                progress:async ()=>{
-                    return 100
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid"
-                }
-            }]);
-            exporterGetUploadJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid"
-                }
-            }]);
+            orthancQueueGetUserArchiveCreationJobsSpy.and.returnValue([archive_jobs[1]]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([archive_jobs[1]]);
+            exporterGetUploadJobsSpy.and.returnValue([send_jobs[0]]);
             let task = await ExportTask.getUserTask("creator");
-            expect(task).toEqual({
-                id : "uuid",
-                type: "export",
-                creator: "creator",
-                progress: {
-                    archiving : 100,
-                    sending : 20
-                },
-                state : 'sending',
-                content: {}
-            });
+            expect(task).toEqual(export_tasks[1]);
             expect(orthancQueueGetUserArchiveCreationJobsSpy).toHaveBeenCalledWith("creator");
             expect(orthancQueueGetArchiveCreationJobsSpy).toHaveBeenCalledWith("uuid");
             expect(exporterGetUploadJobsSpy).toHaveBeenCalledWith("uuid");
@@ -301,129 +119,19 @@ describe('ExportTask', () => {
         });
 
         it('should return tasks 1/2', async ()=>{
-            exportQueueGetJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid"
-                }
-            }]);
-            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid"
-                }
-            }]);
+            exportQueueGetJobsSpy.and.returnValue([archive_jobs[0]]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([archive_jobs[0]]);
             exporterGetUploadJobsSpy.and.returnValue([]);
             let tasks = await ExportTask.getTasks();
-            expect(tasks).toEqual([{
-                id : "uuid",
-                type: "export",
-                creator: "creator",
-                progress: {
-                    archiving : 20,
-                    sending : 0
-                },
-                state : 'archiving',
-                content: {}
-            }]);
+            expect(tasks).toEqual([export_tasks[0]]);
         });
 
         it('should return tasks 2/2', async ()=>{
-            exportQueueGetJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid"
-                }
-            },
-            {
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid"
-                }
-            },
-            {
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid2"
-                }
-            },
-            ]);
-            orthancQueueGetArchiveCreationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid"
-                }
-            },{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid2"
-                }
-            }]);
-            exporterGetUploadJobsSpy.and.returnValue([]);
+            exportQueueGetJobsSpy.and.returnValue([archive_jobs[0],archive_jobs[0],archive_jobs[2]]);
+            orthancQueueGetArchiveCreationJobsSpy.and.returnValues([archive_jobs[0]],[archive_jobs[2]]);
+            exporterGetUploadJobsSpy.and.returnValues([],[]);
             let tasks = await ExportTask.getTasks();
-            expect(tasks).toEqual([{
-                id : "uuid",
-                type: "export",
-                creator: "creator",
-                progress: {
-                    archiving : 20,
-                    sending : 0
-                },
-                state : 'archiving',
-                content: {}
-            }, {
-                id : "uuid2",
-                type: "export",
-                creator: "creator",
-                progress: {
-                    archiving : 20,
-                    sending : 0
-                },
-                state : 'archiving',
-                content: {}
-            }]);
+            expect(tasks).toEqual([export_tasks[0], export_tasks[2]]);
         });
 
     });
