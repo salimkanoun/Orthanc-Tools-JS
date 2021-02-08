@@ -77,15 +77,16 @@ class ExportTask {
      * @returns {[Task]} tasks of this type
      */
     static async getTasks(){
-        let jobs = await orthancQueue.createState.getJobs()
+        let jobs = await orthancQueue.exportQueue.getJobs()
         let ids = [];
         
         //Makes a set of the ids of the task
         for (const job of jobs) {
-            if (!(job.data.id in ids)) {
-                ids.push(job.data.id);
+            if (!(ids.includes(job.data.taskId))) {
+                ids.push(job.data.taskId);
             }
         }
+
         return await Promise.all(ids.map(id=>ExportTask.getTask(id)));
     }
 }
