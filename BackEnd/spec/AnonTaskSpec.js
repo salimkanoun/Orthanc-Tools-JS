@@ -1,5 +1,7 @@
 const OrthancQueue = require('../model/OrthancQueue');
 const AnonTask = require('../model/tasks/AnonTask');
+const anon_jobs = require('./ressources/anon_jobs');
+const anon_tasks = require('./ressources/anon_tasks');
 
 describe('AnonTask', () => {
     let orthancQueue = new OrthancQueue();
@@ -34,151 +36,23 @@ describe('AnonTask', () => {
         });
 
         it('should return task 1/3', async ()=>{
-            orthancQueueGetAnonimizationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20;
-                },
-                data:{
-                    creator:'creator',
-                    taskId : 'uuid',
-                    item : {
-                        sourceOrthancStudyID : "source1"
-                    }
-                }
-            },{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 10;
-                },
-                data:{
-                    creator:'creator',
-                    taskId : 'uuid',
-                    item : {
-                        sourceOrthancStudyID : "source2"
-                    }
-                }
-            }]);
+            orthancQueueGetAnonimizationJobsSpy.and.returnValue([anon_jobs[0], anon_jobs[1]]);
             let task = await AnonTask.getTask("uuid");
-            expect(task).toEqual({
-                id : "uuid",
-                type: "anonymize",
-                creator: "creator",
-                progress: 15,
-                state : 'active',
-                content: {
-                    items : [
-                        {
-                            source : 'source1',
-                            state : 'active',
-                            result : null
-                        },
-                        {
-                            source : 'source2',
-                            state : 'active',
-                            result : null
-                        }
-                    ]
-                }
-            });
+            expect(task).toEqual(anon_tasks[0]);
             expect(orthancQueueGetAnonimizationJobsSpy).toHaveBeenCalledWith("uuid");
         });
 
         it('should return task 2/3', async ()=>{
-            orthancQueueGetAnonimizationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId : 'uuid',
-                    item : {
-                        sourceOrthancStudyID : "source1"
-                    }
-                }
-            }]);
+            orthancQueueGetAnonimizationJobsSpy.and.returnValue([anon_jobs[0]]);
             let task = await AnonTask.getTask("uuid");
-            expect(task).toEqual({
-                id : "uuid",
-                type: "anonymize",
-                creator: "creator",
-                progress: 20,
-                state : 'active',
-                content: {
-                    items : [
-                        {
-                            source : 'source1',
-                            state : 'active',
-                            result : null
-                        }
-                    ]
-                }
-            });
+            expect(task).toEqual(anon_tasks[1]);
             expect(orthancQueueGetAnonimizationJobsSpy).toHaveBeenCalledWith("uuid");
         });
 
         it('should return task 3/3', async ()=>{
-            orthancQueueGetAnonimizationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'completed';
-                },
-                progress:async ()=>{
-                    return 100;
-                },
-                data:{
-                    creator:'creator',
-                    taskId : 'uuid',
-                    item : {
-                        sourceOrthancStudyID : "source1"
-                    }
-                },
-                finished:async()=>{
-                    return 'new id';
-                }
-            },{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20;
-                },
-                data:{
-                    creator:'creator',
-                    taskId : 'uuid',
-                    item : {
-                        sourceOrthancStudyID : "source2"
-                    }
-                }
-            }]);
+            orthancQueueGetAnonimizationJobsSpy.and.returnValue([anon_jobs[2],anon_jobs[1]]);
             let task = await AnonTask.getTask("uuid");
-            expect(task).toEqual({
-                id : "uuid",
-                type: "anonymize",
-                creator: "creator",
-                progress: 60,
-                state : 'active',
-                content: {
-                    items : [
-                        {
-                            source : 'source1',
-                            state : 'completed',
-                            result : 'new id'
-                        },
-                        {
-                            source : 'source2',
-                            state : 'active',
-                            result : null
-                        }
-                    ]
-                }
-            });
+            expect(task).toEqual(anon_tasks[2]);
             expect(orthancQueueGetAnonimizationJobsSpy).toHaveBeenCalledWith("uuid");
         });
     });
@@ -192,135 +66,19 @@ describe('AnonTask', () => {
         });
 
         it('should return task 1/2', async ()=>{
-            orthancQueueGetUserAnonimiaztionJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid",
-                    item : {
-                        sourceOrthancStudyID : "source1"
-                    }
-                }
-            },{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid",
-                    item : {
-                        sourceOrthancStudyID : "source2"
-                    }
-                }
-            }]);
-            orthancQueueGetAnonimizationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid",
-                    item : {
-                        sourceOrthancStudyID : "source1"
-                    }
-                }
-            },{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid",
-                    item : {
-                        sourceOrthancStudyID : "source2"
-                    }
-                }
-            }]);
+            orthancQueueGetUserAnonimiaztionJobsSpy.and.returnValue([anon_jobs[0],anon_jobs[1]]);
+            orthancQueueGetAnonimizationJobsSpy.and.returnValue([anon_jobs[0],anon_jobs[1]]);
             let task = await AnonTask.getUserTask("creator");
-            expect(task).toEqual({
-                id : "uuid",
-                type: "anonymize",
-                creator: "creator",
-                progress: 20,
-                state : 'active',
-                content: {
-                    items : [
-                        {
-                            source : 'source1',
-                            state : 'active',
-                            result : null
-                        },
-                        {
-                            source : 'source2',
-                            state : 'active',
-                            result : null
-                        }
-                    ]
-                }
-            });
+            expect(task).toEqual(anon_tasks[0]);
             expect(orthancQueueGetUserAnonimiaztionJobsSpy).toHaveBeenCalledWith("creator");
             expect(orthancQueueGetAnonimizationJobsSpy).toHaveBeenCalledWith("uuid");
         });
 
         it('should return task 2/2', async()=>{
-            orthancQueueGetUserAnonimiaztionJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId:"uuid"
-                }
-            }]);
-            orthancQueueGetAnonimizationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId : 'uuid',
-                    item : {
-                        sourceOrthancStudyID : "source1"
-                    }
-                }
-            }]);
+            orthancQueueGetUserAnonimiaztionJobsSpy.and.returnValue([anon_jobs[0]]);
+            orthancQueueGetAnonimizationJobsSpy.and.returnValue([anon_jobs[0]]);
             let task = await AnonTask.getUserTask("creator");
-            expect(task).toEqual({
-                id : "uuid",
-                type: "anonymize",
-                creator: "creator",
-                progress: 20,
-                state : 'active',
-                content: {
-                    items : [
-                        {
-                            source : 'source1',
-                            state : 'active',
-                            result : null
-                        }
-                    ]
-                }
-            });
+            expect(task).toEqual(anon_tasks[1]);
             expect(orthancQueueGetUserAnonimiaztionJobsSpy).toHaveBeenCalledWith("creator");
             expect(orthancQueueGetAnonimizationJobsSpy).toHaveBeenCalledWith("uuid");
         });
@@ -335,179 +93,17 @@ describe('AnonTask', () => {
         });
 
         it('should return tasks 1/2', async ()=>{
-            anonQueueGetJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId : 'uuid',
-                    item : {
-                        sourceOrthancStudyID : "source1"
-                    }
-                }
-            },{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 10
-                },
-                data:{
-                    creator:'creator',
-                    taskId : 'uuid',
-                    item : {
-                        sourceOrthancStudyID : "source2"
-                    }
-                }
-            }]);
-            orthancQueueGetAnonimizationJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId : 'uuid',
-                    item : {
-                        sourceOrthancStudyID : "source1"
-                    }
-                }
-            },{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 10
-                },
-                data:{
-                    creator:'creator',
-                    taskId : 'uuid',
-                    item : {
-                        sourceOrthancStudyID : "source2"
-                    }
-                }
-            }]);
+            anonQueueGetJobsSpy.and.returnValue([anon_jobs[0],anon_jobs[1]]);
+            orthancQueueGetAnonimizationJobsSpy.and.returnValue([anon_jobs[0],anon_jobs[1]]);
             let tasks = await AnonTask.getTasks();
-            expect(tasks).toEqual([{
-                id : "uuid",
-                type: "anonymize",
-                creator: "creator",
-                progress: 15,
-                state : 'active',
-                content: {
-                    items : [
-                        {
-                            source : 'source1',
-                            state : 'active',
-                            result : null
-                        },
-                        {
-                            source : 'source2',
-                            state : 'active',
-                            result : null
-                        } 
-                    ]
-                }
-            }]);
+            expect(tasks).toEqual([anon_tasks[0]]);
         });
 
         it('should return tasks 2/2', async ()=>{
-            anonQueueGetJobsSpy.and.returnValue([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId : 'uuid',
-                    item : {
-                        sourceOrthancStudyID : "source1"
-                    }
-                }
-            },{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 10
-                },
-                data:{
-                    creator:'not creator',
-                    taskId : 'not uuid',
-                    item : {
-                        sourceOrthancStudyID : "source2"
-                    }
-                }
-            }]);
-            orthancQueueGetAnonimizationJobsSpy.and.returnValues([{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 20
-                },
-                data:{
-                    creator:'creator',
-                    taskId : 'uuid',
-                    item : {
-                        sourceOrthancStudyID : "source1"
-                    }
-                }
-            }],[{
-                getState:async ()=>{
-                    return 'active';
-                },
-                progress:async ()=>{
-                    return 10
-                },
-                data:{
-                    creator:'not creator',
-                    taskId : 'not uuid',
-                    item : {
-                        sourceOrthancStudyID : "source2"
-                    }
-                }
-            }]);
+            anonQueueGetJobsSpy.and.returnValue([anon_jobs[0],anon_jobs[3]]);
+            orthancQueueGetAnonimizationJobsSpy.and.returnValues([anon_jobs[0]],[anon_jobs[3]]);
             let tasks = await AnonTask.getTasks();
-            expect(tasks).toEqual([{
-                id : "uuid",
-                type: "anonymize",
-                creator: "creator",
-                progress: 20,
-                state : 'active',
-                content: {
-                    items : [
-                        {
-                            source : 'source1',
-                            state : 'active',
-                            result : null
-                        } 
-                    ]
-                }
-            },{
-                id : "not uuid",
-                type: "anonymize",
-                creator: "not creator",
-                progress: 10,
-                state : 'active',
-                content: {
-                    items : [
-                        {
-                            source : 'source2',
-                            state : 'active',
-                            result : null
-                        } 
-                    ]
-                }
-            }]);
+            expect(tasks).toEqual([anon_tasks[1],anon_tasks[3]]);
         });
 
     });
