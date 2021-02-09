@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken")
+const { OTJSForbiddenException } = require("../Exceptions/OTJSErrors")
 const Task = require("../model/Task")
 
 const userAuthMidelware = function (req, res, next) {

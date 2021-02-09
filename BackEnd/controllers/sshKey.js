@@ -3,17 +3,17 @@ const SshKey = require("../model/export/SshKey");
 const newKey = async function(req, res){
     let key = new SshKey(req.body)
     await key.createSshKey()
-    res.json(key.getSendable());
+    res.json(key.toJSON());
 }
 
 const allKeys = async function(req, res){
-    res.json((await SshKey.getAllSshKey()).map(x=>x.getSendable()));
+    res.json((await SshKey.getAllSshKey()).map(x=>x.toJSON()));
 }
 
 const updateKey = async function(req, res){
     let key = await SshKey.getFromId(req.body.id);
     key.set(req.body)
-    res.json(key.getSendable())
+    res.json(key.toJSON())
 }
 
 const uploadKey = async function(req, res){

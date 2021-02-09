@@ -73,8 +73,8 @@ app.get('/viewer/*', function (req, res) {
 
 app.use('/api/authentication', authenticationRouter)
 app.use('/api/users', usersRouter)
-app.use('/api', apisRouter)
 app.use('/api', adminRouter)
+app.use('/api', apisRouter)
 
 // If didn't found route catch 404 and forward to error handler
 //SK A améliorer ne tient pas compte des routes dans le subrouter

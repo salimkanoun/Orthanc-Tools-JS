@@ -91,7 +91,7 @@ adminRouter.get('/ldap/groupname', getLdapGroupeNames)
 //Retrieve Robot
 //SK A UNIFORMISER
 adminRouter.post('/tasks/:username/retrieve/validate', validateRetrieve)
-adminRouter.get('/tasks/:type', getTasksOfType)
+adminRouter.get('/tasks/type/:type', getTasksOfType)
 
 /*
 ** REMOTE EXPORT

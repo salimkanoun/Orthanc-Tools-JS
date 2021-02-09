@@ -202,7 +202,7 @@ class Endpoint{
         return [username, password]
     }
     
-    async getSendable(){
+    toJSON(){
         return {
             id:this.id,
             label:this.label,
@@ -212,7 +212,7 @@ class Endpoint{
             username: this.username,
             port: this.port,
             digest: this.digest,
-            sshKey:(this.sshKey?(await this.getSshKey()).getSendable():null) ,
+            sshKey:this.sshKey,
             ssl: this.ssl
         }
     }

@@ -62,7 +62,7 @@ const retrieveRobot = {
             }
         }
 
-        return fetch("/api/tasks/retrieve", getAllRobotsDetails).then((answer) => {
+        return fetch("/api/tasks/type/retrieve", getAllRobotsDetails).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         })

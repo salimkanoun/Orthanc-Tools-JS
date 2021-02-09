@@ -101,7 +101,7 @@ class SshKey{
         }})
     }
 
-    getSendable(){
+    toJSON(){
         return {
             id: this.id,
             label: this.label,
