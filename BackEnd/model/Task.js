@@ -9,9 +9,14 @@ const RetrieveTask = require('./tasks/RetrieveTask');
  * Represents a task to be executed by Orthanc Tool js
  */
 class Task {
+    /**
+     * Get a task with its uuid
+     * @param {string} id uuid of the task
+     */
     static async getTask(id){
         let task = null;
-        switch(id[0]){
+        //Checking for task type with the first character of the task id
+        switch(id[0]){ 
             case 'a' :
                 task = await AnonTask.getTask(id);
                 break;
@@ -33,6 +38,11 @@ class Task {
         return task; 
     }
 
+    /**
+     * Get a task with its creator and with its type
+     * @param {string} username username of the creator of the task
+     * @param {string} type type of the task
+     */
     static async getUserTask(username, type){
         let task;
         switch (type) {
@@ -57,6 +67,10 @@ class Task {
         return task;
     }
 
+    /**
+     * Get all tasks of a given type
+     * @param {string} type type of the task
+     */
     static async getTasksOfType(type){
         let tasks;
         switch (type) {
@@ -78,6 +92,9 @@ class Task {
         return tasks;
     }
 
+    /**
+     * Get all tasks
+     */
     static async getTasks(){
         let tasks = [];
         tasks.concat(await RetrieveTask.getTasks());
@@ -88,6 +105,11 @@ class Task {
         return tasks;
     }
 
+    /**
+     * Delete a task given its creator and its type
+     * @param {string} username creator of the task to be deleted
+     * @param {string} type type of the task to be deleted
+     */
     static async deleteTaskOfUser(username, type){
         let task;
         switch (type) {
@@ -108,10 +130,14 @@ class Task {
         }
     }
 
+    /**
+     * Delete the task of a given id 
+     * @param {string} id uuid of the task to be deleted
+     */
     static async deleteTask(id){
         let task = null;
         //Checking for task type with the first character of the task id
-        switch(id[0]){
+        switch(id[0]){ 
             case 'r' : 
                 task = await RetrieveTask.delete(id);
                 break;
