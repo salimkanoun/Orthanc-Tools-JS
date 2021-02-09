@@ -19,13 +19,13 @@ const updateKey = async function(req, res){
 const uploadKey = async function(req, res){
     let key = await SshKey.getFromId(req.params.id)
     await key.setKeyContent(req.body)
-    res.send('Done')
+    res.sendStatus(200)
 }
 
 const removeKey = async function(req,res){
     let key = await SshKey.getFromId(req.body.id)
     await key.deleteSshKey()
-    res.send('Done')
+    res.sendStatus(200)
 }
 
 module.exports = { newKey, allKeys, updateKey, uploadKey, removeKey}

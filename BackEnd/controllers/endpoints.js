@@ -27,7 +27,7 @@ const updateEndpoint = async function(){
 const removeEndpoint = async function(req,res){
     let endpoint = await Endpoint.getFromId(req.body.id)
     await endpoint.removeEndpoint()
-    res.send('Done')
+    res.sendStatus(200)
 }
 
 module.exports = { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint }
