@@ -1,4 +1,3 @@
-const { OTJSNotFoundException } = require("../../Exceptions/OTJSErrors");
 const Exporter = require("../export/Exporter");
 const OrthancQueue = require("../OrthancQueue");
 const TaskType = require("../TaskType");

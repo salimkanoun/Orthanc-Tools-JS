@@ -2,19 +2,21 @@ const db = require('../database/models')
 const Configstore = require('configstore')
 const packageJson = require('../package.json')
 const { EventEmitter } = require('events')
-const config = new Configstore(packageJson.name, { OrthancAddress: process.env.OrthancAddress || 'http://localhost', 
-                                                    OrthancPort: process.env.Port || 8042, 
-                                                    OrthancUsername : process.env.OrthancUsername || '', 
-                                                    OrthancPassword : process.env.OrthancPassword || '' })
+const config = new Configstore(packageJson.name, {
+  OrthancAddress: process.env.OrthancAddress || 'http://localhost',
+  OrthancPort: process.env.Port || 8042,
+  OrthancUsername: process.env.OrthancUsername || '',
+  OrthancPassword: process.env.OrthancPassword || ''
+})
 
-class OptionEventEmittter extends EventEmitter{}
+class OptionEventEmittter extends EventEmitter { }
 
 /**
  * Update and read configuration data from database or config store
  */
 const Options = {
 
-  optionEventEmiter: new OptionEventEmittter(), 
+  optionEventEmiter: new OptionEventEmittter(),
 
   getOptions: async () => {
     const option = await db.Option.findOne(({ where: { id: 1 } }))
@@ -31,8 +33,8 @@ const Options = {
     Options.optionEventEmiter.emit('schedule_change');
   },
 
-  setBurnerOptions : async (burner_monitored_path, burner_viewer_path, burner_label_path, burner_manifacturer, burner_monitoring_level,
-    burner_support_type, burner_delete_study_after_sent, burner_transfer_syntax, burner_date_format ) => {
+  setBurnerOptions: async (burner_monitored_path, burner_viewer_path, burner_label_path, burner_manifacturer, burner_monitoring_level,
+    burner_support_type, burner_delete_study_after_sent, burner_transfer_syntax, burner_date_format) => {
 
     const option = await db.Option.findOne(({ where: { id: 1 } }))
 
@@ -45,12 +47,12 @@ const Options = {
     option.burner_delete_study_after_sent = burner_delete_study_after_sent
     option.burner_transfer_syntax = burner_transfer_syntax
     option.burner_date_format = burner_date_format
-    
+
     await option.save()
 
   },
 
-  setBurnerStarted : async (started) =>{
+  setBurnerStarted: async (started) => {
     const option = await db.Option.findOne(({ where: { id: 1 } }))
     option.burner_started = started
     await option.save()
@@ -77,7 +79,7 @@ const Options = {
     return Options.configSettings
   },
 
-  getCdBurnerOptions : async () => {
+  getCdBurnerOptions: async () => {
     const options = await db.Option.findOne(({ where: { id: 1 } }));
     return options
   },
@@ -95,10 +97,10 @@ const Options = {
   },
 
   changeMode: async (mode) => {
-    
+
     try {
       await db.Option.upsert({
-        id:1,
+        id: 1,
         ldap: mode
       })
 

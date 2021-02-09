@@ -1,15 +1,10 @@
 var CdBurnerFactory = require('../model/monitoring/cdburner/CdBurnerFactory')
 
 var startBurner = async function(req, res) {
-    try {
-        let cdBurnerInstance = await CdBurnerFactory.getInstance()
-        await cdBurnerInstance.setSettings()
-        await cdBurnerInstance.startCDMonitoring()
-        res.json(true)
-    } catch (err) {
-        res.status(500).send(err)
-    }
-
+    let cdBurnerInstance = await CdBurnerFactory.getInstance()
+    await cdBurnerInstance.setSettings()
+    await cdBurnerInstance.startCDMonitoring()
+    res.status(200)
 }
 
 var getBurner = async function(req, res) {
@@ -20,15 +15,13 @@ var getBurner = async function(req, res) {
 var stopBurner = async function (req, res){
     let cdBurnerInstance = await CdBurnerFactory.getInstance()
     await cdBurnerInstance.stopCDMonitoring()
-    res.json(true)
-
+    res.status(200)
 }
 
 var cancelJobBurner = async function(req, res){
     let cdBurnerInstance = await CdBurnerFactory.getInstance()
     cdBurnerInstance.cancelCdJob(req.params.jobBurnerId)
-    res.json(true)
-
+    res.status(200)
 }
 
 module.exports = { startBurner, getBurner, stopBurner, cancelJobBurner }
