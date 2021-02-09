@@ -14,7 +14,7 @@ const anonymize =  {
         
         return fetch('/api/tasks/' + username + '/anonymize', createAnonRobotOption ).then(answer => {
             if (!answer.ok) {throw answer}
-            return answer.json()
+            return answer.text()
         }).catch(error => {
             throw error
         })

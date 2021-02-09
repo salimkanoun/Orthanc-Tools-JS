@@ -123,7 +123,7 @@ const exportDicom = {
 
     return fetch('/api/tasks/' + username + '/export/', storeFtpOption).then((answer) => {
       if (!answer.ok) { throw answer }
-      return (answer.json())
+      return (answer.text())
     }).catch(error => {
         throw error
     })

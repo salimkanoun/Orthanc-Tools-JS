@@ -12,7 +12,8 @@ const ExportTask = require("../model/tasks/ExportTask");
  */
 const addAnonTask = async (req, res) => {
     let orthancIds = req.body;
-    res.json({id:await AnonTask.createTask(req.roles.username, orthancIds)});
+    let id = await AnonTask.createTask(req.roles.username, orthancIds);
+    res.send( id );
 }
 
 /**
@@ -23,7 +24,7 @@ const addAnonTask = async (req, res) => {
 const addDeleteTask = async (req, res) => {
     let orthancIds = req.body;
     let id = await DeleteTask.createTask(req.roles.username, orthancIds);
-    res.json({ id })
+    res.send(id)
 }
 
 /**
@@ -34,7 +35,7 @@ const addDeleteTask = async (req, res) => {
 const addRetrieveTask = async (req, res) => {
     let answers = req.body.retrieveArray
     let id = await RetrieveTask.createTask(req.roles.username, req.body.projectName, answers);
-    res.json({ id })
+    res.send(id)
 }
 
 /**
@@ -46,8 +47,8 @@ const addExportTask = async function(req,res){
     let studies = req.body.Resources;
     let endpoint = req.body.endpoint;
     let transcoding = req.body.transcoding;
-    let id = await  ExportTask.createTask(req.roles.username, studies, endpoint, transcoding);
-    res.json({id});
+    let id = await ExportTask.createTask(req.roles.username, studies, endpoint, transcoding);
+    res.send(id);
 }
 
 /**
@@ -57,7 +58,7 @@ const addExportTask = async function(req,res){
  */
 const validateRetrieve = async (req, res) => {
     await RetrieveTask.validateTask(req.roles.username);
-    res.json(true);
+    res.sendStatus(200);
 }
 
 /**
@@ -68,7 +69,7 @@ const validateRetrieve = async (req, res) => {
 const deleteRetrieveItem = async (req, res) => {
     let task = await RetrieveTask.getUserTask(req.roles.username);
     await RetrieveTask.deleteItem(task.id, req.params.id);
-    res.json(true)
+    res.sendStatus(200);
 }
 
 /**
@@ -124,7 +125,7 @@ const getTasksOfType = async (req, res) => {
  */
 const deleteTaskOfUser = async (req, res) => {
     await Task.deleteTaskOfUser(req.params.username, req.params.type);
-    res.json(true);
+    res.sendStatus(200);
 }
 
 /**
@@ -134,7 +135,7 @@ const deleteTaskOfUser = async (req, res) => {
  */
 const deleteTask = async (req, res) => {
     await Task.deleteTask(req.params.id);
-    res.json(true);
+    res.sendStatus(200);
 }
 
 
