@@ -4,8 +4,6 @@ var morgan = require('morgan')
 var path = require('path')
 var cookieParser = require('cookie-parser')
 var bodyParser = require('body-parser')
-var logger = require('morgan')
-var rfs = require('rotating-file-stream')
 
 var apisRouter = require('./routes/index')
 var adminRouter = require('./routes/admin')
@@ -34,7 +32,6 @@ app.use('/viewer-stone/js/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer-stone/webfonts/', express.static(path.join(__dirname, 'build')));
 app.use('/streamSaver/', express.static(path.join(__dirname, 'build')));
 
-app.use(logger('dev'))
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
@@ -51,18 +48,13 @@ var unless = function (path, middleware) {
   }
 }
 
-var accessLogStream = rfs.createStream('access.log', {
-  interval: '1d', // rotate daily
-  path: path.join(__dirname, '/data/log')
-})
-
 morgan.token('username', function (req, res) { 
   return req.roles == null ? 'Not Authentified' : req.roles.username
 })
 
 app.use(
   unless('/',
-    morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTPS/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username" ;', { stream: accessLogStream })
+    morgan(':remote-addr - [:date[clf]] ":method :url HTTPS/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username"')
   )
 )
 
