@@ -84,7 +84,7 @@ class DeleteTask {
      * @returns {Task} task of the user 
      */
     static async getUserTask(user){
-        let deleteJobs = await orthancQueue.getDeleteJobs(user);
+        let deleteJobs = await orthancQueue.getUserDeleteJobs(user);
         if(deleteJobs.length === 0) return null;
         return DeleteTask.getTask(deleteJobs[0].data.taskId);
     }
