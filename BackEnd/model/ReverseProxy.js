@@ -94,7 +94,11 @@ const ReverseProxy = {
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(res)
-        } else {
+        } 
+        else if (response.statusCode === 401){
+          res.status(403).send("Bad orthanc credentials")
+        }
+        else {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
@@ -108,7 +112,11 @@ const ReverseProxy = {
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(res)
-        } else {
+        }
+        else if (response.statusCode === 401){
+          res.status(403).send("Bad orthanc credentials")
+        }
+        else {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
@@ -123,8 +131,12 @@ const ReverseProxy = {
         if(response.statusCode == 200)
           response.pipe(res)
       }).catch((error) => {
-        console.error(error)
-        res.status(error.statusCode).send(error)
+        if (error.statusCode === 401) {
+          res.status(403).send("Bad orthanc credentials")
+        }else{
+          console.error(error)
+          res.status(error.statusCode).send(error)
+        }
       })
   },
 
