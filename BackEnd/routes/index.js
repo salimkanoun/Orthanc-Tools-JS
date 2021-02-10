@@ -9,7 +9,7 @@ const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../cont
 
 const { importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
         exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, 
-        modifyMidelware, isCurrentUserOrAdminMidelWare, userAuthMidelware } = require('../midelwares/authentication')
+        modifyMidelware, isCurrentUserOrAdminMidelWare, userAuthMidelware, userAdminMidelware, ownTaskOrIsAdminMidelware } = require('../midelwares/authentication')
 
 const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve, deleteRetrieveItem, addExportTask } = require('../controllers/task')
 
@@ -68,26 +68,26 @@ router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
 
 //OrthancToolsJS Robot routes
 //Retrieve Robot
-router.post('/robot/:username/retrieve', [isCurrentUserOrAdminMidelWare, autoQueryMidelware], addRetrieveTask)
+router.post('/tasks/:username/retrieve', [isCurrentUserOrAdminMidelWare, autoQueryMidelware], addRetrieveTask)
 
 //AnonRobot
-router.post('/robot/:username/anonymize', anonMidelware, addAnonTask)
+router.post('/tasks/:username/anonymize', anonMidelware, addAnonTask)
 
 //DeleteRobot
 //SK BUG MIDELWARE DELETE?
-router.post('/robot/:username/delete', deleteMidelware, addDeleteTask)
+router.post('/tasks/:username/delete', deleteMidelware, addDeleteTask)
 
 //FTP & WebDav Exports
-router.post('/robot/:user/export', exportExternMidelware, addExportTask)
+router.post('/tasks/:user/export', exportExternMidelware, addExportTask)
 
 //Tasks
 //SK : ICI MANQUE LES MIDDELWARE
 router.get('/tasks/:username/:type', getTaskWithUser)
-router.delete('/tasks/:username/:type', deleteTaskOfUser)
-router.delete('/tasks/:username/retrieve/:id', deleteRetrieveItem)
-router.get('/tasks/:id', getTask)
-router.delete('/tasks/:id', deleteTask)
-router.get('/tasks', getTasksIds)
-router.get('/tasks?expend', getTasks)
+router.delete('/tasks/:username/:type', isCurrentUserOrAdminMidelWare, deleteTaskOfUser)
+router.delete('/tasks/:username/retrieve/:id', [isCurrentUserOrAdminMidelWare, autoQueryMidelware], deleteRetrieveItem)
+router.get('/tasks/:id', ownTaskOrIsAdminMidelware, getTask)
+router.delete('/tasks/:id', ownTaskOrIsAdminMidelware, deleteTask)
+router.get('/tasks', userAdminMidelware,  getTasksIds)
+router.get('/tasks?expend', userAdminMidelware, getTasks)
 
 module.exports = router

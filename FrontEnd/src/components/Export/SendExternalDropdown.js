@@ -24,7 +24,7 @@ export default class SendExternalDropdown extends Component {
             toast.error(error.statusText)
         }
         
-        let jobMonitoring = new MonitorTask(taskAnswer.id)
+        let jobMonitoring = new MonitorTask(taskAnswer)
 
         let self = this
         jobMonitoring.onUpdate(function (info) {

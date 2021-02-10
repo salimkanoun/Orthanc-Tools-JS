@@ -74,7 +74,7 @@ class AnonymizePanel extends Component {
 
             try{
                 let answer = await apis.anon.createAnonRobot(listToAnonymize, this.props.username) //wait for the robot's answer to know what do to next
-                this.props.setTask(answer.id)
+                this.props.setTask(answer)
             } catch (error){
                 toast.error(error.statusText)
             }

@@ -50,7 +50,7 @@ class DeleteTool extends Component {
             return
         }
         if (answer) {
-            this.task = new MonitorTask(answer.id, 2000)
+            this.task = new MonitorTask(answer, 2000)
             this.task.startMonitoringJob()
 
             this.openToast()

@@ -53,7 +53,7 @@ class SshKey{
     }
 
     static async getAllSshKey(){
-        return await db.SshKey.findAll().map(x=>new SshKey(x));
+        return (await db.SshKey.findAll()).map(x=>new SshKey(x));
     }
 
     async setKeyContent(chunk){
@@ -101,7 +101,7 @@ class SshKey{
         }})
     }
 
-    getSendable(){
+    toJSON(){
         return {
             id: this.id,
             label: this.label,

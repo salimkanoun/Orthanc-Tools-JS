@@ -14,7 +14,7 @@ const retrieveRobot = {
             })
         }
 
-        return fetch('/api/robot/' + username + '/retrieve', createRobotOption).then((answer) => {
+        return fetch('/api/tasks/' + username + '/retrieve', createRobotOption).then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
@@ -35,7 +35,7 @@ const retrieveRobot = {
             }
         }
 
-        return fetch("/api/robot/" + username + "/retrieve/validate", validateRobotOption).then((answer) => {
+        return fetch("/api/tasks/" + username + "/retrieve/validate", validateRobotOption).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         })
@@ -62,7 +62,7 @@ const retrieveRobot = {
             }
         }
 
-        return fetch("/api/robot/retrieve", getAllRobotsDetails).then((answer) => {
+        return fetch("/api/tasks/type/retrieve", getAllRobotsDetails).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         })

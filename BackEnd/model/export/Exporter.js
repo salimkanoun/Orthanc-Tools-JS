@@ -28,10 +28,6 @@ class Exporter{
             }
         })
 
-        this._sendQueue.on('progress', async (job,data)=>{
-            this._jobs[job.id]._progress = await job.progress()
-        })
-
         //Adding a processor for ftp  export tasks  
         this._sendQueue.process('send-over-ftp', Exporter._sendOverFtp)
 
@@ -68,33 +64,33 @@ class Exporter{
     }
 
     static async _sendOverFtp(job,done){
-        let endpoint = job.data.endpoint
-        let archive = job.data.archive
-        
+        let endpoint = job.data.endpoint;
+        let file = job.data.file;
         //Opening the ftp connecttion
         await ftp.access(endpoint).then(async()=>{
             //Start tracking
             ftp.trackProgress(info=>{
-                job.progress(info.bytesOverall/archive.size*100)
+                job.progress(info.bytesOverall/file.size*100)
             });
             //Start Uploading
-            await ftp.uploadFrom(archive.filePath, path.join(endpoint.targetFolder,  archive.name))
+            await ftp.uploadFrom(file.path, path.join(endpoint.targetFolder,  file.name))
         })
+        console.log("exported");
         done()
     }
 
     static async _sendOverSftp(job,done){
-        let endpoint = job.data.endpoint
-        let archive = job.data.archive
+        let endpoint = job.data.endpoint;
+        let file = job.data.file;
 
         const sftp = new SftpClient();
 
         //Creating the sftp connection
         await sftp.connect(endpoint).then(()=>{
             //Starting the transfer
-            sftp.fastPut(archive.filePath,path.join(endpoint.targetFolder, archive.name),{
+            sftp.fastPut(file.path,path.join(endpoint.targetFolder, file.name),{
                 step:  (total_transferred, chunk, total)=>{
-                    job.progress(total_transferred/archive.size*100);
+                    job.progress(total_transferred/file.size*100);
                 }
             }).then(()=>sftp.end())
         })
@@ -103,7 +99,7 @@ class Exporter{
 
     static async _sendOverWebdav(job,done){
         let endpoint = job.data.endpoint
-        let archive = job.data.archive
+        let file = job.data.file
 
 
         try {
@@ -115,18 +111,18 @@ class Exporter{
                 digest: endpoint.digest
             })
             //Transfering archive
-            let rs = fs.createReadStream(archive.filePath,{autoClose:true})
+            let rs = fs.createReadStream(file.path,{autoClose:true})
             await new Promise((resolve,reject)=>{
                 //Monitoring the progress
                 let sent = 0
                 rs.on('data', (chunk)=>{
                     sent += chunk.length
-                    job.progress(sent/archive.size*100).catch((err=>console.error(err)))
+                    job.progress(sent/file.size*100).catch((err=>console.error(err)))
                 })
                 rs.on('end', resolve)
                 rs.on('error', reject)
                 try {
-                    let ws = client.createWriteStream(path.join(endpoint.targetFolder,archive.name))
+                    let ws = client.createWriteStream(path.join(endpoint.targetFolder,file.name))
                     rs.pipe(ws)
                 } catch (error) {
                     console.error(error)
@@ -139,14 +135,14 @@ class Exporter{
         done()
     }
 
-    queue(protocol, endpoint, archive){
+    async queue(protocol, endpoint, archive){
         let formatedEndpoint
         switch (protocol) {
             case 'ftp':
                 formatedEndpoint = endpoint.ftpOptionFormat()
                 break;
             case 'sftp':
-                formatedEndpoint = endpoint.sftpOptionFormat()
+                formatedEndpoint = await endpoint.sftpOptionFormat()
                 break;
             case 'webdav':
                 formatedEndpoint = endpoint.webdavOptionFormat()
@@ -158,9 +154,42 @@ class Exporter{
             {endpoint:formatedEndpoint,archive}).then((job)=>{
                 this._jobs[job.id] = job
                 return job
-            })
+            }) 
+    }
 
-        
+    async uploadFile(taskId, endpoint, filePath){
+        let formatedEndpoint
+        switch (endpoint.protocol) {
+            case 'ftp':
+                formatedEndpoint = endpoint.ftpOptionFormat()
+                break;
+            case 'sftp':
+                formatedEndpoint = await endpoint.sftpOptionFormat()
+                break;
+            case 'webdav':
+                formatedEndpoint = endpoint.webdavOptionFormat()
+                break;
+            default:
+                break;
+        }
+        let file = {
+            path : filePath,
+            name : path.basename(filePath),
+            size : await new Promise((resolve,reject)=>{
+                fs.stat(filePath,(err, stats)=>{
+                    if(!err) resolve(stats.size);
+                    else reject(err);
+                })
+            })
+        }
+        this._sendQueue.add({'ftp':'send-over-ftp','sftp':'send-over-sftp','webdav':'send-over-webdav'}[endpoint.protocol],
+            {taskId, endpoint:formatedEndpoint,file})
+        return taskId;
+    }
+
+    async getUploadJobs(taskId){
+        let jobs = await this._sendQueue.getJobs(["delayed", "completed", "active", "paused", "waiting"]);
+        return jobs.filter(job=>job.data.taskId == taskId); 
     }
 
 

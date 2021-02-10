@@ -7,19 +7,19 @@ class Ldap extends AbstractAnnuaire {
         //ToDo
     }
 
-    testSettings(callback) {
+    testSettings() {
         //ToDo
     }
 
-    getAllCorrespodences(callback) {
+    getAllCorrespodences() {
         //ToDo
     }    
 
-    autentification(username, mdp, callback) {
+    autentification(username, mdp) {
         //ToDo
     }
     
-    getPermission(username, groupes, callback) {
+    getPermission(username, groupes) {
         //ToDo
     }    
     
