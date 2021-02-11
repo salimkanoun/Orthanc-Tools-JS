@@ -80,7 +80,7 @@ jobs:
     - uses: actions/upload-artifact@v1
       with:
         name: OrthancToolsJS
-        path: BackEnd
+        path: ./BackEnd/OrthancToolsJS.zip
     - name: Install dependencies
       run: npm install
       working-directory: BackEnd
