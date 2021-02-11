@@ -75,7 +75,6 @@ class Exporter{
             //Start Uploading
             await ftp.uploadFrom(file.path, path.join(endpoint.targetFolder,  file.name))
         })
-        console.log("exported");
         done()
     }
 

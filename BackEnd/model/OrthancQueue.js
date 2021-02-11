@@ -285,7 +285,6 @@ class OrthancQueue {
 
     // Checking for duplicate
     let curratedItems = items.reduce((agregation, item)=>{
-      console.log(agregation);
       if (item.Level === OrthancQueryAnswer.LEVEL_STUDY) {
         for (const existingItem of agregation) {
           if (item.studyInstanceUID===existingItem.studyInstanceUID) return agregation;

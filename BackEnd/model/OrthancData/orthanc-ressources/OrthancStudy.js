@@ -21,7 +21,7 @@ class OrthancStudy {
       };
       orthancStudyInstance.getSeries()
       return orthancStudyInstance
-    }).catch((error) => { console.log('Error geting study details ' + error) })
+    }).catch((error) => { throw error })
   }
 
   fillSeriesDetails () {
