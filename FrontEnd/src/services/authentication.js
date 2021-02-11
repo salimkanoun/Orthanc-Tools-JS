@@ -11,8 +11,7 @@ const authentication = {
         username: username,
         password: password
       })
-    }).then((answer) => {
-      if (!answer.ok) { throw answer }
+    }).then( (answer) => {
       return (answer.json())
     }).catch((error) => { throw error })
   },

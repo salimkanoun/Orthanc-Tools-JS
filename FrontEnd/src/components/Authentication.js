@@ -29,17 +29,19 @@ export default class Authentication extends Component {
     try {
       answer = await apis.authentication.logIn(this.state.username, this.state.password)
     } catch (error) {
-      console.error(error)
-      error.json().then(answer => {
-        this.setState({
-          errorMessage: answer.errorMessage
-        })
-      }).catch(error => {
-        toast.error(error)
-      })
+      toast.error(error)
     }
 
-    this.props.onLogin(answer)
+    if (answer.errorMessage != null) {
+      this.setState({
+        errorMessage: answer.errorMessage
+      })
+    } else {
+      this.props.onLogin(answer)
+    }
+
+
+
 
   }
 
