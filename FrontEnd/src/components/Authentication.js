@@ -29,6 +29,7 @@ export default class Authentication extends Component {
       let answer = await apis.authentication.logIn(this.state.username, this.state.password)
       this.props.onLogin(answer)
     } catch (error) {
+      console.error(error)
       error.json().then(answer => {
         this.setState({
           errorMessage: answer.errorMessage

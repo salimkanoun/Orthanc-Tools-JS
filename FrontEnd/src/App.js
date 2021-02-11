@@ -76,8 +76,8 @@ class App extends Component {
     this.setState({
       authentified: true,
       roles: logInAnwser
-    })
-    this.props.saveUsername(logInAnwser.username)
+    }, () => { this.props.saveUsername(logInAnwser.username) })
+    
 
   }
 
