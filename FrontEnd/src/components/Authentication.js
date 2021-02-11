@@ -25,19 +25,21 @@ export default class Authentication extends Component {
 
   handleClick = async () => {
 
+    let answer
     try {
-      let answer = await apis.authentication.logIn(this.state.username, this.state.password)
-      this.props.onLogin(answer)
+      answer = await apis.authentication.logIn(this.state.username, this.state.password)
     } catch (error) {
       console.error(error)
       error.json().then(answer => {
         this.setState({
           errorMessage: answer.errorMessage
         })
-      }).catch( error => {
+      }).catch(error => {
         toast.error(error)
       })
     }
+
+    this.props.onLogin(answer)
 
   }
 
