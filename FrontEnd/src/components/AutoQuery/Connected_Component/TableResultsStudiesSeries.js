@@ -16,45 +16,42 @@ import CustomFilter from './CustomFilter';
  */
 class TableResultsStudiesSeries extends Component {
 
-    constructor(props){
-        super(props)
-        this.buildResultsSeriesArray = this.buildResultsSeriesArray.bind(this)
-        this.emptyTable = this.emptyTable.bind(this)
-        this.removeRow = this.removeRow.bind(this)
-        this.saveFilteredValues = this.saveFilteredValues.bind(this)
-    }
-
-    async componentDidMount(){
+    componentDidMount = async () => {
         //List studies for each series details are missing
         let emptyResultArray = []
         let studyUIDToQuery = Object.keys(this.props.results)
         let availableStudyUID = []
-        for(let seriesUID of Object.keys(this.props.resultsSeries)){
-            availableStudyUID.push(this.props.resultsSeries[seriesUID]['StudyInstanceUID'])    
-        } 
+        for (let seriesUID of Object.keys(this.props.resultsSeries)) {
+            availableStudyUID.push(this.props.resultsSeries[seriesUID]['StudyInstanceUID'])
+        }
 
-        studyUIDToQuery.forEach (studyUID =>{
-            if( ! availableStudyUID.includes(studyUID)) emptyResultArray.push(this.props.results[studyUID])
+        studyUIDToQuery.forEach(studyUID => {
+            if (!availableStudyUID.includes(studyUID)) emptyResultArray.push(this.props.results[studyUID])
         })
-        
 
-        if(emptyResultArray.length>0){
+
+        if (emptyResultArray.length > 0) {
             const id = toast.info('Starting Series Fetching');
             let i = 0
             //Load All series details of studies answers
             for (let studyResults of emptyResultArray) {
                 i++
-                await this.getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET)
-                toast.update(id, {
-                    render : 'Queried series '+i+'/'+(emptyResultArray.length)
-                });
+                try{
+                    await this.getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET)
+                    toast.update(id, {
+                        render: 'Queried series ' + i + '/' + (emptyResultArray.length)
+                    });
+                } catch(error){
+                    console.error(error)
+                }
+
             }
         }
 
 
     }
 
-    async getSeriesDetails(studyUID, aet){
+    getSeriesDetails = async (studyUID, aet) => {
 
         let queryData = {
             Level: 'Series',
@@ -70,14 +67,14 @@ class TableResultsStudiesSeries extends Component {
             Normalize: false
         }
 
-        let queryAnswers = await apis.query.dicomQuery(aet,queryData);
+        let queryAnswers = await apis.query.dicomQuery(aet, queryData);
         let seriesAnswers = await apis.query.retrieveAnswer(queryAnswers['ID'])
 
         this.props.addSeriesDetails(seriesAnswers, studyUID)
 
     }
 
-    emptyTable() {
+    emptyTable = () => {
         this.props.emptyResultsTable()
     }
 
@@ -100,9 +97,9 @@ class TableResultsStudiesSeries extends Component {
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesPatientName'/>
+            return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesPatientName' />
         }
     }, {
         dataField: 'PatientID',
@@ -111,9 +108,9 @@ class TableResultsStudiesSeries extends Component {
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesPatientID'/>
+            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesPatientID' />
         }
     }, {
         dataField: 'AccessionNumber',
@@ -122,9 +119,9 @@ class TableResultsStudiesSeries extends Component {
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesAccessionNumber'/>
+            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesAccessionNumber' />
         }
     }, {
         dataField: 'StudyDate',
@@ -138,24 +135,24 @@ class TableResultsStudiesSeries extends Component {
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesStudyDesc'/>
+            return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesStudyDesc' />
         },
         style: { whiteSpace: 'normal', wordWrap: 'break-word' }
-    },{
+    }, {
         dataField: 'RequestedProcedureDescription',
         text: 'Requested Procedure Description',
         sort: true,
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
             return <CustomFilter options={this.getOption('RequestedProcedureDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='RequestedProcedureDescription' />
         },
         style: { whiteSpace: 'normal', wordWrap: 'break-word' }
-    },{
+    }, {
         dataField: 'StudyInstanceUID',
         hidden: true,
         csvExport: false
@@ -170,9 +167,9 @@ class TableResultsStudiesSeries extends Component {
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('SeriesDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesDesc'/>
+            return <CustomFilter options={this.getOption('SeriesDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesDesc' />
         },
         style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
@@ -182,9 +179,9 @@ class TableResultsStudiesSeries extends Component {
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('Modality')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesModalities'/>
+            return <CustomFilter options={this.getOption('Modality')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesModalities' />
         }
     }, {
         dataField: 'SeriesNumber',
@@ -193,9 +190,9 @@ class TableResultsStudiesSeries extends Component {
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('SeriesNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesNumber'/>
+            return <CustomFilter options={this.getOption('SeriesNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='seriesNumber' />
         }
     }, {
         dataField: 'NumberOfSeriesRelatedInstances',
@@ -207,22 +204,22 @@ class TableResultsStudiesSeries extends Component {
         sort: true
     }];
 
-    getOption(cell){
+    getOption = (cell) => {
         let options = []
         let rows = this.buildResultsSeriesArray()
         rows.forEach(element => {
             let find = false
-            options.forEach(option => {if (option.value === element[cell]) find = true})
-            if (!find){
-                options.push({value: element[cell], label: element[cell]})
+            options.forEach(option => { if (option.value === element[cell]) find = true })
+            if (!find) {
+                options.push({ value: element[cell], label: element[cell] })
             }
         })
-        return options 
+        return options
     }
 
-    buildResultsSeriesArray(){
+    buildResultsSeriesArray = () => {
         let seriesLines = []
-        for(let seriesUID of Object.keys(this.props.resultsSeries)){
+        for (let seriesUID of Object.keys(this.props.resultsSeries)) {
             seriesLines.push({
                 ...this.props.results[this.props.resultsSeries[seriesUID]['StudyInstanceUID']],
                 ...this.props.resultsSeries[seriesUID],
@@ -237,29 +234,27 @@ class TableResultsStudiesSeries extends Component {
         clickToSelect: true
     }
 
-    removeRow() {
+    removeRow = () => {
         let selectedKeyRow = this.node.selectionContext.selected
-        console.log(selectedKeyRow)
         this.props.removeSeriesResult(selectedKeyRow)
         this.node.selectionContext.selected = []
     }
 
-    getFilteredRessources(){
+    getFilteredRessources = () => {
         return this.node.filterContext.data
     }
 
-    getSelectedUID(){
+    getSelectedUID = () => {
         return this.node.selectionContext.selected
     }
 
-    saveFilteredValues(){
+    saveFilteredValues = () => {
         let resultDisplay = this.node.filterContext.data
         let filteredSeriesUID = resultDisplay.map(row => row.SeriesInstanceUID)
         this.props.addSeriesFiltered(filteredSeriesUID)
     }
 
-    render() {
-        let rows = this.buildResultsSeriesArray()
+    render = () => {
         return (
             <Fragment>
                 <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={this.removeRow} />
@@ -267,14 +262,14 @@ class TableResultsStudiesSeries extends Component {
                 <div className="mt-5">
                     <ToolkitProvider
                         keyField="SeriesInstanceUID"
-                        data={rows}
+                        data={this.buildResultsSeriesArray()}
                         columns={this.columns}
                     >{
-                        props => (
-                            <BootstrapTable ref={n => this.node = n} {...props.baseProps} wrapperClasses="table-responsive" selectRow = {this.selectRowSeries} striped={true} bordered={ false } filter={filterFactory()} pagination={paginationFactory()} />
+                            props => (
+                                <BootstrapTable ref={n => this.node = n} {...props.baseProps} wrapperClasses="table-responsive" selectRow={this.selectRowSeries} striped={true} bordered={false} filter={filterFactory()} pagination={paginationFactory()} />
 
-                        )
-                    }
+                            )
+                        }
                     </ToolkitProvider>
                 </div>
             </Fragment>
@@ -285,7 +280,7 @@ class TableResultsStudiesSeries extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        results : state.AutoRetrieveResultList.results,
+        results: state.AutoRetrieveResultList.results,
         resultsSeries: state.AutoRetrieveResultList.resultsSeries
     }
 }
@@ -293,7 +288,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
     emptyResultsTable,
     addSeriesDetails,
-    removeSeriesResult, 
+    removeSeriesResult,
     addSeriesFiltered
 }
 

@@ -1,206 +1,198 @@
-const {ExportTask ,CREATING,PENDING_SENDING,SENDING, CREATION_ERROR, SEND_ERROR, SENT, PROTOCOL_FTP,PROTOCOL_SFTP,PROTOCOL_FTPS,PROTOCOL_WEBDAV} = require( "./ExportTask");
-const Orthanc = require("../Orthanc")
-const fs = require("fs")
+//Modules
+const Queue = require('bull')
 const SftpClient = require("ssh2-sftp-client") 
 const FtpClient =  require("basic-ftp" )
 const tls = require("tls") 
-const path = require("path")
 const {createClient} = require("webdav")
+const path = require('path')
+const fs = require('fs')
+const Certificate = require('./Certificate')
 
-// TODO : Check le changement de port webdav
-
-let orthanc = new Orthanc()
 const ftp = new FtpClient.Client()
-
-const ftpConnectionOption = {
-    host: 'localhost',
-    port: '22',
-    username: 'legrand',
-    password: 'Dnmts!',
-    targetFolder : '/home/legrand/test',
-    protocol : 'sftp',
-    privateKey : true,
-    privateKeyPassPhrase : 'devellopement'
-}
-
-const webdavConnectionOption = {
-    host: 'http://localhost/webdav',
-    username: 'alex',
-    password: 'alex',
-    targetFolder : '',
-    digest: false
-}
 
 let instance
 class Exporter{
     constructor(){
-        if(!instance){
-            instance = this
+        //Singleton Logique
+        if(instance)return instance
+        instance = this
 
-            this.orthanc = new Orthanc()
+        this._jobs = {}
 
-            this.taskMap = {}
-            this._sending = false;
-            this._sendTaskQueue = []
+        //Declaration for the send queue
+        this._sendQueue = new Queue('send',{
+            redis:{
+                host: process.env.REDIS_HOST,
+                port: process.env.REDIS_PORT,
+                password: process.env.REDIS_PASSWORD
+            }
+        })
 
+        //Adding a processor for ftp  export tasks  
+        this._sendQueue.process('send-over-ftp', Exporter._sendOverFtp)
 
-            // tls hack to allow CA to be add
-            const origCreateSecureContext = tls.createSecureContext
+        //Adding a processor for sftp  export tasks  
+        this._sendQueue.process('send-over-sftp', Exporter._sendOverSftp)
+
+        //Adding a processor for webdav  export tasks  
+        this._sendQueue.process('send-over-webdav', Exporter._sendOverWebdav)
+
+        Certificate.getAllCertificate().then((certificates)=>{
+            let origCreateSecureContext = tls.createSecureContext
             tls.createSecureContext = options => {
                 const context = origCreateSecureContext(options)
                 try {
-                    const pem = fs
-                    .readFileSync(path.join(__dirname, '..', 'data', 'certificates', 'rootCA.crt'), { encoding: "ascii" })
-                    .replace(/\r\n/g, "\n");
+                    certificates.forEach((cert)=>{
+                        const pem = fs
+                        .readFileSync(cert.path, { encoding: "ascii" })
+                        .replace(/\r\n/g, "\n");
 
-                    const certs = pem.match(/-----BEGIN CERTIFICATE-----\n[\s\S]+?\n-----END CERTIFICATE-----/g)
+                        const certs = pem.match(/-----BEGIN CERTIFICATE-----\n[\s\S]+?\n-----END CERTIFICATE-----/g)
 
-                    certs.forEach(cert => {
-                        context.context.addCACert(cert.trim())
+                        certs.forEach(cert => {
+                            context.context.addCACert(cert.trim())
+                        })
                     })
-
                 } catch (error) {
 
                 }
                 return context;
-            };
-
-        }
-        return instance
-    }
-
-    async _sendArchives(){
-        if(this._sending)return;
-        this._sending = true;
-
-        while (this._sendTaskQueue.length) {
-            let task = this._sendTaskQueue.pop()
-            task.status = SENDING
-            task.sent = 0;
-            
-            let promise;
-            switch (task.protocol) {
-                case PROTOCOL_WEBDAV:
-                    promise = this._webdavSend(task);
-                    break;
-                case PROTOCOL_FTP:
-                case PROTOCOL_FTPS:
-                    promise = this._ftpSend(task);
-                    break;
-                case PROTOCOL_SFTP:
-                    promise = this._sftpSend(task);
-                    break;
-                default:
-                    break;
             }
-
-            // Upon completion or sending faillure the task is dereference and replace only a status to reduce memorie cost; 
-            await promise.then(()=>{task.status = SENT}).catch(e => {
-                console.error(e);
-                task.status = SEND_ERROR
-            })
-        }
-
-        this._sending = false 
-    }
-
-
-    _ftpSend(task){
-        return ftp.access({
-            host : ftpConnectionOption.host,
-            user : ftpConnectionOption.username,
-            password : ftpConnectionOption.password,
-            secure : ftpConnectionOption.protocol==="ftps" 
-        }).then(async()=>{
-            // Manage tracking
-            ftp.trackProgress((ftpConnectionOption.protocol==="ftp"?task.getFtpProgressListener():task.getFtpsProgressListener()));
-            await ftp.uploadFrom(task.path, ftpConnectionOption.targetFolder + task.name)
         })
+
+        
     }
 
-    _sftpSend(task){
-        let connectioOptions = (ftpConnectionOption.privateKey?
-            {
-                host: ftpConnectionOption.host,
-                port: ftpConnectionOption.port,
-                username: ftpConnectionOption.username,
-                privateKey: fs.readFileSync(path.join(__dirname, '..', 'data', 'private_key', 'id_rsa')),
-                passphrase: ftpConnectionOption.privateKeyPassPhrase
-            }:
-            {
-                host: ftpConnectionOption.host,
-                port: ftpConnectionOption.port,
-                username: ftpConnectionOption.username,
-                password: ftpConnectionOption.password
-            }
-        )
+    static async _sendOverFtp(job,done){
+        let endpoint = job.data.endpoint;
+        let file = job.data.file;
+        //Opening the ftp connecttion
+        await ftp.access(endpoint).then(async()=>{
+            //Start tracking
+            ftp.trackProgress(info=>{
+                job.progress(info.bytesOverall/file.size*100)
+            });
+            //Start Uploading
+            await ftp.uploadFrom(file.path, path.join(endpoint.targetFolder,  file.name))
+        })
+        done()
+    }
+
+    static async _sendOverSftp(job,done){
+        let endpoint = job.data.endpoint;
+        let file = job.data.file;
 
         const sftp = new SftpClient();
 
         //Creating the sftp connection
-        return sftp.connect(connectioOptions).then(()=>{
-            sftp.fastPut(task.path,ftpConnectionOption.targetFolder+task.name,{
-                step: task.getSftpProgressListener()
+        await sftp.connect(endpoint).then(()=>{
+            //Starting the transfer
+            sftp.fastPut(file.path,path.join(endpoint.targetFolder, file.name),{
+                step:  (total_transferred, chunk, total)=>{
+                    job.progress(total_transferred/file.size*100);
+                }
             }).then(()=>sftp.end())
         })
+        done()
     }
 
-    _webdavSend(task){
-        const client = createClient(
-            webdavConnectionOption.host,
+    static async _sendOverWebdav(job,done){
+        let endpoint = job.data.endpoint
+        let file = job.data.file
+
+
+        try {
+            //Creating the conncetion
+            const client = createClient(endpoint.url,
             {
-                username: webdavConnectionOption.username,
-                password: webdavConnectionOption.password,
-                digest: webdavConnectionOption.digest
+                username: endpoint.username,
+                password: endpoint.password,
+                digest: endpoint.digest
             })
-        
-        let rs = fs.createReadStream(task.path,{autoClose:true})
-        return new Promise((resolve,reject)=>{
-            rs.pipe(client.createWriteStream(webdavConnectionOption.targetFolder+task.name))
-            rs.on('data', task.getWebDavProgressListener())
-            rs.on('end', resolve)
-            rs.on('error', reject)
-        })
-        
+            //Transfering archive
+            let rs = fs.createReadStream(file.path,{autoClose:true})
+            await new Promise((resolve,reject)=>{
+                //Monitoring the progress
+                let sent = 0
+                rs.on('data', (chunk)=>{
+                    sent += chunk.length
+                    job.progress(sent/file.size*100).catch((err=>console.error(err)))
+                })
+                rs.on('end', resolve)
+                rs.on('error', reject)
+                try {
+                    let ws = client.createWriteStream(path.join(endpoint.targetFolder,file.name))
+                    rs.pipe(ws)
+                } catch (error) {
+                    console.error(error)
+                }
+            })
+        } catch (error) {
+            console.error(error)
+        }
+
+        done()
     }
 
-    _queueForSend(task){
-        task.status = PENDING_SENDING
-        this._sendTaskQueue.unshift(task)
-        this._sendArchives()
+    async queue(protocol, endpoint, archive){
+        let formatedEndpoint
+        switch (protocol) {
+            case 'ftp':
+                formatedEndpoint = endpoint.ftpOptionFormat()
+                break;
+            case 'sftp':
+                formatedEndpoint = await endpoint.sftpOptionFormat()
+                break;
+            case 'webdav':
+                formatedEndpoint = endpoint.webdavOptionFormat()
+                break;
+            default:
+                break;
+        }
+        return this._sendQueue.add({'ftp':'send-over-ftp','sftp':'send-over-sftp','webdav':'send-over-webdav'}[protocol],
+            {endpoint:formatedEndpoint,archive}).then((job)=>{
+                this._jobs[job.id] = job
+                return job
+            }) 
     }
 
-    ftpExport(ids){
-        let task = new ExportTask(ftpConnectionOption.protocol)
-        task.status = CREATING
-        this.taskMap[task.uuid] = task
-        this.orthanc.getArchiveDicom(ids).then(path=>{
-            task.setArchive(path)
-            this._queueForSend(task)
-        }).catch(
-            (e)=>{
-                task.status = CREATION_ERROR
-                throw(e)
-            }
-        )
-        return task.uuid; 
+    async uploadFile(taskId, endpoint, filePath){
+        let formatedEndpoint
+        switch (endpoint.protocol) {
+            case 'ftp':
+                formatedEndpoint = endpoint.ftpOptionFormat()
+                break;
+            case 'sftp':
+                formatedEndpoint = await endpoint.sftpOptionFormat()
+                break;
+            case 'webdav':
+                formatedEndpoint = endpoint.webdavOptionFormat()
+                break;
+            default:
+                break;
+        }
+        let file = {
+            path : filePath,
+            name : path.basename(filePath),
+            size : await new Promise((resolve,reject)=>{
+                fs.stat(filePath,(err, stats)=>{
+                    if(!err) resolve(stats.size);
+                    else reject(err);
+                })
+            })
+        }
+        this._sendQueue.add({'ftp':'send-over-ftp','sftp':'send-over-sftp','webdav':'send-over-webdav'}[endpoint.protocol],
+            {taskId, endpoint:formatedEndpoint,file})
+        return taskId;
     }
 
-    webdavExport(ids){
-        let task = new ExportTask(PROTOCOL_WEBDAV)
-        task.status = CREATING
-        this.taskMap[task.uuid] = task
-        this.orthanc.getArchiveDicom(ids).then((path)=>{
-            task.setArchive(path)
-            this._queueForSend(task)
-        }).catch(
-            (e)=>{
-                task.status = CREATION_ERROR
-                throw(e)
-            }
-        )
-        return task.uuid; 
+    async getUploadJobs(taskId){
+        let jobs = await this._sendQueue.getJobs(["delayed", "completed", "active", "paused", "waiting"]);
+        return jobs.filter(job=>job.data.taskId == taskId); 
     }
+
+
 }
 
-module.exports = {Exporter}
+
+module.exports = Exporter

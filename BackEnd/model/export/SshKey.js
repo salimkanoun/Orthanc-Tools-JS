@@ -2,7 +2,6 @@ const db = require("../../database/models");
 const fs = require('fs');
 const crypto = require('crypto');
 const convert = require("../../utils/convert");
-const { Console } = require("console");
 
 const algo = 'aes256'
 
@@ -54,7 +53,7 @@ class SshKey{
     }
 
     static async getAllSshKey(){
-        return await db.SshKey.findAll().map(x=>new SshKey(x));
+        return (await db.SshKey.findAll()).map(x=>new SshKey(x));
     }
 
     async setKeyContent(chunk){
@@ -102,7 +101,7 @@ class SshKey{
         }})
     }
 
-    getSendable(){
+    toJSON(){
         return {
             id: this.id,
             label: this.label,

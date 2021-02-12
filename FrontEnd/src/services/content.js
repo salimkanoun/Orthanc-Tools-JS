@@ -1,8 +1,8 @@
-import { toastifyError } from "./toastify"
+import { toast } from "react-toastify"
 
-const query  = {
+const orthancContent = {
 
-    getContent(contentSerch){
+    getOrthancFind(contentSerch){
 
         const getContentOption = {
             method: 'POST', 
@@ -17,25 +17,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
-        })
-    },
-
-    getPatientsDetails(ID){
-
-        const getPatientsDetailsOption = {
-            method: 'GET', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }
-
-        return fetch('/api/patients/' + ID + '?expand', getPatientsDetailsOption ).then((response) => {
-            if (!response.ok) {throw response}
-            return response.json()
-        }).catch((error) => {
-            toastifyError(error)
+            throw(error)
         })
     },
 
@@ -53,7 +35,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     }, 
 
@@ -75,7 +57,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -93,7 +75,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -111,7 +93,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -129,7 +111,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -143,11 +125,11 @@ const query  = {
             }
         }
 
-        return fetch('/api/series/' + serieID + '/shared-tags?simplify', getSharedTagsOption ).then((response) => {
+        return fetch('/api/series/' + serieID + '/shared-tags', getSharedTagsOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -165,7 +147,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -179,7 +161,7 @@ const query  = {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
 
     },
@@ -194,7 +176,7 @@ const query  = {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
 
     },
@@ -209,7 +191,7 @@ const query  = {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
 
     },
@@ -230,7 +212,7 @@ const query  = {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     },
 
@@ -249,7 +231,7 @@ const query  = {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     },
 
@@ -268,10 +250,10 @@ const query  = {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     }
 }
 
-export default query
+export default orthancContent
 

@@ -1,68 +1,67 @@
 import React, { useState } from 'react'
-import OrthancSettings from './OrthancSettings/OrthancSettings'
 import AetRootPanel from './AET/AetRootPanel'
 import AutoRetrieveRootPanel from './Robots/AutoRetrieveRootPanel'
 import PeerRootPanel from './Peers/PeerRootPanel'
 import JobsRootPanel from './Jobs/JobsRootPanel'
-import Plugins from './Plugins'
+import Plugins from './Plugins/Plugins'
 import UserManagement from './UserManagement/UserManagement'
 import BurnerOptions from './CDBurner/BurnerOptions'
-import SecurityRootPanel from './Security/SecurityRootPanel'
 import EndpointsRootPanel from './Endpoints/EndpointsRootPanel'
+import GeneralRoot from './General/GeneralRoot'
 
 /**
  * Root Panel of Admin route
  * Using React Hooks
  */
-const AdminPanel = () => {
+
+const AdminRootPanel = () => {
+
   const [selectedOptionMenu, setSelectedOptionMenu] = useState('General')
 
-  function clickHandler (event) {
+  function clickHandler(event) {
     setSelectedOptionMenu(event.target.value)
   }
 
-  function getComponentToDisplay () {
+  function getComponentToDisplay() {
     switch (selectedOptionMenu) {
-      case 'General' :
-        return (<OrthancSettings />)
-      case 'Aets' :
+      case 'General':
+        return (<GeneralRoot />)
+      case 'Aets':
         return (<AetRootPanel />)
-      case 'Peers' :
+      case 'Peers':
         return (<PeerRootPanel />)
-      case 'External Exports' :
+      case 'External Endpoints':
         return (<EndpointsRootPanel />)
-      case 'Security' :
-        return (<SecurityRootPanel />)
-      case 'Robots' :
+      case 'Robots':
         return (<AutoRetrieveRootPanel />)
-      case 'Jobs' :
+      case 'Jobs':
         return (<JobsRootPanel />)
-      case 'CD Burner' :
-          return (<BurnerOptions />)
-      case 'Plugins' :
+      case 'CD Burner':
+        return (<BurnerOptions />)
+      case 'Orthanc Plugins':
         return (<Plugins />)
-      case 'User Management' :
+      case 'Users':
         return (<UserManagement />)
-      default :
+      default:
         return ([])
     }
   }
 
   return (
     <div className='jumbotron'>
-      <div className= "row">
+      <div className="row">
         <div className='col-3'>
           <div className='nav flex-column nav-pills' role='tablist' aria-orientation='vertical'>
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='General' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Users' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Aets' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers' />
-            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='External Exports' />
-            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Security' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='External Endpoints' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Robots' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Jobs' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='CD Burner' />
-            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Plugins' />
-            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='User Management' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Orthanc Plugins' />
+
           </div>
         </div>
         <div className='col-sm'>
@@ -73,4 +72,4 @@ const AdminPanel = () => {
   )
 }
 
-export default AdminPanel
+export default AdminRootPanel

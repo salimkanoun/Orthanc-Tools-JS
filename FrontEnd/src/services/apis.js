@@ -10,21 +10,17 @@ import authentication from './authentication'
 import peers from './peers'
 import content from './content'
 import anon from './anon'
-import localStorage from './localStorage'
 import User from './User'
 import deleteRobot from './deleteRobot'
 import role from './role'
-import token from './token'
 import ldap from './ldap'
 import cdBurner from './cdBurner'
-import ftp from './ftp'
-import exportTask from './exportTask'
-import webdav from './webdav'
+import task from './task'
 import certificates from './certificates'
 import sshKeys from './sshKeys'
 import endpoints from './endpoints'
 
-export default {
+const apis = {
   importDicom,
   aets,
   options,
@@ -37,17 +33,15 @@ export default {
   peers, 
   content, 
   anon, 
-  localStorage, 
   User, 
   deleteRobot, 
-  role, 
-  token,
+  role,
   ldap,
   cdBurner,
-  ftp,
-  exportTask,
-  webdav,
+  task,
   certificates,
   sshKeys,
   endpoints
 }
+
+export default apis

@@ -2,20 +2,23 @@ version: "2"
 services:
 
     redis:
-        image: "redis:alpine"
-        hostname: redis
+        image: redis:alpine
         ports:
-          - "6379:6379"
+          - 6379:6379
           
     orthanctoolsjs:
         image: salimkanoun/orthanctoolsjs
         container_name: orthanctoolsjs
+        depends_on:
+            - redis
         ports: 
-            - 80:4000
             - 443:4000
+            - 8080:4000
         restart: unless-stopped
-        volumes: ["orthanctoolsjs:/OrthancToolsJs/data:Z"]
+        volumes:
+            - orthanctoolsjs:/OrthancToolsJs:Z
         environment:
+            TZ: "Europe/Paris"
             OrthancAddress: "http://orthanc"
             OrthancPort: "8042"
             OrthancUsername: "salim"
@@ -24,10 +27,12 @@ services:
             DOMAIN_ADDRESS: "serverAddress"
     
     orthanc:
-        image: osimis/orthanc:20.4.2
+        image: osimis/orthanc:20.12.4
         container_name: orthanc
         restart: unless-stopped
-        ports: ["8042:8042"]
+        ports: 
+            -"8042:8042"
+            #-"4242:4242"
         volumes: ["orthanc:/var/lib/orthanc/db:Z"]
         environment:
             ORTHANC__NAME: "OrthancToolsJS"
@@ -48,8 +53,6 @@ services:
             ORTHANC__DICOM_WEB__SSL: "true"
             ORTHANC__DICOM_WEB__STUDIESMETADATA: "MainDicomTags"
             ORTHANC__DICOM_WEB__SERIESMETADATA: "Full"
-
-   
 
 volumes:
         orthanc:

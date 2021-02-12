@@ -2,107 +2,112 @@ import React, { Component, Fragment } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import Dropdown from "react-bootstrap/Dropdown";
+import { toast } from "react-toastify";
 
 import apis from "../../../services/apis";
 import ModalDetails from './ModalDetails'
 
-class JobsRootPanel extends Component {
+export default class JobsRootPanel extends Component {
 
-    constructor(props) {
-        super(props);
-        this.getJobs = this.getJobs.bind(this)
-    }
-
-    state = { 
-        rows: [], 
-        showDetail: false, 
+    state = {
+        rows: [],
+        showDetail: false,
         currentRowIndex: ''
     }
 
-    componentDidMount(){
+    column = [
+        {
+            dataField: 'ID',
+            text: 'ID',
+            sort: true
+        }, {
+            dataField: 'Progress',
+            text: 'Progress',
+            sort: true
+        }, {
+            dataField: 'State',
+            text: 'State',
+            sort: true
+        }, {
+            dataField: 'Details',
+            text: 'Details',
+            formatter: ((value, row, index) => {
+                return <button className='btn btn-info' type='button' onClick={() => this.setState({ showDetail: true, currentRowIndex: index })}>Details</button>
+            })
+        }, {
+            dataField: 'Actions',
+            text: 'Actions',
+            formatter: ((value, row, index) => {
+                return this.dropDown(row.ID)
+            })
+        }
+    ]
+
+    componentDidMount = () => {
         this.getJobs()
         this.startRefreshMonitoring()
     }
 
-    componentWillUnmount(){
+    componentWillUnmount = () => {
         this.stopRefreshMonitoring()
     }
 
-    startRefreshMonitoring(){
-        this.intervalChcker = setInterval(() => {this.getJobs()}, 2000)
+    startRefreshMonitoring = () => {
+        this.intervalChcker = setInterval(() => { this.getJobs() }, 2000)
     }
 
-    stopRefreshMonitoring () {
+    stopRefreshMonitoring = () => {
         clearInterval(this.intervalChcker)
     }
 
-    async getJobs(){
-        let jobsDetails = await apis.jobs.getJobs()
+    getJobs = async () => {
 
-        let rows=[]
+        let rows = []
+
+        let jobsDetails
+
+        try {
+            jobsDetails = await apis.jobs.getJobs()
+        } catch (error){
+            toast.error(error.statusText)
+            return rows
+        }
+
         jobsDetails.forEach(jobDetails => {
             rows.push({
                 ...jobDetails
             })
         })
 
-        this.setState({rows: rows})
+        this.setState({ rows: rows })
     }
 
-    dropDown(id){
+    dropDown = (id) => {
         return (
             <Dropdown>
                 <Dropdown.Toggle variant='success' >
                     Actions
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                    <button className='dropdown-item bg-danger' onClick={async () => {await apis.jobs.cancelJob(id); this.getJobs()}}>Cancel</button> 
-                    <button className='dropdown-item bg-warning' onClick={async () => {await apis.jobs.pauseJob(id); this.getJobs()}}>Pause</button>
-                    <button className='dropdown-item bg-primary' onClick={async () => {await apis.jobs.resumbitJob(id); this.getJobs()}}>Resumbit</button>
-                    <button className='dropdown-item bg-info' onClick={async () => {await apis.jobs.resumeJob(id); this.getJobs()}}>Resume</button>
+                    <Dropdown.Item className='bg-danger' onClick={async () => { await apis.jobs.cancelJob(id).catch(error => toast.error(error.statusText) ); this.getJobs() }}>Cancel</Dropdown.Item>
+                    <Dropdown.Item className='bg-warning' onClick={async () => { await apis.jobs.pauseJob(id).catch(error => toast.error(error.statusText) ); this.getJobs() }}>Pause</Dropdown.Item>
+                    <Dropdown.Item className='bg-primary' onClick={async () => { await apis.jobs.resumbitJob(id).catch(error => toast.error(error.statusText) ); this.getJobs() }}>Resumbit</Dropdown.Item>
+                    <Dropdown.Item className='bg-info' onClick={async () => { await apis.jobs.resumeJob(id).catch(error => toast.error(error.statusText) ); this.getJobs() }}>Resume</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         )
     }
 
-    column = [
-        {
-            dataField: 'ID', 
-            text: 'ID', 
-            sort: true
-        }, {
-            dataField: 'Progress',
-            text: 'Progress', 
-            sort: true
-        }, {
-            dataField: 'State',
-            text: 'State', 
-            sort: true
-        }, {
-            dataField: 'Details', 
-            text: 'Details', 
-            formatter: ( (value, row, index) => {
-                return <button className='btn btn-info' type='button' onClick={() => this.setState({showDetail: true, currentRowIndex: index})}>Details</button>
-            })
-        }, {
-            dataField: 'Actions', 
-            text: 'Actions', 
-            formatter: ( (value, row, index) => {
-                return this.dropDown(row.ID)
-            })
-        }
-    ]
-
-    render() {
+    render = () => {
         return (
             <Fragment>
                 <h2 className="card-title">Jobs</h2>
-                <ModalDetails show={this.state.showDetail} onHide={() => this.setState({showDetail: false})} data={[this.state.rows[this.state.currentRowIndex]]} />
-                <BootstrapTable 
-                    keyField='ID' 
-                    striped={true} 
-                    data={this.state.rows} 
-                    columns={this.column} 
+                <ModalDetails show={this.state.showDetail} onHide={() => this.setState({ showDetail: false })} data={[this.state.rows[this.state.currentRowIndex]]} />
+                <BootstrapTable
+                    keyField='ID'
+                    striped={true}
+                    data={this.state.rows}
+                    columns={this.column}
                     pagination={paginationFactory()}
                     wrapperClasses='table-responsive'
                 />
@@ -110,5 +115,3 @@ class JobsRootPanel extends Component {
         );
     }
 }
-
-export default JobsRootPanel;

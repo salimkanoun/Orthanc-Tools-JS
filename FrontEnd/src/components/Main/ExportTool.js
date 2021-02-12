@@ -11,6 +11,7 @@ import DownloadDropdown from "../Export/DownloadDropdown"
 
 import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
+import { toast } from 'react-toastify'
 
 class ExportTool extends Component {
 
@@ -18,35 +19,31 @@ class ExportTool extends Component {
         aet: []
     }
 
-    constructor(props){
-        super(props)
-        this.handleClickEmpty = this.handleClickEmpty.bind(this)
-        this.onDeleteSeries = this.onDeleteSeries.bind(this)
-        this.onDeleteStudy = this.onDeleteStudy.bind(this)
+    componentDidMount = async () => {
+        try{
+            let aets = await apis.aets.getAets()
+            this.setState({
+                aets: aets
+            })
+        } catch (error){
+            toast.error(error.statusText)
+        }
+
     }
 
-    async componentDidMount() {
-        let aets = await apis.aets.getAets()
-        this.setState({
-            aets: aets
-        })
-    }
-    
-    
-
-    handleClickEmpty(){
+    handleClickEmpty = () => {
         this.props.emptyExportList()
     }
 
-    onDeleteSeries(serieID){
+    onDeleteSeries = (serieID) => {
         this.props.removeSeriesFromExportList(serieID)
     }
 
-    onDeleteStudy(studyID){
+    onDeleteStudy = (studyID) => {
         this.props.removeStudyFromExportList(studyID)
     }
 
-    getExportIDArray(){
+    getExportIDArray = () => {
         let ids = []
         this.props.seriesArray.forEach(serie => {
             ids.push(serie.ID)
@@ -54,11 +51,11 @@ class ExportTool extends Component {
         return ids
     }
 
-    render(){
+    render = () => {
         let idArray = this.getExportIDArray()
         return (
             <Overlay target={this.props.target} show={this.props.show} placement='left' onHide={this.props.onHide} rootClose >
-                <Popover id='popover-export' style={ { maxWidth: '100%' } } >
+                <Popover id='popover-export' style={{ maxWidth: '100%' }} >
                     <Popover.Title as='h3'>Export List</Popover.Title>
                     <Popover.Content>
                         <div className="row mb-3">
@@ -69,15 +66,15 @@ class ExportTool extends Component {
                                 <button type="button" className="btn btn-warning float-right" onClick={this.handleClickEmpty} >Empty List</button>
                             </div>
                         </div>
-                        <TableStudiesWithNestedSeries 
-                            data={seriesArrayToStudyArray(this.props.seriesArray, this.props.studyArray)} 
-                            hiddenRemoveRow={false} 
+                        <TableStudiesWithNestedSeries
+                            data={seriesArrayToStudyArray(this.props.seriesArray, this.props.studyArray)}
+                            hiddenRemoveRow={false}
                             hiddenAccessionNumber={true}
                             hiddenActionBouton={true}
                             hiddenName={false}
                             hiddenID={false}
-                            onDeleteStudy={this.onDeleteStudy} 
-                            onDeleteSeries={this.onDeleteSeries} 
+                            onDeleteStudy={this.onDeleteStudy}
+                            onDeleteSeries={this.onDeleteSeries}
                             pagination={true}
                             wrapperClasses="table-responsive" />
                         <div className="row text-center mt-5">
@@ -103,8 +100,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
-    emptyExportList, 
-    removeStudyFromExportList, 
+    emptyExportList,
+    removeStudyFromExportList,
     removeSeriesFromExportList
 }
 

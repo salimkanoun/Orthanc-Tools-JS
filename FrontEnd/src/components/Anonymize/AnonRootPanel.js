@@ -12,46 +12,41 @@ class AnonRootPanel extends Component {
         progress: false
     }
 
-    constructor (props) {
-        super(props)
-        this.setProgress = this.setProgress.bind(this)
-    }
-    
-    setProgress(progress){
+    setTask = (task) => {
         this.setState({
-            progress: progress
+            task: task
         })
     }
 
-    render() {
+    render = () => {
         return (
             <div>
                 {
-                    this.state.progress ?
-                    <div className='jumbotron' >
-                        <h2 className='card-title mb-3'>Anonymize in progress</h2>
-                        <AnonymizePanelProgress setProgress={this.setProgress} />
-                    </div> 
-                    :
-                    null
+                    this.state.task ?
+                        <div className='jumbotron' >
+                            <h2 className='card-title mb-3'>Anonymize in progress</h2>
+                            <AnonymizePanelProgress setTask={this.setTask} task={this.state.task} />
+                        </div>
+                        :
+                        null
                 }
-                
+
                 <div className='jumbotron' hidden={this.state.progress}>
                     <h2 className='card-title mb-3'>Anonymize</h2>
-                    <AnonymizePanel setProgress={this.setProgress}/>
+                    <AnonymizePanel setTask={this.setTask} />
                 </div>
                 <div className='jumbotron' hidden={this.props.anonymizedList && this.props.anonymizedList.length === 0}>
                     <AnonymizedResults />
                 </div>
             </div>
-            
+
         )
     }
 }
 
 const mapStateToProps = state => {
     return {
-        anonList: state.AnonList.anonList, 
+        anonList: state.AnonList.anonList,
         anonymizedList: state.AnonList.anonymizedList
     }
 }

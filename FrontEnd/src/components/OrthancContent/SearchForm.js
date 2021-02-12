@@ -1,16 +1,10 @@
-import React, { Component, createRef } from 'react'
+import React, { Component } from 'react'
 import Form from '../CommonComponents/SearchForm/Form'
 
+export default class SearchForm extends Component{
 
-class SearchForm extends Component{
-
-    constructor(props){
-        super(props)
-        this.dataSearch = this.dataSearch.bind(this)
-    }
-
-    dataSearch(formData){
-        
+    dataSearch = (formData) => {
+         
         //dateForm
         let date = ""
         if (formData.dateFrom !== "" || formData.dateTo !== "") //if dateFrom or dateTo isn't empty 
@@ -52,5 +46,3 @@ class SearchForm extends Component{
         )
     }
 }
-
-export default SearchForm

@@ -1,59 +1,59 @@
 import React, { Component } from "react"
 import Dropdown from "react-bootstrap/Dropdown"
 import DropdownButton from "react-bootstrap/DropdownButton"
+import { toast } from "react-toastify"
 
 import apis from '../../services/apis'
 import MonitorJob from '../../tools/MonitorJob'
 
-export default class DownloadDropdown extends Component{
+export default class DownloadDropdown extends Component {
 
     state = {
-        buttonText : "Download",
-        disabled : false
+        buttonText: "Download",
+        disabled: false
     }
 
-    constructor(props){
-        super(props)
-        this.handleClickDownload = this.handleClickDownload.bind(this)
-        this.handleRootClick = this.handleRootClick.bind(this)
-    }
-
-    updateProgress (progress){
+    updateProgress = (progress) => {
         this.setState({
-            buttonText : "Preparing Zip "+ progress + "%",
-            disabled : true
+            buttonText: "Preparing Zip " + progress + "%",
+            disabled: true
         })
     }
 
-    setStatusDownloading(){
+    setStatusDownloading = () => {
         this.setState({
-            buttonText : "Downloading",
-            disabled : true
+            buttonText: "Downloading",
+            disabled: true
         })
     }
 
-    resetProgress(){
+    resetProgress = () => {
         this.setState({
-            buttonText : "Download",
-            disabled : false
+            buttonText: "Download",
+            disabled: false
         })
     }
 
-    handleRootClick(e){
+    handleRootClick = (e) => {
         e.stopPropagation()
     }
 
-    async handleClickDownload(e){
-        let TS = apis.localStorage.getLocalStorage('TS')
+    handleClickDownload = async (e) => {
+        let TS = localStorage.getItem('TS')
         e.stopPropagation()
 
         let jobAnswer
 
-        if(e.currentTarget.id === 'hirarchical'){
-            jobAnswer = await apis.exportDicom.exportHirachicalDicoms(this.props.exportIds, TS)
-        }else{
-            jobAnswer = await apis.exportDicom.exportDicomDirDicoms(this.props.exportIds, TS)
+        try{
+            if (e.currentTarget.id === 'hirarchical') {
+                jobAnswer = await apis.exportDicom.exportHirachicalDicoms(this.props.exportIds, TS)
+            } else {
+                jobAnswer = await apis.exportDicom.exportDicomDirDicoms(this.props.exportIds, TS)
+            }
+        } catch (error){
+            toast.error(error.statusText)
         }
+
 
         let jobMonitoring = new MonitorJob(jobAnswer.ID)
         let self = this
@@ -61,12 +61,12 @@ export default class DownloadDropdown extends Component{
             self.updateProgress(progress)
         })
 
-        jobMonitoring.onFinish(async function (state){
-            if(state === MonitorJob.Success){
+        jobMonitoring.onFinish(async function (state) {
+            if (state === MonitorJob.Success) {
                 self.setStatusDownloading()
                 await apis.exportDicom.downloadZip(jobAnswer.ID)
                 self.resetProgress()
-            }else if (state === MonitorJob.Failure){
+            } else if (state === MonitorJob.Failure) {
                 console.log('failure')
                 self.resetProgress()
             }
@@ -77,21 +77,20 @@ export default class DownloadDropdown extends Component{
         this.job = jobMonitoring
     }
 
-    componentWillUnmount(){
-        if(this.job !== undefined) this.job.cancelJob()
+    componentWillUnmount = () => {
+        if (this.job !== undefined) this.job.cancelJob()
     }
 
-    render(){
+    render = () => {
 
         return (
-            <DropdownButton onClick={this.handleRootClick} variant="success" disabled={this.state.disabled} title = {this.state.buttonText}>
-                <Dropdown.Item id='hirarchical' onClick={ this.handleClickDownload }>
+            <DropdownButton onClick={this.handleRootClick} variant="success" disabled={this.state.disabled} title={this.state.buttonText}>
+                <Dropdown.Item id='hirarchical' onClick={this.handleClickDownload}>
                     Hirarchical
                 </Dropdown.Item>
-                <Dropdown.Item id='dicomdir' onClick={ this.handleClickDownload }>
+                <Dropdown.Item id='dicomdir' onClick={this.handleClickDownload}>
                     Dicomdir
                 </Dropdown.Item>
-                
             </DropdownButton>
         )
     }

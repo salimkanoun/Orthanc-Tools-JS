@@ -19,7 +19,8 @@ Current Features :
   - Search ressources in Orthanc
   - Import DICOM file into Orthanc using drag and drop
   - Batch Anonymizaion
-  - Batch Export (local ZIP, AET, Orthanc Peers)
+  - Batch Export Local (local ZIP, AET)
+  - Batch Export Remove (Orthanc Peers, FTP, SFTP, Webdav)
   - Batch Delete
   - Manual Query and Retrieve
   - Dicom Tag Edition
@@ -30,5 +31,4 @@ Current Features :
 Documentation : https://github.com/salimkanoun/Orthanc-Tools-JS/blob/master/Documentation/Orthanc-Tools-JS-Documentation.pdf
 
 Roadmap : 
-Export to external endpoint : FTP / SFTP / WebDav
 Monitoring  : Tag collection (in Elastic Search), Prefecthing, AutoRouting

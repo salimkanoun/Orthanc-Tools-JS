@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import Modal from 'react-bootstrap/Modal'
 
-class ModalDelete extends Component {
-    
-    render() {
+export default class ModalDelete extends Component {
+
+    render = () => {
         return (
             <Modal show={this.props.show} onHide={this.props.onHide}>
                 <Modal.Header closeButton>
@@ -18,5 +18,3 @@ class ModalDelete extends Component {
         );
     }
 }
-
-export default ModalDelete;

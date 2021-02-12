@@ -1,4 +1,3 @@
-
 const importDicom = {
 
     importDicom(dicomFile) {
@@ -16,6 +15,8 @@ const importDicom = {
             .then(async (answer) => {
                 if (!answer.ok) { throw await answer.json() }
                 return (answer.json())
+            }).catch( error => {
+                console.error(error)
             })
     }
 

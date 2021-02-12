@@ -1,122 +1,133 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import {TreeView, TreeItem} from '@material-ui/lab';
+import { TreeView, TreeItem } from '@material-ui/lab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import NumericInput from 'react-numeric-input';
 
 import apis from '../../services/apis'
+import { toast } from 'react-toastify';
 
-
-
-class Metadata extends Component {
+export default class Metadata extends Component {
 
     useStyles = makeStyles({
         root: {
-          height: 110,
-          flexGrow: 1,
-          maxWidth: 400,
+            height: 110,
+            flexGrow: 1,
+            maxWidth: 400,
         },
     });
 
 
     state = {
-        data: [], 
+        data: [],
         InstancesArray: [],
-        currentKey: 0, 
-        InstancesTags: true, 
+        currentKey: 0,
+        InstancesTags: true,
         text: 'disabled'
     }
 
-    async componentDidMount() {
-        let array = await apis.content.getSeriesInstances(this.props.serieID) 
-        let id = []
-        array.forEach(element => id.push(element.ID))
+    componentDidMount = async () => {
+        let instanceArray  = await this.getInstancesArray(this.props.serieID)
         this.setState({
-            InstancesArray: id 
+            InstancesArray: instanceArray
         })
-        this.data()
+        this.updateData()
     }
 
-    async getInstancesArray(serieID){
-        let array = await apis.content.getSeriesInstances(serieID)
-        let id = []
-        array.forEach(element => id.push(element.ID))
-        this.setState({
-            InstancesArray: id 
-        })
-    }
-    
+    getInstancesArray = async (serieID) => {
+        try{
+            let array = await apis.content.getSeriesInstances(serieID)
+            let idArray = array.map(element => (element.ID))
+            return idArray
+        } catch(error){
+            toast.error(error.statusText)
+            return []
+        }
 
-    async data(){
-        let data = await apis.content.getInstances(this.state.InstancesArray[this.state.currentKey])
-        let header = await apis.content.getHeader(this.state.InstancesArray[this.state.currentKey])
-        data = {...data, ...header}
+    }
+
+
+    updateData = async () => {
+        let data
+        try{
+            let instances = await apis.content.getInstances(this.state.InstancesArray[this.state.currentKey])
+            let header = await apis.content.getHeader(this.state.InstancesArray[this.state.currentKey])
+            data = { ...instances, ...header }
+
+        }catch(error){
+            toast.error(error.statusText)
+            return
+        }
         let prepare = this.prepareData(data)
-        this.setState({data: prepare, InstancesTags: true})
-        return prepare
+        this.setState({ data: prepare, InstancesTags: true })
     }
- 
-    prepareData(data){
+
+    prepareData = (data) => {
         let answer = []
-        for (let dicomTag of Object.keys(data).sort()){
+        for (let dicomTag of Object.keys(data).sort()) {
             console.log(dicomTag)
             let tagName = data[dicomTag]['Name']
             let value = data[dicomTag]['Value']
 
-            let answerData = { name: (dicomTag +' - ' + tagName) }
-            if(Array.isArray(value)){
+            let answerData = { name: (dicomTag + ' - ' + tagName) }
+            if (Array.isArray(value)) {
                 answerData['value'] = value.map(node => this.prepareData(node))
-            }else{
+            } else {
                 answerData['value'] = value
             }
-            
+
             answer.push(answerData)
         }
 
         return answer
     }
 
-    renderTree(array){
+    renderTree = (array) => {
         let rows = []
-            if (Array.isArray(array)){
-                array.forEach(nodes => {rows.push(
-                        <TreeItem key={nodes.name} nodeId={nodes.name} label={nodes.name}>
-                            {Array.isArray(nodes.value) ? nodes.value.map((node) => this.renderTree(node)) : nodes.value}
-                        </TreeItem>
-                    )
-                })
-                    
-            }
+        if (Array.isArray(array)) {
+            array.forEach(nodes => {
+                rows.push(
+                    <TreeItem key={nodes.name} nodeId={nodes.name} label={nodes.name}>
+                        {Array.isArray(nodes.value) ? nodes.value.map((node) => this.renderTree(node)) : nodes.value}
+                    </TreeItem>
+                )
+            })
+
+        }
         return rows
     }
 
-    async setSharedTags(){
-        if (this.state.text === 'disabled'){
-            let data = await apis.content.getSharedTags(this.props.serieID)
-            this.setState({data: this.prepareData(data), text: 'enabled'})
+    setSharedTags = async () => {
+        if (this.state.text === 'disabled') {
+            try{
+                this.setState({ data: [], text: 'Fetching...' })
+                let data = await apis.content.getSharedTags(this.props.serieID)
+                console.log(data)
+                this.setState({ data: this.prepareData(data), text: 'enabled' })
+            }catch (error) {
+                toast.error(error.statusText)
+            }
         } else {
-            this.data()
-            this.setState({text: 'disabled'})
+            this.updateData()
+            this.setState({ text: 'disabled' })
         }
     }
 
-    async handleChange(num){
-        await this.setState(prevState => ({
+    handleChange = (num) => {
+        this.setState(prevState => ({
             currentKey: num >= prevState.InstancesArray.length ? prevState.InstancesArray.length - 1 : num < 0 ? 0 : num
-        }))
-        this.data()
+        }), () => this.updateData())
     }
 
-
-    render() {
+    render = () => {
         return (
             <div className='jumbotron'>
                 <div className='row mb-4'>
-                    <div className='col-auto'>
-                        <button type='button' className='btn btn-primary' onClick={()=>this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared Tags: {this.state.text}</button>
+                    <div className='col'>
+                        <button type='button' className='btn btn-primary' onClick={() => this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared Tags: {this.state.text}</button>
                     </div>
-                    <div className='col-auto ml-3'>
+                    <div className='col ml-3'>
                         <div className='row'>
                             <label htmlFor='numberInstances' className='text-center'>Number of instances : {this.state.InstancesArray.length}</label>
                         </div>
@@ -125,16 +136,14 @@ class Metadata extends Component {
                         </div>
                     </div>
                 </div>
-                <TreeView 
+                <TreeView
                     className={this.useStyles.root}
                     defaultExpanded={['root']}
                     defaultCollapseIcon={<ExpandMoreIcon />}
                     defaultExpandIcon={<ChevronRightIcon />}>
-                        {this.renderTree(this.state.data)}
+                    {this.renderTree(this.state.data)}
                 </TreeView>
             </div>
         );
     }
 }
-
-export default Metadata;
