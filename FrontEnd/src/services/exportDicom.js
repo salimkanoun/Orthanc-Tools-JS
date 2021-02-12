@@ -1,9 +1,12 @@
-import { toastifyError } from './toastify'
 import streamSaver from 'streamsaver'
+import { WritableStream } from "web-streams-polyfill/ponyfill";
+streamSaver.mitm = window.location.origin + '/streamSaver/mitm.html'
+streamSaver.WritableStream = WritableStream
 
 const exportDicom = {
 
   exportHirachicalDicoms(OrthancIDsArray, TS) {
+
     let body = {}
     if (TS !== 'none') {
       body = {
@@ -27,13 +30,12 @@ const exportDicom = {
       body: JSON.stringify(body)
     }
 
-    return fetch('/api/tools/create-archive/', exportHirachicalDicomsOption ).then((answer) => {
+    return fetch('/api/tools/create-archive/', exportHirachicalDicomsOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return answer.json()
+    }).catch((error) => {
+      throw error
     })
-      .catch((error) => {
-        toastifyError(error)
-      })
   },
 
   exportDicomDirDicoms(OrthancIDsArray, TS) {
@@ -60,22 +62,31 @@ const exportDicom = {
       body: JSON.stringify(body)
     }
 
-    return fetch('/api/tools/create-media-extended/', exportDicomDirDicomsOption ).then((answer) => {
+    return fetch('/api/tools/create-media-extended/', exportDicomDirDicomsOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).catch((error) => {
-      toastifyError(error)
+      throw error
     })
   },
 
-  async downloadZip(jobID) {
+  downloadZip(jobID) {
 
-    const url = '/api/jobs/' + jobID + '/archive'
-    const fileStream = streamSaver.createWriteStream(jobID + ".zip")
+    const fileStream = streamSaver.createWriteStream('Dicom_' + jobID + '.zip')
 
-    fetch(url).then(res => {
-      const readableStream = res.body
+    return fetch('/api/jobs/' + jobID + '/archive', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/zip'
+      }
 
+    }).then((answer) => {
+
+      if (!answer.ok) throw answer
+
+      const readableStream = answer.body
+
+      // more optimized
       if (window.WritableStream && readableStream.pipeTo) {
         return readableStream.pipeTo(fileStream)
           .then(() => console.log('done writing'))
@@ -83,15 +94,39 @@ const exportDicom = {
 
       let writer = fileStream.getWriter()
 
-      const reader = res.body.getReader()
+      const reader = answer.body.getReader()
       const pump = () => reader.read()
         .then(res => res.done
           ? writer.close()
           : writer.write(res.value).then(pump))
 
       pump()
+
+    }).catch((error) => {
+      throw error
     })
 
+  },
+
+  exportStudiesToExternal(username, orthancIDsArray, endpoint) {
+    const storeFtpOption = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        Resources: orthancIDsArray,
+        endpoint: endpoint
+      })
+    }
+
+    return fetch('/api/tasks/' + username + '/export/', storeFtpOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+      return (answer.text())
+    }).catch(error => {
+        throw error
+    })
   }
 
 }

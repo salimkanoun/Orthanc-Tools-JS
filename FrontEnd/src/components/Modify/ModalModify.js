@@ -4,11 +4,7 @@ import BootstrapTable from 'react-bootstrap-table-next'
 import cellEditFactory from 'react-bootstrap-table2-editor'
 
 
-class ModalModify extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {  };
-    }
+export default class ModalModify extends Component {
 
     columns = [
         {
@@ -34,7 +30,7 @@ class ModalModify extends Component {
         selectionHeaderRenderer: () => {return 'Delete'}
     }
     
-    render() {
+    render = () => {
         return (
             <Modal show={this.props.show} onHide={this.props.onHide} onClick={(e) => e.stopPropagation()} size='xl'>
                 <Modal.Header closeButton>
@@ -81,8 +77,6 @@ class ModalModify extends Component {
                     <button type='button' className='btn btn-warning' onClick={this.props.modify}>Modify</button>
                 </Modal.Footer>
             </Modal>
-        );
+        )
     }
 }
-
-export default ModalModify;

@@ -4,21 +4,15 @@ import Users from './Users'
 import Roles from './Roles'
 import Ldap from './Ldap'
 
+export default class UserManagement extends Component {
 
-class UserManagement extends Component {
-    
     state = {
         currentComponent: 'Users'
     }
 
-    constructor(props) {
-        super(props)
-        this.switchTab = this.switchTab.bind(this)
-    }
-
-    getComponentToDisplay(){
+    getComponentToDisplay = () => {
         let component = null
-        switch(this.state.currentComponent){
+        switch (this.state.currentComponent) {
             case 'Users':
                 component = <Users />
                 break
@@ -27,42 +21,41 @@ class UserManagement extends Component {
                 break
             case 'Ldap':
                 component = <Ldap />
-                break    
-            default: 
+                break
+            default:
                 break
         }
 
         return component
     }
 
-    switchTab(tabName){
+    switchTab = (tabName) => {
         this.setState({
             currentComponent: tabName
         })
     }
 
-    render() {
+    render = () => {
         return (
             <div>
-                <div id='navBar' className='mb-5'>
+                <div className='mb-5'>
                     <ul className='nav nav-pills nav-fill'>
-                    <li className='nav-item'>
-                        <button className={this.state.currentComponent === 'Roles' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => this.switchTab('Roles')}>Roles</button>
-                    </li>    
-                    <li className='nav-item'>
-                        <button className={this.state.currentComponent === 'Users' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => this.switchTab('Users')}>Local Users</button>
-                    </li>
-                    <li className='nav-item'>
-                        <button className={this.state.currentComponent === 'Ldap' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => this.switchTab('Ldap')}>Distant Users</button>
-                    </li>
+                        <li className='nav-item'>
+                            <button className={this.state.currentComponent === 'Users' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => this.switchTab('Users')}>Local Users</button>
+                        </li>
+                        <li className='nav-item'>
+                            <button className={this.state.currentComponent === 'Roles' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => this.switchTab('Roles')}>Roles</button>
+                        </li>
+
+                        <li className='nav-item'>
+                            <button className={this.state.currentComponent === 'Ldap' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => this.switchTab('Ldap')}>Distant Users</button>
+                        </li>
                     </ul>
                 </div>
                 <div>
                     {this.getComponentToDisplay()}
                 </div>
             </div>
-        );
+        )
     }
 }
-
-export default UserManagement;

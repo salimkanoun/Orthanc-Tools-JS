@@ -2,43 +2,42 @@ import React, { Component } from 'react'
 import TableSeries from './TableSeries'
 import TableStudy from './TableStudy'
 
-class TableStudiesWithNestedSeries extends Component {
-    
+export default class TableStudiesWithNestedSeries extends Component {
+
     static defaultProps = {
-        onDeleteStudy : function(){},
-        onDeleteSeries : function(){}
+        onDeleteStudy: function () { },
+        onDeleteSeries: function () { }
     }
+
     expandRow = {
         showExpandColumn: true,
         renderer: (row) => {
             //Flatenning the study array for the nested study table
-            let series = row.series 
+            let series = row.series
             let answer = []
-            for(let serie in series) {
-                answer.push( {
-                    SeriesOrthancID  : serie,
+            for (let serie in series) {
+                answer.push({
+                    SeriesOrthancID: serie,
                     ...series[serie]
                 })
             }
             return (
-                <TableSeries {...this.props} data={answer} parentStudyId={row.StudyOrthancID} onDelete={ this.props.onDeleteSeries } />
+                <TableSeries {...this.props} data={answer} parentStudyId={row.StudyOrthancID} onDelete={this.props.onDeleteSeries} />
             )
-        }, 
+        },
         parentClassName: (isExpanded, row, rowIndex) => {
-            if(isExpanded){
+            if (isExpanded) {
                 return 'bg-info'
-            }else{
+            } else {
                 return ''
             }
         }
-                
+
     }
-    
-    render(){
-        return(
+
+    render = () => {
+        return (
             <TableStudy studies={this.props.studies} expandRow={this.expandRow} onDelete={this.props.onDeleteStudy} {...this.props} />
         )
     }
 }
-
-export default TableStudiesWithNestedSeries

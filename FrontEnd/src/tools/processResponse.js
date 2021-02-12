@@ -11,6 +11,7 @@ export function treeToPatientArray(patientStudiesTree){
   }
 
 export function studyArrayToNestedData(studiesArray){
+    //if(studiesArray === undefined) return []
     let responseMap = []
     //Create Patient Key for each patient
     studiesArray.forEach(study => {

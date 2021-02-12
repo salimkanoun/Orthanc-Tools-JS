@@ -1,95 +1,72 @@
 const db = require('../database/models')
-const jwt = require("jsonwebtoken")
-
+const {OTJSConflictException, OTJSBadRequestException} = require('./../Exceptions/OTJSErrors')
+ 
 class Roles {
 
-    static async createRoles (payload) {
-        const roles = await db.Role.findOne({ 
-          where: { name: payload.name }})
-        if(roles) {
-            throw new Error('This roles already exist');
-        }
+  static async createRoles(payload) {
 
-        const promise = db.Role.create({
-            name: payload.name,
-            import: payload.import,
-            content: payload.content,
-            anon: payload.anon,
-            export_local: payload.exportLocal,
-            export_extern: payload.exportExtern,
-            query: payload.query,
-            auto_query: payload.autoQuery,
-            delete: payload.delete,
-            modify: payload.modify,
-            cd_burner : payload.cd_burner, 
-            admin: payload.admin
-          }).catch(e => console.log(e))
-    
-        return promise
-      }
+    const roles = await db.Role.findOne({
+      where: { name: payload.name }
+    })
 
-    static async getAllRoles () {
-      try {
-        return await db.Role.findAll(
-            {attributes: ['name']}
-        )
-      } catch (error) {
-        console.log(error)
-      }
+    if (roles) {
+      throw new OTJSConflictException('This roles already exist');
     }
 
-    static async getPermission (name) {
-        return await db.Role.findAll({ where: { name: name }}).catch((error) => console.log(error)) //return a JSON
-    }
+    return db.Role.create({
+      name: payload.name,
+      import: payload.import,
+      content: payload.content,
+      anon: payload.anon,
+      export_local: payload.exportLocal,
+      export_extern: payload.exportExtern,
+      query: payload.query,
+      auto_query: payload.autoQuery,
+      delete: payload.delete,
+      modify: payload.modify,
+      cd_burner: payload.cd_burner,
+      admin: payload.admin
+    }).catch( (e) => {throw e})
+  }
 
-    static async deleteRole(name){
-      if(name === 'admin') throw 'Can\'t delete role admin'
+  static async getAllRoles() {
+    return db.Role.findAll(
+      { attributes: ['name'] }
+    )
+  }
 
-      try {
-        await db.Role.destroy({
-        where: {
-            name: name
-        }
-      })
-      } catch (error) {
-        console.log(error)
+  static getPermission(name) {
+    return db.Role.findAll({ where: { name: name } }).catch((error) => { throw error })
+  }
+
+  static deleteRole(name) {
+    if (name === 'admin') throw new OTJSBadRequestException('Can\'t delete Admin Role')
+    return db.Role.destroy({
+      where: {
+        name: name
       }
-    }
+    }).catch((error) => { throw error })
+  }
 
-    static async modifyRoles(name, payload){
-      if(name === 'admin') throw 'Can\'t modify role admin'
+  static modifyRoles(name, payload) {
+    if (name === 'admin') throw new OTJSBadRequestException('Can\'t modify Admin Role')
 
-      console.log(payload.import)
-      try {
-        await db.Role.upsert({
-          name: name,
-          content: payload.content,
-          anon: payload.anon,
-          export_local: payload.exportLocal,
-          export_extern: payload.exportExtern,
-          query: payload.query,
-          auto_query: payload.autoQuery,
-          delete: payload.delete,
-          admin: payload.admin,
-          modify: payload.modify,
-          import: payload.import,
-          cd_burner : payload.cd_burner
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
+    return db.Role.upsert({
+      name: name,
+      content: payload.content,
+      anon: payload.anon,
+      export_local: payload.exportLocal,
+      export_extern: payload.exportExtern,
+      query: payload.query,
+      auto_query: payload.autoQuery,
+      delete: payload.delete,
+      admin: payload.admin,
+      modify: payload.modify,
+      import: payload.import,
+      cd_burner: payload.cd_burner
+    })
 
-    static async getRoleFromToken(token){
-      
-      try { 
-        return jwt.verify(token, process.env.TOKEN_SECRET) 
-      } 
-      catch(err) {
-        console.log(err)
-        throw res.sendStatus(403)//if incorrect token
-      }
-    }
+  }
 
 }
 

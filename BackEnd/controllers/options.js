@@ -1,11 +1,8 @@
 const Options = require('../model/Options')
-const {robot} = require('../model/robot/Robot')
 
 var changeSchedule = async function (req, res) {
-  await Options.setScheduleTime(req.body.hour, req.body.min)
-  // Refresh Retrieve Robot to the new time
-  robot.updateRetrieveJobsSchelude()
-  res.json(true)
+  await Options.setScheduleTime(req.body.hour_start, req.body.min_start, req.body.hour_stop, req.body.min_stop)
+  res.sendStatus(200)
 }
 
 var getOptions = async function (req, res) {
@@ -24,9 +21,9 @@ var updateRobotOptions = async function(req, res){
     body.burner_support_type,
     body.burner_delete_study_after_sent,
     body.burner_transfer_syntax,
-    body.date_format
+    body.burner_date_format
   )
-  res.json(true)
+  res.sendStatus(200)
 }
 
 
@@ -38,7 +35,7 @@ var getOrthancServer = function (req, res) {
 var setOrthancServer = function (req, res) {
   const data = req.body
   Options.setOrthancConnexionSettings(data.OrthancAddress, data.OrthancPort, data.OrthancUsername, data.OrthancPassword)
-  res.end()
+  res.sendStatus(200)
 }
 
 var getMode = async function(req, res) {

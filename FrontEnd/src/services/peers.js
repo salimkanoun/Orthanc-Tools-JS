@@ -1,91 +1,93 @@
-import { toastifySuccess, toastifyError } from './toastify'
-
 const peers = {
 
-    getPeers(){
-        return fetch('/api/peers' )
+    getPeers() {
+        return fetch('/api/peers')
             .then((answer) => {
                 if (!answer.ok) { throw answer }
                 return (answer.json())
             })
             .catch((error) => {
-                toastifyError(error)
-                return []
+                throw error
             })
     },
 
-    getPeersExpand(){
-        return fetch('/api/peers?expand' )
+    getPeersExpand() {
+        return fetch('/api/peers?expand')
             .then((answer) => {
                 if (!answer.ok) { throw answer }
                 return (answer.json())
             })
             .catch((error) => {
-                toastifyError(error)
+                throw error
             })
     },
 
-    updatePeer(name, parameters){
+    updatePeer(name, hostname, port, username, password) {
 
-        const updatePeerOption = {
-            method: 'PUT', 
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json' 
-            }, 
-            body: JSON.stringify(parameters)
+        let putData = {
+            PeerName: name,
+            Url: hostname + ":" + port,
+            Username: username,
+            Password: password
         }
 
-        return fetch('/api/peers/'+ name, updatePeerOption ).then((answer) => {
+        const updatePeerOption = {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(putData)
+        }
+
+        return fetch('/api/peers/' + name, updatePeerOption).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {
-            toastifyError(error)
+            throw error
         })
     },
 
-    deletePeer(name){
+    deletePeer(name) {
 
         const deletePeerOption = {
             method: 'DELETE'
         }
 
-        return fetch('/api/peers/' + name, deletePeerOption ).then((answer) => {
-            if (!answer.ok) {throw answer}
+        return fetch('/api/peers/' + name, deletePeerOption).then((answer) => {
+            if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch((error) => {
-            toastifyError(error)
+            throw error
         })
     },
 
-    echoPeer(peerName){
-        fetch ('/api/peers/' + peerName + '/system' ).then(response => {
+    echoPeer(peerName) {
+        return fetch('/api/peers/' + peerName + '/system').then(response => {
             if (response.ok) return response.json()
             else throw response
-        }).then((response) => {
-            toastifySuccess('Version ' + peerName + ' = ' + response.Version)
-        }).catch(error => toastifyError('Echo ' + peerName + ' Error'))
-    }, 
+        })
+    },
 
-    storePeer(name, orthancIDsArray){
+    storePeer(name, orthancIDsArray) {
 
         const storePeerOption = {
-            method: 'POST', 
+            method: 'POST',
             headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                Synchronous : false,
-                Resources : orthancIDsArray
+                Synchronous: false,
+                Resources: orthancIDsArray
             })
         }
 
-        return fetch ('/api/peers/' + name + '/store', storePeerOption ).then((answer) => {
-            if (!answer.ok) {throw answer}
+        return fetch('/api/peers/' + name + '/store', storePeerOption).then((answer) => {
+            if (!answer.ok) { throw answer }
             return (answer.json())
         }).catch(error => {
-            toastifyError(error)
+            throw error
         })
     }
 }

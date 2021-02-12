@@ -1,7 +1,7 @@
 import importDicom from './importDicom'
 import aets from './aets'
 import options from './options'
-import queryRobot from './queryRobot'
+import retrieveRobot from './retrieveRobot'
 import query from './query'
 import jobs from './jobs'
 import retrieve from './retrieve'
@@ -10,19 +10,21 @@ import authentication from './authentication'
 import peers from './peers'
 import content from './content'
 import anon from './anon'
-import localStorage from './localStorage'
 import User from './User'
 import deleteRobot from './deleteRobot'
 import role from './role'
-import token from './token'
 import ldap from './ldap'
 import cdBurner from './cdBurner'
+import task from './task'
+import certificates from './certificates'
+import sshKeys from './sshKeys'
+import endpoints from './endpoints'
 
-export default {
+const apis = {
   importDicom,
   aets,
   options,
-  queryRobot,
+  retrieveRobot,
   query,
   jobs,
   retrieve,
@@ -31,11 +33,15 @@ export default {
   peers, 
   content, 
   anon, 
-  localStorage, 
   User, 
   deleteRobot, 
-  role, 
-  token,
+  role,
   ldap,
-  cdBurner
+  cdBurner,
+  task,
+  certificates,
+  sshKeys,
+  endpoints
 }
+
+export default apis

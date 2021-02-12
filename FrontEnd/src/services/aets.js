@@ -1,67 +1,70 @@
-import { toastifySuccess, toastifyError } from './toastify'
-
-
 const aets = {
 
-  getAets () {
+  getAets() {
     return fetch('/api/modalities')
       .then((answer) => {
         if (!answer.ok) { throw answer }
         return (answer.json())
       })
       .catch((error) => {
-        toastifyError(error)
-        return []
+        throw error
       })
   },
 
-  getAetsExpand () {
+  getAetsExpand() {
     return fetch('/api/modalities?expand')
       .then((answer) => {
         if (!answer.ok) { throw answer }
         return (answer.json())
       })
       .catch((error) => {
-        toastifyError(error)
+        throw error
       })
   },
 
-  updateAet (name, parameters) {
+  updateAet(name, aetName, host, port, manufacturer) {
 
-    const updateAetOption =  {
+    let postData = {
+      AET: aetName,
+      Host: host,
+      Port: port,
+      Manufacturer: manufacturer
+    }
+
+    const updateAetOption = {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(parameters)
-    } 
+      body: JSON.stringify(postData)
+    }
 
     return fetch('/api/modalities/' + name, updateAetOption).then((answer) => {
       if (!answer.ok) { throw answer }
-      return (answer.json())
+      return true
+    }).catch((error) => {
+      throw error
     })
-      .catch((error) => {
-        toastifyError(error)
-      })
+
   },
 
-  deleteAet (name) {
+  deleteAet(name) {
 
     const deleteAetOption = {
       method: 'DELETE'
     }
 
-    return fetch('/api/modalities/' + name, deleteAetOption ).then((answer) => {
+    return fetch('/api/modalities/' + name, deleteAetOption).then((answer) => {
       if (!answer.ok) { throw answer }
-      return (answer.json())
+      return true
+    }).catch((error) => {
+      throw error
     })
-      .catch((error) => {
-        toastifyError(error)
-      })
+
   },
 
-  echoAet (aetName) {
+  echoAet(aetName) {
 
     const echoAetOption = {
       method: 'POST',
@@ -72,33 +75,32 @@ const aets = {
       body: JSON.stringify({})
     }
 
-    fetch('/api/modalities/' + aetName + '/echo', echoAetOption ).then(response => {
-      if (response.ok) response.json()
+    return fetch('/api/modalities/' + aetName + '/echo', echoAetOption).then(response => {
+      if (response.ok) return true
       else throw response
-    }).then((answer) => {
-      toastifySuccess('Echo ' + aetName + ' Sucess')
-    }).catch(error => toastifyError('Echo ' + aetName + ' Error'))
-  }, 
+    }).catch(error => { throw error });
 
-  storeAET( name, orthancIDsArray){
+  },
+
+  storeAET(name, orthancIDsArray) {
 
     const storeAETOption = {
-      method: 'POST', 
+      method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        Synchronous : false,
-        Resources : orthancIDsArray
-        })
-      }
+        Synchronous: false,
+        Resources: orthancIDsArray
+      })
+    }
 
-    return fetch ('/api/modalities/' + name + '/store', storeAETOption ).then((answer) => {
-          if (!answer.ok) {throw answer}
-          return (answer.json())
-      }).catch(error => {
-          toastifyError(error)
+    return fetch('/api/modalities/' + name + '/store', storeAETOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+      return (answer.json())
+    }).catch(error => {
+      throw error
     })
   }
 }

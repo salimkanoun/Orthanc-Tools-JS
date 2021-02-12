@@ -1,21 +1,10 @@
-import React, { Component, createRef } from 'react'
+import React, { Component } from 'react'
 import Form from '../CommonComponents/SearchForm/Form'
 
+export default class SearchForm extends Component{
 
-class SearchForm extends Component{
-
-    constructor(props){
-        super(props)
-        this.dataSearch = this.dataSearch.bind(this)
-        this.child = createRef()
-    }
-
-    dataSearch(){
-        ///get Form state 
-        let formData = this.child.current.getState()
-
-        //prepare query for API /tools/find
-
+    dataSearch = (formData) => {
+         
         //dateForm
         let date = ""
         if (formData.dateFrom !== "" || formData.dateTo !== "") //if dateFrom or dateTo isn't empty 
@@ -51,9 +40,9 @@ class SearchForm extends Component{
     //form
     render(){
         return (
-            <Form ref={this.child} title="Search" buttons={<input type='button' className='btn btn-primary' onClick={this.dataSearch} value='Search' />} />
+            <Form title="Search" onFormValidate={this.dataSearch} >
+                    <input type='button' className='btn btn-primary' value='Search' />
+            </Form>
         )
     }
 }
-
-export default SearchForm

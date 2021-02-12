@@ -2,24 +2,22 @@ import React, { Component } from 'react'
 import apis from '../../../services/apis'
 import TableStudy from './TableStudy'
 
-class TableStudyFillFromParent extends Component {
+export default class TableStudyFillFromParent extends Component {
 
     state = {
-        studies : []
+        studies: []
     }
 
-    async componentDidMount(){
+    componentDidMount = async () => {
         let studiesDetails = await apis.content.getStudiesDetails(this.props.studiesID)
         this.setState({
-            studies : studiesDetails
+            studies: studiesDetails
         })
     }
 
-    render(){
-        return(
+    render = () => {
+        return (
             <TableStudy data={this.state.studies} {...this.props} />
         )
     }
 }
-
-export default TableStudyFillFromParent

@@ -1,7 +1,7 @@
 const fs = require('fs')
-const QueryStudyAnswer = require('./queries-answer/QueryStudyAnswer')
-const QuerySerieAnswer = require('./queries-answer/QuerySeriesAnswer')
-const TagAnon = require('./TagAnon')
+const QueryStudyAnswer = require('./OrthancData/queries-answer/QueryStudyAnswer')
+const QuerySerieAnswer = require('./OrthancData/queries-answer/QuerySeriesAnswer')
+const TagAnon = require('./OrthancData/TagAnon')
 const ReverseProxy = require('./ReverseProxy')
 
 /**
@@ -125,7 +125,8 @@ class Orthanc {
         AccessionNumber: accessionNb,
         StudyInstanceUID: studyInstanceUID,
         NumberOfStudyRelatedInstances: '',
-        NumberOfStudyRelatedSeries: ''
+        NumberOfStudyRelatedSeries: '',
+        RequestedProcedureDescription: ''
       }
     }
   }
@@ -150,7 +151,6 @@ class Orthanc {
      * @param {String} aet
      */
   async makeDicomQuery (aet) {
-    console.log(this.preparedQuery)
     const answer = await ReverseProxy.getAnswer('/modalities/' + aet + '/query', 'POST', this.preparedQuery)
 
     if (this.preparedQuery.Level === 'Study') {
@@ -222,7 +222,7 @@ class Orthanc {
 
   async getStudyAnswerDetails (answerId, aet) {
     const studyAnswers = await this._getAnswerDetails(answerId)
-
+    
     const answersObjects = []
 
     for (let i = 0; i < studyAnswers.length; i++) {
@@ -274,8 +274,15 @@ class Orthanc {
       if (element.hasOwnProperty('0008,0061')) {
         modalitiesInStudy = element['0008,0061'].Value
       }
+
+      let requestedProcedureDescription = 'N/A'
+      if (element.hasOwnProperty('0032,1060')) {
+        requestedProcedureDescription = element['0032,1060'].Value
+      }
+
+      
       const origineAET = aet
-      const queryAnswserObject = new QueryStudyAnswer(answerId, i, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate, numberOfStudyRelatedSeries, numberOfStudyRelatedInstances)
+      const queryAnswserObject = new QueryStudyAnswer(answerId, i, origineAET, patientName, patientID, accessionNb, modalitiesInStudy, studyDescription, studyUID, studyDate, numberOfStudyRelatedSeries, numberOfStudyRelatedInstances, requestedProcedureDescription)
       answersObjects.push(queryAnswserObject)
     }
 
@@ -311,8 +318,6 @@ class Orthanc {
       }
     }
 
-    console.log(queryParameter)
-
     const answer = await ReverseProxy.getAnswer('/tools/find', 'POST', queryParameter)
 
     return answer
@@ -323,8 +328,6 @@ class Orthanc {
      * @param {string} studyUID
      */
   async findInOrthancByUid (studyUID) {
-
-    console.log(studyUID)
     const answer = await this.findInOrthanc('Study', '', '', '', '', '', '', studyUID)
     return answer
   }
@@ -479,6 +482,23 @@ class Orthanc {
   async getSopClassUID(instanceID){
     let changes = await ReverseProxy.getAnswerPlainText('/instances/'+instanceID+"/metadata/SopClassUid", "GET", undefined)
     return changes
+  }
+
+   monitorJob(jobPath, updateCallback, updateInterval){
+    return new Promise((resolve, reject)=>{
+      let interval = setInterval(()=>{
+        ReverseProxy.getAnswer(jobPath, 'GET', null).then((response)=>{
+          updateCallback(response)
+          if(response.State==="Success"){
+            clearInterval(interval)
+            resolve(response)
+          }else if(response.State==="Failed"){
+            clearInterval(interval)
+            reject(response)
+          }
+        })
+      },updateInterval)
+    })
   }
 }
 

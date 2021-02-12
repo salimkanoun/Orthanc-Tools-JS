@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
 
 export default class AutoRetrieveSchedule extends Component {
@@ -9,28 +10,31 @@ export default class AutoRetrieveSchedule extends Component {
     min: '00'
   }
 
-  constructor (props) {
-    super(props)
-    this.handleClick = this.handleClick.bind(this)
-    this.handleChange = this.handleChange.bind(this)
-  }
-
   /**
    * Get defined schedule hour and min from backend
    */
-  async componentDidMount () {
-    const response = await apis.options.getOptions()
-    this.setState({
-      hour: response.hour,
-      min: response.min
-    })
+  componentDidMount = async () => {
+    try {
+      
+      const response = await apis.options.getOptions()
+      this.setState({
+        hour_start: response.hour_start,
+        min_start: response.min_start,
+        hour_stop: response.hour_stop,
+        min_stop: response.min_stop
+      })
+
+    } catch (error) {
+      toast.error(error.statusText)
+    }
+
   }
 
   /**
    * Store written value in state
    * @param {*} event 
    */
-  handleChange (event) {
+  handleChange = (event) => {
     const target = event.target
     const name = target.name
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -43,27 +47,37 @@ export default class AutoRetrieveSchedule extends Component {
   /**
    * Submission of new values of schedule
    */
-  handleClick () {
-    apis.options.setRobotScheduleHour(this.state.hour, this.state.min )
+  handleClick = () => {
+    apis.options.setRobotScheduleHour(this.state.hour_start, this.state.min_start, this.state.hour_stop, this.state.min_stop)
+      .then(() => { toast.success('schedule updated') })
+      .catch(error => { toast.error(error.statusText) })
   }
 
-  render () {
+  render = () => {
     return (
-        <div>
-          <h2 className="card-title">Retrieve Schedule Time : </h2>
-          <div className="form-row">
-            <div className="col">
-              <label htmlFor='hour'>Hour : </label>
-              <input type='number' name='hour' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hour} />
-            </div>
-            <div className="col">
-              <label htmlFor='min'>Minutes : </label>
-              <input type='number' name='min' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.min} />
-            </div>
+      <div>
+        <h2 className="card-title">Retrieve Schedule Time : </h2>
+        <div className="form-row">
+          <div className="col">
+            <label htmlFor='hour_start'>Start Hour : </label>
+            <input type='number' name='hour_start' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hour_start} />
           </div>
-          <div className="text-right">
-            <input type='button' className='btn btn-primary' onClick={this.handleClick} value='send' />
+          <div className="col">
+            <label htmlFor='min_start'>Start Minutes : </label>
+            <input type='number_start' name='min_start' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.min_start} />
           </div>
+          <div className="col">
+            <label htmlFor='hour_stop'>Stop Hour : </label>
+            <input type='number' name='hour_stop' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hour_stop} />
+          </div>
+          <div className="col">
+            <label htmlFor='min_stop'>Stop Minutes : </label>
+            <input type='number' name='min_stop' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.min_stop} />
+          </div>
+        </div>
+        <div className="text-right">
+          <input type='button' className='btn btn-primary' onClick={this.handleClick} value='send' />
+        </div>
       </div>
 
     )

@@ -33,9 +33,9 @@ class CdBurner {
         const options = await Options.getCdBurnerOptions()
         
         //format of date (using contry convention)
-        if (options.date_format === "fr") {
+        if (options.burner_date_format === "fr") {
             this.format = "DD/MM/YYYY"
-        } else if (options.date_format === "uk") {
+        } else if (options.burner_date_format === "uk") {
             this.format = "MM/DD/YYYY"
         } else {
             this.format = "MM/DD/YYYY"
@@ -180,7 +180,7 @@ class CdBurner {
         try {
             formattedPatientDOB = this.formatDicomDate(patient.MainDicomTags.PatientBirthDate)
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
 
         let datInfos = []
@@ -193,7 +193,7 @@ class CdBurner {
             try {
                 formattedDateExamen = this.formatDicomDate(studies[i].MainDicomTags.StudyDate)
             } catch (err) {
-                console.log(err)
+                console.error(err)
             }
             let studyDescription = studies[i].MainDicomTags.StudyDescription;
             let accessionNumber = studies[i].MainDicomTags.AccessionNumber;

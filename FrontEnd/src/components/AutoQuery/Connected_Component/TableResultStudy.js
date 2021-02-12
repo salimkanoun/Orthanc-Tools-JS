@@ -17,25 +17,7 @@ const { ExportCSVButton } = CSVExport;
 
 class TableResultStudy extends Component {
 
-    constructor(props) {
-        super(props)
-        this.removeRow = this.removeRow.bind(this)
-        this.emptyTable = this.emptyTable.bind(this)
-        this.saveFilteredValues = this.saveFilteredValues.bind(this)
-    }
-
-
-    removeRow() {
-        let selectedKeyRow = this.node.selectionContext.selected
-        this.props.removeResult(selectedKeyRow)
-        this.node.selectionContext.selected = []
-    }
-
-    emptyTable() {
-        this.props.emptyResultsTable()
-    }
-
-    columns = [ {
+    columns = [{
         dataField: 'Level',
         hidden: true,
         csvExport: false
@@ -54,7 +36,7 @@ class TableResultStudy extends Component {
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
             return <CustomFilter options={this.getOption('PatientName')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyPatientName' />
         }
@@ -62,14 +44,14 @@ class TableResultStudy extends Component {
         dataField: 'PatientID',
         text: 'Patient ID',
         sort: true,
-        
+
         filter: customFilter({
             comparator: Comparator.EQ,
-            type: FILTER_TYPES.MULTISELECT, 
-            
-        }), 
+            type: FILTER_TYPES.MULTISELECT,
+
+        }),
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyPatientID'/>
+            return <CustomFilter options={this.getOption('PatientID')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyPatientID' />
         }
     }, {
         dataField: 'AccessionNumber',
@@ -78,9 +60,9 @@ class TableResultStudy extends Component {
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyAccessionNumber'/>
+            return <CustomFilter options={this.getOption('AccessionNumber')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyAccessionNumber' />
         }
     }, {
         dataField: 'StudyDate',
@@ -94,9 +76,21 @@ class TableResultStudy extends Component {
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
             return <CustomFilter options={this.getOption('StudyDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyDate' />
+        },
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+    }, {
+        dataField: 'RequestedProcedureDescription',
+        text: 'Requested Procedure Description',
+        sort: true,
+        filter: customFilter({
+            comparator: Comparator.EQ,
+            type: FILTER_TYPES.MULTISELECT
+        }),
+        filterRenderer: (onFilter) => {
+            return <CustomFilter options={this.getOption('RequestedProcedureDescription')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='RequestedProcedureDescription' />
         },
         style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
@@ -106,9 +100,9 @@ class TableResultStudy extends Component {
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('ModalitiesInStudy')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyModalities'/>
+            return <CustomFilter options={this.getOption('ModalitiesInStudy')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyModalities' />
         }
     }, {
         dataField: 'OriginAET',
@@ -117,9 +111,9 @@ class TableResultStudy extends Component {
         filter: customFilter({
             comparator: Comparator.EQ,
             type: FILTER_TYPES.MULTISELECT
-        }), 
+        }),
         filterRenderer: (onFilter) => {
-            return <CustomFilter options={this.getOption('OriginAET')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyAET'/>
+            return <CustomFilter options={this.getOption('OriginAET')} onFilter={onFilter} saveValues={this.saveFilteredValues} ID='studyAET' />
         }
     }, {
         dataField: 'StudyInstanceUID',
@@ -131,31 +125,35 @@ class TableResultStudy extends Component {
     }, {
         dataField: 'NumberOfSeriesRelatedInstances',
         text: 'Instances'
-    }]; 
-
-    
+    }];
 
     selectRowStudies = {
         mode: 'checkbox',
         clickToSelect: true
     }
+    
+    removeRow = () => {
+        let selectedKeyRow = this.node.selectionContext.selected
+        this.props.removeResult(selectedKeyRow)
+        this.node.selectionContext.selected = []
+    }
 
-    getOption(cell){
+    getOption = (cell) => {
         let options = []
         let rows = this.buildRowArray()
         rows.forEach(element => {
             let find = false
-            options.forEach(option => {if (option.value === element[cell]) find = true})
-            if (!find){
-                options.push({value: element[cell], label: element[cell]})
+            options.forEach(option => { if (option.value === element[cell]) find = true })
+            if (!find) {
+                options.push({ value: element[cell], label: element[cell] })
             }
         })
-        return options 
+        return options
     }
 
-    buildRowArray(){
+    buildRowArray = () => {
         let rows = []
-        for(const studyUID of Object.keys(this.props.results)){
+        for (const studyUID of Object.keys(this.props.results)) {
             rows.push({
                 ...this.props.results[studyUID]
             })
@@ -163,21 +161,21 @@ class TableResultStudy extends Component {
         return rows
     }
 
-    getFilteredRessources(){
+    getFilteredRessources = () => {
         return this.node.filterContext.data
     }
 
-    getSelectedUID(){
+    getSelectedUID = () => {
         return this.node.selectionContext.selected
     }
 
-    saveFilteredValues(){
+    saveFilteredValues = () => {
         let resultDisplay = this.node.filterContext.data
         let filteredStudiesUID = resultDisplay.map(row => row.StudyInstanceUID)
         this.props.addStudiesFiltered(filteredStudiesUID)
     }
 
-    render() {
+    render = () => {
         return (
             <ToolkitProvider
                 keyField="StudyInstanceUID"
@@ -190,7 +188,7 @@ class TableResultStudy extends Component {
                             <div>
                                 <ExportCSVButton {...props.csvProps} className="btn btn-primary m-2">Export CSV</ExportCSVButton>
                                 <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={this.removeRow} />
-                                <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={this.emptyTable} />
+                                <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={() => { this.props.emptyResultsTable() }} />
                                 <div className="mt-5">
                                     <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRowStudies} pagination={paginationFactory()} >
                                     </BootstrapTable>
@@ -207,14 +205,14 @@ class TableResultStudy extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        results: state.AutoRetrieveResultList.results, 
+        results: state.AutoRetrieveResultList.results,
         filters: state.AutoRetrieveResultList.filters
     }
 }
 
 const mapDispatchToProps = {
     emptyResultsTable,
-    removeResult, 
+    removeResult,
     addStudiesFiltered
 }
 

@@ -12,7 +12,7 @@ import moment from 'moment'
  * title : title of the form
  * buttons : buttons to validate and treat the form 
  */
-class Search extends Component{
+export default class Search extends Component{
 
     state = {
         firstName: '',
@@ -26,42 +26,6 @@ class Search extends Component{
         presetDate: 'none'
     }
 
-    constructor(props){
-        super(props)
-        this.handleChange=this.handleChange.bind(this)
-        this.updateModalities = this.updateModalities.bind(this)
-        this.changeListener = this.changeListener.bind(this)
-    }
-
-    getState(){
-        return this.state
-    }
-
-    /**
-     * Store modality string comming from SelectModalities component in the current state
-     * @param {String} modalityString 
-     */
-    updateModalities(modalityString){
-        this.setState({
-            modalities : modalityString
-        })
-    }
-
-    /**
-     * Fill input text of users in current state
-     * @param {*} event 
-     */
-    handleChange(event) {
-        const target = event.target
-        const name = target.name
-        const value = target.value
-        
-        this.setState({
-            [name]: value
-        })
-
-    }
-
     dates = [
         {value: 'none', label: 'None'},
         {value: 'today', label: 'Today'},
@@ -72,7 +36,38 @@ class Search extends Component{
         {value: 'lastYear', label: 'Last Year'}
     ]
 
-    changeListener(event){
+    getState = () => {
+        return this.state
+    }
+
+    /**
+     * Store modality string comming from SelectModalities component in the current state
+     * @param {String} modalityString 
+     */
+    updateModalities = (modalityString) => {
+        this.setState({
+            modalities : modalityString
+        })
+    }
+
+    /**
+     * Fill input text of users in current state
+     * @param {*} event 
+     */
+    handleChange = (event) => {
+        const target = event.target
+        const name = target.name
+        const value = target.value
+        
+        this.setState({
+            [name]: value
+        })
+
+    }
+
+
+
+    changeListener = (event) => {
         this.setState({presetDate: event.value})
         let dateFrom = ''
         let dateTo = moment().format('YYYY-MM-DD')
@@ -106,7 +101,7 @@ class Search extends Component{
     }
 
     //form
-    render(){
+    render = () => {
         return (
             <div>
                 <h2 className="card-title">{this.props.title}</h2>
@@ -153,11 +148,11 @@ class Search extends Component{
                     </div>
                 </div>
                 <div className='mt-3 mb-3 text-center'>
-                        {this.props.buttons}
+                    { React.cloneElement( this.props.children, { onClick: (event)=>{this.props.onFormValidate(this.state, event)} } ) }
                 </div>
+                
             </div>
         )
     }
 
 }
-export default Search
