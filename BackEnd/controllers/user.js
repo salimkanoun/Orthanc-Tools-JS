@@ -4,7 +4,7 @@ var Users = require('../model/Users')
 
     createUser = async function (req, res) {
         const body = req.body
-        if( !body.username, !body.password, !body.role){
+        if( !body.username || !body.password || !body.role){
             throw new OTJSBadRequestException('Username, Password and Role must be specified')
         }
         await Users.createUser(body.username, body.firstname, body.lastname, body.email, body.password, body.role, body.super_admin)
