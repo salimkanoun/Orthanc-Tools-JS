@@ -1,4 +1,5 @@
 const request = require('request-promise-native')
+const { OTJSForbiddenException } = require('../Exceptions/OTJSErrors')
 const Options = require('./Options')
 
 const ReverseProxy = {
@@ -102,7 +103,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        throw error
+        throw OTJSForbiddenException(error.message)
       })
   },
 
@@ -119,7 +120,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        throw error
+        throw OTJSForbiddenException(error.message)
       })
   },
 
