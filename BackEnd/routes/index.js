@@ -11,7 +11,9 @@ const { importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
         exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, 
         modifyMidelware,cdBurnerMidelware, isCurrentUserOrAdminMidelWare, userAuthMidelware, userAdminMidelware, ownTaskOrIsAdminMidelware } = require('../midelwares/authentication')
 
-const {  getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, deleteRetrieveItem, addExportTask } = require('../controllers/task')
+
+const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, deleteRetrieveItem, addExportTask } = require('../controllers/task')
+
 
 router.get('/modalities', userAuthMidelware, reverseProxyGet)
 router.post('/modalities/*/store', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
