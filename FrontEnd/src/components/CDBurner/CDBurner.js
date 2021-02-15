@@ -71,13 +71,13 @@ export default class CDBurner extends Component {
                 return (
                     <div className="text-center">
                         <input type="button" className='btn btn-danger' onClick={async () => {
-                                try{
-                                    await apis.cdBurner.cancelCdBurner(row.cdJobID)
-                                } catch( error ){
-                                    toast.error(error.statusText)
-                                }
-                            
-                            }} value="Cancel" disabled={disable} />
+                            try {
+                                await apis.cdBurner.cancelCdBurner(row.cdJobID)
+                            } catch (error) {
+                                toast.error(error.statusText)
+                            }
+
+                        }} value="Cancel" disabled={disable} />
                     </div>
                 )
             }
@@ -87,9 +87,9 @@ export default class CDBurner extends Component {
     refreshTableData = async () => {
 
         let cdBurnerData
-        try{
+        try {
             cdBurnerData = await apis.cdBurner.getCdBuner()
-        } catch (error){
+        } catch (error) {
             toast.error(error.statusText)
             return
         }
@@ -97,32 +97,35 @@ export default class CDBurner extends Component {
         let jobs = cdBurnerData.Jobs
 
         let newTablearray = []
+        if (jobs != null) {
 
-        //this.audioFailure.play()
-        Object.keys(jobs).forEach(jobKey => {
+            Object.keys(jobs).forEach(jobKey => {
 
-            //If sounds enabled search for Failure or completion to play sound
-            if (this.state.playSound) {
+                //If sounds enabled search for Failure or completion to play sound
+                if (this.state.playSound) {
 
-                let jobItem = this.state.burnerJobs.filter(job => {
-                    return (job.cdJobID === jobKey)
-                })
+                    let jobItem = this.state.burnerJobs.filter(job => {
+                        return (job.cdJobID === jobKey)
+                    })
 
-                if (jobItem.length === 1 && jobItem[0]['status'] !== jobs[jobKey]['status']) {
-                    if (jobs[jobKey]['status'] === CDBurner.JOB_STATUS_BURNING_DONE) {
-                        this.audioSuccess.play()
-                    } else if (jobs[jobKey]['status'] === CDBurner.JOB_STATUS_BURNING_ERROR) {
-                        this.audioFailure.play()
+                    if (jobItem.length === 1 && jobItem[0]['status'] !== jobs[jobKey]['status']) {
+                        if (jobs[jobKey]['status'] === CDBurner.JOB_STATUS_BURNING_DONE) {
+                            this.audioSuccess.play()
+                        } else if (jobs[jobKey]['status'] === CDBurner.JOB_STATUS_BURNING_ERROR) {
+                            this.audioFailure.play()
+                        }
                     }
                 }
-            }
 
-            newTablearray.push({
-                cdJobID: jobKey,
-                status: jobs[jobKey]['status'],
-                ...jobs[jobKey]['details']
+                newTablearray.push({
+                    cdJobID: jobKey,
+                    status: jobs[jobKey]['status'],
+                    ...jobs[jobKey]['details']
+                })
+
             })
-        })
+
+        }
 
         this.setState({
             firstRefresh: true,
@@ -138,7 +141,7 @@ export default class CDBurner extends Component {
         console.log(event)
         let startStatus = this.state.robotStarted
 
-        try{
+        try {
             let newStatus
             if (!startStatus) {
                 await apis.cdBurner.startCdBurnerService()
@@ -147,16 +150,16 @@ export default class CDBurner extends Component {
                 await apis.cdBurner.stopCdBurnerService()
                 newStatus = false
             }
-    
+
             this.setState({
                 robotStarted: newStatus
             })
 
-        }catch(error) {
-            let message = await error.text()
-            toast.error(message)
+        } catch (error) {
+            let message = await error.json()
+            toast.error(message.errorMessage)
         }
-       
+
 
 
     }

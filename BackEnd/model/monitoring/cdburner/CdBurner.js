@@ -9,6 +9,7 @@ const Options = require('../../Options')
 const orthanc_Monitoring = require('../Orthanc_Monitoring')
 const moment = require('moment')
 const recursive = require("recursive-readdir");
+const { OTJSForbiddenException } = require('../../../Exceptions/OTJSErrors');
 
 //SK RESTE A FAIRE
 //Frequence de monitoring dans DB + front end
@@ -65,7 +66,7 @@ class CdBurner {
      */
     async startCDMonitoring() {
         if (this.monitoringStarted) return
-        if (!this.monitoredFolder) throw 'Monitoring folder not defined'
+        if (!this.monitoredFolder) throw  new OTJSForbiddenException('Monitoring folder not defined')
 
         this.monitoringStarted = true
         await Options.setBurnerStarted(true)

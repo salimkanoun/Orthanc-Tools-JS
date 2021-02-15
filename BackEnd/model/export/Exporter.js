@@ -27,15 +27,21 @@ class Exporter{
                 password: process.env.REDIS_PASSWORD
             }
         })
+        
+        //this._sendQueue.on('error',(err)=>{console.log(err)})
 
-        //Adding a processor for ftp  export tasks  
-        this._sendQueue.process('send-over-ftp', Exporter._sendOverFtp)
+        this._sendQueue.isReady().then(()=>{
+            //Adding a processor for ftp  export tasks  
+            this._sendQueue.process('send-over-ftp', Exporter._sendOverFtp)
+    
+            //Adding a processor for sftp  export tasks  
+            this._sendQueue.process('send-over-sftp', Exporter._sendOverSftp)
+    
+            //Adding a processor for webdav  export tasks  
+            this._sendQueue.process('send-over-webdav', Exporter._sendOverWebdav)
+        }).catch((err)=>{})
 
-        //Adding a processor for sftp  export tasks  
-        this._sendQueue.process('send-over-sftp', Exporter._sendOverSftp)
 
-        //Adding a processor for webdav  export tasks  
-        this._sendQueue.process('send-over-webdav', Exporter._sendOverWebdav)
 
         Certificate.getAllCertificate().then((certificates)=>{
             let origCreateSecureContext = tls.createSecureContext
@@ -117,8 +123,9 @@ class Exporter{
                 rs.on('data', (chunk)=>{
                     sent += chunk.length
                     job.progress(sent/file.size*100).catch((err=>console.error(err)))
+                    
                 })
-                rs.on('end', resolve)
+                rs.on('end', ()=>{resolve()})
                 rs.on('error', reject)
                 try {
                     let ws = client.createWriteStream(path.join(endpoint.targetFolder,file.name))
@@ -130,7 +137,7 @@ class Exporter{
         } catch (error) {
             console.error(error)
         }
-
+        job.progress(100)
         done()
     }
 

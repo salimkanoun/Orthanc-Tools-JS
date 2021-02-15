@@ -33,7 +33,7 @@ export default class CertificateForm extends Component {
     handleClick = async () => {
         try{
             let response = await apis.certificates.createCertificate(this.state.label)
-            await apis.certificates.uploadCertificate(response.id, this.state.file)
+            await apis.certificates.uploadCertificate(response, this.state.file)
             this.props.refreshCertificatesData()
         }catch(error){
             toast.error(error.statusText)
