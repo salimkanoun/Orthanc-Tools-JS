@@ -101,7 +101,7 @@ class Endpoint{
             fields.identifiants = Endpoint._encryptIdentifiants(endpoint.username, endpoint.password)
         }
         try {
-            let entity = await db.Endpoint.create(fields)
+            await db.Endpoint.create(fields)
             return endpoint.id
         } catch (error) {
             console.error(error)

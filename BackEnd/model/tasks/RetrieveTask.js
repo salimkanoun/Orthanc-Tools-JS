@@ -87,13 +87,13 @@ class RetrieveTask {
         } else if (progress.validation === 100 && progress.retrieve < 100 && validationJobs.length !== 0) {
             state = 'retrieve';
         } else if (progress.validation === 100 && progress.retrieve === 100 && validationJobs.length !== 0) {
+            state = 'completed';
             for (const job of validationJobs) {
                 if(job.getState()==='failed') state = 'failed';
             }
             for (const job of retrieveJobs) {
                 if(job.getState()==='failed') state = 'failed';
             }
-            state = 'completed';
         } else state = 'failed';
 
         //Check for the validation of the task and gather the items
@@ -182,7 +182,7 @@ class RetrieveTask {
         let retrieveJobs = await orthancQueue.getRetrieveItem(taskId);
 
         //Checking if all the jobs are finished
-        let stateComplete = (await Promise.all(retrieveJobs.map(job=>job.getState()))).reduce((acc,x)=>acc=acc&&x==='completed',true);
+        let stateComplete = (await Promise.all(retrieveJobs.map(job=>job.getState()))).reduce((acc,x)=>acc&&x==='completed',true);
 
         if (retrieveJobs.length !== 0 && !stateComplete) throw new OTJSForbiddenException("Can't delete a robot already in progress");
         let validateJobs = await orthancQueue.getValidationJobs(taskId);

@@ -1,6 +1,5 @@
 const { OTJSForbiddenException } = require("../../Exceptions/OTJSErrors");
 const OrthancQueue = require("../OrthancQueue");
-const Task = require("../Task");
 const TaskType = require("../TaskType");
 
 let orthancQueue = new OrthancQueue;
