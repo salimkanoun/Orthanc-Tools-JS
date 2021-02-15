@@ -62,8 +62,7 @@ class Import extends Component {
                     await this.addUploadedFileToState(response)
 
                 } catch (error) {
-                    let errorJson = JSON.parse(error.error)
-                    this.addErrorToState(file.name, errorJson.Details)
+                    this.addErrorToState(file.name, error.error)
                 }
 
             })
@@ -103,7 +102,6 @@ class Import extends Component {
 
         if (isExistingSerie) {
             this.setState(state => {
-                console.log(state.seriesObjects[orthancAnswer.ParentSeries]['Instances'])
                 state.seriesObjects[orthancAnswer.ParentSeries]['Instances']++
                 return state
             })
