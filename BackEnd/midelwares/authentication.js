@@ -27,7 +27,6 @@ const isCurrentUserOrAdminMidelWare = function (req, res, next) {
 }
 
 const userAdminMidelware = async function (req, res, next) {
-
   if (req.roles.admin) {
     next()
   } else {
@@ -45,7 +44,6 @@ const importMidelware = async function (req, res, next) {
 }
 
 const contentMidelware = async function (req, res, next) {
-
   if (req.roles.content) {
     next()
   } else {
@@ -118,6 +116,14 @@ const modifyMidelware = async function (req, res, next) {
   }
 }
 
+const cdBurnerMidelware = async function (req, res, next) {
+  if (req.roles.cd_burner) {
+    next()
+  } else {
+    res.sendStatus(403);
+  }
+}
+
 const ownTaskOrIsAdminMidelware = async function (req,res,next){
   let task = await Task.getTask(req.params.id);
   if(task.creator !== req.roles.username && !req.roles.admin) throw new OTJSForbiddenException("Task not owned");
@@ -127,6 +133,6 @@ const ownTaskOrIsAdminMidelware = async function (req,res,next){
 
 module.exports = {
   userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
-  exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, isCurrentUserOrAdminMidelWare,
+  exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, cdBurnerMidelware, isCurrentUserOrAdminMidelWare,
   ownTaskOrIsAdminMidelware
 }    
