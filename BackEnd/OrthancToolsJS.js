@@ -48,7 +48,7 @@ var unless = function (path, middleware) {
   }
 }
 
-morgan.token('username', function (req, res) { 
+morgan.token('username', function (req, res) {
   return req.roles == null ? 'Not Authentified' : req.roles.username
 })
 
@@ -76,14 +76,18 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
+  if (req.app.get('env') === 'development') {
+    console.error(err)
+  }
+
   if (res.headersSent) {
     return next(err);
   }
 
-  if(err instanceof OTJSError){
-    res.status( err.getStatusCode() ).json( err.getJsonPayload() );
+  if (err instanceof OTJSError) {
+    res.status(err.getStatusCode()).json(err.getJsonPayload());
     return
-  }else{
+  } else {
     return next(err);
   }
 })
@@ -91,7 +95,7 @@ app.use(function (err, req, res, next) {
 const port = 4000
 
 app.listen(port, (error) => {
-  
+
   if (error) {
     console.error(error)
     return process.exit(1)

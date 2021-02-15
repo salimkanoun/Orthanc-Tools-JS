@@ -23,9 +23,12 @@ services:
             OrthancPassword: "salim"
             DOMAIN_PROTOCOL: "http"
             DOMAIN_ADDRESS: "212.47.232.65"
+            REDIS_HOST: "redis"
+            REDIS_PORT: "6379"
+            REDIS_PASSWORD: ""
     
     orthanc:
-        image: osimis/orthanc:20.12.6
+        image: osimis/orthanc:21.1.7
         container_name: orthanc
         restart: unless-stopped
         ports: ["8042:8042"]
@@ -51,7 +54,7 @@ services:
             ORTHANC__DICOM_WEB__SERIESMETADATA: "Full"
 
     orthanctoolsjspacs:
-        image: osimis/orthanc:20.12.6
+        image: osimis/orthanc:21.7.1
         ports: ["8043:8042"]
         container_name: orthanctoolsjspacs
         restart: unless-stopped

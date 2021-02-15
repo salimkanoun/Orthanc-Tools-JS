@@ -90,7 +90,7 @@ const ReverseProxy = {
   },
 
   streamToRes (api, method, data, res) {
-    request(this.makeOptions(method, api, data))
+    return request(this.makeOptions(method, api, data))
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(res)
@@ -102,12 +102,12 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        res.status(500).send(error.statusMessage)
+        throw error
       })
   },
 
   streamToResPlainText(api, method, data, res){
-    request(this.makeOptionsUpload(method, api, data, true))
+    return request(this.makeOptionsUpload(method, api, data, true))
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(res)
@@ -119,7 +119,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        res.status(500).send(error.statusMessage)
+        throw error
       })
   },
 
