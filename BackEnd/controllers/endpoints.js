@@ -12,7 +12,7 @@ const allEndpoints = async function(req, res){
     for (let index = 0; index < endpoints.length; index++) {
         const element = endpoints[index];
         let j = element.toJSON();
-        j.sshKey = (await element.getSshKey()).toJSON();
+        if(j.sshKey) j.sshKey = (await element.getSshKey()).toJSON();
         response.push(j);
     }
     res.json(response);

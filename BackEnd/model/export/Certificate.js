@@ -10,7 +10,7 @@ class Certificate{
 
     static createCertificate(label){
         return db.Certificate.create({
-            lablel : label
+            label : label
         }).catch((error) => {throw error})
     }
 
@@ -24,7 +24,7 @@ class Certificate{
     }
 
     static getFromId(id){
-        return db.Certificate.findOne({where:{id:id}}.catch((error) => {throw error}))
+        return db.Certificate.findOne({where:{id:id}}).catch((error) => {throw error})
     }
 
     static async getAllCertificate(){
@@ -53,6 +53,7 @@ class Certificate{
             autoClose:true
         });
         stream.write(chunk)
+        return path;
     }
 
 }
