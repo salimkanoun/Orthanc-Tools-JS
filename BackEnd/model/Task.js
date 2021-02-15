@@ -135,7 +135,6 @@ class Task {
      * @param {string} id uuid of the task to be deleted
      */
     static async deleteTask(id){
-        let task = null;
         //Checking for task type with the first character of the task id
         switch(id[0]){ 
             case 'r' : 
