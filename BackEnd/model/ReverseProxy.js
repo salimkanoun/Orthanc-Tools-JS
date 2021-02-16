@@ -103,7 +103,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        throw OTJSForbiddenException(error.message)
+        throw new OTJSForbiddenException(error.message)
       })
   },
 
@@ -120,7 +120,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        throw OTJSForbiddenException(error.message)
+        throw new OTJSForbiddenException(error.message)
       })
   },
 
