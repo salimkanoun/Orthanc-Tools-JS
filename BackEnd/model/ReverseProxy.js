@@ -92,7 +92,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        throw error
+        throw new OTJSInternalServerError(error);
       })
   },
 
@@ -109,7 +109,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        throw error
+        throw new OTJSInternalServerError(error);
       })
   },
 
@@ -135,7 +135,7 @@ const ReverseProxy = {
             .on('finish', function () { console.log('Writing Done') })
         }
       }).catch((error) => {
-        console.error(error)
+        throw new OTJSInternalServerError(error);
       })
   },
 
@@ -149,7 +149,7 @@ const ReverseProxy = {
             } )
         }
       }).catch((error) => {
-        console.error(error)
+        throw new OTJSInternalServerError(error);
       })
   },
 
