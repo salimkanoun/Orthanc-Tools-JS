@@ -22,7 +22,6 @@ dotenv.config();
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 var unless = function (path, middleware) {
@@ -41,7 +40,7 @@ var unless = function (path, middleware) {
 app.use('/sounds', express.static(path.join(__dirname, 'build', 'sounds')));
 app.use('/static', express.static(path.join(__dirname, 'build', 'static')));
 
-app.use('/viewer-ohif/assets/', express.static(path.join(__dirname, 'build', 'viewer-ohif', 'assets')));
+app.use('/viewer-ohif/', express.static(path.join(__dirname, 'build', 'viewer-ohif')));
 app.use('/viewer-ohif/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'viewer-ohif', 'index.html'))
 })
