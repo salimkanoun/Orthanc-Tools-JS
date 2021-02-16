@@ -18,23 +18,6 @@ const dotenv = require("dotenv");
 const OTJSError = require('./Exceptions/OTJSError')
 // get config vars
 dotenv.config();
-// access config var
-process.env.TOKEN_SECRET;
-
-// static routes
-app.use('/viewer-ohif/assets/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-ohif/*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'viewer', 'index.html'))
-})
-
-app.use('/viewer-stone/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-stone/css/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-stone/img/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-stone/js/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-stone/webfonts/', express.static(path.join(__dirname, 'build')));
-app.use('/streamSaver/', express.static(path.join(__dirname, 'build')));
-
-app.use('/*', express.static(path.join(__dirname, 'build')));
 
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
 app.use(bodyParser.json({ limit: '10mb' }));
@@ -52,6 +35,26 @@ var unless = function (path, middleware) {
   }
 }
 
+// static routes
+app.use('/viewer-ohif/assets/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-ohif/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'viewer-ohif', 'index.html'))
+})
+
+app.use('/viewer-stone/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-stone/css/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-stone/img/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-stone/js/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-stone/webfonts/', express.static(path.join(__dirname, 'build')));
+
+app.use('/streamSaver/', express.static(path.join(__dirname, 'build')));
+
+app.use('/api/authentication', authenticationRouter)
+app.use('/api/users', usersRouter)
+app.use('/api', adminRouter)
+app.use('/api', apisRouter)
+
+
 morgan.token('username', function (req, res) {
   return req.roles == null ? 'Not Authentified' : req.roles.username
 })
@@ -61,16 +64,6 @@ app.use(
     morgan(':remote-addr - [:date[clf]] ":method :url HTTPS/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username"')
   )
 )
-
-//For routes containing study UID redirect to OHIF index
-app.get('/viewer/*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'viewer', 'index.html'))
-})
-
-app.use('/api/authentication', authenticationRouter)
-app.use('/api/users', usersRouter)
-app.use('/api', adminRouter)
-app.use('/api', apisRouter)
 
 // If didn't found route catch 404 and forward to error handler
 //SK A améliorer ne tient pas compte des routes dans le subrouter
