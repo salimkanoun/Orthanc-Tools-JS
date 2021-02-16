@@ -194,7 +194,6 @@ class RobotView extends Component {
         try{
             response = await apis.task.getTaskOfUser(this.props.username, 'retrieve')
         } catch (error){
-            toast.error(error.statusText)
             return
         }
         
@@ -209,7 +208,6 @@ class RobotView extends Component {
     }
 
     refreshHandler = (response) => {
-        console.log(response)
         let rowsRetrieveList = []
 
         let newPercentageFailure = 0
@@ -237,14 +235,22 @@ class RobotView extends Component {
             totalPercentageProgress: newTotalPercentageProgress,
             percentageFailure: newPercentageFailure
         })
-
     }
 
     deleteQueryHandler = async (rowIndex, refreshHandler) => {
 
         try {
             await apis.retrieveRobot.deleteRobotItem(this.props.username, rowIndex)
-            await apis.task.getTaskOfUser(this.props.username, 'retrieve').then(this.refreshHandler)
+
+            if(this.state.rows.length <= 1){
+                this.setState({
+                    ...this.state,
+                    rows:[]
+                })
+                this.task.stopMonitoringJob();
+            }else{
+                await apis.task.getTaskOfUser(this.props.username, 'retrieve').then(this.refreshHandler)
+            }
         } catch (error) {
             toast.error(error)
         }
