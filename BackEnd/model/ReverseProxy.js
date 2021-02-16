@@ -26,15 +26,13 @@ const ReverseProxy = {
         headers: {
           'Forwarded' : 'by=localhost;for=localhost;host='+process.env.DOMAIN_ADDRESS+'/api;proto='+process.env.DOMAIN_PROTOCOL
         },
-        username: this.username,
-        password: this.password
+        auth: `${this.username}:${this.password}`
       }
     } else {
       options = {
         method: method,
         url: serverString,
-        username: this.username,
-        password: this.password,
+        auth: `${this.username}:${this.password}`,
         headers: {
           'Content-Type': 'application/json',
           'Content-Length': JSON.stringify(data).length
@@ -52,10 +50,7 @@ const ReverseProxy = {
     const options = {
       method: method,
       url: serverString,
-      auth: {
-        user: this.username,
-        password: this.password
-      },
+      auth: `${this.username}:${this.password}`,
       headers: {
         'Content-Type': plain ? 'application/dicom' : 'text/plain',
         'Content-Length': data.length
@@ -72,10 +67,7 @@ const ReverseProxy = {
     const options = {
       method: method,
       url: serverString,
-      auth: {
-        user: this.username,
-        password: this.password
-      },
+      auth: `${this.username}:${this.password}`,
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': data.length,
@@ -100,7 +92,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        throw new OTJSForbiddenException(error.message)
+        throw error
       })
   },
 
@@ -117,7 +109,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        throw new OTJSForbiddenException(error.message)
+        throw error
       })
   },
 
