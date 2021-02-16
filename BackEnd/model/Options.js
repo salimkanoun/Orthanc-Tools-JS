@@ -19,8 +19,7 @@ const Options = {
   optionEventEmiter: new OptionEventEmittter(),
 
   getOptions: async () => {
-    const option = await db.Option.findOne(({ where: { id: 1 } }))
-    return option
+    return await db.Option.findOne(({ where: { id: 1 } })).catch( (error) => {throw error})
   },
 
   setScheduleTime: async (hour_start, min_start, hour_stop, min_stop) => {
