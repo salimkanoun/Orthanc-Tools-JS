@@ -36,25 +36,25 @@ var unless = function (path, middleware) {
 }
 
 // static routes
-app.use('/', express.static(path.join(__dirname, 'build')));
 
-app.use('/viewer-ohif/assets/', express.static(path.join(__dirname, 'build')));
+
+app.use('/sounds', express.static(path.join(__dirname, 'build', 'sounds')));
+app.use('/static', express.static(path.join(__dirname, 'build', 'static')));
+
+app.use('/viewer-ohif/assets/', express.static(path.join(__dirname, 'build', 'viewer-ohif', 'assets')));
 app.use('/viewer-ohif/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'viewer-ohif', 'index.html'))
 })
 
-app.use('/viewer-stone/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-stone/css/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-stone/img/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-stone/js/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-stone/webfonts/', express.static(path.join(__dirname, 'build')));
-
-app.use('/streamSaver/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-stone/', express.static(path.join(__dirname, 'build', 'viewer-stone')));
+app.use('/streamSaver/', express.static(path.join(__dirname, 'build', 'streamSaver')));
 
 app.use('/api/authentication', authenticationRouter)
 app.use('/api/users', usersRouter)
 app.use('/api', adminRouter)
 app.use('/api', apisRouter)
+
+app.use('/*', express.static(path.join(__dirname, 'build')))
 
 morgan.token('username', function (req, res) {
   return req.roles == null ? 'Not Authentified' : req.roles.username
