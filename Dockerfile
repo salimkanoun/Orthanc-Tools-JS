@@ -25,11 +25,10 @@ RUN mkdir build
 COPY --from=react /app/build ./build/
 COPY --from=ohif /ohif/Viewers/platform/viewer/dist ./build/viewer-ohif/
 COPY --from=stone /stone/wasm-binaries/StoneWebViewer ./build/viewer-stone/
-#COPY --from=react /app/build/viewer-ohif/app-config.js ./build/viewer-ohif/
-#COPY --from=react /app/build/viewer-stone/configuration.json ./build/viewer-stone/
+COPY --from=react /app/build/viewer-ohif/app-config.js ./build/viewer-ohif/
+COPY --from=react /app/build/viewer-stone/configuration.json ./build/viewer-stone/
 
 COPY ./BackEnd .
-RUN ls build/viewer-stone
 RUN npm install --only=prod
 
 EXPOSE 4000
