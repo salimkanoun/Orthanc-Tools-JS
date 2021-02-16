@@ -1,4 +1,3 @@
-const request = require('request-promise-native')
 const { OTJSForbiddenException } = require('../Exceptions/OTJSErrors')
 const Options = require('./Options')
 const got = require('got')
