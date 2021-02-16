@@ -22,7 +22,6 @@ dotenv.config();
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 var unless = function (path, middleware) {
