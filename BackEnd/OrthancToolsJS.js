@@ -53,6 +53,7 @@ app.use('/api/users', usersRouter)
 app.use('/api', adminRouter)
 app.use('/api', apisRouter)
 
+app.use('/', express.static(path.join(__dirname, 'build')));
 
 morgan.token('username', function (req, res) {
   return req.roles == null ? 'Not Authentified' : req.roles.username
