@@ -1,4 +1,4 @@
-const { OTJSForbiddenException } = require('../Exceptions/OTJSErrors')
+const { OTJSInternalServerError } = require('../Exceptions/OTJSErrors')
 const Options = require('./Options')
 const got = require('got')
 
