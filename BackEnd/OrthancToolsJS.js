@@ -22,15 +22,19 @@ dotenv.config();
 process.env.TOKEN_SECRET;
 
 // static routes
-app.use('/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-ohif/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer-ohif/assets/', express.static(path.join(__dirname, 'build')));
+app.use('/viewer-ohif/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'viewer', 'index.html'))
+})
+
 app.use('/viewer-stone/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer-stone/css/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer-stone/img/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer-stone/js/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer-stone/webfonts/', express.static(path.join(__dirname, 'build')));
 app.use('/streamSaver/', express.static(path.join(__dirname, 'build')));
+
+app.use('/*', express.static(path.join(__dirname, 'build')));
 
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
 app.use(bodyParser.json({ limit: '10mb' }));
@@ -48,7 +52,7 @@ var unless = function (path, middleware) {
   }
 }
 
-morgan.token('username', function (req, res) { 
+morgan.token('username', function (req, res) {
   return req.roles == null ? 'Not Authentified' : req.roles.username
 })
 
@@ -76,25 +80,25 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  
-  console.error(err)
+  if (req.app.get('env') === 'development') {
+    console.error(err)
+  }
 
   if (res.headersSent) {
     return next(err);
   }
 
-  if(err instanceof OTJSError){
-    res.status( err.getStatusCode() ).json( err.getJsonPayload() );
+  if (err instanceof OTJSError) {
+    res.status(err.getStatusCode()).json(err.getJsonPayload());
     return
-  }else{
+  } else {
     return next(err);
   }
 })
-
 const port = 4000
 
 app.listen(port, (error) => {
-  
+
   if (error) {
     console.error(error)
     return process.exit(1)

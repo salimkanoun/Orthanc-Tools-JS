@@ -132,7 +132,7 @@ class Users {
 
     if (password !== null) {
       mod.password = await bcrypt.hash(password, 10).catch((error) => {
-        console.error(error)
+        throw error
       })
     }
 

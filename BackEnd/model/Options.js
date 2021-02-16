@@ -85,28 +85,15 @@ const Options = {
   },
 
   getMode: async () => {
-    let mode
-    try {
-      mode = await db.Option.findOne()
-
-    } catch (err) {
-      console.error(err)
-    }
-
+    let mode = await db.Option.findOne()
     return mode.ldap
   },
 
   changeMode: async (mode) => {
-
-    try {
-      await db.Option.upsert({
-        id: 1,
-        ldap: mode
-      })
-
-    } catch (err) {
-      console.error(err)
-    }
+    await db.Option.upsert({
+      id: 1,
+      ldap: mode
+    })
   }
 
 }

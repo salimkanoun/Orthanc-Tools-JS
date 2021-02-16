@@ -1,5 +1,5 @@
 const TaskType = require('./TaskType');
-const { OTJSBadRequestException } = require("../Exceptions/OTJSErrors");
+const { OTJSBadRequestException, OTJSNotFoundException } = require("../Exceptions/OTJSErrors");
 const AnonTask = require('./tasks/AnonTask');
 const ExportTask = require('./tasks/ExportTask');
 const DeleteTask = require('./tasks/DeleteTask');
@@ -97,10 +97,10 @@ class Task {
      */
     static async getTasks(){
         let tasks = [];
-        tasks.concat(await RetrieveTask.getTasks());
-        tasks.concat(await ExportTask.getTasks());
-        tasks.concat(await AnonTask.getTasks());
-        tasks.concat(await DeleteTask.getTasks());
+        tasks = tasks.concat(await RetrieveTask.getTasks());
+        tasks = tasks.concat(await ExportTask.getTasks());
+        tasks = tasks.concat(await AnonTask.getTasks());
+        tasks = tasks.concat(await DeleteTask.getTasks());
         
         return tasks;
     }
@@ -135,17 +135,16 @@ class Task {
      * @param {string} id uuid of the task to be deleted
      */
     static async deleteTask(id){
-        let task = null;
         //Checking for task type with the first character of the task id
         switch(id[0]){ 
             case 'r' : 
-                task = await RetrieveTask.delete(id);
+                await RetrieveTask.delete(id);
                 break;
             case 'a' : 
-                task = await AnonTask.delete(id);
+                await AnonTask.delete(id);
                 break;
             case 'd' : 
-                task = await DeleteTask.delete(id);
+                await DeleteTask.delete(id);
                 break;
             default:
                 throw new OTJSBadRequestException('Cant delete this task');

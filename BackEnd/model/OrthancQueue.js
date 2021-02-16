@@ -33,13 +33,30 @@ class OrthancQueue {
     this.anonQueue = new Queue('orthanc-anon', {redis:REDIS_OPTIONS})
     this.aetQueue = new Queue('orthanc-aet', {redis:REDIS_OPTIONS})
     this.validationQueue = new Queue('orthanc-validation', {redis:REDIS_OPTIONS})
+/*
+    this.exportQueue.on('error',(err)=>{console.error(err)})
+    this.deleteQueue.on('error',(err)=>{console.error(err)})
+    this.anonQueue.on('error',(err)=>{console.error(err)})
+    this.validationQueue.on('error',(err)=>{console.error(err)})
+    this.aetQueue.on('error',(err)=>{console.error(err)})*/
 
     //adding processor to queues
-    this.exportQueue.process('create-archive', OrthancQueue._getArchiveDicom)
-    this.deleteQueue.process('delete-item', OrthancQueue._deleteItem)
-    this.anonQueue.process('anonymize-item', OrthancQueue._anonymizeItem)
-    this.validationQueue.process('validate-item', OrthancQueue._validateItem)
-    this.aetQueue.process('retrieve-item', OrthancQueue._retrieveItem)
+    this.exportQueue.isReady().then(()=>{
+      this.exportQueue.process('create-archive', OrthancQueue._getArchiveDicom)
+    }).catch((err)=>{})
+    this.deleteQueue.isReady().then(()=>{
+      this.deleteQueue.process('delete-item', OrthancQueue._deleteItem).catch((err)=>{})
+    }).catch((err)=>{})
+    this.anonQueue.isReady().then(()=>{
+      this.anonQueue.process('anonymize-item', OrthancQueue._anonymizeItem).catch((err)=>{})
+    }).catch((err)=>{})
+    this.validationQueue.isReady().then(()=>{
+      this.validationQueue.process('validate-item', OrthancQueue._validateItem).catch((err)=>{})
+    }).catch((err)=>{})
+    this.aetQueue.isReady().then(()=>{
+      this.aetQueue.process('retrieve-item', OrthancQueue._retrieveItem).catch((err)=>{})
+    }).catch((err)=>{})
+
 
     this.exportQueue.on("completed",async(job, result)=>{
       let endpoint = await Endpoint.getFromId(job.data.endpoint);
@@ -57,6 +74,16 @@ class OrthancQueue {
     this.setupRetrieveSchedule()
   }
 
+  isReady(){
+    return Promise.all([
+      this.aetQueue.isReady(),
+      this.validationQueue.isReady(),
+      this.exportQueue.isReady(),
+      this.anonQueue.isReady(),
+      this.deleteQueue.isReady()
+    ])
+  }
+
   /**
    * Setup the scheduling for the queue
    */
@@ -70,9 +97,9 @@ class OrthancQueue {
     
     //Pausing or unpausing the aet queue 
     if(time.isTimeInbetween(now.getHours(),now.getMinutes(),optionsParameters.hour_start,optionsParameters.min_start,optionsParameters.min_stop,optionsParameters.hour_stop)){
-      this.aetQueue.resume()
+      this.aetQueue.resume().catch((err)=>{})
     }else{
-      this.aetQueue.pause()
+      this.aetQueue.pause().catch((err)=>{})
     }
 
     //Schedule for the queue to be paused and unpaused
@@ -285,7 +312,6 @@ class OrthancQueue {
 
     // Checking for duplicate
     let curratedItems = items.reduce((agregation, item)=>{
-      console.log(agregation);
       if (item.Level === OrthancQueryAnswer.LEVEL_STUDY) {
         for (const existingItem of agregation) {
           if (item.studyInstanceUID===existingItem.studyInstanceUID) return agregation;
@@ -351,7 +377,8 @@ class OrthancQueue {
    * @returns {[Job]} return bull jobs
    */
   async getAnonimizationJobs(taskId){
-    let jobs = await this.anonQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    let jobs = await this.anonQueue.getJobs(["completed","active","waiting","delayed","paused"]).catch((err)=>{console.log(err)});
+
     return jobs.filter(job=>job.data.taskId === taskId);
   }
 
@@ -401,7 +428,7 @@ class OrthancQueue {
    * @returns {[Job]} return bull jobs
    */
   async getUserAnonimizationJobs(user){
-    let jobs = await this.anonQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    let jobs = await this.anonQueue.getJobs(["completed","active","waiting","delayed","paused"]).catch((err)=>{console.log(err)});
     return jobs.filter(job=>job.data.creator === user);
   }
 

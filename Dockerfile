@@ -10,10 +10,7 @@ RUN apt-get update -qy && \
     git
 WORKDIR /ohif
 RUN git clone https://github.com/OHIF/Viewers.git
-WORKDIR /ohif/Viewers
-RUN yarn install
-RUN QUICK_BUILD=true PUBLIC_URL=/viewer-ohif/ yarn run build
-WORKDIR /ohif/Viewers/platform/viewer-ohif/dist
+RUN cd Viewers && yarn install && QUICK_BUILD=true PUBLIC_URL=/viewer-ohif/ yarn run build
 
 FROM alpine as stone
 RUN apk --no-cache add wget
@@ -25,15 +22,13 @@ RUN unzip wasm-binaries.zip -d /stone
 FROM node:14.15.4
 WORKDIR /OrthancToolsJs
 RUN mkdir build
-RUN ls
 COPY --from=react /app/build ./build/
-COPY --from=ohif /ohif/Viewers/platform/viewer/dist/* ./build/viewer-ohif
-COPY --from=stone /stone/wasm-binaries/StoneWebViewer/* ./build/viewer-stone
-COPY --from=react /app/build/viewer-ohif/app-config.js ./build/viewer-ohif
-COPY --from=react /app/build/viewer-stone/configuration.json ./build/viewer-stone
+COPY --from=ohif /ohif/Viewers/platform/viewer/dist ./build/viewer-ohif/
+COPY --from=stone /stone/wasm-binaries/StoneWebViewer ./build/viewer-stone/
+COPY --from=react /app/build/viewer-ohif/app-config.js ./build/viewer-ohif/
+COPY --from=react /app/build/viewer-stone/configuration.json ./build/viewer-stone/
 
 COPY ./BackEnd .
-RUN ls
 RUN npm install --only=prod
 
 EXPOSE 4000

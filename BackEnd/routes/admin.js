@@ -17,104 +17,98 @@ const { newCertificate, allCertificates, updateCertificate, removeCertificate, u
 const { newKey, allKeys, updateKey, removeKey, uploadKey } = require('../controllers/sshKey')
 const { getTasksOfType, validateRetrieve } = require('../controllers/task')
 
-//These routes needs authentication + admin authorization
-adminRouter.use([userAuthMidelware, userAdminMidelware])
-
 // OrthancToolsJS Options routes
-adminRouter.get('/options', getOptions)
-adminRouter.put('/options', changeSchedule)
+adminRouter.get('/options', [userAuthMidelware, userAdminMidelware],  getOptions)
+adminRouter.put('/options', [userAuthMidelware, userAdminMidelware], changeSchedule)
 
 //Monitoring
 //SK ROUTE A RENOMMER
-adminRouter.put('/monitoring/burning/options', updateRobotOptions)
+adminRouter.put('/monitoring/burning/options', [userAuthMidelware, userAdminMidelware],updateRobotOptions)
 
 // OrthancToolsJS Settings routes
-adminRouter.get('/options/orthanc-server', getOrthancServer)
-adminRouter.put('/options/orthanc-server', setOrthancServer)
+adminRouter.get('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], getOrthancServer)
+adminRouter.put('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], setOrthancServer)
 
 // Orthanc System API
-adminRouter.get('/system', reverseProxyGet)
+adminRouter.get('/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 
 // Orthanc Job API
-adminRouter.get('/jobs*', reverseProxyGet)
-adminRouter.post('/jobs/*', reverseProxyPost)
+adminRouter.get('/jobs*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+adminRouter.post('/jobs/*', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
 
 // Orthanc Aets Routes
-adminRouter.get('/modalities*', reverseProxyGet)
-adminRouter.delete('/modalities/*', reverseProxyDelete)
-adminRouter.post('/modalities/:dicom/echo', reverseProxyPost)
-adminRouter.put('/modalities/:dicom', reverseProxyPut)
+adminRouter.delete('/modalities/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
+adminRouter.post('/modalities/:dicom/echo', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
+adminRouter.put('/modalities/:dicom', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
 
 //Orthanc Peers Routes
-adminRouter.get('/peers*', reverseProxyGet)
-adminRouter.delete('/peers/*', reverseProxyDelete)
-adminRouter.get('/peers/:peer/system', reverseProxyGet)
-adminRouter.put('/peers/:peer/', reverseProxyPut)
+adminRouter.get('/peers*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+adminRouter.delete('/peers/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
+adminRouter.get('/peers/:peer/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+adminRouter.put('/peers/:peer/', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
 
 //Orthanc reset - shutdown route
-adminRouter.post('/tools/reset', reverseProxyPost)
-adminRouter.post('/tools/shutdown', reverseProxyPost)
+adminRouter.post('/tools/reset', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
+adminRouter.post('/tools/shutdown', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
 
 //Orthanc get and set Verbosity
-adminRouter.get('/tools/log-level', reverseProxyGet)
-adminRouter.put('/tools/log-level', reverseProxyPutPlainText)
+adminRouter.get('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
+adminRouter.put('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseProxyPutPlainText)
 
 //Orthanc Get plugins
-adminRouter.get('/plugins', reverseProxyGet)
+adminRouter.get('/plugins', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 
 //roles
-adminRouter.get('/roles', getRoles)
-adminRouter.get('/roles/:name', getPermission)
-adminRouter.put('/roles', modifyRole)
-adminRouter.post('/roles', createRole)
-adminRouter.delete('/roles', deleteRole)
+adminRouter.get('/roles', [userAuthMidelware, userAdminMidelware], getRoles)
+adminRouter.get('/roles/:name', [userAuthMidelware, userAdminMidelware], getPermission)
+adminRouter.put('/roles', [userAuthMidelware, userAdminMidelware], modifyRole)
+adminRouter.post('/roles', [userAuthMidelware, userAdminMidelware], createRole)
+adminRouter.delete('/roles', [userAuthMidelware, userAdminMidelware], deleteRole)
 
 //Mode
 //SK A EXPLICITER C EST AUTHENTICATION MODE
-adminRouter.get('/mode', getMode)
-adminRouter.put('/changeMode', changeMode)
+adminRouter.get('/mode', [userAuthMidelware, userAdminMidelware], getMode)
+adminRouter.put('/changeMode', [userAuthMidelware, userAdminMidelware], changeMode)
 
 //Ldap
-adminRouter.get('/ldap/settings', getLdapSettings)
-adminRouter.put('/ldap/settings', setLdapSettings)
-adminRouter.get('/ldap/test', testLdapSettings)
-adminRouter.post('/ldap/matches', setLdapCorrespodence)
-adminRouter.get('/ldap/matches', getLdapCorrespodences)
-adminRouter.delete('/ldap/matches', deleteCorrespodence)
-adminRouter.get('/ldap/groupname', getLdapGroupeNames)
+adminRouter.get('/ldap/settings', [userAuthMidelware, userAdminMidelware], getLdapSettings)
+adminRouter.put('/ldap/settings', [userAuthMidelware, userAdminMidelware], setLdapSettings)
+adminRouter.get('/ldap/test', [userAuthMidelware, userAdminMidelware], testLdapSettings)
+adminRouter.post('/ldap/matches', [userAuthMidelware, userAdminMidelware], setLdapCorrespodence)
+adminRouter.get('/ldap/matches', [userAuthMidelware, userAdminMidelware], getLdapCorrespodences)
+adminRouter.delete('/ldap/matches', [userAuthMidelware, userAdminMidelware], deleteCorrespodence)
+adminRouter.get('/ldap/groupname', [userAuthMidelware, userAdminMidelware], getLdapGroupeNames)
 
 /*
 ** TASKS
 */
 
-//OrthancToolsJS Robot routes
-//Retrieve Robot
-//SK A UNIFORMISER
-adminRouter.post('/tasks/:username/retrieve/validate', validateRetrieve)
-adminRouter.get('/tasks/type/:type', getTasksOfType)
+//OrthancToolsJS Task routes
+adminRouter.post('/tasks/:username/retrieve/validate', [userAuthMidelware, userAdminMidelware], validateRetrieve)
+adminRouter.get('/tasks/type/:type', [userAuthMidelware, userAdminMidelware], getTasksOfType)
 
 /*
 ** REMOTE EXPORT
 */
 
 // Export endpoints
-adminRouter.get('/endpoints/', allEndpoints)
-adminRouter.post('/endpoints/update', updateEndpoint)
-adminRouter.post('/endpoints/create', newEndpoint)
-adminRouter.delete('/endpoints/', removeEndpoint)
+adminRouter.get('/endpoints/', [userAuthMidelware, userAdminMidelware], allEndpoints)
+adminRouter.post('/endpoints/update', [userAuthMidelware, userAdminMidelware], updateEndpoint)
+adminRouter.post('/endpoints/create', [userAuthMidelware, userAdminMidelware], newEndpoint)
+adminRouter.delete('/endpoints/', [userAuthMidelware, userAdminMidelware], removeEndpoint)
 
 // Certificates
-adminRouter.get('/certificates', allCertificates)
-adminRouter.put('/certificates/:id', updateCertificate)
-adminRouter.post('/certificates', newCertificate)
-adminRouter.delete('/certificates/:id', removeCertificate)
-adminRouter.post('/certificates/upload/:id', uploadCertificate)
+adminRouter.get('/certificates', [userAuthMidelware, userAdminMidelware], allCertificates)
+adminRouter.put('/certificates/:id', [userAuthMidelware, userAdminMidelware], updateCertificate)
+adminRouter.post('/certificates', [userAuthMidelware, userAdminMidelware], newCertificate)
+adminRouter.delete('/certificates/:id', [userAuthMidelware, userAdminMidelware], removeCertificate)
+adminRouter.post('/certificates/upload/:id', [userAuthMidelware, userAdminMidelware], uploadCertificate)
 
 //Ssh keys
-adminRouter.get('/keys', allKeys)
-adminRouter.post('/keys/update', updateKey)
-adminRouter.post('/keys/create', newKey)
-adminRouter.delete('/keys/', removeKey)
-adminRouter.post('/keys/upload/:id', uploadKey)
+adminRouter.get('/keys', [userAuthMidelware, userAdminMidelware], allKeys)
+adminRouter.post('/keys/update', [userAuthMidelware, userAdminMidelware], updateKey)
+adminRouter.post('/keys/create', [userAuthMidelware, userAdminMidelware], newKey)
+adminRouter.delete('/keys/', [userAuthMidelware, userAdminMidelware], removeKey)
+adminRouter.post('/keys/upload/:id', [userAuthMidelware, userAdminMidelware], uploadKey)
 
 module.exports = adminRouter

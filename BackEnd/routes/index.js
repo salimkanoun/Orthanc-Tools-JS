@@ -9,85 +9,85 @@ const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../cont
 
 const { importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
         exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, 
-        modifyMidelware, isCurrentUserOrAdminMidelWare, userAuthMidelware, userAdminMidelware, ownTaskOrIsAdminMidelware } = require('../midelwares/authentication')
+        modifyMidelware,cdBurnerMidelware, isCurrentUserOrAdminMidelWare, userAuthMidelware, userAdminMidelware, ownTaskOrIsAdminMidelware } = require('../midelwares/authentication')
 
-const { getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, validateRetrieve, deleteRetrieveItem, addExportTask } = require('../controllers/task')
+const { checkForOrthancQueueReady, getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, deleteRetrieveItem, addExportTask } = require('../controllers/task')
 
-
-router.use(userAuthMidelware)
-
-router.get('/modalities', reverseProxyGet)
-router.post('/modalities/*/store', exportLocalMidelware, reverseProxyPost)
+router.get('/modalities', userAuthMidelware, reverseProxyGet)
+router.post('/modalities/*/store', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
 
 // Orthanc Query / Retrieve Routes
-router.post('/modalities/:modality/query', queryMidelware, reverseProxyPost)
-router.get('/queries/:orthancIdQuery/answers*', queryMidelware, reverseProxyGet)
-router.post('/retrieve', queryMidelware, postRetrieve)
+router.post('/modalities/:modality/query', [userAuthMidelware, queryMidelware], reverseProxyPost)
+router.get('/queries/:orthancIdQuery/answers*', [userAuthMidelware, queryMidelware], reverseProxyGet)
+router.post('/retrieve', [userAuthMidelware,queryMidelware], postRetrieve)
 
 // OrthancToolsJS API to get simplified results from Orthanc
-router.get('/queries/:orthancIdQuery/parsedAnswers', queryMidelware, getParsedAnswer)
+router.get('/queries/:orthancIdQuery/parsedAnswers', [userAuthMidelware,queryMidelware], getParsedAnswer)
 
 // Orthanc Dicom Import Route
-router.post('/instances', importMidelware, reverseProxyPostUploadDicom)
+router.post('/instances', [userAuthMidelware,importMidelware], reverseProxyPostUploadDicom)
 
 // Orthanc DicomWebRoutes
-router.get('/dicom-web/*', contentMidelware, reverseProxyGet)
-router.get('/wado/*', contentMidelware, reverseProxyGet)
+router.get('/dicom-web/*', [userAuthMidelware, contentMidelware], reverseProxyGet)
+router.get('/wado/*', [userAuthMidelware, contentMidelware], reverseProxyGet)
 
 //Orthanc export routes
-router.post('/tools/create-archive', exportLocalMidelware, reverseProxyPost)
-router.post('/tools/create-media-extended', exportLocalMidelware, reverseProxyPost)
+router.post('/tools/create-archive', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
+router.post('/tools/create-media-extended', [userAuthMidelware,exportLocalMidelware], reverseProxyPost)
 
 //Orthanc Peers Routes
-router.post('/peers/*/store', exportExternMidelware, reverseProxyPost)
+router.post('/peers/*/store', [userAuthMidelware,exportExternMidelware], reverseProxyPost)
 
 //Orthanc Modify
-router.post('/patients/*/modify', modifyMidelware, reverseProxyPost)
-router.post('/studies/*/modify', modifyMidelware, reverseProxyPost)
-router.post('/series/*/modify', modifyMidelware, reverseProxyPost)
+router.post('/patients/*/modify', [userAuthMidelware,modifyMidelware], reverseProxyPost)
+router.post('/studies/*/modify', [userAuthMidelware,modifyMidelware], reverseProxyPost)
+router.post('/series/*/modify', [userAuthMidelware,modifyMidelware], reverseProxyPost)
 
 //Orthanc content
-router.post('/tools/find', contentMidelware, reverseProxyPost)
-router.get('/patients/*', contentMidelware, reverseProxyGet)
-router.get('/studies/*', contentMidelware, reverseProxyGet)
-router.get('/series/*', contentMidelware, reverseProxyGet)
-router.get('/instances/*', contentMidelware, reverseProxyGet)
-router.delete('/patients/*', contentMidelware, reverseProxyDelete)
-router.delete('/studies/*', contentMidelware, reverseProxyDelete)
-router.delete('/series/*', contentMidelware, reverseProxyDelete)
+router.post('/tools/find', [userAuthMidelware,contentMidelware], reverseProxyPost)
+router.get('/patients/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
+router.get('/studies/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
+router.get('/series/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
+router.get('/instances/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
+router.delete('/patients/*', [userAuthMidelware,contentMidelware], reverseProxyDelete)
+router.delete('/studies/*', [userAuthMidelware,contentMidelware], reverseProxyDelete)
+router.delete('/series/*', [userAuthMidelware,contentMidelware], reverseProxyDelete)
 
 //Monitoring
-router.post('/monitoring/burner', startBurner)
-router.delete('/monitoring/burner', stopBurner)
-router.get('/monitoring/burner', getBurner)
-router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', cancelJobBurner)
+router.post('/monitoring/burner', [userAuthMidelware,cdBurnerMidelware], startBurner)
+router.delete('/monitoring/burner', [userAuthMidelware,cdBurnerMidelware], stopBurner)
+router.get('/monitoring/burner', [userAuthMidelware,cdBurnerMidelware], getBurner)
+router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', [userAuthMidelware,cdBurnerMidelware], cancelJobBurner)
 
 /*
 ** TASKS
 */
 
+router.use('/tasks', checkForOrthancQueueReady);
+
 //OrthancToolsJS Robot routes
 //Retrieve Robot
-router.post('/tasks/:username/retrieve', [isCurrentUserOrAdminMidelWare, autoQueryMidelware], addRetrieveTask)
+router.post('/tasks/:username/retrieve', [userAuthMidelware, autoQueryMidelware], addRetrieveTask)
 
 //AnonRobot
-router.post('/tasks/:username/anonymize', anonMidelware, addAnonTask)
+router.post('/tasks/:username/anonymize', [userAuthMidelware, anonMidelware], addAnonTask)
 
 //DeleteRobot
 //SK BUG MIDELWARE DELETE?
-router.post('/tasks/:username/delete', deleteMidelware, addDeleteTask)
+router.post('/tasks/:username/delete', [userAuthMidelware, deleteMidelware], addDeleteTask)
 
 //FTP & WebDav Exports
-router.post('/tasks/:user/export', exportExternMidelware, addExportTask)
+router.post('/tasks/:user/export', [userAuthMidelware, exportExternMidelware], addExportTask)
 
 //Tasks
 //SK : ICI MANQUE LES MIDDELWARE
-router.get('/tasks/:username/:type', getTaskWithUser)
-router.delete('/tasks/:username/:type', isCurrentUserOrAdminMidelWare, deleteTaskOfUser)
-router.delete('/tasks/:username/retrieve/:id', [isCurrentUserOrAdminMidelWare, autoQueryMidelware], deleteRetrieveItem)
-router.get('/tasks/:id', ownTaskOrIsAdminMidelware, getTask)
-router.delete('/tasks/:id', ownTaskOrIsAdminMidelware, deleteTask)
-router.get('/tasks', userAdminMidelware,  getTasksIds)
-router.get('/tasks?expend', userAdminMidelware, getTasks)
+router.get('/tasks/:username/:type', userAuthMidelware, getTaskWithUser)
+//SK ICI FAUT MUTIPLIER CETTE ROUTE POUR CHAQUE TYPE POUR ASSOCIER LE BON MIDDELWARE
+router.delete('/tasks/:username/:type', [userAuthMidelware, isCurrentUserOrAdminMidelWare], deleteTaskOfUser)
+router.delete('/tasks/:username/retrieve/:id', [userAuthMidelware, isCurrentUserOrAdminMidelWare, autoQueryMidelware], deleteRetrieveItem)
+router.get('/tasks/:id', [userAuthMidelware, ownTaskOrIsAdminMidelware], getTask)
+router.delete('/tasks/:id', [userAuthMidelware,ownTaskOrIsAdminMidelware], deleteTask)
+router.get('/tasks', [userAuthMidelware,userAdminMidelware],  getTasksIds)
+router.get('/tasks?expend', [userAuthMidelware,userAdminMidelware], getTasks)
 
 module.exports = router

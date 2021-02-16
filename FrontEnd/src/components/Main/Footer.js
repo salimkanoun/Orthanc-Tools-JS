@@ -8,7 +8,7 @@ export default class Footer extends Component {
   render = () => {
     return (
       <Fragment>
-        <div className="footer-copyright text-center mb-3">Orthanc Tools JS: 0.5.0
+        <div className="footer-copyright text-center mb-3">Orthanc Tools JS: 0.6.0-pre
 
               <button type="button" className='link-button ml-3' onClick={() => this.setState(prevState => ({ show: !prevState.show }))}>About</button>
         </div>

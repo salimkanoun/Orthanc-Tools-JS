@@ -29,13 +29,13 @@ class ContentRootPanel extends Component {
     this.child = createRef()
   }
 
-  sendSearch = async (dataFrom) => {
-    if (dataFrom) {
+  sendSearch = async (dataForm) => {
+    if (dataForm) {
       //Store new form find value and send request to back
       this.setState( {
-        dataFrom: dataFrom,
+        dataForm: dataForm,
         currentSelectedStudyId: ''
-      }, () => this.sendFindRequest(dataFrom) )
+      }, () => this.sendFindRequest(dataForm) )
     } else {
       //refresh value using the same current form search value
       this.sendFindRequest(this.state.dataForm)

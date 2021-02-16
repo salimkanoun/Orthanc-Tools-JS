@@ -32,7 +32,7 @@ const certificates = {
       body: JSON.stringify({label : label})
     }).then((answer) => {
       if (!answer.ok) { throw answer }
-      return (answer.json())
+      return (answer.text())
     }).catch((error) => {
       throw error
     })

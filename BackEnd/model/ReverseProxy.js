@@ -1,4 +1,5 @@
 const request = require('request-promise-native')
+const { OTJSForbiddenException } = require('../Exceptions/OTJSErrors')
 const Options = require('./Options')
 const got = require('got')
 
@@ -87,7 +88,7 @@ const ReverseProxy = {
   },
 
   streamToRes (api, method, data, res) {
-    got(this.makeOptions(method, api, data))
+    return got(this.makeOptions(method, api, data))
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(res)
@@ -99,12 +100,12 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        res.status(500).send(error.statusMessage)
+        throw new OTJSForbiddenException(error.message)
       })
   },
 
   streamToResPlainText(api, method, data, res){
-    got(this.makeOptionsUpload(method, api, data, true))
+    return got(this.makeOptionsUpload(method, api, data, true))
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(res)
@@ -116,12 +117,12 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        res.status(500).send(error.statusMessage)
+        throw new OTJSForbiddenException(error.message)
       })
   },
 
   streamToResUploadDicom (api, method, data, res) {
-    got(this.makeOptionsUpload(method, api, data))
+    return got(this.makeOptionsUpload(method, api, data))
       .on('response', function (response) {
         if(response.statusCode == 200)
           response.pipe(res)
@@ -135,7 +136,7 @@ const ReverseProxy = {
   },
 
   streamToFile (api, method, data, streamWriter) {
-    got(this.makeOptions(method, api, data))
+    return got(this.makeOptions(method, api, data))
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(streamWriter)
@@ -147,7 +148,7 @@ const ReverseProxy = {
   },
 
   streamToFileWithCallBack (api, method, data, streamWriter, finishCallBack) {
-    got(this.makeOptionsDownload(method, api, data))
+    return got(this.makeOptionsDownload(method, api, data))
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(streamWriter)

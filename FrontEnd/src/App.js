@@ -78,7 +78,6 @@ class App extends Component {
       roles: logInAnwser
     })
     this.props.saveUsername(logInAnwser.username)
-
   }
 
   logout = () => {
