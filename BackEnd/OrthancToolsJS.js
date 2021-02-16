@@ -22,6 +22,7 @@ dotenv.config();
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 var unless = function (path, middleware) {
@@ -35,6 +36,8 @@ var unless = function (path, middleware) {
 }
 
 // static routes
+app.use('/', express.static(path.join(__dirname, 'build')));
+
 app.use('/viewer-ohif/assets/', express.static(path.join(__dirname, 'build')));
 app.use('/viewer-ohif/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'viewer-ohif', 'index.html'))
@@ -52,8 +55,6 @@ app.use('/api/authentication', authenticationRouter)
 app.use('/api/users', usersRouter)
 app.use('/api', adminRouter)
 app.use('/api', apisRouter)
-
-app.use('/', express.static(path.join(__dirname, 'build')));
 
 morgan.token('username', function (req, res) {
   return req.roles == null ? 'Not Authentified' : req.roles.username
