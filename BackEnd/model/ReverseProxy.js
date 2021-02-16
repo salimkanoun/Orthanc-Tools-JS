@@ -1,6 +1,7 @@
 const request = require('request-promise-native')
 const { OTJSForbiddenException } = require('../Exceptions/OTJSErrors')
 const Options = require('./Options')
+const got = require('got')
 
 const ReverseProxy = {
 
@@ -25,19 +26,13 @@ const ReverseProxy = {
         headers: {
           'Forwarded' : 'by=localhost;for=localhost;host='+process.env.DOMAIN_ADDRESS+'/api;proto='+process.env.DOMAIN_PROTOCOL
         },
-        auth: {
-          user: this.username,
-          password: this.password
-        }
+        auth: `${this.username}:${this.password}`
       }
     } else {
       options = {
         method: method,
         url: serverString,
-        auth: {
-          user: this.username,
-          password: this.password
-        },
+        auth: `${this.username}:${this.password}`,
         headers: {
           'Content-Type': 'application/json',
           'Content-Length': JSON.stringify(data).length
@@ -55,10 +50,7 @@ const ReverseProxy = {
     const options = {
       method: method,
       url: serverString,
-      auth: {
-        user: this.username,
-        password: this.password
-      },
+      auth: `${this.username}:${this.password}`,
       headers: {
         'Content-Type': plain ? 'application/dicom' : 'text/plain',
         'Content-Length': data.length
@@ -75,10 +67,7 @@ const ReverseProxy = {
     const options = {
       method: method,
       url: serverString,
-      auth: {
-        user: this.username,
-        password: this.password
-      },
+      auth: `${this.username}:${this.password}`,
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': data.length,
@@ -91,7 +80,7 @@ const ReverseProxy = {
   },
 
   streamToRes (api, method, data, res) {
-    return request(this.makeOptions(method, api, data))
+    return got(this.makeOptions(method, api, data))
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(res)
@@ -103,12 +92,12 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        throw OTJSForbiddenException(error.message)
+        throw new OTJSInternalServerError(error);
       })
   },
 
   streamToResPlainText(api, method, data, res){
-    return request(this.makeOptionsUpload(method, api, data, true))
+    return got(this.makeOptionsUpload(method, api, data, true))
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(res)
@@ -120,12 +109,12 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        throw OTJSForbiddenException(error.message)
+        throw new OTJSInternalServerError(error);
       })
   },
 
   streamToResUploadDicom (api, method, data, res) {
-    request(this.makeOptionsUpload(method, api, data))
+    return got(this.makeOptionsUpload(method, api, data))
       .on('response', function (response) {
         if(response.statusCode == 200)
           response.pipe(res)
@@ -139,19 +128,19 @@ const ReverseProxy = {
   },
 
   streamToFile (api, method, data, streamWriter) {
-    request(this.makeOptions(method, api, data))
+    return got(this.makeOptions(method, api, data))
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(streamWriter)
             .on('finish', function () { console.log('Writing Done') })
         }
       }).catch((error) => {
-        console.error(error)
+        throw new OTJSInternalServerError(error);
       })
   },
 
   streamToFileWithCallBack (api, method, data, streamWriter, finishCallBack) {
-    request(this.makeOptionsDownload(method, api, data))
+    return got(this.makeOptionsDownload(method, api, data))
       .on('response', function (response) {
         if (response.statusCode === 200) {
           response.pipe(streamWriter)
@@ -160,12 +149,12 @@ const ReverseProxy = {
             } )
         }
       }).catch((error) => {
-        console.error(error)
+        throw new OTJSInternalServerError(error);
       })
   },
 
   async getAnswer (api, method, data) {
-    const requestPromise = request(this.makeOptions(method, api, data)).then(function (body) {
+    const requestPromise = got(this.makeOptions(method, api, data)).then(function (body) {
       return JSON.parse(body)
     }).catch((error) => { return false })
 
@@ -173,7 +162,7 @@ const ReverseProxy = {
   },
 
   async getAnswerPlainText (api, method, data) {
-    const requestPromise = request(this.makeOptions(method, api, data)).then(function (body) {
+    const requestPromise = got(this.makeOptions(method, api, data)).then(function (body) {
       return body
     }).catch((error) => { return false })
 

@@ -80,7 +80,7 @@ const retrieveRobot = {
 
         return fetch("/api/tasks/" + username + "/retrieve/" + item, deleteRobotItemOption).then((answer) => {
             if (!answer.ok) { throw answer }
-            return (answer.json())
+            return;
         }).catch((error) => {
             throw error
         })
