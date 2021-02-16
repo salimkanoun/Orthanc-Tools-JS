@@ -23,7 +23,7 @@ process.env.TOKEN_SECRET;
 
 // static routes
 app.use('/viewer-ohif/assets/', express.static(path.join(__dirname, 'build')));
-app.get('/viewer-ohif/*', function (req, res) {
+app.use('/viewer-ohif/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'viewer', 'index.html'))
 })
 
