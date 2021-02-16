@@ -10,9 +10,7 @@ RUN apt-get update -qy && \
     git
 WORKDIR /ohif
 RUN git clone https://github.com/OHIF/Viewers.git
-RUN cd Viewers
-RUN yarn install
-RUN QUICK_BUILD=true PUBLIC_URL=/viewer-ohif/ yarn run build
+RUN cd Viewers && yarn install && QUICK_BUILD=true PUBLIC_URL=/viewer-ohif/ yarn run build
 
 FROM alpine as stone
 RUN apk --no-cache add wget
