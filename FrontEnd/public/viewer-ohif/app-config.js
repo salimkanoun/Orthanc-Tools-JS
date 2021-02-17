@@ -1,6 +1,5 @@
 window.config = {
-  // default: '/'
-  routerBasename: '/',
+  routerBasename: '/viewer-ohif',
   extensions: [],
   showStudyList: true,
   filterQueryParam: false,
