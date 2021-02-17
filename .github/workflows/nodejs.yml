@@ -40,7 +40,7 @@ jobs:
     - name : copy OHIF
       run : |
         mv ./ohif/Viewers/platform/viewer/dist/ ../BackEnd/build/viewer-ohif/
-        mv ../BackEnd/build/viewer-ohif/app-config.js  ../BackEnd/build/viewer-ohif/
+        mv -f ../BackEnd/build/viewer-ohif/app-config.js  ../BackEnd/build/viewer-ohif/app-config.js
       working-directory: FrontEnd
     - name: copy Stone Of Orthanc
       run: |
