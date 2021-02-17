@@ -34,9 +34,18 @@ var unless = function (path, middleware) {
   }
 }
 
+
+morgan.token('username', function (req, res) {
+  return req.roles == null ? 'Not Authentified' : req.roles.username
+})
+
+app.use(
+  unless('/',
+    morgan(':remote-addr - [:date[clf]] ":method :url HTTPS/:http-version" :status ":user-agent" ":username"')
+  )
+)
+
 // static routes
-
-
 app.use('/sounds', express.static(path.join(__dirname, 'build', 'sounds')));
 app.use('/static', express.static(path.join(__dirname, 'build', 'static')));
 
@@ -55,15 +64,6 @@ app.use('/api', apisRouter)
 
 app.use('/*', express.static(path.join(__dirname, 'build')))
 
-morgan.token('username', function (req, res) {
-  return req.roles == null ? 'Not Authentified' : req.roles.username
-})
-
-app.use(
-  unless('/',
-    morgan(':remote-addr - [:date[clf]] ":method :url HTTPS/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username"')
-  )
-)
 
 // If didn't found route catch 404 and forward to error handler
 //SK A améliorer ne tient pas compte des routes dans le subrouter
