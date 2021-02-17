@@ -22,7 +22,6 @@ dotenv.config();
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
 var unless = function (path, middleware) {
@@ -35,26 +34,6 @@ var unless = function (path, middleware) {
   }
 }
 
-// static routes
-app.use('/', express.static(path.join(__dirname, 'build')));
-
-app.use('/viewer-ohif/assets/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-ohif/*', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'viewer-ohif', 'index.html'))
-})
-
-app.use('/viewer-stone/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-stone/css/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-stone/img/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-stone/js/', express.static(path.join(__dirname, 'build')));
-app.use('/viewer-stone/webfonts/', express.static(path.join(__dirname, 'build')));
-
-app.use('/streamSaver/', express.static(path.join(__dirname, 'build')));
-
-app.use('/api/authentication', authenticationRouter)
-app.use('/api/users', usersRouter)
-app.use('/api', adminRouter)
-app.use('/api', apisRouter)
 
 morgan.token('username', function (req, res) {
   return req.roles == null ? 'Not Authentified' : req.roles.username
@@ -62,9 +41,29 @@ morgan.token('username', function (req, res) {
 
 app.use(
   unless('/',
-    morgan(':remote-addr - [:date[clf]] ":method :url HTTPS/:http-version" :status :res[content-length] ":referrer" ":user-agent" ":username"')
+    morgan(':remote-addr - [:date[clf]] ":method :url HTTPS/:http-version" :status ":user-agent" ":username"')
   )
 )
+
+// static routes
+app.use('/sounds', express.static(path.join(__dirname, 'build', 'sounds')));
+app.use('/static', express.static(path.join(__dirname, 'build', 'static')));
+
+app.use('/viewer-ohif/', express.static(path.join(__dirname, 'build', 'viewer-ohif')));
+app.use('/viewer-ohif/*', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'viewer-ohif', 'index.html'))
+})
+
+app.use('/viewer-stone/', express.static(path.join(__dirname, 'build', 'viewer-stone')));
+app.use('/streamSaver/', express.static(path.join(__dirname, 'build', 'streamSaver')));
+
+app.use('/api/authentication', authenticationRouter)
+app.use('/api/users', usersRouter)
+app.use('/api', adminRouter)
+app.use('/api', apisRouter)
+
+app.use('/*', express.static(path.join(__dirname, 'build')))
+
 
 // If didn't found route catch 404 and forward to error handler
 //SK A améliorer ne tient pas compte des routes dans le subrouter

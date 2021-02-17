@@ -1,8 +1,7 @@
 window.config = {
-  // default: '/'
-  routerBasename: '/',
+  routerBasename: '/viewer-ohif',
   extensions: [],
-  showStudyList: false,
+  showStudyList: true,
   filterQueryParam: false,
   servers: {
     dicomWeb: [

@@ -1,5 +1,4 @@
-const request = require('request-promise-native')
-const { OTJSForbiddenException } = require('../Exceptions/OTJSErrors')
+const { OTJSInternalServerError } = require('../Exceptions/OTJSErrors')
 const Options = require('./Options')
 const got = require('got')
 
@@ -26,13 +25,15 @@ const ReverseProxy = {
         headers: {
           'Forwarded' : 'by=localhost;for=localhost;host='+process.env.DOMAIN_ADDRESS+'/api;proto='+process.env.DOMAIN_PROTOCOL
         },
-        auth: `${this.username}:${this.password}`
+        username: this.username,
+        password :this.password,
       }
     } else {
       options = {
         method: method,
         url: serverString,
-        auth: `${this.username}:${this.password}`,
+        username: this.username,
+        password :this.password,
         headers: {
           'Content-Type': 'application/json',
           'Content-Length': JSON.stringify(data).length
@@ -50,7 +51,8 @@ const ReverseProxy = {
     const options = {
       method: method,
       url: serverString,
-      auth: `${this.username}:${this.password}`,
+      username: this.username,
+      password :this.password,
       headers: {
         'Content-Type': plain ? 'application/dicom' : 'text/plain',
         'Content-Length': data.length
@@ -67,7 +69,8 @@ const ReverseProxy = {
     const options = {
       method: method,
       url: serverString,
-      auth: `${this.username}:${this.password}`,
+      username: this.username,
+      password :this.password,
       headers: {
         'Content-Type': 'application/json',
         'Content-Length': data.length,
