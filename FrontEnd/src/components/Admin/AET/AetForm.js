@@ -8,12 +8,18 @@ import apis from '../../../services/aets'
  */
 export default class AetForm extends Component {
 
+    state = {
+        name : '', 
+        aetName : '',
+        ip : '',
+        port : '',
+        manufacturer : { value: 'Generic', label: 'Generic' }
+    }
+
     manufacturers = [
         { value: 'Generic', label: 'Generic' },
         { value: 'GenericNoWildcardInDates', label: 'GenericNoWildcardInDates' },
-        { value: 'StoreScp', label: 'StoreScp' },
-        { value: 'ClearCanvas', label: 'ClearCanvas' },
-        { value: 'Dcm4Chee', label: 'Dcm4Chee' },
+        { value: 'GenericNoUniversalWildcard', label: 'GenericNoUniversalWildcard' },
         { value: 'Vitrea', label: 'Vitrea' },
         { value: 'GE', label: 'GE' }
     ]
@@ -39,7 +45,7 @@ export default class AetForm extends Component {
      */
     manufacturerChangeListener = (item) => {
         this.setState({
-            manufacturer: item.value
+            manufacturer: item
         })
     }
 
@@ -48,7 +54,14 @@ export default class AetForm extends Component {
      */
     handleClick = async () => {
         try{
-            await apis.updateAet(this.state.name, this.state.aetName,this.state.ip, this.state.port, this.state.manufacturer )
+            await apis.updateAet(this.state.name, this.state.aetName,this.state.ip, this.state.port, this.state.manufacturer.value )
+            this.setState({
+                name : '', 
+                aetName : '',
+                ip : '',
+                port : '',
+                manufacturer :  { value: 'Generic', label: 'Generic' }
+            })
             this.props.refreshAetData()
         } catch(error){
             console.log(error)
@@ -63,15 +76,15 @@ export default class AetForm extends Component {
                 <h2 className="card-title">Add Aet</h2>
                 <div className="form-group">
                     <label htmlFor="name">Name : </label>
-                    <input type='text' name="name" className="form-control" onChange={this.handleChange} />
+                    <input type='text' name="name" value={this.state.name} className="form-control" onChange={this.handleChange} />
                     <label htmlFor="aetName">Aet Name : </label>
-                    <input type='text' name="aetName" className="form-control" onChange={this.handleChange} />
+                    <input type='text' name="aetName" value={this.state.aetName} className="form-control" onChange={this.handleChange} />
                     <label htmlFor="ip">IP : </label>
-                    <input type='text' name="ip" className="form-control" onChange={this.handleChange} />
+                    <input type='text' name="ip" value={this.state.ip} className="form-control" onChange={this.handleChange} />
                     <label htmlFor="port">Port : </label>
-                    <input type='number' min="0" max="999999" name="port" className="form-control" onChange={this.handleChange} />
+                    <input type='number' min="0" max="999999" value={this.state.port} name="port" className="form-control" onChange={this.handleChange} />
                     <label htmlFor="manufacturer">Manufacturer : </label>
-                    <Select className="col-sm" options={this.manufacturers} name="manufacturer" onChange={this.manufacturerChangeListener} />
+                    <Select className="col-sm" options={this.manufacturers} value={this.state.manufacturer} name="manufacturer" onChange={this.manufacturerChangeListener} />
                 </div>
                 <div className="text-right mb-5">
                     <input type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />

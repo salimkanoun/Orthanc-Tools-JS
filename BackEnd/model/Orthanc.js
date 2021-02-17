@@ -160,16 +160,16 @@ class Orthanc {
     }
   }
 
-  async _getAnswerLevel (answerId) {
-    return await ReverseProxy.getAnswerPlainText('/queries/' + answerId + '/level', 'GET', undefined)
+  _getAnswerLevel (answerId) {
+    return ReverseProxy.getAnswerPlainText('/queries/' + answerId + '/level', 'GET', undefined)
   }
 
-  async _getAnswerOriginAET (answerId) {
-    return await ReverseProxy.getAnswerPlainText('/queries/' + answerId + '/modality', 'GET', undefined)
+  _getAnswerOriginAET (answerId) {
+    return  ReverseProxy.getAnswerPlainText('/queries/' + answerId + '/modality', 'GET', undefined)
   }
 
-  async _getAnswerDetails (answerId) {
-    return await ReverseProxy.getAnswer('/queries/' + answerId + '/answers?expand', 'GET', undefined)
+  _getAnswerDetails (answerId) {
+    return ReverseProxy.getAnswer('/queries/' + answerId + '/answers?expand', 'GET', undefined)
   }
 
   async getSeriesAnswerDetails (answerId, aet) {
