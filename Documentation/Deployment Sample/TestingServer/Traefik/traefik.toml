@@ -1,0 +1,32 @@
+# /apps/traefik/traefik.toml
+[api]
+  dashboard = true
+  insecure = true
+
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+    [entryPoints.web.http]
+      [entryPoints.web.http.redirections]
+        [entryPoints.web.http.redirections.entryPoint]
+          to = "websecure"
+          scheme = "https"
+          permanent = true
+
+  [entryPoints.websecure]
+    address = ":443"
+      [entryPoints.websecure.http.tls]
+        certResolver = "default"
+
+[providers]
+  [providers.docker]
+    watch = true
+    exposedByDefault = false
+
+[certificatesResolvers]
+  [certificatesResolvers.default]
+    [certificatesResolvers.default.acme]
+      email = "salim.kanoun@gmail.com"
+      storage = "acme.json"
+      caServer = "https://acme-v01.api.letsencrypt.org/directory"
+    [certificatesResolvers.default.acme.tlsChallenge]

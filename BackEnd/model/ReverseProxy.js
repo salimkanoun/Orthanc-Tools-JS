@@ -95,7 +95,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        throw new OTJSInternalServerError(error);
+        throw new OTJSInternalServerError(error.message);
       })
   },
 
@@ -112,7 +112,7 @@ const ReverseProxy = {
           res.status(response.statusCode).send(response.statusMessage)
         }
       }).catch((error) => {
-        throw new OTJSInternalServerError(error);
+        throw new OTJSInternalServerError(error.message);
       })
   },
 
@@ -138,7 +138,7 @@ const ReverseProxy = {
             .on('finish', function () { console.log('Writing Done') })
         }
       }).catch((error) => {
-        throw new OTJSInternalServerError(error);
+        throw new OTJSInternalServerError(error.message);
       })
   },
 
@@ -152,24 +152,20 @@ const ReverseProxy = {
             } )
         }
       }).catch((error) => {
-        throw new OTJSInternalServerError(error);
+        throw new OTJSInternalServerError(error.message);
       })
   },
 
-  async getAnswer (api, method, data) {
-    const requestPromise = got(this.makeOptions(method, api, data)).then(function (body) {
-      return JSON.parse(body)
-    }).catch((error) => { return false })
-
-    return await requestPromise
+  getAnswer (api, method, data) {
+    return got(this.makeOptions(method, api, data)).then( (response) => {
+      return JSON.parse(response.body)
+    }).catch((error) => { throw new OTJSInternalServerError(error.message) })
   },
 
-  async getAnswerPlainText (api, method, data) {
-    const requestPromise = got(this.makeOptions(method, api, data)).then(function (body) {
-      return body
-    }).catch((error) => { return false })
-
-    return await requestPromise
+  getAnswerPlainText (api, method, data) {
+    return got(this.makeOptions(method, api, data)).then( (response) => {
+      return response.body
+    }).catch((error) => { throw new OTJSInternalServerError(error.message) })
   }
 
 }

@@ -1,0 +1,24 @@
+version: "3"
+services:
+        
+    reverse-proxy:
+        image: traefik:v2.2
+        container_name: traefik
+        ports:
+          - "80:80"
+          - "443:443"
+          - "8080:8080"
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+          - ./traefik.toml:/etc/traefik/traefik.toml
+          - ./acme.json:/acme.json
+        restart: always
+        networks:
+          - internal
+          - web
+
+networks:
+  web:
+    external: true
+  internal:
+    external: false
