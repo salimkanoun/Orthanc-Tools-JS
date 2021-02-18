@@ -111,7 +111,10 @@ export default class RobotStatus extends Component {
 
     render = () => {
         return (
-            <BootstrapTable keyField="username" striped={true} data={this.state.rows} columns={this.columns} wrapperClasses='table-responsive' />
+            <>
+                <h2 className="card-title">Retrieve Robots : </h2>
+                <BootstrapTable keyField="username" striped={true} data={this.state.rows} columns={this.columns} wrapperClasses='table-responsive' />
+            </>
         )
     }
 }

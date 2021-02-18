@@ -59,6 +59,11 @@ router.delete('/monitoring/burner', [userAuthMidelware,cdBurnerMidelware], stopB
 router.get('/monitoring/burner', [userAuthMidelware,cdBurnerMidelware], getBurner)
 router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', [userAuthMidelware,cdBurnerMidelware], cancelJobBurner)
 
+//Server Time
+router.get('/tools/time', userAuthMidelware, (req, res)=>{
+    res.json(new Date());
+})
+
 /*
 ** TASKS
 */
