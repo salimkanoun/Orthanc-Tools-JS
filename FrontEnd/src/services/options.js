@@ -211,7 +211,18 @@ const options = {
       throw error
     })
 
-  }
+  },
+
+  getServerTime() {
+    return fetch('/api/tools/time').then(response => {
+      if (response.ok) {
+        return response.json()
+      }
+      else throw response
+    }).catch(error => {
+      throw error
+    })
+  },
 }
 
 export default options

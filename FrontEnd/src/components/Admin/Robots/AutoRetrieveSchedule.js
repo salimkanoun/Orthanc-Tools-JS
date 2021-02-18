@@ -6,8 +6,11 @@ export default class AutoRetrieveSchedule extends Component {
 
   /**Init state */
   state = {
-    hour: '00',
-    min: '00'
+    serverTime: '', 
+    hourStart: '00',
+    minStart: '00',
+    hourStop: '00',
+    minStop: '00'
   }
 
   /**
@@ -18,16 +21,36 @@ export default class AutoRetrieveSchedule extends Component {
       
       const response = await apis.options.getOptions()
       this.setState({
-        hour_start: response.hour_start,
-        min_start: response.min_start,
-        hour_stop: response.hour_stop,
-        min_stop: response.min_stop
+        hourStart: response.hour_start,
+        minStart: response.min_start,
+        hourStop: response.hour_stop,
+        minStop: response.min_stop
       })
+      
+      apis.options.getServerTime().then((serverTime)=>{
+        let cutTime = serverTime.split('T')[1].split('.')[0].split(':');
+        this.setState({
+          serverTime : cutTime[0]+':'+cutTime[1]
+        })
+      })
+
+      this.serverTimeInterval = setInterval(()=>{
+        apis.options.getServerTime().then((serverTime)=>{
+          let cutTime = serverTime.split('T')[1].split('.')[0].split(':');
+          this.setState({
+            serverTime : cutTime[0]+':'+cutTime[1]
+          })
+        })
+      },30000);
 
     } catch (error) {
       toast.error(error.statusText)
     }
 
+  }
+
+  componentWillUnmount = ()=>{
+    clearInterval(this.serverTimeInterval);
   }
 
   /**
@@ -48,7 +71,7 @@ export default class AutoRetrieveSchedule extends Component {
    * Submission of new values of schedule
    */
   handleClick = () => {
-    apis.options.setRobotScheduleHour(this.state.hour_start, this.state.min_start, this.state.hour_stop, this.state.min_stop)
+    apis.options.setRobotScheduleHour(this.state.hourStart, this.state.minStart, this.state.hourStop, this.state.minStop)
       .then(() => { toast.success('schedule updated') })
       .catch(error => { toast.error(error.statusText) })
   }
@@ -60,22 +83,23 @@ export default class AutoRetrieveSchedule extends Component {
         <div className="form-row">
           <div className="col">
             <label htmlFor='hour_start'>Start Hour : </label>
-            <input type='number' name='hour_start' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hour_start} />
+            <input type='number' name='hour_start' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStart} />
           </div>
           <div className="col">
             <label htmlFor='min_start'>Start Minutes : </label>
-            <input type='number_start' name='min_start' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.min_start} />
+            <input type='number_start' name='min_start' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStart} />
           </div>
           <div className="col">
             <label htmlFor='hour_stop'>Stop Hour : </label>
-            <input type='number' name='hour_stop' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hour_stop} />
+            <input type='number' name='hour_stop' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStop} />
           </div>
           <div className="col">
             <label htmlFor='min_stop'>Stop Minutes : </label>
-            <input type='number' name='min_stop' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.min_stop} />
+            <input type='number' name='min_stop' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStop} />
           </div>
         </div>
-        <div className="text-right">
+        <div className="d-flex justify-content-between">
+          <p>Server time : {this.state.serverTime}</p>
           <input type='button' className='btn btn-primary' onClick={this.handleClick} value='send' />
         </div>
       </div>
