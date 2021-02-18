@@ -159,5 +159,10 @@ const deleteTask = async (req, res) => {
     res.sendStatus(200);
 }
 
+const flushTasks = async(req, res) => {
+    await Task.flushTasks(req.params.type);
+    res.sendStatus(200);
+}
 
-module.exports = { checkForOrthancQueueReady, getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, addExportTask, validateRetrieve, deleteRetrieveItem }
+
+module.exports = { flushTasks, checkForOrthancQueueReady, getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, addExportTask, validateRetrieve, deleteRetrieveItem }

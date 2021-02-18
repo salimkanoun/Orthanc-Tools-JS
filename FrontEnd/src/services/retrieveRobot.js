@@ -85,6 +85,19 @@ const retrieveRobot = {
             throw error
         })
 
+    },
+
+    flush(){
+        const flushRetrRobotsOption = {
+            method: 'DELETE'
+        }
+
+        return fetch('/api/tasks/type/retrieve/flush', flushRetrRobotsOption ).then(answer => {
+            if (!answer.ok) {throw answer}
+            return true
+        }).catch(error => {
+            throw error
+        })
     }
 
 }

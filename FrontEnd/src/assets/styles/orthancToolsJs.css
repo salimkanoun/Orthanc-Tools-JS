@@ -334,7 +334,7 @@ code {
 	box-shadow: 0px 0px 5px 5px #0099E0;
   }
 
-.grid-form-group{
+  .grid-form-group{
 	display: grid;
 }
 
@@ -351,6 +351,27 @@ code {
   
 	.grid-form-group input,.select {
 	  grid-column: 2 / 3;
+	}
+}
+
+.grid-button-group{
+	display: grid;
+	max-width: 400px;
+}
+
+
+@media (min-width: 400px) {
+	.grid-button-group {
+	  grid-template-columns: 200px 1fr;
+	  grid-gap: 16px;
+	}
+  
+	.grid-button-group p {
+	  grid-column: 1 / 2;
+	}
+  
+	.grid-button-group input {
+	  grid-column: 3 / 4;
 	}
   }
   

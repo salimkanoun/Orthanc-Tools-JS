@@ -192,6 +192,14 @@ class RetrieveTask {
         validateJobs.forEach(job=>job.remove());
         retrieveJobs.forEach(job=>job.remove());
     }
+
+    /**
+     * Remove all jobs for retrieval
+     */
+    static async flush(){
+        (await orthancQueue.aetQueue.getJobs()).forEach(job=>job.remove());
+        (await orthancQueue.validationQueue.getJobs()).forEach(job=>job.remove());
+    }
 }
 
 module.exports = RetrieveTask

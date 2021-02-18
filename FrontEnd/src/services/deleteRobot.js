@@ -17,6 +17,19 @@ const deleteRobot = {
         }).catch(error => {
             throw error
         })
+    },
+
+    flush(){
+        const flushDeleRobotsOption = {
+            method: 'DELETE'
+        }
+
+        return fetch('/api/tasks/type/delete/flush', flushDeleRobotsOption ).then(answer => {
+            if (!answer.ok) {throw answer}
+            return true
+        }).catch(error => {
+            throw error
+        })
     }
 }
 

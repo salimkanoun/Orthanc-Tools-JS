@@ -117,6 +117,13 @@ class DeleteTask {
         let deleteJobs = await orthancQueue.getDeleteJobs(taskId);
         deleteJobs.forEach(job=>job.remove()); //Delete jobs of the task 
     }
+
+    /**
+     * Remove all jobs for deletion
+     */
+    static async flush(){
+        (await orthancQueue.deleteQueue.getJobs()).forEach(job=>job.remove());
+    }
 }
 
 module.exports = DeleteTask
