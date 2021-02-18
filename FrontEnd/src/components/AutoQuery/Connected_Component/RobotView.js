@@ -208,6 +208,17 @@ class RobotView extends Component {
     }
 
     refreshHandler = (response) => {
+        if(!response){
+            this.setState({
+                projectName: '',
+                rows: [],
+                totalPercentageProgress: 0,
+                percentageFailure: 0
+            })
+            this.stopProgressMonitoring()
+            return;
+        }
+
         let rowsRetrieveList = []
 
         let newPercentageFailure = 0
@@ -259,7 +270,7 @@ class RobotView extends Component {
 
     handleClickDeleteRobot = async () => {
         await apis.retrieveRobot.deleteRobot(this.props.username);
-        await this.refreshHandler();
+        await this.refreshHandler(null);
     }
 
     render = () => {
