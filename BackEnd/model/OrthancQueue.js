@@ -309,17 +309,18 @@ class OrthancQueue {
    */
   validateItems(creator, projectName, items){
     let taskId = 'r-'+uuid();
-
+    
     // Checking for duplicate
     let curratedItems = items.reduce((agregation, item)=>{
       if (item.Level === OrthancQueryAnswer.LEVEL_STUDY) {
         for (const existingItem of agregation) {
-          if (item.studyInstanceUID===existingItem.studyInstanceUID) return agregation;
+          console.log(existingItem);
+          if (item.StudyInstanceUID===existingItem.StudyInstanceUID) return agregation;
         }
         agregation.push(item);
       } else if (item.Level === OrthancQueryAnswer.LEVEL_SERIES) {
         for (const existingItem of agregation) {
-          if (item.studyInstanceUID===existingItem.studyInstanceUID && item.SeriesInstanceUID===existingItem.SeriesInstanceUID) return agregation;
+          if (item.StudyInstanceUID===existingItem.StudyInstanceUID && item.SeriesInstanceUID===existingItem.SeriesInstanceUID) return agregation;
         }
         agregation.push(item);
       }
