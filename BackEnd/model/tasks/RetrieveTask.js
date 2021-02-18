@@ -49,6 +49,7 @@ class RetrieveTask {
                 throw new OTJSForbiddenException("Cant create two retrieval simulteanously");
             }
         }
+        
         //Creating the corresponding jobs
         return orthancQueue.validateItems(creator, projectName, answers)
     }
