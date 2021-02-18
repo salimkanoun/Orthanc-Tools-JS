@@ -195,8 +195,8 @@ class RetrieveTask {
      * Remove all jobs for retrieval
      */
     static async flush(){
-        await orthancQueue.aetQueue.getJobs().forEach(job=>job.remove());
-        await orthancQueue.validationQueue.getJobs().forEach(job=>job.remove());
+        (await orthancQueue.aetQueue.getJobs()).forEach(job=>job.remove());
+        (await orthancQueue.validationQueue.getJobs()).forEach(job=>job.remove());
     }
 }
 

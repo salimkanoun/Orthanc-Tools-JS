@@ -19,6 +19,19 @@ const anonymize =  {
             throw error
         })
 
+    },
+
+    flush(){
+        const flushAnonRobotsOption = {
+            method: 'DELETE'
+        }
+
+        return fetch('/api/tasks/type/anonymize/flush', flushAnonRobotsOption ).then(answer => {
+            if (!answer.ok) {throw answer}
+            return true
+        }).catch(error => {
+            throw error
+        })
     }
 
 }

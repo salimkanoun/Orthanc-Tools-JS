@@ -132,7 +132,7 @@ class AnonTask {
      * Remove all jobs for anonimization
      */
     static async flush(){
-        await orthancQueue.anonQueue.getJobs().forEach(job=>job.remove());
+        (await orthancQueue.anonQueue.getJobs()).forEach(job=>job.remove());
     }
 }
 

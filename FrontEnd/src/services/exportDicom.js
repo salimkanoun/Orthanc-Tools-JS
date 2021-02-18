@@ -127,7 +127,20 @@ const exportDicom = {
     }).catch(error => {
         throw error
     })
-  }
+  },
+
+  flushExternalExport(){
+    const flushExpoRobotsOption = {
+        method: 'DELETE'
+    }
+
+    return fetch('/api/tasks/type/export/flush', flushExpoRobotsOption ).then(answer => {
+        if (!answer.ok) {throw answer}
+        return true
+    }).catch(error => {
+        throw error
+    })
+}
 
 }
 

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import AetRootPanel from './AET/AetRootPanel'
-import AutoRetrieveRootPanel from './Robots/AutoRetrieveRootPanel'
 import PeerRootPanel from './Peers/PeerRootPanel'
 import JobsRootPanel from './Jobs/JobsRootPanel'
 import Plugins from './Plugins/Plugins'
@@ -8,6 +7,7 @@ import UserManagement from './UserManagement/UserManagement'
 import BurnerOptions from './CDBurner/BurnerOptions'
 import EndpointsRootPanel from './Endpoints/EndpointsRootPanel'
 import GeneralRoot from './General/GeneralRoot'
+import TaskRootPanel from './Robots/TaskRootPanel'
 
 /**
  * Root Panel of Admin route
@@ -32,8 +32,8 @@ const AdminRootPanel = () => {
         return (<PeerRootPanel />)
       case 'External Endpoints':
         return (<EndpointsRootPanel />)
-      case 'Robots':
-        return (<AutoRetrieveRootPanel />)
+      case 'Robots & Tasks':
+        return (<TaskRootPanel />)
       case 'Jobs':
         return (<JobsRootPanel />)
       case 'CD Burner':
@@ -57,7 +57,7 @@ const AdminRootPanel = () => {
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Aets' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='External Endpoints' />
-            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Robots' />
+            <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Robots & Tasks' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Jobs' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='CD Burner' />
             <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Orthanc Plugins' />

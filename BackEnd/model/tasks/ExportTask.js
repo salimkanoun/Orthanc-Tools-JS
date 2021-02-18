@@ -93,8 +93,8 @@ class ExportTask {
      * Remove all jobs for export
      */
     static async flush(){
-        await orthancQueue.exportQueue.getJobs().forEach(job=>job.remove());
-        await exporter.sendQueue.getJobs().forEach(job=>job.remove());
+        (await orthancQueue.exportQueue.getJobs()).forEach(job=>job.remove());
+        (await exporter.sendQueue.getJobs()).forEach(job=>job.remove());
     }
 }
 

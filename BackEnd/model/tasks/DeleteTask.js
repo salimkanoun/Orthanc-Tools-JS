@@ -122,7 +122,7 @@ class DeleteTask {
      * Remove all jobs for deletion
      */
     static async flush(){
-        await orthancQueue.deleteQueue.getJobs().forEach(job=>job.remove());
+        (await orthancQueue.deleteQueue.getJobs()).forEach(job=>job.remove());
     }
 }
 
