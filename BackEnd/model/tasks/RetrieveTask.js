@@ -104,10 +104,12 @@ class RetrieveTask {
             const retrieveJob = retrieveJobs[i];
             let Validated = (await validateJob.getState() === 'completed' ? await validateJob.finished(): false);
             autoValidation = autoValidation&& Validated;
+            const state = (retrieveJob? await retrieveJob.getState() : 'waiting');
             items.push({
                 ...validateJob.data.item,
                 Validated,
-                Status: (retrieveJob? await retrieveJob.getState():'waiting')
+                Status: state,
+                RetrievedOrthancId: (state==="completed"? await retrieveJob.finished():null)
             })
         }
 

@@ -238,7 +238,7 @@ class RobotView extends Component {
 
         newPercentageFailure /= response.content.items.length
 
-        let newTotalPercentageProgress = response.progress.retrieve
+        let newTotalPercentageProgress = Math.round((response.progress.retrieve + Number.EPSILON) * 10) / 10
 
         this.setState({
             projectName: response.content.projectName,
