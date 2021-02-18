@@ -88,6 +88,14 @@ class ExportTask {
 
         return await Promise.all(ids.map(id=>ExportTask.getTask(id)));
     }
+
+    /**
+     * Remove all jobs for export
+     */
+    static async flush(){
+        await orthancQueue.exportQueue.getJobs().forEach(job=>job.remove());
+        await exporter.sendQueue.getJobs().forEach(job=>job.remove());
+    }
 }
 
 module.exports = ExportTask

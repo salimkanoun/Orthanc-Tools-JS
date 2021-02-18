@@ -127,6 +127,13 @@ class AnonTask {
         let anonJobs = await orthancQueue.getAnonimizationJobs(taskId);
         anonJobs.forEach(job=>job.remove()); //Delete jobs of the task 
     }
+
+    /**
+     * Remove all jobs for anonimization
+     */
+    static async flush(){
+        await orthancQueue.anonQueue.getJobs().forEach(job=>job.remove());
+    }
 }
 
 module.exports = AnonTask
