@@ -15,7 +15,7 @@ const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authent
 const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
 const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate } = require('../controllers/certificates')
 const { newKey, allKeys, updateKey, removeKey, uploadKey } = require('../controllers/sshKey')
-const { getTasksOfType, validateRetrieve } = require('../controllers/task')
+const { getTasksOfType, validateRetrieve, flushTasks } = require('../controllers/task')
 
 // OrthancToolsJS Options routes
 adminRouter.get('/options', [userAuthMidelware, userAdminMidelware],  getOptions)
@@ -86,7 +86,7 @@ adminRouter.get('/ldap/groupname', [userAuthMidelware, userAdminMidelware], getL
 //OrthancToolsJS Task routes
 adminRouter.post('/tasks/:username/retrieve/validate', [userAuthMidelware, userAdminMidelware], validateRetrieve)
 adminRouter.get('/tasks/type/:type', [userAuthMidelware, userAdminMidelware], getTasksOfType)
-adminRouter.delete('/tasks/type/:type/flush', [userAuthMidelware, userAdminMidelware], )
+adminRouter.delete('/tasks/type/:type/flush', [userAuthMidelware, userAdminMidelware], flushTasks)
 
 /*
 ** REMOTE EXPORT
