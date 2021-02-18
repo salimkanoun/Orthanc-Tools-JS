@@ -314,7 +314,6 @@ class OrthancQueue {
     let curratedItems = items.reduce((agregation, item)=>{
       if (item.Level === OrthancQueryAnswer.LEVEL_STUDY) {
         for (const existingItem of agregation) {
-          console.log(existingItem);
           if (item.StudyInstanceUID===existingItem.StudyInstanceUID) return agregation;
         }
         agregation.push(item);
