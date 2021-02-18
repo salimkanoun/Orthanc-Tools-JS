@@ -20,7 +20,7 @@ class Exporter{
         this._jobs = {}
 
         //Declaration for the send queue
-        this._sendQueue = new Queue('send',{
+        this.sendQueue = new Queue('send',{
             redis:{
                 host: process.env.REDIS_HOST,
                 port: process.env.REDIS_PORT,
@@ -30,15 +30,15 @@ class Exporter{
         
         //this._sendQueue.on('error',(err)=>{console.log(err)})
 
-        this._sendQueue.isReady().then(()=>{
+        this.sendQueue.isReady().then(()=>{
             //Adding a processor for ftp  export tasks  
-            this._sendQueue.process('send-over-ftp', Exporter._sendOverFtp)
+            this.sendQueue.process('send-over-ftp', Exporter._sendOverFtp)
     
             //Adding a processor for sftp  export tasks  
-            this._sendQueue.process('send-over-sftp', Exporter._sendOverSftp)
+            this.sendQueue.process('send-over-sftp', Exporter._sendOverSftp)
     
             //Adding a processor for webdav  export tasks  
-            this._sendQueue.process('send-over-webdav', Exporter._sendOverWebdav)
+            this.sendQueue.process('send-over-webdav', Exporter._sendOverWebdav)
         }).catch((err)=>{})
 
 
@@ -156,7 +156,7 @@ class Exporter{
             default:
                 break;
         }
-        return this._sendQueue.add({'ftp':'send-over-ftp','sftp':'send-over-sftp','webdav':'send-over-webdav'}[protocol],
+        return this.sendQueue.add({'ftp':'send-over-ftp','sftp':'send-over-sftp','webdav':'send-over-webdav'}[protocol],
             {endpoint:formatedEndpoint,archive}).then((job)=>{
                 this._jobs[job.id] = job
                 return job
@@ -188,13 +188,13 @@ class Exporter{
                 })
             })
         }
-        this._sendQueue.add({'ftp':'send-over-ftp','sftp':'send-over-sftp','webdav':'send-over-webdav'}[endpoint.protocol],
+        this.sendQueue.add({'ftp':'send-over-ftp','sftp':'send-over-sftp','webdav':'send-over-webdav'}[endpoint.protocol],
             {taskId, endpoint:formatedEndpoint,file})
         return taskId;
     }
 
     async getUploadJobs(taskId){
-        let jobs = await this._sendQueue.getJobs(["delayed", "completed", "active", "paused", "waiting"]);
+        let jobs = await this.sendQueue.getJobs(["delayed", "completed", "active", "paused", "waiting"]);
         return jobs.filter(job=>job.data.taskId == taskId); 
     }
 

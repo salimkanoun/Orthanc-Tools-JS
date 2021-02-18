@@ -150,6 +150,25 @@ class Task {
                 throw new OTJSBadRequestException('Cant delete this task');
         }    
     }
+
+    static async flushTasks(type){
+        switch (type) {
+            case TaskType.RETRIEVE:
+                await RetrieveTask.flush();
+                break;
+            case TaskType.DELETE:
+                await DeleteTask.flush();
+                break;
+            case TaskType.ANONYMIZE:
+                await AnonTask.flush();
+                break;
+            case TaskType.EXPORT:
+                await ExportTask.flush();
+                break;
+            default:
+                throw new OTJSBadRequestException('This task type');
+        }
+    }
 }
 
 module.exports = Task

@@ -113,7 +113,7 @@ class AnonymizePanelProgress extends Component {
                     </CircularProgressbarWithChildren>
                 </div>
 
-                <button type='button' className='btn btn-info float-right mr-2' onClick={() => this.toogleModal()} >Show Details</button>
+                <button type='button' className='btn btn-info float-right mr-2' onClick={() => this.toogleModal()} disabled>Show Details</button>
                 <button type='button' className='btn btn-danger float-right mr-2' onClick={() => alert('not implemented yet')} disabled>Delete</button>
                 <button type='button' className='btn btn-primary float-right mr-2' onClick={() => alert('not implemented yet')} disabled>Resume</button>
                 <button type='button' className='btn btn-warning float-right mr-2' onClick={() => alert('not implemented yet')} disabled>Pause</button>

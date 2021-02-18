@@ -49,6 +49,7 @@ class RetrieveTask {
                 throw new OTJSForbiddenException("Cant create two retrieval simulteanously");
             }
         }
+        
         //Creating the corresponding jobs
         return orthancQueue.validateItems(creator, projectName, answers)
     }
@@ -104,10 +105,12 @@ class RetrieveTask {
             const retrieveJob = retrieveJobs[i];
             let Validated = (await validateJob.getState() === 'completed' ? await validateJob.finished(): false);
             autoValidation = autoValidation&& Validated;
+            const state = (retrieveJob? await retrieveJob.getState() : 'waiting');
             items.push({
                 ...validateJob.data.item,
                 Validated,
-                Status: (retrieveJob? await retrieveJob.getState():'waiting')
+                Status: state,
+                RetrievedOrthancId: (state==="completed"? await retrieveJob.finished():null)
             })
         }
 
@@ -189,6 +192,14 @@ class RetrieveTask {
 
         validateJobs.forEach(job=>job.remove());
         retrieveJobs.forEach(job=>job.remove());
+    }
+
+    /**
+     * Remove all jobs for retrieval
+     */
+    static async flush(){
+        (await orthancQueue.aetQueue.getJobs()).forEach(job=>job.remove());
+        (await orthancQueue.validationQueue.getJobs()).forEach(job=>job.remove());
     }
 }
 
