@@ -39,6 +39,10 @@ morgan.token('username', function (req, res) {
   return req.roles == null ? 'Not Authentified' : req.roles.username
 })
 
+morgan.token('remote-addr', (req, res) => {
+  return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+});
+
 app.use(
   unless('/',
     morgan(':remote-addr - [:date[clf]] ":method :url HTTPS/:http-version" :status ":user-agent" ":username"')
