@@ -27,10 +27,10 @@ const options = {
 
   setOrthancServer(address, port, username, password) {
     const postData = {
-      OrthancAddress: address,
-      OrthancPort: port,
-      OrthancUsername: username,
-      OrthancPassword: password
+      orthancAddress: address,
+      orthancPort: port,
+      orthancUsername: username,
+      orthancPassword: password
     }
 
     const setOrthancServerOption = {
@@ -42,7 +42,7 @@ const options = {
       body: JSON.stringify(postData)
     }
 
-    return fetch('/api/options/orthanc-server', setOrthancServerOption).then((answser) => {
+    return fetch('/api/options/orthanc', setOrthancServerOption).then((answser) => {
       if (!answser.ok) throw answser
       return true
     })
@@ -58,9 +58,25 @@ const options = {
       }
     }
 
-    return fetch('/api/options/orthanc-server', optionOrthancServer).then((answer) => {
+    return fetch('/api/options/orthanc', optionOrthancServer).then((answer) => {
       return (answer.json())
     }).catch(error => { throw error })
+  },
+
+  getRedisServer(){
+
+    let optionRedisServer = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }
+
+    return fetch('/api/options/redis', optionRedisServer).then((answer) => {
+      return (answer.json())
+    }).catch(error => { throw error })
+
   },
 
   getOrthancSystem() {

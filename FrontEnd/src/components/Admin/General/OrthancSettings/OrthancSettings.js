@@ -1,18 +1,18 @@
 import React, { Component, Fragment } from 'react'
-import apis from '../../../../services/apis';
+import apis from '../../../../services/apis'
 import Select from 'react-select'
 
-import { toast } from 'react-toastify';
-import Modal from 'react-bootstrap/Modal';
+import { toast } from 'react-toastify'
+import Modal from 'react-bootstrap/Modal'
 
 export default class OrthancSettings extends Component {
 
     /** Init State */
     state = {
-        OrthancAddress: '',
-        OrthancPort: 0,
-        OrthancUsername: '',
-        OrthancPassword: '',
+        orthancAddress: '',
+        orthancPort: 0,
+        orthancUsername: '',
+        orthancPassword: '',
         showRestart: false,
         showShutdown: false,
         verbositySelected: null
@@ -72,9 +72,9 @@ export default class OrthancSettings extends Component {
      * Send new value to BackEnd
      */
     submitOrthancSettings = async () => {
-        apis.options.setOrthancServer(this.state.OrthancAddress, this.state.OrthancPort,
-            this.state.OrthancUsername, this.state.OrthancPassword)
-            .then(() => { toast.success('Updated') })
+        apis.options.setOrthancServer(this.state.orthancAddress, this.state.orthancPort,
+            this.state.orthancUsername, this.state.orthancPassword)
+            .then(() => { toast.warning('Updated, modify your environnement settings for the next start') })
             .catch((error) => { toast.error(error.statusText) })
     }
 
@@ -129,13 +129,13 @@ export default class OrthancSettings extends Component {
                 <div className="form-group">
                     <h2 className="card-title">Orthanc Server</h2>
                     <label htmlFor="address">Address : </label>
-                    <input type='text' name="OrthancAddress" className="form-control" onChange={this.handleChange} value={this.state.OrthancAddress} placeholder="http://" />
+                    <input type='text' name="orthancAddress" className="form-control" onChange={this.handleChange} value={this.state.orthancAddress} placeholder="http://" />
                     <label htmlFor="port">Port : </label>
-                    <input type='number' min="0" max="999999" name="OrthancPort" className="form-control" value={this.state.OrthancPort} onChange={this.handleChange} />
+                    <input type='number' min="0" max="999999" name="orthancPort" className="form-control" value={this.state.orthancPort} onChange={this.handleChange} />
                     <label htmlFor="username">Username : </label>
-                    <input type='text' name="OrthancUsername" className="form-control" value={this.state.OrthancUsername} onChange={this.handleChange} />
+                    <input type='text' name="orthancUsername" className="form-control" value={this.state.orthancUsername} onChange={this.handleChange} />
                     <label htmlFor="password">Password : </label>
-                    <input type='password' name="OrthancPassword" className="form-control" value={this.state.OrthancPassword} onChange={this.handleChange} />
+                    <input type='password' name="orthancPassword" className="form-control" value={this.state.orthancPassword} onChange={this.handleChange} />
                 </div>
                 <div className="form-group text-right">
                     <input type='button' className='btn btn-primary mr-1' onClick={this.submitOrthancSettings} value='Update' />

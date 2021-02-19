@@ -20,10 +20,10 @@ describe('Testing Options', () =>{
     it('shoud set orthanc settings', () => {
         Options.setOrthancConnexionSettings('http://localhost', 8042, 'salimTest', 'salim')
         expect(Options.getOrthancConnexionSettings()).toEqual({
-            OrthancAddress : 'http://localhost',
-            OrthancPort : 8042,
-            OrthancUsername : 'salimTest',
-            OrthancPassword : 'salim'
+            orthancAddress : 'http://localhost',
+            orthancPort : 8042,
+            orthancUsername : 'salimTest',
+            orthancPassword : 'salim'
         })
     })
 })
