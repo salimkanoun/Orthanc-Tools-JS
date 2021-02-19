@@ -1,13 +1,6 @@
 const db = require('../database/models')
-const Configstore = require('configstore')
-const packageJson = require('../package.json')
 const { EventEmitter } = require('events')
-const config = new Configstore(packageJson.name, {
-  OrthancAddress: process.env.OrthancAddress || 'http://localhost',
-  OrthancPort: process.env.Port || 8042,
-  OrthancUsername: process.env.OrthancUsername || '',
-  OrthancPassword: process.env.OrthancPassword || ''
-})
+
 
 class OptionEventEmittter extends EventEmitter { }
 
@@ -18,81 +11,91 @@ const Options = {
 
   optionEventEmiter: new OptionEventEmittter(),
 
-  getOptions: async () => {
-    return await db.Option.findOne(({ where: { id: 1 } })).catch( (error) => {throw error})
+  getOptions:  () => {
+    return db.Option.findOne(({ where: { id: 1 } })).catch((error) => { throw error })
   },
 
-  setScheduleTime: async (hour_start, min_start, hour_stop, min_stop) => {
-    const option = await db.Option.findOne(({ where: { id: 1 } }))
-    option.hour_start = hour_start
-    option.min_start = min_start
-    option.hour_stop = hour_stop
-    option.min_stop = min_stop
+  setScheduleTime:  async (startHour, startMin, stopHour, stopMin) => {
+    const option = await Options.getOptions()
+    option.hour_start = startHour
+    option.min_start = startMin
+    option.hour_stop = stopHour
+    option.min_stop = stopMin
     await option.save()
     Options.optionEventEmiter.emit('schedule_change');
   },
 
-  setBurnerOptions: async (burner_monitored_path, burner_viewer_path, burner_label_path, burner_manifacturer, burner_monitoring_level,
-    burner_support_type, burner_delete_study_after_sent, burner_transfer_syntax, burner_date_format) => {
+  setBurnerOptions: async (burnerMonitoredPath,
+    burnerViewerPath,
+    burnerLabelPath,
+    burnerManifacturer,
+    burnerMonitoringLevel,
+    burnerSupportType,
+    burnerDeleteStudyAfterSent,
+    burnerTransferSyntax,
+    burnerDateFormat) => {
 
-    const option = await db.Option.findOne(({ where: { id: 1 } }))
+    const option = await Options.getOptions()
 
-    option.burner_monitored_path = burner_monitored_path
-    option.burner_viewer_path = burner_viewer_path
-    option.burner_label_path = burner_label_path
-    option.burner_manifacturer = burner_manifacturer
-    option.burner_monitoring_level = burner_monitoring_level
-    option.burner_support_type = burner_support_type
-    option.burner_delete_study_after_sent = burner_delete_study_after_sent
-    option.burner_transfer_syntax = burner_transfer_syntax
-    option.burner_date_format = burner_date_format
+    option.burner_monitored_path = burnerMonitoredPath
+    option.burner_viewer_path = burnerViewerPath
+    option.burner_label_path = burnerLabelPath
+    option.burner_manifacturer = burnerManifacturer
+    option.burner_monitoring_level = burnerMonitoringLevel
+    option.burner_support_type = burnerSupportType
+    option.burner_delete_study_after_sent = burnerDeleteStudyAfterSent
+    option.burner_transfer_syntax = burnerTransferSyntax
+    option.burner_date_format = burnerDateFormat
 
     await option.save()
 
   },
 
-  setBurnerStarted: async (started) => {
-    const option = await db.Option.findOne(({ where: { id: 1 } }))
+  setBurnerStarted:  async (started) => {
+    const option = await Options.getOptions()
     option.burner_started = started
     await option.save()
   },
 
-  setOrthancConnexionSettings: (address, port, username, password) => {
-    config.set('OrthancAddress', address)
-    config.set('OrthancPort', port)
-    config.set('OrthancUsername', username)
-    config.set('OrthancPassword', password)
-    Options.configSettings = undefined
-  },
-
   getOrthancConnexionSettings: () => {
-    if (Options.configSettings === undefined) {
-      Options.configSettings = {
-        OrthancAddress: config.get('OrthancAddress'),
-        OrthancPort: config.get('OrthancPort'),
-        OrthancUsername: config.get('OrthancUsername'),
-        OrthancPassword: config.get('OrthancPassword')
-      }
+    return {
+      orthancAddress: process.env.ORTHANC_ADDRESS,
+      orthancPort: process.env.ORTHANC_PORT,
+      orthancUsername: process.env.ORTHANC_USERNAME,
+      orthancPassword: process.env.ORTHANC_PASSWORD,
     }
-
-    return Options.configSettings
   },
 
-  getCdBurnerOptions: async () => {
-    const options = await db.Option.findOne(({ where: { id: 1 } }));
-    return options
+  getRedisConnexionSettings : () =>{
+    return {
+      redisAddress: process.env.REDIS_HOST,
+      redisPort: process.env.REDIS_PORT,
+      redisPassword: process.env.REDIS_PASSWORD
+    }
+  }, 
+
+  setOrthancConnexionSettings: (orthancAddress, orthancPort, orthancUsername, orthancPassword) => {
+    process.env['ORTHANC_ADDRESS'] = orthancAddress;
+    process.env['ORTHANC_PORT'] = orthancPort;
+    process.env['ORTHANC_USERNAME'] = orthancUsername;
+    process.env['ORTHANC_PASSWORD'] = orthancPassword;
   },
+
+  setRedisConnexionSettings : (redisAddress, redisPort, redisPassword ) =>{
+    process.env['REDIS_HOST'] = redisAddress;
+    process.env['REDIS_PORT'] = redisPort;
+    process.env['REDIS_PASSWORD'] = redisPassword;
+  }, 
 
   getMode: async () => {
-    let mode = await db.Option.findOne()
+    let mode = await Options.getOptions()
     return mode.ldap
   },
 
   changeMode: async (mode) => {
-    await db.Option.upsert({
-      id: 1,
-      ldap: mode
-    })
+    let option = await Options.getOptions()
+    option.ldap = mode
+    await option.save()
   }
 
 }

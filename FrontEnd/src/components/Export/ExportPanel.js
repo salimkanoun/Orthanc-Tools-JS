@@ -67,7 +67,7 @@ class ExportPanel extends Component {
     }
 
     componentDidMount = async () => {
-        let currentTS = localStorage.getItem('TS');
+        let currentTS = localStorage.getItem('TS') == null ? 'None'  : localStorage.getItem('TS');
         this.loadTS(currentTS);
 
         try {
@@ -91,14 +91,6 @@ class ExportPanel extends Component {
             ids.push(serie.ID)
         })
         return ids
-    }
-
-    handleClickFTP = () => {
-
-    }
-
-    handleClickWebDav = () => {
-
     }
 
     removeSeries = (serieID) => {
@@ -146,12 +138,9 @@ class ExportPanel extends Component {
     }
 
     loadTS = (tsValue) => {
-        if (tsValue) {
-            this.setState({
-                currentTS: this.getSelectedTSObject(tsValue)
-            })
-        }
-
+        this.setState({
+            currentTS: this.getSelectedTSObject(tsValue)
+        })
     }
 
     setButton = (button) => {
@@ -164,8 +153,6 @@ class ExportPanel extends Component {
         localStorage.setItem('TS', item.value)
         this.loadTS(item.value)
     }
-
-
 
     getSelectedTSObject = (tsValue) => {
         let filteredArray = this.transferSyntaxOptions.filter(item => {
@@ -247,7 +234,7 @@ class ExportPanel extends Component {
                 </div>
                 <div className="row text-center mt-5">
                     <div className='col-sm'>
-                        <DownloadDropdown exportIds={idArray} />
+                        <DownloadDropdown exportIds={idArray} TS = {this.state.currentTS.value} />
                         <Select single options={this.transferSyntaxOptions} onChange={this.onTSChange} name="ts_selector" value={this.state.currentTS} />
                     </div>
                     <div className='col-sm'>

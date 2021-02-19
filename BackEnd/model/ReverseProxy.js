@@ -6,10 +6,10 @@ const ReverseProxy = {
 
   getOrthancAddress () {
     const orthancSettings = Options.getOrthancConnexionSettings()
-    this.address = orthancSettings.OrthancAddress
-    this.port = orthancSettings.OrthancPort
-    this.username = orthancSettings.OrthancUsername
-    this.password = orthancSettings.OrthancPassword
+    this.address = orthancSettings.orthancAddress
+    this.port = orthancSettings.orthancPort
+    this.username = orthancSettings.orthancUsername
+    this.password = orthancSettings.orthancPassword
     return this.address + ':' + this.port
   },
 

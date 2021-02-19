@@ -3,7 +3,7 @@ var adminRouter = express.Router()
 // Handle controller errors
 require('express-async-errors')
 
-const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, getMode, changeMode, getOptions } = require('../controllers/options')
+const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, getMode, changeMode, getOptions, getRedisServer, setRedisServer } = require('../controllers/options')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
 const { getRoles, createRole, modifyRole, deleteRole, getPermission } = require('../controllers/role')
 
@@ -26,8 +26,10 @@ adminRouter.put('/options', [userAuthMidelware, userAdminMidelware], changeSched
 adminRouter.put('/monitoring/burning/options', [userAuthMidelware, userAdminMidelware],updateRobotOptions)
 
 // OrthancToolsJS Settings routes
-adminRouter.get('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], getOrthancServer)
-adminRouter.put('/options/orthanc-server', [userAuthMidelware, userAdminMidelware], setOrthancServer)
+adminRouter.get('/options/orthanc', [userAuthMidelware, userAdminMidelware], getOrthancServer)
+adminRouter.put('/options/orthanc', [userAuthMidelware, userAdminMidelware], setOrthancServer)
+adminRouter.get('/options/redis', [userAuthMidelware, userAdminMidelware], getRedisServer)
+adminRouter.put('/options/redis', [userAuthMidelware, userAdminMidelware], setRedisServer)
 
 // Orthanc System API
 adminRouter.get('/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)

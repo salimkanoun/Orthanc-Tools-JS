@@ -26,12 +26,12 @@ class CdBurner {
         this.jobQueue = new Queue(1, Infinity);
     }
 
-    async setSettings() {
+    setSettings = async () => {
 
         //Date format
         this.dateOptions = { month: 'numeric', day: 'numeric', year : 'numeric' } //precision of the date
-
-        const options = await Options.getCdBurnerOptions()
+        
+        const options = await Options.getOptions()
         
         //format of date (using contry convention)
         if (options.burner_date_format === "fr") {

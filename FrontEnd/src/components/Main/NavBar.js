@@ -71,17 +71,17 @@ export default class NavBar extends Component {
        <Navbar fixed='top' collapseOnSelect expand='lg' bg={this.state.navbar === 'responsive' ? 'primary' : this.state.navBackground} variant='dark' >
           <Navbar.Toggle aria-controls='responsive_navbar' />
           <Navbar.Collapse id='responsive_navbvar'>
-            {this.state.navbar === 'responsive' ? <div className='float-right'><ToolsPanel roles={this.props.token} apercu={false} /></div> : null}
+            {this.state.navbar === 'responsive' ? <div className='float-right'><ToolsPanel roles={this.props.roles} apercu={false} /></div> : null}
             <Nav className='mr-auto'>
-              <Link className={this.getLinkClass('content')} onClick={this.selectTabHandler} name='content' to='/orthanc-content' hidden={!this.props.token.content}>Orthanc Content</Link>
-              <Link className={this.getLinkClass('import')} onClick={this.selectTabHandler} name='import' to='/import' hidden={!this.props.token.import}>Import</Link>
-              <Link className={this.getLinkClass('query')} onClick={this.selectTabHandler} name='query' to='/query' hidden={!this.props.token.query}>Query</Link>
-              <Link className={this.getLinkClass('auto-query')} onClick={this.selectTabHandler} name='auto-query' to='/auto-query' hidden={!this.props.token.auto_query}>Auto-Retrieve</Link>
-              <Link className={this.getLinkClass('burner')} onClick={this.selectTabHandler} name='burner' to='/cd-burner' hidden={!this.props.token.cd_burner}>CD-burner</Link>
-              <Link className={this.getLinkClass('administration')} onClick={this.selectTabHandler} name='administration' to='/administration' hidden={!this.props.token.admin}>Administration</Link>
+              <Link className={this.getLinkClass('content')} onClick={this.selectTabHandler} name='content' to='/orthanc-content' hidden={!this.props.roles.content}>Orthanc Content</Link>
+              <Link className={this.getLinkClass('import')} onClick={this.selectTabHandler} name='import' to='/import' hidden={!this.props.roles.import}>Import</Link>
+              <Link className={this.getLinkClass('query')} onClick={this.selectTabHandler} name='query' to='/query' hidden={!this.props.roles.query}>Query</Link>
+              <Link className={this.getLinkClass('auto-query')} onClick={this.selectTabHandler} name='auto-query' to='/auto-query' hidden={!this.props.roles.auto_query}>Auto-Retrieve</Link>
+              <Link className={this.getLinkClass('burner')} onClick={this.selectTabHandler} name='burner' to='/cd-burner' hidden={!this.props.roles.cd_burner}>CD-burner</Link>
+              <Link className={this.getLinkClass('administration')} onClick={this.selectTabHandler} name='administration' to='/administration' hidden={!this.props.roles.admin}>Administration</Link>
               <Link className={this.getLinkClass('log-out')} name='log-out' onClick={this.props.onLogout} to='/'>Log out</Link>
             </Nav>
-            {this.state.navbar === 'classique' ? <ToolsPanel roles={this.props.token} apercu={true} /> : null}
+            {this.state.navbar === 'classique' ? <ToolsPanel roles={this.props.roles} apercu={true} /> : null}
           </Navbar.Collapse>
         </Navbar>
         <div className='content-panel'>

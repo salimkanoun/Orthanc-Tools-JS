@@ -17,10 +17,10 @@ services:
         volumes: ["orthanctoolsjs:/OrthancToolsJs/data:Z"]
         environment:
             TZ: "Europe/Paris"
-            OrthancAddress: "http://orthanc"
-            OrthancPort: "8042"
-            OrthancUsername: "salim"
-            OrthancPassword: "salim"
+            ORTHANC_ADDRESS: "http://orthanc"
+            ORTHANC_PORT: "8042"
+            ORTHANC_USERNAME: "salim"
+            ORTHANC_PASSWORD: "salim"
             DOMAIN_PROTOCOL: "https"
             DOMAIN_ADDRESS: "0e44be91-4285-440b-a132-c6580851eed7.pub.instances.scw.cloud"
             REDIS_HOST: "redis"

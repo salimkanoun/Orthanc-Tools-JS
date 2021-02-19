@@ -1,18 +1,28 @@
 import React, { Component, Fragment } from 'react'
+import { toast } from 'react-toastify'
 
+import apis from '../../../../services/apis'
 export default class RedisSettings extends Component {
 
     /** Init State */
     state = {
         redisAddress: 'localhost',
-        resdisPort: 6379
+        redisPort: 6379,
+        redisPassword : ''
     }
 
     /**
      * Fetch value from BackEnd
      */
     componentDidMount = async () => {
-        //TO DO GET INFOS FROM BACKEND
+        try {
+            let answer = await apis.options.getRedisServer()
+            this.setState({
+                ...answer
+            })
+        } catch (error) {
+            toast.error(error.statusText)
+        }
     }
 
     render = () => {
@@ -20,10 +30,12 @@ export default class RedisSettings extends Component {
             <Fragment>
                 <div className="form-group">
                     <h2 className="card-title">Redis Server</h2>
-                    <label htmlFor="address">Address : </label>
+                    <label htmlFor="redisAddress">Address : </label>
                     <input type='text' name="redisAddress" className="form-control" value={this.state.redisAddress} placeholder="" disabled />
-                    <label htmlFor="port">Port : </label>
-                    <input type='number' min="0" max="999999" name="redisPort" className="form-control" value={this.state.resdisPort} disabled />
+                    <label htmlFor="redisPort">Port : </label>
+                    <input type='number' min="0" max="999999" name="redisPort" className="form-control" value={this.state.redisPort} disabled />
+                    <label htmlFor="redisPassword">Password : </label>
+                    <input type='password' name="redisPassword" className="form-control" value={this.state.redisPassword} disabled />
                 </div>
             </Fragment>
         )
