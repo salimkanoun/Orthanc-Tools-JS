@@ -6,8 +6,7 @@ import fetchIntercept from 'fetch-intercept'
 import NavBar from './components/Main/NavBar'
 import Authentication from './components/Authentication'
 
-import { resetReducer } from './actions/LogOut'
-import { saveUsername } from './actions/Username'
+import { login, logout } from './actions/login'
 import { connect } from 'react-redux'
 import apis from './services/apis'
 
@@ -34,11 +33,6 @@ toast.configure({
 })
 
 class App extends Component {
-
-  state = {
-    authentified: false,
-    roles: {}
-  }
 
   constructor(props){
     super(props)
@@ -73,21 +67,12 @@ class App extends Component {
 
 
   login = (logInAnwser) => {
-    this.setState({
-      authentified: true,
-      roles: logInAnwser
-    })
-    this.props.saveUsername(logInAnwser.username)
+    this.props.login(logInAnwser)
   }
 
-  logout = () => {
-    this.props.resetReducer() //empty all reducer
-    apis.authentication.logOut()//ask backend to reset cookie http only
-    this.setState({
-      authentified: false,
-      roles : {}
-    })
-
+  logout = async () => {
+    this.props.logout() //empty all reducer
+    await apis.authentication.logOut() //ask backend to reset cookie http only
   }
 
 
@@ -95,7 +80,7 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        {this.state.authentified ? <NavBar onLogout={this.logout} token={this.state.roles} /> : <Authentication onLogin={this.login} />}
+        {this.props.username ? <NavBar onLogout={this.logout} roles={this.props.roles} /> : <Authentication onLogin={this.login} />}
       </BrowserRouter>
     );
   }
@@ -103,9 +88,16 @@ class App extends Component {
 
 
 const mapsDispatchToProps = {
-  resetReducer,
-  saveUsername
+  logout,
+  login
 }
 
-export default connect(null, mapsDispatchToProps)(App)
+const mapStateToProps = (state) => {
+  return {
+    username: state.OrthancTools.username,
+    roles: state.OrthancTools.roles
+  }
+}
+
+export default connect(mapStateToProps, mapsDispatchToProps)(App)
 

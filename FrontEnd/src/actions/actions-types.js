@@ -54,8 +54,6 @@ export const REMOVE_STUDY_EXPORT_LIST = 'REMOVE_STUDY_EXPORT_LIST'
 export const REMOVE_SERIES_EXPORT_LIST = 'REMOVE_SERIES_EXPORt_LIST'
 export const EMPTY_EXPORT_LIST = 'EMPTY_EXPORT_LIST'
 
-//Log out
+//Log In / out
 export const LOG_OUT = 'LOG_OUT'
-
-//save username
-export const SAVE_USERNAME = 'SAVE_USERNAME'
+export const LOG_IN = 'LOG_IN'
