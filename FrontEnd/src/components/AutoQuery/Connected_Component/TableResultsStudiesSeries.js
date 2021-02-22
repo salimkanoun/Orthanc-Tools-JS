@@ -63,8 +63,7 @@ class TableResultsStudiesSeries extends Component {
                 StudyInstanceUID: studyUID,
                 SeriesNumber: '',
                 NumberOfSeriesRelatedInstances: ''
-            },
-            Normalize: false
+            }
         }
 
         let queryAnswers = await apis.query.dicomQuery(aet, queryData);

@@ -67,8 +67,7 @@ class QueryForm extends Component {
         AccessionNumber: formData.accessionNumber,
         NumberOfStudyRelatedInstances: '',
         NumberOfStudyRelatedSeries: ''
-      },
-      Normalize: false
+      }
     }
 
 
