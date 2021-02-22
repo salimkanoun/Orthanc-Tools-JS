@@ -83,19 +83,19 @@ export default class AutoRetrieveSchedule extends Component {
         <div className="form-row">
           <div className="col">
             <label htmlFor='hour_start'>Start Hour : </label>
-            <input type='number' name='hour_start' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStart} />
+            <input type='number' name='hourStart' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStart} />
           </div>
           <div className="col">
             <label htmlFor='min_start'>Start Minutes : </label>
-            <input type='number_start' name='min_start' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStart} />
+            <input type='number_start' name='minStart' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStart} />
           </div>
           <div className="col">
             <label htmlFor='hour_stop'>Stop Hour : </label>
-            <input type='number' name='hour_stop' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStop} />
+            <input type='number' name='hourStop' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStop} />
           </div>
           <div className="col">
             <label htmlFor='min_stop'>Stop Minutes : </label>
-            <input type='number' name='min_stop' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStop} />
+            <input type='number' name='minStop' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStop} />
           </div>
         </div>
         <div className="d-flex justify-content-between">
