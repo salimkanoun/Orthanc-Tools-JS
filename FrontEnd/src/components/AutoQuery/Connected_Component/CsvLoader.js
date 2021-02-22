@@ -13,18 +13,17 @@ class CsvLoader extends Component {
 
             Papa.parse(files[0], {
                 header: true,
+                skipEmptyLines:true,
                 complete: this.completeFn// base config to use for each file
             })
         }
     }
 
     completeFn = (result, file) => {
-        console.log(result)
         let currentObject = this
         let csvData = result.data;
 
         csvData.forEach((query) => {
-            console.log(query['Acquisition Date'])
             let dateFrom, dateTo
             if (query['Acquisition Date'] === undefined) {
 

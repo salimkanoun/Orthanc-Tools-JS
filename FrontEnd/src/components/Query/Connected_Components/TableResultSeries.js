@@ -82,8 +82,7 @@ class TableResultSeries extends Component {
                 StudyInstanceUID: studyUID,
                 SeriesNumber: '',
                 NumberOfSeriesRelatedInstances: ''
-            },
-            Normalize: false
+            }
         }
 
         try {
