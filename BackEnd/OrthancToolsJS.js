@@ -1,3 +1,7 @@
+
+const dotenv = require("dotenv")
+dotenv.config()
+
 var createError = require('http-errors')
 var express = require('express')
 var morgan = require('morgan')
@@ -14,10 +18,7 @@ var app = express()
 
 var autoStartMonitoring = require('./model/monitoring/AutoStartMonitoring')
 
-const dotenv = require("dotenv");
 const OTJSError = require('./Exceptions/OTJSError')
-// get config vars
-dotenv.config();
 
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
 app.use(bodyParser.json({ limit: '10mb' }));
@@ -100,6 +101,8 @@ app.listen(port, (error) => {
     console.error(error)
     return process.exit(1)
   } else {
+    console.log(process.env.TZ)
+    console.log(new Date().toTimeString())
     console.log('Listening on port: ' + port)
     if (app.get('env') === 'production') {
       //Autostart monitonring service if needed
