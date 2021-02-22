@@ -20,6 +20,8 @@ const REDIS_OPTIONS = {
 let exporter = new Exporter();
 let orthanc = new Orthanc()
 
+const BULL_JOB_STATES = ["completed","active","waiting","delayed","paused","failed"]
+
 let instance
 class OrthancQueue {
   constructor() {
@@ -33,12 +35,6 @@ class OrthancQueue {
     this.anonQueue = new Queue('orthanc-anon', {redis:REDIS_OPTIONS})
     this.aetQueue = new Queue('orthanc-aet', {redis:REDIS_OPTIONS})
     this.validationQueue = new Queue('orthanc-validation', {redis:REDIS_OPTIONS})
-/*
-    this.exportQueue.on('error',(err)=>{console.error(err)})
-    this.deleteQueue.on('error',(err)=>{console.error(err)})
-    this.anonQueue.on('error',(err)=>{console.error(err)})
-    this.validationQueue.on('error',(err)=>{console.error(err)})
-    this.aetQueue.on('error',(err)=>{console.error(err)})*/
 
     //adding processor to queues
     this.exportQueue.isReady().then(()=>{
@@ -182,6 +178,8 @@ class OrthancQueue {
       } else {
         done("Orthanc Error Anonymizing")
       }
+    }).catch((err)=>{
+      done(err)
     })
   }
 
@@ -226,20 +224,24 @@ class OrthancQueue {
     OrthancQueue.buildDicomQuery(job.data.item)
     
     //Retrieve the item
-    const answerDetails = await orthanc.makeDicomQuery(job.data.item.OriginAET)
-    const answer = answerDetails[0]
-    const retrieveAnswer = await orthanc.makeRetrieve(answer.AnswerId, answer.AnswerNumber, await orthanc.getOrthancAetName(), false)
-    
-    //Monitor the orthanc job
-    await orthanc.monitorJob(retrieveAnswer.Path,(response)=>{
-      job.progress(response.Progress)
-    }, 2000).then(async(response)=>{
-      const orthancResults = await orthanc.findInOrthancByUid(response.Content['Query'][0]['0020,000d'])
-      done(null, orthancResults[0].ID)
-    }).catch((error)=>{
-      console.error(error)
+    try {
+      const answerDetails = await orthanc.makeDicomQuery(job.data.item.OriginAET)
+      const answer = answerDetails[0]
+      const retrieveAnswer = await orthanc.makeRetrieve(answer.AnswerId, answer.AnswerNumber, await orthanc.getOrthancAetName(), false)
+
+      //Monitor the orthanc job
+      await orthanc.monitorJob(retrieveAnswer.Path,(response)=>{
+        job.progress(response.Progress)
+      }, 2000).then(async(response)=>{
+        const orthancResults = await orthanc.findInOrthancByUid(response.Content['Query'][0]['0020,000d'])
+        done(null, orthancResults[0].ID)
+      }).catch((error)=>{
+        console.error(error)
+        done(error)
+      })
+    } catch (error) {
       done(error)
-    })
+    }
   }
 
   /**
@@ -367,7 +369,7 @@ class OrthancQueue {
    * @returns {[Job]} return bull jobs
    */
   async getArchiveCreationJobs(taskId){
-    let jobs = await this.exportQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    let jobs = await this.exportQueue.getJobs(BULL_JOB_STATES);
     return jobs.filter(job=>job.data.taskId === taskId);
   }
 
@@ -377,7 +379,7 @@ class OrthancQueue {
    * @returns {[Job]} return bull jobs
    */
   async getAnonimizationJobs(taskId){
-    let jobs = await this.anonQueue.getJobs(["completed","active","waiting","delayed","paused"]).catch((err)=>{console.log(err)});
+    let jobs = await this.anonQueue.getJobs(BULL_JOB_STATES).catch((err)=>{console.log(err)});
 
     return jobs.filter(job=>job.data.taskId === taskId);
   }
@@ -388,7 +390,7 @@ class OrthancQueue {
    * @returns {[Job]} return bull jobs
    */
   async getDeleteJobs(taskId){
-    let jobs = await this.deleteQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    let jobs = await this.deleteQueue.getJobs(BULL_JOB_STATES);
     return jobs.filter(job=>job.data.taskId === taskId);
   }
 
@@ -398,7 +400,7 @@ class OrthancQueue {
    * @returns {[Job]} return bull jobs
    */
   async getValidationJobs(taskId){
-    let jobs = await this.validationQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    let jobs = await this.validationQueue.getJobs(BULL_JOB_STATES);
     return jobs.filter(job=>job.data.taskId === taskId);
   }
 
@@ -408,7 +410,7 @@ class OrthancQueue {
    * @returns {[Job]} return bull jobs
    */
   async getRetrieveItem(taskId){
-    let jobs = await this.aetQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    let jobs = await this.aetQueue.getJobs(BULL_JOB_STATES);
     return jobs.filter(job=>job.data.taskId === taskId);
   }
 
@@ -418,7 +420,7 @@ class OrthancQueue {
    * @returns {[Job]} return bull jobs
    */
   async getUserArchiveCreationJobs(user){
-    let jobs = await this.exportQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    let jobs = await this.exportQueue.getJobs(BULL_JOB_STATES);
     return jobs.filter(job=>job.data.creator === user);
   }
 
@@ -428,7 +430,7 @@ class OrthancQueue {
    * @returns {[Job]} return bull jobs
    */
   async getUserAnonimizationJobs(user){
-    let jobs = await this.anonQueue.getJobs(["completed","active","waiting","delayed","paused"]).catch((err)=>{console.log(err)});
+    let jobs = await this.anonQueue.getJobs(BULL_JOB_STATES).catch((err)=>{console.log(err)});
     return jobs.filter(job=>job.data.creator === user);
   }
 
@@ -438,7 +440,7 @@ class OrthancQueue {
    * @returns {[Job]} return bull jobs
    */
   async getUserDeleteJobs(user){
-    let jobs = await this.deleteQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    let jobs = await this.deleteQueue.getJobs(BULL_JOB_STATES);
     return jobs.filter(job=>job.data.creator === user);
   }
 
@@ -448,7 +450,7 @@ class OrthancQueue {
    * @returns {[Job]} return bull jobs
    */
   async getUserValidationJobs(user){
-    let jobs = await this.validationQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    let jobs = await this.validationQueue.getJobs(BULL_JOB_STATES);
     return jobs.filter(job=>job.data.creator === user);
   }
 
@@ -458,7 +460,7 @@ class OrthancQueue {
    * @returns {[Job]} return bull jobs
    */
   async getUserRetrieveItem(user){
-    let jobs = await this.aetQueue.getJobs(["completed","active","waiting","delayed","paused"]);
+    let jobs = await this.aetQueue.getJobs(BULL_JOB_STATES);
     return jobs.filter(job=>job.data.creator === user);
   }
 

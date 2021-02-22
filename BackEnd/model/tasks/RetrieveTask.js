@@ -85,11 +85,11 @@ class RetrieveTask {
             state = 'waiting validation';
         } else if (progress.validation < 100) {
             state = 'validation';
-        } else if (progress.validation === 100 && progress.retrieve === 0 && validationJobs.length === 0) {
+        } else if (progress.validation === 100 && progress.retrieve === 0 && retrieveJobs.length === 0) {
             state = 'waiting retireve'
-        } else if (progress.validation === 100 && progress.retrieve < 100 && validationJobs.length !== 0) {
+        } else if (progress.validation === 100 && progress.retrieve < 100 && retrieveJobs.length !== 0) {
             state = 'retrieve';
-        } else if (progress.validation === 100 && progress.retrieve === 100 && validationJobs.length !== 0) {
+        } else if (progress.validation === 100 && progress.retrieve === 100 && retrieveJobs.length !== 0) {
             state = 'completed';
             for (const job of validationJobs) {
                 if(job.getState()==='failed') state = 'failed';
@@ -118,7 +118,7 @@ class RetrieveTask {
 
         //Makes validation
         let isValidated;
-        if(autoValidation&&retrieveJobs.length>0){
+        if( autoValidation && retrieveJobs.length > 0){
             isValidated = "Validated"
         }else if(autoValidation){
             isValidated =  "Waiting Approbation"
