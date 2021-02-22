@@ -496,7 +496,7 @@ class Orthanc {
             clearInterval(interval)
             reject(response)
           }
-        })
+        }).catch(reject)
       },updateInterval)
     })
   }
