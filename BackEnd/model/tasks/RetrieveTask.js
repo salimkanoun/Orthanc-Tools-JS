@@ -4,6 +4,8 @@ const TaskType = require("../TaskType");
 
 let orthancQueue = new OrthancQueue();
 
+const jobsStatus = ['completed', 'wait', 'active', 'delayed', 'failed']
+
 class RetrieveTask {
 
     /**
@@ -198,8 +200,8 @@ class RetrieveTask {
      * Remove all jobs for retrieval
      */
     static async flush(){
-        (await orthancQueue.aetQueue.getJobs()).forEach(job=>job.remove());
-        (await orthancQueue.validationQueue.getJobs()).forEach(job=>job.remove());
+        await Promise.all(jobsStatus.map(x=>orthancQueue.aetQueue.clean(1, x)));
+        await Promise.all(jobsStatus.map(x=>orthancQueue.validationQueue.clean(1, x)));
     }
 }
 

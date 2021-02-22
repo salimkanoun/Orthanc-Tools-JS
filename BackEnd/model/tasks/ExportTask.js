@@ -6,6 +6,8 @@ const TaskType = require("../TaskType");
 let orthancQueue =new OrthancQueue();
 let exporter = new Exporter();
 
+const jobsStatus = ['completed', 'wait', 'active', 'delayed', 'failed']
+
 class ExportTask {
 
     /**
@@ -93,8 +95,8 @@ class ExportTask {
      * Remove all jobs for export
      */
     static async flush(){
-        (await orthancQueue.exportQueue.getJobs()).forEach(job=>job.remove());
-        (await exporter.sendQueue.getJobs()).forEach(job=>job.remove());
+        await Promise.all(jobsStatus.map(x=>orthancQueue.exportQueue.clean(1, x)));
+        await Promise.all(jobsStatus.map(x=>exporter.sendQueue.clean(1, x)));
     }
 }
 
