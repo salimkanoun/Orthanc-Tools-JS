@@ -28,7 +28,7 @@ export default class AutoRetrieveSchedule extends Component {
       })
       
       apis.options.getServerTime().then((serverTime)=>{
-        let cutTime = serverTime.split('T')[1].split('.')[0].split(':');
+        let cutTime = serverTime.split(' ')[2].split(':');
         this.setState({
           serverTime : cutTime[0]+':'+cutTime[1]
         })
@@ -36,7 +36,7 @@ export default class AutoRetrieveSchedule extends Component {
 
       this.serverTimeInterval = setInterval(()=>{
         apis.options.getServerTime().then((serverTime)=>{
-          let cutTime = serverTime.split('T')[1].split('.')[0].split(':');
+          let cutTime = serverTime.split(' ')[2].split(':');
           this.setState({
             serverTime : cutTime[0]+':'+cutTime[1]
           })

@@ -61,7 +61,7 @@ router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', [userAuthMidelware,cd
 
 //Server Time
 router.get('/tools/time', userAuthMidelware, (req, res)=>{
-    res.json(new Date());
+    res.send((new Date()).toLocaleString());
 })
 
 /*
