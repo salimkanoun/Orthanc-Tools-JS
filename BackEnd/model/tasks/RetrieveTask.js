@@ -1,4 +1,3 @@
-const { default: retrieve } = require("../../../FrontEnd/src/services/retrieve");
 const { OTJSForbiddenException, OTJSNotFoundException } = require("../../Exceptions/OTJSErrors");
 const OrthancQueue = require("../OrthancQueue");
 const TaskType = require("../TaskType");
@@ -117,7 +116,7 @@ class RetrieveTask {
             })
         }
 
-        approved = valid && retrieveJobs.length>0
+        approved = valid && retrieveJobs.length > 0
 
         return {
             id,
@@ -127,8 +126,7 @@ class RetrieveTask {
             state,
             details: {
                 projectName : validationJobs[0].data.projectName,
-                valid,
-                approved,
+                isValidated,
                 items
             }
         }
