@@ -16,6 +16,9 @@ export default class MonitorTask extends MonitorJob {
         try {
             task = await apis.task.getTask(jobUuid)
         } catch (error) {
+            if (error.status === 404) {
+                this.stopMonitoringJob()
+            }
             return
         }
 

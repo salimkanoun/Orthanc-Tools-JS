@@ -4,6 +4,8 @@ const TaskType = require("../TaskType");
 
 let orthancQueue = new OrthancQueue;
 
+const jobsStatus = ['completed', 'wait', 'active', 'delayed', 'failed']
+
 class AnonTask {
     /**
      * Get the average progress of all the jobs of a task
@@ -132,7 +134,7 @@ class AnonTask {
      * Remove all jobs for anonimization
      */
     static async flush(){
-        (await orthancQueue.anonQueue.getJobs()).forEach(job=>job.remove());
+        await Promise.all(jobsStatus.map(x=>orthancQueue.anonQueue.clean(1, x)));
     }
 }
 
