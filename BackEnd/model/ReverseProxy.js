@@ -76,7 +76,7 @@ const ReverseProxy = {
         'Content-Length': data.length,
         'Accept' : 'application/dicom'
       },
-      body: JSON.stringify(data)
+      body: (method !== 'GET'?JSON.stringify(data):undefined)
     }
 
     return options
