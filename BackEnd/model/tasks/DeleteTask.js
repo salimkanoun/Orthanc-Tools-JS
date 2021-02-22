@@ -79,7 +79,7 @@ class DeleteTask {
             creator: jobs[0].data.creator,
             progress,
             state,
-            content: {}
+            details: {}
         }
     }
 

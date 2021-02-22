@@ -40,7 +40,7 @@ class AnonymizePanelProgress extends Component {
         this.task.onUpdate((info) => {
             let success = 0
             let failures = 0
-            info.content.items.forEach(async item => {
+            info.details.items.forEach(async item => {
                 switch (item.state) {
                     case 'completed':
                         success++
@@ -58,9 +58,9 @@ class AnonymizePanelProgress extends Component {
             this.setState({
                 success,
                 failures,
-                numberOfItem: info.content.items.length
+                numberOfItem: info.details.items.length
             })
-            if (success + failures === info.content.items.length) {
+            if (success + failures === info.details.items.length) {
                 this.stopMonitoring()
             }
         })

@@ -58,7 +58,7 @@ class ExportTask {
                 sending : (sendJob[0]?await sendJob[0].progress():0)
             },
             state,
-            content: {}
+            details: {}
         }
     }
 

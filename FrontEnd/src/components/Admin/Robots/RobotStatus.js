@@ -94,10 +94,10 @@ export default class RobotStatus extends Component {
             answerData.forEach(robotJob => {
                 rows.push({
                     key: Math.random(),
-                    name: robotJob.content.projectName,
+                    name: robotJob.details.projectName,
                     username: robotJob.creator,
-                    queriesNb: robotJob.content.items.length,
-                    validation: robotJob.content.isValidated
+                    queriesNb: robotJob.details.items.length,
+                    validation: robotJob.details.isValidated
                 })
 
             });

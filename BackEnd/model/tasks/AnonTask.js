@@ -77,7 +77,7 @@ class AnonTask {
             creator: jobs[0].data.creator,
             progress,
             state,
-            content: {
+            details: {
                 items : // Format jobs into usable info about the items
                     await Promise.all(jobs.map(async job=>{
                     let state = await job.getState()
