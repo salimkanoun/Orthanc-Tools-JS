@@ -16,4 +16,3 @@ BackEnd/data/private_key/*
 !BackEnd/data/private_key/README
 
 FrontEnd/.eslintcache
-BackEnd/.env
