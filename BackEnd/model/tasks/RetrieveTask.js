@@ -1,5 +1,4 @@
 
-const { default: jobs } = require("../../../FrontEnd/src/services/jobs");
 const { OTJSForbiddenException, OTJSNotFoundException } = require("../../Exceptions/OTJSErrors");
 const OrthancQueue = require("../OrthancQueue");
 const TaskType = require("../TaskType");
