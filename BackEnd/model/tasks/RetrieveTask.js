@@ -116,7 +116,7 @@ class RetrieveTask {
             })
         }
 
-        approved = valid && retrieveJobs.length > 0
+        let approved = valid && retrieveJobs.length > 0
 
         return {
             id,
@@ -126,7 +126,8 @@ class RetrieveTask {
             state,
             details: {
                 projectName : validationJobs[0].data.projectName,
-                isValidated,
+                valid,
+                approved,
                 items
             }
         }

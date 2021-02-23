@@ -38,7 +38,7 @@ export default class RobotStatus extends Component {
                         </div>
                     )
                 }else{
-                    return(<p> Analysing project </p>)
+                    return(<p> Validated & approved </p>)
                 }
             } else {
                 return(<p> Analysing project </p>)
