@@ -100,13 +100,13 @@ class RetrieveTask {
         } else state = 'failed';
 
         //Check for the validation of the task and gather the items
-        let autoValidation = true;
+        let valid = true;
         let items = []
         for (let i = 0; i < validationJobs.length; i++) {
             const validateJob = validationJobs[i];
             const retrieveJob = retrieveJobs[i];
-            let Validated = (await validateJob.getState() === 'completed' ? await validateJob.finished(): false);
-            autoValidation = autoValidation&& Validated;
+            let Validated = (await validateJob.getState() === 'completed' ? await validateJob.finished(): null);
+            valid = valid && !!Validated;
             const state = (retrieveJob? await retrieveJob.getState() : 'waiting');
             items.push({
                 ...validateJob.data.item,
@@ -116,15 +116,7 @@ class RetrieveTask {
             })
         }
 
-        //Makes validation
-        let isValidated;
-        if( autoValidation && retrieveJobs.length > 0){
-            isValidated = "Validated"
-        }else if(autoValidation){
-            isValidated =  "Waiting Approbation"
-        }else {
-            isValidated =  "Validating"
-        }
+        approved = valid && retrieveJobs.length > 0
 
         return {
             id,
@@ -132,7 +124,7 @@ class RetrieveTask {
             creator: validationJobs[0].data.creator,
             progress,
             state,
-            content: {
+            details: {
                 projectName : validationJobs[0].data.projectName,
                 isValidated,
                 items

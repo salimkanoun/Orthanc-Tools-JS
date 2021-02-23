@@ -241,7 +241,7 @@ class RobotView extends Component {
 
         let newPercentageFailure = 0
 
-        response.content.items.forEach(item => {
+        response.details.items.forEach(item => {
 
             rowsRetrieveList.push({
                 //Merge Modalities (study level) to modality column
@@ -254,16 +254,17 @@ class RobotView extends Component {
             }
         });
 
+
         //SK CALCULER EN INSTANCE ET PAS EN STUDY (1 si pas d'info)
-        newPercentageFailure =  (newPercentageFailure / response.content.items.length)*100
+        newPercentageFailure =  (newPercentageFailure / response.details.items.length)*100
 
         let newTotalPercentageProgress = Math.round((response.progress.retrieve + Number.EPSILON) * 10) / 10
 
         console.log(newPercentageFailure)
         this.setState({
-            valid : response.content.valid,
-            approved : response.content.approved,
-            projectName: response.content.projectName,
+            valid : response.details.valid,
+            approved : response.details.approved,
+            projectName: response.details.projectName,
             rows: rowsRetrieveList,
             totalPercentageProgress: newTotalPercentageProgress,
             percentageFailure: newPercentageFailure
