@@ -14,6 +14,7 @@ import apis from '../../../services/apis'
 
 import { ReactComponent as CheckedSVG } from '../../../assets/images/check-circle.svg'
 import { ReactComponent as XSVG } from '../../../assets/images/x-circle.svg'
+import { ReactComponent as PendingSVG } from '../../../assets/images/pending.svg'
 
 import { addStudiesToExportList } from '../../../actions/ExportList'
 import { addStudiesToDeleteList } from '../../../actions/DeleteList'
@@ -101,6 +102,7 @@ class RobotView extends Component {
         text: 'Validated',
         filter: textFilter(),
         formatter : (cell, row, rowIndex, formatExtraData) => {
+            if (cell == null) return <div className="text-center"><PendingSVG/></div>
             return cell === true ? <div className="text-center"><CheckedSVG /></div> : <div className="text-center"><XSVG/></div>
         }
     }, {

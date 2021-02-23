@@ -18,7 +18,6 @@ export default class AutoRetrieveSchedule extends Component {
    */
   componentDidMount = async () => {
     try {
-      
       const response = await apis.options.getOptions()
       this.setState({
         hourStart: response.hour_start,
@@ -26,22 +25,7 @@ export default class AutoRetrieveSchedule extends Component {
         hourStop: response.hour_stop,
         minStop: response.min_stop
       })
-      
-      apis.options.getServerTime().then((serverTime)=>{
-        let cutTime = serverTime.split(' ')[2].split(':');
-        this.setState({
-          serverTime : cutTime[0]+':'+cutTime[1]
-        })
-      })
-
-      this.serverTimeInterval = setInterval(()=>{
-        apis.options.getServerTime().then((serverTime)=>{
-          let cutTime = serverTime.split(' ')[2].split(':');
-          this.setState({
-            serverTime : cutTime[0]+':'+cutTime[1]
-          })
-        })
-      },30000);
+      await this.refreshServerTime()
 
     } catch (error) {
       toast.error(error.statusText)
@@ -49,8 +33,13 @@ export default class AutoRetrieveSchedule extends Component {
 
   }
 
-  componentWillUnmount = ()=>{
-    clearInterval(this.serverTimeInterval);
+  refreshServerTime = async () => {
+
+    let serverTime = await apis.options.getServerTime()
+    this.setState({
+      serverTime : serverTime
+    }) 
+
   }
 
   /**
@@ -72,8 +61,11 @@ export default class AutoRetrieveSchedule extends Component {
    */
   handleClick = () => {
     apis.options.setRobotScheduleHour(this.state.hourStart, this.state.minStart, this.state.hourStop, this.state.minStop)
-      .then(() => { toast.success('schedule updated') })
+      .then( async () => { 
+        this.refreshServerTime()
+        toast.success('schedule updated')})
       .catch(error => { toast.error(error.statusText) })
+    
   }
 
   render = () => {
