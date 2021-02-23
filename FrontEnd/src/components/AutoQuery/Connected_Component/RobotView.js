@@ -276,7 +276,8 @@ class RobotView extends Component {
     deleteQueryHandler = async (rowIndex, refreshHandler) => {
 
         try {
-            await apis.retrieveRobot.deleteRobotItem(this.props.username, rowIndex)
+            let row = this.state.rows[rowIndex];
+            await apis.retrieveRobot.deleteRobotItem(this.props.username, row.AnswerNumber+":"+row.AnswerId)
 
             if(this.state.rows.length <= 1){
                 this.setState({
