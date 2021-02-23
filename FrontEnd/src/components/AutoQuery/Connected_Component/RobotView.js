@@ -50,7 +50,7 @@ class RobotView extends Component {
     }
 
     columns = [{
-        dataField: 'Key',
+        dataField: 'id',
         hidden: true
     }, {
         dataField: 'Level',
@@ -248,6 +248,7 @@ class RobotView extends Component {
             rowsRetrieveList.push({
                 //Merge Modalities (study level) to modality column
                 Modality: item.ModalitiesInStudy,
+                id : item.AnswerNumber+":"+item.AnswerId,
                 ...item
             })
 
@@ -277,7 +278,7 @@ class RobotView extends Component {
 
         try {
             let row = this.state.rows[rowIndex];
-            await apis.retrieveRobot.deleteRobotItem(this.props.username, row.AnswerNumber+":"+row.AnswerId)
+            await apis.retrieveRobot.deleteRobotItem(this.props.username, row.id)
 
             if(this.state.rows.length <= 1){
                 this.setState({
@@ -323,7 +324,7 @@ class RobotView extends Component {
                     </div>
                 </div>
                 <input type='button' className="btn btn-danger" onClick={this.handleClickDeleteRobot} value="Delete Robot" />
-                <BootstrapTable ref={n => this.node = n} wrapperClasses="table-responsive" keyField="Key" striped={true} rowClasses={this.rowClasses} selectRow={this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
+                <BootstrapTable ref={n => this.node = n} wrapperClasses="table-responsive" keyField="id" striped={true} rowClasses={this.rowClasses} selectRow={this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
                 <AnonExportDeleteSendButton onAnonClick={this.sendToAnon} onExportClick={this.sendToExport} onDeleteClick={this.sendToDelete} />
             </div>
         )
