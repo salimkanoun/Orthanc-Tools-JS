@@ -228,6 +228,31 @@ const options = {
     })
 
   },
+  
+  setExportOptions(export_transcoding) {
+
+    let payload = {
+      export_transcoding
+    }
+
+    const exportOptions = {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    }
+
+    return fetch('/api/options/export', exportOptions).then(response => {
+      if (response.ok) {
+        return true
+      } else throw response
+    }).catch(error => {
+      throw error
+    })
+
+  },
 
   getServerTime() {
     return fetch('/api/tools/time').then(response => {
