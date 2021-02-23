@@ -72,6 +72,7 @@ class AnonymizePanelProgress extends Component {
     stopMonitoring = () => {
         if (this.task) this.task.stopMonitoringJob()
         this.props.emptyAnonymizeList()
+        this.props.onAnonymizeFinished()
     }
 
     render = () => {

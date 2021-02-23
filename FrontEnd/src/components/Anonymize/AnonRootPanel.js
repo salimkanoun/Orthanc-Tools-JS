@@ -16,11 +16,17 @@ class AnonRootPanel extends Component {
 
     componentDidMount = async () => {
         //Sk / Voir si robot anoymisation de cet utilisateur est en cours
-        let answer = await apis.task.getTaskOfUser(this.props.username, 'anonymize')
-        console.log(answer)
-        this.setState({
-            anonTaskId: answer.id
-        })
+        try{
+            let answer = await apis.task.getTaskOfUser(this.props.username, 'anonymize')
+            if(answer.state !== "completed"){
+                
+                this.setState({
+                    anonTaskId: answer.id
+                })
+
+            }
+        }catch (error) {}
+
 
     }
 
@@ -33,7 +39,7 @@ class AnonRootPanel extends Component {
     render = () => {
         return (
             <div>
-                { this.state.anonTaskId ? <AnonymizePanelProgress anonTaskID={this.state.anonTaskId} /> : null }
+                { this.state.anonTaskId ? <AnonymizePanelProgress onAnonymizeFinished = {() => this.setAnonTaskId(null) } anonTaskID={this.state.anonTaskId} /> : null }
                 { !this.state.anonTaskId ? <AnonymizePanel setTask={this.setAnonTaskId} /> : null}
                 { this.props.anonymizedList.length > 0 ? <AnonymizedResults /> : null}
             </div>
