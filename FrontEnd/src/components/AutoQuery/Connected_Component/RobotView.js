@@ -23,6 +23,7 @@ import MonitorTask from '../../../tools/MonitorTask'
 import { toast } from 'react-toastify';
 import { Fragment } from 'react';
 import Dropdown from 'react-bootstrap/esm/Dropdown';
+import retrieve from '../../../services/retrieve';
 
 
 /**
@@ -248,15 +249,18 @@ class RobotView extends Component {
                 ...item
             })
 
-            if (item.state === RobotView.ITEM_FAILED) {
-                newPercentageFailure++;
+            if (item.Status === RobotView.ITEM_FAILED) {
+                ++newPercentageFailure;
             }
         });
 
-        newPercentageFailure /= response.details.items.length
+
+        //SK CALCULER EN INSTANCE ET PAS EN STUDY (1 si pas d'info)
+        newPercentageFailure =  (newPercentageFailure / response.details.items.length)*100
 
         let newTotalPercentageProgress = Math.round((response.progress.retrieve + Number.EPSILON) * 10) / 10
 
+        console.log(newPercentageFailure)
         this.setState({
             valid : response.details.valid,
             approved : response.details.approved,

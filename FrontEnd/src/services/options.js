@@ -232,7 +232,7 @@ const options = {
   getServerTime() {
     return fetch('/api/tools/time').then(response => {
       if (response.ok) {
-        return response.json()
+        return response.text()
       }
       else throw response
     }).catch(error => {
