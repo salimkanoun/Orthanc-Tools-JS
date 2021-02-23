@@ -469,10 +469,11 @@ class OrthancQueue {
    * @param {JobItemRetrieve} item 
    */
   static buildDicomQuery(item) {
+    console.log(item)
     if (item.Level === OrthancQueryAnswer.LEVEL_STUDY) {
       orthanc.buildStudyDicomQuery('', '', '', '', '', '', item.StudyInstanceUID)
     } else if (item.Level === OrthancQueryAnswer.LEVEL_SERIES) {
-      orthanc.buildSeriesDicomQuery(item.studyInstanceUID, '', '', '', '', item.SeriesInstanceUID)
+      orthanc.buildSeriesDicomQuery(item.StudyInstanceUID, '', '', '', '', item.SeriesInstanceUID)
     }
   }
 

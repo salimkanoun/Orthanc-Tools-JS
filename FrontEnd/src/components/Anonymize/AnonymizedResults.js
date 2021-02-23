@@ -27,11 +27,8 @@ class AnonymizedResults extends Component {
     }
 
     getCSV = () => {
-
         //Level study ou series
         //Get le anonymized from pour le level study
-
-
     }
 
     emptyAnonymizedList = () => {
