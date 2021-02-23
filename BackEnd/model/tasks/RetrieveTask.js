@@ -1,3 +1,4 @@
+
 const { OTJSForbiddenException, OTJSNotFoundException } = require("../../Exceptions/OTJSErrors");
 const OrthancQueue = require("../OrthancQueue");
 const TaskType = require("../TaskType");
@@ -168,8 +169,8 @@ class RetrieveTask {
         let retrieveJobs = await orthancQueue.getRetrieveItem(taskId);
         if (retrieveJobs.length !== 0) throw new OTJSForbiddenException("Can't delete a robot already in progress");
         let validateJobs = await orthancQueue.getValidationJobs(taskId);
-        answersId = itemId.splice(0);
-        answerNumber = itemId;
+        let answerId = itemId.split(':')[1];
+        let answerNumber = itemId.split(':')[0];
         validateJobs.filter(job => job.data.item.AnswerNumber == answerNumber && job.data.item.AnswerId == answerId)[0].remove();
     }
 
