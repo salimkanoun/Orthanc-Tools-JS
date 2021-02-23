@@ -1,4 +1,5 @@
 
+const { default: jobs } = require("../../../FrontEnd/src/services/jobs");
 const { OTJSForbiddenException, OTJSNotFoundException } = require("../../Exceptions/OTJSErrors");
 const OrthancQueue = require("../OrthancQueue");
 const TaskType = require("../TaskType");
@@ -171,7 +172,9 @@ class RetrieveTask {
         let validateJobs = await orthancQueue.getValidationJobs(taskId);
         let answerId = itemId.split(':')[1];
         let answerNumber = itemId.split(':')[0];
-        validateJobs.filter(job => job.data.item.AnswerNumber == answerNumber && job.data.item.AnswerId == answerId)[0].remove();
+        let job = validateJobs.filter(job => job.data.item.AnswerNumber == answerNumber && job.data.item.AnswerId == answerId)[0];
+        if(!job)throw new OTJSNotFoundException("Item not found");
+        job.remove();
     }
 
     /**
