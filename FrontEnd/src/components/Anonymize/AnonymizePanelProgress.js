@@ -36,11 +36,11 @@ class AnonymizePanelProgress extends Component {
     }
 
     startMonitoring = () => {
-        this.task = new MonitorTask(this.props.task, 2000)
+        this.task = new MonitorTask(this.props.anonTaskID, 2000)
         this.task.onUpdate((info) => {
             let success = 0
             let failures = 0
-            info.content.items.forEach(async item => {
+            info.details.items.forEach(async item => {
                 switch (item.state) {
                     case 'completed':
                         success++
@@ -58,9 +58,9 @@ class AnonymizePanelProgress extends Component {
             this.setState({
                 success,
                 failures,
-                numberOfItem: info.content.items.length
+                numberOfItem: info.details.items.length
             })
-            if (success + failures === info.content.items.length) {
+            if (success + failures === info.details.items.length) {
                 this.stopMonitoring()
             }
         })
@@ -72,7 +72,7 @@ class AnonymizePanelProgress extends Component {
     stopMonitoring = () => {
         if (this.task) this.task.stopMonitoringJob()
         this.props.emptyAnonymizeList()
-        this.props.setTask(null)
+        this.props.onAnonymizeFinished()
     }
 
     render = () => {
@@ -94,29 +94,32 @@ class AnonymizePanelProgress extends Component {
 
         return (
             <Fragment>
-                <AnonymizeRobotDetails show={this.state.showRobotDetails} onHide={this.toogleModal} robotItems={this.state.robotItems} />
-                <div className="col-md-2 text-left">
-                    <CircularProgressbarWithChildren
-                        value={successPercent}
-                        text={'Studies Done : ' + itemProgression + '/' + this.state.numberOfItem}
-                        styles={buildStyles({
-                            textSize: '8px'
-                        })}>
-
-                        <CircularProgressbar
-                            value={failuresPercent}
+                <div className = "jumbotron">
+                    <h2 className='card-title mb-3'>Anonymize in progress</h2>
+                    <AnonymizeRobotDetails show={this.state.showRobotDetails} onHide={this.toogleModal} robotItems={this.state.robotItems} />
+                    <div className="col-md-2 text-left">
+                        <CircularProgressbarWithChildren
+                            value={successPercent}
+                            text={'Studies Done : ' + itemProgression + '/' + this.state.numberOfItem}
                             styles={buildStyles({
-                                pathColor: "#f00",
-                                trailColor: "transparent"
-                            })}
-                        />
-                    </CircularProgressbarWithChildren>
-                </div>
+                                textSize: '8px'
+                            })}>
 
-                <button type='button' className='btn btn-info float-right mr-2' onClick={() => this.toogleModal()} disabled>Show Details</button>
-                <button type='button' className='btn btn-danger float-right mr-2' onClick={() => alert('not implemented yet')} disabled>Delete</button>
-                <button type='button' className='btn btn-primary float-right mr-2' onClick={() => alert('not implemented yet')} disabled>Resume</button>
-                <button type='button' className='btn btn-warning float-right mr-2' onClick={() => alert('not implemented yet')} disabled>Pause</button>
+                            <CircularProgressbar
+                                value={failuresPercent}
+                                styles={buildStyles({
+                                    pathColor: "#f00",
+                                    trailColor: "transparent"
+                                })}
+                            />
+                        </CircularProgressbarWithChildren>
+                    </div>
+
+                    <button type='button' className='btn btn-info float-right mr-2' onClick={() => this.toogleModal()} disabled>Show Details</button>
+                    <button type='button' className='btn btn-danger float-right mr-2' onClick={() => alert('not implemented yet')} disabled>Delete</button>
+                    <button type='button' className='btn btn-primary float-right mr-2' onClick={() => alert('not implemented yet')} disabled>Resume</button>
+                    <button type='button' className='btn btn-warning float-right mr-2' onClick={() => alert('not implemented yet')} disabled>Pause</button>
+                </div>
             </Fragment>
         )
     }

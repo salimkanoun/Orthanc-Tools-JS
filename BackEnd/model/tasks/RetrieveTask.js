@@ -1,8 +1,11 @@
+
 const { OTJSForbiddenException, OTJSNotFoundException } = require("../../Exceptions/OTJSErrors");
 const OrthancQueue = require("../OrthancQueue");
 const TaskType = require("../TaskType");
 
 let orthancQueue = new OrthancQueue();
+
+const jobsStatus = ['completed', 'wait', 'active', 'delayed', 'failed']
 
 class RetrieveTask {
 
@@ -83,11 +86,11 @@ class RetrieveTask {
             state = 'waiting validation';
         } else if (progress.validation < 100) {
             state = 'validation';
-        } else if (progress.validation === 100 && progress.retrieve === 0 && validationJobs.length === 0) {
+        } else if (progress.validation === 100 && progress.retrieve === 0 && retrieveJobs.length === 0) {
             state = 'waiting retireve'
-        } else if (progress.validation === 100 && progress.retrieve < 100 && validationJobs.length !== 0) {
+        } else if (progress.validation === 100 && progress.retrieve < 100 && retrieveJobs.length !== 0) {
             state = 'retrieve';
-        } else if (progress.validation === 100 && progress.retrieve === 100 && validationJobs.length !== 0) {
+        } else if (progress.validation === 100 && progress.retrieve === 100 && retrieveJobs.length !== 0) {
             state = 'completed';
             for (const job of validationJobs) {
                 if(job.getState()==='failed') state = 'failed';
@@ -98,13 +101,13 @@ class RetrieveTask {
         } else state = 'failed';
 
         //Check for the validation of the task and gather the items
-        let autoValidation = true;
+        let valid = true;
         let items = []
         for (let i = 0; i < validationJobs.length; i++) {
             const validateJob = validationJobs[i];
             const retrieveJob = retrieveJobs[i];
-            let Validated = (await validateJob.getState() === 'completed' ? await validateJob.finished(): false);
-            autoValidation = autoValidation&& Validated;
+            let Validated = (await validateJob.getState() === 'completed' ? await validateJob.finished(): null);
+            valid = valid && !!Validated;
             const state = (retrieveJob? await retrieveJob.getState() : 'waiting');
             items.push({
                 ...validateJob.data.item,
@@ -114,15 +117,7 @@ class RetrieveTask {
             })
         }
 
-        //Makes validation
-        let isValidated;
-        if(autoValidation&&retrieveJobs.length>0){
-            isValidated = "Validated"
-        }else if(autoValidation){
-            isValidated =  "Waiting Approbation"
-        }else {
-            isValidated =  "Validating"
-        }
+        let approved = valid && retrieveJobs.length > 0
 
         return {
             id,
@@ -130,9 +125,10 @@ class RetrieveTask {
             creator: validationJobs[0].data.creator,
             progress,
             state,
-            content: {
+            details: {
                 projectName : validationJobs[0].data.projectName,
-                isValidated,
+                valid,
+                approved,
                 items
             }
         }
@@ -173,8 +169,11 @@ class RetrieveTask {
         let retrieveJobs = await orthancQueue.getRetrieveItem(taskId);
         if (retrieveJobs.length !== 0) throw new OTJSForbiddenException("Can't delete a robot already in progress");
         let validateJobs = await orthancQueue.getValidationJobs(taskId);
-        
-        validateJobs.filter(job => job.data.item.AnswerNumber == itemId)[0].remove();
+        let answerId = itemId.split(':')[1];
+        let answerNumber = itemId.split(':')[0];
+        let job = validateJobs.filter(job => job.data.item.AnswerNumber == answerNumber && job.data.item.AnswerId == answerId)[0];
+        if(!job)throw new OTJSNotFoundException("Item not found");
+        job.remove();
     }
 
     /**
@@ -198,8 +197,8 @@ class RetrieveTask {
      * Remove all jobs for retrieval
      */
     static async flush(){
-        (await orthancQueue.aetQueue.getJobs()).forEach(job=>job.remove());
-        (await orthancQueue.validationQueue.getJobs()).forEach(job=>job.remove());
+        await Promise.all(jobsStatus.map(x=>orthancQueue.aetQueue.clean(1, x)));
+        await Promise.all(jobsStatus.map(x=>orthancQueue.validationQueue.clean(1, x)));
     }
 }
 

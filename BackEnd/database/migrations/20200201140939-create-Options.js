@@ -83,6 +83,11 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'uk' 
+      },
+      export_transcoding : {
+        type: Sequelize.STRING,
+        allowNull: false,
+        defaultValue: 'None' 
       }
 
     }).then(() => {

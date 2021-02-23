@@ -4,6 +4,7 @@ const DeleteTask = require("../model/tasks/DeleteTask");
 const RetrieveTask = require("../model/tasks/RetrieveTask");
 const ExportTask = require("../model/tasks/ExportTask");
 const OrthancQueue = require("../model/OrthancQueue");
+const Options = require("../model/Options");
 
 const orthancQueue = new OrthancQueue();
 
@@ -58,7 +59,7 @@ const addExportTask = async function(req,res){
     
     let studies = req.body.Resources;
     let endpoint = req.body.endpoint;
-    let transcoding = req.body.transcoding;
+    let transcoding = Options.getOptions().export_transcoding;
     let id = await ExportTask.createTask(req.roles.username, studies, endpoint, transcoding);
     res.send(id);
 }

@@ -492,11 +492,11 @@ class Orthanc {
           if(response.State==="Success"){
             clearInterval(interval)
             resolve(response)
-          }else if(response.State==="Failed"){
+          }else if(response.State==="Failure"){
             clearInterval(interval)
             reject(response)
           }
-        })
+        }).catch(reject)
       },updateInterval)
     })
   }

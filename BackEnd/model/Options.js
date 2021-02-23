@@ -96,6 +96,14 @@ const Options = {
     let option = await Options.getOptions()
     option.ldap = mode
     await option.save()
+  },
+
+  setExportOption: async(transcoding)=>{
+    const option = await Options.getOptions()
+
+    option.export_transcoding = transcoding
+
+    await option.save()
   }
 
 }

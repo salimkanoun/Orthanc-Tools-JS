@@ -30,14 +30,18 @@ export default class RobotStatus extends Component {
         text: 'Validation Status',
         formatExtraData: this,
         formatter: (cell, row, rowIndex, parentComponent) => {
-            if (row.validation !== 'Waiting Approbation') {
-                return <div className="text-center">{row.validation}</div>
+            if (row.valid) {
+                if(!row.approved){
+                    return (
+                        <div className="text-center">
+                            <input type="button" className='btn btn-success' onClick={() => parentComponent.validationRobotHandler(row.username, parentComponent.refreshHandler)} value="Validate" />
+                        </div>
+                    )
+                }else{
+                    return(<p> Validated & approved </p>)
+                }
             } else {
-                return (
-                    <div className="text-center">
-                        <input type="button" className='btn btn-success' onClick={() => parentComponent.validationRobotHandler(row.username, parentComponent.refreshHandler)} value="Validate" />
-                    </div>
-                )
+                return(<p> Analysing project </p>)
             }
         }
     }, {
@@ -94,10 +98,11 @@ export default class RobotStatus extends Component {
             answerData.forEach(robotJob => {
                 rows.push({
                     key: Math.random(),
-                    name: robotJob.content.projectName,
+                    name: robotJob.details.projectName,
                     username: robotJob.creator,
-                    queriesNb: robotJob.content.items.length,
-                    validation: robotJob.content.isValidated
+                    queriesNb: robotJob.details.items.length,
+                    valid: robotJob.details.valid,
+                    approved: robotJob.details.approved
                 })
 
             });

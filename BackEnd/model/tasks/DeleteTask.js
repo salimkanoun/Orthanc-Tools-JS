@@ -3,6 +3,8 @@ const OrthancQueue = require("../OrthancQueue");
 const TaskType = require("../TaskType");
 const orthancQueue = new OrthancQueue()
 
+const jobsStatus = ['completed', 'wait', 'active', 'delayed', 'failed']
+
 class DeleteTask {
 
     /**
@@ -77,7 +79,7 @@ class DeleteTask {
             creator: jobs[0].data.creator,
             progress,
             state,
-            content: {}
+            details: {}
         }
     }
 
@@ -122,7 +124,7 @@ class DeleteTask {
      * Remove all jobs for deletion
      */
     static async flush(){
-        (await orthancQueue.deleteQueue.getJobs()).forEach(job=>job.remove());
+        await Promise.all(jobsStatus.map(x=>orthancQueue.deleteQueue.clean(1, x)));
     }
 }
 

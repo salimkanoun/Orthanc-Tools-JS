@@ -115,14 +115,17 @@ class Task {
         switch (type) {
             case TaskType.RETRIEVE:
                 task = await RetrieveTask.getUserTask(username);
+                if(!task)throw new OTJSNotFoundException('Unknown task');
                 RetrieveTask.delete(task.id);
                 break;
             case TaskType.DELETE:
                 task = await DeleteTask.getUserTask(username);
+                if(!task)throw new OTJSNotFoundException('Unknown task');
                 DeleteTask.delete(task.id);
                 break;
             case TaskType.ANONYMIZE:
                 task = await AnonTask.getUserTask(username);
+                if(!task)throw new OTJSNotFoundException('Unknown task');
                 AnonTask.delete(task.id);
                 break;
             default:

@@ -27,11 +27,8 @@ class AnonymizedResults extends Component {
     }
 
     getCSV = () => {
-
         //Level study ou series
         //Get le anonymized from pour le level study
-
-
     }
 
     emptyAnonymizedList = () => {
@@ -49,12 +46,11 @@ class AnonymizedResults extends Component {
 
     deleteList = () => {
         this.props.addStudiesToDeleteList(this.props.anonymizedList)
-        this.emptyAnonymizedList()
     }
 
     render = () => {
         return (
-            <div className='jumbotron' hidden={this.props.anonymizedList && this.props.anonymizedList.length === 0}>
+            <div className='jumbotron' >
                 <h2 className='card-title mb-3'>Anonymized studies</h2>
                 <div className='row'>
                     <div className='col-sm mb-3'>
