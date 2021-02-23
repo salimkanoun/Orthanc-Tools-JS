@@ -50,10 +50,9 @@ class App extends Component {
     
       response: async (response) => {
         if (response.status === 401 && !response.url.includes('authentication')) {
-          this.setState({
-            authentified: false
-          })
           toast.error('Session exprired, please re-identify')
+          await this.logout()
+          
         }
         return response;
       },
@@ -61,7 +60,7 @@ class App extends Component {
       responseError: function (error) {
         return Promise.reject(error);
       }
-    });
+    })
 
   }
 
