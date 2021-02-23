@@ -6,6 +6,7 @@ import WebdavEndpoints from './WebdavEndpoint'
 import EndpointForm from './EndpointForm'
 import SecurityRootPanel from './Security/SecurityRootPanel'
 import { toast } from 'react-toastify'
+import EndpointsOptions from './EndpointsOptions'
 
 const EndpointRootPanel = () => {
 
@@ -36,6 +37,7 @@ const EndpointRootPanel = () => {
                         <FtpEndpoints endpointsData={endpoints.ftp} onDeleteEndpoint={onDeleteEndpoint} />
                         <SftpEndpoints endpointsData={endpoints.sftp} onDeleteEndpoint={onDeleteEndpoint} />
                         <WebdavEndpoints endpointsData={endpoints.webdav} onDeleteEndpoint={onDeleteEndpoint} />
+                        <EndpointsOptions/>
                     </Fragment>
                 break
             case 'add':

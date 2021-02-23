@@ -60,4 +60,10 @@ const changeMode = async function(req, res) {
   res.json(true)
 }  
 
-module.exports = { changeSchedule, getOptions, getOrthancServer, setOrthancServer, getMode, changeMode, updateRobotOptions, getRedisServer, setRedisServer }
+
+const setExportOption = async function(req, res){
+  let body = req.body
+  Options.setExportOption(body.export_transcoding);
+  res.sendStatus(200);
+}
+module.exports = { changeSchedule, getOptions, getOrthancServer, setOrthancServer, getMode, changeMode, updateRobotOptions, getRedisServer, setRedisServer, setExportOption }
