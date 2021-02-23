@@ -168,8 +168,9 @@ class RetrieveTask {
         let retrieveJobs = await orthancQueue.getRetrieveItem(taskId);
         if (retrieveJobs.length !== 0) throw new OTJSForbiddenException("Can't delete a robot already in progress");
         let validateJobs = await orthancQueue.getValidationJobs(taskId);
-        
-        validateJobs.filter(job => job.data.item.AnswerNumber == itemId)[0].remove();
+        answersId = itemId.splice(0);
+        answerNumber = itemId;
+        validateJobs.filter(job => job.data.item.AnswerNumber == answerNumber && job.data.item.AnswerId == answerId)[0].remove();
     }
 
     /**
