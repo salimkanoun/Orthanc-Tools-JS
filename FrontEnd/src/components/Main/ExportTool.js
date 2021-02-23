@@ -26,6 +26,9 @@ class ExportTool extends Component {
                 aets: aets
             })
         } catch (error){
+            this.setState({
+                aets: []
+            })
             toast.error(error.statusText)
         }
 

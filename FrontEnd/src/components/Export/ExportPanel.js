@@ -80,6 +80,9 @@ class ExportPanel extends Component {
                 endpoints: endpoints
             })
         } catch (error) {
+            this.setState({
+                aets: []
+            })
             toast.error(error.statusText)
         }
 
