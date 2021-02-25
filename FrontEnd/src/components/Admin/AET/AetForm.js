@@ -64,7 +64,6 @@ export default class AetForm extends Component {
             })
             this.props.refreshAetData()
         } catch(error){
-            console.log(error)
             toast.error(error.statusText)
         }
         

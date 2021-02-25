@@ -34,8 +34,8 @@ import retrieve from '../../../services/retrieve';
 class RobotView extends Component {
 
     state = {
-        valid : null,
-        approved : null,
+        valid: null,
+        approved: null,
         rows: [],
         totalPercentageProgress: 0,
         percentageFailure: 0
@@ -101,9 +101,9 @@ class RobotView extends Component {
         dataField: 'Validated',
         text: 'Validated',
         filter: textFilter(),
-        formatter : (cell, row, rowIndex, formatExtraData) => {
-            if (cell == null) return <div className="text-center"><PendingSVG/></div>
-            return cell === true ? <div className="text-center"><CheckedSVG /></div> : <div className="text-center"><XSVG/></div>
+        formatter: (cell, row, rowIndex, formatExtraData) => {
+            if (cell == null) return <div className="text-center"><PendingSVG /></div>
+            return cell === true ? <div className="text-center"><CheckedSVG /></div> : <div className="text-center"><XSVG /></div>
         }
     }, {
         dataField: 'Status',
@@ -121,17 +121,17 @@ class RobotView extends Component {
         text: 'Remove Query',
         formatter: (cell, row, rowIndex, formatExtraData) => {
             return this.state.approved === false ?
-            (<div className="text-center">
-                <input type="button" className='btn btn-danger' onClick={() => formatExtraData.deleteQueryHandler(rowIndex, formatExtraData.refreshHandler)} value="Remove" />
-            </div>)
-            : null
+                (<div className="text-center">
+                    <input type="button" className='btn btn-danger' onClick={() => formatExtraData.deleteQueryHandler(rowIndex, formatExtraData.refreshHandler)} value="Remove" />
+                </div>)
+                : null
         },
         formatExtraData: this
     }, {
         dataField: 'Viewers',
         text: 'Viewers',
         formatter: function (cell, row, rowIndex, formatExtraData) {
-                return row.Status === RobotView.ITEM_SUCCESS ? 
+            return row.Status === RobotView.ITEM_SUCCESS ?
                 <Fragment>
                     <Dropdown onClick={this.handleClick} drop='left'>
                         <Dropdown.Toggle variant="success" id="dropdown-basic"  >
@@ -162,16 +162,28 @@ class RobotView extends Component {
             } else {
                 return true
             }
+        },
+        onSelectAll: (isSelect, rows, e) => {
+            if( ! isSelect) return []
+            let rowsToSelect = rows.map(row => {
+                if (row.Status === RobotView.ITEM_SUCCESS) {
+                    return row.id
+                }else{
+                    return false
+                }
+            })
+            return rowsToSelect;
         }
+
     }
 
     getSelectedItemsStudiesDetails = async () => {
 
         //get selected row keys
-        let selectedKeyRow = this.node.selectionContext.selected
+        let selectedIdRow = this.node.selectionContext.selected
         //get array of selected rows
         let seletectedRows = this.state.rows.filter(row => {
-            if (selectedKeyRow.includes(row.Key)) return true
+            if (selectedIdRow.includes(row.id)) return true
             else return false
         })
 
@@ -209,12 +221,12 @@ class RobotView extends Component {
 
     startProgressMonitoring = async () => {
         let response
-        try{
+        try {
             response = await apis.task.getTaskOfUser(this.props.username, 'retrieve')
-        } catch (error){
+        } catch (error) {
             return
         }
-        
+
         this.refreshHandler(response)
         this.task = new MonitorTask(response.id)
         this.task.onUpdate(this.refreshHandler.bind(this))
@@ -226,10 +238,10 @@ class RobotView extends Component {
     }
 
     refreshHandler = (response) => {
-        if(!response){
+        if (!response) {
             this.setState({
-                valid : null,
-                approved : null,
+                valid: null,
+                approved: null,
                 projectName: '',
                 rows: [],
                 totalPercentageProgress: 0,
@@ -248,7 +260,7 @@ class RobotView extends Component {
             rowsRetrieveList.push({
                 //Merge Modalities (study level) to modality column
                 Modality: item.ModalitiesInStudy,
-                id : item.AnswerNumber+":"+item.AnswerId,
+                id: item.AnswerNumber + ":" + item.AnswerId,
                 ...item
             })
 
@@ -259,14 +271,13 @@ class RobotView extends Component {
 
 
         //SK CALCULER EN INSTANCE ET PAS EN STUDY (1 si pas d'info)
-        newPercentageFailure =  (newPercentageFailure / response.details.items.length)*100
+        newPercentageFailure = (newPercentageFailure / response.details.items.length) * 100
 
         let newTotalPercentageProgress = Math.round((response.progress.retrieve + Number.EPSILON) * 10) / 10
-
-        console.log(newPercentageFailure)
+        
         this.setState({
-            valid : response.details.valid,
-            approved : response.details.approved,
+            valid: response.details.valid,
+            approved: response.details.approved,
             projectName: response.details.projectName,
             rows: rowsRetrieveList,
             totalPercentageProgress: newTotalPercentageProgress,
@@ -280,13 +291,13 @@ class RobotView extends Component {
             let row = this.state.rows[rowIndex];
             await apis.retrieveRobot.deleteRobotItem(this.props.username, row.id)
 
-            if(this.state.rows.length <= 1){
+            if (this.state.rows.length <= 1) {
                 this.setState({
                     ...this.state,
-                    rows:[]
+                    rows: []
                 })
                 this.task.stopMonitoringJob();
-            }else{
+            } else {
                 await apis.task.getTaskOfUser(this.props.username, 'retrieve').then(this.refreshHandler)
             }
         } catch (error) {

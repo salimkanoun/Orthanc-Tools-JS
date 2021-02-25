@@ -66,7 +66,6 @@ export default class Metadata extends Component {
     prepareData = (data) => {
         let answer = []
         for (let dicomTag of Object.keys(data).sort()) {
-            console.log(dicomTag)
             let tagName = data[dicomTag]['Name']
             let value = data[dicomTag]['Value']
 

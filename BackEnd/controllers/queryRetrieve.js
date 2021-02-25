@@ -10,7 +10,6 @@ const getParsedAnswer = async function (req, res) {
   const orthanc = new Orthanc()
   const level = await orthanc._getAnswerLevel(req.params.orthancIdQuery)
   const originAET = await orthanc._getAnswerOriginAET(req.params.orthancIdQuery)
-  console.log(level, originAET, req.params.orthancIdQuery)
   let answerDetails = []
   if (level === 'Study') {
     answerDetails = await orthanc.getStudyAnswerDetails(req.params.orthancIdQuery, originAET)
