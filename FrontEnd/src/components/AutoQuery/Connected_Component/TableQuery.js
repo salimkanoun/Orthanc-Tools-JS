@@ -241,8 +241,7 @@ class TableQuery extends Component {
     let data = this.node.props.data
     const toastId = toast.info('Starting Studies Queries', {autoClose : false} );
     let i = 0
-    console.log(data)
-    //SK ICI GERER LA PROGRESSION ET LA FIN FAIRE SWITCH DE TAB
+    
     for (const query of data) {
       i++
       toast.update(toastId, {

@@ -137,8 +137,6 @@ export default class CDBurner extends Component {
     }
 
     toogleHandler = async (event) => {
-
-        console.log(event)
         let startStatus = this.state.robotStarted
 
         try {

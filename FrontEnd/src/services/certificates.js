@@ -39,7 +39,6 @@ const certificates = {
   },
 
   async uploadCertificate(id, file) {
-    console.log(file);
     let fileText = await file.text()
     return fetch('api/certificates/upload/' + id, {
       method: 'POST',

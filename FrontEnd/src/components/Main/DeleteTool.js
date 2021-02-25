@@ -26,7 +26,7 @@ class DeleteTool extends Component {
     }
 
     updateToast = (progress) => {
-        toast.update(this.toast, { type: toast.TYPE.INFO, render: 'Delete progress : ' + progress + '%' })
+        toast.update(this.toast, { type: toast.TYPE.INFO, render: 'Delete progress : ' + Math.round(progress) + '%' })
     }
 
     successToast = () => {
