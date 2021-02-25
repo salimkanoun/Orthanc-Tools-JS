@@ -17,7 +17,7 @@ export default class Modify extends Component {
     }
 
     updateToast = (id, progress) => {
-        toast.update(this.state.toasts[id].current, { type: toast.TYPE.INFO, autoClose: false, render: 'Modify progress : ' + progress + '%' })
+        toast.update(this.state.toasts[id].current, { type: toast.TYPE.INFO, autoClose: false, render: 'Modify progress : ' + Math.round(progress) + '%' })
     }
 
     successToast = (id) => {
