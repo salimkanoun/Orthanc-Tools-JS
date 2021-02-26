@@ -5,7 +5,8 @@ const TaskType = require("../TaskType");
 
 let orthancQueue = new OrthancQueue();
 
-const jobsStatus = ['completed', 'wait', 'active', 'delayed', 'failed']
+const JOBS_STATUS = ['completed', 'wait', 'active', 'delayed', 'failed'];
+const JOBS_TTL = 5;
 
 class RetrieveTask {
 
@@ -15,19 +16,19 @@ class RetrieveTask {
      * @param {[Jobs]} retrieveJobs retrive jobs of the task 
      * @returns {any} objecting containing the progress of the task
      */
-    static async getProgress(validationJobs, retrieveJobs){
+    static async getProgress(validationJobs, retrieveJobs) {
         let validation = 0;
         for (const job of validationJobs) {
-            validation +=  (['completed','failed'].includes(await job.getState())?100:await job.progress());
+            validation += (['completed', 'failed'].includes(await job.getState()) ? 100 : await job.progress());
         }
         validation /= validationJobs.length;
 
         let retrieve = 0;
         for (const job of retrieveJobs) {
-            retrieve +=  (['completed','failed'].includes(await job.getState())?100:await job.progress());
+            retrieve += (['completed', 'failed'].includes(await job.getState()) ? 100 : await job.progress());
         }
         retrieve /= (retrieveJobs.length === 0 ? 1 : retrieveJobs.length);
-        return{
+        return {
             validation,
             retrieve,
         }
@@ -40,30 +41,27 @@ class RetrieveTask {
      * @param {[any]} answers querry answers from the aet to be retrieve from the aet
      * @returns {string} the uuid of the task 
      */
-    static async createTask(creator, projectName, answers){
-        let task = await RetrieveTask.getUserTask(creator);
+    static async createTask(creator, projectName, answers) {
+        let task = (await RetrieveTask.getUserTask(creator)||[])[0];
         // Checking for existing task of the user 
-        if(!!task){
-            // If the task is complete delete it if not theres an exception
-            if(['completed','failed'].includes(task.state)){
-                RetrieveTask.delete(task.id);
-            }
-            else{
-                throw new OTJSForbiddenException("Cant create two retrieval simulteanously");
-            }
+        if (!!task && !['completed', 'failed'].includes(task.state)) {
+            throw new OTJSForbiddenException("Cant create two retrieval simulteanously");
         }
-        
+
+        //Removing the oldest task and decreasing the ttl of other task
+        await RetrieveTask.decay(creator);
+
         //Creating the corresponding jobs
-        return orthancQueue.validateItems(creator, projectName, answers)
+        return orthancQueue.validateItems(creator, projectName, answers, JOBS_TTL)
     }
 
     /**
      * give the administrator approbation to the retrieve task
-     * @param {string} creator username of the creator of the task
+     * @param {string} id username of the creator of the task
      */
-    static async validateTask(creator){
-        let task = await RetrieveTask.getUserTask(creator);
-        if(task===null) throw new OTJSNotFoundException("No task of this kind");
+    static async validateTask(id) {
+        let task = await RetrieveTask.getTask(id);
+        if (task === null) throw new OTJSNotFoundException("No task of this kind");
         orthancQueue.approveTask(task.id);
     }
 
@@ -72,10 +70,10 @@ class RetrieveTask {
      * @param {string} id the uuid of the task to be returned
      * @returns {Task} the task info
      */
-    static async getTask(id){
+    static async getTask(id) {
         //Gathering the jobs of the corresponding task
         let validationJobs = await orthancQueue.getValidationJobs(id);
-        if(validationJobs.length === 0) return null; //If no jobs of this task exist then the task doesn't exist
+        if (validationJobs.length === 0) return null; //If no jobs of this task exist then the task doesn't exist
         let retrieveJobs = await orthancQueue.getRetrieveItem(id);
 
         let progress = await RetrieveTask.getProgress(validationJobs, retrieveJobs);
@@ -93,10 +91,10 @@ class RetrieveTask {
         } else if (progress.validation === 100 && progress.retrieve === 100 && retrieveJobs.length !== 0) {
             state = 'completed';
             for (const job of validationJobs) {
-                if(job.getState()==='failed') state = 'failed';
+                if (job.getState() === 'failed') state = 'failed';
             }
             for (const job of retrieveJobs) {
-                if(job.getState()==='failed') state = 'failed';
+                if (job.getState() === 'failed') state = 'failed';
             }
         } else state = 'failed';
 
@@ -106,14 +104,14 @@ class RetrieveTask {
         for (let i = 0; i < validationJobs.length; i++) {
             const validateJob = validationJobs[i];
             const retrieveJob = retrieveJobs[i];
-            let Validated = (await validateJob.getState() === 'completed' ? await validateJob.finished(): null);
+            let Validated = (await validateJob.getState() === 'completed' ? await validateJob.finished() : null);
             valid = valid && !!Validated;
-            const state = (retrieveJob? await retrieveJob.getState() : 'waiting');
+            const state = (retrieveJob ? await retrieveJob.getState() : 'waiting');
             items.push({
                 ...validateJob.data.item,
                 Validated,
                 Status: state,
-                RetrievedOrthancId: (state==="completed"? await retrieveJob.finished():null)
+                RetrievedOrthancId: (state === "completed" ? await retrieveJob.finished() : null)
             })
         }
 
@@ -126,30 +124,45 @@ class RetrieveTask {
             progress,
             state,
             details: {
-                projectName : validationJobs[0].data.projectName,
+                projectName: validationJobs[0].data.projectName,
                 valid,
                 approved,
                 items
-            }
+            },
+            ttl: validationJobs[0].data.ttl
         }
     }
 
-     /**
-     * get the task corresponding of user
-     * @param {string} user creator of the task to be returned
-     * @returns {Task} task of the user 
-     */
-    static async getUserTask(user){
+    /**
+    * get the task corresponding of user
+    * @param {string} user creator of the task to be returned
+    * @returns {Task} task of the user 
+    */
+    static async getUserTask(user) {
         let validateJobs = await orthancQueue.getUserValidationJobs(user);
-        if(validateJobs.length === 0) return null;
-        return RetrieveTask.getTask(validateJobs[0].data.taskId);
+
+        if (validateJobs.length === 0) return null;
+
+        let ids = [];
+        for (const job of validateJobs) {
+            if (!(ids.includes(job.data.taskId))) {
+                ids.push(job.data.taskId);
+            }
+        }
+        return Promise.all(ids.map(x => RetrieveTask.getTask(x))).then(res => {
+            let orderred = []
+            res.forEach(x => {
+                orderred[JOBS_TTL - x.ttl] = x;
+            });
+            return orderred;
+        });
     }
 
     /**
      * get the tasks of this type
      * @returns {[Task]} tasks of this type
      */
-    static async getTasks(){
+    static async getTasks() {
         let jobs = await orthancQueue.validationQueue.getJobs()
         let ids = [];
         for (const job of jobs) {
@@ -157,7 +170,7 @@ class RetrieveTask {
                 ids.push(job.data.taskId);
             }
         }
-        return await Promise.all(ids.map(id=>RetrieveTask.getTask(id)));
+        return await Promise.all(ids.map(id => RetrieveTask.getTask(id)));
     }
 
     /**
@@ -165,40 +178,74 @@ class RetrieveTask {
      * @param {string} taskId uuid of the task 
      * @param {string} itemId id of the item to be deleted 
      */
-    static async  deleteItem(taskId, itemId){
+    static async deleteItem(taskId, itemId) {
         let retrieveJobs = await orthancQueue.getRetrieveItem(taskId);
         if (retrieveJobs.length !== 0) throw new OTJSForbiddenException("Can't delete a robot already in progress");
         let validateJobs = await orthancQueue.getValidationJobs(taskId);
         let answerId = itemId.split(':')[1];
         let answerNumber = itemId.split(':')[0];
         let job = validateJobs.filter(job => job.data.item.AnswerNumber == answerNumber && job.data.item.AnswerId == answerId)[0];
-        if(!job)throw new OTJSNotFoundException("Item not found");
-        job.remove();
+        if (!job) throw new OTJSNotFoundException("Item not found");
+        await job.remove();
     }
 
     /**
      * delete the task of a given id
      * @param {string} taskId uuid of the task to be deleted
      */
-    static async delete(taskId){
+    static async delete(taskId) {
         let retrieveJobs = await orthancQueue.getRetrieveItem(taskId);
 
         //Checking if all the jobs are finished
-        let stateComplete = (await Promise.all(retrieveJobs.map(job=>job.getState()))).reduce((acc,x)=>acc&&x==='completed',true);
+        let stateComplete = (await Promise.all(retrieveJobs.map(job => job.getState()))).reduce((acc, x) => acc && x === 'completed', true);
 
         if (retrieveJobs.length !== 0 && !stateComplete) throw new OTJSForbiddenException("Can't delete a robot already in progress");
         let validateJobs = await orthancQueue.getValidationJobs(taskId);
 
-        validateJobs.forEach(job=>job.remove());
-        retrieveJobs.forEach(job=>job.remove());
+        validateJobs.forEach(job => job.remove());
+        retrieveJobs.forEach(job => job.remove());
     }
 
     /**
      * Remove all jobs for retrieval
      */
-    static async flush(){
-        await Promise.all(jobsStatus.map(x=>orthancQueue.aetQueue.clean(1, x)));
-        await Promise.all(jobsStatus.map(x=>orthancQueue.validationQueue.clean(1, x)));
+    static async flush() {
+        await Promise.all(JOBS_STATUS.map(x => orthancQueue.aetQueue.clean(1, x)));
+        await Promise.all(JOBS_STATUS.map(x => orthancQueue.validationQueue.clean(1, x)));
+    }
+
+
+    /**
+     * reduce the time to live of all the jobs of an user
+     */
+    static async decay(user) {
+        let validateJobs = await orthancQueue.getUserValidationJobs(user);
+        let retrieveJobs = await orthancQueue.getUserRetrieveItem(user);
+
+        await Promise.all(validateJobs.map(x => {
+            if (x.data.ttl === 1) {
+                return x.remove();
+            } else {
+                return x.update(
+                    {
+                        ...x.data,
+                        ttl: x.data.ttl - 1
+                    }
+                );
+            }
+        }));
+        await Promise.all(retrieveJobs.map(x => {
+            if (x.data.ttl === 1) {
+                return x.remove();
+            } else {
+                return x.update(
+                    {
+                        ...x.data,
+                        ttl: x.data.ttl - 1
+                    }
+                );
+            }
+        }));
     }
 }
 

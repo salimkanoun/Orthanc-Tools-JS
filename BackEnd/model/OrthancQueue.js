@@ -309,7 +309,7 @@ class OrthancQueue {
    * @param {[any]} items items to be retrieved
    * @returns {string} the task uuid
    */
-  validateItems(creator, projectName, items){
+  validateItems(creator, projectName, items, ttl){
     let taskId = 'r-'+uuid();
     
     // Checking for duplicate
@@ -335,6 +335,7 @@ class OrthancQueue {
           taskId,
           creator,
           projectName,
+          ttl,
           item
         }
       }

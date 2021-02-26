@@ -70,8 +70,7 @@ const addExportTask = async function(req,res){
  * @param {*} res request result
  */
 const validateRetrieve = async (req, res) => {
-    
-    await RetrieveTask.validateTask(req.roles.username);
+    await RetrieveTask.validateTask(req.params.id);
     res.sendStatus(200);
 }
 
@@ -82,8 +81,7 @@ const validateRetrieve = async (req, res) => {
  */
 const deleteRetrieveItem = async (req, res) => {
     
-    let task = await RetrieveTask.getUserTask(req.roles.username);
-    await RetrieveTask.deleteItem(task.id, req.params.id);
+    await RetrieveTask.deleteItem(req.params.taskId, req.params.itemId);
     res.sendStatus(200);
 }
 

@@ -105,7 +105,7 @@ const AnimatedSwitch = withRouter(({ location }) => (
         <Route exact path='/auto-query' component={AutoQueryRoot} />
         <Route exact path='/administration' component={AdminRootPanel} />
         <Route exact path='/orthanc-content' component={ContentRootPanel} />
-        <Route exact path='/robot/:username' render={(props) => <RobotView username={props.match.params.username} />} />
+        <Route exact path='/robot/:id' render={(props) => <RobotView id={props.match.params.id} />} />
         <Route exact path='/export' component={ExportPanel} />
         <Route exact path='/anonymize' component={AnonRootPanel} />
         <Route exact path='/cd-burner' component={CDBurner} />

@@ -4,7 +4,7 @@ const TaskType = require("../TaskType");
 
 let orthancQueue = new OrthancQueue;
 
-const jobsStatus = ['completed', 'wait', 'active', 'delayed', 'failed']
+const JOB_STATUS = ['completed', 'wait', 'active', 'delayed', 'failed']
 
 class AnonTask {
     /**
@@ -134,7 +134,7 @@ class AnonTask {
      * Remove all jobs for anonimization
      */
     static async flush(){
-        await Promise.all(jobsStatus.map(x=>orthancQueue.anonQueue.clean(1, x)));
+        await Promise.all(JOB_STATUS.map(x=>orthancQueue.anonQueue.clean(1, x)));
     }
 }
 

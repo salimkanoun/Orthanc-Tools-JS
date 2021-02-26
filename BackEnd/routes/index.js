@@ -89,7 +89,7 @@ router.post('/tasks/:user/export', [userAuthMidelware, exportExternMidelware], a
 router.get('/tasks/:username/:type', userAuthMidelware, getTaskWithUser)
 //SK ICI FAUT MUTIPLIER CETTE ROUTE POUR CHAQUE TYPE POUR ASSOCIER LE BON MIDDELWARE
 router.delete('/tasks/:username/:type', [userAuthMidelware, isCurrentUserOrAdminMidelWare], deleteTaskOfUser)
-router.delete('/tasks/:username/retrieve/:id', [userAuthMidelware, isCurrentUserOrAdminMidelWare, autoQueryMidelware], deleteRetrieveItem)
+router.delete('/tasks/retrieve/:taskId/:itemId', [userAuthMidelware, isCurrentUserOrAdminMidelWare, autoQueryMidelware], deleteRetrieveItem)
 router.get('/tasks/:id', [userAuthMidelware, ownTaskOrIsAdminMidelware], getTask)
 router.delete('/tasks/:id', [userAuthMidelware,ownTaskOrIsAdminMidelware], deleteTask)
 router.get('/tasks', [userAuthMidelware,userAdminMidelware],  getTasksIds)

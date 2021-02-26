@@ -34,6 +34,7 @@ import retrieve from '../../../services/retrieve';
 class RobotView extends Component {
 
     state = {
+        id : null,
         valid: null,
         approved: null,
         rows: [],
@@ -221,16 +222,31 @@ class RobotView extends Component {
 
     startProgressMonitoring = async () => {
         let response
-        try {
-            response = await apis.task.getTaskOfUser(this.props.username, 'retrieve')
-        } catch (error) {
-            return
+        if (!this.props.id) {
+            try {
+                response = await apis.task.getTaskOfUser(this.props.username, 'retrieve')
+            } catch (error) {
+                return
+            }
+            this.refreshHandler(response)
+            this.task = new MonitorTask(response.id)
+            this.task.onUpdate(this.refreshHandler.bind(this))
+            this.task.startMonitoringJob()
+            this.setState({
+                id:response.id,
+                creator:this.props.username
+            });
+        }else{
+            response = await apis.task.getTask(this.props.id);
+            this.setState({
+                id:response.id,
+                creator:response.creator
+            });
+            this.task = new MonitorTask(this.props.id)
+            this.task.onUpdate(this.refreshHandler.bind(this))
+            this.task.startMonitoringJob()
+            this.refreshHandler(response)
         }
-
-        this.refreshHandler(response)
-        this.task = new MonitorTask(response.id)
-        this.task.onUpdate(this.refreshHandler.bind(this))
-        this.task.startMonitoringJob()
     }
 
     stopProgressMonitoring = () => {
@@ -289,16 +305,17 @@ class RobotView extends Component {
 
         try {
             let row = this.state.rows[rowIndex];
-            await apis.retrieveRobot.deleteRobotItem(this.props.username, row.id)
+            await apis.retrieveRobot.deleteRobotItem(this.state.id, row.id)
 
             if (this.state.rows.length <= 1) {
                 this.setState({
                     ...this.state,
-                    rows: []
+                    rows: [],
+                    id:null
                 })
                 this.task.stopMonitoringJob();
             } else {
-                await apis.task.getTaskOfUser(this.props.username, 'retrieve').then(this.refreshHandler)
+                apis.task.getTask(this.state.id).then(this.refreshHandler)
             }
         } catch (error) {
             toast.error(error)
@@ -307,15 +324,18 @@ class RobotView extends Component {
     }
 
     handleClickDeleteRobot = async () => {
-        await apis.retrieveRobot.deleteRobot(this.props.username);
+        await apis.retrieveRobot.deleteRobot(this.state.id);
         await this.refreshHandler(null);
+        await this.setState({
+            id:null
+        })
     }
 
     render = () => {
         return (
             <div className="jumbotron">
                 <div className="row mb-5">
-                    <h1 className="col"> Robot for user {this.props.username}, project : {this.state.projectName} </h1>
+                    <h1 className="col"> Robot for user {this.state.creator}, project : {this.state.projectName} </h1>
                     <div className="col-md-2 text-right" >
                         <CircularProgressbarWithChildren
                             value={this.state.totalPercentageProgress} text={`Progress : ${this.state.totalPercentageProgress}%`}
