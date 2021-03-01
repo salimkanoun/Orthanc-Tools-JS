@@ -61,7 +61,7 @@ export default class Users extends Component {
             row.email,
             row.role,
             password,
-            row.isSuperAdmin
+            row.superAdmin
         ).then(() => {
             toast.success('User modified')
             this.resetState()
@@ -130,9 +130,19 @@ export default class Users extends Component {
         }, {
             dataField: 'superAdmin',
             text: 'Super Admin',
-            editable : true,
+            type : 'bool',
             editor: {
-                type: Type.CHECKBOX
+                type: Type.SELECT,
+                options: [{
+                  value: true,
+                  label: 'Yes'
+                }, {
+                  value: false,
+                  label: 'No'
+                }]
+            },
+            formatter: (cell, row, index) => {
+                return cell ===true ? 'Yes' : 'No'
             }
         }, {
             dataField: 'edit',
