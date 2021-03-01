@@ -141,8 +141,21 @@ class Users {
 
   }
 
-  static getUsers() {
-    return db.User.findAll()
+  static async getUsers() {
+    let userEntities = await db.User.findAll()
+    let usersAnswer = []
+    userEntities.forEach( (user) => {
+      usersAnswer.push({
+        id : user.id,
+        username : user.username,
+        email : user.email,
+        firstname : user.firstname,
+        lastname : user.lastname,
+        role : user.role,
+        superAdmin : user.super_admin
+      })
+    })
+    return usersAnswer
   }
 
   getLocalUserRight() {
