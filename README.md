@@ -35,4 +35,4 @@ login : admin
 password : admin
 
 Roadmap : 
-Monitoring  : Tag collection (in Elastic Search), Prefecthing, AutoRouting, Dicom ressource labelling
+Monitoring  : Tag collection (in Elastic Search), Prefecthing, AutoRouting, Dicom ressource labelling, Dicom creation (image or pdf)
