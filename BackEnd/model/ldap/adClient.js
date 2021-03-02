@@ -4,21 +4,21 @@ var AbstractAnnuaire = require('./abstractAnnuaire');
 
 class ADClient extends AbstractAnnuaire {
 
-    constructor(type, protocole, adresse, port, DN, mdp, base, user, groupe) {
+    constructor(type, protocol, address, port, DN, password, base, user, group) {
         super()
         this.type = type,
-            this.protocole = protocole
-        this.adresse = adresse,
-            this.port = port,
-            this.DN = DN,
-            this.mdp = mdp
+        this.protocol = protocol
+        this.address = address
+        this.port = port
+        this.DN = DN
+        this.password = password
         this.base = base
         this.user = user
 
-        if (groupe === '') {
-            this.groupe = 'CN=*'
+        if (group === '') {
+            this.group = 'CN=*'
         } else {
-            this.groupe = groupe
+            this.group = group
         }
 
         this.buildAD()
@@ -26,30 +26,33 @@ class ADClient extends AbstractAnnuaire {
 
     buildAD() {
         var config = {
-            url: this.protocole + this.adresse + ':' + this.port,
+            url: this.protocol + this.address + ':' + this.port,
             baseDN: this.base,
             username: this.DN,
-            password: this.mdp
+            password: this.password
         }
 
+        console.log(config)
         this.ad = new ActiveDirectory(config);
     }
 
     testSettings() {
-        return this.autentification(this.DN, this.mdp);
+        return this.autentification(this.DN, this.password);
     }
 
     getAllCorrespodences() {
         var queryFindGroupsOptions = {
             scope: 'sub',
-            filter: this.groupe
+            filter: this.group
         }
 
         return new Promise((resolve, reject) => {
             this.ad.findGroups(queryFindGroupsOptions, function (err, groups) {
 
+                console.log(err, groups)
                 if (err) {
                     reject(err)
+                    return
                 }
 
                 let res = []

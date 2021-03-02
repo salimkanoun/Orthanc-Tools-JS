@@ -9,13 +9,13 @@ var setLdapSettings = async function (req, res) {
   const options = req.body
 
   await Ldap.setLdapSettings(
-    options.TypeGroupe,
-    options.adresse,
+    options.TypeGroup,
+    options.address,
     options.port,
     options.DN,
-    options.mdp,
-    options.protocole,
-    options.groupe,
+    options.password,
+    options.protocol,
+    options.group,
     options.user,
     options.base
   )

@@ -7,15 +7,15 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      TypeGroupe: {
+      TypeGroup: {
         defaultValue: 'ad',
         type: Sequelize.STRING, 
       },
-      protocole: {
+      protocol: {
         defaultValue: '',
         type: Sequelize.STRING, 
       },
-      adresse: {
+      address: {
         defaultValue: '',
         type: Sequelize.STRING, 
       },
@@ -27,7 +27,7 @@ module.exports = {
         defaultValue: '',
         type: Sequelize.STRING, 
       },
-      mdp: {
+      password: {
         defaultValue: '',
         type: Sequelize.STRING, 
       },
@@ -35,7 +35,7 @@ module.exports = {
         defaultValue: '',
         type: Sequelize.STRING, 
       },
-      groupe: {
+      group: {
         defaultValue: '',
         type: Sequelize.STRING, 
       },
@@ -54,12 +54,12 @@ module.exports = {
     }).then(() => {
       queryInterface.bulkInsert('LdapOptions', [{
         id:1,
-        TypeGroupe:'ad',
-        protocole:'',
-        adresse:'',
+        TypeGroup:'ad',
+        protocol:'',
+        address:'',
         port:389,
         DN:'',
-        mdp:'',
+        password:'',
         createdAt: new Date().toDateString(),
         updatedAt: new Date().toDateString()
       }], {})

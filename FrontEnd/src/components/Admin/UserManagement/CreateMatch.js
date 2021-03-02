@@ -3,6 +3,8 @@ import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select'
 import { toast } from 'react-toastify';
 
+import BootstrapTable from 'react-bootstrap-table-next';
+
 import apis from '../../../services/apis'
 
 
@@ -13,7 +15,8 @@ export default class CreateMatch extends Component {
         groupName: '',
         associedRole: '',
         optionsAssociedRole: [],
-        optionsGroupName: []
+        optionsGroupName: [],
+        matches : []
     }
 
     componentDidMount = async () => {
@@ -30,6 +33,25 @@ export default class CreateMatch extends Component {
         }
 
     }
+
+    columns = [
+        {
+            dataField: 'groupName',
+            text: 'Group name',
+            sort: true
+        }, {
+            dataField: 'associedRole',
+            text: 'Associed role',
+        }, {
+            dataField: 'delete',
+            text: 'Delete',
+            editable: false,
+            formatExtraData: this,
+            formatter: (cell, row, index, parentComponent) => {
+                return <button type='button' name='delete' className='btn btn-danger' onClick={() => { parentComponent.delete(row.groupName) }} >Delete</button>
+            }
+        }
+    ]
 
     changeGroupe = (event) => {
         this.setState({ groupName: event })
@@ -65,20 +87,42 @@ export default class CreateMatch extends Component {
         }).catch(error => { toast.error(error.statusText) })
     }
 
+    getMatches = async () => {
+        try {
+            let answer = await apis.ldap.getAllCorrespodences()
+            this.setState({
+                matches: answer
+            })
+        } catch (error) {
+            toast.error(error.statusText)
+        }
+
+    }
+
+    //SK A VOIR
+    delete = (groupName) => {
+        apis.ldap.deleteMatch(groupName).then(() => {
+            toast.success('Match deleted with success')
+            this.getMatches()
+        }).catch(error => {
+            toast.error(error.statusText)
+        })
+    }
+
     render = () => {
         return (
             <Fragment>
-                <button type='button' hidden={this.props.show} className='btn btn-primary mr-3 mt-2' onClick={() => this.setState({ show: true })} >New match</button>
+                <button type='button' className='btn btn-primary mr-3 mt-2' onClick={() => this.setState({ show: true })} >New match</button>
                 <Modal id='create' show={this.state.show} onHide={() => this.setState({ show: false })}>
                     <Modal.Header closeButton>
                         <h2 className='card-title'>Create new match</h2>
                     </Modal.Header>
                     <Modal.Body>
                         <label>Group name</label>
-                        <Select name="typeGroupe" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsGroupName} onChange={this.changeGroupe} value={this.state.groupName} required />
+                        <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsGroupName} onChange={this.changeGroupe} value={this.state.groupName} required />
 
                         <label className='mt-3'>Associed role</label>
-                        <Select name="typeGroupe" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsAssociedRole} onChange={this.changeRole} value={this.state.associedRole} required />
+                        <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsAssociedRole} onChange={this.changeRole} value={this.state.associedRole} required />
 
                     </Modal.Body>
                     <Modal.Footer>
@@ -86,6 +130,10 @@ export default class CreateMatch extends Component {
                         <button type='button' className='btn btn-info' onClick={() => this.setState({ show: false })} >Cancel</button>
                     </Modal.Footer>
                 </Modal>
+
+                <div className="form-group mr-3 mt-3">
+                    <BootstrapTable keyField='groupName' data={this.state.matches} columns={this.columns} striped />
+                </div>
             </Fragment>
 
         );

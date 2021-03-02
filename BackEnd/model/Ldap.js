@@ -4,25 +4,8 @@ const AdClient = require('./ldap/adClient')
 const Ldap = {
 
     getLdapSettings: async () => {
-        const option = await db.LdapOptions.findOne(({
-            where: { id: 1 }, attributes: ['TypeGroupe',
-                'protocole',
-                'adresse',
-                'port',
-                'DN',
-                'mdp', 'user', 'groupe', 'base']
-        }))
-        return ({
-            user: option.user,
-            groupe: option.groupe,
-            base: option.base,
-            protocoles: option.protocole,
-            TypeGroupe: option.TypeGroupe,
-            adresse: option.adresse,
-            port: option.port,
-            DN: option.DN,
-            mdp: option.mdp
-        })
+        return db.LdapOptions.findOne({
+            where: { id: 1 }})
     },
 
     setLdapSettings: async (typeGroup, address, port, DN, password, protocol, group, user, base) => {
@@ -31,12 +14,12 @@ const Ldap = {
             { where: { id: 1 } }
         ))
 
-        option.TypeGroupe = typeGroup
+        option.TypeGroup = typeGroup
         option.address = address
         option.port = port
         option.DN = DN
-        option.mdp = password
-        option.protocole = protocol
+        option.password = password
+        option.protocol = protocol
         option.group = group
         option.user = user
         option.base = base
@@ -55,13 +38,13 @@ const Ldap = {
 
         let client
 
-        if (option.TypeGroupe === 'ad') {
-            client = new AdClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp, option.base, option.user, option.groupe)
-        } else if (option.TypeGroupe === 'ldap') {
+        if (option.TypeGroup === 'ad') {
+            client = new AdClient(option.TypeGroup, option.protocol, option.address, option.port, option.DN, option.password, option.base, option.user, option.group)
+        } else if (option.TypeGroup === 'ldap') {
             //ToDo
             throw 'ToDo'
         } else {
-            throw 'inccorect TypeGroupe'
+            throw 'inccorect TypeGroup'
         }
 
         return await client.testSettings().catch(error => { return error })
@@ -104,9 +87,9 @@ const Ldap = {
 
         let client;
 
-        if (option.TypeGroupe === 'ad') {
-            client = new AdClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp, option.base, option.user, option.groupe)
-        } else if (option.TypeGroupe === 'ldap') {
+        if (option.TypeGroup === 'ad') {
+            client = new AdClient(option.TypeGroup, option.protocol, option.address, option.port, option.DN, option.password, option.base, option.user, option.group)
+        } else if (option.TypeGroup === 'ldap') {
             //ToDo
             throw 'ToDo'
         } else {

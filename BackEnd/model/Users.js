@@ -30,22 +30,17 @@ class Users {
     }
 
     const option = await db.LdapOptions.findOne(({
-      where: { id: 1 }, attributes: ['TypeGroupe',
-        'protocole',
-        'adresse',
-        'port',
-        'DN',
-        'mdp', 'user', 'groupe', 'base']
+      where: { id: 1 }
     }))
 
     let client;
-    if (option.TypeGroupe === 'ad') {
-      client = new AdClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp, option.base, option.user, option.groupe)
-    } else if (option.TypeGroupe === 'ldap') {
+    if (option.TypeGroup === 'ad') {
+      client = new AdClient(option.TypeGroup, option.protocol, option.address, option.port, option.DN, option.password, option.base, option.user, option.group)
+    } else if (option.TypeGroup === 'ldap') {
       //ToDo
       throw 'ToDo'
     } else {
-      throw 'inccorect TypeGroupe'
+      throw 'inccorect TypeGroup'
     }
 
     return client.autentification(username, plainPassword)
@@ -179,13 +174,13 @@ class Users {
     )
 
     let client;
-    if (option.TypeGroupe === 'ad') {
-      client = new AdClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp, option.base, option.user, option.groupe)
-    } else if (option.TypeGroupe === 'ldap') {
+    if (option.TypeGroup === 'ad') {
+      client = new AdClient(option.TypeGroup, option.protocol, option.address, option.port, option.DN, option.mdp, option.base, option.user, option.group)
+    } else if (option.TypeGroup === 'ldap') {
       //ToDo
       throw 'ToDo'
     } else {
-      throw 'inccorect TypeGroupe'
+      throw 'inccorect TypeGroup'
     }
 
     const opt = await db.DistantUser.findAll(({ attributes: ['groupName'] }))

@@ -3,14 +3,14 @@ const ldap = {
   setLdapSettings(typeGroup, address, port, DN, password, protocol, base, group, user) {
 
     const options = {
-      TypeGroupe: typeGroup,
-      adresse: address,
+      TypeGroup: typeGroup,
+      address: address,
       port: port,
       DN: DN,
-      mdp: password,
-      protocole: protocol,
+      password: password,
+      protocol: protocol,
       base: base,
-      groupe: group,
+      group: group,
       user: user
     }
 
