@@ -75,6 +75,7 @@ class ADClient extends AbstractAnnuaire {
             this.ad.authenticate(username, password, function (err, auth) {
                 if (err) {
                     reject(err)
+                    return
                 }
                 resolve(auth)
             })
@@ -110,6 +111,7 @@ class ADClient extends AbstractAnnuaire {
             this.ad.isUserMemberOf(usernameMemberOf, groupe, function (err, isMember) {
                 if (err) {
                     reject('ERROR: ' + JSON.stringify(err))
+                    return
                 }
                 resolve(isMember)
             })
