@@ -30,7 +30,7 @@ Current Features :
   
 Documentation : https://github.com/salimkanoun/Orthanc-Tools-JS/blob/master/Documentation/Orthanc-Tools-JS-Documentation.pdf
 
-Demo Server : https://0e44be91-4285-440b-a132-c6580851eed7.pub.instances.scw.cloud/
+Demo Server : https://orthanctoolsjs.ddns.net/
 login : admin
 password : admin
 
