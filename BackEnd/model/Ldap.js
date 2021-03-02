@@ -93,7 +93,7 @@ const Ldap = {
             //ToDo
             throw 'ToDo'
         } else {
-            throw 'inccorect TypeGroupe'
+            throw 'inccorect TypeGroup'
         }
 
         let correspondances = await client.getAllCorrespodences()
