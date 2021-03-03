@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../database/models')
+const ldap = require('./Ldap')
 const { OTJSNotFoundException } = require('../Exceptions/OTJSErrors')
 const AdClient = require('./ldap/adClient')
 
@@ -175,7 +176,7 @@ class Users {
 
     let client;
     if (option.TypeGroup === 'ad') {
-      client = new AdClient(option.TypeGroup, option.protocol, option.address, option.port, option.DN, option.mdp, option.base, option.user, option.group)
+      client = await ldap.getLdapClient()
     } else if (option.TypeGroup === 'ldap') {
       //ToDo
       throw 'ToDo'
@@ -188,11 +189,14 @@ class Users {
     for (let u = 0; u < opt.length; u++) { roles.push(opt[u].dataValues.groupName) }
 
     let response = await client.getPermission(username, roles)
-
+    console.log("apres ad role")
+    console.log(response)
     for (let i = 0; i < response.length; i++) {
-
+      console.log('loop authorisation')
       let resp = await db.DistantUser.findOne(({ where: { groupName: response[i] }, attributes: ['roleDistant'] }))
+      console.log(resp)
       let role = await resp.dataValues.roleDistant;
+      console.log(resp)
 
       let option = await db.Role.findOne((
         {

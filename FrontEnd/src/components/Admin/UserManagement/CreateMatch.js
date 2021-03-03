@@ -20,20 +20,28 @@ export default class CreateMatch extends Component {
     }
 
     componentDidMount = async () => {
+        console.log('mount')
         try {
             let optionsGroupName = await this.getExistingGroupOptions()
-            
             let optionGroupRole = await this.getAssociedRole()
+            let associations = await this.getExistingAssociations()
             console.log(optionGroupRole)
             console.log(optionsGroupName)
+            console.log(associations)
             this.setState({
                 optionsAssociedRole: optionGroupRole,
-                optionsGroupName: optionsGroupName
+                optionsGroupName: optionsGroupName,
+                matches : associations
             })
         } catch (error) {
             toast.error(error.statusText)
         }
 
+    }
+
+    getExistingAssociations = async () => {
+
+        return await apis.ldap.getAllCorrespodences()
     }
 
     columns = [
@@ -56,10 +64,12 @@ export default class CreateMatch extends Component {
     ]
 
     changeGroupe = (event) => {
+        console.log(event)
         this.setState({ groupName: event })
     }
 
     changeRole = (event) => {
+        console.log(event)
         this.setState({ associedRole: event })
     }
 
@@ -93,7 +103,8 @@ export default class CreateMatch extends Component {
         try {
             let answer = await apis.ldap.getAllGroupName()
             let options = answer.map((group) => {
-                return {label : group, value : group}
+                //SK Ajouter un render de description dans le select ? (info qui vient du LDAP)
+                return {label : group.cn, value : group.cn, description : group.description}
             })
             return options
         } catch (error) {
@@ -124,7 +135,6 @@ export default class CreateMatch extends Component {
                         <Fragment>
                             <label>Group name</label>
                             <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsGroupName} onChange={this.changeGroupe} value={this.state.groupName} required />
-
                             <label className='mt-3'>Associed role</label>
                             <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsAssociedRole} onChange={this.changeRole} value={this.state.associedRole} required />
                         </Fragment>

@@ -74,7 +74,7 @@ const ldap = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify([payload])
+      body: JSON.stringify(payload)
     };
 
     return fetch("/api/ldap/matches/", createMatchOption).then((answer) => {

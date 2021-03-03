@@ -1,5 +1,5 @@
-var ActiveDirectory = require('activedirectory');
-var AbstractAnnuaire = require('./abstractAnnuaire');
+var ActiveDirectory = require('activedirectory')
+var AbstractAnnuaire = require('./abstractAnnuaire')
 
 
 class ADClient extends AbstractAnnuaire {
@@ -37,7 +37,9 @@ class ADClient extends AbstractAnnuaire {
     }
 
     testSettings() {
-        return this.autentification(this.DN, this.password);
+        return this.autentification(this.DN, this.password).catch((error)=> {
+            throw error
+        });
     }
 
     getAllCorrespodences() {
@@ -73,8 +75,6 @@ class ADClient extends AbstractAnnuaire {
     autentification(username, password) {
         return new Promise((resolve, reject) => {
             this.ad.authenticate(username, password, function (err, auth) {
-                console.log(err)
-                console.log(auth)
                 if (err) {
                     reject(err)
                     return
@@ -92,32 +92,36 @@ class ADClient extends AbstractAnnuaire {
         //Get groups
         let res = []
         let memberPromisesArray = []
-        for (let i = 0; i < groupes.length; i++) {
+        groupes.map( (group) => {
 
-            let memberPromises = this.isMemberOfPromise(usernameMemberOf, groupes[i]).then((isMember) => {
-                if (isMember) { res.push(groupes[i]) }
+            let memberPromises = this.isMemberOfPromise(usernameMemberOf, group).then((isMember) => {
+                if (isMember)  res.push( group )
             }).catch((error) => { console.error(error) })
 
             memberPromisesArray.push(memberPromises)
 
-        }
+        })
 
-        Promise.all(memberPromisesArray).then(() => {
+        return Promise.all(memberPromisesArray).then( () => {
             return res
         })
     }
 
     isMemberOfPromise(usernameMemberOf, groupe) {
+        console.log(usernameMemberOf)
+        console.log(groupe)
         return new Promise((resolve, reject) => {
 
             this.ad.isUserMemberOf(usernameMemberOf, groupe, function (err, isMember) {
-                console.log(err)
+                console.log('isMember')
                 console.log(isMember)
                 if (err) {
                     reject('ERROR: ' + JSON.stringify(err))
                     return
+                }else{
+                    resolve(isMember)
                 }
-                resolve(isMember)
+                
             })
 
         })

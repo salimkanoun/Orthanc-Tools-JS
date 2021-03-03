@@ -38,8 +38,8 @@ var getLdapCorrespodences = async function (req, res) {
 }
 
 var setLdapCorrespodence = async function (req, res) {
-  const matches = req.body
-  await Ldap.setCorrespodence(matches[0].groupName, matches[0].associedRole)
+  let matches = req.body
+  await Ldap.setCorrespondence(matches.groupName, matches.associedRole)
   res.sendStatus(200)
 }
 
