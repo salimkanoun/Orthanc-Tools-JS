@@ -21,12 +21,14 @@ export default class CreateMatch extends Component {
 
     componentDidMount = async () => {
         try {
-            let groupName = await apis.ldap.getAllGroupName()
-            let roles = await this.getAssociedRole()
-
+            let optionsGroupName = await this.getExistingGroupOptions()
+            
+            let optionGroupRole = await this.getAssociedRole()
+            console.log(optionGroupRole)
+            console.log(optionsGroupName)
             this.setState({
-                optionsAssociedRole: roles,
-                optionsGroupName: groupName
+                optionsAssociedRole: optionGroupRole,
+                optionsGroupName: optionsGroupName
             })
         } catch (error) {
             toast.error(error.statusText)
@@ -64,10 +66,10 @@ export default class CreateMatch extends Component {
     getAssociedRole = async () => {
         let roles = []
         try {
-            let list = await apis.role.getRoles()
-            for (let i = 0; i < list.length; i++) {
-                roles.push({ value: list[i].name, label: list[i].name })
-            }
+            let existingsRoles = await apis.role.getRoles()
+            existingsRoles.map( (role) => {
+                roles.push({value : role.name, label : role.name})
+            })
         } catch (error) {
             toast.error(error.statusText)
         }
@@ -87,12 +89,13 @@ export default class CreateMatch extends Component {
         }).catch(error => { toast.error(error.statusText) })
     }
 
-    getMatches = async () => {
+    getExistingGroupOptions = async () => {
         try {
-            let answer = await apis.ldap.getAllCorrespodences()
-            this.setState({
-                matches: answer
+            let answer = await apis.ldap.getAllGroupName()
+            let options = answer.map((group) => {
+                return {label : group, value : group}
             })
+            return options
         } catch (error) {
             toast.error(error.statusText)
         }
@@ -118,12 +121,13 @@ export default class CreateMatch extends Component {
                         <h2 className='card-title'>Create new match</h2>
                     </Modal.Header>
                     <Modal.Body>
-                        <label>Group name</label>
-                        <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsGroupName} onChange={this.changeGroupe} value={this.state.groupName} required />
+                        <Fragment>
+                            <label>Group name</label>
+                            <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsGroupName} onChange={this.changeGroupe} value={this.state.groupName} required />
 
-                        <label className='mt-3'>Associed role</label>
-                        <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsAssociedRole} onChange={this.changeRole} value={this.state.associedRole} required />
-
+                            <label className='mt-3'>Associed role</label>
+                            <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsAssociedRole} onChange={this.changeRole} value={this.state.associedRole} required />
+                        </Fragment>
                     </Modal.Body>
                     <Modal.Footer>
                         <button type='button' name='create' className='btn btn-primary' onClick={this.create} >Create</button>

@@ -26,6 +26,8 @@ var setLdapSettings = async function (req, res) {
 
 var testLdapSettings = async function (req, res) {
   let answer = await Ldap.testLdapSettings()
+  console.log('testLDAP')
+  console.log(answer)
   res.json(answer)
 
 }
@@ -48,8 +50,9 @@ var deleteCorrespodence = async function (req, res) {
 }
 
 var getLdapGroupeNames = async function (req, res) {
-  let matches = await Ldap.getAllGroupeNames()
-  res.json(matches)
+  let groups = await Ldap.getAllGroupeNames()
+  console.log(groups)
+  res.json(groups)
 }
 
 module.exports = { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames }

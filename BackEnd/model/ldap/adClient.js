@@ -41,29 +41,29 @@ class ADClient extends AbstractAnnuaire {
     }
 
     getAllCorrespodences() {
-        var queryFindGroupsOptions = {
+        let queryFindGroupsOptions = {
             scope: 'sub',
             filter: this.group
         }
 
+        console.log(queryFindGroupsOptions)
         return new Promise((resolve, reject) => {
             this.ad.findGroups(queryFindGroupsOptions, function (err, groups) {
-
-                console.log(err, groups)
                 if (err) {
                     reject(err)
                     return
                 }
 
                 let res = []
-                if ((!groups) || (groups.length == 0)) {
-                    console.log('No groups found.');
-                } else {
-                    for (let i = 0; i < groups.length; i++) {
-                        res.push({ value: groups[i].cn, label: groups[i].cn });
-                    }
+                //If not empty response map it to an response array (otherwise send empty array)
+                if(groups){
+                    groups.forEach( (group)=>{
+                        res.push(group)
+                    })
                 }
                 resolve(res)
+                return
+               
             })
 
         })
@@ -73,6 +73,8 @@ class ADClient extends AbstractAnnuaire {
     autentification(username, password) {
         return new Promise((resolve, reject) => {
             this.ad.authenticate(username, password, function (err, auth) {
+                console.log(err)
+                console.log(auth)
                 if (err) {
                     reject(err)
                     return
@@ -109,6 +111,8 @@ class ADClient extends AbstractAnnuaire {
         return new Promise((resolve, reject) => {
 
             this.ad.isUserMemberOf(usernameMemberOf, groupe, function (err, isMember) {
+                console.log(err)
+                console.log(isMember)
                 if (err) {
                     reject('ERROR: ' + JSON.stringify(err))
                     return
