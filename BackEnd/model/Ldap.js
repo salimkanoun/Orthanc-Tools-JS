@@ -51,14 +51,12 @@ const Ldap = {
 
     authenticateUser : async (username, password) => {
         const client = await Ldap.getLdapClient()
-        return client.authenticateUser(username, password).catch( (error) => {console.log(error); return false})
+        return client.authenticateUser(username, password).catch( () => {return false})
     },
 
     getAllCorrespodences: async () => {
         const correspondances = await db.DistantUser.findAll(({ attributes: ['local_role', 'ldap_group'] }))
-        console.log(correspondances)
         let results = []
-
         correspondances.forEach( (correspondance) => {
             results.push({ localRole: correspondance.local_role, ldapGroup: correspondance.ldap_group })
         });
@@ -85,7 +83,6 @@ const Ldap = {
     getAllLdapGroups: async () => {
         const client = await Ldap.getLdapClient()
         let ldapGroups = await client.getAllLdapGroups().catch( (error)=> {throw error})
-        console.log(ldapGroups)
         return ldapGroups
 
     },
@@ -94,6 +91,11 @@ const Ldap = {
         let client = await Ldap.getLdapClient()
         let response = await client.isUserMemberOf(username, ldapGroup).catch( (error)=> {throw error})
         return response
+    },
+
+    getGroupMembershipForUser : async () => {
+        let client = await Ldap.getLdapClient()
+        return client.getGroupMembershipForUser(this.ldapUsername)
     }
 }
 

@@ -38,7 +38,6 @@ var testLdapSettings = async function (req, res) {
 var getLdapCorrespodences = async function (req, res) {
   try {
     const matches = await Ldap.getAllCorrespodences()
-    console.log(matches)
     res.json(matches)
   } catch (error) {
     throw error

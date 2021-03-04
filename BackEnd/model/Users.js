@@ -156,55 +156,37 @@ class Users {
 
   async getLDAPUserRight() {
 
-    console.log('get right')
-    // Get User Entity to get local role
-    const userEntity = await this._getUserEntity()
-    //Get Ldap Group corresponding to the user's local role
-    const ldapGroup = await db.DistantUser.findOne(({ where: { local_role: userEntity.role } }))
+    //Get Ldap Group having a local role correspondance
+    const ldapMatches = await db.DistantUser.findAll()
 
-    console.log(userEntity)
-    console.log(ldapGroup)
+    //Flatten known LdapGroup in Array
+    let knownLdapGroups = ldapMatches.map((match) => { return match.ldap_group })
 
-    //Check this LDAP Group is in allowed by LDAP
-    let check = await ldap.isUserMemberOf(this.ldapUsername, ldapGroup.ldap_group)
+    //Get user's group from LDAP
+    let userLdapGroups = await ldap.getGroupMembershipForUser(this.ldapUsername)
 
-    if (check) {
+    //Loop user's group until we found a known group having a local role
+    for (let i = 0; userLdapGroups; i++) {
 
-      let option = await db.Role.findOne((
-        {
-          where: { name: role }
-        }
-      ))
+      //Get and return the first match
+      if (knownLdapGroups.includes(userLdapGroups[i].cn)) {
 
-      return {
-        import: option.import,
-        content: option.content,
-        anon: option.anon,
-        export_local: option.export_local,
-        export_extern: option.export_extern,
-        query: option.query,
-        auto_query: option.auto_query,
-        delete: option.delete,
-        admin: option.admin,
-        modify: option.modify
-      }
+        let local_role = ldapMatches.filter((match) => {
+          return match.ldap_group === userLdapGroups[i].cn
+        })
 
-    } else {
+        //get Role data and return it to controller
+        let role = await db.Role.findOne((
+          {
+            where: { name: local_role[0].local_role }
+          }
+        ))
 
-      return {
-        import: false,
-        content: false,
-        anon: false,
-        export_local: false,
-        export_extern: false,
-        query: false,
-        auto_query: false,
-        delete: false,
-        admin: false,
-        modify: false,
+        return role
       }
 
     }
+
 
   }
 

@@ -58,6 +58,10 @@ class ADClient extends AbstractAnnuaire {
 
     }
 
+    getGroupMembershipForUser = (username) => {
+        return this.ad.getGroupMembershipForUser(username)
+    }
+
 }
 
 module.exports = ADClient
