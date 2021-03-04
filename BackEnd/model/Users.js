@@ -1,16 +1,32 @@
 const bcrypt = require('bcryptjs')
 const db = require('../database/models')
 const ldap = require('./Ldap')
-const { OTJSNotFoundException } = require('../Exceptions/OTJSErrors')
-const AdClient = require('./ldap/adClient')
+const { OTJSNotFoundException, OTJSBadRequestException } = require('../Exceptions/OTJSErrors')
+const Ldap = require('./Ldap')
 
 class Users {
 
   constructor(username) {
+
     this.username = username
+    this.ldapUser = false
+
+    //if contain @, called User is from LDAP
+    if (this.username.indexOf('@') !== -1) {
+      this.ldapUsername = this.username
+      if (this.username.indexOf('@') === 0) {
+        this.username = this.username.substr(1)
+        this.ldapUsername = this.username
+      } else {
+        this.username = this.username.split('@')[0];
+      }
+      this.ldapUser = true
+    }
+
   }
 
   _getUserEntity() {
+    console.log(this.username)
     return db.User.findOne({ where: { username: this.username } }).then(entity => {
       if (!entity) {
         throw new OTJSNotFoundException('Not Found')
@@ -22,30 +38,6 @@ class Users {
 
   isAdmin() {
     return this._getUserEntity().then(user => user.super_admin).catch((error) => { throw error })
-  }
-
-  async checkLDAPPassword(plainPassword) {
-    let username = this.username;
-    if (this.username.indexOf('@') === 0) {
-      username = username.substr(1)
-    }
-
-    const option = await db.LdapOptions.findOne(({
-      where: { id: 1 }
-    }))
-
-    let client;
-    if (option.TypeGroup === 'ad') {
-      client = new AdClient(option.TypeGroup, option.protocol, option.address, option.port, option.DN, option.password, option.base, option.user, option.group)
-    } else if (option.TypeGroup === 'ldap') {
-      //ToDo
-      throw 'ToDo'
-    } else {
-      throw 'inccorect TypeGroup'
-    }
-
-    return client.autentification(username, plainPassword)
-
   }
 
   checkLocalPassword(plainPassword) {
@@ -64,9 +56,9 @@ class Users {
   async checkPassword(plainPassword) {
 
     let option = await this.getAuthenticationMode()
-    if (option.ldap && this.username.indexOf('@') !== -1) {
+    if (option.ldap && this.ldapUser) {
       //LDAP user
-      return await this.checkLDAPPassword(plainPassword).catch((error) => { throw error })
+      return await Ldap.authenticateUser(this.ldapUsername, plainPassword).catch((error) => { throw error })
     } else {
       //Local user
       return await this.checkLocalPassword(plainPassword).catch((error) => { throw error })
@@ -77,7 +69,7 @@ class Users {
 
   static async createUser(username, firstname, lastname, email, password, role, super_admin) {
 
-    if (username.indexOf('@') !== -1) throw new Error('@ is forbiden')
+    if (username.indexOf('@') !== -1) throw new OTJSBadRequestException('@ not allowed for local username definition')
 
     const saltRounds = 10
     return bcrypt.hash(password, saltRounds).then(function (hash) {
@@ -140,15 +132,15 @@ class Users {
   static async getUsers() {
     let userEntities = await db.User.findAll()
     let usersAnswer = []
-    userEntities.forEach( (user) => {
+    userEntities.forEach((user) => {
       usersAnswer.push({
-        id : user.id,
-        username : user.username,
-        email : user.email,
-        firstname : user.firstname,
-        lastname : user.lastname,
-        role : user.role,
-        superAdmin : user.super_admin
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        role: user.role,
+        superAdmin: user.super_admin
       })
     })
     return usersAnswer
@@ -163,40 +155,20 @@ class Users {
   }
 
   async getLDAPUserRight() {
-    let username = this.username;
-    if (this.username.indexOf('@') === 0) {
-      username = username.substr(1)
-    }
 
-    const option = await db.LdapOptions.findOne(
-      ({
-        where: { id: 1 }
-      })
-    )
+    console.log('get right')
+    // Get User Entity to get local role
+    const userEntity = await this._getUserEntity()
+    //Get Ldap Group corresponding to the user's local role
+    const ldapGroup = await db.DistantUser.findOne(({ where: { local_role: userEntity.role } }))
 
-    let client;
-    if (option.TypeGroup === 'ad') {
-      client = await ldap.getLdapClient()
-    } else if (option.TypeGroup === 'ldap') {
-      //ToDo
-      throw 'ToDo'
-    } else {
-      throw 'inccorect TypeGroup'
-    }
+    console.log(userEntity)
+    console.log(ldapGroup)
 
-    const opt = await db.DistantUser.findAll(({ attributes: ['groupName'] }))
-    const roles = [];
-    for (let u = 0; u < opt.length; u++) { roles.push(opt[u].dataValues.groupName) }
+    //Check this LDAP Group is in allowed by LDAP
+    let check = await ldap.isUserMemberOf(this.ldapUsername, ldapGroup.ldap_group)
 
-    let response = await client.getPermission(username, roles)
-    console.log("apres ad role")
-    console.log(response)
-    for (let i = 0; i < response.length; i++) {
-      console.log('loop authorisation')
-      let resp = await db.DistantUser.findOne(({ where: { groupName: response[i] }, attributes: ['roleDistant'] }))
-      console.log(resp)
-      let role = await resp.dataValues.roleDistant;
-      console.log(resp)
+    if (check) {
 
       let option = await db.Role.findOne((
         {
@@ -205,16 +177,31 @@ class Users {
       ))
 
       return {
-        import: option.dataValues.import,
-        content: option.dataValues.content,
-        anon: option.dataValues.anon,
-        export_local: option.dataValues.export_local,
-        export_extern: option.dataValues.export_extern,
-        query: option.dataValues.query,
-        auto_query: option.dataValues.auto_query,
-        delete: option.dataValues.delete,
-        admin: option.dataValues.admin,
-        modify: option.dataValues.modify
+        import: option.import,
+        content: option.content,
+        anon: option.anon,
+        export_local: option.export_local,
+        export_extern: option.export_extern,
+        query: option.query,
+        auto_query: option.auto_query,
+        delete: option.delete,
+        admin: option.admin,
+        modify: option.modify
+      }
+
+    } else {
+
+      return {
+        import: false,
+        content: false,
+        anon: false,
+        export_local: false,
+        export_extern: false,
+        query: false,
+        auto_query: false,
+        delete: false,
+        admin: false,
+        modify: false,
       }
 
     }
@@ -222,16 +209,13 @@ class Users {
   }
 
   getUserRight() {
-
     return this.getAuthenticationMode().then(async option => {
-      if (option.ldap && this.username.indexOf('@') !== -1) {
+      if (option.ldap && this.ldapUser) {
         //LDAP user
-        let LDAPasnwer = await this.getLDAPUserRight()
-        return LDAPasnwer
+        return await this.getLDAPUserRight()
       } else {
         //Local user
-        let localAnswer = await this.getLocalUserRight()
-        return localAnswer
+        return await this.getLocalUserRight()
       }
 
     }).catch(error => { throw error })

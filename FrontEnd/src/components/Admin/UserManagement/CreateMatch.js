@@ -46,11 +46,11 @@ export default class CreateMatch extends Component {
 
     columns = [
         {
-            dataField: 'groupName',
+            dataField: 'ldapGroup',
             text: 'Group name',
             sort: true
         }, {
-            dataField: 'associedRole',
+            dataField: 'localRole',
             text: 'Associed role',
         }, {
             dataField: 'delete',
@@ -58,7 +58,7 @@ export default class CreateMatch extends Component {
             editable: false,
             formatExtraData: this,
             formatter: (cell, row, index, parentComponent) => {
-                return <button type='button' name='delete' className='btn btn-danger' onClick={() => { parentComponent.delete(row.groupName) }} >Delete</button>
+                return <button type='button' name='delete' className='btn btn-danger' onClick={() => { parentComponent.delete(row.ldapGroup) }} >Delete</button>
             }
         }
     ]
@@ -89,14 +89,16 @@ export default class CreateMatch extends Component {
     }
 
     create = async () => {
-        await apis.ldap.createMatch(this.state.groupName.value, this.state.associedRole.value).then(() => {
-            toast.success('Ldap Match Created')
+        try{
+            await apis.ldap.createMatch(this.state.groupName.value, this.state.associedRole.value)
             this.props.getMatches()
+            toast.success('Ldap Match Created')
             this.setState({
-                show: false,
+                show: false
             })
-
-        }).catch(error => { toast.error(error.statusText) })
+        } catch(error ){
+            toast.error(error.statusText)
+        }
     }
 
     getExistingGroupOptions = async () => {
@@ -114,20 +116,21 @@ export default class CreateMatch extends Component {
     }
 
     //SK A VOIR
-    delete = (groupName) => {
-        apis.ldap.deleteMatch(groupName).then(() => {
+    delete = async (ldapGroup) => {
+        try{
+            apis.ldap.deleteMatch(ldapGroup)
             toast.success('Match deleted with success')
-            this.getMatches()
-        }).catch(error => {
+            this.props.getMatches()
+        }catch(error) {
             toast.error(error.statusText)
-        })
+        }
     }
 
     render = () => {
         return (
             <Fragment>
                 <button type='button' className='btn btn-primary mr-3 mt-2' onClick={() => this.setState({ show: true })} >New match</button>
-                <Modal id='create' show={this.state.show} onHide={() => this.setState({ show: false })}>
+                <Modal show={this.state.show} onHide={() => this.setState({ show: false })}>
                     <Modal.Header closeButton>
                         <h2 className='card-title'>Create new match</h2>
                     </Modal.Header>

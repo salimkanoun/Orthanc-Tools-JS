@@ -2,18 +2,17 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('DistantUsers', {
       id: { //ID
-        allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
         type: Sequelize.INTEGER
       },
-      groupName: {
+      ldap_group: {
         allowNull: false,
         unique: true,
         type: Sequelize.STRING, 
       }, 
-      roleDistant: {
+      local_role: {
         allowNull: false, 
+        unique: true,
         references: {
           model: 'Roles', 
           key: 'name'

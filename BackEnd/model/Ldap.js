@@ -1,17 +1,27 @@
 const db = require('../database/models')
-const { OTJSForbiddenException } = require('../Exceptions/OTJSErrors')
 const AdClient = require('./ldap/adClient')
 
 const Ldap = {
 
     getLdapSettings: () => {
         return db.LdapOptions.findOne({
-            where: { id: 1 }})
+            where: { id: 1 }
+        })
     },
 
-    getLdapClient : async () => {
+    getLdapClient: async () => {
         let ldapOptions = await Ldap.getLdapSettings()
-        return new AdClient(ldapOptions.TypeGroup, ldapOptions.protocol, ldapOptions.address, ldapOptions.port, ldapOptions.DN, ldapOptions.password, ldapOptions.base, ldapOptions.user, ldapOptions.group)
+
+        if (ldapOptions.TypeGroup === 'ad') {
+            return new AdClient(ldapOptions.TypeGroup, ldapOptions.protocol, ldapOptions.address, ldapOptions.port, ldapOptions.DN, ldapOptions.password, ldapOptions.base, ldapOptions.user, ldapOptions.group)
+        } else if (ldapOptions.TypeGroup === 'ldap') {
+            //ToDo
+            throw 'ToDo'
+        } else {
+            throw 'inccorect TypeGroup'
+        }
+
+
     },
 
     setLdapSettings: async (typeGroup, address, port, DN, password, protocol, group, user, base) => {
@@ -34,38 +44,32 @@ const Ldap = {
 
     testLdapSettings: async () => {
 
-        const option = await Ldap.getLdapSettings()
-
-        let client
-
-        if (option.TypeGroup === 'ad') {
-            client = await Ldap.getLdapClient()
-        } else if (option.TypeGroup === 'ldap') {
-            //ToDo
-            throw 'ToDo'
-        } else {
-            throw 'inccorect TypeGroup'
-        }
-
-        return await client.testSettings().catch(error => { throw new OTJSForbiddenException(error.message) })
+        const client = await Ldap.getLdapClient()
+        return client.authenticateLdapServer().catch( (error) => {throw error})
 
     },
 
-    getAllCorrespodences: async () => {
-        const answer = await db.DistantUser.findAll(({ attributes: ['groupName', 'roleDistant'] }))
-        console.log(answer)
-        let res = []
-        for (let i = 0; i < answer.length; i++) {
-            res[i] = { groupName: answer[i].dataValues.groupName, associedRole: answer[i].dataValues.roleDistant }
-        }
+    authenticateUser : async (username, password) => {
+        const client = await Ldap.getLdapClient()
+        return client.authenticateUser(username, password).catch( (error) => {console.log(error); return false})
+    },
 
-        return res
+    getAllCorrespodences: async () => {
+        const correspondances = await db.DistantUser.findAll(({ attributes: ['local_role', 'ldap_group'] }))
+        console.log(correspondances)
+        let results = []
+
+        correspondances.forEach( (correspondance) => {
+            results.push({ localRole: correspondance.local_role, ldapGroup: correspondance.ldap_group })
+        });
+
+        return results
     },
 
     setCorrespondence: async (ldapGroup, localRole) => {
         await db.DistantUser.create({
-            groupName: ldapGroup,
-            roleDistant: localRole,
+            local_role: localRole,
+            ldap_group: ldapGroup,
         })
 
     },
@@ -73,31 +77,24 @@ const Ldap = {
     deleteCorrespodence: (ldapGroup) => {
         return db.DistantUser.destroy({
             where: {
-                groupName: ldapGroup
+                ldap_group: ldapGroup
             }
         })
     },
 
-    getAllGroupeNames: async () => {
-
-        const option = await Ldap.getLdapSettings()
-
-        let client;
-
-        if (option.TypeGroup === 'ad') {
-            client = await Ldap.getLdapClient()
-        } else if (option.TypeGroup === 'ldap') {
-            //ToDo
-            throw 'ToDo'
-        } else {
-            throw 'inccorect TypeGroup'
-        }
-
-        let correspondances = await client.getAllCorrespodences()
-
-        return correspondances
+    getAllLdapGroups: async () => {
+        const client = await Ldap.getLdapClient()
+        let ldapGroups = await client.getAllLdapGroups().catch( (error)=> {throw error})
+        console.log(ldapGroups)
+        return ldapGroups
 
     },
+
+    isUserMemberOf: async (username, ldapGroup) => {
+        let client = await Ldap.getLdapClient()
+        let response = await client.isUserMemberOf(username, ldapGroup).catch( (error)=> {throw error})
+        return response
+    }
 }
 
 module.exports = Ldap
