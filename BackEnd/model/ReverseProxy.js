@@ -121,11 +121,14 @@ const ReverseProxy = {
       .on('response', function (response) {
         if(response.statusCode == 200)
           response.pipe(res)
+        else throw response
       }).catch((error) => {
         if (error.statusCode === 401) {
           res.status(403).send("Bad orthanc credentials")
         }else{
-          res.status(error.statusCode).send(error)
+          let statusCode  = error.statusCode ? error.statusCode : 500
+          let message  = error.message ? error.message : 'Internal Server Error'
+          res.status(statusCode).send(message)
         }
       })
   },

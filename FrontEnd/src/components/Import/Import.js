@@ -237,7 +237,7 @@ class Import extends Component {
                         <input type="button" className="btn btn-warning" value={"See Errors (" + this.state.errors.length + ")"} onClick={this.handleShowErrorClick} />
                     </div>
 
-                    <Modal show={this.state.showErrors} onHide={this.handleShowErrorClick}>
+                    <Modal show={this.state.showErrors} onHide={this.handleShowErrorClick} size='xl'>
                         <Modal.Header closeButton>
                             <Modal.Title>Errors</Modal.Title>
                         </Modal.Header>

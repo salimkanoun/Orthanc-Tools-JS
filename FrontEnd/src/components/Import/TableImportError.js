@@ -22,7 +22,7 @@ export default class TableImportError extends Component {
     render = () => {
         return (
             <Fragment>
-                <BootstrapTable keyField={'fileID'} striped={true} columns={this.columns} pagination={paginationFactory()} {...this.props} />
+                <BootstrapTable keyField={'fileID'} striped={true} columns={this.columns} pagination={paginationFactory()}  wrapperClasses="table-responsive" {...this.props} />
             </Fragment>
         )
     }

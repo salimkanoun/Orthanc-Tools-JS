@@ -26,7 +26,6 @@ class Users {
   }
 
   _getUserEntity() {
-    console.log(this.username)
     return db.User.findOne({ where: { username: this.username } }).then(entity => {
       if (!entity) {
         throw new OTJSNotFoundException('Not Found')
@@ -165,8 +164,22 @@ class Users {
     //Get user's group from LDAP
     let userLdapGroups = await ldap.getGroupMembershipForUser(this.ldapUsername)
 
+    let role = {
+      import: false,
+      content: false,
+      anon: false,
+      export_local: false,
+      export_extern: false,
+      query: false,
+      auto_query: false,
+      delete: false,
+      modify: false,
+      cd_burner: false,
+      admin: false
+    }
+
     //Loop user's group until we found a known group having a local role
-    for (let i = 0; userLdapGroups; i++) {
+    for (let i = 0; i < userLdapGroups.length ; i++) {
 
       //Get and return the first match
       if (knownLdapGroups.includes(userLdapGroups[i].cn)) {
@@ -176,16 +189,29 @@ class Users {
         })
 
         //get Role data and return it to controller
-        let role = await db.Role.findOne((
+        let currentRole = await db.Role.findOne((
           {
             where: { name: local_role[0].local_role }
           }
         ))
 
-        return role
+        if (role.import === false) role.import = currentRole.import
+        if (role.content === false) role.content = currentRole.content
+        if (role.anon === false) role.anon = currentRole.anon
+        if (role.export_local === false) role.export_local = currentRole.export_local
+        if (role.export_extern === false) role.export_extern = currentRole.export_extern
+        if (role.query === false) role.query = currentRole.query
+        if (role.auto_query === false) role.auto_query = currentRole.auto_query
+        if (role.delete === false) role.delete = currentRole.delete
+        if (role.modify === false) role.modify = currentRole.modify
+        if (role.cd_burner === false) role.cd_burner = currentRole.cd_burner
+        if (role.admin === false) role.admin = currentRole.admin
+
       }
 
     }
+
+    return role
 
 
   }

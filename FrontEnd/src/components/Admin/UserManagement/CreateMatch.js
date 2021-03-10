@@ -16,22 +16,20 @@ export default class CreateMatch extends Component {
         associedRole: '',
         optionsAssociedRole: [],
         optionsGroupName: [],
-        matches : []
+        associations : []
     }
 
     componentDidMount = async () => {
-        console.log('mount')
+
         try {
             let optionsGroupName = await this.getExistingGroupOptions()
             let optionGroupRole = await this.getAssociedRole()
             let associations = await this.getExistingAssociations()
-            console.log(optionGroupRole)
-            console.log(optionsGroupName)
-            console.log(associations)
+
             this.setState({
                 optionsAssociedRole: optionGroupRole,
                 optionsGroupName: optionsGroupName,
-                matches : associations
+                associations : associations
             })
         } catch (error) {
             toast.error(error.statusText)
@@ -40,7 +38,6 @@ export default class CreateMatch extends Component {
     }
 
     getExistingAssociations = async () => {
-
         return await apis.ldap.getAllCorrespodences()
     }
 
@@ -63,13 +60,11 @@ export default class CreateMatch extends Component {
         }
     ]
 
-    changeGroupe = (event) => {
-        console.log(event)
+    changeGroup = (event) => {
         this.setState({ groupName: event })
     }
 
     changeRole = (event) => {
-        console.log(event)
         this.setState({ associedRole: event })
     }
 
@@ -91,11 +86,12 @@ export default class CreateMatch extends Component {
     create = async () => {
         try{
             await apis.ldap.createMatch(this.state.groupName.value, this.state.associedRole.value)
-            this.props.getMatches()
-            toast.success('Ldap Match Created')
+            toast.success('Association Created')
             this.setState({
-                show: false
+                associations : await this.getExistingAssociations()
             })
+            this.showModal(false)
+
         } catch(error ){
             toast.error(error.statusText)
         }
@@ -115,12 +111,17 @@ export default class CreateMatch extends Component {
 
     }
 
-    //SK A VOIR
+    showModal = (show) => {
+        this.setState({ show: show })
+    }
+
     delete = async (ldapGroup) => {
         try{
             apis.ldap.deleteMatch(ldapGroup)
-            toast.success('Match deleted with success')
-            this.props.getMatches()
+            toast.success('Assocication deleted')
+            this.setState({
+                associations : await this.getExistingAssociations()
+            })
         }catch(error) {
             toast.error(error.statusText)
         }
@@ -129,30 +130,29 @@ export default class CreateMatch extends Component {
     render = () => {
         return (
             <Fragment>
-                <button type='button' className='btn btn-primary mr-3 mt-2' onClick={() => this.setState({ show: true })} >New match</button>
-                <Modal show={this.state.show} onHide={() => this.setState({ show: false })}>
+                <button type='button' className='btn btn-primary mr-3 mt-2' onClick={() => this.showModal(true) } >New match</button>
+                <Modal show={this.state.show} onHide={() => this.showModal(false)}>
                     <Modal.Header closeButton>
                         <h2 className='card-title'>Create new match</h2>
                     </Modal.Header>
                     <Modal.Body>
                         <Fragment>
                             <label>Group name</label>
-                            <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsGroupName} onChange={this.changeGroupe} value={this.state.groupName} required />
+                            <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsGroupName} onChange={this.changeGroup} value={this.state.groupName} required />
                             <label className='mt-3'>Associed role</label>
                             <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.state.optionsAssociedRole} onChange={this.changeRole} value={this.state.associedRole} required />
                         </Fragment>
                     </Modal.Body>
                     <Modal.Footer>
                         <button type='button' name='create' className='btn btn-primary' onClick={this.create} >Create</button>
-                        <button type='button' className='btn btn-info' onClick={() => this.setState({ show: false })} >Cancel</button>
                     </Modal.Footer>
                 </Modal>
 
                 <div className="form-group mr-3 mt-3">
-                    <BootstrapTable keyField='groupName' data={this.state.matches} columns={this.columns} striped />
+                    <BootstrapTable keyField='groupName' data={this.state.associations} columns={this.columns} striped />
                 </div>
             </Fragment>
 
-        );
+        )
     }
 }

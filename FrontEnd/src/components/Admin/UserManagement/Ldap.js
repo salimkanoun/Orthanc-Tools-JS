@@ -233,7 +233,7 @@ export default class Ldap extends Component {
                 </div>
 
                 {this.state.activated ? 
-                        <CreateMatch />
+                        <CreateMatch/>
                  : null}
 
             </Fragment>

@@ -24,8 +24,6 @@ class ADClient extends AbstractAnnuaire {
             username: this.DN,
             password: this.password
         }
-        
-        console.log(config)
 
         this.ad = new ActiveDirectory(config);
 
