@@ -3,14 +3,14 @@ const ldap = {
   setLdapSettings(typeGroup, address, port, DN, password, protocol, base, group, user) {
 
     const options = {
-      TypeGroupe: typeGroup,
-      adresse: address,
+      TypeGroup: typeGroup,
+      address: address,
       port: port,
       DN: DN,
-      mdp: password,
-      protocole: protocol,
+      password: password,
+      protocol: protocol,
       base: base,
-      groupe: group,
+      group: group,
       user: user
     }
 
@@ -74,7 +74,7 @@ const ldap = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify([payload])
+      body: JSON.stringify(payload)
     };
 
     return fetch("/api/ldap/matches/", createMatchOption).then((answer) => {

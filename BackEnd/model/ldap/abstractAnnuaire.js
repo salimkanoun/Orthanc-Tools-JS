@@ -3,21 +3,25 @@ class AbstractAnnuaire {
     constructor() {
     }
 
-    testSettings() {
+    getAllLdapGroups = () => {
+        throw 'abstract class, do not implement it'
+    }
+
+    authenticateLdapServer = () => {
         throw 'abstract class, do not implement it'
         //Renvois Vraie si une connexion à pu etre établie avec l'annuaire
     }
 
-    getAllCorrespodences() {
+    authenticateUser = (username, password) => {
+        throw 'abstract class, do not implement it'
+        //Renvois Vraie si une connexion à pu etre établie avec l'annuaire
+    }
+
+    getAllLdapGroups = () => {
         throw 'abstract class, do not implement it'
         //Renvois tous les groupes de l'annuaire (peut etre modulé par un filtre)
     }    
 
-    autentification(username, mdp) {
-        throw 'abstract class, do not implement it'
-        //Renvois Vraie si l'username et le password sont correcte (authentification d'un utilisateur via l'annuaire)
-    }
-    
     getPermission(username, groupes) {
         throw 'abstract class, do not implement it'
         //Prend un tableau de string representant les groupes (tous les groupes ayant une correspondance). Verifiepour chaque groupe que

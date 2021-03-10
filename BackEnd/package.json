@@ -23,7 +23,7 @@
     "build": "webpack OrthancToolsJS.js"
   },
   "dependencies": {
-    "activedirectory": "^0.7.2",
+    "activedirectory2": "^2.1.0",
     "basic-ftp": "^4.6.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",

@@ -102,7 +102,6 @@ export default class Metadata extends Component {
             try{
                 this.setState({ data: [], text: 'Fetching...' })
                 let data = await apis.content.getSharedTags(this.props.serieID)
-                console.log(data)
                 this.setState({ data: this.prepareData(data), text: 'enabled' })
             }catch (error) {
                 toast.error(error.statusText)

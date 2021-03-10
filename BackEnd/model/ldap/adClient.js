@@ -1,118 +1,65 @@
-var ActiveDirectory = require('activedirectory');
-var AbstractAnnuaire = require('./abstractAnnuaire');
+var ActiveDirectory = require('activedirectory2').promiseWrapper
+var AbstractAnnuaire = require('./abstractAnnuaire')
 
 
 class ADClient extends AbstractAnnuaire {
 
-    constructor(type, protocole, adresse, port, DN, mdp, base, user, groupe) {
+    constructor(type, protocol, address, port, DN, password, base, user, group) {
         super()
-        this.type = type,
-            this.protocole = protocole
-        this.adresse = adresse,
-            this.port = port,
-            this.DN = DN,
-            this.mdp = mdp
+        this.type = type
+        this.DN = DN
+        this.password = password
         this.base = base
         this.user = user
 
-        if (groupe === '') {
-            this.groupe = 'CN=*'
+        if (group === '') {
+            this.group = 'CN=*'
         } else {
-            this.groupe = groupe
+            this.group = group
         }
 
-        this.buildAD()
-    }
-
-    buildAD() {
-        var config = {
-            url: this.protocole + this.adresse + ':' + this.port,
+        let config = {
+            url: (protocol + address + ':' + port),
             baseDN: this.base,
             username: this.DN,
-            password: this.mdp
+            password: this.password
         }
 
         this.ad = new ActiveDirectory(config);
+
     }
 
-    testSettings() {
-        return this.autentification(this.DN, this.mdp);
-    }
-
-    getAllCorrespodences() {
-        var queryFindGroupsOptions = {
+    getAllLdapGroups = () => {
+        let queryFindGroupsOptions = {
             scope: 'sub',
-            filter: this.groupe
+            filter: this.group
         }
 
-        return new Promise((resolve, reject) => {
-            this.ad.findGroups(queryFindGroupsOptions, function (err, groups) {
+        return this.ad.findGroups(queryFindGroupsOptions).catch( (error) =>  { throw error})
+       
+    }
 
-                if (err) {
-                    reject(err)
-                }
+    authenticateLdapServer = () => {
+        return this.ad.authenticate(this.DN, this.password).catch((error)=> {
+            throw error
+        });
+    }
 
-                let res = []
-                if ((!groups) || (groups.length == 0)) {
-                    console.log('No groups found.');
-                } else {
-                    for (let i = 0; i < groups.length; i++) {
-                        res.push({ value: groups[i].cn, label: groups[i].cn });
-                    }
-                }
-                resolve(res)
-            })
-
-        })
+    authenticateUser = (username, password) => {
+        return this.ad.authenticate(username, password).catch((error)=> {
+            throw error
+        });
+    }
+ 
+    isUserMemberOf = (username, ldapGroup) => {
+        return this.ad.isUserMemberOf(username, ldapGroup).catch( (error) => { throw error })
 
     }
 
-    autentification(username, password) {
-        return new Promise((resolve, reject) => {
-            this.ad.authenticate(username, password, function (err, auth) {
-                if (err) {
-                    reject(err)
-                }
-                resolve(auth)
-            })
-        })
+    getGroupMembershipForUser = (username) => {
+        return this.ad.getGroupMembershipForUser(username)
     }
 
-    async getPermission(username, groupes) {
-        //Get username
-        let words = username.split('@');
-        let usernameMemberOf = words[0];
-
-        //Get groups
-        let res = []
-        let memberPromisesArray = []
-        for (let i = 0; i < groupes.length; i++) {
-
-            let memberPromises = this.isMemberOfPromise(usernameMemberOf, groupes[i]).then((isMember) => {
-                if (isMember) { res.push(groupes[i]) }
-            }).catch((error) => { console.error(error) })
-
-            memberPromisesArray.push(memberPromises)
-
-        }
-
-        Promise.all(memberPromisesArray).then(() => {
-            return res
-        })
-    }
-
-    isMemberOfPromise(usernameMemberOf, groupe) {
-        return new Promise((resolve, reject) => {
-
-            this.ad.isUserMemberOf(usernameMemberOf, groupe, function (err, isMember) {
-                if (err) {
-                    reject('ERROR: ' + JSON.stringify(err))
-                }
-                resolve(isMember)
-            })
-
-        })
-    }
 }
 
 module.exports = ADClient
