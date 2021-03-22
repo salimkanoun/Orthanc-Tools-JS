@@ -49,9 +49,9 @@ router.get('/patients/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
 router.get('/studies/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
 router.get('/series/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
 router.get('/instances/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
-router.delete('/patients/*', [userAuthMidelware,contentMidelware], reverseProxyDelete)
-router.delete('/studies/*', [userAuthMidelware,contentMidelware], reverseProxyDelete)
-router.delete('/series/*', [userAuthMidelware,contentMidelware], reverseProxyDelete)
+router.delete('/patients/*', [userAuthMidelware, deleteMidelware], reverseProxyDelete)
+router.delete('/studies/*', [userAuthMidelware, deleteMidelware], reverseProxyDelete)
+router.delete('/series/*', [userAuthMidelware, deleteMidelware], reverseProxyDelete)
 
 //Monitoring
 router.post('/monitoring/burner', [userAuthMidelware,cdBurnerMidelware], startBurner)
@@ -79,7 +79,7 @@ router.post('/tasks/:username/anonymize', [userAuthMidelware, anonMidelware], ad
 
 //DeleteRobot
 //SK BUG MIDELWARE DELETE?
-router.post('/tasks/:username/delete', [userAuthMidelware, deleteMidelware], addDeleteTask)
+router.post('/tasks/:username/delete', [userAuthMidelware, isCurrentUserOrAdminMidelWare], addDeleteTask)
 
 //FTP & WebDav Exports
 router.post('/tasks/:user/export', [userAuthMidelware, exportExternMidelware], addExportTask)

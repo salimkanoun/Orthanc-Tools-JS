@@ -28,21 +28,36 @@ export default class ActionBouton extends Component{
         let orthancID = this.props.orthancID
         switch(this.props.level){
             case 'patients':
-                await apis.content.deletePatient(orthancID)
-                toast.success("Patient " + orthancID + " have been deleted")
+                try{
+                    await apis.content.deletePatient(orthancID)
+                    toast.success("Patient " + orthancID + " have been deleted")
+                    this.props.onDelete(orthancID, this.props.parentID)
+                }catch(error){
+                    toast.error(error)
+                }
                 break
             case 'studies':
-                await apis.content.deleteStudies(orthancID)
-                toast.success("Studies " + orthancID + " have been deleted")
+                try{
+                    await apis.content.deleteStudies(orthancID)
+                    toast.success("Studies " + orthancID + " have been deleted")
+                    this.props.onDelete(orthancID, this.props.parentID)
+                }catch(error){
+                    toast.error(error)
+                }
                 break
             case 'series':
-                await apis.content.deleteSeries(orthancID)
-                toast.success("Series " + orthancID + " have been deleted")
+                try{
+                    await apis.content.deleteSeries(orthancID)
+                    toast.success("Series " + orthancID + " have been deleted")
+                    this.props.onDelete(orthancID, this.props.parentID)
+                }catch(error){
+                    toast.error(error)
+                }
                 break
             default:
                 toast.error("Wrong level")
         }
-        this.props.onDelete(orthancID, this.props.parentID)
+        
     }
 
     handleClick = (e) => {
