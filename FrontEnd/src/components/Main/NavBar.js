@@ -16,7 +16,7 @@ import Query from '../Query/Components/Query'
 import AutoQueryRoot from '../AutoQuery/Connected_Component/AutoQueryRoot'
 import RobotView from '../AutoQuery/Connected_Component/RobotView'
 import AdminRootPanel from '../Admin/AdminRootPanel'
-import Import from '../Import/Import'
+import ImportRootPanel from '../Import/ImportRootPanel'
 import ContentRootPanel from '../OrthancContent/ContentRootPanel'
 import ExportPanel from '../Export/ExportPanel'
 import AnonRootPanel from '../Anonymize/AnonRootPanel'
@@ -100,7 +100,7 @@ const AnimatedSwitch = withRouter(({ location }) => (
   <TransitionGroup>
     <CSSTransition key={location.key} classNames={'slide'} timeout={500} >
       <Switch location={location}>
-        <Route exact path='/import' component={Import} />
+        <Route exact path='/import' component={ImportRootPanel} />
         <Route exact path='/query' component={Query} />
         <Route exact path='/auto-query' component={AutoQueryRoot} />
         <Route exact path='/administration' component={AdminRootPanel} />
