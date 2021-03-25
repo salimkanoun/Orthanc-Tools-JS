@@ -35,6 +35,9 @@ router.get('/wado/*', [userAuthMidelware, contentMidelware], reverseProxyGet)
 router.post('/tools/create-archive', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
 router.post('/tools/create-media-extended', [userAuthMidelware,exportLocalMidelware], reverseProxyPost)
 
+//Orthanc Create Dicom Route
+router.post('/tools/create-dicom', [userAuthMidelware, importMidelware], reverseProxyPost)
+
 //Orthanc Peers Routes
 router.post('/peers/*/store', [userAuthMidelware,exportExternMidelware], reverseProxyPost)
 

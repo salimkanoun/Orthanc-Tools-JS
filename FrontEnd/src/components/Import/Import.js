@@ -40,7 +40,7 @@ class Import extends Component {
             fr.onload = () => {
                 resolve(fr)
             }
-        });
+        })
     }
 
     addFile = async (files) => {
