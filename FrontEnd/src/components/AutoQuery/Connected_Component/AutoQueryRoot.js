@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import TableQuery from './TableQuery'
 import Results from './Results'
 import RobotView from './RobotView'
+import RobotHistoric from './RobotHistoric'
 
 /**
  * Root Panel of AutoQuery module
@@ -11,9 +12,10 @@ import RobotView from './RobotView'
  */
 const AutoQueryRoot = () => {
 
-  const Query = 'Query'
-  const Result = 'Result'
-  const MyRobot = 'MyRobot'
+  const QUERRY = 'Query'
+  const RESULT = 'Result'
+  const MY_ROBOT = 'MyRobot'
+  const HISTORIC = 'Historic'
 
   const [currentMainTab, setCurrentMainTab] = useState('Query')
   const username = useSelector(state => state.OrthancTools.username)
@@ -22,14 +24,17 @@ const AutoQueryRoot = () => {
   function getComponentToDisplay() {
     let component = null
     switch (currentMainTab) {
-      case Query:
+      case QUERRY:
         component = <TableQuery switchTab={switchTab} />
         break
-      case Result:
+      case RESULT:
         component = <Results switchTab={switchTab} />
         break
-      case MyRobot:
+      case MY_ROBOT:
         component = <RobotView username={username} />
+        break
+      case HISTORIC:
+        component = <RobotHistoric username={username} />
         break
       default:
         break
@@ -47,15 +52,18 @@ const AutoQueryRoot = () => {
       <div className='mb-5'>
         <ul className='nav nav-pills nav-fill'>
           <li className='nav-item'>
-            <button className={currentMainTab === 'Query' ? 'col nav-link active link-button' : ' col nav-link link-button'} onClick={() => setCurrentMainTab('Query')}>Query List</button>
+            <button className={currentMainTab === QUERRY ? 'col nav-link active link-button' : ' col nav-link link-button'} onClick={() => setCurrentMainTab(QUERRY)}>Query List</button>
           </li>
           <li className='nav-item'>
-            <button className={currentMainTab === 'Result' ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab('Result')}>Results</button>
+            <button className={currentMainTab === RESULT ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab(RESULT)}>Results</button>
           </li>
           <li className='nav-item'>
-            <button className={currentMainTab === 'MyRobot' ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab('MyRobot')}>My Retrieve Robot</button>
+            <button className={currentMainTab === MY_ROBOT ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab(MY_ROBOT)}>My Retrieve Robot</button>
           </li>
-        </ul>
+          <li className='nav-item'>
+            <button className={currentMainTab === HISTORIC ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab(HISTORIC)}>Historic</button>
+          </li>
+        </ul>My Retrieve Robot
       </div>
       <div className="jumbotron">
         {getComponentToDisplay()}

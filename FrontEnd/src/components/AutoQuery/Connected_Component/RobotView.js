@@ -224,7 +224,7 @@ class RobotView extends Component {
         let response
         if (!this.props.id) {
             try {
-                response = await apis.task.getTaskOfUser(this.props.username, 'retrieve')
+                response = (await apis.task.getTaskOfUser(this.props.username, 'retrieve'))[0]
             } catch (error) {
                 return
             }

@@ -47,7 +47,7 @@ class Task {
         let task;
         switch (type) {
             case TaskType.RETRIEVE:
-                task = (await RetrieveTask.getUserTask(username))[0];
+                task = (await RetrieveTask.getUserTask(username));
                 break;
             case TaskType.EXPORT:
                 task = await ExportTask.getUserTask(username);
@@ -114,7 +114,7 @@ class Task {
         let task;
         switch (type) {
             case TaskType.RETRIEVE:
-                task = (await RetrieveTask.getUserTask(username))[0];
+                task = await RetrieveTask.getUserTask(username);
                 if(!task)throw new OTJSNotFoundException('Unknown task');
                 RetrieveTask.delete(task.id);
                 break;
