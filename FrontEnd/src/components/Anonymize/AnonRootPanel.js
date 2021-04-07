@@ -6,24 +6,29 @@ import { connect } from 'react-redux';
 import AnonymizePanelProgress from './AnonymizePanelProgress';
 import apis from '../../services/apis';
 import task from '../../services/task';
+import AnonHistoric from './AnonHistoric';
 
+const ANON_TAB = "Anonymizassion"
+const PORG_TAB = "Progress"
+const HISTORIC_TAB = "Historic"
 
 class AnonRootPanel extends Component {
 
     state = {
-        anonTaskId : null
+        anonTaskId : null,
+        currentMainTab : ANON_TAB
     }
 
     componentDidMount = async () => {
         //Sk / Voir si robot anoymisation de cet utilisateur est en cours
         try{
-            let answer = await apis.task.getTaskOfUser(this.props.username, 'anonymize')
-            if(answer.state !== "completed"){
-                
+            let answer = (await apis.task.getTaskOfUser(this.props.username, 'anonymize'))[0]
+            
+            if (answer){
                 this.setState({
+                    
                     anonTaskId: answer.id
                 })
-
             }
         }catch (error) {}
 
@@ -32,16 +37,53 @@ class AnonRootPanel extends Component {
 
     setAnonTaskId = (anonTaskID) => {
         this.setState({
-            anonTaskId: anonTaskID
+            anonTaskId: anonTaskID,
+            currentMainTab : PORG_TAB
         })
+    }
+
+    getComponentToDisplay = ()=>{
+        switch (this.state.currentMainTab) {
+            case ANON_TAB:
+                return(<AnonymizePanel setTask={this.setAnonTaskId}/>);
+            case PORG_TAB:
+                return(
+                <>
+                    <AnonymizePanelProgress anonTaskID={this.state.anonTaskId}/>
+                    <AnonymizedResults anonTaskID={this.state.anonTaskId}/>
+                </>)
+            case HISTORIC_TAB:
+                return(<AnonHistoric/>)
+                break;
+                    
+            default:
+                break;
+        }
+    }
+    
+    setCurrentMainTab = currentMainTab=>{
+        this.setState({currentMainTab})
     }
 
     render = () => {
         return (
             <div>
-                { this.state.anonTaskId ? <AnonymizePanelProgress onAnonymizeFinished = {() => this.setAnonTaskId(null) } anonTaskID={this.state.anonTaskId} /> : null }
-                { !this.state.anonTaskId ? <AnonymizePanel setTask={this.setAnonTaskId} /> : null}
-                { this.props.anonymizedList.length > 0 ? <AnonymizedResults /> : null}
+                <div className='mb-5'>
+                    <ul className='nav nav-pills nav-fill'>
+                    <li className='nav-item'>
+                        <button className={this.state.currentMainTab === ANON_TAB ? 'col nav-link active link-button' : ' col nav-link link-button'} onClick={() => this.setCurrentMainTab(ANON_TAB)}>Anonimization List</button>
+                    </li>
+                    <li className='nav-item'>
+                        <button className={this.state.currentMainTab === PORG_TAB ? 'col nav-link active link-button' : 'col nav-link link-button'+(!this.state.anonTaskId?' disabled':'')} onClick={() => {if(this.state.anonTaskId) this.setCurrentMainTab(PORG_TAB)}}>Progress</button>
+                    </li>
+                    <li className='nav-item'>
+                        <button className={this.state.currentMainTab === HISTORIC_TAB ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => this.setCurrentMainTab(HISTORIC_TAB)}>Historic</button>
+                    </li>
+                    </ul>
+                </div>
+                <div className="jumbotron">
+                    {this.getComponentToDisplay()}
+                </div>
             </div>
 
         )
@@ -50,8 +92,6 @@ class AnonRootPanel extends Component {
 
 const mapStateToProps = state => {
     return {
-        anonList: state.AnonList.anonList,
-        anonymizedList: state.AnonList.anonymizedList,
         username: state.OrthancTools.username
     }
 }

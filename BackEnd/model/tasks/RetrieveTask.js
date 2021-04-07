@@ -150,7 +150,7 @@ class RetrieveTask {
             }
         }
         return Promise.all(ids.map(x => RetrieveTask.getTask(x))).then(res => {
-            let orderred = []
+            let orderred = [];
             res.forEach(x => {
                 orderred[JOBS_TTL - x.ttl] = x;
             });

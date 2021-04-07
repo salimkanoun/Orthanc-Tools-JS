@@ -115,7 +115,6 @@ export default class RobotStatus extends Component {
                 })
             });
 
-            console.log(rows);
 
             this.setState({
                 rows: rows

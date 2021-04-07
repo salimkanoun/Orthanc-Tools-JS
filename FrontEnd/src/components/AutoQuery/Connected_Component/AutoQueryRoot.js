@@ -63,7 +63,7 @@ const AutoQueryRoot = () => {
           <li className='nav-item'>
             <button className={currentMainTab === HISTORIC ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab(HISTORIC)}>Historic</button>
           </li>
-        </ul>My Retrieve Robot
+        </ul>
       </div>
       <div className="jumbotron">
         {getComponentToDisplay()}

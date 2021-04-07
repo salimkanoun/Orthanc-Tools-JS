@@ -7,23 +7,54 @@ import { emptyAnonymizedList, removeStudyFromAnonymizedList } from '../../action
 import { addStudiesToDeleteList } from '../../actions/DeleteList'
 import { addStudiesToExportList } from '../../actions/ExportList'
 import apis from "../../services/apis"
+import task from "../../services/task"
+import MonitorTask from "../../tools/MonitorTask"
 
 
 class AnonymizedResults extends Component {
 
-    getStudiesAnonymized = () => {
+    state = {
+        studies : []
+    }
+
+    componentDidMount = async () => {
+        if(this.props.anonTaskID){
+            let anonTask = await task.getTask(this.props.anonTaskID);
+            if(!!anonTask){
+                this.handleTask(anonTask);
+                if (!["completed", "failed"].includes(anonTask.state)) {
+                    this.monitor = new MonitorTask(this.props.anonTaskID, 4000);
+                    this.monitor.onUpdate(this.handleTask.bind(this));
+                    this.monitor.onFinish(()=>{});
+                    this.monitor.startMonitoringJob();
+                }
+            }
+        }
+    }
+
+    componentWillUnmount = ()=>{
+        if(this.monitor)this.monitor.stopMonitoringJob();
+    }
+
+    handleTask = async anonTask => {
         let studies = []
-        this.props.anonymizedList.forEach(study => {
-            studies.push({
-                StudyOrthancID: study.ID,
-                ...study.MainDicomTags,
-                ...study.PatientMainDicomTags,
-                AnonymizedFrom: study.AnonymizedFrom,
-                newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
-                newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
-            })
-        })
-        return studies
+        for (const item of anonTask.details.items) {
+            if(item.state === "completed"){
+                let study = (await apis.content.getStudiesDetails(item.result));
+                studies.push({
+                    StudyOrthancID: study.ID,
+                    ...study.MainDicomTags,
+                    ...study.PatientMainDicomTags,
+                    AnonymizedFrom: study.AnonymizedFrom,
+                    newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
+                    newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
+                });
+
+            }
+        }
+        this.setState({
+            studies
+        });
     }
 
     getCSV = () => {
@@ -31,21 +62,16 @@ class AnonymizedResults extends Component {
         //Get le anonymized from pour le level study
     }
 
-    emptyAnonymizedList = () => {
-        this.props.emptyAnonymizedList()
-    }
-
     removeStudyAnonymized = (studyID) => {
-        this.props.removeStudyFromAnonymizedList(studyID)
         apis.content.deleteStudies(studyID)
     }
 
     exportList = () => {
-        this.props.addStudiesToExportList(this.props.anonymizedList)
+        this.props.addStudiesToExportList(this.state.studies)
     }
 
     deleteList = () => {
-        this.props.addStudiesToDeleteList(this.props.anonymizedList)
+        this.props.addStudiesToDeleteList(this.state.studies)
     }
 
     render = () => {
@@ -56,7 +82,7 @@ class AnonymizedResults extends Component {
                     <div className='col-sm mb-3'>
                         <button type='button' className="btn btn-warning float-right" onClick={this.emptyAnonymizedList}>Empty List</button>
                         <TableStudy
-                            data={this.getStudiesAnonymized()}
+                            data={this.state.studies}
                             hiddenActionBouton={true}
                             hiddenRemoveRow={false}
                             onDelete={this.removeStudyAnonymized}
@@ -76,16 +102,4 @@ class AnonymizedResults extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        anonymizedList: state.AnonList.anonymizedList
-    }
-}
-const mapDispatchToProps = {
-    emptyAnonymizedList,
-    removeStudyFromAnonymizedList,
-    addStudiesToDeleteList,
-    addStudiesToExportList
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AnonymizedResults)
+export default AnonymizedResults

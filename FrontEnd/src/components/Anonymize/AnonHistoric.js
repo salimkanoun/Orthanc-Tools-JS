@@ -2,11 +2,14 @@ import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify';
-import apis from '../../../services/apis';
+import { connect } from 'react-redux'
+import apis from '../../services/apis';
+import AnonymizedResults from './AnonymizedResults';
 
-export default class RobotJistoric extends Component {
+class AnonHistoric extends Component {
 
     state = {
+        selectedTask : null,
         rows: []
     }
 
@@ -17,16 +20,15 @@ export default class RobotJistoric extends Component {
         dataField: 'queriesNb',
         text: 'Number of Queries'
     }, {
-        dataField: 'progress',
-        text: 'Progress'
-    }, {
         dataField: 'state',
         text: 'State'
     }, {
         dataField: 'details',
         text: 'Show Details',
         formatter: (cell, row, rowIndex, parentComponent) => {
-            return <Link className='nav-link btn btn-info' to={'/robot/' + row.id} > Details </Link>
+            return (<div className="text-center">
+                <input type="button" className='btn btn-primary' onClick={() => {this.setState({selectedTask: row.id})}} value="Show Result" />
+            </div>)
         }
     }, {
         dataField: 'remove',
@@ -69,7 +71,7 @@ export default class RobotJistoric extends Component {
     }
 
     refreshHandler = () => {
-        apis.task.getTaskOfUser(this.props.username, 'retrieve').then((answerData) => {
+        apis.task.getTaskOfUser(this.props.username, 'anonymize').then((answerData) => {
 
             let rows = []
 
@@ -78,7 +80,6 @@ export default class RobotJistoric extends Component {
                     id: robotJob.id,
                     name: robotJob.details.projectName,
                     username: robotJob.creator,
-                    progress: (robotJob.progress.retrieve+robotJob.progress.validation)/2,
                     state: robotJob.state,
                     queriesNb: robotJob.details.items.length
                 })
@@ -92,11 +93,22 @@ export default class RobotJistoric extends Component {
     }
 
     render = () => {
+        let resultTable = (this.state.selectedTask?<AnonymizedResults anonTaskID={this.state.selectedTask}/>:<></>)
+        
         return (
             <>
-                <h2 className="card-title">Retrieve Robots : </h2>
+                <h2 className="card-title">Anonimizations : </h2>
                 <BootstrapTable keyField="username" striped={true} data={this.state.rows} columns={this.columns} wrapperClasses='table-responsive' />
+                {resultTable}
             </>
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+      username: state.OrthancTools.username
+    }
+  }
+
+export default connect(mapStateToProps)(AnonHistoric)
