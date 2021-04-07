@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   Study_Label.associate = function (models) {
     Study_Label.hasOne(models.Study_Label, {
       foreignKey: 'label_name',
-      as:'label_name'
+      onUpdate: 'CASCADE'
     })
   }
   return Study_Label

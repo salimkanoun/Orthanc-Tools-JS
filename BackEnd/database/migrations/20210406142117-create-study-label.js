@@ -34,6 +34,7 @@ module.exports = {
       return queryInterface.addConstraint('Study_Label', {
         type: 'foreign key',
         fields: ['label_name'],
+        onUpdate: 'CASCADE',
         references: {
           fields: ['label_name'],
           table: 'Labels',

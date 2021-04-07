@@ -26,7 +26,7 @@ class Roles {
       modify: payload.modify,
       cd_burner: payload.cd_burner,
       admin: payload.admin
-    }).catch( (e) => {throw e})
+    })
   }
 
   static async getAllRoles() {

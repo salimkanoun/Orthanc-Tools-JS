@@ -13,11 +13,10 @@ module.exports = (sequelize, DataTypes) => {
   User_Label.associate = function (models) {
     User_Label.hasOne(models.User_Label, {
       foreignKey: 'label_name',
-      as:'label_name'
+      onUpdate: 'CASCADE'
     }),
     User_Label.hasOne(models.User_Label, {
-      foreignKey: 'user_id',
-      as:'user_id'
+      foreignKey: 'user_id'
     })
   }
   return User_Label
