@@ -14,7 +14,7 @@ const JOBS_PROGRESS_INTERVAL = 250
 const REDIS_OPTIONS = {
   host: process.env.REDIS_HOST,
   port: process.env.REDIS_PORT,
-  password: process.env.REDIS_PASSWORDUL_labels_name_fkey
+  password: process.env.REDIS_PASSWORD
 }
 
 let exporter = new Exporter();
