@@ -1,20 +1,20 @@
-var Study_Label = require('../model/Study_Label')
+var StudyLabel = require('../model/StudyLabel')
 
 const createStudyLabel = async function(req,res){
   const body = req.body
-  await Study_Label.createStudyLabel(body.study_uid,body.label_name)
+  await StudyLabel.createStudyLabel(body.study_instance_uid,body.label_name)
   res.sendstatus(201)
 }
 
 const deleteStudyLabel = async function(req,res){
   const body = req.body
-  await Study_Label.deleteStudyLabel(body.study_uid,body.label_name)
+  await StudyLabel.deleteStudyLabel(body.study_instance_uid,body.label_name)
   res.sendstatus(200)
 }
 
 const getStudiesLabels = async function(req,res){
-  let studies_labels = await Study_Label.getAll()
-  res.json(studies_labels)
+  let studieslabels = await StudyLabel.getAll()
+  res.json(studieslabels)
 }
 
 module.exports = {createStudyLabel,deleteStudyLabel,getStudiesLabels}

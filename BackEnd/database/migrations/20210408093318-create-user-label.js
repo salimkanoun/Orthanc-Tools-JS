@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('User_Label', {
+    await queryInterface.createTable('UserLabel', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -25,13 +25,13 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      return queryInterface.addConstraint('User_Label',  {
+      return queryInterface.addConstraint('UserLabel',  {
         fields: ['user_id','label_name'],
         type: 'unique',
         name: 'unique_combined_userID&label'
       })
     }).then(() => {
-      return queryInterface.addConstraint('User_Label', {
+      return queryInterface.addConstraint('UserLabel', {
         type: 'foreign key',
         fields: ['user_id'],
         references: {
@@ -41,7 +41,7 @@ module.exports = {
         name: 'UL_users_id_fkey',
       })
     }).then(() => {
-      return queryInterface.addConstraint('User_Label', {
+      return queryInterface.addConstraint('UserLabel', {
         type: 'foreign key',
         fields: ['label_name'],
         onUpdate: 'CASCADE',
@@ -54,6 +54,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('User_Label');
+    await queryInterface.dropTable('UserLabel');
   }
 };

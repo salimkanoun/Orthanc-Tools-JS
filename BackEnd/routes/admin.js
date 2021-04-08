@@ -17,6 +17,10 @@ const { newCertificate, allCertificates, updateCertificate, removeCertificate, u
 const { newKey, allKeys, updateKey, removeKey, uploadKey } = require('../controllers/sshKey')
 const { getTasksOfType, validateRetrieve, flushTasks } = require('../controllers/task')
 
+const { getLabels,createLabel,modifyLabel,deleteLabel } = require('../controllers/label')
+const {getUsersLabels,createUserLabel,deleteUserLabel} = require('../controllers/userLabel')
+const {getStudiesLabels,createStudyLabel,deleteStudyLabel} = require('../controllers/studyLabel')
+
 // OrthancToolsJS Options routes
 adminRouter.get('/options', [userAuthMidelware, userAdminMidelware],  getOptions)
 adminRouter.put('/options', [userAuthMidelware, userAdminMidelware], changeSchedule)
@@ -114,5 +118,24 @@ adminRouter.post('/keys/update', [userAuthMidelware, userAdminMidelware], update
 adminRouter.post('/keys/create', [userAuthMidelware, userAdminMidelware], newKey)
 adminRouter.delete('/keys/', [userAuthMidelware, userAdminMidelware], removeKey)
 adminRouter.post('/keys/upload/:id', [userAuthMidelware, userAdminMidelware], uploadKey)
+
+/*
+**LABELS
+*/
+// Labels
+adminRouter.get('/labels',[userAuthMidelware, userAdminMidelware],getLabels)
+adminRouter.put('/labels',[userAuthMidelware, userAdminMidelware],modifyLabel)
+adminRouter.post('/labels',[userAuthMidelware, userAdminMidelware],createLabel)
+adminRouter.delete('/labels',[userAuthMidelware, userAdminMidelware],deleteLabel)
+
+//UserLabel
+adminRouter.get('/userlabel',[userAuthMidelware, userAdminMidelware],getUsersLabels)
+adminRouter.post('/userlabel',[userAuthMidelware, userAdminMidelware],createUserLabel)
+adminRouter.delete('/userlabel',[userAuthMidelware, userAdminMidelware],deleteUserLabel)
+
+//StudyLabel
+adminRouter.get('/studylabel',[userAuthMidelware, userAdminMidelware],getStudiesLabels)
+adminRouter.post('/studylabel',[userAuthMidelware, userAdminMidelware],createStudyLabel)
+adminRouter.delete('/studylabel',[userAuthMidelware, userAdminMidelware],deleteStudyLabel)
 
 module.exports = adminRouter
