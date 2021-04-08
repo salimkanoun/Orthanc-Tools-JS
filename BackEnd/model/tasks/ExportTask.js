@@ -6,7 +6,7 @@ const TaskType = require("../TaskType");
 let orthancQueue =new OrthancQueue();
 let exporter = new Exporter();
 
-const jobsStatus = ['completed', 'wait', 'active', 'delayed', 'failed']
+const JOBS_STATUS = ['completed', 'wait', 'active', 'delayed', 'failed']
 
 class ExportTask {
 
@@ -65,12 +65,12 @@ class ExportTask {
     /**
      * get the task corresponding of user
      * @param {string} user creator of the task to be returned
-     * @returns {Task} task of the user 
+     * @returns {Task} task uuid of the user 
      */
     static async getUserTask(user){
         let archiveJobs = await orthancQueue.getUserArchiveCreationJobs(user);
         if(archiveJobs.length === 0) return null;
-        return ExportTask.getTask(archiveJobs[0].data.taskId);
+        return archiveJobs[0].data.taskId;
     }
 
     /**
@@ -95,8 +95,8 @@ class ExportTask {
      * Remove all jobs for export
      */
     static async flush(){
-        await Promise.all(jobsStatus.map(x=>orthancQueue.exportQueue.clean(1, x)));
-        await Promise.all(jobsStatus.map(x=>exporter.sendQueue.clean(1, x)));
+        await Promise.all(JOBS_STATUS.map(x=>orthancQueue.exportQueue.clean(1, x)));
+        await Promise.all(JOBS_STATUS.map(x=>exporter.sendQueue.clean(1, x)));
     }
 }
 

@@ -25,7 +25,7 @@ const retrieveRobot = {
 
     },
 
-    validateRobot(username) {
+    validateRobot(id) {
 
         const validateRobotOption = {
             method: "POST",
@@ -35,13 +35,24 @@ const retrieveRobot = {
             }
         }
 
-        return fetch("/api/tasks/" + username + "/retrieve/validate", validateRobotOption).then((answer) => {
+        return fetch("/api/tasks/retrieve/" + id + "/validate", validateRobotOption).then((answer) => {
             if (!answer.ok) { throw answer }
             return (answer.json())
         })
     },
 
-    deleteRobot(username) {
+    deleteRobot(id) {
+
+        const deleteRobotOption = {
+            method: "DELETE",
+        }
+
+        return fetch("/api/tasks/"+id, deleteRobotOption).catch((error) => {
+            throw error
+        })
+    },
+
+    deleteRobotUser(username) {
 
         const deleteRobotOption = {
             method: "DELETE",
@@ -68,7 +79,7 @@ const retrieveRobot = {
         })
     },
 
-    deleteRobotItem(username, item) {
+    deleteRobotItem(id, item) {
 
         const deleteRobotItemOption = {
             method: "DELETE",
@@ -78,7 +89,7 @@ const retrieveRobot = {
             }
         }
 
-        return fetch("/api/tasks/" + username + "/retrieve/" + item, deleteRobotItemOption).then((answer) => {
+        return fetch("/api/tasks/retrieve/" + id + "/" + item, deleteRobotItemOption).then((answer) => {
             if (!answer.ok) { throw answer }
             return;
         }).catch((error) => {

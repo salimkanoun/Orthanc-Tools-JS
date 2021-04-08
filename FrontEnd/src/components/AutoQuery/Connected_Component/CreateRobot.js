@@ -19,7 +19,8 @@ class CreateRobot extends Component {
   createRobot = async () => {
     //Send the retrieve array to back end
     try{
-      await apis.retrieveRobot.createRobot( this.props.username, this.state.projectName, this.props.getResultArray())
+      let id = await apis.retrieveRobot.createRobot( this.props.username, this.state.projectName, this.props.getResultArray())
+      this.props.setTaskId(id);
       this.props.switchTab('MyRobot')
       toast.success('sent to robot')
     }catch(error){

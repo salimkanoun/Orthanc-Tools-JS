@@ -87,7 +87,7 @@ adminRouter.get('/ldap/groupname', [userAuthMidelware, userAdminMidelware], getL
 */
 
 //OrthancToolsJS Task routes
-adminRouter.post('/tasks/:username/retrieve/validate', [userAuthMidelware, userAdminMidelware], validateRetrieve)
+adminRouter.post('/tasks/retrieve/:id/validate', [userAuthMidelware, userAdminMidelware], validateRetrieve)
 adminRouter.get('/tasks/type/:type', [userAuthMidelware, userAdminMidelware], getTasksOfType)
 adminRouter.delete('/tasks/type/:type/flush', [userAuthMidelware, userAdminMidelware], flushTasks)
 

@@ -183,6 +183,9 @@ code {
 	color: rgba(255, 255, 255, 1) !important;
 }
 
+.nav-link.disabled {
+	color: rgba(128, 128, 128, 1) !important;
+}
 
 .vertical-center {
 	min-height: 100%;  /* Fallback for browsers do NOT support vh unit */

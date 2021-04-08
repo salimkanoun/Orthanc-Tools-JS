@@ -67,7 +67,7 @@ class Results extends Component {
                     {this.state.seriesView === true ? <TableResultsStudiesSeries /> : <TableResultStudy />}
                 </div>
                 <div className="text-center">
-                    <CreateRobot getResultArray={this.buildArrayRetrieve} switchTab={this.props.switchTab} />
+                    <CreateRobot getResultArray={this.buildArrayRetrieve} switchTab={this.props.switchTab} setTaskId={this.props.setTaskId} />
                 </div>
             </Fragment>
         )

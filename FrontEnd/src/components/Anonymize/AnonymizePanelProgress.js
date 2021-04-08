@@ -1,13 +1,8 @@
-import React, { Component, Fragment } from 'react'
-import { connect } from 'react-redux';
+import React, { Component, Fragment } from 'react';
 
-import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
+import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
 
-import AnonymizeRobotDetails from './AnonymizeRobotDetails'
-
-import { addToAnonymizedList, emptyAnonymizeList } from '../../actions/AnonList'
-
-import apis from '../../services/apis';
+import AnonymizeRobotDetails from './AnonymizeRobotDetails';
 import MonitorTask from '../../tools/MonitorTask';
 
 
@@ -28,7 +23,9 @@ class AnonymizePanelProgress extends Component {
     }
 
     componentDidMount = () => {
-        this.startMonitoring()
+        if (this.props.anonTaskID) {
+            this.startMonitoring();
+        }
     }
 
     componentWillUnmount = () => {
@@ -44,9 +41,6 @@ class AnonymizePanelProgress extends Component {
                 switch (item.state) {
                     case 'completed':
                         success++
-                        let studyDetail = await apis.content.getStudiesDetails(item.result)
-                        if (studyDetail !== undefined)
-                            this.props.addToAnonymizedList([studyDetail])
                         break
                     case 'failed':
                         failures++
@@ -71,8 +65,6 @@ class AnonymizePanelProgress extends Component {
 
     stopMonitoring = () => {
         if (this.task) this.task.stopMonitoringJob()
-        this.props.emptyAnonymizeList()
-        this.props.onAnonymizeFinished()
     }
 
     render = () => {
@@ -125,16 +117,6 @@ class AnonymizePanelProgress extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        anonymizedList: state.AnonList.anonymizedList,
-        username: state.OrthancTools.username
-    }
-}
 
-const mapsDispatchToProps = {
-    addToAnonymizedList,
-    emptyAnonymizeList
-}
 
-export default connect(mapStateToProps, mapsDispatchToProps)(AnonymizePanelProgress)
+export default AnonymizePanelProgress

@@ -4,7 +4,8 @@ const TaskType = require("../TaskType");
 
 let orthancQueue = new OrthancQueue;
 
-const jobsStatus = ['completed', 'wait', 'active', 'delayed', 'failed']
+const JOB_STATUS = ['completed', 'wait', 'active', 'delayed', 'failed'];
+const JOBS_TTL = 5;
 
 class AnonTask {
     /**
@@ -29,19 +30,17 @@ class AnonTask {
      * @returns {string} the uuid of the task 
      */
     static async createTask(creator, studies){
-        let task = await AnonTask.getUserTask(creator);
+        let task = (await AnonTask.getUserTask(creator)||[])[0];
         // Checking for existing task of the user 
-        if(!!task){
-            // If the task is complete delete it if not theres an exception
-            if(['completed','failed'].includes(task.state)){
-                AnonTask.delete(task.id);
-            }
-            else{
-                throw new OTJSForbiddenException("Cant create two anonymiztion simulteanously");
-            }
+        if (!!task && !['completed', 'failed'].includes(task.state)) {
+            throw new OTJSForbiddenException("Cant create two retrieval simulteanously");
         }
+
+        //Removing the oldest task and decreasing the ttl of other task
+        await AnonTask.decay(creator);
+
         //Creating the corresponding jobs
-        return orthancQueue.anonimizeItems(creator, studies)
+        return orthancQueue.anonimizeItems(creator, studies, JOBS_TTL);
     }
 
     /**
@@ -88,19 +87,27 @@ class AnonTask {
                     }
                     return item;
                 }))
-            }
+            }, 
+            ttl: jobs[0].data.ttl
         }
     }
 
     /**
-     * get the task corresponding of user
+     * get the tasks  of a corresponding user
      * @param {string} user creator of the task to be returned
-     * @returns {Task} task of the user 
+     * @returns {[id]} tasks uuids of the user 
      */
     static async getUserTask(user){
-        let validateJobs = await orthancQueue.getUserAnonimizationJobs(user);
-        if(validateJobs.length === 0) return null;
-        return AnonTask.getTask(validateJobs[0].data.taskId);
+        let anonJobs = await orthancQueue.getUserAnonimizationJobs(user);
+        if(anonJobs.length === 0) return null;
+        
+        let ids = [];
+        for (const job of anonJobs) {
+            if (!(ids.includes(job.data.taskId))) {
+                ids[JOBS_TTL - job.data.ttl] = job.data.taskId;
+            }
+        }
+        return ids;
     }
 
     /**
@@ -134,7 +141,27 @@ class AnonTask {
      * Remove all jobs for anonimization
      */
     static async flush(){
-        await Promise.all(jobsStatus.map(x=>orthancQueue.anonQueue.clean(1, x)));
+        await Promise.all(JOB_STATUS.map(x=>orthancQueue.anonQueue.clean(1, x)));
+    }
+
+    /**
+     * reduce the time to live of all the jobs of an user
+     */
+    static async decay(user) {
+        let jobs = await orthancQueue.getUserAnonimizationJobs(user);
+
+        await Promise.all(jobs.map(x => {
+            if (x.data.ttl === 1) {
+                return x.remove();
+            } else {
+                return x.update(
+                    {
+                        ...x.data,
+                        ttl: x.data.ttl - 1
+                    }
+                );
+            }
+        }));
     }
 }
 
