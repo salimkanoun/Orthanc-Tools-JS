@@ -1,13 +1,8 @@
-import React, { Component, Fragment } from 'react'
-import { connect } from 'react-redux';
+import React, { Component, Fragment } from 'react';
 
-import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
+import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
 
-import AnonymizeRobotDetails from './AnonymizeRobotDetails'
-
-import { addToAnonymizedList, emptyAnonymizeList } from '../../actions/AnonList'
-
-import apis from '../../services/apis';
+import AnonymizeRobotDetails from './AnonymizeRobotDetails';
 import MonitorTask from '../../tools/MonitorTask';
 
 

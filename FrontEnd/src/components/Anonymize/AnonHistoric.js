@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
-import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import { connect } from 'react-redux'
 import apis from '../../services/apis';

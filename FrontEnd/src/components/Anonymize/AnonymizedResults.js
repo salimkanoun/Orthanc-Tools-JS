@@ -1,11 +1,6 @@
 import React, { Component } from "react"
-import { connect } from "react-redux"
 
 import TableStudy from "../CommonComponents/RessourcesDisplay/TableStudy"
-
-import { emptyAnonymizedList, removeStudyFromAnonymizedList } from '../../actions/AnonList'
-import { addStudiesToDeleteList } from '../../actions/DeleteList'
-import { addStudiesToExportList } from '../../actions/ExportList'
 import apis from "../../services/apis"
 import task from "../../services/task"
 import MonitorTask from "../../tools/MonitorTask"
