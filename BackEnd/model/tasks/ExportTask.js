@@ -65,12 +65,12 @@ class ExportTask {
     /**
      * get the task corresponding of user
      * @param {string} user creator of the task to be returned
-     * @returns {Task} task of the user 
+     * @returns {Task} task uuid of the user 
      */
     static async getUserTask(user){
         let archiveJobs = await orthancQueue.getUserArchiveCreationJobs(user);
         if(archiveJobs.length === 0) return null;
-        return ExportTask.getTask(archiveJobs[0].data.taskId);
+        return archiveJobs[0].data.taskId;
     }
 
     /**

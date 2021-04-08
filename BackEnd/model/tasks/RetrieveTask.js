@@ -134,9 +134,9 @@ class RetrieveTask {
     }
 
     /**
-    * get the task corresponding of user
+    * get the corresponding tasks of user
     * @param {string} user creator of the task to be returned
-    * @returns {Task} task of the user 
+    * @returns {[id]} tasks uuids of the user 
     */
     static async getUserTask(user) {
         let validateJobs = await orthancQueue.getUserValidationJobs(user);
@@ -146,16 +146,10 @@ class RetrieveTask {
         let ids = [];
         for (const job of validateJobs) {
             if (!(ids.includes(job.data.taskId))) {
-                ids.push(job.data.taskId);
+                ids[JOBS_TTL - job.data.ttl] = job.data.taskId;
             }
         }
-        return Promise.all(ids.map(x => RetrieveTask.getTask(x))).then(res => {
-            let orderred = [];
-            res.forEach(x => {
-                orderred[JOBS_TTL - x.ttl] = x;
-            });
-            return orderred;
-        });
+        return ids;
     }
 
     /**

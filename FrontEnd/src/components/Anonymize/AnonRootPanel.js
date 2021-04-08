@@ -26,8 +26,7 @@ class AnonRootPanel extends Component {
             
             if (answer){
                 this.setState({
-                    
-                    anonTaskId: answer.id
+                    anonTaskId: answer
                 })
             }
         }catch (error) {}

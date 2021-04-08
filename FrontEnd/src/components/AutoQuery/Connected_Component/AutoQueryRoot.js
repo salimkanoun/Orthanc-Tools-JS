@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import TableQuery from './TableQuery'
 import Results from './Results'
 import RobotView from './RobotView'
 import RobotHistoric from './RobotHistoric'
+import task from '../../../services/task'
 
 /**
  * Root Panel of AutoQuery module
@@ -17,9 +18,13 @@ const AutoQueryRoot = () => {
   const MY_ROBOT = 'MyRobot'
   const HISTORIC = 'Historic'
 
-  const [currentMainTab, setCurrentMainTab] = useState('Query')
+  const [currentMainTab, setCurrentMainTab] = useState('Query');
+  const [lastTaskId, setLastTaskId] = useState(null);
   const username = useSelector(state => state.OrthancTools.username)
 
+  useEffect(()=>{
+    task.getTaskOfUser(username, 'retrieve').then(id=>{setLastTaskId(id[0])}).catch(()=>{})
+  },[])
 
   function getComponentToDisplay() {
     let component = null
@@ -28,10 +33,10 @@ const AutoQueryRoot = () => {
         component = <TableQuery switchTab={switchTab} />
         break
       case RESULT:
-        component = <Results switchTab={switchTab} />
+        component = <Results switchusernameTab={switchTab} setTaskId={setLastTaskId}/>
         break
       case MY_ROBOT:
-        component = <RobotView username={username} />
+        component = <RobotView id={lastTaskId} />
         break
       case HISTORIC:
         component = <RobotHistoric username={username} />
@@ -58,7 +63,7 @@ const AutoQueryRoot = () => {
             <button className={currentMainTab === RESULT ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab(RESULT)}>Results</button>
           </li>
           <li className='nav-item'>
-            <button className={currentMainTab === MY_ROBOT ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab(MY_ROBOT)}>My Retrieve Robot</button>
+            <button className={currentMainTab === MY_ROBOT ? 'col nav-link active link-button' : 'col nav-link link-button'+(!lastTaskId?" disabled":"")} onClick={() => {if(lastTaskId) setCurrentMainTab(MY_ROBOT)}}>My Retrieve Robot</button>
           </li>
           <li className='nav-item'>
             <button className={currentMainTab === HISTORIC ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab(HISTORIC)}>Historic</button>

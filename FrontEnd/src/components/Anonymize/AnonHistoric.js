@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { connect } from 'react-redux'
 import apis from '../../services/apis';
 import AnonymizedResults from './AnonymizedResults';
+import task from '../../services/task';
 
 class AnonHistoric extends Component {
 
@@ -71,10 +72,10 @@ class AnonHistoric extends Component {
     }
 
     refreshHandler = () => {
-        apis.task.getTaskOfUser(this.props.username, 'anonymize').then((answerData) => {
-
+        apis.task.getTaskOfUser(this.props.username, 'anonymize')
+                .then(async taksIds =>  await Promise.all(taksIds.map(id=>task.getTask(id))))
+                .then((answerData) => {
             let rows = []
-
             answerData.forEach(robotJob => {
                 rows.push({
                     id: robotJob.id,

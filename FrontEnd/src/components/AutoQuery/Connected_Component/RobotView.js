@@ -221,32 +221,15 @@ class RobotView extends Component {
     }
 
     startProgressMonitoring = async () => {
-        let response
-        if (!this.props.id) {
-            try {
-                response = (await apis.task.getTaskOfUser(this.props.username, 'retrieve'))[0]
-            } catch (error) {
-                return
-            }
-            this.refreshHandler(response)
-            this.task = new MonitorTask(response.id)
-            this.task.onUpdate(this.refreshHandler.bind(this))
-            this.task.startMonitoringJob()
-            this.setState({
-                id:response.id,
-                creator:this.props.username
-            });
-        }else{
-            response = await apis.task.getTask(this.props.id);
-            this.setState({
-                id:response.id,
-                creator:response.creator
-            });
-            this.task = new MonitorTask(this.props.id)
-            this.task.onUpdate(this.refreshHandler.bind(this))
-            this.task.startMonitoringJob()
-            this.refreshHandler(response)
-        }
+        let response = await apis.task.getTask(this.props.id);
+        this.setState({
+            id:response.id,
+            creator:response.creator
+        });
+        this.task = new MonitorTask(this.props.id);
+        this.task.onUpdate(this.refreshHandler.bind(this));
+        this.task.startMonitoringJob();
+        this.refreshHandler(response);
     }
 
     stopProgressMonitoring = () => {

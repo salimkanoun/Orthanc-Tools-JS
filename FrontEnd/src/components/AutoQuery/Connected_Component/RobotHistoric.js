@@ -3,6 +3,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
+import task from '../../../services/task';
 
 export default class RobotJistoric extends Component {
 
@@ -69,7 +70,9 @@ export default class RobotJistoric extends Component {
     }
 
     refreshHandler = () => {
-        apis.task.getTaskOfUser(this.props.username, 'retrieve').then((answerData) => {
+        apis.task.getTaskOfUser(this.props.username, 'retrieve')
+                .then(async taksIds => await Promise.all(taksIds.map(id=>task.getTask(id))))
+                .then((answerData) => {
 
             let rows = []
 

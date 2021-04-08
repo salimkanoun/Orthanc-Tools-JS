@@ -93,27 +93,21 @@ class AnonTask {
     }
 
     /**
-     * get the task corresponding of user
+     * get the tasks  of a corresponding user
      * @param {string} user creator of the task to be returned
-     * @returns {Task} task of the user 
+     * @returns {[id]} tasks uuids of the user 
      */
     static async getUserTask(user){
-        let validateJobs = await orthancQueue.getUserAnonimizationJobs(user);
-        if(validateJobs.length === 0) return null;
+        let anonJobs = await orthancQueue.getUserAnonimizationJobs(user);
+        if(anonJobs.length === 0) return null;
         
         let ids = [];
-        for (const job of validateJobs) {
+        for (const job of anonJobs) {
             if (!(ids.includes(job.data.taskId))) {
-                ids.push(job.data.taskId);
+                ids[JOBS_TTL - job.data.ttl] = job.data.taskId;
             }
         }
-        return Promise.all(ids.map(x => AnonTask.getTask(x))).then(res => {
-            let orderred = []
-            res.forEach(x => {
-                orderred[JOBS_TTL - x.ttl] = x;
-            });
-            return orderred;
-        });
+        return ids;
     }
 
     /**
