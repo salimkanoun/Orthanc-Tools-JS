@@ -7,14 +7,8 @@ const newCertificate = async function(req, res){
 }
 
 const allCertificates = async function(req, res){
-    let certificates = await Certificate.getAllCertificate()
+    let certificates = await Certificate.getAllCertificates()
     res.send(certificates)
-}
-
-//SK Pas utilisee ? 
-const updateCertificate = async function(req,res){
-    await Certificate.updateCertificate(req.params.id, req.body.label, req.body.path)
-    res.sendStatus(200)
 }
 
 const uploadCertificate = async function(req,res){

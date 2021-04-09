@@ -39,11 +39,11 @@ class Exporter{
     
             //Adding a processor for webdav  export tasks  
             this.sendQueue.process('send-over-webdav', Exporter._sendOverWebdav)
-        }).catch((err)=>{})
+        }).catch((_)=>{})
 
 
 
-        Certificate.getAllCertificate().then((certificates)=>{
+        Certificate.getAllCertificates().then((certificates)=>{
             let origCreateSecureContext = tls.createSecureContext
             tls.createSecureContext = options => {
                 const context = origCreateSecureContext(options)
@@ -94,7 +94,7 @@ class Exporter{
         await sftp.connect(endpoint).then(()=>{
             //Starting the transfer
             sftp.fastPut(file.path,path.join(endpoint.targetFolder, file.name),{
-                step:  (total_transferred, chunk, total)=>{
+                step:  (total_transferred, _chunk, _total)=>{
                     job.progress(total_transferred/file.size*100);
                 }
             }).then(()=>sftp.end())
@@ -195,7 +195,7 @@ class Exporter{
 
     async getUploadJobs(taskId){
         let jobs = await this.sendQueue.getJobs(["delayed", "completed", "active", "paused", "waiting"]);
-        return jobs.filter(job=>job.data.taskId == taskId); 
+        return jobs.filter(job=>job.data.taskId === taskId);
     }
 
 
