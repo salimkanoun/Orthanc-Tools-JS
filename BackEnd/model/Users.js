@@ -1,8 +1,10 @@
 const bcrypt = require('bcryptjs')
-const db = require('../database/models')
-const ldap = require('./Ldap')
 const { OTJSNotFoundException, OTJSBadRequestException } = require('../Exceptions/OTJSErrors')
 const Ldap = require('./Ldap')
+const Role = require('../repository/Role')
+const User = require('../repository/User')
+const Option = require('../repository/Option')
+const DistantUser = require('../repository/DistantUser')
 
 class Users {
 
@@ -26,7 +28,7 @@ class Users {
   }
 
   _getUserEntity() {
-    return db.User.findOne({ where: { username: this.username } }).then(entity => {
+    return User.findOne(username).then(entity => {
       if (!entity) {
         throw new OTJSNotFoundException('Not Found')
       } else {
@@ -46,10 +48,7 @@ class Users {
   }
 
   getAuthenticationMode() {
-    return db.Option.findOne({
-      attributes: ['ldap'],
-      where: { id: '1' }
-    })
+    return Option.findOneAuthenticationMode()
   }
 
   async checkPassword(plainPassword) {
@@ -72,17 +71,7 @@ class Users {
 
     const saltRounds = 10
     return bcrypt.hash(password, saltRounds).then(function (hash) {
-      db.User.create({
-        username: username,
-        firstname: firstname,
-        lastname: lastname,
-        email: email,
-        password: hash,
-        role: role,
-        super_admin: super_admin
-      }
-      ).catch(e => { throw e })
-
+      User.create(username, firstname, lastname, email, password, role, super_admin)
     })
   }
 
@@ -90,15 +79,11 @@ class Users {
     let user = new Users(username)
 
     if (await user.isAdmin()) {
-      let superUserCount = await db.User.findAndCountAll({ where: { super_admin: true } })
+      let superUserCount = await User.findAndCountAllSuperUser()
       if (superUserCount <= 1) throw 'Can\'t delete last super user'
     }
 
-    await db.User.destroy({
-      where: {
-        username: username
-      }
-    })
+    await User.destroy(username)
 
   }
 
@@ -129,7 +114,7 @@ class Users {
   }
 
   static async getUsers() {
-    let userEntities = await db.User.findAll()
+    let userEntities = await User.findAll()
     let usersAnswer = []
     userEntities.forEach((user) => {
       usersAnswer.push({
@@ -145,24 +130,22 @@ class Users {
     return usersAnswer
   }
 
-  getLocalUserRight() {
+  getLocalUserRight() { //add
     return this._getUserEntity().then(user => {
-      return db.Role.findOne({
-        where: { name: user.role }
-      })
+      return Role.findOne(user.role)
     })
   }
 
   async getLDAPUserRight() {
 
     //Get Ldap Group having a local role correspondance
-    const ldapMatches = await db.DistantUser.findAll()
+    const ldapMatches = await DistantUser.findAll()
 
     //Flatten known LdapGroup in Array
     let knownLdapGroups = ldapMatches.map((match) => { return match.ldap_group })
 
     //Get user's group from LDAP
-    let userLdapGroups = await ldap.getGroupMembershipForUser(this.ldapUsername)
+    let userLdapGroups = await Ldap.getGroupMembershipForUser(this.ldapUsername)
 
     let role = {
       import: false,
@@ -189,11 +172,7 @@ class Users {
         })
 
         //get Role data and return it to controller
-        let currentRole = await db.Role.findOne((
-          {
-            where: { name: local_role[0].local_role }
-          }
-        ))
+        let currentRole = await Role.findOne(local_role[0].local_role)
 
         if (role.import === false) role.import = currentRole.import
         if (role.content === false) role.content = currentRole.content

@@ -1,6 +1,6 @@
 const TaskType = require('./TaskType');
 const { OTJSBadRequestException, OTJSNotFoundException } = require("../Exceptions/OTJSErrors");
-const AnonTask = require('./tasks/AnonTask');
+const AnonTask = require('./ta  sks/AnonTask');
 const ExportTask = require('./tasks/ExportTask');
 const DeleteTask = require('./tasks/DeleteTask');
 const RetrieveTask = require('./tasks/RetrieveTask');

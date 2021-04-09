@@ -1,12 +1,11 @@
-const db = require('../database/models')
+const DistantUser = require('../repository/DistantUser')
+const LdapOption = require('../repository/LdapOption')
 const AdClient = require('./ldap/adClient')
 
 const Ldap = {
 
     getLdapSettings: () => {
-        return db.LdapOptions.findOne({
-            where: { id: 1 }
-        })
+        return LdapOption.findOneLdap
     },
 
     getLdapClient: async () => {
@@ -55,8 +54,7 @@ const Ldap = {
     },
 
     getAllCorrespodences: async () => {
-        const correspondances = await db.DistantUser.findAll(({ attributes: ['local_role', 'ldap_group'] }))
-        let results = []
+        const correspondances = await DistantUser.findAllLocalRoleAndLdapGroup()
         correspondances.forEach( (correspondance) => {
             results.push({ localRole: correspondance.local_role, ldapGroup: correspondance.ldap_group })
         });
@@ -65,19 +63,11 @@ const Ldap = {
     },
 
     setCorrespondence: async (ldapGroup, localRole) => {
-        await db.DistantUser.create({
-            local_role: localRole,
-            ldap_group: ldapGroup,
-        })
-
+        await DistantUser.create(ldapGroup,localRole)
     },
 
     deleteCorrespodence: (ldapGroup) => {
-        return db.DistantUser.destroy({
-            where: {
-                ldap_group: ldapGroup
-            }
-        })
+        return DistantUser.destroy(ldapGroup)
     },
 
     getAllLdapGroups: async () => {
