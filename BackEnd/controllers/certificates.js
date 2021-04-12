@@ -1,22 +1,21 @@
-const { OTJSForbiddenException } = require("../Exceptions/OTJSErrors");
 const Certificate = require("../model/export/Certificate");
 
-const newCertificate = async function(req, res){
+const newCertificate = async function (req, res) {
     let cert = await Certificate.createCertificate(req.body.label)
     res.send(cert.toString());
 }
 
-const allCertificates = async function(req, res){
+const allCertificates = async function (req, res) {
     let certificates = await Certificate.getAllCertificates()
     res.send(certificates)
 }
 
-const uploadCertificate = async function(req,res){
-    await Certificate.setCertContent(req.params.id,req.body);
+const uploadCertificate = async function (req, res) {
+    await Certificate.setCertContent(req.params.id, req.body);
     res.sendStatus(201)
 }
 
-const removeCertificate = async function(req,res){
+const removeCertificate = async function (req, res) {
     await Certificate.deleteCertificate(req.params.id)
     res.sendStatus(200)
 }

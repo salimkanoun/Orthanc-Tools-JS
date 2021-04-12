@@ -3,27 +3,46 @@ var adminRouter = express.Router()
 // Handle controller errors
 require('express-async-errors')
 
-const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, getMode, changeMode, getOptions, getRedisServer, setRedisServer, setExportOption } = require('../controllers/options')
-const { reverseProxyGet, reverseProxyPost, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
-const { getRoles, createRole, modifyRole, deleteRole, getPermission } = require('../controllers/role')
+const {
+    changeSchedule,
+    updateRobotOptions,
+    getOrthancServer,
+    setOrthancServer,
+    getMode,
+    changeMode,
+    getOptions,
+    getRedisServer,
+    setRedisServer,
+    setExportOption
+} = require('../controllers/options')
+const {
+    reverseProxyGet,
+    reverseProxyPost,
+    reverseProxyPut,
+    reverseProxyPutPlainText,
+    reverseProxyDelete
+} = require('../controllers/reverseProxy')
+const {getRoles, createRole, modifyRole, deleteRole, getPermission} = require('../controllers/role')
 
-const { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, 
-        setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames } = require('../controllers/ldap')
+const {
+    getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences,
+    setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames
+} = require('../controllers/ldap')
 
-const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authentication')
+const {userAuthMidelware, userAdminMidelware} = require('../midelwares/authentication')
 
-const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
-const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate } = require('../controllers/certificates')
-const { newKey, allKeys, updateKey, removeKey, uploadKey } = require('../controllers/sshKey')
-const { getTasksOfType, validateRetrieve, flushTasks } = require('../controllers/task')
+const {allEndpoints, updateEndpoint, newEndpoint, removeEndpoint} = require('../controllers/endpoints')
+const {newCertificate, allCertificates, removeCertificate, uploadCertificate} = require('../controllers/certificates')
+const {newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
+const {getTasksOfType, validateRetrieve, flushTasks} = require('../controllers/task')
 
 // OrthancToolsJS Options routes
-adminRouter.get('/options', [userAuthMidelware, userAdminMidelware],  getOptions)
+adminRouter.get('/options', [userAuthMidelware, userAdminMidelware], getOptions)
 adminRouter.put('/options', [userAuthMidelware, userAdminMidelware], changeSchedule)
 
 //Monitoring
 //SK ROUTE A RENOMMER
-adminRouter.put('/monitoring/burning/options', [userAuthMidelware, userAdminMidelware],updateRobotOptions)
+adminRouter.put('/monitoring/burning/options', [userAuthMidelware, userAdminMidelware], updateRobotOptions)
 
 // OrthancToolsJS Settings routes
 adminRouter.get('/options/orthanc', [userAuthMidelware, userAdminMidelware], getOrthancServer)
