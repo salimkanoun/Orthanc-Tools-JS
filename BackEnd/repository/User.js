@@ -1,24 +1,29 @@
 const db = require('../database/models')
 
 class User{
-  static findOne(username){
+  static getUser(username){
     return db.User.findOne({
       where:{username:username}
     })
   }
 
-  static findAll(){
+  static getAllUser(){
     return db.User.findAll()
   }
 
-  static destroy(username){
+  static delete(username){
+    const user = user.getUser(username)
+    if(user==null){
+      throw new OTJSDBEntityNotFoundException('This user doesn\'t exist')
+    }
+    
     return db.User.destroy({
       where:{username:username}
     })
   }
 
   static findAndCountAllSuperUser(){
-    return db.User.findAndCountAll({where: {suuper_admin:true}})
+    return db.User.findAndCountAll({where: {super_admin:true}})
   }
 
   static create(username, firstname, lastname, email, password, role, super_admin){
@@ -27,7 +32,7 @@ class User{
         firstname: firstname,
         lastname: lastname,
         email: email,
-        password: hash,
+        password: password,
         role: role,
         super_admin: super_admin
     })

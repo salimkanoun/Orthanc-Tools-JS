@@ -28,7 +28,7 @@ class Users {
   }
 
   _getUserEntity() {
-    return User.findOne(username).then(entity => {
+    return User.getUser(username).then(entity => {
       if (!entity) {
         throw new OTJSNotFoundException('Not Found')
       } else {
@@ -48,7 +48,7 @@ class Users {
   }
 
   getAuthenticationMode() {
-    return Option.findOneAuthenticationMode()
+    return Option.getOneAuthenticationMode()
   }
 
   async checkPassword(plainPassword) {
@@ -83,7 +83,7 @@ class Users {
       if (superUserCount <= 1) throw 'Can\'t delete last super user'
     }
 
-    await User.destroy(username)
+    await User.delete(username)
 
   }
 
@@ -114,7 +114,7 @@ class Users {
   }
 
   static async getUsers() {
-    let userEntities = await User.findAll()
+    let userEntities = await User.getAllUser()
     let usersAnswer = []
     userEntities.forEach((user) => {
       usersAnswer.push({
@@ -132,14 +132,14 @@ class Users {
 
   getLocalUserRight() { //add
     return this._getUserEntity().then(user => {
-      return Role.findOne(user.role)
+      return Role.getRole(user.role)
     })
   }
 
   async getLDAPUserRight() {
 
     //Get Ldap Group having a local role correspondance
-    const ldapMatches = await DistantUser.findAll()
+    const ldapMatches = await DistantUser.getAllDistantUser()
 
     //Flatten known LdapGroup in Array
     let knownLdapGroups = ldapMatches.map((match) => { return match.ldap_group })
@@ -172,7 +172,7 @@ class Users {
         })
 
         //get Role data and return it to controller
-        let currentRole = await Role.findOne(local_role[0].local_role)
+        let currentRole = await Role.getRole(local_role[0].local_role)
 
         if (role.import === false) role.import = currentRole.import
         if (role.content === false) role.content = currentRole.content

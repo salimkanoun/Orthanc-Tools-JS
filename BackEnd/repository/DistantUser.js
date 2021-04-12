@@ -1,22 +1,31 @@
 const db = require ('../database/models')
 
 class DistantUser{
-  static findAll(){
-    return db.DistantUser.findAll()
+  static async getDistantUser(ldapGroup){
+    return db.DistantUser.findOne({where:{ldapGroup:ldapGroup}})
   }
 
-  static findAllLocalRoleAndLdapGroup(){
+  static async getAll(){
+    return db.DistantUser.getAllDistantUser()
+  }
+
+  static async getAllLocalRoleAndLdapGroup(){
     return db.DistantUser.findAll(({ attributes: ['local_role', 'ldap_group'] }))
   }
 
-  static create(ldapGroup,localRole){
+  static async create(ldapGroup,localRole){
     return db.DistantUser.create({
       local_role: localRole,
       ldap_group: ldapGroup,
     })
   }
 
-  static destroy(ldapGroup){
+  static async delete(ldapGroup){
+    const distant_user = await DistantUser.getDistantUser(ldapGroup)
+    if(distant_user==null){
+      throw new OTJSDBEntityNotFoundException('This distant user doesn\'t exist')
+    }
+
     return db.DistantUser.destroy({
       where: {
           ldap_group: ldapGroup

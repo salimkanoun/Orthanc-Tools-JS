@@ -1,6 +1,6 @@
 'use strict'
 module.exports = (sequelize, DataTypes) => {
-  const User_Label = sequelize.define('User_Label', {
+  const UserLabel = sequelize.define('UserLabel', {
     id:{
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -10,14 +10,14 @@ module.exports = (sequelize, DataTypes) => {
     label_name: DataTypes.STRING
     
   }, {})
-  User_Label.associate = function (models) {
-    User_Label.hasOne(models.User_Label, {
+  UserLabel.associate = function (models) {
+    UserLabel.hasOne(models.UserLabel, {
       foreignKey: 'label_name',
       onUpdate: 'CASCADE'
     }),
-    User_Label.hasOne(models.User_Label, {
+    UserLabel.hasOne(models.UserLabel, {
       foreignKey: 'user_id'
     })
   }
-  return User_Label
+  return UserLabel
 }

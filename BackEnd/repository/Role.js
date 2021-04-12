@@ -1,57 +1,68 @@
 const db = require('../database/models')
+const {OTJSDBEntityNotFoundException} = require('../Exceptions/OTJSErrors')
 
 class Role{
 
-  static findOne(name){
+  static async getRole(name){
     return db.Role.findOne({
       where:{name:name}
     })
   }
 
-  static findAllName(){
-    return db.Role.findAll({attributes:['name']}.catch((error) => { throw error }))
+  static async getAllRole(){
+    return db.Role.findAll().catch((error)=> {throw error})
   }
 
-  static create(payload){
+  static async create(name,importR,content,anon,exportLocal,exportExtern,query,autoQuery,deleteR,modify,cd_burner,admin){
     return db.Role.create({
-      name: payload.name,
-      import: payload.import,
-      content: payload.content,
-      anon: payload.anon,
-      export_local: payload.exportLocal,
-      export_extern: payload.exportExtern,
-      query: payload.query,
-      auto_query: payload.autoQuery,
-      delete: payload.delete,
-      modify: payload.modify,
-      cd_burner: payload.cd_burner,
-      admin: payload.admin
+      name: name,
+      import: importR,
+      content: content,
+      anon: anon,
+      export_local: exportLocal,
+      export_extern: exportExtern,
+      query: query,
+      auto_query: autoQuery,
+      delete: deleteR,
+      modify: modify,
+      cd_burner: cd_burner,
+      admin: admin
     })
   }
 
-  static findAllByName(name){
+  static async getRoleByName(name){
     return db.Role.findAll({where:{name:name}})
   }
 
-  static destroy(name){
+  static async delete(name){
+    const role = await Role.getRole(name)
+    if(role==null){
+      throw new OTJSDBEntityNotFoundException('This role doesn\'t exist')
+    }
     return db.Role.destroy({where:{name:name}})
   }
 
-  static upsert(name,payload){
-    return db.Role.upsert({
-      name: name,
-      content: payload.content,
-      anon: payload.anon,
-      export_local: payload.exportLocal,
-      export_extern: payload.exportExtern,
-      query: payload.query,
-      auto_query: payload.autoQuery,
-      delete: payload.delete,
-      admin: payload.admin,
-      modify: payload.modify,
-      import: payload.import,
-      cd_burner: payload.cd_burner
-    })
+  //voir pour faire avec un getEntity, modification de l'entity puis .save()
+  static async update(name,importR,content,anon,exportLocal,exportExtern,query,autoQuery,deleteR,modify,cd_burner,admin){
+    
+    const role = await Role.getRole(name)
+    if(role==null){
+      throw new OTJSDBEntityNotFoundException('This role doesn\'t exist')
+    }
+    
+    role.import = importR
+    role.content = content
+    role.anon = anon
+    role.exportLocal = exportLocal
+    role.exportExtern = exportExtern
+    role.query = query
+    role.autoQuery = autoQuery
+    role.delete = deleteR
+    role.modify = modify
+    role.cd_burner = cd_burner
+    role.admin = admin
+
+    return role.save()
   }
 
 }

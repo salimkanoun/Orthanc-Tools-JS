@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('StudyLabel', {
+    await queryInterface.createTable('StudyLabels', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -25,13 +25,13 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      return queryInterface.addConstraint('StudyLabel', {
+      return queryInterface.addConstraint('StudyLabels', {
         fields: ['study_instance_uid','label_name'],
         type: 'unique',
         name: 'unique_combined_studyUID&label'
       })
     }).then(() => {
-      return queryInterface.addConstraint('StudyLabel', {
+      return queryInterface.addConstraint('StudyLabels', {
         type: 'foreign key',
         fields: ['label_name'],
         onUpdate: 'CASCADE',
@@ -44,6 +44,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('StudyLabel');
+    await queryInterface.dropTable('StudyLabels');
   }
 };

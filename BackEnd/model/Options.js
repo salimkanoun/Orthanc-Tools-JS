@@ -12,7 +12,7 @@ const Options = {
   optionEventEmiter: new OptionEventEmittter(),
 
   getOptions:  () => {
-    return Option.findOneById(1)
+    return Option.getOptionById(1)
   },
 
   setScheduleTime:  async (startHour, startMin, stopHour, stopMin) => {

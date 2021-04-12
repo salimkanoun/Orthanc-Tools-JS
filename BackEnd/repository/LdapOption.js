@@ -1,7 +1,7 @@
 const db = require ('../database/models')
 
 class LdapOption{
-  static findOneLdap(){
+  static getOneLdap(){
     return db.LdapOptions.findOne({where:{id:1}})
   }
 }

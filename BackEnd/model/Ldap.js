@@ -5,7 +5,7 @@ const AdClient = require('./ldap/adClient')
 const Ldap = {
 
     getLdapSettings: () => {
-        return LdapOption.findOneLdap
+        return LdapOption.getOneLdap()
     },
 
     getLdapClient: async () => {
@@ -54,7 +54,7 @@ const Ldap = {
     },
 
     getAllCorrespodences: async () => {
-        const correspondances = await DistantUser.findAllLocalRoleAndLdapGroup()
+        const correspondances = await DistantUser.getAllLocalRoleAndLdapGroup()
         correspondances.forEach( (correspondance) => {
             results.push({ localRole: correspondance.local_role, ldapGroup: correspondance.ldap_group })
         });
@@ -67,7 +67,7 @@ const Ldap = {
     },
 
     deleteCorrespodence: (ldapGroup) => {
-        return DistantUser.destroy(ldapGroup)
+        return DistantUser.delete(ldapGroup)
     },
 
     getAllLdapGroups: async () => {

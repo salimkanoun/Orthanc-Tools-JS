@@ -1,14 +1,14 @@
 const db = require('../database/models')
 
 class Option{
-  static findOneAuthenticationMode(){
+  static getOneAuthenticationMode(){
     return db.Option.findOne({
       attributes: ['ldap'],
       where: { id: '1' }
     })
   }
 
-  static findOneById(id){
+  static getOptionById(id){
     return db.Option.findOne(({ where: { id: id} }))
   }
 

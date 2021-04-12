@@ -7,8 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     study_instance_uid: DataTypes.STRING,
-    label_name: DataTypes.STRING
-    
+    label_name: DataTypes.STRING,
   }, {})
   StudyLabel.associate = function (models) {
     StudyLabel.hasOne(models.StudyLabel, {
