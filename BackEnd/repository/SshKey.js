@@ -21,6 +21,7 @@ class SshKey {
     }
 
     static delete(id){
+        db.Endpoint.destroy({where: {sshKeys: id}});
         return db.SshKey.destroy({where:{id}});
     }
 }

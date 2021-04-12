@@ -1,9 +1,10 @@
-const crypto = require('crypto')
-const db = require('../../database/models')
-const convert = require('../../utils/convert')
-const SshKey = require('./SshKey')
-const fs = require('fs')
-const { OTJSBadRequestException } = require('../../Exceptions/OTJSErrors')
+const crypto = require('crypto');
+const db = require('../../database/models');
+const convert = require('../../utils/convert');
+const SshKey = require('./SshKey');
+const fs = require('fs');
+const EndpointRepo = require ('../../repository/Endpoint');
+const { OTJSBadRequestException } = require('../../Exceptions/OTJSErrors');
 
 const algo = 'aes256'
 
@@ -59,22 +60,7 @@ class Endpoint{
         this.sshKey = params.sshKey || this.sshKey
         this.ssl = params.ssl || this.ssl
         if(this.id){
-            let fields = {
-                ...this
-            }
-            fields.password = undefined;
-            fields.username = undefined;
-    
-            if(!server.password){
-                fields.identifiant = server.username
-            }else{
-                fields.identifiant = Endpoint._encryptIdentifiants(server.username, server.password)
-            }
-            try {
-                await db.Endpoint.upsert(fields)
-            } catch (error) {
-                console.error(error)
-            }
+            await Endpoint.saveEndpoint(this);
         }
     }
 
@@ -83,12 +69,12 @@ class Endpoint{
     }
 
     async createEndpoint(){
-        this.id = await Endpoint.createEndpoint(this)
+        this.id = await Endpoint.saveEndpoint(this)
         return this.id
 
     }
 
-    static async createEndpoint(endpoint){
+    static async saveEndpoint(endpoint){
         let fields = {
             ...endpoint
         }
@@ -101,7 +87,7 @@ class Endpoint{
             fields.identifiants = Endpoint._encryptIdentifiants(endpoint.username, endpoint.password)
         }
         try {
-            await db.Endpoint.create(fields)
+            await EndpointRepo.saveEndpoint(fields.id||null,fields.label, fields.host, fields.targetFolder,fields.protocol,fields.port, fields.identifiants, fields.pass, fields.digest,fields.sshKey, fields.ssl )
             return endpoint.id
         } catch (error) {
             console.error(error)
@@ -109,31 +95,21 @@ class Endpoint{
         }
     }
 
-    static async getFromId(id){
-        return new Endpoint((await db.Endpoint.findAll({where:{
-            id:id
-        }}))[0])
+    static getFromId(id){
+        return EndpointRepo.getFromId(id).then(entity=>new Endpoint(entity));
     }
 
-    static async getAllEndpoints(){
-    
-        let servers = [] 
-        await db.Endpoint.findAll(
-            {attributes: ['id', 'label', 'host', 'protocol', 'port', 'identifiants', 'pass', 'targetFolder', 'digest', 'ssl', 'sshKey']}
-        ).then((results)=>{
-            results.forEach(element => {
-                servers.push(new Endpoint(element.dataValues))
-            });
-        })
-        return servers
+    static getAllEndpoints(){
+        return EndpointRepo.getAllEndpoints()
+            .then(entities=>entities.map(e=>new Endpoint(e)));
     }
 
     async removeEndpoint(){
-        await db.Endpoint.destroy({where:{id:this.id}})
+        await EndpointRepo.removeEndpoint(this.id);
     }
 
     static async removeEndpoint(id){
-        await db.Endpoint.destroy({where:{id:id}})
+        await EndpointRepo.removeEndpoint(id);
     }
 
     ftpOptionFormat(){
