@@ -1,5 +1,5 @@
 const CertificateRepo = require('../../repository/Certificate');
-const fs = require('fs')
+const fs = require('fs');
 
 class Certificate{
 
@@ -62,20 +62,25 @@ class Certificate{
      * @param content the content of the certificate
      * @returns {Promise<>}
      */
-    static setCertContent(id, content){
-        let path = 'data/certificates/cert-'+Date.now()+'.cert'
-        let stream = fs.createWriteStream( path, {
-            autoClose:true
-        });
-        return new Promise((resolve,reject)=>{
-            try {
-                stream.write(content,()=>{resolve(path)});
-            }
-            catch (e) {
-                reject(e);
-            }
+    static async setCertContent(id, content) {
+        let cert = await Certificate.getFromId(id);
 
-        }).then(async ()=> await Certificate.updateCertificate(id, null, path));
+        let path = cert.path;
+
+        if(!path){
+            await  fs.promises.access(path, fs.constants.R_OK|fs.constants.W_OK)
+                .then(async ()=>{
+                    await fs.promises.unlink(path);
+                }).catch(()=>{});
+
+            path = 'data/certificates/cert-' + Date.now() + '.cert';
+        }
+
+        let stream = fs.createWriteStream(path);
+        await new Promise((resolve, reject)=>{
+            stream.write(content, ()=>resolve());
+        });
+        await Certificate.updateCertificate(id, null, path);
     }
 
 }

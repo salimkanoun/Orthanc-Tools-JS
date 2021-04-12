@@ -103,7 +103,7 @@ adminRouter.delete('/endpoints/', [userAuthMidelware, userAdminMidelware], remov
 
 // Certificates
 adminRouter.get('/certificates', [userAuthMidelware, userAdminMidelware], allCertificates)
-adminRouter.put('/certificates/:id', [userAuthMidelware, userAdminMidelware], updateCertificate)
+//adminRouter.put('/certificates/:id', [userAuthMidelware, userAdminMidelware], updateCertificate)
 adminRouter.post('/certificates', [userAuthMidelware, userAdminMidelware], newCertificate)
 adminRouter.delete('/certificates/:id', [userAuthMidelware, userAdminMidelware], removeCertificate)
 adminRouter.post('/certificates/upload/:id', [userAuthMidelware, userAdminMidelware], uploadCertificate)
