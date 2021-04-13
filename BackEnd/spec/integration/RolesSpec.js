@@ -20,28 +20,31 @@ describe('Testing Role Table', () =>{
 
     it('should get one roles', async () => {
         let schedule = await Role.getRole('admin')
-        expect(schedule==null).toBe(false)
+        expect(schedule).not.toBeNull()
+    })
+
+    it('should not get one roles',async()=>{
         schedule = await Role.getRole('test other')
-        expect(schedule==null).toBe(true)
+        expect(schedule).toBeNull()
     })
 
     it('should validate creating one roles',async()=>{
         let schedule = await Role.getRole('test')
-        expect(schedule==null).toBe(false)
+        expect(schedule).not.toBeNull()
         expect(schedule.name).toBe('test')
     })
 
     it('should update one roles',async()=>{
         const role = await Role.update('test',true,false,false,false,false,false,false,false,false,false,false)
         let schedule = await Role.getRole('test')
-        expect(schedule==null).toBe(false)
-        expect(schedule.import).toBe(true)
+        expect(schedule).not.toBe()
+        expect(schedule.import).toBeTruthy()
     })
 
     it('should delete one roles',async()=>{
         const role = await Role.delete('test')
         let schedule = await Role.getRole('test')
-        expect(schedule==null).toBe(true)
+        expect(schedule).toBeNull()
     })
 
     it('should return delete error',async()=>{

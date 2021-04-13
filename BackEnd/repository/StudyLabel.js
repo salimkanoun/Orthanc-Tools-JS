@@ -1,4 +1,5 @@
 const db = require('../database/models')
+const {OTJSDBEntityNotFoundException} = require('../Exceptions/OTJSErrors')
 
 class StudyLabel{
   static async getStudyLabel(study_instance_uid,label_name){

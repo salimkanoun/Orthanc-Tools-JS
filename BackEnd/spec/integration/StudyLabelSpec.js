@@ -4,16 +4,26 @@ const {OTJSDBEntityNotFoundException} = require('../../Exceptions/OTJSErrors')
 
 //To run the test : npm test spec/integration/StudyLabelSpec.js
 beforeEach(async function(){
-  const l = await Label.getLabel('test_study_label')
+  var l = await Label.getLabel('test_study_label')
+  const study_instance_uid = 'ABCDEFG'
   if(l==null){
-    const label = await Label.create('test_study_label')
+    l = await Label.create('test_study_label')
+  }
+  var sl = await StudyLabel.getStudyLabel(study_instance_uid,l.label_name)
+  if(sl==null){
+    sl = await StudyLabel.create(study_instance_uid,l.label_name)
   }
 })
 
 afterEach(async function(){
-  const l = await Label.getLabel('test_study_label')
+  var l = await Label.getLabel('test_study_label')
+  const study_instance_uid = 'ABCDEFG'
+  var sl = await StudyLabel.getStudyLabel(study_instance_uid,l.label_name)
+  if((!(l==null))&&(!(sl==null))){
+    sl = await StudyLabel.delete(study_instance_uid,l.label_name)
+  }
   if(!(l==null)){
-    const label = await Label.delete('test_study_label')
+    l = await Label.delete('test_study_label')
   }
 })
 
@@ -21,26 +31,29 @@ afterEach(async function(){
 describe('Testing StudyLabel Table',()=>{
   it('should create and get a StudyLabel',async()=>{
     const study_instance_uid = 'ABCDEFG'
-    const study_label = await StudyLabel.create(study_instance_uid,'test_study_label')
-
     let schedule = await StudyLabel.getStudyLabel(study_instance_uid,'test_study_label')
-    expect(schedule==null).toBe(false)
+    expect(schedule).not.toBeNull()
     expect(schedule.study_instance_uid).toBe('ABCDEFG')
     expect(schedule.label_name).toBe('test_study_label')
+  })
+  
+  it('should not get a StudyLabel',async()=>{
+    let schedule = await StudyLabel.getStudyLabel('undefined study instance uid','undefined label test')
+    expect(schedule).toBeNull()
   })
 
   it('should delete a StudyLabel',async()=>{
     const study_labl = await StudyLabel.delete('ABCDEFG','test_study_label')
     let schedule = await StudyLabel.getStudyLabel('ABCDEFG','test_study_label')
 
-    expect(schedule==null).toBe(true)
+    expect(schedule).toBeNull()
   })
 
   it('should throw an error when deleting',async ()=>{
     try{
       await StudyLabel.delete('unknown','test_study_label unknown')
     }catch(e){
-      expect(typeof e).toEqual(typeof new OTJSDBEntityNotFoundException)
+      expect(e).toBeInstanceOf(OTJSDBEntityNotFoundException)
     }
   })
 })

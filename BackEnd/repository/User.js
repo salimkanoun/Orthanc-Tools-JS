@@ -1,4 +1,5 @@
 const db = require('../database/models')
+const {OTJSDBEntityNotFoundException} = require ('../Exceptions/OTJSErrors')
 
 class User{
   static getUser(username){
@@ -12,7 +13,7 @@ class User{
   }
 
   static delete(username){
-    const user = user.getUser(username)
+    const user = User.getUser(username)
     if(user==null){
       throw new OTJSDBEntityNotFoundException('This user doesn\'t exist')
     }

@@ -6,7 +6,7 @@ class DistantUser{
   }
 
   static async getAll(){
-    return db.DistantUser.getAllDistantUser()
+    return db.DistantUser.findAll()
   }
 
   static async getAllLocalRoleAndLdapGroup(){

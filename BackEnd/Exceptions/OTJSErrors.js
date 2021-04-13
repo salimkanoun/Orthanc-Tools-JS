@@ -11,7 +11,7 @@ class OTJSBadRequestException extends OTJSError {
 class OTJSConflictException extends OTJSError {
 
     constructor(message){
-        super(message, 209)
+        super(message, 409)
     }
 
 }

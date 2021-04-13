@@ -16,7 +16,7 @@ class Orthanc_Monitoring extends EventEmitter {
     }
 
     async setSettings() {
-        const options = await Option.findOneById(1)
+        const options = await Option.getOptionById(1)
         //set monitoring rate in secondes 
         this.monitoringRate = (options.monitoring_rate * 1000)
         
