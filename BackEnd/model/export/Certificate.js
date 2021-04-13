@@ -1,15 +1,15 @@
 const CertificateRepo = require('../../repository/Certificate');
 const fs = require('fs');
 
-class Certificate{
+class Certificate {
 
     /**
      * Create the certificate in the database
      * @param label of the new certificate
      * @returns {Promise<int>} Returns a promise for the id of the new certicate
      */
-    static createCertificate(label){
-        return CertificateRepo.createCertificate(label).then(cert=>cert.id);
+    static createCertificate(label) {
+        return CertificateRepo.createCertificate(label).then(cert => cert.id);
     }
 
     /**
@@ -19,8 +19,8 @@ class Certificate{
      * @param path of the certificate file
      * @returns {Promise<>} Returns a promise that complete once the modification is completed
      */
-    static updateCertificate(id, label, path){
-        return CertificateRepo.updateCertificate(id,label, path);
+    static updateCertificate(id, label, path) {
+        return CertificateRepo.updateCertificate(id, label, path);
     }
 
     /**
@@ -28,7 +28,7 @@ class Certificate{
      * @param id of the certificate
      * @returns {Promise<Certificate>}
      */
-    static getFromId(id){
+    static getFromId(id) {
         return CertificateRepo.getFromId(id);
     }
 
@@ -36,7 +36,7 @@ class Certificate{
      * Returns a list of all existing certificates
      * @returns {Promise<[Certificate]>}
      */
-    static getAllCertificates(){
+    static getAllCertificates() {
         return CertificateRepo.getAllCertificates();
     }
 
@@ -45,13 +45,14 @@ class Certificate{
      * @param id of the certificate
      * @returns {Promise<>}
      */
-    static async deleteCertificate(id){
+    static async deleteCertificate(id) {
         let certificate = await Certificate.getFromId(id);
-        if(certificate.path){
+        if (certificate.path) {
             await fs.promises.access(certificate.path, fs.constants.W_OK | fs.constants.R_OK)
-                .then(async _=>{
+                .then(async _ => {
                     await fs.promises.unlink(certificate.path);
-                }).catch(()=>{});
+                }).catch(() => {
+                });
         }
         await CertificateRepo.deleteCertificate(id);
     }
@@ -67,18 +68,19 @@ class Certificate{
 
         let path = cert.path;
 
-        if(!path){
-            await  fs.promises.access(path, fs.constants.R_OK|fs.constants.W_OK)
-                .then(async ()=>{
+        if (path) {
+            await fs.promises.access(path, fs.constants.R_OK | fs.constants.W_OK)
+                .then(async () => {
                     await fs.promises.unlink(path);
-                }).catch(()=>{});
+                }).catch(() => {
+                });
 
             path = 'data/certificates/cert-' + Date.now() + '.cert';
         }
 
         let stream = fs.createWriteStream(path);
-        await new Promise((resolve, reject)=>{
-            stream.write(content, ()=>resolve());
+        await new Promise((resolve, reject) => {
+            stream.write(content, () => resolve());
         });
         await Certificate.updateCertificate(id, null, path);
     }

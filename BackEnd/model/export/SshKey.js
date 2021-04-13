@@ -72,7 +72,7 @@ class SshKey {
     async setKeyContent(chunk) {
         let path = this.path;
 
-        if (!path) {
+        if (path) {
             await fs.promises.access(path, fs.constants.R_OK | fs.constants.W_OK)
                 .then(async () => {
                     await fs.promises.unlink(path);

@@ -14,7 +14,7 @@ describe("Testing Certificate Table", () => {
             expect(res).toEqual(joc({
                 label: "label"
             }), "Resulting object is not valid");
-            expect(!!res.id).toBe(true, "Resulting object is not valid");
+            expect(res.id).toBeTruthy("Resulting object is not valid");
             expect(await Certificate.getAllCertificates().then(m => m.length)).toEqual(count + 1, "Expected count to increment");
         });
     });
@@ -30,7 +30,7 @@ describe("Testing Certificate Table", () => {
                 path: 'path'
 
             }), "Resulting object is not valid");
-            expect(!!res.id).toBe(true, "Resulting object is not valid");
+            expect(res.id).toBeTruthy("Resulting object is not valid");
             expect(await Certificate.getAllCertificates().then(m => m.length)).toEqual(count, "Expected count to increment");
         });
 
@@ -40,7 +40,7 @@ describe("Testing Certificate Table", () => {
                 let res = await Certificate.updateCertificate(30000, "label", "path");
                 expect(false).toBe(true, "expected an exception");
             } catch (e) {
-                expect(e).toEqual(new OTJSDBEntityNotFoundException());
+                expect(e).toBeInstanceOf(OTJSDBEntityNotFoundException);
             }
             expect(await Certificate.getAllCertificates().then(m => m.length)).toEqual(count, "Expected count to stay the same");
         });
@@ -58,7 +58,7 @@ describe("Testing Certificate Table", () => {
 
         it('should return null', async function () {
             let res = await Certificate.getFromId(300000);
-            expect(res).toBe(null);
+            expect(res).toBeNull();
         });
     });
 
@@ -95,7 +95,7 @@ describe("Testing Certificate Table", () => {
                 let res = await Certificate.deleteCertificate(30000);
                 expect(false).toBe(true, "expected an exception");
             } catch (e) {
-                expect(e).toEqual(new OTJSDBEntityNotFoundException());
+                expect(e).toBeInstanceOf(OTJSDBEntityNotFoundException);
             }
             expect(await Certificate.getAllCertificates().then(m => m.length)).toEqual(count, "Expected count to stay the same");
         });

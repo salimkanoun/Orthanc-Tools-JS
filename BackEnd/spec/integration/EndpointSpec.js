@@ -31,7 +31,7 @@ describe("Testing Endpoint Table", () => {
                 sshKey: sshKey.id,
                 ssl: true
             }), "Resulting object is not valid");
-            expect(!!res.id).toBe(true, "Resulting object is not valid");
+            expect(res.id).toBeTruthy("Resulting object is not valid");
             expect(await Endpoint.getAllEndpoints().then(m => m.length)).toEqual(count + 1, "Expected count to increment");
         });
 
@@ -50,7 +50,7 @@ describe("Testing Endpoint Table", () => {
                 sshKey: null,
                 ssl: true
             }), "Resulting object is not valid");
-            expect(!!res.id).toBe(true, "Resulting object is not valid");
+            expect(res.id).toBeTruthy("Resulting object is not valid");
             expect(await Endpoint.getAllEndpoints().then(m => m.length)).toEqual(count + 1, "Expected count to increment");
         });
 
@@ -109,7 +109,7 @@ describe("Testing Endpoint Table", () => {
                 let res = await Endpoint.saveEndpoint(null, 'label2', null, 'targetFolderChanged', 'protocol', 'port', 'identifiants', true, false, -9, true);
                 expect(false).toBe(true, "expected an exception");
             } catch (e) {
-                expect(e).toEqual(new OTJSDBEntityNotFoundException());
+                expect(e).toBeInstanceOf(OTJSDBEntityNotFoundException);
             }
             expect(await Endpoint.getAllEndpoints().then(m => m.length)).toEqual(count, "Expected count to stay the same");
         });
@@ -137,7 +137,7 @@ describe("Testing Endpoint Table", () => {
 
         it('should return null', async function () {
             let res = await Endpoint.getFromId(300000);
-            expect(res).toBe(null);
+            expect(res).toBeNull();
         });
     });
 
@@ -174,7 +174,7 @@ describe("Testing Endpoint Table", () => {
                 let res = await Endpoint.removeEndpoint(30000);
                 expect(false).toBe(true, "expected an exception");
             } catch (e) {
-                expect(e).toEqual(new OTJSDBEntityNotFoundException());
+                expect(e).toBeInstanceOf(OTJSDBEntityNotFoundException);
             }
             expect(await Endpoint.getAllEndpoints().then(m => m.length)).toEqual(count, "Expected count to stay the same");
         });

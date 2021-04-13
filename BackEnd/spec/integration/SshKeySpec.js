@@ -18,7 +18,7 @@ describe("Testing SshKey Table", () => {
                 path: "path",
                 pass: "pass"
             }), "Resulting object is not valid");
-            expect(!!res.id).toBe(true, "Resulting object is not valid");
+            expect(res.id).toBeTruthy("Resulting object is not valid");
             expect(await SshKey.getAll().then(m => m.length)).toEqual(count + 1, "Expected count to increment");
         });
 
@@ -41,7 +41,7 @@ describe("Testing SshKey Table", () => {
                 let res = await SshKey.saveKey(30000, "label", "path", "pass");
                 expect(false).toBe(true, "expected an exception");
             } catch (e) {
-                expect(e).toEqual(new OTJSDBEntityNotFoundException());
+                expect(e).toBeInstanceOf(OTJSDBEntityNotFoundException);
             }
             expect(await SshKey.getAll().then(m => m.length)).toEqual(count, "Expected count to stay the same");
         });
@@ -59,7 +59,7 @@ describe("Testing SshKey Table", () => {
 
         it('should return null', async function () {
             let res = await SshKey.getFromId(300000);
-            expect(res).toBe(null);
+            expect(res).toBeNull();
         });
     });
 
@@ -91,7 +91,7 @@ describe("Testing SshKey Table", () => {
                 let res = await SshKey.delete(30000);
                 expect(false).toBe(true, "expected an exception");
             } catch (e) {
-                expect(e).toEqual(new OTJSDBEntityNotFoundException());
+                expect(e).toBeInstanceOf(OTJSDBEntityNotFoundException);
             }
             expect(await SshKey.getAll().then(m => m.length)).toEqual(count, "Expected count to stay the same");
         });
