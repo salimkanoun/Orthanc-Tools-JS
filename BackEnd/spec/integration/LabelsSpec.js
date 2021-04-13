@@ -27,14 +27,14 @@ beforeEach(async function(){
 
   const label = await Label.getLabel('label test')
   if(label==null){
-    const create = await Label.create('label test')
+    await Label.create('label test')
   }
 })
 
 afterEach(async function(){
   const label = await Label.getLabel('label test')
   if(!(label==null)){
-    const create = await Label.delete('label test')
+    await Label.delete('label test')
   }
 })
 
@@ -49,22 +49,22 @@ describe('Testing Label Table',()=>{
   })
 
   it('should not get one labels',async()=>{
-    schedule = await Label.getLabel('undefined label test')
+    let schedule = await Label.getLabel('undefined label test')
     expect(schedule).toBeNull()
   })
 
   it('should update one labels',async()=>{
-    const label = await Label.update('label test','label_modified')
+    await Label.update('label test','label_modified')
     let schedule = await Label.getLabel('label_modified')
     expect(schedule).not.toBeNull()
     expect(schedule.label_name).toBe('label_modified')
 
     //reupdate to clean the row with afterEach function
-    const reupdate = await Label.update('label_modified','label test') 
+    await Label.update('label_modified','label test') 
   })
 
   it('should delete one labels',async()=>{
-    const label = await Label.delete('label test')
+    await Label.delete('label test')
     let schedule = await Label.getLabel('label test')
     expect(schedule).toBeNull()
 
@@ -101,7 +101,7 @@ describe('Testing cascade effect on label_name',()=>{
     expect(study_label.study_instance_uid).toBe('test2')
     expect(study_label.label_name).toBe('label test')
 
-    const update = await Label.update('label test','label test2')
+    await Label.update('label test','label test2')
     let label = await Label.getLabel('label test2')
     expect(label).not.toBeNull()
     study_label = await StudyLabel.getStudyLabel('test2','label test2')
@@ -121,16 +121,16 @@ describe('Testing cascade effect on label_name',()=>{
       modify label_name on Labels
       verify that the row on UserLabels as been modified then delete it
     */
-    let user = await User.create('test','test','test','test','test','user',false)
-    user = await User.getUser('test')
-    let user_label = await UserLabel.create(user.id,'label test')
-    user_label = await UserLabel.getUserLabel(user.id,'label test')
+    await User.create('test','test','test','test','test','user',false)
+    var user = await User.getUser('test')
+    await UserLabel.create(user.id,'label test')
+    var user_label = await UserLabel.getUserLabel(user.id,'label test')
     expect(user_label).not.toBeNull()
     expect(user_label.user_id).toBe(user.id)
     expect(user_label.label_name).toBe('label test')
 
-    let label = await Label.update('label test','label test2')
-    label = await Label.getLabel('label test2')
+    await Label.update('label test','label test2')
+    let label = await Label.getLabel('label test2')
     expect(label).not.toBeNull()
 
     user_label = await UserLabel.getUserLabel(user.id,'label test2')

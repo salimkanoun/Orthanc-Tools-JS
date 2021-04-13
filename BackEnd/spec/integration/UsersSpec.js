@@ -60,13 +60,12 @@ describe('Testing Users Table',()=>{
   })
 
   it('should delete a test user',async()=>{
-    let user = await User.delete('test')
-    user = await User.getUser('test')
+    await User.delete('test')
+    let user = await User.getUser('test')
     expect(user).toBeNull()
   })
 
   it('should raise an error for deleting an unknow user',async()=>{
-    console.log(process.env)
     try{
       await User.delete('test unknow user')
     }catch(e){

@@ -16,7 +16,7 @@ beforeEach(async function(){
   }
   var ul = await UserLabel.getUserLabel(u.id,l.label_name)
   if(ul==null){
-    ul = await UserLabel.create(u.id,l.label_name)
+    await UserLabel.create(u.id,l.label_name)
   }
 
 })
@@ -26,13 +26,13 @@ afterEach(async function(){
   var u = await User.getUser('test')
   var ul = await UserLabel.getUserLabel(u.id,l.label_name)
   if((!(l==null))&& (!(u==null)) &&!(ul==null)){
-    ul = await UserLabel.delete(u.id,l.label_name)
+    await UserLabel.delete(u.id,l.label_name)
   }
   if(!(l==null)){
-    l = await Label.delete('test_user_label')
+    await Label.delete('test_user_label')
   }
   if(!(u==null)){
-    u = await User.delete('test')
+    await User.delete('test')
   }
 })
 
@@ -55,7 +55,7 @@ describe('Testing UserLabel Table',()=>{
 
   it('should delete a UserLabel',async()=>{
     const user= await User.getUser('test')
-    const user_label = await UserLabel.delete(user.id,'test_user_label')
+    await UserLabel.delete(user.id,'test_user_label')
     let schedule = await UserLabel.getUserLabel(user.id,'test_user_label')
     expect(schedule).toBeNull()
   })

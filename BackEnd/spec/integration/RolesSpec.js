@@ -4,14 +4,14 @@ const {OTJSDBEntityNotFoundException} = require('../../Exceptions/OTJSErrors')
 beforeEach(async function(){
     const role = await Role.getRole('test')
     if(role==null){
-        const createtest = await Role.create('test',false,false,false,false,false,false,false,false,false,false,false)
+        await Role.create('test',false,false,false,false,false,false,false,false,false,false,false)
     }
 })
 
 afterEach(async function(){
     const role = await Role.getRole('test')
     if(!(role==null)){
-        const deletetest = await Role.delete('test')
+        await Role.delete('test')
     }
 })
 
@@ -24,7 +24,7 @@ describe('Testing Role Table', () =>{
     })
 
     it('should not get one roles',async()=>{
-        schedule = await Role.getRole('test other')
+        let schedule = await Role.getRole('test other')
         expect(schedule).toBeNull()
     })
 
@@ -35,14 +35,14 @@ describe('Testing Role Table', () =>{
     })
 
     it('should update one roles',async()=>{
-        const role = await Role.update('test',true,false,false,false,false,false,false,false,false,false,false)
+        await Role.update('test',true,false,false,false,false,false,false,false,false,false,false)
         let schedule = await Role.getRole('test')
         expect(schedule).not.toBe()
         expect(schedule.import).toBeTruthy()
     })
 
     it('should delete one roles',async()=>{
-        const role = await Role.delete('test')
+        await Role.delete('test')
         let schedule = await Role.getRole('test')
         expect(schedule).toBeNull()
     })

@@ -11,7 +11,7 @@ beforeEach(async function(){
   }
   var sl = await StudyLabel.getStudyLabel(study_instance_uid,l.label_name)
   if(sl==null){
-    sl = await StudyLabel.create(study_instance_uid,l.label_name)
+    await StudyLabel.create(study_instance_uid,l.label_name)
   }
 })
 
@@ -20,10 +20,10 @@ afterEach(async function(){
   const study_instance_uid = 'ABCDEFG'
   var sl = await StudyLabel.getStudyLabel(study_instance_uid,l.label_name)
   if((!(l==null))&&(!(sl==null))){
-    sl = await StudyLabel.delete(study_instance_uid,l.label_name)
+    await StudyLabel.delete(study_instance_uid,l.label_name)
   }
   if(!(l==null)){
-    l = await Label.delete('test_study_label')
+    await Label.delete('test_study_label')
   }
 })
 
@@ -43,7 +43,7 @@ describe('Testing StudyLabel Table',()=>{
   })
 
   it('should delete a StudyLabel',async()=>{
-    const study_labl = await StudyLabel.delete('ABCDEFG','test_study_label')
+    await StudyLabel.delete('ABCDEFG','test_study_label')
     let schedule = await StudyLabel.getStudyLabel('ABCDEFG','test_study_label')
 
     expect(schedule).toBeNull()
