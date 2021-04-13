@@ -1,4 +1,5 @@
 const db = require("../database/models");
+const {OTJSDBEntityNotFoundException} = require("../Exceptions/OTJSErrors");
 
 class Certificate {
     static createCertificate(label) {
@@ -10,9 +11,10 @@ class Certificate {
 
     static updateCertificate(id, label, path) {
         return db.Certificate.findOne({where: {id: id}}).then(async (certificate) => {
+            if (!certificate) throw new OTJSDBEntityNotFoundException();
             certificate.label = label || certificate.label;
             certificate.path = path || certificate.path;
-            await certificate.save();
+            return certificate.save();
         });
     }
 
@@ -24,8 +26,9 @@ class Certificate {
         return db.Certificate.findAll();
     }
 
-    static deleteCertificate(id) {
-        return db.Certificate.destroy({where: {id}});
+    static async deleteCertificate(id) {
+        if (!await this.getFromId(id)) throw new OTJSDBEntityNotFoundException();
+        await db.Certificate.destroy({where: {id}});
     }
 }
 

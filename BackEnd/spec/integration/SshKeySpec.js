@@ -1,5 +1,7 @@
 const SshKey = require("../../repository/SshKey");
 const joc = jasmine.objectContaining;
+const {OTJSDBEntityNotFoundException} = require("../../Exceptions/OTJSErrors");
+
 
 describe("Testing SshKey Table", () => {
     beforeEach(async () => {
@@ -30,6 +32,17 @@ describe("Testing SshKey Table", () => {
                 path: "path",
                 pass: "pass2"
             }), "Resulting object is not valid");
+            expect(await SshKey.getAll().then(m => m.length)).toEqual(count, "Expected count to stay the same");
+        });
+
+        it('should throw an error', async function () {
+            let count = await SshKey.getAll().then(m => m.length);
+            try {
+                let res = await SshKey.saveKey(30000, "label", "path", "pass");
+                expect(false).toBe(true, "expected an exception");
+            } catch (e) {
+                expect(e).toEqual(new OTJSDBEntityNotFoundException());
+            }
             expect(await SshKey.getAll().then(m => m.length)).toEqual(count, "Expected count to stay the same");
         });
     });
@@ -68,8 +81,19 @@ describe("Testing SshKey Table", () => {
     describe('delete(id)', function () {
         it('should remove the key from the table', async function () {
             let k = await SshKey.saveKey(null, 'label', 'path', "pass");
-            SshKey.delete(k.id);
+            await SshKey.delete(k.id);
             expect(await SshKey.getAll()).toEqual([]);
+        });
+
+        it('should throw an error', async function () {
+            let count = await SshKey.getAll().then(m => m.length);
+            try {
+                let res = await SshKey.delete(30000);
+                expect(false).toBe(true, "expected an exception");
+            } catch (e) {
+                expect(e).toEqual(new OTJSDBEntityNotFoundException());
+            }
+            expect(await SshKey.getAll().then(m => m.length)).toEqual(count, "Expected count to stay the same");
         });
     });
 });

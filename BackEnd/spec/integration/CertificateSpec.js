@@ -1,97 +1,103 @@
-const SshKey = require("../../repository/SshKey");
+const Certificate = require("../../repository/Certificate");
 const joc = jasmine.objectContaining;
+const {OTJSDBEntityNotFoundException} = require("../../Exceptions/OTJSErrors");
 
-describe("Testing SshKey Table", () => {
+describe("Testing Certificate Table", () => {
     beforeEach(async () => {
-        await SshKey.getAll().then(x => Promise.all(x.map(e => SshKey.delete(e.id))));
+        await Certificate.getAllCertificates().then(x => Promise.all(x.map(e => Certificate.deleteCertificate(e.id))));
     })
 
-    describe('saveKey(id, label, path, pass)', function () {
+    describe('createCertificate(label)', function () {
         it('should create an entity', async function () {
-            let count = await SshKey.getAll().then(m => m.length);
-            let res = await SshKey.saveKey(null, 'label', 'path', "pass");
+            let count = await Certificate.getAllCertificates().then(m => m.length);
+            let res = await Certificate.createCertificate('label');
             expect(res).toEqual(joc({
-                id: res.id,
-                label: "label",
-                path: "path",
-                pass: "pass"
+                label: "label"
             }), "Resulting object is not valid");
             expect(!!res.id).toBe(true, "Resulting object is not valid");
-            expect(await SshKey.getAll().then(m => m.length)).toEqual(count + 1, "Expected count to increment");
+            expect(await Certificate.getAllCertificates().then(m => m.length)).toEqual(count + 1, "Expected count to increment");
         });
+    });
 
-        it('should update the key', async function () {
-            let initial = await SshKey.saveKey(null, 'label', 'path', "pass");
-            let count = await SshKey.getAll().then(m => m.length);
-            let res = await SshKey.saveKey(initial.id, 'label2', null, "pass2");
-            expect(res).toEqual(joc({
-                id: initial.id,
-                label: "label2",
-                path: "path",
-                pass: "pass2"
+    describe('updateCertificate(id, label, path)', function () {
+        it('should update the entity', async function () {
+            let res = await Certificate.createCertificate('label');
+            let count = await Certificate.getAllCertificates().then(m => m.length);
+            let res2 = await Certificate.updateCertificate(res.id, 'new_label', 'path');
+            expect(res2).toEqual(joc({
+                id: res.id,
+                label: "new_label",
+                path: 'path'
+
             }), "Resulting object is not valid");
-            expect(await SshKey.getAll().then(m => m.length)).toEqual(count, "Expected count to stay the same");
+            expect(!!res.id).toBe(true, "Resulting object is not valid");
+            expect(await Certificate.getAllCertificates().then(m => m.length)).toEqual(count, "Expected count to increment");
         });
 
         it('should throw an error', async function () {
-            let count = await SshKey.getAll().then(m => m.length);
+            let count = await Certificate.getAllCertificates().then(m => m.length);
             try {
-                let res = await SshKey.saveKey(initial.id, 'label2', null, "pass2");
+                let res = await Certificate.updateCertificate(30000, "label", "path");
                 expect(false).toBe(true, "expected an exception");
             } catch (e) {
                 expect(e).toEqual(new OTJSDBEntityNotFoundException());
             }
-            expect(await SshKey.getAll().then(m => m.length)).toEqual(count, "Expected count to stay the same");
+            expect(await Certificate.getAllCertificates().then(m => m.length)).toEqual(count, "Expected count to stay the same");
         });
     });
 
     describe('getFromId(id)', function () {
 
         it('should find the right object', async function () {
-            let key = await SshKey.saveKey(null, 'label_getFromId(id)', 'path_getFromId(id)', "pass_getFromId(id)");
-            let res = await SshKey.getFromId(key.id);
+            let key = await Certificate.createCertificate('label_getFromId(id)');
+            let res = await Certificate.getFromId(key.id);
             expect(res).toEqual(joc({
-                id: key.id, label: 'label_getFromId(id)', path: 'path_getFromId(id)', pass: "pass_getFromId(id)"
+                id: key.id, label: 'label_getFromId(id)'
             }));
         });
 
         it('should return null', async function () {
-            let res = await SshKey.getFromId(300000);
+            let res = await Certificate.getFromId(300000);
             expect(res).toBe(null);
         });
     });
 
-    describe('getAll()', function () {
+    describe('getAllCertificate()', function () {
         it('should return a list of all keys', async function () {
-            await SshKey.saveKey(null, 'label1', 'path', "pass");
-            await SshKey.saveKey(null, 'label2', 'path', "pass");
-            await SshKey.saveKey(null, 'label3', 'path', "pass");
+            await Certificate.createCertificate('label1');
+            await Certificate.createCertificate('label2');
+            await Certificate.createCertificate('label3');
 
-            let res = await SshKey.getAll();
+            let res = await Certificate.getAllCertificates();
             expect(res).toEqual([
-                joc({label: 'label1', path: 'path', pass: 'pass'}),
-                joc({label: 'label2', path: 'path', pass: 'pass'}),
-                joc({label: 'label3', path: 'path', pass: 'pass'})
-            ])
+                joc({label: 'label1'}),
+                joc({label: 'label2'}),
+                joc({label: 'label3'})
+            ]);
+        });
+
+        it('should return []', async function () {
+            let res = await Certificate.getAllCertificates();
+            expect(res).toEqual([]);
         });
     });
 
-    describe('delete(id)', function () {
-        it('should remove the key from the table', async function () {
-            let k = await SshKey.saveKey(null, 'label', 'path', "pass");
-            SshKey.delete(k.id);
-            expect(await SshKey.getAll()).toEqual([]);
+    describe('deleteCertificate(id)', function () {
+        it('should remove the certificate from the table', async function () {
+            let c = await Certificate.createCertificate('label');
+            await Certificate.deleteCertificate(c.id);
+            expect(await Certificate.getAllCertificates()).toEqual([]);
         });
 
         it('should throw an error', async function () {
-            let count = await SshKey.getAll().then(m => m.length);
+            let count = await Certificate.getAllCertificates().then(m => m.length);
             try {
-                let res = await SshKey.delete(30000);
+                let res = await Certificate.deleteCertificate(30000);
                 expect(false).toBe(true, "expected an exception");
             } catch (e) {
                 expect(e).toEqual(new OTJSDBEntityNotFoundException());
             }
-            expect(await SshKey.getAll().then(m => m.length)).toEqual(count, "Expected count to stay the same");
+            expect(await Certificate.getAllCertificates().then(m => m.length)).toEqual(count, "Expected count to stay the same");
         });
     });
 });
