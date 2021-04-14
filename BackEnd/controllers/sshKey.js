@@ -2,7 +2,7 @@ const SshKey = require("../model/export/SshKey");
 
 const newKey = async function(req, res){
     let key = new SshKey(req.body)
-    await key.createSshKey()
+    await key.save()
     res.json(key);
 }
 
@@ -12,7 +12,8 @@ const allKeys = async function(req, res){
 
 const updateKey = async function(req, res){
     let key = await SshKey.getFromId(req.body.id);
-    key.set(req.body)
+    key.label = req.body.label;
+    await key.save();
     res.json(key)
 }
 

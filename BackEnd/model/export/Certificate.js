@@ -1,59 +1,88 @@
-const db = require("../../database/models")
-const fs = require('fs')
+const CertificateRepo = require('../../repository/Certificate');
+const fs = require('fs');
 
-class Certificate{
-    constructor(params){
-        this.id = params.id || null
-        this.label = params.label
-        this.path = params.path || null
+class Certificate {
+
+    /**
+     * Create the certificate in the database
+     * @param label of the new certificate
+     * @returns {Promise<int>} Returns a promise for the id of the new certicate
+     */
+    static createCertificate(label) {
+        return CertificateRepo.createCertificate(label).then(cert => cert.id);
     }
 
-    static createCertificate(label){
-        return db.Certificate.create({
-            label : label
-        }).catch((error) => {throw error})
+    /**
+     * Update the certificate of a given id
+     * @param id of the certificate
+     * @param label of the certificate
+     * @param path of the certificate file
+     * @returns {Promise<>} Returns a promise that complete once the modification is completed
+     */
+    static updateCertificate(id, label, path) {
+        return CertificateRepo.updateCertificate(id, label, path);
     }
 
-    static updateCertificate(id, label, path){
-        return Certificate.getFromId(id).then(async (certificate) => 
-            {
-                certificate.label = label;
-                certificate.path = path;
-                await certificate.save();
-            });
+    /**
+     * Returns the certificate of a given id
+     * @param id of the certificate
+     * @returns {Promise<Certificate>}
+     */
+    static getFromId(id) {
+        return CertificateRepo.getFromId(id);
     }
 
-    static getFromId(id){
-        return db.Certificate.findOne({where:{id:id}}).catch((error) => {throw error})
+    /**
+     * Returns a list of all existing certificates
+     * @returns {Promise<[Certificate]>}
+     */
+    static getAllCertificates() {
+        return CertificateRepo.getAllCertificates();
     }
 
-    static async getAllCertificate(){
-        return await db.Certificate.findAll().catch((error) => {throw error})
-
-    }
-
-    //Sk ici eviter de bloker l'event loop
-    static async deleteCertificate(id){
-        let certificate = await Certificate.getFromId(id)
-        if( certificate.path && fs.existsSync(certificate.path)){
-            fs.unlinkSync(certificate.path)
+    /**
+     * Removing a certificate from the database
+     * @param id of the certificate
+     * @returns {Promise<>}
+     */
+    static async deleteCertificate(id) {
+        let certificate = await Certificate.getFromId(id);
+        if (certificate.path) {
+            await fs.promises.access(certificate.path, fs.constants.W_OK | fs.constants.R_OK)
+                .then(async _ => {
+                    await fs.promises.unlink(certificate.path);
+                }).catch(() => {
+                });
         }
-        await db.Certificate.destroy({where:{
-            id : certificate.id
-        }})
+        await CertificateRepo.deleteCertificate(id);
     }
 
-    //SK ici eviter de bloquer l event loop
-    //Passer en promise car ici en callback soit faire passer un callback 
-    //Soit passer en prmomise
-    //Pour declancher une errur si ecriture fail (mieux vaut utiliser fsPromise)
-    static setCertContent(chunk){
-        let path = 'data/certificates/cert-'+Date.now()+'.cert'
-        let stream = fs.createWriteStream( path, {
-            autoClose:true
+    /**
+     * set the certificate content
+     * @param id of the certificate
+     * @param content the content of the certificate
+     * @returns {Promise<>}
+     */
+    static async setCertContent(id, content) {
+        let cert = await Certificate.getFromId(id);
+
+        let path = cert.path;
+
+        if (path) {
+            await fs.promises.access(path, fs.constants.R_OK | fs.constants.W_OK)
+                .then(async () => {
+                    await fs.promises.unlink(path);
+                }).catch(() => {
+                });
+
+            path = 'data/certificates/cert-' + Date.now() + '.cert';
+        }
+
+        let stream = fs.createWriteStream(path);
+        await new Promise((resolve, reject) => {
+            stream.write(content, () => resolve());
         });
-        stream.write(chunk)
-        return path;
+        await Certificate.updateCertificate(id, null, path);
     }
 
 }

@@ -1,8 +1,8 @@
-const OTJSError =  require('./OTJSError')
+const OTJSError = require('./OTJSError')
 
 class OTJSBadRequestException extends OTJSError {
 
-    constructor(message){
+    constructor(message) {
         super(message, 400)
     }
 
@@ -10,7 +10,7 @@ class OTJSBadRequestException extends OTJSError {
 
 class OTJSConflictException extends OTJSError {
 
-    constructor(message){
+    constructor(message) {
         super(message, 409)
     }
 
@@ -18,7 +18,7 @@ class OTJSConflictException extends OTJSError {
 
 class OTJSForbiddenException extends OTJSError {
 
-    constructor(message){
+    constructor(message) {
         super(message, 403)
     }
 
@@ -26,7 +26,7 @@ class OTJSForbiddenException extends OTJSError {
 
 class OTJSUnauthorizedException extends OTJSError {
 
-    constructor(message){
+    constructor(message) {
         super(message, 401)
     }
 
@@ -34,7 +34,7 @@ class OTJSUnauthorizedException extends OTJSError {
 
 class OTJSNotFoundException extends OTJSError {
 
-    constructor(message){
+    constructor(message) {
         super(message, 404)
     }
 
@@ -42,16 +42,24 @@ class OTJSNotFoundException extends OTJSError {
 
 class OTJSInternalServerError extends OTJSError {
 
-    constructor(message){
+    constructor(message) {
         super(message, 500)
     }
 
 }
 
-class OTJSDBEntityNotFoundException extends OTJSError{
-    constructor(message){
-        super(message,404)
+class OTJSDBEntityNotFoundException extends OTJSError {
+    constructor(message) {
+        super(message, 404)
     }
 }
 
-module.exports = {OTJSBadRequestException, OTJSForbiddenException, OTJSUnauthorizedException, OTJSNotFoundException, OTJSConflictException, OTJSInternalServerError,OTJSDBEntityNotFoundException}
+module.exports = {
+    OTJSBadRequestException,
+    OTJSDBEntityNotFoundException,
+    OTJSForbiddenException,
+    OTJSUnauthorizedException,
+    OTJSNotFoundException,
+    OTJSConflictException,
+    OTJSInternalServerError
+}

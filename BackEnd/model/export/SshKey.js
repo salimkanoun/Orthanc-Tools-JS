@@ -1,107 +1,113 @@
-const db = require("../../database/models");
+const SshKeyRepo = require("../../repository/SshKey");
 const fs = require('fs');
 const crypto = require('crypto');
 const convert = require("../../utils/convert");
 
 const algo = 'aes256'
 
-class SshKey{
-    constructor(params){
-        this.id = params.id || null
-        this.label = params.label
-        this.path = params.path || null
-        this.pass = params.pass || null
+class SshKey {
+    constructor(params) {
+        this.id = params.id || null;
+        this.label = params.label;
+        this.path = params.path || null;
+        this.pass = params.pass || null;
 
-        if(this.id!==null&&this.pass){
-            let encryptedPass = this.pass.split(':')
-            let iv = convert.toByteArray(encryptedPass[0])
-            let decypher = crypto.createDecipheriv(algo,process.env.HASH_KEY,iv)
-            let pass = decypher.update(encryptedPass[1],"hex","utf8") + decypher.final('utf8');
+        if (this.id !== null && this.pass) {
+            let encryptedPass = this.pass.split(':');
+            let iv = convert.toByteArray(encryptedPass[0]);
+            let decypher = crypto.createDecipheriv(algo, process.env.HASH_KEY, iv);
+            let pass = decypher.update(encryptedPass[1], "hex", "utf8") + decypher.final('utf8');
             this.pass = decodeURIComponent(pass.replace(/\s+/g, '').replace(/[0-9a-f]{2}/g, '%$&'))
         }
     }
 
-    async createSshKey(){
-        
-        this.id = await SshKey.createSshKey(this)
+    /**
+     * Save the key to the database with the pass encrypted
+     * @returns {Promise<int>} Returns a promise of the key id
+     */
+    async save() {
+        this.id = await SshKey.saveSshKey(this);
         return this.id;
     }
 
-    static async createSshKey(key){
-        try {
-            let queryFields = {
-                ...key
-            }
-            if(key.pass){
-                let iv = new Int8Array(16)
-                crypto.randomFillSync(iv)
-                let cypher = crypto.createCipheriv(algo,process.env.HASH_KEY,iv)
-                let pass = cypher.update(Buffer.from(key.pass, 'utf8').toString('hex'),"utf8","hex")+ cypher.final('hex');
-                queryFields.pass = convert.toHexString(iv)+':'+pass
-            }
-
-            let sshKey = await db.SshKey.create(queryFields)
-            return sshKey.id
-        } catch (error) {
-            console.error(error)
-            throw error
-        }
-    }
-
-    static async getFromId(id){
-        return new SshKey(await db.SshKey.findOne({where:{id:id}}))
-    }
-
-    static async getAllSshKey(){
-        return (await db.SshKey.findAll()).map(x=>new SshKey(x));
-    }
-
-    async setKeyContent(chunk){
-        
-        let path
-        do{
-            path = 'data/private_key/key-'+crypto.randomInt(99999);
-        }while(fs.existsSync(path))
-        let stream = fs.createWriteStream(path,{
-            autoClose:true
-        });
-        stream.write(chunk)
-
-        if(fs.existsSync(this.path)){
-            fs.unlinkSync(this.path)
-        }
-
-        this.set({path:path})
-    }
-
-    async set(params){
-        this.id = params.id || this.id
-        this.label = params.label || this.label
-        this.path = params.path || this.path
-        this.pass = params.pass || this.pass
-
-        if(this.pass){
+    /**
+     * Save the key to the database with the pass encrypted
+     * @param key key to be saved to the database
+     * @returns {Promise<int>} Returns a promise of the key id
+     */
+    static saveSshKey(key) {
+        let queryFields = {...key}
+        if (key.pass) {
             let iv = new Int8Array(16)
-            crypto.randomFillSync(iv)
-            let cypher = crypto.createCipheriv(algo,process.env.HASH_KEY,iv)
-            let pass = cypher.update(Buffer.from(this.pass, 'utf8').toString('hex'),"utf8","hex")+ cypher.final('hex');
-            this.pass = convert.toHexString(iv)+':'+pass
+            crypto.randomFillSync(iv);
+            let cypher = crypto.createCipheriv(algo, process.env.HASH_KEY, iv);
+            let pass = cypher.update(Buffer.from(key.pass, 'utf8').toString('hex'), "utf8", "hex") + cypher.final('hex');
+            queryFields.pass = convert.toHexString(iv) + ':' + pass;
         }
-
-        await db.SshKey.upsert(this)
-        return this.id
+        return SshKeyRepo.saveKey(queryFields.id, queryFields.label, queryFields.path, queryFields.pass).then(sshKey => sshKey.id);
     }
 
-    async deleteSshKey(){
-        if(this.path&&fs.existsSync(this.path)){
-            fs.unlinkSync(this.path)
-        }
-        await db.SshKey.destroy({where:{
-            id:this.id
-        }})
+    /**
+     * Returns the keys from a given id
+     * @param id of the key
+     * @returns {Promise<SshKey>}
+     */
+    static getFromId(id) {
+        return SshKeyRepo.getFromId(id).then(key => new SshKey(key));
     }
 
-    toJSON(){
+    /**
+     * Returns all the ssh keys
+     * @returns {Promise<SshKey[]>}
+     */
+    static getAllSshKey() {
+        return SshKeyRepo.getAll().then(list => list.map(x => new SshKey(x)));
+    }
+
+    /**
+     * Saves the body of the key
+     * @param chunk chunk of the keys body
+     * @returns {Promise<int>}
+     */
+    async setKeyContent(chunk) {
+        let path = this.path;
+
+        if (path) {
+            await fs.promises.access(path, fs.constants.R_OK | fs.constants.W_OK)
+                .then(async () => {
+                    await fs.promises.unlink(path);
+                }).catch(() => {
+                });
+
+            path = 'data/private_key/key-' + Date.now();
+        }
+
+        let stream = fs.createWriteStream(path);
+        await new Promise((resolve, reject) => {
+            stream.write(chunk, () => resolve());
+        });
+
+        this.path = path;
+
+        return this.save();
+    }
+
+    /**
+     * Deletes the ssh key
+     * @returns {Promise<void>}
+     */
+    async deleteSshKey() {
+        if (this.path) {
+            await fs.promises.access(this.path, fs.constants.W_OK | fs.constants.R_OK)
+                .then(async _ => {
+                    await fs.promises.unlink(this.path);
+                }).catch(() => {
+                });
+        }
+        await SshKeyRepo.delete(this.id);
+    }
+
+    toJSON() {
         return {
             id: this.id,
             label: this.label,

@@ -47,16 +47,16 @@ class Task {
         let task;
         switch (type) {
             case TaskType.RETRIEVE:
-                task = await RetrieveTask.getUserTask(username);
+                task = (await RetrieveTask.getUserTask(username));
                 break;
             case TaskType.EXPORT:
-                task = await ExportTask.getUserTask(username);
+                task = [await ExportTask.getUserTask(username)];
                 break;
             case TaskType.ANONYMIZE:
                 task = await AnonTask.getUserTask(username);
                 break;
             case TaskType.DELETE:
-                task = await DeleteTask.getUserTask(username);
+                task = [await DeleteTask.getUserTask(username)];
                 break;
             default:
                 throw new OTJSBadRequestException('Unknown task type');
@@ -114,7 +114,7 @@ class Task {
         let task;
         switch (type) {
             case TaskType.RETRIEVE:
-                task = await RetrieveTask.getUserTask(username);
+                task = await RetrieveTask.getUserTask(username)[0];
                 if(!task)throw new OTJSNotFoundException('Unknown task');
                 RetrieveTask.delete(task.id);
                 break;
@@ -124,7 +124,7 @@ class Task {
                 DeleteTask.delete(task.id);
                 break;
             case TaskType.ANONYMIZE:
-                task = await AnonTask.getUserTask(username);
+                task = await AnonTask.getUserTask(username)[0];
                 if(!task)throw new OTJSNotFoundException('Unknown task');
                 AnonTask.delete(task.id);
                 break;

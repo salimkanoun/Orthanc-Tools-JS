@@ -3,31 +3,50 @@ var adminRouter = express.Router()
 // Handle controller errors
 require('express-async-errors')
 
-const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, getMode, changeMode, getOptions, getRedisServer, setRedisServer, setExportOption } = require('../controllers/options')
-const { reverseProxyGet, reverseProxyPost, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
-const { getRoles, createRole, modifyRole, deleteRole, getPermission } = require('../controllers/role')
+const {
+    changeSchedule,
+    updateRobotOptions,
+    getOrthancServer,
+    setOrthancServer,
+    getMode,
+    changeMode,
+    getOptions,
+    getRedisServer,
+    setRedisServer,
+    setExportOption
+} = require('../controllers/options')
+const {
+    reverseProxyGet,
+    reverseProxyPost,
+    reverseProxyPut,
+    reverseProxyPutPlainText,
+    reverseProxyDelete
+} = require('../controllers/reverseProxy')
+const {getRoles, createRole, modifyRole, deleteRole, getPermission} = require('../controllers/role')
 
-const { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, 
-        setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames } = require('../controllers/ldap')
+const {
+    getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences,
+    setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames
+} = require('../controllers/ldap')
 
-const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authentication')
+const {userAuthMidelware, userAdminMidelware} = require('../midelwares/authentication')
 
-const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
-const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate } = require('../controllers/certificates')
-const { newKey, allKeys, updateKey, removeKey, uploadKey } = require('../controllers/sshKey')
-const { getTasksOfType, validateRetrieve, flushTasks } = require('../controllers/task')
+const {allEndpoints, updateEndpoint, newEndpoint, removeEndpoint} = require('../controllers/endpoints')
+const {newCertificate, allCertificates, removeCertificate, uploadCertificate} = require('../controllers/certificates')
+const {newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
+const {getTasksOfType, validateRetrieve, flushTasks} = require('../controllers/task')
 
 const { getLabels,createLabel,modifyLabel,deleteLabel } = require('../controllers/label')
 const {getUsersLabels,createUserLabel,deleteUserLabel} = require('../controllers/userLabel')
 const {getStudiesLabels,createStudyLabel,deleteStudyLabel} = require('../controllers/studyLabel')
 
 // OrthancToolsJS Options routes
-adminRouter.get('/options', [userAuthMidelware, userAdminMidelware],  getOptions)
+adminRouter.get('/options', [userAuthMidelware, userAdminMidelware], getOptions)
 adminRouter.put('/options', [userAuthMidelware, userAdminMidelware], changeSchedule)
 
 //Monitoring
 //SK ROUTE A RENOMMER
-adminRouter.put('/monitoring/burning/options', [userAuthMidelware, userAdminMidelware],updateRobotOptions)
+adminRouter.put('/monitoring/burning/options', [userAuthMidelware, userAdminMidelware], updateRobotOptions)
 
 // OrthancToolsJS Settings routes
 adminRouter.get('/options/orthanc', [userAuthMidelware, userAdminMidelware], getOrthancServer)
@@ -91,7 +110,7 @@ adminRouter.get('/ldap/groupname', [userAuthMidelware, userAdminMidelware], getL
 */
 
 //OrthancToolsJS Task routes
-adminRouter.post('/tasks/:username/retrieve/validate', [userAuthMidelware, userAdminMidelware], validateRetrieve)
+adminRouter.post('/tasks/retrieve/:id/validate', [userAuthMidelware, userAdminMidelware], validateRetrieve)
 adminRouter.get('/tasks/type/:type', [userAuthMidelware, userAdminMidelware], getTasksOfType)
 adminRouter.delete('/tasks/type/:type/flush', [userAuthMidelware, userAdminMidelware], flushTasks)
 
@@ -107,7 +126,7 @@ adminRouter.delete('/endpoints/', [userAuthMidelware, userAdminMidelware], remov
 
 // Certificates
 adminRouter.get('/certificates', [userAuthMidelware, userAdminMidelware], allCertificates)
-adminRouter.put('/certificates/:id', [userAuthMidelware, userAdminMidelware], updateCertificate)
+//adminRouter.put('/certificates/:id', [userAuthMidelware, userAdminMidelware], updateCertificate)
 adminRouter.post('/certificates', [userAuthMidelware, userAdminMidelware], newCertificate)
 adminRouter.delete('/certificates/:id', [userAuthMidelware, userAdminMidelware], removeCertificate)
 adminRouter.post('/certificates/upload/:id', [userAuthMidelware, userAdminMidelware], uploadCertificate)

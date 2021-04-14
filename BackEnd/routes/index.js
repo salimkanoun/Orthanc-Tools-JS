@@ -35,6 +35,9 @@ router.get('/wado/*', [userAuthMidelware, contentMidelware], reverseProxyGet)
 router.post('/tools/create-archive', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
 router.post('/tools/create-media-extended', [userAuthMidelware,exportLocalMidelware], reverseProxyPost)
 
+//Orthanc Create Dicom Route
+router.post('/tools/create-dicom', [userAuthMidelware, importMidelware], reverseProxyPost)
+
 //Orthanc Peers Routes
 router.post('/peers/*/store', [userAuthMidelware,exportExternMidelware], reverseProxyPost)
 
@@ -49,9 +52,9 @@ router.get('/patients/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
 router.get('/studies/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
 router.get('/series/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
 router.get('/instances/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
-router.delete('/patients/*', [userAuthMidelware,contentMidelware], reverseProxyDelete)
-router.delete('/studies/*', [userAuthMidelware,contentMidelware], reverseProxyDelete)
-router.delete('/series/*', [userAuthMidelware,contentMidelware], reverseProxyDelete)
+router.delete('/patients/*', [userAuthMidelware, deleteMidelware], reverseProxyDelete)
+router.delete('/studies/*', [userAuthMidelware, deleteMidelware], reverseProxyDelete)
+router.delete('/series/*', [userAuthMidelware, deleteMidelware], reverseProxyDelete)
 
 //Monitoring
 router.post('/monitoring/burner', [userAuthMidelware,cdBurnerMidelware], startBurner)
@@ -79,7 +82,7 @@ router.post('/tasks/:username/anonymize', [userAuthMidelware, anonMidelware], ad
 
 //DeleteRobot
 //SK BUG MIDELWARE DELETE?
-router.post('/tasks/:username/delete', [userAuthMidelware, deleteMidelware], addDeleteTask)
+router.post('/tasks/:username/delete', [userAuthMidelware, isCurrentUserOrAdminMidelWare], addDeleteTask)
 
 //FTP & WebDav Exports
 router.post('/tasks/:user/export', [userAuthMidelware, exportExternMidelware], addExportTask)
@@ -89,7 +92,7 @@ router.post('/tasks/:user/export', [userAuthMidelware, exportExternMidelware], a
 router.get('/tasks/:username/:type', userAuthMidelware, getTaskWithUser)
 //SK ICI FAUT MUTIPLIER CETTE ROUTE POUR CHAQUE TYPE POUR ASSOCIER LE BON MIDDELWARE
 router.delete('/tasks/:username/:type', [userAuthMidelware, isCurrentUserOrAdminMidelWare], deleteTaskOfUser)
-router.delete('/tasks/:username/retrieve/:id', [userAuthMidelware, isCurrentUserOrAdminMidelWare, autoQueryMidelware], deleteRetrieveItem)
+router.delete('/tasks/retrieve/:taskId/:itemId', [userAuthMidelware, isCurrentUserOrAdminMidelWare, autoQueryMidelware], deleteRetrieveItem)
 router.get('/tasks/:id', [userAuthMidelware, ownTaskOrIsAdminMidelware], getTask)
 router.delete('/tasks/:id', [userAuthMidelware,ownTaskOrIsAdminMidelware], deleteTask)
 router.get('/tasks', [userAuthMidelware,userAdminMidelware],  getTasksIds)

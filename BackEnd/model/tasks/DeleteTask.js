@@ -3,7 +3,7 @@ const OrthancQueue = require("../OrthancQueue");
 const TaskType = require("../TaskType");
 const orthancQueue = new OrthancQueue()
 
-const jobsStatus = ['completed', 'wait', 'active', 'delayed', 'failed']
+const JOBS_STATUS = ['completed', 'wait', 'active', 'delayed', 'failed']
 
 class DeleteTask {
 
@@ -86,12 +86,12 @@ class DeleteTask {
     /**
      * get the task corresponding of user
      * @param {string} user creator of the task to be returned
-     * @returns {Task} task of the user 
+     * @returns {Task} task uuid of the user 
      */
     static async getUserTask(user){
         let deleteJobs = await orthancQueue.getUserDeleteJobs(user);
         if(deleteJobs.length === 0) return null;
-        return DeleteTask.getTask(deleteJobs[0].data.taskId);
+        return deleteJobs[0].data.taskId;
     }
 
     /**
@@ -124,7 +124,7 @@ class DeleteTask {
      * Remove all jobs for deletion
      */
     static async flush(){
-        await Promise.all(jobsStatus.map(x=>orthancQueue.deleteQueue.clean(1, x)));
+        await Promise.all(JOBS_STATUS.map(x=>orthancQueue.deleteQueue.clean(1, x)));
     }
 }
 

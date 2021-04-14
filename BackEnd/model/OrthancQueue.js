@@ -264,7 +264,7 @@ class OrthancQueue {
    * @param {[any]} items items to be anonymised
    * @returns {string} the task uuid
    */
-  anonimizeItems(creator, items){
+  anonimizeItems(creator, items, ttl){
     let taskId = 'a-'+uuid();
     let jobs = items.map(item=>{
       return {
@@ -272,7 +272,8 @@ class OrthancQueue {
         data : {
           taskId,
           creator,
-          item
+          item,
+          ttl
         }
       }
     });
@@ -309,7 +310,7 @@ class OrthancQueue {
    * @param {[any]} items items to be retrieved
    * @returns {string} the task uuid
    */
-  validateItems(creator, projectName, items){
+  validateItems(creator, projectName, items, ttl){
     let taskId = 'r-'+uuid();
     
     // Checking for duplicate
@@ -335,6 +336,7 @@ class OrthancQueue {
           taskId,
           creator,
           projectName,
+          ttl,
           item
         }
       }
@@ -469,7 +471,6 @@ class OrthancQueue {
    * @param {JobItemRetrieve} item 
    */
   static buildDicomQuery(item) {
-    console.log(item)
     if (item.Level === OrthancQueryAnswer.LEVEL_STUDY) {
       orthanc.buildStudyDicomQuery('', '', '', '', '', '', item.StudyInstanceUID)
     } else if (item.Level === OrthancQueryAnswer.LEVEL_SERIES) {

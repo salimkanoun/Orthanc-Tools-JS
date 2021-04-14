@@ -159,9 +159,8 @@ const orthancContent = {
 
         return fetch('/api/patients/' + ID, deletePatientOption ).then((answer) => {
             if (!answer.ok) {throw answer}
-            return (answer.json())
         }).catch((error) => {
-            toast.error(error)
+            throw error.statusText
         })
 
     },
@@ -174,9 +173,8 @@ const orthancContent = {
 
         return fetch('/api/studies/' + ID, deleteStudiesOption ).then((answer) => {
             if (!answer.ok) {throw answer}
-            return (answer.json())
         }).catch((error) => {
-            toast.error(error)
+            throw error.statusText
         })
 
     },
@@ -189,9 +187,8 @@ const orthancContent = {
 
         return fetch('/api/series/' + ID, deleteSeriesOption ).then((answer) => {
             if (!answer.ok) {throw answer}
-            return (answer.json())
         }).catch((error) => {
-            toast.error(error)
+            throw error.statusText
         })
 
     },
