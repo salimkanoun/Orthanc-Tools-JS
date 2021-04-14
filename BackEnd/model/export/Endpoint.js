@@ -5,7 +5,6 @@ const EndpointRepo = require('../../repository/Endpoint');
 const {OTJSBadRequestException} = require('../../Exceptions/OTJSErrors');
 const crypto = require('../../adapter/cryptoAdapter');
 
-const algo = 'aes256'
 
 
 class Endpoint {
