@@ -6,8 +6,6 @@ const User = require('../repository/User')
 const Option = require('../repository/Option')
 const DistantUser = require('../repository/DistantUser')
 
-const algo = 'aes256'
-
 class Users {
 
   constructor(username) {
@@ -45,7 +43,7 @@ class Users {
 
   checkLocalPassword(plainPassword) {
     return this._getUserEntity().then(user => {
-      return crypto.comparePassword(plainPassword,user.password)
+      return crypto.compareText(plainPassword,user.password)
     }).catch((error) => { throw error })
   }
 
@@ -71,8 +69,7 @@ class Users {
 
     if (username.indexOf('@') !== -1) throw new OTJSBadRequestException('@ not allowed for local username definition')
 
-    const saltRounds = 10
-    return crypto.encryptPassword(password).then(function (hash) {
+    return crypto.encryptText(password).then(function (hash) {
       User.create(username, firstname, lastname, email, hash, role, super_admin)
     })
   }
@@ -105,7 +102,7 @@ class Users {
     mod.email = email
 
     if (password !== null) {
-      mod.password = crypto.encryptPassword(password).catch((error) => {
+      mod.password = crypto.encryptText(password).catch((error) => {
         throw error
       })
     }

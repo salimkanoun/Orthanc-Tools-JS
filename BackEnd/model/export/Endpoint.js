@@ -1,4 +1,4 @@
-const crypto = require('crypto')
+const crypto = require('../../adapter/cryptoAdapter')
 const db = require('../../database/models')
 const convert = require('../../utils/convert')
 const SshKey = require('./SshKey')
@@ -185,18 +185,11 @@ class Endpoint{
     static _encryptIdentifiants(username, password){
         username = Buffer.from(username, 'utf8').toString('hex')
         password = Buffer.from(password, 'utf8').toString('hex')
-        let iv = new Int8Array(16)
-        crypto.randomFillSync(iv)
-        let cypher = crypto.createCipheriv(algo,process.env.HASH_KEY,iv)
-        let identifiant = cypher.update(username+':'+password,"utf8","hex")+ cypher.final('hex');
-        return convert.toHexString(iv)+':'+identifiant
+        return crypto.encryptText(username+':'+password)
     }
 
     static _decryptIdentifiants(ids){
-        ids = ids.split(':')
-        let iv = convert.toByteArray(ids[0])
-        let decypher = crypto.createDecipheriv(algo,process.env.HASH_KEY,iv)
-        let usernamePassword = (decypher.update(ids[1],"hex","utf8") + decypher.final('utf8')).split(':');
+        let usernamePassword = crypto.decryptText(ids).split(':')
         let username = decodeURIComponent(usernamePassword[0].replace(/\s+/g, '').replace(/[0-9a-f]{2}/g, '%$&'))
         let password = decodeURIComponent(usernamePassword[1].replace(/\s+/g, '').replace(/[0-9a-f]{2}/g, '%$&'))
         return [username, password]
