@@ -1,10 +1,12 @@
-const bcrypt = require('bcryptjs')
+const crypto = require('../adapter/cryptoAdapter')
 const { OTJSNotFoundException, OTJSBadRequestException } = require('../Exceptions/OTJSErrors')
 const Ldap = require('./Ldap')
 const Role = require('../repository/Role')
 const User = require('../repository/User')
 const Option = require('../repository/Option')
 const DistantUser = require('../repository/DistantUser')
+
+const algo = 'aes256'
 
 class Users {
 
@@ -42,8 +44,8 @@ class Users {
   }
 
   checkLocalPassword(plainPassword) {
-    return this._getUserEntity().then(async user => {
-      return await bcrypt.compare(plainPassword, user.password)
+    return this._getUserEntity().then(user => {
+      return crypto.comparePassword(plainPassword,user.password)
     }).catch((error) => { throw error })
   }
 
@@ -70,8 +72,8 @@ class Users {
     if (username.indexOf('@') !== -1) throw new OTJSBadRequestException('@ not allowed for local username definition')
 
     const saltRounds = 10
-    return bcrypt.hash(password, saltRounds).then(function (hash) {
-      User.create(username, firstname, lastname, email, password, role, super_admin)
+    return crypto.encryptPassword(password).then(function (hash) {
+      User.create(username, firstname, lastname, email, hash, role, super_admin)
     })
   }
 
@@ -103,7 +105,7 @@ class Users {
     mod.email = email
 
     if (password !== null) {
-      mod.password = await bcrypt.hash(password, 10).catch((error) => {
+      mod.password = crypto.encryptPassword(password).catch((error) => {
         throw error
       })
     }

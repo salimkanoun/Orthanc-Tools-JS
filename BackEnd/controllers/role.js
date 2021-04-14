@@ -26,7 +26,6 @@ const getRoles = async function (req, res) {
 const getPermission = async function (req, res) {
     let permission = await Roles.getPermission(req.params.name)
     res.json(permission)
-
 }
 
 module.exports = { createRole, modifyRole, deleteRole, getRoles, getPermission }

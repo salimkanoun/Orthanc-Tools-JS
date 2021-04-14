@@ -3,7 +3,7 @@ const StudyLabel = require('../../repository/StudyLabel')
 const UserLabel = require('../../repository/UserLabel')
 const User = require('../../repository/User')
 const {OTJSDBEntityNotFoundException} = require('../../Exceptions/OTJSErrors')
-
+const crypto = require('../../adapter/cryptoAdapter')
 beforeEach(async function(){
   //made for cascade tests if they were wrongly executed
   //remove foreign key constraint for other tests
@@ -95,8 +95,8 @@ describe('Testing cascade effect on label_name',()=>{
       modify label_name on Labels
       verify that the row a StudyLabels as been modified then delete it
     */
-    let study_label = await StudyLabel.create('test2','label test')
-    study_label = await StudyLabel.getStudyLabel('test2','label test')
+    await StudyLabel.create('test2','label test')
+    var study_label = await StudyLabel.getStudyLabel('test2','label test')
     expect(study_label).not.toBeNull()
     expect(study_label.study_instance_uid).toBe('test2')
     expect(study_label.label_name).toBe('label test')
@@ -141,7 +141,6 @@ describe('Testing cascade effect on label_name',()=>{
     await UserLabel.delete(user_label.user_id,user_label.label_name)
     await User.delete('test')
     await Label.delete(user_label.label_name)
-
   })
 
 })
