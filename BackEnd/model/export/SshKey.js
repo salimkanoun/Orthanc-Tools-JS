@@ -1,6 +1,6 @@
 const SshKeyRepo = require("../../repository/SshKey");
 const fs = require('fs');
-const crypto = require('crypto');
+const crypto = require('../../adapter/cryptoAdapter');
 const convert = require("../../utils/convert");
 
 const algo = 'aes256'
@@ -13,10 +13,7 @@ class SshKey {
         this.pass = params.pass || null;
 
         if (this.id !== null && this.pass) {
-            let encryptedPass = this.pass.split(':');
-            let iv = convert.toByteArray(encryptedPass[0]);
-            let decypher = crypto.createDecipheriv(algo, process.env.HASH_KEY, iv);
-            let pass = decypher.update(encryptedPass[1], "hex", "utf8") + decypher.final('utf8');
+            let pass = crypto.decryptText(this.pass)
             this.pass = decodeURIComponent(pass.replace(/\s+/g, '').replace(/[0-9a-f]{2}/g, '%$&'))
         }
     }
@@ -38,11 +35,7 @@ class SshKey {
     static saveSshKey(key) {
         let queryFields = {...key}
         if (key.pass) {
-            let iv = new Int8Array(16)
-            crypto.randomFillSync(iv);
-            let cypher = crypto.createCipheriv(algo, process.env.HASH_KEY, iv);
-            let pass = cypher.update(Buffer.from(key.pass, 'utf8').toString('hex'), "utf8", "hex") + cypher.final('hex');
-            queryFields.pass = convert.toHexString(iv) + ':' + pass;
+            queryFields.pass=crypto.encryptText(key.pass)
         }
         return SshKeyRepo.saveKey(queryFields.id, queryFields.label, queryFields.path, queryFields.pass).then(sshKey => sshKey.id);
     }

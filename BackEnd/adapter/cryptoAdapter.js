@@ -26,13 +26,13 @@ function decryptText(text) {
     return decrypted.toString('utf8');
 }
 
-function compareText(text, hashText) {
-    var res = false
-    let decryptedText = decryptText(hashText)
-    if (decryptedText == text) {
-        res = true
-    }
-    return res
+function compareText(text,hashText){
+  var res = false
+  let decryptedText = this.decryptText(hashText)
+  if(decryptedText==text){
+    res = true
+  }
+  return res
 }
 
 function generateRandomString(size) {
