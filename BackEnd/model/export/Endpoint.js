@@ -1,4 +1,3 @@
-const convert = require('../../utils/convert');
 const SshKey = require('./SshKey');
 const fs = require('fs');
 const EndpointRepo = require('../../repository/Endpoint');

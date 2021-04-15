@@ -3,7 +3,7 @@ const StudyLabel = require('../../repository/StudyLabel')
 const UserLabel = require('../../repository/UserLabel')
 const User = require('../../repository/User')
 const {OTJSDBEntityNotFoundException} = require('../../Exceptions/OTJSErrors')
-const crypto = require('../../adapter/cryptoAdapter')
+
 beforeEach(async function(){
   //made for cascade tests if they were wrongly executed
   //remove foreign key constraint for other tests

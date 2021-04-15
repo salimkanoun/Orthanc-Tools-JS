@@ -2,8 +2,6 @@ const SshKeyRepo = require("../../repository/SshKey");
 const fs = require('fs');
 const crypto = require('../../adapter/cryptoAdapter');
 
-const algo = 'aes256'
-
 class SshKey {
     constructor(params) {
         this.id = params.id || null;
