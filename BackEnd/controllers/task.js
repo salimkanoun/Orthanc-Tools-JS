@@ -3,14 +3,12 @@ const AnonTask = require("../model/tasks/AnonTask");
 const DeleteTask = require("../model/tasks/DeleteTask");
 const RetrieveTask = require("../model/tasks/RetrieveTask");
 const ExportTask = require("../model/tasks/ExportTask");
-const OrthancQueue = require("../model/OrthancQueue");
 const Options = require("../model/Options");
-
-const orthancQueue = new OrthancQueue();
+const Queue = require("../adapter/bullAdapter");
 
 
 const checkForOrthancQueueReady = async (req, res, next) => {
-    orthancQueue.isReady().then(() => next()).catch(() => {
+    Queue.isReady().then(() => next()).catch(() => {
         res.status(500).send("Cant connect to redis");
     })
 }

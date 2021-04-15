@@ -7,6 +7,7 @@ const REDIS_OPTIONS = {
     password: process.env.REDIS_PASSWORD
 }
 
+const queues = [];
 const CLEAN_GRACE = 1;
 
 class Queue extends event.EventEmitter {
@@ -30,6 +31,7 @@ class Queue extends event.EventEmitter {
         this._queue.on('completed', (job, result) => {
             this.emit('completed', job, result);
         });
+        queues.push(this);
     }
 
     /**
@@ -77,6 +79,10 @@ class Queue extends event.EventEmitter {
      * @returns {Promise<>} Promise resolved when the clean is done
      */
     clean = () => Promise.all(Object.values(Queue._JOB_STATES_CLEAN).map(x => this._queue.clean(CLEAN_GRACE, x)));
+
+    static isReady() {
+        return Promise.all(queues.map(queue => queue.isReady())).then(readies => readies.reduce((previousValue, currentValue) => previousValue && currentValue));
+    }
 }
 
 Queue.JOB_STATES = {
