@@ -76,7 +76,7 @@ class Queue extends event.EventEmitter {
      * Remove all jobs of the queue
      * @returns {Promise<>} Promise resolved when the clean is done
      */
-    clean = () => this._queue.clean(CLEAN_GRACE, Object.values(Queue.JOB_STATES));
+    clean = () => Promise.all(Object.values(Queue._JOB_STATES_CLEAN).map(x => this._queue.clean(CLEAN_GRACE, x)));
 }
 
 Queue.JOB_STATES = {
@@ -86,6 +86,14 @@ Queue.JOB_STATES = {
     WAITING: 'waiting',
     ACTIVE: 'active',
     PAUSE: 'pause'
+}
+
+Queue._JOB_STATES_CLEAN = {
+    COMPLETED: 'completed',
+    FAILED: 'failed',
+    DELAYED: 'delayed',
+    WAITING: 'wait',
+    ACTIVE: 'active'
 }
 
 module.exports = Queue

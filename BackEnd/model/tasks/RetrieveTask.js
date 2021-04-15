@@ -264,8 +264,8 @@ class RetrieveTask {
      * Remove all jobs for retrieval
      */
     static async flush() {
-        await Promise.all(JOBS_STATUS.map(x => retrieveQueue.clean()));
-        await Promise.all(JOBS_STATUS.map(x => validationQueue.clean()));
+        await retrieveQueue.clean();
+        await validationQueue.clean();
     }
 
 

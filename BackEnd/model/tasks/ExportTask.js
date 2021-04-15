@@ -10,8 +10,6 @@ const fs = require('fs');
 let orthanc = new Orthanc();
 let exporter = new Exporter();
 
-
-const JOBS_STATUS = ['completed', 'wait', 'active', 'delayed', 'failed']
 const JOBS_PROGRESS_INTERVAL = 200;
 
 class ExportTask {
