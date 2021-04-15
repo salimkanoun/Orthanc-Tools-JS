@@ -148,13 +148,13 @@ adminRouter.post('/labels',[userAuthMidelware, userAdminMidelware],createLabel)
 adminRouter.delete('/labels',[userAuthMidelware, userAdminMidelware],deleteLabel)
 
 //UserLabel
-adminRouter.get('/userlabel',[userAuthMidelware, userAdminMidelware],getUsersLabels)
-adminRouter.post('/userlabel',[userAuthMidelware, userAdminMidelware],createUserLabel)
-adminRouter.delete('/userlabel',[userAuthMidelware, userAdminMidelware],deleteUserLabel)
+adminRouter.get('/userlabels',[userAuthMidelware, userAdminMidelware],getUsersLabels)
+adminRouter.post('/userlabels',[userAuthMidelware, userAdminMidelware],createUserLabel)
+adminRouter.delete('/userlabels',[userAuthMidelware, userAdminMidelware],deleteUserLabel)
 
 //StudyLabel
-adminRouter.get('/studylabel',[userAuthMidelware, userAdminMidelware],getStudiesLabels)
-adminRouter.post('/studylabel',[userAuthMidelware, userAdminMidelware],createStudyLabel)
-adminRouter.delete('/studylabel',[userAuthMidelware, userAdminMidelware],deleteStudyLabel)
+adminRouter.get('/studylabels',[userAuthMidelware, userAdminMidelware],getStudiesLabels)
+adminRouter.post('/studylabels',[userAuthMidelware, userAdminMidelware],createStudyLabel)
+adminRouter.delete('/studylabels',[userAuthMidelware, userAdminMidelware],deleteStudyLabel)
 
 module.exports = adminRouter
