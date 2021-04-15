@@ -1,4 +1,5 @@
 const User = require('../../repository/User')
+const crypto = require('../../adapter/cryptoAdapter')
 const {OTJSDBEntityNotFoundException} = require ('../../Exceptions/OTJSErrors')
 
 //to run test : npm test spec/integration/UsersSpec.js
@@ -6,7 +7,7 @@ const {OTJSDBEntityNotFoundException} = require ('../../Exceptions/OTJSErrors')
 beforeEach(async function(){
   let user = await User.getUser('test')
   if(user==null){
-    await User.create('test','test','test','test','test','user',false)
+    await User.create('test','test','test','test',crypto.hash('test',16),'user',false)
   }
 })
 afterEach(async function(){
@@ -34,7 +35,8 @@ describe('Testing Users Table',()=>{
     expect(user.username).toBe('test')
     expect(user.role).toBe('user')
     expect(user.super_admin).toBeFalsy()
-
+    expect(crypto.compare('test',user.password)).toBeTruthy()
+    
     const undefined_user = await User.getUser('undefined user test')
     expect(undefined_user).toBeNull()
   })
@@ -51,12 +53,12 @@ describe('Testing Users Table',()=>{
 
   it('should return and count all the super users (at least one with admin)',async()=>{
     const user = await User.findAndCountAllSuperUser()
-    console.log(user.rows[0].dataValues.username)
     expect(user).not.toBeNull()
     expect(user.count).toEqual(1)
 
     let res = containsUser(user.rows,'admin')
     expect(res).toBeTruthy()
+    expect(crypto.compare('admin',user.rows[0].dataValues.password)).toBeTruthy()
   })
 
   it('should delete a test user',async()=>{

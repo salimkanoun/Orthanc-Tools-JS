@@ -1,7 +1,6 @@
 const SshKeyRepo = require("../../repository/SshKey");
 const fs = require('fs');
 const crypto = require('../../adapter/cryptoAdapter');
-const convert = require("../../utils/convert");
 
 const algo = 'aes256'
 

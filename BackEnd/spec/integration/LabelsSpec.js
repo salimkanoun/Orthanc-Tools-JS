@@ -104,14 +104,14 @@ describe('Testing cascade effect on label_name',()=>{
     await Label.update('label test','label test2')
     let label = await Label.getLabel('label test2')
     expect(label).not.toBeNull()
-    study_label = await StudyLabel.getStudyLabel('test2','label test2')
+    var study_label_upd = await StudyLabel.getStudyLabel('test2','label test2')
 
-    expect(study_label).not.toBeNull()
-    expect(study_label.study_instance_uid).toBe('test2')
-    expect(study_label.label_name).toBe('label test2')
+    expect(study_label_upd).not.toBeNull()
+    expect(study_label_upd.study_instance_uid).toBe('test2')
+    expect(study_label_upd.label_name).toBe('label test2')
 
-    await StudyLabel.delete(study_label.study_instance_uid,study_label.label_name)
-    await Label.delete(study_label.label_name)
+    await StudyLabel.delete(study_label_upd.study_instance_uid,study_label_upd.label_name)
+    await Label.delete(study_label_upd.label_name)
 
   })
 

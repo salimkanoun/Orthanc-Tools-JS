@@ -57,7 +57,7 @@ module.exports = {
         },
         name: 'roles_name_fkey',
       })
-    }).then( () => { return crypto.encryptText("admin") 
+    }).then( () => { return crypto.hash('admin',16) 
     }).then((hash) => {
       queryInterface.bulkInsert('Users', [{
         username: 'admin',

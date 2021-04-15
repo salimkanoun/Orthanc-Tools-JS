@@ -47,7 +47,7 @@ class Users {
 
     checkLocalPassword(plainPassword) {
         return this._getUserEntity().then(user => {
-            return crypto.compareText(plainPassword, user.password)
+            return crypto.compare(plainPassword, user.password)
         }).catch((error) => {
             throw error
         })
@@ -79,7 +79,7 @@ class Users {
 
         if (username.indexOf('@') !== -1) throw new OTJSBadRequestException('@ not allowed for local username definition')
 
-        return crypto.encryptText(password).then(function (hash) {
+        return crypto.hash(password,16).then(function (hash) {
             User.create(username, firstname, lastname, email, hash, role, super_admin)
         })
     }
@@ -112,7 +112,7 @@ class Users {
         mod.email = email
 
         if (password !== null) {
-            mod.password = crypto.encryptText(password).catch((error) => {
+            mod.password = crypto.hash(password,16).catch((error) => {
                 throw error
             })
         }
