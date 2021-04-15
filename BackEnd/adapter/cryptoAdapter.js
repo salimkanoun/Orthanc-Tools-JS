@@ -1,7 +1,8 @@
 const crypto = require('crypto')
 
 const algo = 'aes-256-cbc'
-const ENCRYPTION_KEY = 'abdcefrt98i8i8i0i6r4t4fc7hz8j56a' //hard coded for tests to replace by process.env.HASH_KEY (defined while installing with generateRandomString(16)?)
+//hard coded for tests to replace by process.env.HASH_KEY (defined while installing with generateRandomString(32)?)
+const ENCRYPTION_KEY = 'abdcefrt98i8i8i0i6r4t4fc7hz8j56a' 
 const IV_LENGTH = 16
 
 function encryptText(text) {
@@ -26,21 +27,12 @@ function decryptText(text) {
     return decrypted.toString('utf8');
 }
 
-function compareText(text,hashText){
-  var res = false
-  let decryptedText = this.decryptText(hashText)
-  if(decryptedText==text){
-    res = true
-  }
-  return res
-}
-
 function generateRandomString(size) {
-    return crypto.randomBytes(size).toString('hex') //return lenght * 2 string in hexadecimal
+    return crypto.randomBytes(size/2).toString('hex') //return lenght * 2 string in hexadecimal
 }
 
 function hash(password,saltRounds){
-  var salt = this.generateRandomString(saltRounds)
+  var salt = this.generateRandomString(saltRounds*2)
   var hash =crypto.pbkdf2Sync(password, salt,  
     1000, 64, `sha256`).toString(`hex`); 
   return salt.slice(0,16)+hash+salt.slice(16,32)
@@ -59,4 +51,4 @@ function compare(plainPassword,password){
 }
 
 //function to generate an hash key ?
-module.exports = {encryptText, decryptText, compareText, generateRandomString,hash,compare}
+module.exports = {encryptText, decryptText, generateRandomString, hash, compare}

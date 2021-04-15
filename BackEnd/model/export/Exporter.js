@@ -1,14 +1,12 @@
 //Modules
 const Queue = require('bull')
-const SftpClient = require("ssh2-sftp-client") 
-const FtpClient =  require("basic-ftp" )
+const Sftp = require('../../adapter/ssh2SftpClientAdapter')
+const Ftp = require('../../adapter/basicFtpAdapter')
+const Webdav = require('../../adapter/webdavAdapter')
 const tls = require("tls") 
-const {createClient} = require("webdav")
 const path = require('path')
 const fs = require('fs')
 const Certificate = require('./Certificate')
-
-const ftp = new FtpClient.Client()
 
 let instance
 class Exporter{
@@ -70,75 +68,15 @@ class Exporter{
     }
 
     static async _sendOverFtp(job,done){
-        let endpoint = job.data.endpoint;
-        let file = job.data.file;
-        //Opening the ftp connecttion
-        await ftp.access(endpoint).then(async()=>{
-            //Start tracking
-            ftp.trackProgress(info=>{
-                job.progress(info.bytesOverall/file.size*100)
-            });
-            //Start Uploading
-            await ftp.uploadFrom(file.path, path.join(endpoint.targetFolder,  file.name))
-        })
-        done()
+        Ftp.sendOverFtp(job,done)
     }
 
     static async _sendOverSftp(job,done){
-        let endpoint = job.data.endpoint;
-        let file = job.data.file;
-
-        const sftp = new SftpClient();
-
-        //Creating the sftp connection
-        await sftp.connect(endpoint).then(()=>{
-            //Starting the transfer
-            sftp.fastPut(file.path,path.join(endpoint.targetFolder, file.name),{
-                step:  (total_transferred, _chunk, _total)=>{
-                    job.progress(total_transferred/file.size*100);
-                }
-            }).then(()=>sftp.end())
-        })
-        done()
+        Sftp.sendOverSftp(job,done)
     }
 
     static async _sendOverWebdav(job,done){
-        let endpoint = job.data.endpoint
-        let file = job.data.file
-
-
-        try {
-            //Creating the conncetion
-            const client = createClient(endpoint.url,
-            {
-                username: endpoint.username,
-                password: endpoint.password,
-                digest: endpoint.digest
-            })
-            //Transfering archive
-            let rs = fs.createReadStream(file.path,{autoClose:true})
-            await new Promise((resolve,reject)=>{
-                //Monitoring the progress
-                let sent = 0
-                rs.on('data', (chunk)=>{
-                    sent += chunk.length
-                    job.progress(sent/file.size*100).catch((err=>console.error(err)))
-                    
-                })
-                rs.on('end', ()=>{resolve()})
-                rs.on('error', reject)
-                try {
-                    let ws = client.createWriteStream(path.join(endpoint.targetFolder,file.name))
-                    rs.pipe(ws)
-                } catch (error) {
-                    console.error(error)
-                }
-            })
-        } catch (error) {
-            console.error(error)
-        }
-        job.progress(100)
-        done()
+        Webdav.sendOverWebdav(job,done)
     }
 
     async queue(protocol, endpoint, archive){
