@@ -44,7 +44,7 @@ class RetrieveTask {
      * @returns {string} the uuid of the task
      */
     static async createTask(creator, projectName, answers) {
-        let task = (await RetrieveTask.getUserTask(creator) || [])[0];
+        let task = await RetrieveTask.getUserTask(creator).then(ids => RetrieveTask.getTask(ids[0]));
         // Checking for existing task of the user 
         if (!!task && !['completed', 'failed'].includes(task.state)) {
             throw new OTJSForbiddenException("Cant create two retrieval simulteanously");

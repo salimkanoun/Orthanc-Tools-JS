@@ -205,7 +205,7 @@ class OrthancQueue {
      * @param {object} done
      */
     static async _deleteItem(job, done) {
-        await orthanc.deleteFromOrthanc('series', job.data.orthancId)
+        await orthanc.deleteFromOrthanc('series', job.data.orthancId);
         done()
     }
 
