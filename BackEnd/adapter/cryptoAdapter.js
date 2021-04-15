@@ -27,9 +27,9 @@ function decryptText(text) {
 }
 
 function compareText(text, hashText) {
-    var res = false
+    let res = false
     let decryptedText = decryptText(hashText)
-    if (decryptedText == text) {
+    if (decryptedText === text) {
         res = true
     }
     return res

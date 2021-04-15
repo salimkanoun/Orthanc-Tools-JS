@@ -1,25 +1,31 @@
 const Exporter = require("../export/Exporter");
-const OrthancQueue = require("../OrthancQueue");
+const Orthanc = require("../Orthanc");
 const TaskType = require("../TaskType");
+const Queue = require("../../adapter/bullAdapter");
+const {v4: uuid} = require('uuid');
+const Endpoint = require('../export/Endpoint');
+const ReverseProxy = require('../ReverseProxy');
+const fs = require('fs');
 
-
-let orthancQueue =new OrthancQueue();
+let orthanc = new Orthanc();
 let exporter = new Exporter();
 
+
 const JOBS_STATUS = ['completed', 'wait', 'active', 'delayed', 'failed']
+const JOBS_PROGRESS_INTERVAL = 200;
 
 class ExportTask {
-
     /**
      * Create the export task
      * @param {string} creator username of the creator of the task
      * @param {[any]} studies studies to be exported
      * @param {Endpoint} endpoint endpoint to export the studies to
-     * @param {string} transcoding transcoding to be used to create the archive 
-     * @returns {string} the uuid of the task 
+     * @param {string} transcoding transcoding to be used to create the archive
+     * @returns {Promise<String>} the uuid of the task
      */
-    static async createTask(creator, studies, endpoint, transcoding = null){
-        return orthancQueue.exportToEndpoint(creator, studies, transcoding, endpoint);
+    static createTask(creator, studies, endpoint, transcoding = null) {
+        let taskId = 'e-' + uuid();
+        return archiveQueue.addJob({creator, taskId, orthancIds: studies, transcoding, endpoint}).then(() => taskId);
     }
 
     /**
@@ -27,35 +33,34 @@ class ExportTask {
      * @param {string} id the uuid of the task to be returned
      * @returns {Task} the task info
      */
-    static async getTask(id){
-        //Seraching for the relevant Jobs
-        let archiveJob = await orthancQueue.getArchiveCreationJobs(id);
+    static async getTask(id) {
+        //Searching for the relevant Jobs
+        let archiveJob = (await archiveQueue.getJobs()).filter(job => job.data.taskId === id);
         let sendJob = await exporter.getUploadJobs(id);
-        
+
         //If no jobs of this task exist then the task doesn't exist 
-        if(!archiveJob[0] && !sendJob[0])return null;
-        
+        if (!archiveJob[0] && !sendJob[0]) return null;
 
         //Computing the sub-states
-        let archiveState = (archiveJob[0]?await archiveJob[0].getState():'waiting')
-        let sendState = (sendJob[0]?await sendJob[0].getState():'waiting')
-        
+        let archiveState = (archiveJob[0] ? await archiveJob[0].getState() : 'waiting')
+        let sendState = (sendJob[0] ? await sendJob[0].getState() : 'waiting')
+
         //Computing the states
         let state;
-        if(archiveState==='waiting' && archiveState===sendState) state = 'pending archiving'
-        else if(archiveState==='active' && sendState==='waiting') state = 'archiving'
-        else if(archiveState==='completed' && sendState==='waiting') state = 'pending sending'
-        else if(archiveState==='completed' && sendState==='active') state = 'sending'
-        else if(archiveState==='completed' && archiveState===sendState) state = 'completed'
+        if (archiveState === 'waiting' && archiveState === sendState) state = 'pending archiving'
+        else if (archiveState === 'active' && sendState === 'waiting') state = 'archiving'
+        else if (archiveState === 'completed' && sendState === 'waiting') state = 'pending sending'
+        else if (archiveState === 'completed' && sendState === 'active') state = 'sending'
+        else if (archiveState === 'completed' && archiveState === sendState) state = 'completed'
         else state = 'failed'
-        
+
         return {
             id,
             type: TaskType.EXPORT,
             creator: archiveJob[0].data.creator,
             progress: {
-                archiving : (archiveJob[0]?await archiveJob[0].progress():0),
-                sending : (sendJob[0]?await sendJob[0].progress():0)
+                archiving: (archiveJob[0] ? await archiveJob[0].progress() : 0),
+                sending: (sendJob[0] ? await sendJob[0].progress() : 0)
             },
             state,
             details: {}
@@ -65,22 +70,22 @@ class ExportTask {
     /**
      * get the task corresponding of user
      * @param {string} user creator of the task to be returned
-     * @returns {Task} task uuid of the user 
+     * @returns {string} task uuid of the user
      */
-    static async getUserTask(user){
-        let archiveJobs = await orthancQueue.getUserArchiveCreationJobs(user);
-        if(archiveJobs.length === 0) return null;
+    static async getUserTask(user) {
+        let archiveJobs = (await archiveQueue.getJobs()).filter(job => job.data.creator === user);
+        if (archiveJobs.length === 0) return null;
         return archiveJobs[0].data.taskId;
     }
 
     /**
      * get the tasks of this type
-     * @returns {[Task]} tasks of this type
+     * @returns {[string]} tasks of this type
      */
-    static async getTasks(){
-        let jobs = await orthancQueue.exportQueue.getJobs()
+    static async getTasks() {
+        let jobs = await archiveQueue.getJobs();
         let ids = [];
-        
+
         //Makes a set of the ids of the task
         for (const job of jobs) {
             if (!(ids.includes(job.data.taskId))) {
@@ -88,16 +93,67 @@ class ExportTask {
             }
         }
 
-        return await Promise.all(ids.map(id=>ExportTask.getTask(id)));
+        return await Promise.all(ids.map(id => ExportTask.getTask(id)));
     }
 
     /**
      * Remove all jobs for export
      */
-    static async flush(){
-        await Promise.all(JOBS_STATUS.map(x=>orthancQueue.exportQueue.clean(1, x)));
-        await Promise.all(JOBS_STATUS.map(x=>exporter.sendQueue.clean(1, x)));
+    static async flush() {
+        await Promise.all(JOBS_STATUS.map(x => archiveQueue.clean()));
+        await Promise.all(JOBS_STATUS.map(x => exporter.sendQueue.clean(1, x)));
+    }
+
+    /**
+     * Processor that generate an archive based on orthanc ids
+     * @param {object} job
+     * @param {fn} done
+     */
+    static async _getArchiveDicom(job, done) {
+        let orthancIds = job.data.orthancIds;
+        let transcoding = job.data.transcoding;
+
+        let payload;
+
+        if (transcoding) {
+            payload = {
+                "Synchronous": false,
+                "Transcode": transcoding,
+                "Resources": orthancIds
+            }
+        } else {
+            payload = {
+                "Synchronous": false,
+                "Resources": orthancIds
+            }
+        }
+
+        //Request the creation of an archive
+        let r = await ReverseProxy.getAnswer('/tools/create-archive', 'POST', payload)
+        let jobPath = r.Path
+
+        //Monitor the orthanc job
+        await orthanc.monitorJob(jobPath, (response) => {
+            job.progress(response.Progress)
+        }, JOBS_PROGRESS_INTERVAL).then((response) => {
+            const destination = './data/export_dicom/' + Math.random()
+                .toString(36).substr(2, 5) + '.zip';
+            const streamWriter = fs.createWriteStream(destination);
+            ReverseProxy.streamToFileWithCallBack(jobPath + '/archive', 'GET', {}, streamWriter, () => {
+                done(null, {path: destination});
+            });
+        }).catch((error) => {
+            console.error('error in a task :');
+            console.error(error);
+            done(error);
+        })
     }
 }
+
+let archiveQueue = new Queue('archive', ExportTask._getArchiveDicom);
+archiveQueue.on("completed", async (job, result) => {
+    let endpoint = await Endpoint.getFromId(job.data.endpoint);
+    await exporter.uploadFile(job.data.taskId, endpoint, result.path);
+});
 
 module.exports = ExportTask

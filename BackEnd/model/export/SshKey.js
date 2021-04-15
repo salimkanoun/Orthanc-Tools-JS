@@ -78,10 +78,9 @@ class SshKey {
                     await fs.promises.unlink(path);
                 }).catch(() => {
                 });
-
-            path = 'data/private_key/key-' + Date.now();
         }
 
+        path = 'data/private_key/key-' + Date.now();
         let stream = fs.createWriteStream(path);
         await new Promise((resolve, reject) => {
             stream.write(chunk, () => resolve());

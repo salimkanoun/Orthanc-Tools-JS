@@ -74,9 +74,8 @@ class Certificate {
                     await fs.promises.unlink(path);
                 }).catch(() => {
                 });
-
-            path = 'data/certificates/cert-' + Date.now() + '.cert';
         }
+        path = 'data/certificates/cert-' + Date.now() + '.cert';
 
         let stream = fs.createWriteStream(path);
         await new Promise((resolve, reject) => {
