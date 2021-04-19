@@ -2,6 +2,14 @@ const request = require('supertest')
 const express = require('express')
 const app = express()
 const route = require('../../routes/admin')
+const bodyParser = require('body-parser')
+var cookieParser = require('cookie-parser')
+
+
+
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+app.use(cookieParser())
 app.use('/api',route)
 
 afterAll(async ()=>{
@@ -10,25 +18,51 @@ afterAll(async ()=>{
   const User = require('../../repository/User')
   const UserLabel = require('../../repository/UserLabel')
   const StudyLabel = require('../../repository/StudyLabel')
+  const Certificate = require('../../repository/Certificate')
 
   //Post
   let role = await Role.getRole('test')
   if(role){
     await Role.delete('test')
   }
-  let label = await Label.getLabel('test')
-  if(label){
-    await Label.delete('test')
-  }
   let user = await User.getUser('admin')
   let userlabel = await UserLabel.getUserLabel(user.id,'test')
   if(userlabel){
     await UserLabel.delete(user.id,'test')
   }
-  let studylabel = await StudyLabel.getStudyLabel('ABCDEFG','test')
+  let studylabel = await StudyLabel.getStudyLabel('ABCDEFGH','test')
   if(studylabel){
-    await StudyLabel.delete('ABCDEFG','test')
+    await StudyLabel.delete('ABCDEFGH','test')
   }
+
+  let label = await Label.getLabel('test')
+    if(label){
+      let user = await User.getUser('admin')
+    let userlabel = await UserLabel.getUserLabel(user.id,'test')
+    if(userlabel){
+      await UserLabel.delete(user.id,'test')
+    }
+    let studylabel = await StudyLabel.getStudyLabel('ABCDEFGH','test')
+    if(studylabel){
+      await StudyLabel.delete('ABCDEFGH','test')
+    }
+    await Label.delete('test')
+  }
+
+  let label2 = await Label.getLabel('test2')
+  if(label2){
+    let user = await User.getUser('admin')
+  let userlabel = await UserLabel.getUserLabel(user.id,'test2')
+  if(userlabel){
+    await UserLabel.delete(user.id,'test2')
+  }
+  let studylabel = await StudyLabel.getStudyLabel('ABCDEFGH','test2')
+  if(studylabel){
+    await StudyLabel.delete('ABCDEFGH','test2')
+  }
+  await Label.delete('test2')
+}
+
 })
 
 describe('GET/',()=>{
@@ -172,42 +206,47 @@ describe('GET/',()=>{
 })
 
 describe('POST/',()=>{
-  app.use('/api',route)
+  //app.use('/api',route)
   it('Labels',async()=>{
-    const label ={
-      label_name : 'test'
-    }
-
+    const label ={label_name: 'test'}
     const res = await request(app)
     .post('/api/labels')
-    .send({label})
-    .set('Content-type', 'application/json')
+    .set('Accept', 'application/json')
+    .send(label)
     .then((response)=>{
+      
       expect(response.statusCode).toBe(201)
     })
   })
-
+  
   it('Roles',async()=>{
     const role = {
-      name: 'test'
+      name : 'test'
     }
     const res = await request(app)
     .post('/api/roles')
-    .set('Content-type', 'application/json')
+    .set('Accept', 'application/json')
     .send(role)
     .then((response)=>{
+      console.error(response)
       expect(response.statusCode).toBe(201)
     })
   })
-
+  
   it('StudyLabels',async()=>{
+    const Label = require ('../../repository/Label.js')
+    const label = await Label.getLabel('test')
+    if(label==null){
+      await Label.create('test')
+    }
+
     const studylabel = {
-      study_instance_uid:'ABCDEFG',
-      label_name:'test'
+      study_instance_uid : 'ABCDEFGH',
+       label_name : 'test'
     }
     const res = await request(app)
     .post('/api/studylabels')
-    .set('Content-type', 'application/json')
+    .set('Accept', 'application/json')
     .send(studylabel)
     .then((response)=>{
       expect(response.statusCode).toBe(201)
@@ -215,26 +254,79 @@ describe('POST/',()=>{
   })
 
   it('UserLabels',async()=>{
+    const Label = require ('../../repository/Label.js')
+    const label = await Label.getLabel('test')
+    if(label==null){
+      await Label.create('test')
+    }
     const User = require('../../repository/User')
-    const user= User.getUser('admin')
+    const user= await User.getUser('admin')
+    
     const userlabel = {
-      user_id:user.id,
-      label_name:'test'
+      user_id : user.id,
+      label_name : 'test'
     }
     const res = await request(app)
     .post('/api/userlabels')
-    .set('Content-type', 'application/json')
     .send(userlabel)
+    .set('Accept', 'application/json')
     .then((response)=>{
       expect(response.statusCode).toBe(201)
     })
   })
+
+  it('Certificates',async()=>{
+    const certificate = {
+      label : 'test'
+    }
+    const res = await request(app)
+    .post('/api/certificates')
+    .set('Accept', 'application/json')
+    .send(certificate)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
 })
 
 describe('PUT/',()=>{
+  it('Labels',async()=>{
+    const label ={
+      label_name:'test',
+      new_label_name:'test2'
+    }
+    const res = await request(app)
+    .put('/api/labels')
+    .set('Accept', 'application/json')
+    .send(label)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('Roles', async()=>{
+    const role = {
+      name : 'test',
+      import : false
+    }
+    const res = await request(app)
+    .put('/api/roles')
+    .set('Accept', 'application/json')
+    .send(role)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('mode ???',async()=>{
+
+  })
 
 })
 
 describe('DELETE/',()=>{
-  
+  it('',async()=>{
+
+  })
 })

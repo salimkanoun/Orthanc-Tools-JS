@@ -21,8 +21,8 @@ class Labels{
     return Label.delete(label_name)
   }
 
-  static async modifyLabels(label_name){
-      return Label.update(label_name)
+  static async modifyLabels(label_name,new_label_name){
+      return Label.update(label_name,new_label_name)
   }
 
 }

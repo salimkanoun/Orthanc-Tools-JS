@@ -13,7 +13,7 @@ const getLabels = async function(req,res){
 
 const modifyLabel = async function(req,res){
   const body = req.body
-  await Labels.modifyLabels(body.label_name)
+  await Labels.modifyLabels(body.label_name,body.new_label_name)
   res.sendStatus(200)
 }
 

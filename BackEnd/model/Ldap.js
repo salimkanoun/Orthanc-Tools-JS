@@ -53,7 +53,7 @@ const Ldap = {
         return client.authenticateUser(username, password).catch( () => {return false})
     },
 
-    getAllCorrespodences: async () => {
+    getAllCorrespondences: async () => {
         const correspondances = await DistantUser.getAllLocalRoleAndLdapGroup()
         correspondances.forEach( (correspondance) => {
             results.push({ localRole: correspondance.local_role, ldapGroup: correspondance.ldap_group })

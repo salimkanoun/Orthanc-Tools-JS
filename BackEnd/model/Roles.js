@@ -11,7 +11,7 @@ class Roles {
       throw new OTJSConflictException('This roles already exist');
     }
 
-    return Role.create(paylaod.name,payload.import,payload.content,payload.anon,payload.exportLocal,payload.exportExtern,payload.query,payload.autoQuery,payload.deleteR,payload.modify,payload.cd_burner,payload.admin)
+    return Role.create(payload.name,payload.import,payload.content,payload.anon,payload.exportLocal,payload.exportExtern,payload.query,payload.autoQuery,payload.deleteR,payload.modify,payload.cd_burner,payload.admin)
   }
 
   static async getAllRoles() {
