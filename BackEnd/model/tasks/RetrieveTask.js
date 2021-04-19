@@ -4,6 +4,9 @@ const TaskType = require("../TaskType");
 const Queue = require("../../adapter/bullAdapter");
 const OrthancQueryAnswer = require("../OrthancData/queries-answer/OrthancQueryAnswer");
 const {v4: uuid} = require('uuid');
+const schedule = require('node-schedule');
+const Options = require('../Options');
+const time = require('../../utils/time');
 
 let orthanc = new Orthanc();
 
@@ -21,13 +24,13 @@ class RetrieveTask {
     static async getProgress(validationJobs, retrieveJobs) {
         let validation = 0;
         for (const job of validationJobs) {
-            validation += (['completed', 'failed'].includes(await job.getState()) ? 100 : await job.progress());
+            validation += await job.progress();
         }
         validation /= validationJobs.length;
 
         let retrieve = 0;
         for (const job of retrieveJobs) {
-            retrieve += (['completed', 'failed'].includes(await job.getState()) ? 100 : await job.progress());
+            retrieve += await job.progress();
         }
         retrieve /= (retrieveJobs.length === 0 ? 1 : retrieveJobs.length);
         return {
@@ -44,7 +47,7 @@ class RetrieveTask {
      * @returns {string} the uuid of the task
      */
     static async createTask(creator, projectName, answers) {
-        let task = await RetrieveTask.getUserTask(creator).then(ids => RetrieveTask.getTask(ids[0]));
+        let task = await RetrieveTask.getUserTask(creator).then(ids => (ids ? RetrieveTask.getTask(ids[0]) : null));
         // Checking for existing task of the user 
         if (!!task && !['completed', 'failed'].includes(task.state)) {
             throw new OTJSForbiddenException("Cant create two retrieval simulteanously");
@@ -78,7 +81,6 @@ class RetrieveTask {
 
         let jobs = curratedItems.map(item => {
             return {
-                name: "validate-item",
                 data: {
                     taskId,
                     creator,
@@ -91,6 +93,7 @@ class RetrieveTask {
 
         return validationQueue.addJobs(jobs).then(() => taskId);
     }
+
 
     static _getValidationJobs(taskId) {
         return validationQueue.getJobs()
@@ -116,7 +119,6 @@ class RetrieveTask {
         for (const job of jobs) {
             jobsData.push(
                 {
-                    name: 'retrieve-item',
                     data: job.data
                 });
             if (!await job.finished()) return;
@@ -134,7 +136,6 @@ class RetrieveTask {
         let validationJobs = await RetrieveTask._getValidationJobs(id);
         if (validationJobs.length === 0) return null; //If no jobs of this task exist then the task doesn't exist
         let retrieveJobs = await RetrieveTask._getRetrieveJobs(id);
-
         let progress = await RetrieveTask.getProgress(validationJobs, retrieveJobs);
 
         //Making state
@@ -155,8 +156,10 @@ class RetrieveTask {
             for (const job of retrieveJobs) {
                 if (job.getState() === 'failed') state = 'failed';
             }
-        } else state = 'failed';
 
+        } else {
+            state = 'failed';
+        }
         //Check for the validation of the task and gather the items
         let valid = true;
         let items = []
@@ -173,7 +176,6 @@ class RetrieveTask {
                 RetrievedOrthancId: (state === "completed" ? await retrieveJob.finished() : null)
             })
         }
-
         let approved = valid && retrieveJobs.length > 0
 
         return {
@@ -310,18 +312,23 @@ class RetrieveTask {
      * @param {object} done
      */
     static async _validateItem(job, done) {
-        orthanc.buildDicomQuery(job.data.item)
+        try {
+            orthanc.buildDicomQuery(job.data.item)
 
-        //Querry the dicom
-        const answerDetails = await orthanc.makeDicomQuery(job.data.item.OriginAET);
+            //Querry the dicom
+            const answerDetails = await orthanc.makeDicomQuery(job.data.item.OriginAET);
 
-        // checking the answer compte
-        if (answerDetails.length === 1) {
-            job.progress(100);
-            done(null, true);
-        } else {
-            job.progress(100)
-            done(null, false);
+            // checking the answer compte
+            if (answerDetails.length === 1) {
+                job.progress(100);
+                done(null, true);
+            } else {
+                job.progress(100)
+                done(null, false);
+            }
+        } catch (e) {
+            console.error(e);
+            done(e);
         }
 
     }
@@ -356,8 +363,43 @@ class RetrieveTask {
     }
 }
 
+let pauser;
+let resumer;
+
+async function setupRetrieveSchedule() {
+    const optionsParameters = await Options.getOptions()
+    let now = new Date(Date.now());
+
+    //Remove previous set schedule
+    if (pauser) pauser.cancel()
+    if (resumer) resumer.cancel()
+
+    //Pausing or unpausing the aet queue
+    if (time.isTimeInbetween(now.getHours(), now.getMinutes(), optionsParameters.hour_start, optionsParameters.min_start, optionsParameters.min_stop, optionsParameters.hour_stop)) {
+        retrieveQueue.resume().catch((err) => {
+        })
+    } else {
+        retrieveQueue.pause().catch((err) => {
+        })
+    }
+
+    //Schedule for the queue to be paused and unpaused
+    this.resumer = schedule.scheduleJob(optionsParameters.min_start + ' ' + optionsParameters.hour_start + ' * * *', () => {
+        retrieveQueue.resume()
+    })
+    this.pauser = schedule.scheduleJob(optionsParameters.min_stop + ' ' + optionsParameters.hour_stop + ' * * *', () => {
+        retrieveQueue.pause()
+    })
+}
+
+Options.optionEventEmiter.on('schedule_change', () => {
+    setupRetrieveSchedule()
+})
+
+setupRetrieveSchedule();
 
 let validationQueue = new Queue("validation", RetrieveTask._validateItem);
 let retrieveQueue = new Queue("retrieve", RetrieveTask._retrieveItem);
+
 
 module.exports = RetrieveTask

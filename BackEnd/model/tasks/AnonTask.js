@@ -32,7 +32,7 @@ class AnonTask {
      * @returns {string} the uuid of the task
      */
     static async createTask(creator, studies) {
-        let task = await AnonTask.getUserTask(creator).then(ids => AnonTask.getTask(ids[0]));
+        let task = await AnonTask.getUserTask(creator).then(ids => (ids ? AnonTask.getTask(ids[0]) : null));
         // Checking for existing task of the user
         if (!!task && !['completed', 'failed'].includes(task.state)) {
             throw new OTJSForbiddenException("Cant create two retrieval simulteanously");
@@ -53,7 +53,7 @@ class AnonTask {
                     taskId,
                     creator,
                     item,
-                    jobs: JOBS_TTL
+                    ttl: JOBS_TTL
                 }
             }
         });

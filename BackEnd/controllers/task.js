@@ -8,7 +8,7 @@ const Queue = require("../adapter/bullAdapter");
 
 
 const checkForOrthancQueueReady = async (req, res, next) => {
-    Queue.isReady().then(() => next()).catch(() => {
+    Queue.isAllReady().then(() => next()).catch(() => {
         res.status(500).send("Cant connect to redis");
     })
 }
@@ -98,7 +98,6 @@ const getTasks = async (req, res) => {
  * @param {*} res request result
  */
 const getTask = async (req, res) => {
-
     res.json(await Task.getTask(req.params.id));
 }
 
