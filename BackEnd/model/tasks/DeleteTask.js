@@ -153,7 +153,7 @@ class DeleteTask {
         try {
             await orthanc.deleteFromOrthanc('series', job.data.orthancId);
             job.progress(100);
-            done()
+            done(null, true);
         } catch (e) {
             console.error(e);
         }

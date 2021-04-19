@@ -8,7 +8,7 @@ const REDIS_OPTIONS = {
 }
 
 const queues = [];
-const CLEAN_GRACE = 1;
+const CLEAN_GRACE = 50;
 const DEFAULT_POOL_SIZE = 10;
 
 class Queue extends event.EventEmitter {
@@ -38,6 +38,9 @@ class Queue extends event.EventEmitter {
         this._queue.on('completed', (job, result) => {
             this.emit('completed', job, result);
         });
+        this._queue.on('error', (err) => {
+            this.emit('error', err);
+        });
         queues.push(this);
     }
 
@@ -45,7 +48,7 @@ class Queue extends event.EventEmitter {
      * Returns a promise completed when the queue is ready
      * @returns {Promise}
      */
-    isReady = () => this._queue.isReady();
+    isReady = () => this._queue.isReady().then(() => true);
 
     /**
      * Add a job to the queue
@@ -55,9 +58,9 @@ class Queue extends event.EventEmitter {
      */
     addJob = (jobData, name = null) => {
         if (name) {
-            return this.isReady().then(() => this._queue.add(name, jobData));
+            return this.isReady().then(() => this._queue.add(name, jobData)).then(job => new Job(job));
         } else {
-            return this.isReady().then(() => this._queue.add("__default__", jobData));
+            return this.isReady().then(() => this._queue.add("__default__", jobData)).then(job => new Job(job));
         }
     }
 
@@ -71,7 +74,7 @@ class Queue extends event.EventEmitter {
     addJobs = (jobsData, name = null, poolSize = DEFAULT_POOL_SIZE) => {
         let jobData = []
         if (poolSize < 2) {
-            return this.isReady().then(() => this._queue.addBulk(jobsData));
+            return this.isReady().then(() => this._queue.addBulk(jobsData)).then(jobs => jobs.map(j => new Job(j)));
         } else {
             if (name) {
                 for (let i = 0; i < jobsData.length; i += poolSize) {
@@ -96,7 +99,7 @@ class Queue extends event.EventEmitter {
                     })
                 }
             }
-            return this.isReady().then(() => this._queue.addBulk(jobData));
+            return this.isReady().then(() => this._queue.addBulk(jobData)).then(jobs => jobs.map(job => job.data.jobs.map((j, i) => new BatchedJob(job, i))).flat());
         }
     }
 
@@ -203,6 +206,8 @@ class Job {
         return this._bullJob.update(data);
     }
 }
+
+Queue.Job = Job;
 
 
 class BatchedJob extends Job {
