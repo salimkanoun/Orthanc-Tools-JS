@@ -15,15 +15,23 @@ describe('Test Authentication routes',()=>{
   it('login',async()=>{
     const user = {
       username:'admin',
-    password:'admin'
+      password:'admin'
     }
     const res = await request(app)
     .post('/api/authentication/')
     .set('Accept', 'application/json')
     .send(user)
     .then((response)=>{
-      console.error(response)
-      expect(response.statusCode).toBe(201)
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('logout',async ()=>{
+    const res = await request(app)
+    .delete('/api/authentication/')
+    .set('Accept', 'application/json')
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
     })
   })
 })  

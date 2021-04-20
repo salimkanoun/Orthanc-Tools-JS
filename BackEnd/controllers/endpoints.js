@@ -18,9 +18,9 @@ const allEndpoints = async function(req, res){
     res.json(response);
 }
 
-const updateEndpoint = async function(){
+const updateEndpoint = async function(req,res){
     let endpoint = await Endpoint.getFromId(req.body.id);
-    endpoint.set(res.body)
+    endpoint.set(req.body)
     res.send(endpoint)
 }
 

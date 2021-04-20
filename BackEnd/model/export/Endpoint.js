@@ -39,11 +39,11 @@ class Endpoint {
 
     static _checkParams(params) {
         if (params.label === undefined || params.label === null || params.label === "")
-            throw OTJSBadRequestException('Endpoint : Invalid label')
+            throw new OTJSBadRequestException('Endpoint : Invalid label')
         if (params.host === undefined || params.host === null || params.host === "")
-            throw OTJSBadRequestException('Endpoint : Invalid host')
+            throw new OTJSBadRequestException('Endpoint : Invalid host')
         if (params.protocol === undefined || params.protocol === null || !['ftp', 'sftp', 'ftps', 'webdav'].includes(params.protocol))
-            throw OTJSBadRequestException('Endpoint : Invalid protocol')
+            throw new OTJSBadRequestException('Endpoint : Invalid protocol')
     }
 
     async set(params) {

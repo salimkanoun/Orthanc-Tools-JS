@@ -79,9 +79,10 @@ class Users {
 
         if (username.indexOf('@') !== -1) throw new OTJSBadRequestException('@ not allowed for local username definition')
 
-        return crypto.hash(password,16).then(function (hash) {
-            User.create(username, firstname, lastname, email, hash, role, super_admin)
-        })
+        var hash = crypto.hash(password,16)
+        
+        return User.create(username, firstname, lastname, email, hash, role, super_admin)
+
     }
 
     static async deleteUser(username) {
@@ -112,9 +113,11 @@ class Users {
         mod.email = email
 
         if (password !== null) {
-            mod.password = crypto.hash(password,16).catch((error) => {
+            try{
+                mod.password = crypto.hash(password,16)
+            }catch(error){
                 throw error
-            })
+            }
         }
 
         mod.role = role

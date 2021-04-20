@@ -35,7 +35,7 @@ var testLdapSettings = async function (req, res) {
 
 }
 
-var getLdapCorrespodences = async function (req, res) {
+var getLdapCorrespondences = async function (req, res) {
   try {
     const matches = await Ldap.getAllCorrespondences()
     res.json(matches)
@@ -45,13 +45,13 @@ var getLdapCorrespodences = async function (req, res) {
 
 }
 
-var setLdapCorrespodence = async function (req, res) {
+var setLdapCorrespondence = async function (req, res) {
   let matches = req.body
   await Ldap.setCorrespondence(matches.groupName, matches.associedRole)
   res.sendStatus(200)
 }
 
-var deleteCorrespodence = async function (req, res) {
+var deleteCorrespondence = async function (req, res) {
   const match = req.body
   await Ldap.deleteCorrespodence(match.correspodence)
   res.sendStatus(200)
@@ -67,4 +67,4 @@ var getLdapGroupeNames = async function (req, res) {
 
 }
 
-module.exports = { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames }
+module.exports = { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespondences, setLdapCorrespondence, deleteCorrespondence, getLdapGroupeNames }

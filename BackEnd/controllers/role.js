@@ -13,8 +13,8 @@ const modifyRole = async function (req, res) {
 }
 
 const deleteRole = async function (req, res) {
-    const name = req.body
-    await Roles.deleteRole(name)
+    const body = req.body
+    await Roles.deleteRole(body.name)
     res.sendStatus(200)
 }
 

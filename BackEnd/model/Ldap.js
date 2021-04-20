@@ -66,7 +66,7 @@ const Ldap = {
         await DistantUser.create(ldapGroup,localRole)
     },
 
-    deleteCorrespodence: (ldapGroup) => {
+    deleteCorrespondence: (ldapGroup) => {
         return DistantUser.delete(ldapGroup)
     },
 

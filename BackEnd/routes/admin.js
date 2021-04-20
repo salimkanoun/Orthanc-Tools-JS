@@ -25,8 +25,8 @@ const {
 const {getRoles, createRole, modifyRole, deleteRole, getPermission} = require('../controllers/role')
 
 const {
-    getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences,
-    setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames
+    getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespondences,
+    setLdapCorrespondence, deleteCorrespondence, getLdapGroupeNames
 } = require('../controllers/ldap')
 
 const {userAuthMidelware, userAdminMidelware} = require('../midelwares/authentication')
@@ -100,9 +100,9 @@ adminRouter.put('/changeMode', [userAuthMidelware, userAdminMidelware], changeMo
 adminRouter.get('/ldap/settings', [userAuthMidelware, userAdminMidelware], getLdapSettings)
 adminRouter.put('/ldap/settings', [userAuthMidelware, userAdminMidelware], setLdapSettings)
 adminRouter.get('/ldap/test', [userAuthMidelware, userAdminMidelware], testLdapSettings)
-adminRouter.post('/ldap/matches', [userAuthMidelware, userAdminMidelware], setLdapCorrespodence)
-adminRouter.get('/ldap/matches', [userAuthMidelware, userAdminMidelware], getLdapCorrespodences)
-adminRouter.delete('/ldap/matches', [userAuthMidelware, userAdminMidelware], deleteCorrespodence)
+adminRouter.post('/ldap/matches', [userAuthMidelware, userAdminMidelware], setLdapCorrespondence)
+adminRouter.get('/ldap/matches', [userAuthMidelware, userAdminMidelware], getLdapCorrespondences)
+adminRouter.delete('/ldap/matches', [userAuthMidelware, userAdminMidelware], deleteCorrespondence)
 adminRouter.get('/ldap/groupname', [userAuthMidelware, userAdminMidelware], getLdapGroupeNames)
 
 /*

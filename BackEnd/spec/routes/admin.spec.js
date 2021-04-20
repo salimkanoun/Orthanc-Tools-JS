@@ -5,65 +5,10 @@ const route = require('../../routes/admin')
 const bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
 
-
-
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser())
 app.use('/api',route)
-
-afterAll(async ()=>{
-  const Role = require('../../repository/Role')
-  const Label = require('../../repository/Label')
-  const User = require('../../repository/User')
-  const UserLabel = require('../../repository/UserLabel')
-  const StudyLabel = require('../../repository/StudyLabel')
-  const Certificate = require('../../repository/Certificate')
-
-  //Post
-  let role = await Role.getRole('test')
-  if(role){
-    await Role.delete('test')
-  }
-  let user = await User.getUser('admin')
-  let userlabel = await UserLabel.getUserLabel(user.id,'test')
-  if(userlabel){
-    await UserLabel.delete(user.id,'test')
-  }
-  let studylabel = await StudyLabel.getStudyLabel('ABCDEFGH','test')
-  if(studylabel){
-    await StudyLabel.delete('ABCDEFGH','test')
-  }
-
-  let label = await Label.getLabel('test')
-    if(label){
-      let user = await User.getUser('admin')
-    let userlabel = await UserLabel.getUserLabel(user.id,'test')
-    if(userlabel){
-      await UserLabel.delete(user.id,'test')
-    }
-    let studylabel = await StudyLabel.getStudyLabel('ABCDEFGH','test')
-    if(studylabel){
-      await StudyLabel.delete('ABCDEFGH','test')
-    }
-    await Label.delete('test')
-  }
-
-  let label2 = await Label.getLabel('test2')
-  if(label2){
-    let user = await User.getUser('admin')
-  let userlabel = await UserLabel.getUserLabel(user.id,'test2')
-  if(userlabel){
-    await UserLabel.delete(user.id,'test2')
-  }
-  let studylabel = await StudyLabel.getStudyLabel('ABCDEFGH','test2')
-  if(studylabel){
-    await StudyLabel.delete('ABCDEFGH','test2')
-  }
-  await Label.delete('test2')
-}
-
-})
 
 describe('GET/',()=>{
 
@@ -159,50 +104,6 @@ describe('GET/',()=>{
       expect(response.statusCode).toBe(200)
     })
   })
-
-/* error 403
-  it('Ldap Test',async ()=>{
-    const res = await request(app)
-    .get('/api/ldap/test')
-    .then((response)=>{
-      expect(response.statusCode).toBe(200)
-    })
-  })
- error 500
-  it('Ldap Matches',async ()=>{
-    const res = await request(app)
-    .get('/api/ldap/matches')
-    .then((response)=>{
-      expect(response.statusCode).toBe(200)
-    })
-  })
- error 403
-  it('Ldap Groupname',async ()=>{
-    const res = await request(app)
-    .get('/api/ldap/groupname')
-    .then((response)=>{
-      expect(response.statusCode).toBe(200)
-    })
-  })*/
-
-
-
-/* error 500
-  it('Plugins',async ()=>{
-    const res = await request(app)
-    .get('/api/plugins')
-    .then((response)=>{
-      expect(response.statusCode).toBe(200)
-    })
-  })
- error 500
-  it('Verbosity',async ()=>{
-    const res = await request(app)
-    .get('/api/tools/log-level')
-    .then((response)=>{
-      expect(response.statusCode).toBe(200)
-    })
-  })*/
 })
 
 describe('POST/',()=>{
@@ -228,7 +129,6 @@ describe('POST/',()=>{
     .set('Accept', 'application/json')
     .send(role)
     .then((response)=>{
-      console.error(response)
       expect(response.statusCode).toBe(201)
     })
   })
@@ -277,7 +177,8 @@ describe('POST/',()=>{
 
   it('Certificates',async()=>{
     const certificate = {
-      label : 'test'
+      label : 'test',
+      path : 'test'
     }
     const res = await request(app)
     .post('/api/certificates')
@@ -288,6 +189,80 @@ describe('POST/',()=>{
     })
   })
 
+  it('Certificates upload',async()=>{
+    const certificate = {
+      id : 1,
+      label : 'test2',
+    }
+    const res = await request(app)
+    .post('/api/certificates/upload/1')
+    .set('Accept', 'application/json')
+    .send(certificate)
+    .then((response)=>{
+      console.error(response)
+      expect(response.statusCode).toBe(201)
+    })
+  })
+
+  it('Endpoints', async ()=>{
+    const endpoint = {
+        label : 'test',
+        host : 'localhost',
+        targetFolder : 'oui',
+        protocol : 'ftp'
+    }
+    const res = await request(app)
+    .post('/api/endpoints/create')
+    .set('Accept', 'application/json')
+    .send(endpoint)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('Endpoints update',async ()=>{
+    const endpoint = {
+      id : 1,
+      label : 'test2',
+      host : 'localhost',
+      targetFolder : 'oui',
+      protocol : 'webdav'
+    }
+    const res = await request(app)
+    .post('/api/endpoints/update')
+    .set('Accept', 'application/json')
+    .send(endpoint)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('SSHKeys',async()=>{
+    const sshkey = {
+      label : 'test'
+    }
+    const res  = await request(app)
+    .post('/api/keys/create')
+    .set('Accept', 'application/json')
+    .send(sshkey)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('SSHKeys update',async()=>{
+    const sshkey={
+      id : 1,
+      label : 'test2'
+    }
+    const res  = await request(app)
+    .post('/api/keys/update')
+    .set('Accept', 'application/json')
+    .send(sshkey)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
 })
 
 describe('PUT/',()=>{
@@ -319,14 +294,102 @@ describe('PUT/',()=>{
     })
   })
 
-  it('mode ???',async()=>{
+  it('mode ??',async()=>{  
+    
+  })
 
+  it('Ldap Settings',async()=>{  
+    const res = await request(app)
+    .put('/api/ldap/settings')
+    .set('Accept', 'application/json')
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
   })
 
 })
 
 describe('DELETE/',()=>{
-  it('',async()=>{
 
+  it('Roles',async()=>{
+    const roles = {
+      name : 'test'
+    }
+    const res = await request(app)
+    .delete('/api/roles')
+    .set('Accept', 'application/json')
+    .send(roles)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('UserLabels',async()=>{
+    const User = require('../../repository/User')
+    const user = await User.getUser('admin')
+    const userlabel = {
+      user_id : user.id,
+      label_name : 'test2'
+    }
+    const res = await request(app)
+    .delete('/api/userlabels')
+    .set('Accept', 'application/json')
+    .send(userlabel)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('StudyLabels',async()=>{
+    const studylabel = {
+      study_instance_uid : 'ABCDEFGH',
+      label_name : 'test2'
+    }
+    const res = await request(app)
+    .delete('/api/studylabels')
+    .set('Accept','application/json')
+    .send(studylabel)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('Labels',async()=>{
+    const label = {
+      label_name : 'test2'
+    }
+    const res = await request(app)
+    .delete('/api/labels')
+    .set('Accept','application/json')
+    .send(label)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('Endpoints',async()=>{
+    const endpoint = {
+      id : 1
+    }
+    const res = await request(app)
+    .delete('/api/endpoints')
+    .set('Accept','application/json')
+    .send(endpoint)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('SSHKeys',async()=>{
+    const sshkey = {
+      id : 1
+    }
+    const res = await request(app)
+    .delete('/api/keys')
+    .set('Accept','application/json')
+    .send(sshkey)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
   })
 })
