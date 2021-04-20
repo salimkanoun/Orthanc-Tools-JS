@@ -179,11 +179,14 @@ class Job {
         this._bullJob = bullJob;
         this._state = null;
         this.data = bullJob.data;
-        this._res = null
+        this._res = null;
+        this._progress = null;
     }
 
-    progress() {
-        return this._bullJob._progress;
+    async progress() {
+        if (this._progress !== null) return this._progress;
+        this._progress = await this._bullJob.progress();
+        return this._progress;
     }
 
     async getState() {
@@ -218,8 +221,8 @@ class BatchedJob extends Job {
         this.data = bullJob.data.jobs[i];
     }
 
-    progress() {
-        return super.progress()[this._i];
+    async progress() {
+        return (await super.progress())[this._i];
     }
 
     getState() {

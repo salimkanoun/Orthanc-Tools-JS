@@ -2,21 +2,25 @@ const Queue = require('../../adapter/bullAdapter');
 const joc = jasmine.objectContaining;
 
 describe('Testing Queue Adapter', function () {
-    describe('Testing Queue', function () {
 
-        let queue, queueNamed;
+    let queue, queueNamed;
 
-        beforeAll(() => {
-            queue = new Queue('integration-test', (jobs, done) => done(null, true));
-            queueNamed = new Queue("integration-test-named", {
-                "test": (jobs, done) => done(null, true),
-                "test2": (jobs, done) => done(null, true)
-            });
+    beforeAll(() => {
+        queue = new Queue('integration-test', async (jobs, done) => {
+            jobs.progress(100);
+            done(null, true)
         });
+        queueNamed = new Queue("integration-test-named", {
+            "test": (jobs, done) => done(null, true),
+            "test2": (jobs, done) => done(null, true)
+        });
+    });
+
+    describe('Testing Queue', function () {
 
         beforeEach(async () => {
             await queue.clean();
-        })
+        });
 
         describe('constructor', function () {
             it('should create a queue', function () {
@@ -175,7 +179,7 @@ describe('Testing Queue Adapter', function () {
                 await queue.addJobs([{data: {test: 'stuff4'}}, {data: {test: 'stuff5'}}, {data: {test: 'stuff6'}}]);
                 await queue.addJob({test: 'stuff7'});
 
-                await new Promise(resolve => setInterval(() => resolve(), 200));
+                await new Promise(resolve => setTimeout(() => resolve(), 200));
 
                 await queue.clean();
 
@@ -187,7 +191,46 @@ describe('Testing Queue Adapter', function () {
 
     });
 
-    describe('Testing Bull', function () {
+    describe('Testing Job', function () {
+        let job1;
+        let job2;
 
+        beforeAll(async () => {
+            queue.clean();
+            await queue.addJob({test: 'stuff'});
+            await queue.addJobs([{data: {test: 'stuff'}}]);
+            await new Promise(resolve => setTimeout(() => resolve(), 200));
+            [job1, job2] = await queue.getJobs();
+        });
+
+        describe('getState()', function () {
+            it('should return a valid state', async function () {
+                expect(Object.values(Queue.JOB_STATES)).toContain(await job1.getState());
+            });
+
+            it('should return a valid state', async function () {
+                expect(Object.values(Queue.JOB_STATES)).toContain(await job2.getState());
+            });
+        });
+
+        describe('progress()', function () {
+            it('should return the right progress', async function () {
+                expect(await job1.progress()).toEqual(100);
+            });
+
+            it('should return the right progress', async function () {
+                expect(await job2.progress()).toEqual(100);
+            });
+        });
+
+        describe('finished()', function () {
+            it('should return the right return value', async function () {
+                expect(await job1.finished()).toEqual(true);
+            });
+
+            it('should return the right return value', async function () {
+                expect(await job2.finished()).toEqual(true);
+            });
+        });
     });
 });
