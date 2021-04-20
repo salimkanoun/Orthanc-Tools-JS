@@ -10,7 +10,6 @@ const time = require('../../utils/time');
 
 let orthanc = new Orthanc();
 
-const JOBS_STATUS = ['completed', 'wait', 'active', 'delayed', 'failed'];
 const JOBS_TTL = 5;
 
 class RetrieveTask {
@@ -363,8 +362,8 @@ class RetrieveTask {
     }
 }
 
-let pauser;
-let resumer;
+let pauser = null;
+let resumer = null;
 
 async function setupRetrieveSchedule() {
     const optionsParameters = await Options.getOptions()
