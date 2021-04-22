@@ -7,7 +7,7 @@ const userlabel = {
         'Content-Type': 'application/json'
       }
     }
-    return fetch('/api/userlabels', getUsersLabelsOptions).then((answer) => {
+    return fetch('/api/users/labels', getUsersLabelsOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return answer.json()
     }).catch(error => {
@@ -15,34 +15,48 @@ const userlabel = {
     })
   },
 
-  createUserLabel(payload){
+  getUserLabels(id){
+    const getUserLabelsOptions={
+      method:'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }
+    return fetch('/api/users/'+id+'/labels', getUserLabelsOptions).then((answer) => {
+        if (!answer.ok) { throw answer }
+        return answer.json()
+    }).catch(error => {
+        throw error
+    })
+  },
+
+  createUserLabel(id,name){
     const createUserLabelOptions={
       method:'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload)
+      },
     }
 
-    return fetch('/api/userlabels', createUserLabelOptions).then((answer) => {
+    return fetch('/api/users/'+id+'/labels/'+name, createUserLabelOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return true
     })
     
   },
 
-  deleteUserLabel(payload){
+  deleteUserLabel(id,name){
     const deleteUserLabelOptions={
       method:'DELETE',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
     }
 
-    return fetch('/api/userlabels', deleteUserLabelOptions).then((answer) => {
+    return fetch('/api/users/'+id+'/labels/'+name, deleteUserLabelOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return true
     })

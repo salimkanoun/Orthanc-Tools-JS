@@ -15,23 +15,22 @@ const label = {
     })
   },
 
-  createLabels(payload){
+  createLabels(name){
     const createLabelsOptions = {
       method:'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
     }
 
-    return fetch('/api/labels', createLabelsOptions).then((answer) => {
+    return fetch('/api/labels/'+name, createLabelsOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return true
     })
   },
 
-  modifyLabels(payload){
+  modifyLabels(name,payload){
     const modifyLabelsOptions = {
       method:'PUT',
       headers: {
@@ -41,23 +40,22 @@ const label = {
       body: JSON.stringify(payload)
     }
 
-    return fetch('/api/labels', modifyLabelsOptions).then((answer) => {
+    return fetch('/api/labels/'+name, modifyLabelsOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return true
     })
   },
 
-  deleteLabels(payload){
+  deleteLabels(name){
     const deleteLabelsOptions = {
       method:'DELETE',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
     }
 
-    return fetch('/api/labels', deleteLabelsOptions).then((answer) => {
+    return fetch('/api/labels/'+name, deleteLabelsOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return true
     })
