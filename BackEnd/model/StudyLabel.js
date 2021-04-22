@@ -21,6 +21,13 @@ class StudyLabel{
     return StudyLabelRepo.delete(study_instance_uid,label_name)
   }
 
+  static async getStudiesByLabel(label_name){
+    return StudyLabelRepo.getStudiesByLabelName(label_name)
+  }
+
+  static async getLabelsByStudy(study_instance_uid){
+    return StudyLabelRepo.getLabelsbyStudyInstanceUID(study_instance_uid)
+  }
 }
 
 module.exports=StudyLabel

@@ -21,6 +21,10 @@ class UserLabel{
   static async getAll(){
     return UserLabelRepo.getAllUserLabel()
   }
+
+  static async getLabelsFromUserId(id){
+    return UserLabelRepo.getLabelsById(id)
+  }
 }
 
 module.exports = UserLabel

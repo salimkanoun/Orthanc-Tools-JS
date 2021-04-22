@@ -10,6 +10,13 @@ class UserLabel{
       }
     })
   }
+  static getLabelsById(id){
+    return db.UserLabel.findAll({
+      where:{
+        user_id:id
+      }
+    })
+  }
 
   static create(user_id,label_name){
     return db.UserLabel.create({

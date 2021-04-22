@@ -22,15 +22,44 @@ describe('GET/',()=>{
 
   it('StudyLabels',async ()=>{
     const res = await request(app)
-    .get('/api/studylabels')
+    .get('/api/studies/labels')
     .then((response)=>{
       expect(response.statusCode).toBe(200)
     })
   })
 
-  it('UserLabels',async ()=>{
+  it('StudyLabels by label',async ()=>{
     const res = await request(app)
-    .get('/api/userlabels')
+    .get('/api/studies/labels/test')
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('StudyLabels by Study',async ()=>{
+    const res = await request(app)
+    .get('/api/studies/ABCDEFGH/labels/')
+    .then((response)=>{
+      console.error(response)
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('UserLabels',async ()=>{
+    const route = '/api/users/labels'
+    const res = await request(app)
+    .get(route)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('UserLabels by User ID',async ()=>{
+    const User = require('../../repository/User')
+    const user= await User.getUser('admin')
+    const route = '/api/users/'+user.id+'/labels'
+    const res = await request(app)
+    .get(route)
     .then((response)=>{
       expect(response.statusCode).toBe(200)
     })
@@ -109,13 +138,10 @@ describe('GET/',()=>{
 describe('POST/',()=>{
   //app.use('/api',route)
   it('Labels',async()=>{
-    const label ={label_name: 'test'}
     const res = await request(app)
-    .post('/api/labels')
+    .post('/api/labels/test')
     .set('Accept', 'application/json')
-    .send(label)
     .then((response)=>{
-      
       expect(response.statusCode).toBe(201)
     })
   })
@@ -140,14 +166,9 @@ describe('POST/',()=>{
       await Label.create('test')
     }
 
-    const studylabel = {
-      study_instance_uid : 'ABCDEFGH',
-       label_name : 'test'
-    }
     const res = await request(app)
-    .post('/api/studylabels')
+    .post('/api/studies/ABCDEFGH/labels/test')
     .set('Accept', 'application/json')
-    .send(studylabel)
     .then((response)=>{
       expect(response.statusCode).toBe(201)
     })
@@ -161,19 +182,14 @@ describe('POST/',()=>{
     }
     const User = require('../../repository/User')
     const user= await User.getUser('admin')
-    
-    const userlabel = {
-      user_id : user.id,
-      label_name : 'test'
-    }
     const res = await request(app)
-    .post('/api/userlabels')
-    .send(userlabel)
+    .post('/api/users/'+user.id+'/labels/test')
     .set('Accept', 'application/json')
     .then((response)=>{
       expect(response.statusCode).toBe(201)
     })
   })
+  
 
   it('Certificates',async()=>{
     const certificate = {
@@ -199,7 +215,6 @@ describe('POST/',()=>{
     .set('Accept', 'application/json')
     .send(certificate)
     .then((response)=>{
-      console.error(response)
       expect(response.statusCode).toBe(201)
     })
   })
@@ -268,11 +283,10 @@ describe('POST/',()=>{
 describe('PUT/',()=>{
   it('Labels',async()=>{
     const label ={
-      label_name:'test',
-      new_label_name:'test2'
+      label_name:'test2'
     }
     const res = await request(app)
-    .put('/api/labels')
+    .put('/api/labels/test')
     .set('Accept', 'application/json')
     .send(label)
     .then((response)=>{
@@ -327,41 +341,28 @@ describe('DELETE/',()=>{
   it('UserLabels',async()=>{
     const User = require('../../repository/User')
     const user = await User.getUser('admin')
-    const userlabel = {
-      user_id : user.id,
-      label_name : 'test2'
-    }
+
     const res = await request(app)
-    .delete('/api/userlabels')
+    .delete('/api/users/'+user.id+'/labels/test2')
     .set('Accept', 'application/json')
-    .send(userlabel)
     .then((response)=>{
       expect(response.statusCode).toBe(200)
     })
   })
 
   it('StudyLabels',async()=>{
-    const studylabel = {
-      study_instance_uid : 'ABCDEFGH',
-      label_name : 'test2'
-    }
     const res = await request(app)
-    .delete('/api/studylabels')
+    .delete('/api/studies/ABCDEFGH/labels/test2')
     .set('Accept','application/json')
-    .send(studylabel)
     .then((response)=>{
       expect(response.statusCode).toBe(200)
     })
   })
 
   it('Labels',async()=>{
-    const label = {
-      label_name : 'test2'
-    }
     const res = await request(app)
-    .delete('/api/labels')
+    .delete('/api/labels/test2')
     .set('Accept','application/json')
-    .send(label)
     .then((response)=>{
       expect(response.statusCode).toBe(200)
     })

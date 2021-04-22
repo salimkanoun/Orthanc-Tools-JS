@@ -37,8 +37,8 @@ const {newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controlle
 const {getTasksOfType, validateRetrieve, flushTasks} = require('../controllers/task')
 
 const { getLabels,createLabel,modifyLabel,deleteLabel } = require('../controllers/label')
-const {getUsersLabels,createUserLabel,deleteUserLabel} = require('../controllers/userLabel')
-const {getStudiesLabels,createStudyLabel,deleteStudyLabel} = require('../controllers/studyLabel')
+const {getUsersLabels,createUserLabel,deleteUserLabel,getUserLabels} = require('../controllers/userLabel')
+const {getStudiesLabels,createStudyLabel,deleteStudyLabel,getStudiesLabel,getStudyLabels} = require('../controllers/studyLabel')
 
 // OrthancToolsJS Options routes
 adminRouter.get('/options', [userAuthMidelware, userAdminMidelware], getOptions)
@@ -143,18 +143,21 @@ adminRouter.post('/keys/upload/:id', [userAuthMidelware, userAdminMidelware], up
 */
 // Labels
 adminRouter.get('/labels',[userAuthMidelware, userAdminMidelware],getLabels)
-adminRouter.put('/labels',[userAuthMidelware, userAdminMidelware],modifyLabel)
-adminRouter.post('/labels',[userAuthMidelware, userAdminMidelware],createLabel)
-adminRouter.delete('/labels',[userAuthMidelware, userAdminMidelware],deleteLabel)
+adminRouter.put('/labels/:name',[userAuthMidelware, userAdminMidelware],modifyLabel)
+adminRouter.post('/labels/:name',[userAuthMidelware, userAdminMidelware],createLabel)
+adminRouter.delete('/labels/:name',[userAuthMidelware, userAdminMidelware],deleteLabel)
 
 //UserLabel
-adminRouter.get('/userlabels',[userAuthMidelware, userAdminMidelware],getUsersLabels)
-adminRouter.post('/userlabels',[userAuthMidelware, userAdminMidelware],createUserLabel)
-adminRouter.delete('/userlabels',[userAuthMidelware, userAdminMidelware],deleteUserLabel)
+adminRouter.get('/users/labels',[userAuthMidelware, userAdminMidelware],getUsersLabels)
+adminRouter.get('/users/:id/labels',[userAuthMidelware, userAdminMidelware],getUserLabels)
+adminRouter.post('/users/:id/labels/:name',[userAuthMidelware, userAdminMidelware],createUserLabel)
+adminRouter.delete('/users/:id/labels/:name',[userAuthMidelware, userAdminMidelware],deleteUserLabel)
 
 //StudyLabel
-adminRouter.get('/studylabels',[userAuthMidelware, userAdminMidelware],getStudiesLabels)
-adminRouter.post('/studylabels',[userAuthMidelware, userAdminMidelware],createStudyLabel)
-adminRouter.delete('/studylabels',[userAuthMidelware, userAdminMidelware],deleteStudyLabel)
+adminRouter.get('/studies/labels',[userAuthMidelware, userAdminMidelware],getStudiesLabels)
+adminRouter.get('/studies/labels/:name',[userAuthMidelware, userAdminMidelware],getStudiesLabel)
+adminRouter.get('/studies/:uid/labels/',[userAuthMidelware, userAdminMidelware],getStudyLabels)
+adminRouter.post('/studies/:uid/labels/:name',[userAuthMidelware, userAdminMidelware],createStudyLabel)
+adminRouter.delete('/studies/:uid/labels/:name',[userAuthMidelware, userAdminMidelware],deleteStudyLabel)
 
 module.exports = adminRouter

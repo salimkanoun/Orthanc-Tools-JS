@@ -21,6 +21,22 @@ class StudyLabel{
   static async getAllStudyLabel(){
     return db.StudyLabel.findAll()
   }
+  
+  static async getStudiesByLabelName(label_name){
+    return db.StudyLabel.findAll({
+      where:{
+        label_name:label_name
+      }
+    })
+  }
+
+  static async getLabelsbyStudyInstanceUID(study_instance_uid){
+    return db.StudyLabel.findAll({
+      where:{
+        study_instance_uid:study_instance_uid
+      }
+    })
+  }
 
   static async delete(study_instance_uid,label_name){
     const study_label = await StudyLabel.getStudyLabel(study_instance_uid,label_name)
