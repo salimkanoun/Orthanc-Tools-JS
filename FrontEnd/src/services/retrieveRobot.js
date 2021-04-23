@@ -18,7 +18,7 @@ const retrieveRobot = {
             if (!answer.ok) {
                 throw answer
             }
-            return true
+            return answer.text();
         }).catch((error) => {
             throw error
         })
@@ -36,7 +36,9 @@ const retrieveRobot = {
         }
 
         return fetch("/api/tasks/retrieve/" + id + "/validate", validateRobotOption).then((answer) => {
-            if (!answer.ok) { throw answer }
+            if (!answer.ok) {
+                throw answer
+            }
             return (answer.json())
         })
     },
@@ -47,7 +49,7 @@ const retrieveRobot = {
             method: "DELETE",
         }
 
-        return fetch("/api/tasks/"+id, deleteRobotOption).catch((error) => {
+        return fetch("/api/tasks/" + id, deleteRobotOption).catch((error) => {
             throw error
         })
     },
@@ -74,7 +76,9 @@ const retrieveRobot = {
         }
 
         return fetch("/api/tasks/type/retrieve", getAllRobotsDetails).then((answer) => {
-            if (!answer.ok) { throw answer }
+            if (!answer.ok) {
+                throw answer
+            }
             return (answer.json())
         })
     },
@@ -90,7 +94,9 @@ const retrieveRobot = {
         }
 
         return fetch("/api/tasks/retrieve/" + id + "/" + item, deleteRobotItemOption).then((answer) => {
-            if (!answer.ok) { throw answer }
+            if (!answer.ok) {
+                throw answer
+            }
             return;
         }).catch((error) => {
             throw error
@@ -98,13 +104,15 @@ const retrieveRobot = {
 
     },
 
-    flush(){
+    flush() {
         const flushRetrRobotsOption = {
             method: 'DELETE'
         }
 
-        return fetch('/api/tasks/type/retrieve/flush', flushRetrRobotsOption ).then(answer => {
-            if (!answer.ok) {throw answer}
+        return fetch('/api/tasks/type/retrieve/flush', flushRetrRobotsOption).then(answer => {
+            if (!answer.ok) {
+                throw answer
+            }
             return true
         }).catch(error => {
             throw error

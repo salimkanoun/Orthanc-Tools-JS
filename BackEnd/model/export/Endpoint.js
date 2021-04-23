@@ -5,7 +5,6 @@ const {OTJSBadRequestException} = require('../../Exceptions/OTJSErrors');
 const crypto = require('../../adapter/cryptoAdapter');
 
 
-
 class Endpoint {
     constructor(params) {
         Endpoint._checkParams(params)
@@ -120,8 +119,8 @@ class Endpoint {
         }
     }
 
-    async sftpOptionFormat(){
-        
+    async sftpOptionFormat() {
+
         if (this.sshKey) {
             let keyObject = await this.getSshKey();
             return {
@@ -158,10 +157,10 @@ class Endpoint {
     static _encryptIdentifiants(username, password) {
         username = Buffer.from(username, 'utf8').toString('hex')
         password = Buffer.from(password, 'utf8').toString('hex')
-        return crypto.encryptText(username+':'+password)
+        return crypto.encryptText(username + ':' + password)
     }
 
-    static _decryptIdentifiants(ids){
+    static _decryptIdentifiants(ids) {
         let usernamePassword = crypto.decryptText(ids).split(':')
         let username = decodeURIComponent(usernamePassword[0].replace(/\s+/g, '').replace(/[0-9a-f]{2}/g, '%$&'))
         let password = decodeURIComponent(usernamePassword[1].replace(/\s+/g, '').replace(/[0-9a-f]{2}/g, '%$&'))
