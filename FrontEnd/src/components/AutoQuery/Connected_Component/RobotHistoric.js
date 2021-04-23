@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
-import { Link } from 'react-router-dom'
-import { toast } from 'react-toastify';
+import {Link} from 'react-router-dom'
+import {toast} from 'react-toastify';
 import apis from '../../../services/apis';
 import task from '../../../services/task';
 
@@ -27,7 +27,7 @@ export default class RobotJistoric extends Component {
         dataField: 'details',
         text: 'Show Details',
         formatter: (cell, row, rowIndex, parentComponent) => {
-            return <Link className='nav-link btn btn-info' to={'/robot/' + row.id} > Details </Link>
+            return <Link className='nav-link btn btn-info' to={'/robot/' + row.id}> Details </Link>
         }
     }, {
         dataField: 'remove',
@@ -36,7 +36,9 @@ export default class RobotJistoric extends Component {
         formatter: (cell, row, rowIndex, parentComponent) => {
             return (
                 <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={() => parentComponent.deleteJobHandler(row.id, parentComponent.refreshHandler)} value="Remove Job" />
+                    <input type="button" className='btn btn-danger'
+                           onClick={() => parentComponent.deleteJobHandler(row.id, parentComponent.refreshHandler)}
+                           value="Remove Job"/>
                 </div>
             )
         }
@@ -61,44 +63,47 @@ export default class RobotJistoric extends Component {
     }
 
     deleteJobHandler = async (id, refreshHandler) => {
-        try{
+        try {
             await apis.retrieveRobot.deleteRobot(id)
             refreshHandler()
-        }catch(error){
-            toast.error(error.statusText)
+        } catch (error) {
+            toast.error(error.statusText + ':' + error.message)
         }
     }
 
     refreshHandler = () => {
         apis.task.getTaskOfUser(this.props.username, 'retrieve')
-                .then(async taksIds => await Promise.all(taksIds.map(id=>task.getTask(id))))
-                .then((answerData) => {
+            .then(async taksIds => await Promise.all(taksIds.map(id => task.getTask(id))))
+            .then((answerData) => {
 
-            let rows = []
+                let rows = []
 
-            answerData.forEach(robotJob => {
-                rows.push({
-                    id: robotJob.id,
-                    name: robotJob.details.projectName,
-                    username: robotJob.creator,
-                    progress: (robotJob.progress.retrieve+robotJob.progress.validation)/2,
-                    state: robotJob.state,
-                    queriesNb: robotJob.details.items.length
+                answerData.forEach(robotJob => {
+                    rows.push({
+                        id: robotJob.id,
+                        name: robotJob.details.projectName,
+                        username: robotJob.creator,
+                        progress: (robotJob.progress.retrieve + robotJob.progress.validation) / 2,
+                        state: robotJob.state,
+                        queriesNb: robotJob.details.items.length
+                    })
+                });
+
+                this.setState({
+                    rows: rows
                 })
-            });
 
-            this.setState({
-                rows: rows
-            })
-
-        }).catch(error => { toast.error(error.statusText) })
+            }).catch(error => {
+            toast.error(error.statusText + '' + error.message)
+        })
     }
 
     render = () => {
         return (
             <>
                 <h2 className="card-title">Retrieve Robots : </h2>
-                <BootstrapTable keyField="username" striped={true} data={this.state.rows} columns={this.columns} wrapperClasses='table-responsive' />
+                <BootstrapTable keyField="username" striped={true} data={this.state.rows} columns={this.columns}
+                                wrapperClasses='table-responsive'/>
             </>
         )
     }
