@@ -14,7 +14,7 @@ class UserLabel{
     return db.UserLabel.findAll({
       where:{
         user_id:id
-      }
+      },attributes:['label_name']
     })
   }
 
