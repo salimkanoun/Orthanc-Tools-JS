@@ -396,3 +396,7 @@ code {
 button > p {
     margin: 0;
 }
+
+.table-responsive {
+    overflow-x: visible;
+}
