@@ -1,35 +1,23 @@
-const { OTJSForbiddenException } = require("../Exceptions/OTJSErrors");
 const Certificate = require("../model/export/Certificate");
 
-const newCertificate = async function(req, res){
+const newCertificate = async function (req, res) {
     let cert = await Certificate.createCertificate(req.body.label)
-    res.send(cert.id.toString());
+    res.send(cert.toString());
 }
 
-const allCertificates = async function(req, res){
-    let certificates = await Certificate.getAllCertificate()
+const allCertificates = async function (req, res) {
+    let certificates = await Certificate.getAllCertificates()
     res.send(certificates)
 }
 
-//SK Pas utilisee ? 
-const updateCertificate = async function(req,res){
-    await Certificate.updateCertificate(req.params.id, req.body.label, req.body.path)
-    res.sendStatus(200)
-}
-
-const uploadCertificate = async function(req,res){
-    let certificate = await Certificate.getFromId(req.params.id)
-    if( certificate.path ){
-        throw OTJSForbiddenException('Certificate already existing, delete first')
-    }
-    let path = Certificate.setCertContent(req.body)
-    Certificate.updateCertificate(certificate.id, certificate.label,path);
+const uploadCertificate = async function (req, res) {
+    await Certificate.setCertContent(req.params.id, req.body);
     res.sendStatus(201)
 }
 
-const removeCertificate = async function(req,res){
+const removeCertificate = async function (req, res) {
     await Certificate.deleteCertificate(req.params.id)
     res.sendStatus(200)
 }
 
-module.exports = {newCertificate, allCertificates, updateCertificate, uploadCertificate, removeCertificate}
+module.exports = {newCertificate, allCertificates, uploadCertificate, removeCertificate}
