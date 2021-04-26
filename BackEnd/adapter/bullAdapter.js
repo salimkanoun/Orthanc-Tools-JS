@@ -39,6 +39,10 @@ class Queue extends event.EventEmitter {
             this.emit('completed', job, result);
         });
         this._queue.on('error', (err) => {
+            if (err.code === "ECONNREFUSED") {
+                console.error(`Couldn't connect to the redis server at ${err.address}:${err.port}. Task features will be disabled.`);
+                return;
+            }
             this.emit('error', err);
         });
         queues.push(this);
