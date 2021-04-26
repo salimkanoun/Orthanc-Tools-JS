@@ -1,5 +1,4 @@
-
-const bcrypt = require('bcryptjs')
+const crypto = require('../../adapter/cryptoAdapter')
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -58,7 +57,7 @@ module.exports = {
         },
         name: 'roles_name_fkey',
       })
-    }).then( () => { return bcrypt.hash('admin', 10) 
+    }).then( () => { return crypto.hash('admin',16) 
     }).then((hash) => {
       queryInterface.bulkInsert('Users', [{
         username: 'admin',

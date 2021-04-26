@@ -10,7 +10,7 @@
 
 Rewriting of Orthanc Tools in React and NodeJS.
 
-Orthanc Tools JS is mainly a React Frontend for the powerfull Orthanc APIs but also include a Backend for authentication purpose, role management and automation.
+Orthanc Tools JS is mainly a React Frontend for the powerfull Orthanc APIs but also include a Backend for authentication purpose, role management and automations.
 
 Warning : Orthanc Tools JS is still in beta version, this software is not release ready
 
@@ -19,8 +19,8 @@ Current Features :
   - Search ressources in Orthanc
   - Import DICOM file into Orthanc using drag and drop
   - Batch Anonymizaion
-  - Batch Export Local (local ZIP, AET)
-  - Batch Export Remove (Orthanc Peers, FTP, SFTP, Webdav)
+  - Batch Export Local (local, ZIP, AET)
+  - Batch Export to Remote endpoints (Orthanc Peers, FTP, SFTP, Webdav)
   - Batch Delete
   - Manual Query and Retrieve
   - Dicom Tag Edition
@@ -30,5 +30,9 @@ Current Features :
   
 Documentation : https://github.com/salimkanoun/Orthanc-Tools-JS/blob/master/Documentation/Orthanc-Tools-JS-Documentation.pdf
 
+Demo Server : https://orthanctoolsjs.ddns.net/
+login : admin
+password : admin
+
 Roadmap : 
-Monitoring  : Tag collection (in Elastic Search), Prefecthing, AutoRouting
+Monitoring  : Tag collection (in Elastic Search), Prefecthing, AutoRouting, Dicom ressource labelling, Dicom creation (image or pdf)

@@ -1,5 +1,26 @@
-const Options = require('../../model/Options')
 
+const Option = require('../../repository/Option')
+
+describe('Testing Options Table',()=>{
+    it('should get one authentification mode',async()=>{
+        let schedule = await Option.getOneAuthenticationMode()
+        expect(schedule).not.toBeNull()
+        expect(schedule.dataValues.ldap).toBeFalsy()
+    })
+
+    it('should give a selected options',async()=>{
+        let schedule = await Option.getOptionById(1)
+        expect(schedule).not.toBeNull()
+    })
+
+    it('should not give an Options',async ()=>{
+        let schedule = await Option.getOptionById(14156654) // -> random big id
+        expect(schedule).toBeNull()
+    })
+})
+
+/* TESTING THE MODEL
+const Options = require('../../model/Options')
 describe('Testing Options', () =>{
 
     it('should be 22 00 by defaults', async () => {
@@ -26,4 +47,4 @@ describe('Testing Options', () =>{
             orthancPassword : 'salim'
         })
     })
-})
+})*/
