@@ -40,7 +40,6 @@ describe('GET/',()=>{
     const res = await request(app)
     .get('/api/studies/ABCDEFGH/labels/')
     .then((response)=>{
-      console.error(response)
       expect(response.statusCode).toBe(200)
     })
   })
