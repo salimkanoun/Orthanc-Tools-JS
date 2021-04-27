@@ -157,7 +157,7 @@ adminRouter.delete('/users/:id/labels/:name',[userAuthMidelware, userAdminMidelw
 adminRouter.get('/studies/labels',[userAuthMidelware, userAdminMidelware],getStudiesLabels)
 adminRouter.get('/studies/labels/:name',[userAuthMidelware, userAdminMidelware],getStudiesLabel)
 adminRouter.get('/studies/:uid/labels/',[userAuthMidelware, userAdminMidelware],getStudyLabels)
-adminRouter.post('/studies/:uid/labels/:name',[userAuthMidelware, userAdminMidelware],createStudyLabel)
+adminRouter.post('/patient/:id/studies/:uid/labels/:name',[userAuthMidelware, userAdminMidelware],createStudyLabel)
 adminRouter.delete('/studies/:uid/labels/:name',[userAuthMidelware, userAdminMidelware],deleteStudyLabel)
 
 module.exports = adminRouter

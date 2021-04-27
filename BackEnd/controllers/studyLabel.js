@@ -1,7 +1,7 @@
 var StudyLabel = require('../model/StudyLabel')
 
 const createStudyLabel = async function(req,res){
-  await StudyLabel.createStudyLabel(req.params.uid,req.params.name)
+  await StudyLabel.createStudyLabel(req.params.uid,req.params.name,req.params.id)
   res.sendStatus(201)
 }
 
