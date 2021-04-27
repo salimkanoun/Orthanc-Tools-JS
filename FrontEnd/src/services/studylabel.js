@@ -47,7 +47,7 @@ const studylabel = {
     })
   },
 
-  createStudyLabel(study_instance_uid,name){
+  createStudyLabel(study_instance_uid,label_name,patient_id){
     const createStudyLabelOptions={
       method:'POST',
       headers: {
@@ -56,7 +56,7 @@ const studylabel = {
       },
     }
 
-    return fetch('/api/studies/'+study_instance_uid+'/labels/'+name, createStudyLabelOptions).then((answer) => {
+    return fetch('/api/patient/'+patient_id+'/studies/'+study_instance_uid+'/labels/'+label_name, createStudyLabelOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return true
     })

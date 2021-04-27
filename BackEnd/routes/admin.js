@@ -36,21 +36,9 @@ const {newCertificate, allCertificates, removeCertificate, uploadCertificate} = 
 const {newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
 const {getTasksOfType, validateRetrieve, flushTasks} = require('../controllers/task')
 
-const {getLabels, createLabel, modifyLabel, deleteLabel} = require('../controllers/label')
-const {
-    getUsersLabels,
-    createUserLabel,
-    deleteUserLabel,
-    getUserLabels,
-    getLabelUsers
-} = require('../controllers/userLabel')
-const {
-    getStudiesLabels,
-    createStudyLabel,
-    deleteStudyLabel,
-    getStudiesLabel,
-    getStudyLabels
-} = require('../controllers/studyLabel')
+const { getLabels,createLabel,modifyLabel,deleteLabel } = require('../controllers/label')
+const {getUsersLabels,createUserLabel,deleteUserLabel,getUserLabels} = require('../controllers/userLabel')
+const {getStudiesLabels,createStudyLabel,deleteStudyLabel,getStudiesLabel,getStudyLabels} = require('../controllers/studyLabel')
 
 // OrthancToolsJS Options routes
 adminRouter.get('/options', [userAuthMidelware, userAdminMidelware], getOptions)
@@ -170,7 +158,7 @@ adminRouter.delete('/users/:id/labels/:name', [userAuthMidelware, userAdminMidel
 adminRouter.get('/studies/labels', [userAuthMidelware, userAdminMidelware], getStudiesLabels)
 adminRouter.get('/studies/labels/:name', [userAuthMidelware, userAdminMidelware], getStudiesLabel)
 adminRouter.get('/studies/:uid/labels/', [userAuthMidelware, userAdminMidelware], getStudyLabels)
-adminRouter.post('/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], createStudyLabel)
+adminRouter.post('/patient/:id/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], createStudyLabel)
 adminRouter.delete('/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], deleteStudyLabel)
 
 module.exports = adminRouter
