@@ -30,20 +30,7 @@ export default class LabelDropdown extends Component {
         })
     }
 
-    handleCreateSubmit = () => {
-        if (this.state.createLabel.length < 1) return;
-        let labels = this.state.labels;
-        labels.push(this.state.createLabel);
-        return apis.label.createLabels(this.state.createLabel).then(() => {
-            let fn = this.handleSetLabel(this.state.createLabel);
-            this.setState({
-                labels,
-                createLabel: ''
-            });
-            return fn();
-        }).then(() => this._refreshStudyLabel());
-    }
-
+    
     handleOpenClick = () => {
         return this._refreshStudyLabel();
     }

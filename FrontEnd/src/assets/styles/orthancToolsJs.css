@@ -378,6 +378,46 @@ code {
     width: 100%;
 }
 
+.form-control.form-control-search-select {
+    padding: 0;
+}
+
+.form-control.form-control-search-select > input {
+    margin: -1px;
+    border: 1px solid #ced4da;;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    border-radius: .25rem;
+}
+
+.form-control.form-control-search-select:not(:first-child) > input {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.form-control.form-control-search-select:not(:last-child) > input {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.form-control.form-control-search-select > input:focus-visible {
+    margin: -1px;
+    border: 2px solid #80bdff;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
+}
+
+.form-control.form-control-search-select > div {
+    background-color: white;
+    border: 1px solid #ced4da;
+    margin-top: -4px;
+    margin-left: -1px;
+    margin-right: -1px;
+    border-radius: 0 0 4px 4px;
+}
+
 .label-dropdown-item:first-child {
     border-bottom: 1px solid lightgrey;
 }
