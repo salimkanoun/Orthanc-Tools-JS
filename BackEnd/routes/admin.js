@@ -36,9 +36,21 @@ const {newCertificate, allCertificates, removeCertificate, uploadCertificate} = 
 const {newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
 const {getTasksOfType, validateRetrieve, flushTasks} = require('../controllers/task')
 
-const { getLabels,createLabel,modifyLabel,deleteLabel } = require('../controllers/label')
-const {getUsersLabels,createUserLabel,deleteUserLabel,getUserLabels} = require('../controllers/userLabel')
-const {getStudiesLabels,createStudyLabel,deleteStudyLabel,getStudiesLabel,getStudyLabels} = require('../controllers/studyLabel')
+const {getLabels, createLabel, modifyLabel, deleteLabel} = require('../controllers/label')
+const {
+    getUsersLabels,
+    createUserLabel,
+    deleteUserLabel,
+    getUserLabels,
+    getLabelUsers
+} = require('../controllers/userLabel')
+const {
+    getStudiesLabels,
+    createStudyLabel,
+    deleteStudyLabel,
+    getStudiesLabel,
+    getStudyLabels
+} = require('../controllers/studyLabel')
 
 // OrthancToolsJS Options routes
 adminRouter.get('/options', [userAuthMidelware, userAdminMidelware], getOptions)

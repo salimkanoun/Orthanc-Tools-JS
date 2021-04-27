@@ -30,7 +30,7 @@ export default class LabelDropdown extends Component {
         })
     }
 
-    
+
     handleOpenClick = () => {
         return this._refreshStudyLabel();
     }
@@ -39,7 +39,7 @@ export default class LabelDropdown extends Component {
         let studies = {}
         await Promise.all(this.props.selectedStudiesGetter().map(study => apis.studylabel.getStudyLabels(study.ID)
             .then(labels => {
-                studies[study.ID] = labels.map(label => label.label_name);
+                studies[study.ID + ':' + study.ParentPatient] = labels.map(label => label.label_name);
             })))
         this.setState({studies});
     }
@@ -50,12 +50,12 @@ export default class LabelDropdown extends Component {
             let v = Object.entries(this.state.studies).length;
             if (count !== v) {
                 await Promise.all(Object.entries(this.state.studies)
-                    .map(([study, labels]) => apis.studylabel.createStudyLabel(study, label).catch(err => {
+                    .map(([study, labels]) => apis.studylabel.createStudyLabel(study.split(':')[0], label, study.split(':')[1]).catch(err => {
                         if (err.status !== 409) throw err;
                     })));
             } else {
                 await Promise.all(Object.entries(this.state.studies)
-                    .map(([study, labels]) => apis.studylabel.deleteStudyLabel(study, label)));
+                    .map(([study, labels]) => apis.studylabel.deleteStudyLabel(study.split(':')[0], label)));
             }
         }
     }
