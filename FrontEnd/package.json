@@ -28,12 +28,14 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.2",
     "react-select": "^4.1.0",
+    "react-table": "^7.7.0",
     "react-toastify": "^7.0.3",
     "react-toggle": "^4.1.1",
     "react-tooltip": "^4.2.13",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "streamsaver": "^2.0.5",
+    "styled-components": "^5.2.3",
     "web-streams-polyfill": "^3.0.2"
   },
   "scripts": {

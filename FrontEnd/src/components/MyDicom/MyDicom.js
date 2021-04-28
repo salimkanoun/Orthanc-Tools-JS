@@ -3,6 +3,8 @@ import apis from '../../services/apis'
 import { connect } from 'react-redux'
 import SHA1 from 'crypto-js/sha1'
 import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy'
+import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
+import TableMyDicomSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeries'
 
 class MyDicom extends Component{
   state = {
@@ -67,6 +69,8 @@ class MyDicom extends Component{
 
   handleClick = async (e) => {
     var label = e.target.name
+    //reset all buttons to blue (primary)
+    //e.target.className='btn btn-success'
     var studies = await this.getStudiesByLabel(label)
     var studies_tab = []
 
@@ -74,7 +78,16 @@ class MyDicom extends Component{
       let study = studies[i]
       var orthancID = this._getOrthancStudyID(study.patient_id,study.study_instance_uid)
       //search for infos about this orthancID and save them with this.state.studies ?
-      studies_tab.push('A')
+      studies_tab.push(
+      {
+        StudyOrthancID:'testStudyOrthancID'+i,
+        StudyInstanceUID:'testStudyInstanceUID'+i,
+        PatientID:'testPatientID'+i,
+        PatientName:'testPatientName'+i,
+        StudyDate:'testStudyDate'+i,
+        StudyDescription:'testStudyDescription'+i,
+        AccessionNumber:'testAccessionNumber'+i,
+      })
       //studies_tab.push(await apis.content.getStudiesDetails(orthancID)) 
     }
 
@@ -100,10 +113,10 @@ class MyDicom extends Component{
             <button name={label.label_name} key={label.label_name} type='button' className='btn btn-primary' onClick={this.handleClick}> {label.label_name} </button>
           ))}
         </div>
-        
-        <div className='jumbotron' name='studies'>
-          Use 'React Table' to make this new table and replace 'bootstrap-react', make it in an other component and pass the data with props
-          <TableStudy name='study table' data={this.state.studies} {...this.props} />
+
+        <div className='jumbotron' name='studies using react table'>
+          <TableMyDicomPatientsStudies tableData={this.state.studies} />
+          <TableMyDicomSeries tableData=''/>
         </div>
       </div>
     )
