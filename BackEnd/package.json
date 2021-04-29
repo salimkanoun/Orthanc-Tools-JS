@@ -26,6 +26,7 @@
     "activedirectory2": "^2.1.0",
     "basic-ftp": "^4.6.6",
     "bcryptjs": "^2.4.3",
+    "cross-env": "^7.0.3",
     "body-parser": "^1.19.0",
     "bull": "^3.22.0",
     "cookie-parser": "^1.4.5",
@@ -67,7 +68,6 @@
   },
   "devDependencies": {
     "cors": "^2.8.5",
-    "cross-env": "^7.0.3",
     "electron-prebuilt": "^1.4.13",
     "electron-rebuild": "^2.3.5",
     "jasmine": "^3.7.0",
