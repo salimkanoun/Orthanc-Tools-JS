@@ -7,7 +7,6 @@ var express = require('express')
 var morgan = require('morgan')
 var path = require('path')
 var cookieParser = require('cookie-parser')
-var bodyParser = require('body-parser')
 
 var apisRouter = require('./routes/index')
 var adminRouter = require('./routes/admin')
@@ -21,8 +20,9 @@ var autoStartMonitoring = require('./model/monitoring/AutoStartMonitoring')
 const OTJSError = require('./Exceptions/OTJSError')
 
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
-app.use(bodyParser.json({ limit: '10mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json({ limit: '10mb' }))
+
 app.use(cookieParser())
 
 var unless = function (path, middleware) {
@@ -78,6 +78,7 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
+
   if (req.app.get('env') === 'development') {
     console.error(err)
   }
