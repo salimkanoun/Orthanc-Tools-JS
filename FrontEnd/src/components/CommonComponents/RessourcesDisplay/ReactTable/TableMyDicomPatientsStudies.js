@@ -1,16 +1,31 @@
 import React from 'react'
-import { useTable} from 'react-table'
+import { useTable,useFilters} from 'react-table'
 import ActionBouton from '../ActionBouton'
 import BTable from 'react-bootstrap/Table'
-    
 
-// A simple way to support a renderRowSubComponent is to make a render prop
-// This is NOT part of the React Table API, it's merely a rendering
-// option we are creating for ourselves in our table renderer
-function App({tableData}) {
-  if(tableData==null){
-    tableData=[]
-  }
+function ColumnFilter({
+  column: { filterValue, setFilter },
+}) {
+  return (
+    <input
+      value={filterValue || ''}
+      onChange={e => {
+        setFilter(e.target.value.replace(' ','') || undefined) // Set undefined to remove the filter entirely
+      }}
+    />
+  )
+}
+
+
+function App({tableData},rowEventStudies) {
+
+  const defaultColumn = React.useMemo(
+    () => ({
+      Filter: ColumnFilter,
+    }),
+    []
+  )  
+
   const columns = React.useMemo(
     () => [
       {
@@ -34,21 +49,24 @@ function App({tableData}) {
       {
         Header: 'Study Date',
         accessor:'StudyDate',
+        disableFilters:true
       },
       {
         Header: 'Description',
-        accessor: 'StudyDescription'
+        accessor: 'StudyDescription',
+        disableFilters:true
       },
       {
         Header: 'Accession number',
-        accessor: 'AccessionNumber'
+        accessor: 'AccessionNumber',
+        disableFilters:true
       },
       {
         Header: 'Action',
         Cell:(row)=>{
           return(
           <span>
-            <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} row={row} />
+            <ActionBouton level='studies' orthancID={row.cell.row.values.StudyOrthancID} StudyInstanceUID={row.cell.row.values.StudyInstanceUID} row={row} />
           </span>
           )
         }
@@ -66,15 +84,16 @@ function App({tableData}) {
     {
       columns,
       data:tableData,
+      defaultColumn,
       initialState: {
         hiddenColumns: columns.map(column => {
             if (column.show === false) return column.accessor || column.id;
         })
     },},
+    useFilters,
   )
   return (
     <>
-    
       <BTable striped bordered responsive {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
@@ -91,9 +110,8 @@ function App({tableData}) {
           {rows.map((row, i) => {
             prepareRow(row)
             return (
-              // Use a React.Fragment here so the table markup is still valid
               <React.Fragment key={row.getRowProps().key}>
-                <tr>
+                <tr onClick={() => console.log(row)}>
                   {row.cells.map(cell => {
                     return (
                       <td {...cell.getCellProps()}>{cell.render('Cell')}</td>

@@ -2,21 +2,22 @@ import React, { Component } from 'react'
 import apis from '../../services/apis'
 import { connect } from 'react-redux'
 import SHA1 from 'crypto-js/sha1'
-import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy'
 import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
-import TableMyDicomSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeries'
+import TableMyDicomSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeriesFillFromParent'
 
 class MyDicom extends Component{
   state = {
     user:null,
     labels:null,
     username:this.props.username,
-    studies:[]
+    studies:[],
+    currentStudyID:null
   }
 
-  constructor(props){
-    super(props)
-    this.initializeState()
+  async componentDidMount(){
+    try{
+      await this.initializeState()
+    }catch(err){}
   }
 
   getUser = async () => {
@@ -97,7 +98,12 @@ class MyDicom extends Component{
     this.render()
   }
 
-
+  rowEventsStudies = {
+    onClick: (e,row) => {
+      this.setState({ currentSelectedStudyId: row.values.StudyOrthancID})
+      console.log('I\'m in')
+    }
+  }
 
   render = () => {
     var labels  = []
@@ -115,8 +121,12 @@ class MyDicom extends Component{
         </div>
 
         <div className='jumbotron' name='studies using react table'>
-          <TableMyDicomPatientsStudies tableData={this.state.studies} />
-          <TableMyDicomSeries tableData=''/>
+          <TableMyDicomPatientsStudies 
+            tableData={this.state.studies}
+            rowEventsStudies={this.rowEventsStudies}
+          />
+          <TableMyDicomSeriesFillFromParent 
+            studyID={this.state.currentStudyID} />
         </div>
       </div>
     )
