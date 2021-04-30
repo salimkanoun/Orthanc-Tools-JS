@@ -198,7 +198,7 @@ class AnonTask {
         let item = job.data.item
 
         //Requesting orthanc API to anonymize a study
-        let anonAnswer = await orthanc.makeAnon('studies', item.orthancStudyID, item.anonProfile, item.newAccessionNumber, item.newPatientID, item.newPatientName, item.newStudyDescription, false);
+        let anonAnswer = await orthanc.makeAnon('studies', item.orthancStudyID, item.profile, item.newAccessionNumber, item.newPatientID, item.newPatientName, item.newStudyDescription, false);
 
         //Monitor orthanc job
         orthanc.monitorJob(anonAnswer.Path, (response) => {
@@ -206,13 +206,13 @@ class AnonTask {
         }, JOBS_PROGRESS_INTERVAL).then(async (answer) => {
             if (answer.Content.PatientID !== undefined) {
                 //If default, remove the secondary capture SOPClassUID
-                if (item.anonProfile === 'Default') {
+                if (item.profile === 'Default') {
                     let anonymizedStudyDetails = await orthanc.getOrthancDetails('studies', answer.Content.ID)
                     for (let seriesOrthancID of anonymizedStudyDetails['Series']) {
                         let seriesDetails = await orthanc.getOrthancDetails('series', seriesOrthancID)
                         let firstInstanceID = seriesDetails['Instances'][0]
                         let sopClassUID = await orthanc.getSopClassUID(firstInstanceID)
-                        if (OrthancQueue.isSecondaryCapture(sopClassUID)) {
+                        if (AnonTask.isSecondaryCapture(sopClassUID)) {
                             await orthanc.deleteFromOrthanc('series', seriesOrthancID)
                         }
                     }
@@ -227,6 +227,28 @@ class AnonTask {
             console.error(err);
             done(err);
         })
+    }
+
+    static isSecondaryCapture(sopClassUid) {
+
+        let secondaryCapturySopClass = [
+            "1.2.840.10008.5.1.4.1.1.7",
+            "1.2.840.10008.5.1.4.1.1.7.1",
+            "1.2.840.10008.5.1.4.1.1.7.2",
+            "1.2.840.10008.5.1.4.1.1.7.3",
+            "1.2.840.10008.5.1.4.1.1.7.4",
+            "1.2.840.10008.5.1.4.1.1.88.11",
+            "1.2.840.10008.5.1.4.1.1.88.22",
+            "1.2.840.10008.5.1.4.1.1.88.33",
+            "1.2.840.10008.5.1.4.1.1.88.40",
+            "1.2.840.10008.5.1.4.1.1.88.50",
+            "1.2.840.10008.5.1.4.1.1.88.59",
+            "1.2.840.10008.5.1.4.1.1.88.65",
+            "1.2.840.10008.5.1.4.1.1.88.67"
+        ]
+
+        return secondaryCapturySopClass.includes(sopClassUid)
+
     }
 }
 
