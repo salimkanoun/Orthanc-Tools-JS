@@ -8,10 +8,12 @@ import TableMyDicomSeriesFillFromParent from '../CommonComponents/RessourcesDisp
 class MyDicom extends Component{
   state = {
     user:null,
-    labels:null,
+    labels:[],
     username:this.props.username,
     studies:[],
-    currentStudyID:null
+    currentStudyID:null,
+    currentLabel:null,
+    selectedRows:[]
   }
 
   async componentDidMount(){
@@ -70,13 +72,14 @@ class MyDicom extends Component{
 
   handleClick = async (e) => {
     var label = e.target.name
+    this.setState({currentLabel:label})
     //reset all buttons to blue (primary)
     //e.target.className='btn btn-success'
     var studies = await this.getStudiesByLabel(label)
     var studies_tab = []
 
     for(var i = 0;i<studies.length;i++){
-      let study = studies[i]
+      var study = studies[i]
       var orthancID = this._getOrthancStudyID(study.patient_id,study.study_instance_uid)
       //search for infos about this orthancID and save them with this.state.studies ?
       studies_tab.push(
@@ -93,40 +96,46 @@ class MyDicom extends Component{
     }
 
     this.setState({
-      studies:studies_tab
+      studies:studies_tab,
+      currentStudyID:null
     })
-    this.render()
   }
 
-  rowEventsStudies = {
-    onClick: (e,row) => {
-      this.setState({ currentSelectedStudyId: row.values.StudyOrthancID})
-      console.log('I\'m in')
+  onStudyRowClick = (row)=> {
+        this.setState({ 
+          currentStudyID: row.StudyOrthancID
+        })
+  }
+
+  onStudyCheckboxClick = (checkedBox) =>{
+    if(checkedBox!==this.state.selectedRows){
+      this.setState({
+        selectedRows:checkedBox
+      })
     }
+    console.log(this.state.selectedRows)
   }
 
   render = () => {
-    var labels  = []
-    if(this.state.labels!=null || this.state.labels===[]){
-      labels = this.state.labels
-    }
-
     return (
       <div>
         <div className='jumbotron' name='buttons'>
           <h1>Labels</h1> 
-          {labels.map(label => (
-            <button name={label.label_name} key={label.label_name} type='button' className='btn btn-primary' onClick={this.handleClick}> {label.label_name} </button>
+          {this.state.labels.map(label => (
+            <button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} type='button' className='btn btn-primary' onClick={this.handleClick}> {label.label_name} </button>
           ))}
         </div>
 
         <div className='jumbotron' name='studies using react table'>
+        <h3 style={{color:" rgb(100, 100, 100)"}}>{this.state.currentLabel}</h3>
           <TableMyDicomPatientsStudies 
             tableData={this.state.studies}
-            rowEventsStudies={this.rowEventsStudies}
+            onRowClick={this.onStudyRowClick}
+            onCheckboxClick={this.onStudyCheckboxClick}
+            style={{padding:"50%"}}
           />
           <TableMyDicomSeriesFillFromParent 
-            studyID={this.state.currentStudyID} />
+            studyID={this.state.currentStudyID}   />
         </div>
       </div>
     )

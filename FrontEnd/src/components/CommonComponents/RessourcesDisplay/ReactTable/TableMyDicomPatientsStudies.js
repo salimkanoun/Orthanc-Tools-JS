@@ -1,5 +1,5 @@
 import React from 'react'
-import { useTable,useFilters} from 'react-table'
+import { useTable,useFilters,useRowSelect} from 'react-table'
 import ActionBouton from '../ActionBouton'
 import BTable from 'react-bootstrap/Table'
 
@@ -17,7 +17,24 @@ function ColumnFilter({
 }
 
 
-function App({tableData},rowEventStudies) {
+function App({tableData,onRowClick,onCheckboxClick}) {
+
+  const IndeterminateCheckbox = React.forwardRef(
+    ({ indeterminate, ...rest }, ref) => {
+      const defaultRef = React.useRef()
+      const resolvedRef = ref || defaultRef
+  
+      React.useEffect(() => {
+        resolvedRef.current.indeterminate = indeterminate
+      }, [resolvedRef, indeterminate])
+  
+      return (
+        <>
+          <input type="checkbox" ref={resolvedRef} {...rest} />
+        </>
+      )
+    }
+  )
 
   const defaultColumn = React.useMemo(
     () => ({
@@ -66,7 +83,14 @@ function App({tableData},rowEventStudies) {
         Cell:(row)=>{
           return(
           <span>
-            <ActionBouton level='studies' orthancID={row.cell.row.values.StudyOrthancID} StudyInstanceUID={row.cell.row.values.StudyInstanceUID} row={row} />
+            <ActionBouton level='studies'   
+              orthancID={row.cell.row.values.StudyOrthancID} 
+              StudyInstanceUID={row.cell.row.values.StudyInstanceUID} 
+              row={row.cell.row} 
+              hiddenModify={true} 
+              hiddenDelete={true} 
+              hiddenCreateDicom={true} 
+            />
           </span>
           )
         }
@@ -80,6 +104,7 @@ function App({tableData},rowEventStudies) {
     headerGroups,
     rows,
     prepareRow,
+    selectedFlatRows,
   } = useTable(
     {
       columns,
@@ -91,6 +116,30 @@ function App({tableData},rowEventStudies) {
         })
     },},
     useFilters,
+    useRowSelect,
+    hooks => {
+      hooks.visibleColumns.push(columns => [
+        // Let's make a column for selection
+        {
+          id: 'selection',
+          // The header can use the table's getToggleAllRowsSelectedProps method
+          // to render a checkbox
+          Header: ({ getToggleAllRowsSelectedProps }) => (
+            <div>
+              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} onClick={()=>{onCheckboxClick(selectedFlatRows)}} />
+            </div>
+          ),
+          // The cell can use the individual row's getToggleRowSelectedProps method
+          // to the render a checkbox
+          Cell: ({ row }) => (
+            <div>
+              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} onClick={()=>{onCheckboxClick(selectedFlatRows)}} />
+            </div>
+          ),
+        },
+        ...columns,
+      ])
+    }
   )
   return (
     <>
@@ -111,7 +160,7 @@ function App({tableData},rowEventStudies) {
             prepareRow(row)
             return (
               <React.Fragment key={row.getRowProps().key}>
-                <tr onClick={() => console.log(row)}>
+                <tr onClick={()=>onRowClick(row.values)}>
                   {row.cells.map(cell => {
                     return (
                       <td {...cell.getCellProps()}>{cell.render('Cell')}</td>

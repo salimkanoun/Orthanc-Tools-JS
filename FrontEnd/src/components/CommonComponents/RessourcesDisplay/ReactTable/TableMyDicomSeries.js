@@ -7,7 +7,53 @@ import BTable from 'react-bootstrap/Table'
 // A simple way to support a renderRowSubComponent is to make a render prop
 // This is NOT part of the React Table API, it's merely a rendering
 // option we are creating for ourselves in our table renderer
-function Table({ columns: userColumns, data}) {
+function App({tableData}) {
+  const columns = React.useMemo(
+    () => [
+      {
+        accessor:'StudyOrthancID',
+        show : false,
+      },
+      {
+        Header: 'Series Description',
+        accessor: 'SeriesDescription'
+      },
+      {
+        Header :'Modality',
+        accessor:'Modality'
+      },
+      {
+        Header:'Instances',
+        accessor:'Instances'
+      },
+      {
+        Header: 'Series Number',
+        accessor:'SeriesNumber',
+      },
+      {
+        Header: 'Accession number',
+        accessor: 'AccessionNumber'
+      },
+      {
+        Header: 'Action',
+        accessor: 'action',
+        Cell:(row)=>{
+          return(
+          <span>
+            <ActionBouton level='series' 
+              orthancID={row.row.values.StudyOrthancID} 
+              row={row.row} 
+              hiddenModify={true} 
+              hiddenDelete={true} 
+              hiddenMetadata={false} 
+              hiddenCreateDicom={true}/>
+          </span>
+          )
+        }
+      },
+    ],
+    []
+  )
   const {
     getTableProps,
     getTableBodyProps,
@@ -16,10 +62,10 @@ function Table({ columns: userColumns, data}) {
     prepareRow,
   } = useTable(
     {
-      columns: userColumns,
-      data,
+      columns,
+      data:tableData,
       initialState: {
-        hiddenColumns: userColumns.map(column => {
+        hiddenColumns: columns.map(column => {
             if (column.show === false) return column.accessor || column.id;
         })
     },},
@@ -58,58 +104,6 @@ function Table({ columns: userColumns, data}) {
       </BTable>
       <br />
     </>
-  )
-}
-
-function App() {
-  const columns = React.useMemo(
-    () => [
-      {
-        accessor:'StudyOrthancID',
-        show : false,
-      },
-      {
-        Header: 'Series Description',
-        accessor: 'SeriesDescription'
-      },
-      {
-        Header :'Modality',
-        accessor:'Modality'
-      },
-      {
-        Header:'Instances',
-        accessor:'Instances'
-      },
-      {
-        Header: 'Series Number',
-        accessor:'SeriesNumber',
-      },
-      {
-        Header: 'Accession number',
-        accessor: 'AccessionNumber'
-      },
-      {
-        Header: 'Action',
-        accessor: 'action',
-        Cell:(row)=>{
-          return(
-          <span>
-            <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} row={row} />
-          </span>
-          )
-        }
-      },
-    ],
-    []
-  )
-
-  const data = React.useMemo(() => [],[])
-
-  return (
-      <Table
-        columns={columns}
-        data={data}
-      />
   )
 }
 
