@@ -45,7 +45,7 @@ const ReverseProxy = {
         return options
     },
 
-    makeOptionsUpload(method, api, data, plain = false) {
+    makeOptionsUpload(method, api, data, plain ) {
         const serverString = this.getOrthancAddress() + api
 
         const options = {
@@ -54,7 +54,7 @@ const ReverseProxy = {
             username: this.username,
             password: this.password,
             headers: {
-                'Content-Type': plain ? 'application/dicom' : 'text/plain',
+                'Content-Type': plain ? 'text/plain' : 'application/dicom',
                 'Content-Length': data.length
             },
             body: data
@@ -93,7 +93,7 @@ const ReverseProxy = {
                     res.status(response.statusCode).send(response.statusMessage)
                 }
             }).catch((error) => {
-                throw new OTJSInternalServerError(error.message);
+                console.error(error)
             })
     },
 
@@ -108,24 +108,22 @@ const ReverseProxy = {
                     res.status(response.statusCode).send(response.statusMessage)
                 }
             }).catch((error) => {
-                throw new OTJSInternalServerError(error.message);
+                console.error(error)
             })
     },
 
     streamToResUploadDicom(api, method, data, res) {
-        return got(this.makeOptionsUpload(method, api, data))
+        return got(this.makeOptionsUpload(method, api, data, false ))
             .on('response', function (response) {
-                if (response.statusCode == 200)
+                if(response.statusCode === 200){
                     response.pipe(res)
-                else throw response
-            }).catch((error) => {
-                if (error.statusCode === 401) {
+                } else if (response.statusCode === 401) {
                     res.status(403).send("Bad orthanc credentials")
                 } else {
-                    let statusCode = error.statusCode ? error.statusCode : 500
-                    let message = error.message ? error.message : 'Internal Server Error'
-                    res.status(statusCode).send(message)
+                    res.status(response.statusCode).send(response.statusMessage)
                 }
+            }).catch((error) => {
+                console.error(error)
             })
     },
 
@@ -139,7 +137,7 @@ const ReverseProxy = {
                         })
                 }
             }).catch((error) => {
-                throw new OTJSInternalServerError(error.message);
+                console.error(error)
             })
     },
 

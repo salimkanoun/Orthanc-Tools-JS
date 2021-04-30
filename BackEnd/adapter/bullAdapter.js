@@ -40,7 +40,11 @@ class Queue extends event.EventEmitter {
         });
         this._queue.on('error', (err) => {
             if (err.code === "ECONNREFUSED") {
-                console.error(`Couldn't connect to the redis server at ${err.address}:${err.port}. Task features will be disabled.`);
+                console.error(`Could not connect to redis at ${err.address}:${err.port}. The feature requiring bull will respond 500`);
+                return;
+            }
+            if (err.message.includes("Redis version needs to be greater than ") || err.message.includes("ERR unknown command")) {
+                console.error(`${err.message}. The feature requiring bull will respond 500`);
                 return;
             }
             this.emit('error', err);

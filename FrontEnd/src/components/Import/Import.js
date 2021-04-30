@@ -62,7 +62,7 @@ class Import extends Component {
                     await this.addUploadedFileToState(response)
 
                 } catch (error) {
-                    this.addErrorToState(file.name, error.error)
+                    this.addErrorToState(file.name, error.statusText)
                 }
 
             })
@@ -70,7 +70,7 @@ class Import extends Component {
             i = ++i
         }
 
-        this.setState({ inProgress: false }, console.log(this.state.inProgress))
+        this.setState({ inProgress: false })
     }
 
     componentWillUnmount = () => {
@@ -98,6 +98,7 @@ class Import extends Component {
     }
 
     addUploadedFileToState = async (orthancAnswer) => {
+        console.log(orthancAnswer)
         let isExistingSerie = this.isKnownSeries(orthancAnswer.ParentSeries)
 
         if (isExistingSerie) {

@@ -15,10 +15,8 @@ const importDicom = {
 
         return fetch('/api/instances', importDicomFile)
             .then(async (answer) => {
-                if (!answer.ok) { throw await answer.json() }
+                if (!answer.ok) { throw answer }
                 return (answer.json())
-            }).catch(error => {
-                console.error(error)
             })
     },
 
