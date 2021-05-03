@@ -97,7 +97,8 @@ class MyDicom extends Component{
 
     this.setState({
       studies:studies_tab,
-      currentStudyID:null
+      currentStudyID:null,
+      selectedRows:[]
     })
   }
 
@@ -108,11 +109,13 @@ class MyDicom extends Component{
   }
 
   onStudyCheckboxClick = (checkedBox) =>{
-    if(checkedBox!==this.state.selectedRows){
-      this.setState({
-        selectedRows:checkedBox
-      })
+    var tab = []
+    for(var i = 0;i<checkedBox.length;i++){
+      tab.push(checkedBox[i].values.StudyOrthancID)
     }
+    this.setState({
+      selectedRows:tab
+    })
     console.log(this.state.selectedRows)
   }
 

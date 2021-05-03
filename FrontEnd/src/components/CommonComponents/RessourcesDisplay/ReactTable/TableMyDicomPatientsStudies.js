@@ -17,9 +17,10 @@ function ColumnFilter({
 }
 
 
-function App({tableData,onRowClick,onCheckboxClick}) {
 
-  const IndeterminateCheckbox = React.forwardRef(
+function App({tableData,onRowClick,onCheckboxClick}) {
+  
+  const Checkbox = React.forwardRef(
     ({ indeterminate, ...rest }, ref) => {
       const defaultRef = React.useRef()
       const resolvedRef = ref || defaultRef
@@ -124,16 +125,17 @@ function App({tableData,onRowClick,onCheckboxClick}) {
           id: 'selection',
           // The header can use the table's getToggleAllRowsSelectedProps method
           // to render a checkbox
-          Header: ({ getToggleAllRowsSelectedProps }) => (
+          Header: ({ getToggleAllRowsSelectedProps, selectedFlatRows }) => (
             <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} onClick={()=>{onCheckboxClick(selectedFlatRows)}} />
+            {console.log(selectedFlatRows)}
+              <Checkbox {...getToggleAllRowsSelectedProps()} onClick={(e)=>{console.log(e);onCheckboxClick(selectedFlatRows)}}/>
             </div>
           ),
           // The cell can use the individual row's getToggleRowSelectedProps method
           // to the render a checkbox
-          Cell: ({ row }) => (
+          Cell: ({row , selectedFlatRows}) => (
             <div>
-              <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} onClick={()=>{onCheckboxClick(selectedFlatRows)}} />
+              <Checkbox {...row.getToggleRowSelectedProps()} onClick={()=>{console.log(row);onCheckboxClick(selectedFlatRows)}}/>
             </div>
           ),
         },
@@ -173,6 +175,20 @@ function App({tableData,onRowClick,onCheckboxClick}) {
         </tbody>
       </BTable>
       <br />
+      <pre>
+        <code>
+          {JSON.stringify(
+            {
+              'selectedFlatRows[].original': selectedFlatRows.map(
+                d => d.original
+              ),
+            },
+            null,
+            2
+          )}
+        </code>
+      </pre>
+
     </>
   )
 }
