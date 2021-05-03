@@ -47,7 +47,7 @@ class AnonymizedResults extends Component {
                         newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
                     });
                 } catch (err) {
-                    if (!err.statusCode === 404) {
+                    if (err.statusCode !== 404) {
                         throw err;
                     }
                 }
