@@ -16,7 +16,7 @@ function App({tableData}) {
       },
       {
         Header: 'Series Description',
-        accessor: 'SeriesDescription'
+        accessor: 'SeriesDescription',
       },
       {
         Header :'Modality',

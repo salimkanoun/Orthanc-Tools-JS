@@ -18,7 +18,7 @@ function ColumnFilter({
 
 
 
-function App({tableData,onRowClick,onCheckboxClick}) {
+function App({tableData,onRowClick,onSelect,onSelectAll}) {
   
   const Checkbox = React.forwardRef(
     ({ indeterminate, ...rest }, ref) => {
@@ -105,7 +105,6 @@ function App({tableData,onRowClick,onCheckboxClick}) {
     headerGroups,
     rows,
     prepareRow,
-    selectedFlatRows,
   } = useTable(
     {
       columns,
@@ -120,22 +119,16 @@ function App({tableData,onRowClick,onCheckboxClick}) {
     useRowSelect,
     hooks => {
       hooks.visibleColumns.push(columns => [
-        // Let's make a column for selection
         {
           id: 'selection',
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
-          Header: ({ getToggleAllRowsSelectedProps, selectedFlatRows }) => (
+          Header: ({ getToggleAllRowsSelectedProps }) => (
             <div>
-            {console.log(selectedFlatRows)}
-              <Checkbox {...getToggleAllRowsSelectedProps()} onClick={(e)=>{console.log(e);onCheckboxClick(selectedFlatRows)}}/>
+              <Checkbox {...getToggleAllRowsSelectedProps()} onClick={(e)=>{onSelectAll(e.target.checked)}}/>
             </div>
           ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
           Cell: ({row , selectedFlatRows}) => (
             <div>
-              <Checkbox {...row.getToggleRowSelectedProps()} onClick={()=>{console.log(row);onCheckboxClick(selectedFlatRows)}}/>
+              <Checkbox {...row.getToggleRowSelectedProps()} onClick={(e)=>{onSelect(e.target.checked,row)}}/>
             </div>
           ),
         },
@@ -174,21 +167,7 @@ function App({tableData,onRowClick,onCheckboxClick}) {
           })}
         </tbody>
       </BTable>
-      <br />
-      <pre>
-        <code>
-          {JSON.stringify(
-            {
-              'selectedFlatRows[].original': selectedFlatRows.map(
-                d => d.original
-              ),
-            },
-            null,
-            2
-          )}
-        </code>
-      </pre>
-
+      <br/>
     </>
   )
 }

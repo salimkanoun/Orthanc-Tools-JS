@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import SHA1 from 'crypto-js/sha1'
 import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
 import TableMyDicomSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeriesFillFromParent'
+import Dropdown from 'react-bootstrap/Dropdown'
 
 class MyDicom extends Component{
   state = {
@@ -108,16 +109,33 @@ class MyDicom extends Component{
         })
   }
 
-  onStudyCheckboxClick = (checkedBox) =>{
-    var tab = []
-    for(var i = 0;i<checkedBox.length;i++){
-      tab.push(checkedBox[i].values.StudyOrthancID)
+  //row selection handlers
+  onStudyCheckboxClick = (bool,row) =>{
+    var tab = this.state.selectedRows
+    if(bool){
+      tab.push(row.values.StudyOrthancID)
+    }else{
+      for(var i=0;i<tab.length;i++){
+        if(tab[i]===row.values.StudyOrthancID){
+          tab.splice(i,1)
+          break
+        }
+      }
     }
-    this.setState({
-      selectedRows:tab
-    })
-    console.log(this.state.selectedRows)
+    this.setState({selectedRows:tab})
   }
+
+  onStudyCheckboxAllClick = (bool) =>{
+    var tab = []
+    if(bool){
+      for(var i=0;i<this.state.studies.length;i++){
+        tab.push(this.state.studies[i].StudyOrthancID)
+      }
+    }
+    this.setState({selectedRows:tab})
+  }
+
+
 
   render = () => {
     return (
@@ -130,15 +148,36 @@ class MyDicom extends Component{
         </div>
 
         <div className='jumbotron' name='studies using react table'>
-        <h3 style={{color:" rgb(100, 100, 100)"}}>{this.state.currentLabel}</h3>
-          <TableMyDicomPatientsStudies 
-            tableData={this.state.studies}
-            onRowClick={this.onStudyRowClick}
-            onCheckboxClick={this.onStudyCheckboxClick}
-            style={{padding:"50%"}}
-          />
-          <TableMyDicomSeriesFillFromParent 
-            studyID={this.state.currentStudyID}   />
+          
+          <div className='row'>
+            
+            <div className='col-sm'>
+              <Dropdown onClick={this.handleClick} className="float-right mb-3">
+                <Dropdown.Toggle variant="warning" id="dropdown-basic"  >
+                  Send To
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item className='bg-primary' onClick={this.sendToExportList} >Export List</Dropdown.Item>
+                  <Dropdown.Item className='bg-info' onClick={this.sendToAnonList} >Anonymize List</Dropdown.Item>
+                  <Dropdown.Item className='bg-danger' onClick={this.sendToDeleteList} >Delete List</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+              <button name='send' onClick={()=>{console.log(this.state.selectedRows)}} className='btn btn-success' value='send'> SEND </button>
+              <TableMyDicomPatientsStudies 
+                tableData={this.state.studies}
+                onRowClick={this.onStudyRowClick}
+                onSelect={this.onStudyCheckboxClick}
+                onSelectAll={this.onStudyCheckboxAllClick}
+              />
+            </div>
+
+            <div className='col-sm'>
+              <TableMyDicomSeriesFillFromParent 
+                studyID={this.state.currentStudyID}   />
+            </div>
+
+          </div>
         </div>
       </div>
     )
