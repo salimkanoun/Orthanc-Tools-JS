@@ -59,8 +59,6 @@ export default class TableSeriesFillFromParent extends Component {
                 series: seriesData
             })
         }
-
-
     }
 
     render = () => {

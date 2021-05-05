@@ -12,7 +12,7 @@ function App({tableData}) {
     () => [
       {
         accessor:'StudyOrthancID',
-        show : false,
+        hidden : true,
       },
       {
         Header: 'Series Description',
@@ -66,7 +66,7 @@ function App({tableData}) {
       data:tableData,
       initialState: {
         hiddenColumns: columns.map(column => {
-            if (column.show === false) return column.accessor || column.id;
+            if (column.hidden === true) return column.accessor || column.id;
         })
     },},
   )

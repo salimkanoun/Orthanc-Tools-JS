@@ -19,7 +19,8 @@ class MyDicom extends Component{
 
   async componentDidMount(){
     try{
-      await this.initializeState()
+      await this.getUser()
+      await this.getUserLabels()  
     }catch(err){}
   }
 
@@ -46,22 +47,6 @@ class MyDicom extends Component{
     }
   }
 
-  initializeState = async () => {
-    //Fake data set for GUI test : create 2 labels, add them to admin, add them to fake studies
-
-    /*await apis.label.createLabels('test1')
-    await apis.label.createLabels('test2')*/
-    await this.getUser()
-/*
-    await apis.userlabel.createUserLabel(this.state.user.id,'test1')
-    await apis.userlabel.createUserLabel(this.state.user.id,'test2')
-    await apis.studylabel.createStudyLabel('ABCDEFG','test1','patient_exp')
-    await apis.studylabel.createStudyLabel('ZEFDG','test2','patient_test')
-    await apis.studylabel.createStudyLabel('ZEFDG','test1','patient_test')*/
-    await this.getUserLabels()
-
-  }
-
   getStudiesByLabel = async (name) => {
     return await apis.studylabel.getStudiesLabel(name)
   }
@@ -74,26 +59,13 @@ class MyDicom extends Component{
   handleClick = async (e) => {
     var label = e.target.name
     this.setState({currentLabel:label})
-    //reset all buttons to blue (primary)
-    //e.target.className='btn btn-success'
     var studies = await this.getStudiesByLabel(label)
     var studies_tab = []
 
     for(var i = 0;i<studies.length;i++){
       var study = studies[i]
       var orthancID = this._getOrthancStudyID(study.patient_id,study.study_instance_uid)
-      //search for infos about this orthancID and save them with this.state.studies ?
-      studies_tab.push(
-      {
-        StudyOrthancID:'testStudyOrthancID'+i,
-        StudyInstanceUID:'testStudyInstanceUID'+i,
-        PatientID:'testPatientID'+i,
-        PatientName:'testPatientName'+i,
-        StudyDate:'testStudyDate'+i,
-        StudyDescription:'testStudyDescription'+i,
-        AccessionNumber:'testAccessionNumber'+i,
-      })
-      //studies_tab.push(await apis.content.getStudiesDetails(orthancID)) 
+      studies_tab.push(await apis.content.getStudiesDetails(orthancID)) 
     }
 
     this.setState({
@@ -104,34 +76,11 @@ class MyDicom extends Component{
   }
 
   onStudyRowClick = (row)=> {
-        this.setState({ 
-          currentStudyID: row.StudyOrthancID
-        })
-  }
-
-  //row selection handlers
-  onStudyCheckboxClick = (bool,row) =>{
-    var tab = this.state.selectedRows
-    if(bool){
-      tab.push(row.values.StudyOrthancID)
-    }else{
-      for(var i=0;i<tab.length;i++){
-        if(tab[i]===row.values.StudyOrthancID){
-          tab.splice(i,1)
-          break
-        }
-      }
-    }
-    this.setState({selectedRows:tab})
-  }
-
-  onStudyCheckboxAllClick = (bool) =>{
-    var tab = []
-    if(bool){
-      for(var i=0;i<this.state.studies.length;i++){
-        tab.push(this.state.studies[i].StudyOrthancID)
-      }
-    }
+    this.setState({ 
+      currentStudyID: row.StudyOrthancID
+    })
+}
+  onStudyCheckboxClick = (tab) =>{
     this.setState({selectedRows:tab})
   }
 
@@ -139,20 +88,17 @@ class MyDicom extends Component{
 
   render = () => {
     return (
-      <div>
-        <div className='jumbotron' name='buttons'>
-          <h1>Labels</h1> 
+
+        <div className='jumbotron'>
+        <h1>Labels</h1> 
           {this.state.labels.map(label => (
             <button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} type='button' className='btn btn-primary' onClick={this.handleClick}> {label.label_name} </button>
           ))}
-        </div>
 
-        <div className='jumbotron' name='studies using react table'>
-          
           <div className='row'>
             
             <div className='col-sm'>
-              <Dropdown onClick={this.handleClick} className="float-right mb-3">
+              <Dropdown className="float-right mb-3">
                 <Dropdown.Toggle variant="warning" id="dropdown-basic"  >
                   Send To
                 </Dropdown.Toggle>
@@ -163,7 +109,7 @@ class MyDicom extends Component{
                   <Dropdown.Item className='bg-danger' onClick={this.sendToDeleteList} >Delete List</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
-              <button name='send' onClick={()=>{console.log(this.state.selectedRows)}} className='btn btn-success' value='send'> SEND </button>
+              
               <TableMyDicomPatientsStudies 
                 tableData={this.state.studies}
                 onRowClick={this.onStudyRowClick}
@@ -174,12 +120,12 @@ class MyDicom extends Component{
 
             <div className='col-sm'>
               <TableMyDicomSeriesFillFromParent 
-                studyID={this.state.currentStudyID}   />
+                studyID={this.state.currentStudyID}   
+              />
             </div>
 
           </div>
         </div>
-      </div>
     )
   }
 

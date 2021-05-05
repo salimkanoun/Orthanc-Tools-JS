@@ -2,23 +2,9 @@ import React from 'react'
 import { useTable,useFilters,useRowSelect} from 'react-table'
 import ActionBouton from '../ActionBouton'
 import BTable from 'react-bootstrap/Table'
+import ColumnFilter from './ColumnFilter'
 
-function ColumnFilter({
-  column: { filterValue, setFilter },
-}) {
-  return (
-    <input
-      value={filterValue || ''}
-      onChange={e => {
-        setFilter(e.target.value.replace(' ','') || undefined) // Set undefined to remove the filter entirely
-      }}
-    />
-  )
-}
-
-
-
-function App({tableData,onRowClick,onSelect,onSelectAll}) {
+function App({tableData,onRowClick,onSelect}) {
   
   const Checkbox = React.forwardRef(
     ({ indeterminate, ...rest }, ref) => {
@@ -42,19 +28,19 @@ function App({tableData,onRowClick,onSelect,onSelectAll}) {
       Filter: ColumnFilter,
     }),
     []
-  )  
+  )
 
   const columns = React.useMemo(
     () => [
       {
         Header: 'Study Orthanc ID',
         accessor : 'StudyOrthancID',
-        show:false
+        hidden:true
       },
       {
         Header: 'Study Instance UID',
         accessor:'StudyInstanceUID',
-        show:false
+        hidden:true
       },
       {
         Header: 'Patient ID',
@@ -99,12 +85,15 @@ function App({tableData,onRowClick,onSelect,onSelectAll}) {
     ],
     []
   )
+
+
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     rows,
     prepareRow,
+    selectedFlatRows
   } = useTable(
     {
       columns,
@@ -112,7 +101,7 @@ function App({tableData,onRowClick,onSelect,onSelectAll}) {
       defaultColumn,
       initialState: {
         hiddenColumns: columns.map(column => {
-            if (column.show === false) return column.accessor || column.id;
+            if (column.hidden === true) return column.accessor || column.id;
         })
     },},
     useFilters,
@@ -123,12 +112,12 @@ function App({tableData,onRowClick,onSelect,onSelectAll}) {
           id: 'selection',
           Header: ({ getToggleAllRowsSelectedProps }) => (
             <div>
-              <Checkbox {...getToggleAllRowsSelectedProps()} onClick={(e)=>{onSelectAll(e.target.checked)}}/>
+              <Checkbox {...getToggleAllRowsSelectedProps()} />
             </div>
           ),
-          Cell: ({row , selectedFlatRows}) => (
+          Cell: ({row}) => (
             <div>
-              <Checkbox {...row.getToggleRowSelectedProps()} onClick={(e)=>{onSelect(e.target.checked,row)}}/>
+              <Checkbox {...row.getToggleRowSelectedProps()} />
             </div>
           ),
         },
@@ -136,6 +125,9 @@ function App({tableData,onRowClick,onSelect,onSelectAll}) {
       ])
     }
   )
+
+  React.useEffect(() => { onSelect(selectedFlatRows); }, [selectedFlatRows.length]);
+  
   return (
     <>
       <BTable striped bordered responsive {...getTableProps()}>
@@ -151,7 +143,7 @@ function App({tableData,onRowClick,onSelect,onSelectAll}) {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
+          {rows.map((row) => {
             prepareRow(row)
             return (
               <React.Fragment key={row.getRowProps().key}>
