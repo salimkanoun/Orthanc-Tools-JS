@@ -5,6 +5,7 @@ import SHA1 from 'crypto-js/sha1'
 import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
 import TableMyDicomSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeriesFillFromParent'
 import Dropdown from 'react-bootstrap/Dropdown'
+import SendTo from '../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown'
 
 class MyDicom extends Component{
   state = {
@@ -64,9 +65,9 @@ class MyDicom extends Component{
 
     for(var i = 0;i<studies.length;i++){
       var study = studies[i]
-      //var orthancID = this._getOrthancStudyID(study.patient_id,study.study_instance_uid)
-      //console.log(orthancID)
-      let study_details = await apis.content.getStudiesDetails(study.study_instance_uid)
+      var orthancID = this._getOrthancStudyID(study.patient_id,study.study_instance_uid)
+      console.log(orthancID)
+      let study_details = await apis.content.getStudiesDetails(orthancID)
       let row = {
         StudyOrthancID:study_details.ID,
         StudyInstanceUID:study_details.MainDicomTags.StudyInstanceUID,
@@ -93,7 +94,11 @@ class MyDicom extends Component{
 
 }
   onStudyCheckboxClick = (tab) =>{
-    this.setState({selectedRows:tab})
+    var selectedRows = []
+    for(var i = 0; i<tab.length;i++){
+      selectedRows.push(tab[i].values.StudyOrthancID)
+    }
+    this.setState({selectedRows:selectedRows})
   }
 
   rowStyleStudies = (row) => {
@@ -119,18 +124,9 @@ class MyDicom extends Component{
           <div className='row'>
             
             <div className='col-sm'>
-              <Dropdown className="float-right mb-3">
-                <Dropdown.Toggle variant="warning" id="dropdown-basic"  >
-                  Send To
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                  <Dropdown.Item className='bg-primary' onClick={this.sendToExportList} >Export List</Dropdown.Item>
-                  <Dropdown.Item className='bg-info' onClick={this.sendToAnonList} >Anonymize List</Dropdown.Item>
-                  <Dropdown.Item className='bg-danger' onClick={this.sendToDeleteList} >Delete List</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-              
+              <div className='float-right mb-3'>
+                <SendTo studies={this.state.selectedRows} />
+              </div>
               <TableMyDicomPatientsStudies 
                 data={this.state.studies}
                 onRowClick={this.onStudyRowClick}
