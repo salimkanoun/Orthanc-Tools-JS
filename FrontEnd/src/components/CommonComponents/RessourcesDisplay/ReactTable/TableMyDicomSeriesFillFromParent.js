@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import apis from '../../../../services/apis'
-import TableMyDicomSeries from './TableMyDicomSeries'
+import ActionBouton from '../ActionBouton'
+import CommonTable from './CommonTable'
 
 export default class TableSeriesFillFromParent extends Component {
 
@@ -21,49 +22,65 @@ export default class TableSeriesFillFromParent extends Component {
     }
 
     loadSeriesInState = async (studyID) => {
-        /*
-        let seriesAnswer = await apis.content.getSeriesDetails(studyID)
+        let seriesAnswer = await apis.content.getSeriesDetails(studyID) 
         let seriesData = []
-        seriesAnswer.forEach((serie) => {
-            seriesData.push({
-                StudyID: studyID,
-                SeriesOrthancID: serie.ID,
-                Instances: serie.Instances.length,
-                ...serie.MainDicomTags
-            })
-
-        })*/
-        if(this.props.studyID=='testStudyOrthancID0'){
-            let seriesData = [{
-                StudyOrthancID:'StudyOrthancIDTest0',
-                SeriesDescription:'SeriesDescriptionTest0',
-                Modality:'ModalityTest0',
-                Instances:'InstancesTest0',
-                SeriesNumber:'SeriesNumberTest0',
-                AccessionNumber:'AccessionNumberTest0',
-            }]
-            this.setState({
-                series: seriesData
-            })
+        if(seriesAnswer!==undefined){
+          for(var i=0;i<seriesAnswer.length;i++){
+            let row={
+              StudyOrthancID:seriesAnswer[i].ParentStudy,
+              SeriesDescription:seriesAnswer[i].MainDicomTags.SeriesDescription,
+              Modality:seriesAnswer[i].MainDicomTags.Modality,
+              Instances:seriesAnswer[i].Instances.length,
+              SeriesNumber:seriesAnswer[i].MainDicomTags.SeriesNumber,
+            }
+            seriesData.push(row)
+          }
         }
-        if(this.props.studyID=='testStudyOrthancID1'){
-            let seriesData = [{
-                StudyOrthancID:'StudyOrthancIDTest1',
-                SeriesDescription:'SeriesDescriptionTest1',
-                Modality:'ModalityTest1',
-                Instances:'InstancesTest1',
-                SeriesNumber:'SeriesNumberTest1',
-                AccessionNumber:'AccessionNumberTest1',
-            }]
-            this.setState({
-                series: seriesData
-            })
-        }
+        this.setState({series:seriesData})
     }
+
+    columns = 
+    [      {
+            accessor:'StudyOrthancID',
+            hidden : true,
+          },
+          {
+            Header: 'Series Description',
+            accessor: 'SeriesDescription',
+          },
+          {
+            Header :'Modality',
+            accessor:'Modality'
+          },
+          {
+            Header:'Instances',
+            accessor:'Instances'
+          },
+          {
+            Header: 'Series Number',
+            accessor:'SeriesNumber',
+          },
+          {
+            Header: 'Action',
+            accessor: 'action',
+            Cell:(row)=>{
+              return(
+              <span>
+                <ActionBouton level='series' 
+                  orthancID={row.row.values.StudyOrthancID} 
+                  row={row} 
+                  hiddenModify={true} 
+                  hiddenDelete={true} 
+                  hiddenMetadata={false} 
+                  hiddenCreateDicom={true}/>
+              </span>
+              )
+            }
+          }]
 
     render = () => {
         return (
-            <TableMyDicomSeries tableData={this.state.series} />
+            <CommonTable tableData={this.state.series} columns={this.columns}/>
         )
     }
 }

@@ -56,7 +56,7 @@ class MyDicom extends Component{
     return `${hash.substring(0, 8)}-${hash.substring(8, 16)}-${hash.substring(16, 24)}-${hash.substring(24, 32)}-${hash.substring(32, 40)}`
   }
 
-  handleClick = async (e) => {
+  handleLabelClick = async (e) => {
     var label = e.target.name
     this.setState({currentLabel:label})
     var studies = await this.getStudiesByLabel(label)
@@ -64,8 +64,19 @@ class MyDicom extends Component{
 
     for(var i = 0;i<studies.length;i++){
       var study = studies[i]
-      var orthancID = this._getOrthancStudyID(study.patient_id,study.study_instance_uid)
-      studies_tab.push(await apis.content.getStudiesDetails(orthancID)) 
+      //var orthancID = this._getOrthancStudyID(study.patient_id,study.study_instance_uid)
+      //console.log(orthancID)
+      let study_details = await apis.content.getStudiesDetails(study.study_instance_uid)
+      let row = {
+        StudyOrthancID:study_details.ID,
+        StudyInstanceUID:study_details.MainDicomTags.StudyInstanceUID,
+        PatientID:study_details.PatientMainDicomTags.PatientID,
+        PatientName:study_details.PatientMainDicomTags.PatientName,
+        StudyDate:study_details.MainDicomTags.StudyDate,
+        StudyDescription:study_details.MainDicomTags.StudyDescription,
+        AccessionNumber:study_details.MainDicomTags.AccessionNumber
+      }
+      studies_tab.push(row)
     }
 
     this.setState({
@@ -79,10 +90,20 @@ class MyDicom extends Component{
     this.setState({ 
       currentStudyID: row.StudyOrthancID
     })
+
 }
   onStudyCheckboxClick = (tab) =>{
     this.setState({selectedRows:tab})
   }
+
+  rowStyleStudies = (row) => {
+    var style = ''
+    if (row.StudyOrthancID === this.state.currentStudyID) {
+        style = 'rgba(255,153,51)'
+    }
+
+    return style;
+}
 
 
 
@@ -92,7 +113,7 @@ class MyDicom extends Component{
         <div className='jumbotron'>
         <h1>Labels</h1> 
           {this.state.labels.map(label => (
-            <button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} type='button' className='btn btn-primary' onClick={this.handleClick}> {label.label_name} </button>
+            <button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} type='button' className='btn btn-primary' onClick={this.handleLabelClick}> {label.label_name} </button>
           ))}
 
           <div className='row'>
@@ -111,10 +132,10 @@ class MyDicom extends Component{
               </Dropdown>
               
               <TableMyDicomPatientsStudies 
-                tableData={this.state.studies}
+                data={this.state.studies}
                 onRowClick={this.onStudyRowClick}
                 onSelect={this.onStudyCheckboxClick}
-                onSelectAll={this.onStudyCheckboxAllClick}
+                rowStyle={this.rowStyleStudies}
               />
             </div>
 
