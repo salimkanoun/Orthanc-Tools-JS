@@ -37,9 +37,9 @@ export default class LabelDropdown extends Component {
 
     async _refreshStudyLabel() {
         let studies = {}
-        await Promise.all(this.props.selectedStudiesGetter().map(study => apis.studylabel.getStudyLabels(study.ID)
+        await Promise.all(this.props.selectedStudiesGetter().map(study => apis.studylabel.getStudyLabels(study.MainDicomTags.StudyInstanceUID)
             .then(labels => {
-                studies[study.MainDicomTags.StudyInstanceUID + ':' + study.ParentPatient] = labels.map(label => label.label_name);
+                studies[study.MainDicomTags.StudyInstanceUID + ':' + study.PatientMainDicomTags.PatientID] = labels.map(label => label.label_name);
             })))
         this.setState({studies});
     }
