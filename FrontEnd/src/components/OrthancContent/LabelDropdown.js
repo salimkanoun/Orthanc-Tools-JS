@@ -70,7 +70,7 @@ export default class LabelDropdown extends Component {
             symbol = '✓' + (count !== 1 ? count : '');
         }
 
-        return <Dropdown.ItemText className={"dropdown-item label-dropdown-item"}>
+        return <Dropdown.ItemText key={label} className={"dropdown-item label-dropdown-item"}>
             <button className={'btn w-100 text-left d-flex justify-content-between'}
                     onClick={this.handleSetLabel(label)}>
                 <p>{`• ${label}`}</p>
