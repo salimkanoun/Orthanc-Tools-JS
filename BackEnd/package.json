@@ -44,6 +44,8 @@
     "node-schedule": "^2.0.0",
     "promise-queue": "^2.2.5",
     "recursive-readdir": "^2.2.2",
+    "redis": "^3.1.2",
+    "redis-parser": "^3.0.0",
     "sequelize": "^6.6.2",
     "sequelize-cli": "^6.2.0",
     "sqlite3": "^5.0.2",

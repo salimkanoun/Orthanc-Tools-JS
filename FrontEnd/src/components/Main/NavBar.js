@@ -33,8 +33,7 @@ export default class NavBar extends Component {
   }
 
 
-  componentDidMount = async () => {
-
+  componentDidMount = async () => { 
     this.setState({
       navbar: document.documentElement.clientWidth < 992 ? 'responsive' : 'classique',
       currentTabSelect: 'content'

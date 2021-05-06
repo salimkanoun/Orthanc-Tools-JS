@@ -3,14 +3,14 @@ const {OTJSConflictException} = require('../Exceptions/OTJSErrors')
 
 class StudyLabel{
 
-  static async createStudyLabel(study_instance_uid,label_name){
+  static async createStudyLabel(study_instance_uid,label_name,patient_id){
     const studylabel =await StudyLabelRepo.getStudyLabel(study_instance_uid,label_name)
 
     if(studylabel){
       throw new OTJSConflictException('This association studyLabel already exist!');
     }
 
-    return StudyLabelRepo.create(study_instance_uid,label_name)
+    return StudyLabelRepo.create(study_instance_uid,label_name,patient_id)
   }
 
   static async getAll(){
