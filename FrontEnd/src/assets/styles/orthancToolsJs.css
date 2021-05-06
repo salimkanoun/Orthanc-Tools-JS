@@ -111,7 +111,6 @@ code {
     text-decoration: none;
 }
 
-
 .main-content {
     padding: 12px 64px;
     background-color: white;
@@ -372,7 +371,6 @@ code {
     }
 }
 
-
 .label-dropdown-item {
     min-width: 350px;
     width: 100%;
@@ -439,4 +437,5 @@ button > p {
 
 .table-responsive {
     overflow-x: visible;
+
 }
