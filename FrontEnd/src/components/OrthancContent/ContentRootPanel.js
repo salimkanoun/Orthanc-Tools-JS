@@ -94,7 +94,6 @@ class ContentRootPanel extends Component {
     getStudySelectedDetails = () => {
         let selectedIds = this.child.current.getSelectedRessources()
         let studiesOfSelectedPatients = []
-        console.log(selectedIds)
         //Add all studies of selected patient
         selectedIds.selectedPatients.forEach(orthancPatientId => {
           //loop the redux and add all studies that had one of the selected patient ID
@@ -115,7 +114,6 @@ class ContentRootPanel extends Component {
         });
         //Get only unique study ids
         let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
-
         return uniqueSelectedOrthancStudyId
       }
 
