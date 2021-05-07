@@ -1,9 +1,14 @@
-import React, {Component} from "react"
+import React, { Component } from "react"
+import {connect} from 'react-redux'
 
 import TableStudy from "../CommonComponents/RessourcesDisplay/TableStudy"
 import apis from "../../services/apis"
 import task from "../../services/task"
 import MonitorTask from "../../tools/MonitorTask"
+import { Fragment } from "react"
+
+import {addStudiesToDeleteList} from "../../actions/DeleteList"
+import {addStudiesToExportList} from "../../actions/ExportList"
 
 
 class AnonymizedResults extends Component {
@@ -40,9 +45,10 @@ class AnonymizedResults extends Component {
                     let study = await apis.content.getStudiesDetails(item.result)
                     console.log(study)
                     studies.push({
-                        StudyOrthancID: study.ID,
+                        ...study,
                         ...study.MainDicomTags,
                         ...study.PatientMainDicomTags,
+                        StudyOrthancID: study.ID,
                         AnonymizedFrom: study.AnonymizedFrom,
                         newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
                         newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
@@ -78,34 +84,42 @@ class AnonymizedResults extends Component {
     }
 
     render = () => {
+        console.log(this.state)
         return (
-            <div className='jumbotron'>
-                <h2 className='card-title mb-3'>Anonymized studies</h2>
-                <div className='row'>
-                    <div className='col-sm mb-3'>
-                        <button type='button' className="btn btn-warning float-right"
-                                onClick={this.emptyAnonymizedList}>Empty List
+            <Fragment>
+                <div>
+                    <div className="float-right">
+                        <button type='button' className="btn btn-warning"
+                            onClick={this.emptyAnonymizedList}>Empty List
                         </button>
-                        <TableStudy
-                            data={this.state.studies}
-                            hiddenActionBouton={true}
-                            hiddenRemoveRow={false}
-                            onDelete={this.removeStudyAnonymized}
-                            hiddenName={false}
-                            hiddenID={false}
-                            pagination={true}
-                            hiddenCSV={false}
-                        />
                     </div>
+                    <TableStudy
+                        data={this.state.studies}
+                        hiddenActionBouton={true}
+                        hiddenRemoveRow={false}
+                        onDelete={this.removeStudyAnonymized}
+                        hiddenName={false}
+                        hiddenID={false}
+                        pagination={true}
+                        hiddenCSV={false}
+                    />
                 </div>
-                <div className='text-center'>
-                    <button type='button' className='btn btn-primary mr-3' onClick={this.exportList}>To Export List
-                    </button>
-                    <button type='button' className='btn btn-danger' onClick={this.deleteList}>To Delete List</button>
+                <div className="text-center">
+                    <button type='button' className='btn btn-primary mr-3' onClick={this.exportList}>
+                        To Export List
+                            </button>
+                    <button type='button' className='btn btn-danger' onClick={this.deleteList}>
+                        To Delete List
+                            </button>
                 </div>
-            </div>
+            </Fragment>
         )
     }
 }
 
-export default AnonymizedResults
+const mapDispatchToProps = {
+    addStudiesToDeleteList,
+    addStudiesToExportList
+}
+
+export default connect(null, mapDispatchToProps)(AnonymizedResults)

@@ -47,10 +47,14 @@ class AnonRootPanel extends Component {
                 return (<AnonymizePanel setTask={this.setAnonTaskId}/>);
             case PORG_TAB:
                 return (
-                    <>
-                        <AnonymizePanelProgress anonTaskID={this.state.anonTaskId}/>
-                        <AnonymizedResults anonTaskID={this.state.anonTaskId}/>
-                    </>)
+                    <div>
+                        <div className = "row">
+                            <AnonymizePanelProgress anonTaskID={this.state.anonTaskId}/>
+                        </div>
+                        <div>
+                            <AnonymizedResults anonTaskID={this.state.anonTaskId}/>
+                        </div>
+                    </div>)
             case HISTORIC_TAB:
                 return (<AnonHistoric/>);
             default:
@@ -89,7 +93,7 @@ class AnonRootPanel extends Component {
                         </li>
                     </ul>
                 </div>
-                <div className="jumbotron">
+                <div className = "jumbotron">
                     {this.getComponentToDisplay()}
                 </div>
             </div>
