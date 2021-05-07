@@ -53,11 +53,7 @@ class AnonymizedResults extends Component {
                         newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
                         newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
                     });
-                } catch (err) {
-                    if (err.statusCode !== 404) {
-                        throw err;
-                    }
-                }
+                } catch (err) { }
 
             }
         }
