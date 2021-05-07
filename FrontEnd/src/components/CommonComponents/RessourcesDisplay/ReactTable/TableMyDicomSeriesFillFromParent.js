@@ -28,6 +28,7 @@ export default class TableSeriesFillFromParent extends Component {
           for(var i=0;i<seriesAnswer.length;i++){
             let row={
               StudyOrthancID:seriesAnswer[i].ParentStudy,
+              SerieID:seriesAnswer[i].ID,
               SeriesDescription:seriesAnswer[i].MainDicomTags.SeriesDescription,
               Modality:seriesAnswer[i].MainDicomTags.Modality,
               Instances:seriesAnswer[i].Instances.length,
@@ -43,6 +44,10 @@ export default class TableSeriesFillFromParent extends Component {
     [      {
             accessor:'StudyOrthancID',
             hidden : true,
+          },
+          {
+            accessor:'SerieID',
+            hidden : true
           },
           {
             Header: 'Series Description',
@@ -67,8 +72,8 @@ export default class TableSeriesFillFromParent extends Component {
               return(
               <span>
                 <ActionBouton level='series' 
-                  orthancID={row.row.values.StudyOrthancID} 
-                  row={row} 
+                  orthancID={row.row.values.SerieID} 
+                  row={row.row.values} 
                   hiddenModify={true} 
                   hiddenDelete={true} 
                   hiddenMetadata={false} 
