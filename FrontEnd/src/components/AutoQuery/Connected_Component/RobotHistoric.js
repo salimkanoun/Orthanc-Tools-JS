@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
-import {Link} from 'react-router-dom'
-import {toast} from 'react-toastify';
+import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
 import task from '../../../services/task';
 
@@ -37,8 +37,8 @@ export default class RobotJistoric extends Component {
             return (
                 <div className="text-center">
                     <input type="button" className='btn btn-danger'
-                           onClick={() => parentComponent.deleteJobHandler(row.id, parentComponent.refreshHandler)}
-                           value="Remove Job"/>
+                        onClick={() => parentComponent.deleteJobHandler(row.id, parentComponent.refreshHandler)}
+                        value="Remove Job" />
                 </div>
             )
         }
@@ -72,12 +72,12 @@ export default class RobotJistoric extends Component {
     }
 
     refreshHandler = () => {
+
+        let rows = []
+
         apis.task.getTaskOfUser(this.props.username, 'retrieve')
             .then(async taksIds => await Promise.all(taksIds.map(id => task.getTask(id))))
             .then((answerData) => {
-
-                let rows = []
-
                 answerData.forEach(robotJob => {
                     rows.push({
                         id: robotJob.id,
@@ -89,13 +89,14 @@ export default class RobotJistoric extends Component {
                     })
                 });
 
+            }).catch(error => {
+                console.log(error)
+                if(error.status != 404) toast.error(error.statusText + ' ' + error.message)
+            }).finally(() => {
                 this.setState({
                     rows: rows
                 })
-
-            }).catch(error => {
-            toast.error(error.statusText + '' + error.message)
-        })
+            })
     }
 
     render = () => {
@@ -103,7 +104,7 @@ export default class RobotJistoric extends Component {
             <>
                 <h2 className="card-title">Retrieve Robots : </h2>
                 <BootstrapTable keyField="username" striped={true} data={this.state.rows} columns={this.columns}
-                                wrapperClasses='table-responsive'/>
+                    wrapperClasses='table-responsive' />
             </>
         )
     }

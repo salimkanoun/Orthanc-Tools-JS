@@ -43,8 +43,8 @@ const addDeleteTask = async (req, res) => {
  */
 const addRetrieveTask = async (req, res) => {
 
-    let answers = req.body.retrieveArray
-    let id = await RetrieveTask.createTask(req.roles.username, req.body.projectName, answers);
+    let retrieveArray = req.body.retrieveArray
+    let id = await RetrieveTask.createTask(req.roles.username, req.body.projectName, retrieveArray);
     res.send(id)
 }
 
