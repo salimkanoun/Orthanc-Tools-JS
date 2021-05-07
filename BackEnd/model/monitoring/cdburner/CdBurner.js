@@ -3,10 +3,9 @@ var JSZip = require("jszip")
 const path = require('path');
 const Queue = require('promise-queue')
 const tmpPromise = require('tmp-promise')
-const {withFile} = require('tmp-promise')
 
 const Options = require('../../Options')
-const orthanc_Monitoring = require('../Orthanc_Monitoring')
+const Orthanc_Monitoring = require('../Orthanc_Monitoring')
 const moment = require('moment')
 const recursive = require("recursive-readdir");
 const { OTJSForbiddenException } = require('../../../Exceptions/OTJSErrors');
@@ -75,7 +74,7 @@ class CdBurner {
         //Create listener
         this.__makeListener()
         //Start monitoring service
-        this.monitoring.startMonitoringService(orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
+        this.monitoring.startMonitoringService(Orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
     }
 
     /**
@@ -120,7 +119,7 @@ class CdBurner {
         this.monitoringStarted = false
         await Options.setBurnerStarted(false)
         this.__removeListener()
-        this.monitoring.stopMonitoringService(orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
+        this.monitoring.stopMonitoringService(Orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
     }
 
     /**
