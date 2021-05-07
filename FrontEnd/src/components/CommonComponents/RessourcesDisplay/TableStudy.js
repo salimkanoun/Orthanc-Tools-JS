@@ -93,7 +93,6 @@ export default class TableStudy extends Component {
             hidden: this.props.hiddenActionBouton,
             formatter: ((value, row, index) =>
                     (<>
-                    {console.log(row)}
                         <ActionBouton level='studies' orthancID={row.StudyOrthancID}
                                       StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} row={row}
                                       refresh={this.props.refresh}/>

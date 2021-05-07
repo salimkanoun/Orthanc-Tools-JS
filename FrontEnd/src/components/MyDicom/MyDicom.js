@@ -66,7 +66,6 @@ class MyDicom extends Component{
     for(var i = 0;i<studies.length;i++){
       var study = studies[i]
       var orthancID = this._getOrthancStudyID(study.patient_id,study.study_instance_uid)
-      console.log(orthancID)
       let study_details = await apis.content.getStudiesDetails(orthancID)
       let row = {
         StudyOrthancID:study_details.ID,
