@@ -37,7 +37,8 @@ class AnonymizedResults extends Component {
         for (const item of anonTask.details.items) {
             if (item.state === "completed") {
                 try {
-                    let study = (await apis.content.getStudiesDetails(item.result));
+                    let study = await apis.content.getStudiesDetails(item.result)
+                    console.log(study)
                     studies.push({
                         StudyOrthancID: study.ID,
                         ...study.MainDicomTags,

@@ -89,8 +89,9 @@ class Orthanc_Monitoring extends EventEmitter {
         this.done = changes.Done
     }
         
+
+    MONITORING_SERVICE_CDBURNER = "CdBurner"
 }
 
-const MONITORING_SERVICE_CDBURNER = "CdBurner"
 
 module.exports = Orthanc_Monitoring
