@@ -19,6 +19,9 @@ import task from './task'
 import certificates from './certificates'
 import sshKeys from './sshKeys'
 import endpoints from './endpoints'
+import label from './label'
+import studylabel from './studylabel'
+import userlabel from './userlabel'
 
 const apis = {
   importDicom,
@@ -41,7 +44,10 @@ const apis = {
   task,
   certificates,
   sshKeys,
-  endpoints
+  endpoints,
+  label,
+  studylabel,
+  userlabel
 }
 
 export default apis

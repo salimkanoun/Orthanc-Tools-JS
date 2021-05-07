@@ -8,6 +8,7 @@ import Modal from 'react-bootstrap/Modal'
 import Metadata from '../../Metadata/Metadata'
 import Modify from '../../Modify/Modify'
 import { toast } from 'react-toastify'
+import CreateDicom from '../../CreateDicom/CreateDicom'
 export default class ActionBouton extends Component{
 
     state = {
@@ -15,7 +16,8 @@ export default class ActionBouton extends Component{
     }
 
     static defaultProps = {
-        hiddenMetadata: true
+        hiddenMetadata: true,
+        hiddenCreateDicom : false
     }
 
     setMetadata = () => {
@@ -28,21 +30,36 @@ export default class ActionBouton extends Component{
         let orthancID = this.props.orthancID
         switch(this.props.level){
             case 'patients':
-                await apis.content.deletePatient(orthancID)
-                toast.success("Patient " + orthancID + " have been deleted")
+                try{
+                    await apis.content.deletePatient(orthancID)
+                    toast.success("Patient " + orthancID + " have been deleted")
+                    this.props.onDelete(orthancID, this.props.parentID)
+                }catch(error){
+                    toast.error(error)
+                }
                 break
             case 'studies':
-                await apis.content.deleteStudies(orthancID)
-                toast.success("Studies " + orthancID + " have been deleted")
+                try{
+                    await apis.content.deleteStudies(orthancID)
+                    toast.success("Studies " + orthancID + " have been deleted")
+                    this.props.onDelete(orthancID, this.props.parentID)
+                }catch(error){
+                    toast.error(error)
+                }
                 break
             case 'series':
-                await apis.content.deleteSeries(orthancID)
-                toast.success("Series " + orthancID + " have been deleted")
+                try{
+                    await apis.content.deleteSeries(orthancID)
+                    toast.success("Series " + orthancID + " have been deleted")
+                    this.props.onDelete(orthancID, this.props.parentID)
+                }catch(error){
+                    toast.error(error)
+                }
                 break
             default:
                 toast.error("Wrong level")
         }
-        this.props.onDelete(orthancID, this.props.parentID)
+        
     }
 
     handleClick = (e) => {
@@ -71,8 +88,9 @@ export default class ActionBouton extends Component{
                         <OhifLink className='dropdown-item bg-info' {...this.props} />
                         <StoneLink className='dropdown-item bg-info' {...this.props} />
                         <button className='dropdown-item bg-info' type='button' onClick={ this.setMetadata} hidden={this.props.hiddenMetadata}>View Metadata</button>
-                        <Modify {...this.props} />
-                        <button className='dropdown-item bg-danger' type='button' onClick={ this.delete }>Delete</button>
+                        <CreateDicom {...this.props} hidden={this.props.hiddenCreateDicom}  />
+                        <Modify hidden={this.props.hiddenModify} {...this.props} />
+                        <button className='dropdown-item bg-danger' type='button' hidden={this.props.hiddenDelete} onClick={ this.delete }>Delete</button>
                     </Dropdown.Menu>
                 </Dropdown>
             </Fragment>

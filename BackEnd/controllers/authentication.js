@@ -29,9 +29,10 @@ const login = async function (req, res) {
       modify: infosUser.modify,
       cd_burner: infosUser.cd_burner
     }
-
-    var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
-    res.cookie("tokenOrthancJs", TOKEN, { httpOnly: true })
+    if(process.env.NODE_ENV != 'test'){
+      var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
+      res.cookie("tokenOrthancJs", TOKEN, { httpOnly: true })
+    }
     res.json(payload)
 
   } else {
@@ -42,7 +43,9 @@ const login = async function (req, res) {
 
 const logOut = function (req, res) {
   //Invalid the frontend cookie
-  res.cookie("tokenOrthancJs", '', { httpOnly: true })
+  if(process.env.NODE_ENV != 'test'){
+    res.cookie("tokenOrthancJs", '', { httpOnly: true })
+  }
   res.sendStatus(200)
 }
 

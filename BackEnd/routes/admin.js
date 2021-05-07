@@ -3,27 +3,62 @@ var adminRouter = express.Router()
 // Handle controller errors
 require('express-async-errors')
 
-const { changeSchedule, updateRobotOptions, getOrthancServer, setOrthancServer, getMode, changeMode, getOptions, getRedisServer, setRedisServer, setExportOption } = require('../controllers/options')
-const { reverseProxyGet, reverseProxyPost, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete } = require('../controllers/reverseProxy')
-const { getRoles, createRole, modifyRole, deleteRole, getPermission } = require('../controllers/role')
+const {
+    changeSchedule,
+    updateRobotOptions,
+    getOrthancServer,
+    setOrthancServer,
+    getMode,
+    changeMode,
+    getOptions,
+    getRedisServer,
+    setRedisServer,
+    setExportOption
+} = require('../controllers/options')
+const {
+    reverseProxyGet,
+    reverseProxyPost,
+    reverseProxyPut,
+    reverseProxyPutPlainText,
+    reverseProxyDelete
+} = require('../controllers/reverseProxy')
+const {getRoles, createRole, modifyRole, deleteRole, getPermission} = require('../controllers/role')
 
-const { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, 
-        setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames } = require('../controllers/ldap')
+const {
+    getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespondences,
+    setLdapCorrespondence, deleteCorrespondence, getLdapGroupeNames
+} = require('../controllers/ldap')
 
-const { userAuthMidelware, userAdminMidelware } = require('../midelwares/authentication')
+const {userAuthMidelware, userAdminMidelware} = require('../midelwares/authentication')
 
-const { allEndpoints, updateEndpoint, newEndpoint, removeEndpoint } = require('../controllers/endpoints')
-const { newCertificate, allCertificates, updateCertificate, removeCertificate, uploadCertificate } = require('../controllers/certificates')
-const { newKey, allKeys, updateKey, removeKey, uploadKey } = require('../controllers/sshKey')
-const { getTasksOfType, validateRetrieve, flushTasks } = require('../controllers/task')
+const {allEndpoints, updateEndpoint, newEndpoint, removeEndpoint} = require('../controllers/endpoints')
+const {newCertificate, allCertificates, removeCertificate, uploadCertificate} = require('../controllers/certificates')
+const {newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
+const {getTasksOfType, validateRetrieve, flushTasks} = require('../controllers/task')
+
+const {getLabels, createLabel, modifyLabel, deleteLabel} = require('../controllers/label')
+const {
+    getUsersLabels,
+    createUserLabel,
+    deleteUserLabel,
+    getUserLabels,
+    getLabelUsers
+} = require('../controllers/userLabel')
+const {
+    getStudiesLabels,
+    createStudyLabel,
+    deleteStudyLabel,
+    getStudiesLabel,
+    getStudyLabels
+} = require('../controllers/studyLabel')
 
 // OrthancToolsJS Options routes
-adminRouter.get('/options', [userAuthMidelware, userAdminMidelware],  getOptions)
+adminRouter.get('/options', [userAuthMidelware, userAdminMidelware], getOptions)
 adminRouter.put('/options', [userAuthMidelware, userAdminMidelware], changeSchedule)
 
 //Monitoring
 //SK ROUTE A RENOMMER
-adminRouter.put('/monitoring/burning/options', [userAuthMidelware, userAdminMidelware],updateRobotOptions)
+adminRouter.put('/monitoring/burning/options', [userAuthMidelware, userAdminMidelware], updateRobotOptions)
 
 // OrthancToolsJS Settings routes
 adminRouter.get('/options/orthanc', [userAuthMidelware, userAdminMidelware], getOrthancServer)
@@ -77,9 +112,9 @@ adminRouter.put('/changeMode', [userAuthMidelware, userAdminMidelware], changeMo
 adminRouter.get('/ldap/settings', [userAuthMidelware, userAdminMidelware], getLdapSettings)
 adminRouter.put('/ldap/settings', [userAuthMidelware, userAdminMidelware], setLdapSettings)
 adminRouter.get('/ldap/test', [userAuthMidelware, userAdminMidelware], testLdapSettings)
-adminRouter.post('/ldap/matches', [userAuthMidelware, userAdminMidelware], setLdapCorrespodence)
-adminRouter.get('/ldap/matches', [userAuthMidelware, userAdminMidelware], getLdapCorrespodences)
-adminRouter.delete('/ldap/matches', [userAuthMidelware, userAdminMidelware], deleteCorrespodence)
+adminRouter.post('/ldap/matches', [userAuthMidelware, userAdminMidelware], setLdapCorrespondence)
+adminRouter.get('/ldap/matches', [userAuthMidelware, userAdminMidelware], getLdapCorrespondences)
+adminRouter.delete('/ldap/matches', [userAuthMidelware, userAdminMidelware], deleteCorrespondence)
 adminRouter.get('/ldap/groupname', [userAuthMidelware, userAdminMidelware], getLdapGroupeNames)
 
 /*
@@ -87,7 +122,7 @@ adminRouter.get('/ldap/groupname', [userAuthMidelware, userAdminMidelware], getL
 */
 
 //OrthancToolsJS Task routes
-adminRouter.post('/tasks/:username/retrieve/validate', [userAuthMidelware, userAdminMidelware], validateRetrieve)
+adminRouter.post('/tasks/retrieve/:id/validate', [userAuthMidelware, userAdminMidelware], validateRetrieve)
 adminRouter.get('/tasks/type/:type', [userAuthMidelware, userAdminMidelware], getTasksOfType)
 adminRouter.delete('/tasks/type/:type/flush', [userAuthMidelware, userAdminMidelware], flushTasks)
 
@@ -103,7 +138,7 @@ adminRouter.delete('/endpoints/', [userAuthMidelware, userAdminMidelware], remov
 
 // Certificates
 adminRouter.get('/certificates', [userAuthMidelware, userAdminMidelware], allCertificates)
-adminRouter.put('/certificates/:id', [userAuthMidelware, userAdminMidelware], updateCertificate)
+//adminRouter.put('/certificates/:id', [userAuthMidelware, userAdminMidelware], updateCertificate)
 adminRouter.post('/certificates', [userAuthMidelware, userAdminMidelware], newCertificate)
 adminRouter.delete('/certificates/:id', [userAuthMidelware, userAdminMidelware], removeCertificate)
 adminRouter.post('/certificates/upload/:id', [userAuthMidelware, userAdminMidelware], uploadCertificate)
@@ -114,5 +149,28 @@ adminRouter.post('/keys/update', [userAuthMidelware, userAdminMidelware], update
 adminRouter.post('/keys/create', [userAuthMidelware, userAdminMidelware], newKey)
 adminRouter.delete('/keys/', [userAuthMidelware, userAdminMidelware], removeKey)
 adminRouter.post('/keys/upload/:id', [userAuthMidelware, userAdminMidelware], uploadKey)
+
+/*
+**LABELS
+*/
+// Labels
+adminRouter.get('/labels', [userAuthMidelware, userAdminMidelware], getLabels)
+adminRouter.put('/labels/:name', [userAuthMidelware, userAdminMidelware], modifyLabel)
+adminRouter.post('/labels/:name', [userAuthMidelware, userAdminMidelware], createLabel)
+adminRouter.delete('/labels/:name', [userAuthMidelware, userAdminMidelware], deleteLabel)
+
+//UserLabel
+adminRouter.get('/users/labels', [userAuthMidelware, userAdminMidelware], getUsersLabels)
+adminRouter.get('/users/labels/:label', [userAuthMidelware, userAdminMidelware], getLabelUsers)
+adminRouter.get('/users/:id/labels', [userAuthMidelware, userAdminMidelware], getUserLabels)
+adminRouter.post('/users/:id/labels/:name', [userAuthMidelware, userAdminMidelware], createUserLabel)
+adminRouter.delete('/users/:id/labels/:name', [userAuthMidelware, userAdminMidelware], deleteUserLabel)
+
+//StudyLabel
+adminRouter.get('/studies/labels', [userAuthMidelware, userAdminMidelware], getStudiesLabels)
+adminRouter.get('/studies/labels/:name', [userAuthMidelware, userAdminMidelware], getStudiesLabel)
+adminRouter.get('/studies/:uid/labels/', [userAuthMidelware, userAdminMidelware], getStudyLabels)
+adminRouter.post('/patient/:id/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], createStudyLabel)
+adminRouter.delete('/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], deleteStudyLabel)
 
 module.exports = adminRouter

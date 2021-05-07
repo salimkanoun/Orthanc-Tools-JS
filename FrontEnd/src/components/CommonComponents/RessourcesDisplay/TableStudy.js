@@ -1,10 +1,11 @@
-import React, { Component, Fragment } from 'react'
+import React, {Component, Fragment} from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import ActionBouton from './ActionBouton'
 import paginationFactory from 'react-bootstrap-table2-paginator'
-import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit'
+import ToolkitProvider, {CSVExport} from 'react-bootstrap-table2-toolkit'
+import LabelDropdown from "../../OrthancContent/LabelDropdown";
 
-const { ExportCSVButton } = CSVExport;
+const {ExportCSVButton} = CSVExport;
 
 export default class TableStudy extends Component {
 
@@ -45,14 +46,14 @@ export default class TableStudy extends Component {
             hidden: this.props.hiddenName,
             title: (cell, row, rowIndex, colIndex) => row.PatientName,
             editable: false,
-            style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+            style: {whiteSpace: 'normal', wordWrap: 'break-word'}
         }, {
             dataField: 'PatientID',
             text: 'Patient ID',
             sort: true,
             hidden: this.props.hiddenID,
             editable: false,
-            style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+            style: {whiteSpace: 'normal', wordWrap: 'break-word'}
         }, {
             dataField: 'StudyDate',
             text: 'Study Date',
@@ -64,7 +65,7 @@ export default class TableStudy extends Component {
             sort: true,
             title: (cell, row, rowIndex, colIndex) => row.StudyDescription,
             editable: false,
-            style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+            style: {whiteSpace: 'normal', wordWrap: 'break-word'}
         }, {
             dataField: 'newStudyDescription',
             text: 'New Description',
@@ -72,7 +73,7 @@ export default class TableStudy extends Component {
             editable: this.props.editable,
             hidden: !this.props.editable,
             csvExport: false,
-            style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+            style: {whiteSpace: 'normal', wordWrap: 'break-word'}
         }, {
             dataField: 'AccessionNumber',
             text: 'Accession Number',
@@ -91,7 +92,18 @@ export default class TableStudy extends Component {
             text: 'Action',
             hidden: this.props.hiddenActionBouton,
             formatter: ((value, row, index) =>
-                <ActionBouton level='studies' orthancID={row.StudyOrthancID} StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} row={row} refresh={this.props.refresh} />
+                    (<>
+                        <ActionBouton level='studies' orthancID={row.StudyOrthancID}
+                                      StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} row={row}
+                                      refresh={this.props.refresh}/>
+                        <LabelDropdown selectedStudiesGetter={() => [{MainDicomTags:{
+                                                                        StudyInstanceUID:row.StudyInstanceUID,
+                                                                        },
+                                                                        PatientMainDicomTags:{
+                                                                            PatientID:row.PatientID
+                                                                        } 
+                                                                    }]}/>
+                    </>)
             ),
             clickToSelect: false,
             editable: false,
@@ -101,14 +113,19 @@ export default class TableStudy extends Component {
             text: 'Remove',
             hidden: this.props.hiddenRemoveRow,
             formatter: (cell, row, index) => {
-                return <button type="button" className="btn btn-danger" onClick={(e) => { e.stopPropagation(); this.props.onDelete(row.StudyOrthancID) }} >Remove</button>
+                return <button type="button" className="btn btn-danger" onClick={(e) => {
+                    e.stopPropagation();
+                    this.props.onDelete(row.StudyOrthancID)
+                }}>Remove</button>
             },
             editable: false,
             csvExport: false
         }, {
             dataField: 'Anonymized',
             text: 'Anonymized ?',
-            style: (cell, row, index) => { return { color: row.AnonymizedFrom ? 'green' : 'red' } },
+            style: (cell, row, index) => {
+                return {color: row.AnonymizedFrom ? 'green' : 'red'}
+            },
             classes: 'text-center',
             formatter: (cell, row, index) => {
                 return row.AnonymizedFrom ? 'Yes' : 'No'
@@ -126,17 +143,18 @@ export default class TableStudy extends Component {
                 exportCSV
             >
                 {props => (
-                <Fragment>
-                    <ExportCSVButton className='btn btn-info float-right mr-3' hidden={this.props.hiddenCSV} {...props.csvProps} >To CSV</ExportCSVButton>
-                    <BootstrapTable
-                        {...this.props}
-                        {...props.baseProps}
-                        striped={true}
-                        pagination={this.props.pagination ? paginationFactory() : undefined}
-                        wrapperClasses="table-responsive"
-                    />
-                    {this.props.button}
-                </Fragment>)}
+                    <Fragment>
+                        <ExportCSVButton className='btn btn-info float-right mr-3'
+                                         hidden={this.props.hiddenCSV} {...props.csvProps} >To CSV</ExportCSVButton>
+                        <BootstrapTable
+                            {...this.props}
+                            {...props.baseProps}
+                            striped={true}
+                            pagination={this.props.pagination ? paginationFactory() : undefined}
+                            wrapperClasses="table-responsive"
+                        />
+                        {this.props.button}
+                    </Fragment>)}
             </ToolkitProvider>
         )
     }

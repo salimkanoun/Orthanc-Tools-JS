@@ -1,5 +1,5 @@
 const TaskType = require('./TaskType');
-const { OTJSBadRequestException, OTJSNotFoundException } = require("../Exceptions/OTJSErrors");
+const {OTJSBadRequestException, OTJSNotFoundException} = require("../Exceptions/OTJSErrors");
 const AnonTask = require('./tasks/AnonTask');
 const ExportTask = require('./tasks/ExportTask');
 const DeleteTask = require('./tasks/DeleteTask');
@@ -13,29 +13,29 @@ class Task {
      * Get a task with its uuid
      * @param {string} id uuid of the task
      */
-    static async getTask(id){
+    static async getTask(id) {
         let task = null;
         //Checking for task type with the first character of the task id
-        switch(id[0]){ 
+        switch (id[0]) {
             case 'a' :
                 task = await AnonTask.getTask(id);
                 break;
             case 'e' :
                 task = await ExportTask.getTask(id);
                 break;
-            case 'd' : 
+            case 'd' :
                 task = await DeleteTask.getTask(id);
                 break;
-            case 'r' : 
+            case 'r' :
                 task = await RetrieveTask.getTask(id);
                 break;
             default:
                 throw new OTJSBadRequestException("Unknown task type")
         }
-        if(task === null) {
+        if (task === null) {
             throw new OTJSNotFoundException("Unknown task");
         }
-        return task; 
+        return task;
     }
 
     /**
@@ -43,27 +43,27 @@ class Task {
      * @param {string} username username of the creator of the task
      * @param {string} type type of the task
      */
-    static async getUserTask(username, type){
+    static async getUserTask(username, type) {
         let task;
         switch (type) {
             case TaskType.RETRIEVE:
                 task = await RetrieveTask.getUserTask(username);
                 break;
             case TaskType.EXPORT:
-                task = await ExportTask.getUserTask(username);
+                task = [await ExportTask.getUserTask(username)];
                 break;
             case TaskType.ANONYMIZE:
                 task = await AnonTask.getUserTask(username);
                 break;
             case TaskType.DELETE:
-                task = await DeleteTask.getUserTask(username);
+                task = [await DeleteTask.getUserTask(username)];
                 break;
             default:
                 throw new OTJSBadRequestException('Unknown task type');
         }
 
-        if(task===null) throw new OTJSNotFoundException("Unknown task");
-        
+        if (task === null) throw new OTJSNotFoundException("Unknown task");
+
         return task;
     }
 
@@ -71,7 +71,7 @@ class Task {
      * Get all tasks of a given type
      * @param {string} type type of the task
      */
-    static async getTasksOfType(type){
+    static async getTasksOfType(type) {
         let tasks;
         switch (type) {
             case TaskType.RETRIEVE:
@@ -95,13 +95,13 @@ class Task {
     /**
      * Get all tasks
      */
-    static async getTasks(){
+    static async getTasks() {
         let tasks = [];
         tasks = tasks.concat(await RetrieveTask.getTasks());
         tasks = tasks.concat(await ExportTask.getTasks());
         tasks = tasks.concat(await AnonTask.getTasks());
         tasks = tasks.concat(await DeleteTask.getTasks());
-        
+
         return tasks;
     }
 
@@ -110,22 +110,22 @@ class Task {
      * @param {string} username creator of the task to be deleted
      * @param {string} type type of the task to be deleted
      */
-    static async deleteTaskOfUser(username, type){
+    static async deleteTaskOfUser(username, type) {
         let task;
         switch (type) {
             case TaskType.RETRIEVE:
-                task = await RetrieveTask.getUserTask(username);
-                if(!task)throw new OTJSNotFoundException('Unknown task');
+                task = await RetrieveTask.getUserTask(username)[0];
+                if (!task) throw new OTJSNotFoundException('Unknown task');
                 RetrieveTask.delete(task.id);
                 break;
             case TaskType.DELETE:
                 task = await DeleteTask.getUserTask(username);
-                if(!task)throw new OTJSNotFoundException('Unknown task');
+                if (!task) throw new OTJSNotFoundException('Unknown task');
                 DeleteTask.delete(task.id);
                 break;
             case TaskType.ANONYMIZE:
-                task = await AnonTask.getUserTask(username);
-                if(!task)throw new OTJSNotFoundException('Unknown task');
+                task = await AnonTask.getUserTask(username)[0];
+                if (!task) throw new OTJSNotFoundException('Unknown task');
                 AnonTask.delete(task.id);
                 break;
             default:
@@ -134,27 +134,27 @@ class Task {
     }
 
     /**
-     * Delete the task of a given id 
+     * Delete the task of a given id
      * @param {string} id uuid of the task to be deleted
      */
-    static async deleteTask(id){
+    static async deleteTask(id) {
         //Checking for task type with the first character of the task id
-        switch(id[0]){ 
-            case 'r' : 
+        switch (id[0]) {
+            case 'r' :
                 await RetrieveTask.delete(id);
                 break;
-            case 'a' : 
+            case 'a' :
                 await AnonTask.delete(id);
                 break;
-            case 'd' : 
+            case 'd' :
                 await DeleteTask.delete(id);
                 break;
             default:
                 throw new OTJSBadRequestException('Cant delete this task');
-        }    
+        }
     }
 
-    static async flushTasks(type){
+    static async flushTasks(type) {
         switch (type) {
             case TaskType.RETRIEVE:
                 await RetrieveTask.flush();

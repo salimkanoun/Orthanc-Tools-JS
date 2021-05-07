@@ -1,5 +1,5 @@
-const db = require('../database/models')
 const { EventEmitter } = require('events')
+const Option = require('../repository/Option')
 
 
 class OptionEventEmittter extends EventEmitter { }
@@ -12,7 +12,7 @@ const Options = {
   optionEventEmiter: new OptionEventEmittter(),
 
   getOptions:  () => {
-    return db.Option.findOne(({ where: { id: 1 } })).catch((error) => { throw error })
+    return Option.getOptionById(1)
   },
 
   setScheduleTime:  async (startHour, startMin, stopHour, stopMin) => {

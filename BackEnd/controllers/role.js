@@ -13,8 +13,8 @@ const modifyRole = async function (req, res) {
 }
 
 const deleteRole = async function (req, res) {
-    const name = req.body
-    await Roles.deleteRole(name)
+    const body = req.body
+    await Roles.deleteRole(body.name)
     res.sendStatus(200)
 }
 
@@ -26,7 +26,6 @@ const getRoles = async function (req, res) {
 const getPermission = async function (req, res) {
     let permission = await Roles.getPermission(req.params.name)
     res.json(permission)
-
 }
 
 module.exports = { createRole, modifyRole, deleteRole, getRoles, getPermission }

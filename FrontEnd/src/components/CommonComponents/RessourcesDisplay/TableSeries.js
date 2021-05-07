@@ -36,7 +36,7 @@ export default class TableSeries extends Component {
         dataField: 'Action',
         text: 'Action',
         hidden: this.props.hiddenActionBouton,
-        formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.SeriesOrthancID} parentID={row.StudyID} onDelete={this.props.onDelete} row={row} refresh={this.props.refreshSerie} hiddenMetadata={false} />)
+        formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.SeriesOrthancID} parentID={row.StudyID} onDelete={this.props.onDelete} row={row} refresh={this.props.refreshSerie} hiddenMetadata={false} hiddenCreateDicom={true} />)
     }, {
         dataField: 'Remove',
         text: 'Remove',

@@ -18,14 +18,14 @@ const retrieveRobot = {
             if (!answer.ok) {
                 throw answer
             }
-            return true
+            return answer.text();
         }).catch((error) => {
             throw error
         })
 
     },
 
-    validateRobot(username) {
+    validateRobot(id) {
 
         const validateRobotOption = {
             method: "POST",
@@ -35,13 +35,26 @@ const retrieveRobot = {
             }
         }
 
-        return fetch("/api/tasks/" + username + "/retrieve/validate", validateRobotOption).then((answer) => {
-            if (!answer.ok) { throw answer }
+        return fetch("/api/tasks/retrieve/" + id + "/validate", validateRobotOption).then((answer) => {
+            if (!answer.ok) {
+                throw answer
+            }
             return (answer.json())
         })
     },
 
-    deleteRobot(username) {
+    deleteRobot(id) {
+
+        const deleteRobotOption = {
+            method: "DELETE",
+        }
+
+        return fetch("/api/tasks/" + id, deleteRobotOption).catch((error) => {
+            throw error
+        })
+    },
+
+    deleteRobotUser(username) {
 
         const deleteRobotOption = {
             method: "DELETE",
@@ -63,12 +76,14 @@ const retrieveRobot = {
         }
 
         return fetch("/api/tasks/type/retrieve", getAllRobotsDetails).then((answer) => {
-            if (!answer.ok) { throw answer }
+            if (!answer.ok) {
+                throw answer
+            }
             return (answer.json())
         })
     },
 
-    deleteRobotItem(username, item) {
+    deleteRobotItem(id, item) {
 
         const deleteRobotItemOption = {
             method: "DELETE",
@@ -78,8 +93,10 @@ const retrieveRobot = {
             }
         }
 
-        return fetch("/api/tasks/" + username + "/retrieve/" + item, deleteRobotItemOption).then((answer) => {
-            if (!answer.ok) { throw answer }
+        return fetch("/api/tasks/retrieve/" + id + "/" + item, deleteRobotItemOption).then((answer) => {
+            if (!answer.ok) {
+                throw answer
+            }
             return;
         }).catch((error) => {
             throw error
@@ -87,13 +104,15 @@ const retrieveRobot = {
 
     },
 
-    flush(){
+    flush() {
         const flushRetrRobotsOption = {
             method: 'DELETE'
         }
 
-        return fetch('/api/tasks/type/retrieve/flush', flushRetrRobotsOption ).then(answer => {
-            if (!answer.ok) {throw answer}
+        return fetch('/api/tasks/type/retrieve/flush', flushRetrRobotsOption).then(answer => {
+            if (!answer.ok) {
+                throw answer
+            }
             return true
         }).catch(error => {
             throw error
