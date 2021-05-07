@@ -89,8 +89,8 @@ export default class ActionBouton extends Component{
                         <StoneLink className='dropdown-item bg-info' {...this.props} />
                         <button className='dropdown-item bg-info' type='button' onClick={ this.setMetadata} hidden={this.props.hiddenMetadata}>View Metadata</button>
                         <CreateDicom {...this.props} hidden={this.props.hiddenCreateDicom}  />
-                        <Modify {...this.props} />
-                        <button className='dropdown-item bg-danger' type='button' onClick={ this.delete }>Delete</button>
+                        <Modify hidden={this.props.hiddenModify} {...this.props} />
+                        <button className='dropdown-item bg-danger' type='button' hidden={this.props.hiddenDelete} onClick={ this.delete }>Delete</button>
                     </Dropdown.Menu>
                 </Dropdown>
             </Fragment>

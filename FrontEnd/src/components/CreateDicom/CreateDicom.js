@@ -13,7 +13,6 @@ export default class CreateDicom extends Component {
     }
 
     render = () => {
-        console.log(this.props)
         return (
             <Fragment>
                 <button className='dropdown-item bg-primary' type='button' hidden={this.props.hidden} onClick={this.openModify} >Create Dicom </button>

@@ -96,7 +96,13 @@ export default class TableStudy extends Component {
                         <ActionBouton level='studies' orthancID={row.StudyOrthancID}
                                       StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} row={row}
                                       refresh={this.props.refresh}/>
-                        <LabelDropdown selectedStudiesGetter={() => [{ID: row.StudyOrthancID}]}/>
+                        <LabelDropdown selectedStudiesGetter={() => [{MainDicomTags:{
+                                                                        StudyInstanceUID:row.StudyInstanceUID,
+                                                                        },
+                                                                        PatientMainDicomTags:{
+                                                                            PatientID:row.PatientID
+                                                                        } 
+                                                                    }]}/>
                     </>)
             ),
             clickToSelect: false,

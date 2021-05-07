@@ -1,19 +1,28 @@
 import React, { Component } from 'react'
 import apis from '../../services/apis'
 import { connect } from 'react-redux'
-//import { SHA1 } from 'crypto-js/sha1'
+import SHA1 from 'crypto-js/sha1'
+import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
+import TableMyDicomSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeriesFillFromParent'
+import Dropdown from 'react-bootstrap/Dropdown'
+import SendTo from '../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown'
 
 class MyDicom extends Component{
   state = {
     user:null,
-    labels:null,
+    labels:[],
     username:this.props.username,
-    studies:[]
+    studies:[],
+    currentStudyID:null,
+    currentLabel:null,
+    selectedRows:[]
   }
 
-  constructor(props){
-    super(props)
-    this.initializeState()
+  async componentDidMount(){
+    try{
+      await this.getUser()
+      await this.getUserLabels()  
+    }catch(err){}
   }
 
   getUser = async () => {
@@ -34,62 +43,105 @@ class MyDicom extends Component{
       this.setState({
         labels:label_tab
       })
-      console.log(this.state)
     }else{
       throw new Error('Undefined user')
     }
   }
 
-  initializeState = async () => {
-    await this.getUser()
-    await this.getUserLabels()
-  }
-
   getStudiesByLabel = async (name) => {
     return await apis.studylabel.getStudiesLabel(name)
   }
-/*
-  _getOrthancStudyID = () => {
-    let hash = SHA1( this.getPatientID() + '|' + this.getStudyInstanceUID() ).toString()
-    return `${hash.substring(0, 8)}-${hash.substring(8, 16)}-${hash.substring(16, 24)}-${hash.substring(24, 32)}-${hash.substring(32, 40)}`
-  }*/
 
-  handleClick = async (e) => {
+  _getOrthancStudyID = (patientID,studyInstanceUID) => {
+    let hash = SHA1(patientID + "|" + studyInstanceUID).toString()
+    return `${hash.substring(0, 8)}-${hash.substring(8, 16)}-${hash.substring(16, 24)}-${hash.substring(24, 32)}-${hash.substring(32, 40)}`
+  }
+
+  handleLabelClick = async (e) => {
     var label = e.target.name
+    this.setState({currentLabel:label})
     var studies = await this.getStudiesByLabel(label)
-    console.log(studies)
+    var studies_tab = []
 
     for(var i = 0;i<studies.length;i++){
-      //study instance uid to orthanc id ??? (need patientID but how do we do ???)
-      //get informations for a study
+      var study = studies[i]
+      var orthancID = this._getOrthancStudyID(study.patient_id,study.study_instance_uid)
+      let study_details = await apis.content.getStudiesDetails(orthancID)
+      let row = {
+        StudyOrthancID:study_details.ID,
+        StudyInstanceUID:study_details.MainDicomTags.StudyInstanceUID,
+        PatientID:study_details.PatientMainDicomTags.PatientID,
+        PatientName:study_details.PatientMainDicomTags.PatientName,
+        StudyDate:study_details.MainDicomTags.StudyDate,
+        StudyDescription:study_details.MainDicomTags.StudyDescription,
+        AccessionNumber:study_details.MainDicomTags.AccessionNumber
+      }
+      studies_tab.push(row)
     }
+
+    this.setState({
+      studies:studies_tab,
+      currentStudyID:null,
+      selectedRows:[]
+    })
   }
+
+  onStudyRowClick = (row)=> {
+    this.setState({ 
+      currentStudyID: row.StudyOrthancID
+    })
+
+}
+  onStudyCheckboxClick = (tab) =>{
+    var selectedRows = []
+    for(var i = 0; i<tab.length;i++){
+      selectedRows.push(tab[i].values.StudyOrthancID)
+    }
+    this.setState({selectedRows:selectedRows})
+  }
+
+  rowStyleStudies = (row) => {
+    var style = ''
+    if (row.StudyOrthancID === this.state.currentStudyID) {
+        style = 'rgba(255,153,51)'
+    }
+
+    return style;
+}
 
 
 
   render = () => {
-//just to test buttons
-    let labels = null
-    if(this.state.labels!=null){
-      labels = this.state.labels
-    }
-    else{
-      labels = []
-    }
-    labels.push('pancrea' , 'mic', 'radio', 'fracture')
-
     return (
-      <div>
-        <div className='jumbotron' name='buttons'>
-          <h1>Labels</h1> 
-          {labels.map(label => (
-            <button name={label} key={label} type='button' className='btn btn-primary' onClick={this.handleClick}> {label} </button>
+
+        <div className='jumbotron'>
+        <h1>Labels</h1> 
+          {this.state.labels.map(label => (
+            <button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} type='button' className='btn btn-primary' onClick={this.handleLabelClick}> {label.label_name} </button>
           ))}
+
+          <div className='row'>
+            
+            <div className='col-sm'>
+              <div className='float-right mb-3'>
+                <SendTo studies={this.state.selectedRows} />
+              </div>
+              <TableMyDicomPatientsStudies 
+                data={this.state.studies}
+                onRowClick={this.onStudyRowClick}
+                onSelect={this.onStudyCheckboxClick}
+                rowStyle={this.rowStyleStudies}
+              />
+            </div>
+
+            <div className='col-sm'>
+              <TableMyDicomSeriesFillFromParent 
+                studyID={this.state.currentStudyID}   
+              />
+            </div>
+
+          </div>
         </div>
-        
-        <div className='jumbotron' name='studies'>
-        </div>
-      </div>
     )
   }
 
