@@ -91,6 +91,35 @@ class ContentRootPanel extends Component {
         return style;
     }
 
+    getStudySelectedDetails = () => {
+        let selectedIds = this.child.current.getSelectedRessources()
+        let studiesOfSelectedPatients = []
+        console.log(selectedIds)
+        //Add all studies of selected patient
+        selectedIds.selectedPatients.forEach(orthancPatientId => {
+          //loop the redux and add all studies that had one of the selected patient ID
+          let studyArray = this.props.orthancContent.filter(study => {
+              if (study.ParentPatient === orthancPatientId) return true
+              else return false
+          })
+          //Add to the global list of selected studies
+          studiesOfSelectedPatients.push(...studyArray)
+        })
+  
+          //add selected level studies
+          selectedIds.selectedStudies.forEach(element => {
+            this.props.orthancContent.forEach(study => {
+                if (element === study.ID)
+                    studiesOfSelectedPatients.push(study)
+            });
+        });
+        //Get only unique study ids
+        let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
+
+        return uniqueSelectedOrthancStudyId
+      }
+
+
     render = () => {
         return (
             <div className='jumbotron'>
