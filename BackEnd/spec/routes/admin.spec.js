@@ -166,7 +166,7 @@ describe('POST/',()=>{
     }
 
     const res = await request(app)
-    .post('/api/studies/ABCDEFGH/labels/test')
+    .post('/api/patient/patient_test/studies/ABCDEFGH/labels/test')
     .set('Accept', 'application/json')
     .then((response)=>{
       expect(response.statusCode).toBe(201)

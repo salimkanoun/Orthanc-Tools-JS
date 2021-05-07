@@ -124,24 +124,27 @@ export default class Modify extends Component {
     }
 
     render = () => {
-        return (
-            <Fragment>
-                <button className='dropdown-item bg-warning' type='button' onClick={this.openModify} >Modify</button>
-                <ModalModify
-                    reference={n => this.node = n}
-                    show={this.state.show}
-                    onHide={() => this.setState({ show: false })}
-                    data={this.state.data}
-                    level={this.props.level}
-                    afterSaveCell={this.afterSaveCell}
-                    defaultCheckedPrivateTags={this.state.removePrivateTags}
-                    onClickPrivateTags={() => this.setState(prevState => ({ removePrivateTags: !prevState.removePrivateTags }))}
-                    defaultCheckedKeepSource={this.state.keepSource}
-                    onClickKeepSource={() => this.setState(prevState => ({ keepSource: !prevState.keepSource }))}
-                    onClickRemember={() => this.setState(prevState => ({ remember: !prevState.remember }))}
-                    modify={() => this.modify()}
-                />
-            </Fragment>
-        )
+        
+        var render=<></>
+        if(this.props.hidden!==true){
+            render=<Fragment>
+            <button className='dropdown-item bg-warning' type='button' onClick={this.openModify} >Modify</button>
+            <ModalModify
+                reference={n => this.node = n}
+                show={this.state.show}
+                onHide={() => this.setState({ show: false })}
+                data={this.state.data}
+                level={this.props.level}
+                afterSaveCell={this.afterSaveCell}
+                defaultCheckedPrivateTags={this.state.removePrivateTags}
+                onClickPrivateTags={() => this.setState(prevState => ({ removePrivateTags: !prevState.removePrivateTags }))}
+                defaultCheckedKeepSource={this.state.keepSource}
+                onClickKeepSource={() => this.setState(prevState => ({ keepSource: !prevState.keepSource }))}
+                onClickRemember={() => this.setState(prevState => ({ remember: !prevState.remember }))}
+                modify={() => this.modify()}
+            />
+        </Fragment>
+        }
+        return render
     }
 }
