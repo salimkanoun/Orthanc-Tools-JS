@@ -216,6 +216,10 @@ class Job {
     update(data) {
         return this._bullJob.update(data);
     }
+
+    remove() {
+        return this._bullJob.remove()
+    }
 }
 
 Queue.Job = Job;

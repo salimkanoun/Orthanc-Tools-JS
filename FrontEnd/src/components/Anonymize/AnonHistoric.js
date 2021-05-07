@@ -71,17 +71,19 @@ class AnonHistoric extends Component {
     deleteJobHandler = async (id) => {
         try {
             await apis.retrieveRobot.deleteRobot(id)
-            this.refreshHandler()
+            await this.refreshHandler()
         } catch (error) {
             toast.error(error.statusText)
         }
     }
 
     refreshHandler = () => {
+        let rows = []
+
         apis.task.getTaskOfUser(this.props.username, 'anonymize')
             .then(async taksIds => await Promise.all(taksIds.map(id => task.getTask(id))))
             .then((answerData) => {
-                let rows = []
+                
                 answerData.forEach(robotJob => {
                     rows.push({
                         id: robotJob.id,
@@ -96,9 +98,14 @@ class AnonHistoric extends Component {
                 })
 
             }).catch(error => {
-                if (error.statusCode === 404) {
+                console.log(error)
+                if (error.status === 404) {
                     toast.error(error.statusMessage);
                 }
+            }).finally( () => {
+                this.setState({
+                    rows: rows
+                })
             })
     }
 

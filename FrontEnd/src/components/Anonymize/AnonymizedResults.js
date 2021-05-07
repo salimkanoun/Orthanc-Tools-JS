@@ -43,13 +43,17 @@ class AnonymizedResults extends Component {
             if (item.state === "completed") {
                 try {
                     let study = await apis.content.getStudiesDetails(item.result)
-                    console.log(study)
+                    let originalStudy = await apis.content.getStudiesDetails(study.AnonymizedFrom)
                     studies.push({
                         ...study,
                         ...study.MainDicomTags,
                         ...study.PatientMainDicomTags,
                         StudyOrthancID: study.ID,
                         AnonymizedFrom: study.AnonymizedFrom,
+                        OriginalPatientName : originalStudy.PatientMainDicomTags.PatientName,
+                        OriginalPatientID : originalStudy.PatientMainDicomTags.PatientID,
+                        OriginalAccessionNumber : originalStudy.MainDicomTags.AccessionNumber,
+                        OriginalStudyDate : originalStudy.MainDicomTags.StudyDate,
                         newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
                         newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
                     });
@@ -80,15 +84,9 @@ class AnonymizedResults extends Component {
     }
 
     render = () => {
-        console.log(this.state)
         return (
             <Fragment>
                 <div>
-                    <div className="float-right">
-                        <button type='button' className="btn btn-warning"
-                            onClick={this.emptyAnonymizedList}>Empty List
-                        </button>
-                    </div>
                     <TableStudy
                         data={this.state.studies}
                         hiddenActionBouton={true}

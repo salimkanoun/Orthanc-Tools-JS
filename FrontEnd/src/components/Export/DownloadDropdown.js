@@ -77,7 +77,7 @@ export default class DownloadDropdown extends Component {
     }
 
     componentWillUnmount = () => {
-        if (this.job !== undefined) this.job.cancelJob()
+        if (this.job !== undefined) this.job.stopMonitoringJob()
     }
 
     render = () => {

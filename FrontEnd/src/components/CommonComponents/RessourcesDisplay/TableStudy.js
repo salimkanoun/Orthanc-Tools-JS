@@ -36,6 +36,22 @@ export default class TableStudy extends Component {
             text: 'Anonymized from',
             hidden: true
         }, {
+            dataField: 'OriginalPatientID',
+            text: 'Original Patient ID',
+            hidden: true
+        }, {
+            dataField: 'OriginalPatientName',
+            text: 'Original Patient Name',
+            hidden: true
+        }, {
+            dataField: 'OriginalAccessionNumber',
+            text: 'Original Accession Number',
+            hidden: true
+        }, {
+            dataField: 'OriginalStudyDate',
+            text: 'Original StudyDate',
+            hidden: true
+        }, {
             dataField: 'StudyOrthancID',
             text: 'Study ID',
             hidden: true
@@ -133,7 +149,7 @@ export default class TableStudy extends Component {
             hidden: this.props.hiddenAnonymized,
             csvExport: false
         }]
-
+        
     render = () => {
         return (
             <ToolkitProvider

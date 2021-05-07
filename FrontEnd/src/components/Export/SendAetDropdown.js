@@ -61,7 +61,7 @@ export default class SendAetDropdown extends Component {
     }
 
     componentWillUnmount = () => {
-        if (this.job !== undefined) this.job.cancel()
+        if (this.job !== undefined) this.job.stopMonitoringJob()
     }
 
     render = () => {

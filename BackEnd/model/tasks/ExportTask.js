@@ -98,8 +98,8 @@ class ExportTask {
      * Remove all jobs for export
      */
     static async flush() {
-        await Promise.all(JOBS_STATUS.map(x => archiveQueue.clean()));
-        await Promise.all(JOBS_STATUS.map(x => exporter.sendQueue.clean(1, x)));
+         archiveQueue.clean()
+         exporter.sendQueue.clean()
     }
 
     /**

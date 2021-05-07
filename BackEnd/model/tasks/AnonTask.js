@@ -159,7 +159,7 @@ class AnonTask {
      */
     static async delete(taskId) {
         let anonJobs = await AnonTask._getJobs(taskId);
-        anonJobs.forEach(job => job.remove()); //Delete jobs of the task
+        anonJobs.forEach(job =>{job.remove()}); //Delete jobs of the task
     }
 
     /**
@@ -177,6 +177,7 @@ class AnonTask {
 
         await Promise.all(jobs.map(x => {
             if (x.data.ttl === 1) {
+                console.log(x)
                 return x.remove();
             } else {
                 return x.update(
