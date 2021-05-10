@@ -45,6 +45,7 @@ function Table({columns,tableData,hiddenSelection,onRowClick,onSelect,rowStyle})
       initialState: {
         hiddenColumns: columns.map(column => {
             if (column.hidden === true) return column.accessor || column.id;
+            return -1;
         })
     },},
     useFilters,
@@ -70,7 +71,10 @@ function Table({columns,tableData,hiddenSelection,onRowClick,onSelect,rowStyle})
     }}
   )
 
-  React.useEffect(() => { onSelect(selectedFlatRows); }, [selectedFlatRows.length]);
+  React.useEffect(() => { 
+          onSelect(selectedFlatRows);
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [selectedFlatRows.length]);
   
   return (
     <>

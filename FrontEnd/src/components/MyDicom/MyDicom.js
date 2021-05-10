@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import SHA1 from 'crypto-js/sha1'
 import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
 import TableMyDicomSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeriesFillFromParent'
-import Dropdown from 'react-bootstrap/Dropdown'
 import SendTo from '../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown'
 
 class MyDicom extends Component{
