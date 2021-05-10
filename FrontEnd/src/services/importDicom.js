@@ -1,5 +1,3 @@
-import CreateDicom from "../components/Import/CreateDicom"
-
 const importDicom = {
 
     importDicom(dicomFile) {

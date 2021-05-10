@@ -65,7 +65,7 @@ export default class UserSelect extends Component {
     render() {
         let elements = this.props.users
             .filter(user => user.username.includes(this.state.value))
-            .map(user => <Dropdown.Item eventKey={user.username}>{user.username}</Dropdown.Item>)
+            .map(user => <Dropdown.Item key={user.username} eventKey={user.username}>{user.username}</Dropdown.Item>)
 
         return (
             <Dropdown onSelect={this.handleSelect} show={this.state.show}>
