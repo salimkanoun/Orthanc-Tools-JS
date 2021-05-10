@@ -40,6 +40,10 @@ export default class TableStudy extends Component {
             text: 'Original Patient ID',
             hidden: true
         }, {
+            dataField: 'OriginalStudyInstanceUID',
+            text: 'Original Study Instance UID',
+            hidden: true
+        },{
             dataField: 'OriginalPatientName',
             text: 'Original Patient Name',
             hidden: true
@@ -50,6 +54,10 @@ export default class TableStudy extends Component {
         }, {
             dataField: 'OriginalStudyDate',
             text: 'Original StudyDate',
+            hidden: true
+        }, {
+            dataField: 'StudyInstanceUID',
+            text: 'StudyInstanceUID',
             hidden: true
         }, {
             dataField: 'StudyOrthancID',

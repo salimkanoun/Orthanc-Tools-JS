@@ -54,6 +54,7 @@ class AnonymizedResults extends Component {
                         OriginalPatientID : originalStudy.PatientMainDicomTags.PatientID,
                         OriginalAccessionNumber : originalStudy.MainDicomTags.AccessionNumber,
                         OriginalStudyDate : originalStudy.MainDicomTags.StudyDate,
+                        OriginalStudyInstanceUID : originalStudy.MainDicomTags.StudyInstanceUID,
                         newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
                         newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
                     });
