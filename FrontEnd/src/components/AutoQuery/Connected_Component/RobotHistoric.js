@@ -91,7 +91,7 @@ export default class RobotJistoric extends Component {
 
             }).catch(error => {
                 console.log(error)
-                if(error.status != 404) toast.error(error.statusText + ' ' + error.message)
+                if(error.status !== 404) toast.error(error.statusText + ' ' + error.message)
             }).finally(() => {
                 this.setState({
                     rows: rows

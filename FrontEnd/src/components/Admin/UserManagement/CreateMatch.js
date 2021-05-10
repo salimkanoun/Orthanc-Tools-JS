@@ -72,7 +72,7 @@ export default class CreateMatch extends Component {
         let roles = []
         try {
             let existingsRoles = await apis.role.getRoles()
-            existingsRoles.map( (role) => {
+            existingsRoles.forEach( (role) => {
                 roles.push({value : role.name, label : role.name})
             })
         } catch (error) {
