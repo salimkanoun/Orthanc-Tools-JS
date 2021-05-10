@@ -67,7 +67,7 @@ module.exports = {
       burner_support_type : {
         allowNull: false,
         type: Sequelize.BOOLEAN, 
-        defaultValue: "Auto",
+        defaultValue: false,
       },
       burner_viewer_path: {
         allowNull: false,

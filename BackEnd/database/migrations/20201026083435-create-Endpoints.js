@@ -35,7 +35,7 @@ module.exports = {
         type:Sequelize.BOOLEAN
       },
       sshKey: {
-        type: Sequelize.UUID,
+        type: Sequelize.INTEGER,
         references:{
           model: 'SshKeys',
           references:'id'
