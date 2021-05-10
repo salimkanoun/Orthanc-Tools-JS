@@ -1,6 +1,6 @@
 {
   "name": "orthanctoolsjsfront",
-  "version": "0.1.0",
+  "version": "0.6.2-pre",
   "proxy": "http://localhost:4000",
   "private": true,
   "dependencies": {
