@@ -177,7 +177,6 @@ class AnonTask {
 
         await Promise.all(jobs.map(x => {
             if (x.data.ttl === 1) {
-                console.log(x)
                 return x.remove();
             } else {
                 return x.update(

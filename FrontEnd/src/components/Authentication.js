@@ -33,7 +33,6 @@ export default class Authentication extends Component {
     }
 
     if (answer.errorMessage != null) {
-      console.log(answer)
       this.setState({
         errorMessage: answer.errorMessage
       })
