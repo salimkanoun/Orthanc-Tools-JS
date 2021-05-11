@@ -8,7 +8,7 @@ const REDIS_OPTIONS = {
 }
 
 const queues = [];
-const CLEAN_GRACE = 50;
+const CLEAN_GRACE = 0;
 const DEFAULT_POOL_SIZE = 10;
 
 class Queue extends event.EventEmitter {
@@ -48,6 +48,10 @@ class Queue extends event.EventEmitter {
                 return;
             }
             this.emit('error', err);
+        });
+        this._queue.on('failed', (job, err) => {
+            console.log(err);
+            this.emit('failed', job, err);
         });
         queues.push(this);
     }
@@ -122,7 +126,14 @@ class Queue extends event.EventEmitter {
      * Remove all jobs of the queue
      * @returns {Promise<>} Promise resolved when the clean is done
      */
-    clean = () => Promise.all(Object.values(Queue._JOB_STATES_CLEAN).map(x => this._queue.clean(CLEAN_GRACE, x)));
+    clean = async () => {
+        await Promise.all(Object.values(Queue._JOB_STATES_CLEAN).map(x => this._queue.clean(CLEAN_GRACE, x)))
+
+        await this._queue.getActive().then(
+            jobs => Promise.all(jobs.map(job => job.releaseLock().then(
+                () => job.remove()))));
+
+    };
 
     /**
      * Returns a promise completed when the queue is ready
@@ -146,16 +157,17 @@ class Queue extends event.EventEmitter {
 
     static _batch_processor(processor) {
         return async (job, done) => {
+            job.progress(new Array(job.data.jobs.length).fill(null));
             let subJobs = job.data.jobs.map((j, i) => {
                 return {
                     data: j,
                     progress: async (progress = null) => {
-                        let prog = await job.progress() || [];
+                        let prog = await job.progress();
                         if (progress) {
                             prog[i] = progress;
                             await job.progress(prog);
                         }
-                        return prog;
+                        return prog[i];
                     }
                 }
             });
@@ -260,6 +272,7 @@ class BatchedJob extends Job {
         this._bullJob.data.jobs[this._i] = data;
         return this._bullJob.update(this._bullJob.data);
     }
+
 }
 
 Queue.JOB_STATES = {
