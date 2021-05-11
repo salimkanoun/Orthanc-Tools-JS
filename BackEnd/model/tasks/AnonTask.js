@@ -201,7 +201,7 @@ class AnonTask {
 
 
         let anonAnswer = await orthanc.makeAnon('studies', item.orthancStudyID, item.profile, item.newAccessionNumber, item.newPatientID, item.newPatientName, item.newStudyDescription, false).catch((err) => {
-            console.lerrorog(item)
+            console.error(item)
             console.error(err);
             done(err);
         })
