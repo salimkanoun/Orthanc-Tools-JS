@@ -41,7 +41,7 @@ class Endpoint {
             throw new OTJSBadRequestException('Endpoint : Invalid label')
         if (params.host === undefined || params.host === null || params.host === "")
             throw new OTJSBadRequestException('Endpoint : Invalid host')
-        if (params.protocol === undefined || params.protocol === null || !['ftp', 'sftp', 'ftps', 'webdav'].includes(params.protocol))
+        if (params.protocol === undefined || params.protocol === null || !['ftp', 'sftp', 'ftps', 'webdav','local'].includes(params.protocol))
             throw new OTJSBadRequestException('Endpoint : Invalid protocol')
     }
 

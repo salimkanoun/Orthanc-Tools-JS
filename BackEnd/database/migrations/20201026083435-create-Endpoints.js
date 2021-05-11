@@ -52,6 +52,16 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
+    }).then(() => {
+      queryInterface.bulkInsert('Endpoints', [{
+        id: 1,
+        label: 'local',
+        protocol: 'local',
+        host:'localhost',
+        createdAt: new Date().toDateString(),
+        updatedAt: new Date().toDateString()
+      }], {})
+
     });
   },
   down: (queryInterface, Sequelize) => {
