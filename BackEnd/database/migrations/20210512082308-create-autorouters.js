@@ -9,16 +9,21 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       rules: {
-        type: Sequelize.JSON
+        type: Sequelize.JSON,
+        allowNull: false,
       },
       target: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       running: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue:false
       },
       createdAt: {
         allowNull: false,
