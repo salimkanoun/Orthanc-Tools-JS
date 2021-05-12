@@ -53,16 +53,18 @@ export default class UserManagementModal
                 <Modal.Body>
                     <Table striped bordered hover>
                         <thead>
-                        <th>Users</th>
+                        <tr><th>Users</th></tr>
                         </thead>
-                        {this.state.userlabels.map(userlabel => <tr
-                            className={'d-flex justify-content-between align-content-center'}>
-                            <p>{this.state.users.filter(user => user.id === userlabel.user_id)[0].username}</p>
-                            <Button variant={"danger"}
-                                    onClick={() => apis.userlabel.deleteUserLabel(userlabel.user_id, this.props.label).then(() => this._refreshUserLabels())}>
-                                {'X'}
-                            </Button>
-                        </tr>)}
+                        <tbody>
+                            {this.state.userlabels.map(userlabel => <tr key={userlabel.user_id}
+                                className={'d-flex justify-content-between align-content-center'}>
+                                <td>{this.state.users.filter(user => user.id === userlabel.user_id)[0].username}</td>
+                                <td><Button  variant={"danger"}
+                                        onClick={() => apis.userlabel.deleteUserLabel(userlabel.user_id, this.props.label).then(() => this._refreshUserLabels())}>
+                                    {'X'}
+                                </Button></td>
+                            </tr>)}
+                        </tbody>
                     </Table>
                     <UserSelect
                         users={this.state.users.filter(user => !this.state.userlabels.map(ul => ul.user_id).includes(user.id))}

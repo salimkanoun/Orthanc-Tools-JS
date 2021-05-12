@@ -23,8 +23,7 @@ import { addStudiesToAnonList } from '../../../actions/AnonList'
 import MonitorTask from '../../../tools/MonitorTask'
 import { toast } from 'react-toastify';
 import { Fragment } from 'react';
-import Dropdown from 'react-bootstrap/esm/Dropdown';
-import retrieve from '../../../services/retrieve';
+import Dropdown from 'react-bootstrap/esm/Dropdown'
 
 
 /**

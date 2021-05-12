@@ -473,7 +473,7 @@ class Orthanc {
     }
 
     async makeAnon(level, orthancID, profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription, synchronous) {
-        let postData = this.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription, synchronous);
+        let postData = this.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription, synchronous)
         const answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID + '/anonymize', 'POST', postData)
         return answer
     }

@@ -15,6 +15,7 @@ function Table({ columns, tableData }) {
     initialState: {
       hiddenColumns: columns.map(column => {
           if (column.hidden === true) return column.accessor || column.id;
+          return -1;
       })
      },
   })

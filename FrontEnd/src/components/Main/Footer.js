@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import Modal from 'react-bootstrap/Modal'
+import packageInfo from '../../../package.json'
 
 export default class Footer extends Component {
 
@@ -8,7 +9,7 @@ export default class Footer extends Component {
   render = () => {
     return (
       <Fragment>
-        <div className="footer-copyright text-center mb-3">Orthanc Tools JS: 0.6.1
+        <div className="footer-copyright text-center mb-3">Orthanc Tools JS: {packageInfo.version}
 
               <button type="button" className='link-button ml-3' onClick={() => this.setState(prevState => ({ show: !prevState.show }))}>About</button>
         </div>
@@ -21,7 +22,7 @@ export default class Footer extends Component {
             <pre>
               Orthanc Tools JS{'\n\n'}
                     Maintainer : Salim Kanoun (salim.kanoun@gmail.com){'\n\n'}
-                    Contributors : Sylvain Berthier, Leo Couderc, Matthieu Legrand{'\n\n'}
+                    Contributors : Sylvain Berthier, Leo Couderc, Matthieu Legrand, Julien Davidou{'\n\n'}
                     Licence : AGPL v.3{'\n\n'}
               <a href='https://github.com/salimkanoun/Orthanc-Tools-JS/'>https://github.com/salimkanoun/Orthanc-Tools-JS/</a>
             </pre>

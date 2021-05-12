@@ -151,7 +151,7 @@ class Users {
     async getLDAPUserRight() {
 
         //Get Ldap Group having a local role correspondance
-        const ldapMatches = await DistantUser.getAllDistantUser()
+        const ldapMatches = await DistantUser.getAllLocalRoleAndLdapGroup()
 
         //Flatten known LdapGroup in Array
         let knownLdapGroups = ldapMatches.map((match) => {

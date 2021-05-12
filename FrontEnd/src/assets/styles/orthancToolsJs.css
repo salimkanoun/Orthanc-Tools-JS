@@ -436,6 +436,5 @@ button > p {
 }
 
 .table-responsive {
-    overflow-x: visible;
-
+    overflow-x: auto;
 }

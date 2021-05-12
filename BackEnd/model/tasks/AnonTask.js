@@ -1,8 +1,8 @@
-const {OTJSForbiddenException} = require("../../Exceptions/OTJSErrors");
+const { OTJSForbiddenException } = require("../../Exceptions/OTJSErrors");
 const TaskType = require("../TaskType");
 const Queue = require('../../adapter/bullAdapter');
 const Orthanc = require('../Orthanc');
-const {v4: uuid} = require('uuid');
+const { v4: uuid } = require('uuid');
 
 let orthanc = new Orthanc();
 const JOBS_TTL = 5;
@@ -159,7 +159,7 @@ class AnonTask {
      */
     static async delete(taskId) {
         let anonJobs = await AnonTask._getJobs(taskId);
-        anonJobs.forEach(job => job.remove()); //Delete jobs of the task
+        anonJobs.forEach(job => { job.remove() }); //Delete jobs of the task
     }
 
     /**
@@ -198,7 +198,13 @@ class AnonTask {
         let item = job.data.item
 
         //Requesting orthanc API to anonymize a study
-        let anonAnswer = await orthanc.makeAnon('studies', item.orthancStudyID, item.profile, item.newAccessionNumber, item.newPatientID, item.newPatientName, item.newStudyDescription, false);
+
+
+        let anonAnswer = await orthanc.makeAnon('studies', item.orthancStudyID, item.profile, item.newAccessionNumber, item.newPatientID, item.newPatientName, item.newStudyDescription, false).catch((err) => {
+            console.error(item)
+            console.error(err);
+            done(err);
+        })
 
         //Monitor orthanc job
         orthanc.monitorJob(anonAnswer.Path, (response) => {

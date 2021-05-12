@@ -55,6 +55,7 @@ const Ldap = {
 
     getAllCorrespondences: async () => {
         const correspondances = await DistantUser.getAllLocalRoleAndLdapGroup()
+        let results = []
         correspondances.forEach( (correspondance) => {
             results.push({ localRole: correspondance.local_role, ldapGroup: correspondance.ldap_group })
         });

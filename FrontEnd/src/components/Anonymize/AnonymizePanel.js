@@ -72,10 +72,10 @@ class AnonymizePanel extends Component {
                 listToAnonymize.push(anonItem)
             })
 
-            try{
+            try {
                 let answer = await apis.anon.createAnonRobot(listToAnonymize, this.props.username) //wait for the robot's answer to know what do to next
                 this.props.setTask(answer)
-            } catch (error){
+            } catch (error) {
                 toast.error(error.statusText)
             }
 
@@ -101,69 +101,67 @@ class AnonymizePanel extends Component {
     render = () => {
         return (
             <Fragment>
-                <div className="jumbotron">
-                    <h2 className='card-title mb-3'>Anonymize</h2>
-                    <div className="row">
-                        <div className="col-sm mb-3">
-                            <TablePatient
-                                data={this.getPatients()}
-                                rowEvents={this.rowEvents}
-                                hiddenActionBouton={true}
-                                hiddenRemoveRow={false}
-                                textNameColumn={'Original Name'}
-                                textIDColumn={'Original ID'}
-                                hiddenNewName={false}
-                                hiddenNewID={false}
-                                cellEdit={cellEditFactory({
-                                    blurToSave: true,
-                                    autoSelectText: true,
-                                    mode: 'click',
-                                    afterSaveCell: (oldValue, newValue, row, column) => {
-                                        this.props.saveNewValues(row.PatientOrthancID, column.dataField, newValue)
-                                    }
-                                })}
-                                rowStyle={this.rowStyle}
-                                onDelete={this.props.removePatientFromAnonList} />
-                        </div>
-                        <div className="col-sm">
-                            <TableStudy
-                                data={this.getStudy()}
-                                hiddenActionBouton={true}
-                                hiddenRemoveRow={false}
-                                onDelete={this.props.removeStudyFromAnonList}
-                                editable={true}
-                                cellEdit={cellEditFactory({
-                                    blurToSave: true,
-                                    autoSelectText: true,
-                                    mode: 'click',
-                                    afterSaveCell: (oldValue, newValue, row, column) => {
-                                        this.props.saveNewValues(row.StudyOrthancID, column.dataField, newValue)
-                                    }
-                                })}
-                                pagination={true}
-                            />
-                        </div>
+                <h2 className='card-title mb-3'>Anonymize</h2>
+                <div className="row">
+                    <div className="col-sm mb-3">
+                        <TablePatient
+                            data={this.getPatients()}
+                            rowEvents={this.rowEvents}
+                            hiddenActionBouton={true}
+                            hiddenRemoveRow={false}
+                            textNameColumn={'Original Name'}
+                            textIDColumn={'Original ID'}
+                            hiddenNewName={false}
+                            hiddenNewID={false}
+                            cellEdit={cellEditFactory({
+                                blurToSave: true,
+                                autoSelectText: true,
+                                mode: 'click',
+                                afterSaveCell: (oldValue, newValue, row, column) => {
+                                    this.props.saveNewValues(row.PatientOrthancID, column.dataField, newValue)
+                                }
+                            })}
+                            rowStyle={this.rowStyle}
+                            onDelete={this.props.removePatientFromAnonList} />
                     </div>
-                
-                    <div className="row mb-3">
-                        <div className='col-sm'>
-                            <input type='text' name='prefix' id='prefix' className='form-control' placeholder='prefix' onChange={(e) => this.setState({ prefix: e.target.value })} />
-                        </div>
-                        <div className='col-sm'>
-                            <button type='button' className='btn btn-warning mr-3' onClick={() => this.props.autoFill(this.state.prefix)}>AutoFill</button>
-                            <button type='button' className="btn btn-warning" onClick={this.props.emptyAnonymizeList}>Empty List</button>
+                    <div className="col-sm">
+                        <TableStudy
+                            data={this.getStudy()}
+                            hiddenActionBouton={true}
+                            hiddenRemoveRow={false}
+                            onDelete={this.props.removeStudyFromAnonList}
+                            editable={true}
+                            cellEdit={cellEditFactory({
+                                blurToSave: true,
+                                autoSelectText: true,
+                                mode: 'click',
+                                afterSaveCell: (oldValue, newValue, row, column) => {
+                                    this.props.saveNewValues(row.StudyOrthancID, column.dataField, newValue)
+                                }
+                            })}
+                            pagination={true}
+                        />
+                    </div>
+                </div>
 
-                        </div>
-                        <div className='col-sm'>
-                        </div>
+                <div className="row mb-3">
+                    <div className='col-sm'>
+                        <input type='text' name='prefix' id='prefix' className='form-control' placeholder='prefix' onChange={(e) => this.setState({ prefix: e.target.value })} />
                     </div>
-                    <div className="row">
-                        <div className='col-lg'>
-                            <AnonProfile />
-                        </div>
-                        <div className="col-sm">
-                            <button className='btn btn-primary' type='button' onClick={this.anonymize} >Anonymize</button>
-                        </div>
+                    <div className='col-sm'>
+                        <button type='button' className='btn btn-warning mr-3' onClick={() => this.props.autoFill(this.state.prefix)}>AutoFill</button>
+                        <button type='button' className="btn btn-warning" onClick={this.props.emptyAnonymizeList}>Empty List</button>
+
+                    </div>
+                    <div className='col-sm'>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className='col-lg'>
+                        <AnonProfile />
+                    </div>
+                    <div className="col-sm">
+                        <button className='btn btn-primary' type='button' onClick={this.anonymize} >Anonymize</button>
                     </div>
                 </div>
             </Fragment>

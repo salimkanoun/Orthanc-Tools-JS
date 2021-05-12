@@ -9,7 +9,8 @@ class LabelRootPanel extends Component {
     state = {
         userManagement: null,
         labels: [],
-        search: ''
+        search: '',
+        createLabel:''
     }
 
     componentDidMount() {
