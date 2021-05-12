@@ -188,7 +188,7 @@ adminRouter.delete('/studies/:uid/labels/:name', [userAuthMidelware, userAdminMi
 */
 adminRouter.get('/autorouting',[userAuthMidelware, userAdminMidelware],getAutorouters)
 adminRouter.get('/autorouting/:id',[userAuthMidelware, userAdminMidelware],getAutorouterById)
-adminRouter.post('/autorouting/:id',[userAuthMidelware, userAdminMidelware],createAutorouter)
+adminRouter.post('/autorouting/:name',[userAuthMidelware, userAdminMidelware],createAutorouter)
 adminRouter.put('/autorouting/:id',[userAuthMidelware, userAdminMidelware],modifyAutorouter)
 adminRouter.put('/autorouting/:id/running',[userAuthMidelware, userAdminMidelware],switchOnOff)
 adminRouter.delete('/autorouting/:id',[userAuthMidelware, userAdminMidelware],deleteAutorouter)

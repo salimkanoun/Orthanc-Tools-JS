@@ -2,11 +2,10 @@ const Autorouter = require('../repository/Autorouter')
 const {OTJSConflictException} = require('../Exceptions/OTJSErrors')
 
 class Autorouters{
-  static async createAutorouters(name,rules,target){
+  static async createAutorouters(name,rules,target,destination){
     const autorouter = await Autorouter.getOneByName(name)
     if(autorouter)throw new OTJSConflictException('This autorouter already exists !')
-
-    return Autorouter.create(name,rules,target)
+    return Autorouter.create(name,rules,target,destination)
   }
 
   static async getAllAutorouters(){

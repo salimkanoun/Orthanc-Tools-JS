@@ -132,6 +132,26 @@ describe('GET/',()=>{
       expect(response.statusCode).toBe(200)
     })
   })
+
+  it('Autorouters',async () => {
+    const res = await request(app)
+    .get('/api/autorouting')
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('Autorouter by ID', async () => {
+    const Autorouter = require ('../../repository/Autorouter')
+    await Autorouter.create('test',{value1:'t',operator:'in',value2:'test'},"New Studies",{location:'disk c'})
+    let autorouter = await Autorouter.getOneByName('test')
+    const res = await request(app)
+    .get('/api/autorouting/'+autorouter.id)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+    await Autorouter.delete(autorouter.id)
+  })
 })
 
 describe('POST/',()=>{
@@ -277,6 +297,21 @@ describe('POST/',()=>{
       expect(response.statusCode).toBe(200)
     })
   })
+
+  it('Autorouters',async () => {
+    const autorouter = {
+      rules : {value1:'t',operator:'in',value2:'test'},
+      target : "New Studies",
+      destination : {location:'disk c'},
+    }
+    const res = await request(app)
+    .post('/api/autorouting/test')
+    .set('Accept','application/json')
+    .send(autorouter)
+    .then((response)=>{
+      expect(response.statusCode).toBe(201)
+    })
+  })
 })
 
 describe('PUT/',()=>{
@@ -318,6 +353,44 @@ describe('PUT/',()=>{
     .then((response)=>{
       expect(response.statusCode).toBe(200)
     })
+  })
+
+  it('Autorouters', async ()=>{
+    const Autorouter = require('../../repository/Autorouter')
+    let autorouter = await Autorouter.getOneByName('test')
+    const modify = {
+      rules:{test:'conclude'}
+    }
+    const res = await request(app)
+    .put('/api/autorouting/'+autorouter.id)
+    .set('Accept','application/json')
+    .send(modify)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+
+    autorouter = await Autorouter.getOneByName('test')
+    expect(autorouter.rules.test).toEqual('conclude')
+    expect(autorouter.target).toBe("New Studies")
+  })
+
+  it('Autorouters switch ON/OFF', async ()=>{
+    const Autorouter = require('../../repository/Autorouter')
+    let autorouter = await Autorouter.getOneByName('test')
+    const modify = {
+      running:!autorouter.running
+    }
+    const res = await request(app)
+    .put('/api/autorouting/'+autorouter.id+'/running')
+    .set('Accept','application/json')
+    .send(modify)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+
+    autorouter = await Autorouter.getOneByName('test')
+    expect(autorouter.running).toBeTruthy()
+    expect(autorouter.target).toBe("New Studies")
   })
 
 })
@@ -388,6 +461,18 @@ describe('DELETE/',()=>{
     .delete('/api/keys')
     .set('Accept','application/json')
     .send(sshkey)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+  })
+
+  it('Autorouters', async () => {
+    const Autorouter = require('../../repository/Autorouter')
+    let autorouter = await Autorouter.getOneByName('test')
+
+    const res = await request(app)
+    .delete('/api/autorouting/'+autorouter.id)
+    .set('Accept','application/json')
     .then((response)=>{
       expect(response.statusCode).toBe(200)
     })
