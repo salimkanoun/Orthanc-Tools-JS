@@ -52,6 +52,16 @@ const {
     getStudyLabels
 } = require('../controllers/studyLabel')
 
+const{
+    createAutorouter,
+    getAutorouterById,
+    getAutorouters,
+    switchOnOff,
+    modifyAutorouter,
+    deleteAutorouter,
+} = require('../controllers/autorouter')
+
+
 // OrthancToolsJS Options routes
 adminRouter.get('/options', [userAuthMidelware, userAdminMidelware], getOptions)
 adminRouter.put('/options', [userAuthMidelware, userAdminMidelware], changeSchedule)
@@ -172,5 +182,15 @@ adminRouter.get('/studies/labels/:name', [userAuthMidelware, userAdminMidelware]
 adminRouter.get('/studies/:uid/labels/', [userAuthMidelware, userAdminMidelware], getStudyLabels)
 adminRouter.post('/patient/:id/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], createStudyLabel)
 adminRouter.delete('/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], deleteStudyLabel)
+
+/*
+**AUTO ROUTING
+*/
+adminRouter.get('/autorouting',[userAuthMidelware, userAdminMidelware],getAutorouters)
+adminRouter.get('/autorouting/:id',[userAuthMidelware, userAdminMidelware],getAutorouterById)
+adminRouter.post('/autorouting/:id',[userAuthMidelware, userAdminMidelware],createAutorouter)
+adminRouter.put('/autorouting/:id',[userAuthMidelware, userAdminMidelware],modifyAutorouter)
+adminRouter.put('/autorouting/:id/running',[userAuthMidelware, userAdminMidelware],switchOnOff)
+adminRouter.delete('/autorouting/:id',[userAuthMidelware, userAdminMidelware],deleteAutorouter)
 
 module.exports = adminRouter
