@@ -50,6 +50,10 @@ module.exports = {
         type: Sequelize.BOOLEAN, 
         defaultValue: false
       },
+      autorouting : {
+        type : Sequelize.BOOLEAN,
+        defaultValue:false,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -72,6 +76,7 @@ module.exports = {
         delete: true, 
         admin: true,
         cd_burner:true,
+        autorouting:true,
         createdAt: new Date().toDateString(),
         updatedAt: new Date().toDateString(),
         modify: true
@@ -87,6 +92,7 @@ module.exports = {
         delete: true, 
         admin: false,
         cd_burner:true,
+        autorouting:true,
         createdAt: new Date().toDateString(),
         updatedAt: new Date().toDateString(),
         modify: true
