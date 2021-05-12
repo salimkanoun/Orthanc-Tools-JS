@@ -22,15 +22,16 @@ class Autorouter{
     )
   }
 
-  static async create(name,rules,target){
+  static async create(name,rules,target,destination){
     return db.Autorouter.create({
       name:name,
       rules:rules,
-      target:target
+      target:target,
+      destination:destination
     })
   }
 
-  static async modify(id,name,rules,target,running){
+  static async modify(id,name,rules,target,running,destination){
     let autorouter = this.getOneById(id)
     if(autorouter==null)throw new OTJSDBEntityNotFoundException('This Autorouter doesn\'t exist')
 
@@ -39,6 +40,7 @@ class Autorouter{
     if(rules) modify.rules=rules
     if(target) modify.target=target
     if(running) modify.running=running
+    if(destination) modify.destination=destination
 
     return db.Autorouter.update(modify,{where:{id:id}})
   }

@@ -18,11 +18,11 @@ class Autorouters{
   }
 
   static async switchRunning(id,running){
-    return await Autorouter.modify(id,null,null,null,running)
+    return await Autorouter.modify(id,null,null,null,running,null)
   }
 
-  static async modifyAutorouter(id,name=null,rules=null,target=null){
-    return await Autorouter.modify(id,name,rules,target,null)
+  static async modifyAutorouter(id,name=null,rules=null,target=null,destination=null){
+    return await Autorouter.modify(id,name,rules,target,null,destination)
   }
 
   static async deleteAutorouter(id){
