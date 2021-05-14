@@ -63,8 +63,6 @@ class Exporter {
     }
 
     static async _saveLocally(job,done){
-        console.error('I\'M IN')
-        console.error(job)
         let file = job.data.file
         let uploadFolder = './data/export_dicom/local/'
         //job.data.endpoint.targetFolder
@@ -95,7 +93,6 @@ class Exporter {
             default:
                 break;
         }
-        console.error(formatedEndpoint)
         let file = {
             path: filePath,
             name: path.basename(filePath),
