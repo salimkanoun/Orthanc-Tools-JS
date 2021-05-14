@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false,
       },
       rules: {
-        type: Sequelize.JSON,
+        type: Sequelize.JSONB,
         allowNull: false,
       },
       target: {
@@ -26,7 +26,7 @@ module.exports = {
         defaultValue:false
       },
       destination: {
-        type: Sequelize.JSON,
+        type: Sequelize.JSONB,
         allowNull:false,
       },
       createdAt: {
