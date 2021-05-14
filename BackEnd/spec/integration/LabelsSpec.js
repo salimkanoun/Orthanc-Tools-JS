@@ -98,8 +98,8 @@ describe('Test Label Table', function () {
               modify label_name on Labels
               verify that the row a StudyLabels as been modified then delete it
             */
-            await StudyLabel.create('test2', 'label test')
-            var study_label = await StudyLabel.getStudyLabel('test2', 'label test')
+            await StudyLabel.create('test2', 'label test','a')
+            var study_label = await StudyLabel.getStudyLabel('test2', 'label test',)
             expect(study_label).not.toBeNull()
             expect(study_label.study_instance_uid).toBe('test2')
             expect(study_label.label_name).toBe('label test')

@@ -42,6 +42,8 @@
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
     "node-schedule": "^2.0.0",
+    "pg": "^8.6.0",
+    "pg-hstore": "^2.3.3",
     "promise-queue": "^2.2.5",
     "recursive-readdir": "^2.2.2",
     "redis": "^3.1.2",
