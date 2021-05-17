@@ -116,7 +116,7 @@ class MyDicom extends Component{
         <div className='jumbotron'>
         <h1>Labels</h1> 
           {this.state.labels.map(label => (
-            <button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} type='button' className='btn btn-primary' onClick={this.handleLabelClick}> {label.label_name} </button>
+            <button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} type='button' className={label.label_name==this.state.currentLabel ? 'btn btn-success':'btn btn-primary'} onClick={this.handleLabelClick}> {label.label_name} </button>
           ))}
 
           <div className='row'>
