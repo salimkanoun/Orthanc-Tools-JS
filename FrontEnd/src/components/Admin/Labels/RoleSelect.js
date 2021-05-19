@@ -19,13 +19,13 @@ const CustomToggle = React.forwardRef(({onClick, onChange, onEnter}, ref) => {
                     e.preventDefault();
                     onChange(e);
                 }}
-                placeholder={'Username'}
+                placeholder={'Role name'}
             />
         </div>
     )
 });
 
-export default class UserSelect extends Component {
+export default class RoleSelect extends Component {
 
     state = {
         value: '',
@@ -33,8 +33,8 @@ export default class UserSelect extends Component {
     }
 
     componentDidMount() {
-        apis.User.getUsers().then(users => {
-            this.setState({users})
+        apis.role.getRoles().then(roles => {
+            this.setState({roles})
         });
     }
 
@@ -43,7 +43,7 @@ export default class UserSelect extends Component {
     }
 
     handleSelect = (event) => {
-        let val = this.props.users.filter(user => user.username === event)[0];
+        let val = this.props.roles.filter(role => role.name === event)[0];
         if (val) {
             this.props.handleSelect(val);
         }
@@ -51,7 +51,7 @@ export default class UserSelect extends Component {
     }
 
     handleEnter = () => {
-        let val = this.props.users.filter(user => user.username === this.state.value)[0];
+        let val = this.props.roles.filter(role => role.name === this.state.value)[0];
         if (val) {
             this.props.handleSelect(val);
         }
@@ -63,9 +63,9 @@ export default class UserSelect extends Component {
     }
 
     render() {
-        let elements = this.props.users
-            .filter(user => user.username.includes(this.state.value))
-            .map(user => <Dropdown.Item key={user.username} eventKey={user.username}>{user.username}</Dropdown.Item>)
+        let elements = this.props.roles
+            .filter(role => role.name.includes(this.state.value))
+            .map(role => <Dropdown.Item key={role.name} eventKey={role.name}>{role.name}</Dropdown.Item>)
 
         return (
             <Dropdown onSelect={this.handleSelect} show={this.state.show}>
