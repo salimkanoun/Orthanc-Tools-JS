@@ -1,13 +1,13 @@
-const userlabel = {
-    getUsersLabels() {
-        const getUsersLabelsOptions = {
+const rolelabel = {
+    getRolesLabels() {
+        const getRolesLabelsOptions = {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             }
         }
-        return fetch('/api/users/labels', getUsersLabelsOptions).then((answer) => {
+        return fetch('/api/users/labels', getRolesLabelsOptions).then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
@@ -17,52 +17,56 @@ const userlabel = {
         })
     },
 
-    getUserLabels(id) {
-        const getUserLabelsOptions = {
+    getRoleLabels(username,role_name) {
+        const getRoleLabelsOptions = {
             method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }
-        return fetch('/api/users/' + id + '/labels', getUserLabelsOptions).then((answer) => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return answer.json()
-        }).catch(error => {
-            throw error
-        })
-    },
-
-    getLabelUsers(label_name) {
-        const getLabelUsersOptions = {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-            }
-        }
-        return fetch('/api/users/labels/' + label_name + '/', getLabelUsersOptions).then((answer) => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return answer.json()
-        }).catch(error => {
-            throw error
-        })
-    },
-
-    createUserLabel(id, name) {
-        const createUserLabelOptions = {
-            method: 'POST',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
         }
+        return fetch('/api/users/' + username +'/role/'+role_name+'/labels', getRoleLabelsOptions).then((answer) => {
+            if (!answer.ok) {
+                throw answer
+            }
+            return answer.json()
+        }).catch(error => {
+            throw error
+        })
+    },
 
-        return fetch('/api/users/' + id + '/labels/' + name, createUserLabelOptions).then((answer) => {
+    getLabelRoles(label_name) {
+        const getLabelRolesOptions = {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }
+        return fetch('/api/users/labels/' + label_name + '/', getLabelRolesOptions).then((answer) => {
+            if (!answer.ok) {
+                throw answer
+            }
+            return answer.json()
+        }).catch(error => {
+            throw error
+        })
+    },
+
+    createRoleLabel(username,role_name, label_name) {
+        const rolename = {
+            role_name : role_name
+        }
+        const createRoleLabelOptions = {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(rolename)
+        }
+
+        return fetch('/api/users/' + username + '/labels/' + label_name, createRoleLabelOptions).then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
@@ -71,16 +75,20 @@ const userlabel = {
 
     },
 
-    deleteUserLabel(id, name) {
-        const deleteUserLabelOptions = {
+    deleteRoleLabel(username,role_name, label_name) {
+        const rolename = {
+            role_name : role_name
+        }
+        const deleteRoleLabelOptions = {
             method: 'DELETE',
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
             },
+            body: JSON.stringify(rolename)
         }
 
-        return fetch('/api/users/' + id + '/labels/' + name, deleteUserLabelOptions).then((answer) => {
+        return fetch('/api/users/' + username + '/labels/' + label_name, deleteRoleLabelOptions).then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
@@ -88,4 +96,4 @@ const userlabel = {
         })
     }
 }
-export default userlabel
+export default rolelabel

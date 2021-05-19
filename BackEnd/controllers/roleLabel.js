@@ -16,7 +16,7 @@ const getAllRolesLabels= async function (req, res) {
 }
 
 const getRoleLabels = async function (req, res) {
-    let roleslabels = await RoleLabel.getLabelsFromRoleName(req.body.role_name)
+    let roleslabels = await RoleLabel.getLabelsFromRoleName(req.params.role_name)
     res.json(roleslabels)
 }
 const getLabelRoles = async function (req, res) {
