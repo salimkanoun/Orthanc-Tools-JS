@@ -1,3 +1,5 @@
+import { toast } from 'react-toastify'
+
 const label = {
   getAllLabels(){
     const getAllLabelsOptions={
@@ -56,7 +58,10 @@ const label = {
     }
 
     return fetch('/api/labels/'+name, deleteLabelsOptions).then((answer) => {
-        if (!answer.ok) { throw answer }
+        if (!answer.ok) { 
+          toast.error('Remove all Studies/Roles - Labels association !')
+          throw answer
+         }
         return true
     })
   },

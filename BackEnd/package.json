@@ -21,8 +21,8 @@
     "migrate": "./node_modules/.bin/sequelize db:migrate",
     "start": "cross-env NODE_ENV=production node OrthancToolsJS.js",
     "start-dev": "cross-env NODE_ENV=development node OrthancToolsJS.js",
-    "pretest": "cross-env NODE_ENV=test npm run config",
-    "test": "cross-env NODE_ENV=test ./node_modules/jest/bin/jest.js",
+    "pretest": "cross-env NODE_ENV=test npm run migrate",
+    "test":"cross-env NODE_ENV=test ./node_modules/.bin/jasmine",
     "build": "webpack OrthancToolsJS.js"
   },
   "dependencies": {

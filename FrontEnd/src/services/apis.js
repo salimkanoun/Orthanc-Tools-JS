@@ -21,7 +21,7 @@ import sshKeys from './sshKeys'
 import endpoints from './endpoints'
 import label from './label'
 import studylabel from './studylabel'
-import userlabel from './userlabel'
+import rolelabel from './rolelabel'
 
 const apis = {
   importDicom,
@@ -47,7 +47,7 @@ const apis = {
   endpoints,
   label,
   studylabel,
-  userlabel
+  rolelabel
 }
 
 export default apis
