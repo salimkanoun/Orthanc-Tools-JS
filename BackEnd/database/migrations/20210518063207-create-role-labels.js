@@ -10,7 +10,7 @@ module.exports = {
       },
       role_name: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       label_name: {
         allowNull: false,
