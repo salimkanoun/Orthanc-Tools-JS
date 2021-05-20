@@ -1,82 +1,89 @@
-// The forwardRef is important!!
-// Dropdown needs access to the DOM node in order to position the Menu
-import React, {Component} from "react";
-import {Dropdown, FormControl} from "react-bootstrap";
+import Select from 'react-select';
+import {Component} from 'react';
 import apis from "../../../services/apis";
+import rolelabel from '../../../services/rolelabel';
 
-const CustomToggle = React.forwardRef(({onClick, onChange, onEnter}, ref) => {
-    return (
-        <div onKeyDown={(e) => {
-            if (e.key === "Enter" && !!onEnter) onEnter();
-        }}>
-            <FormControl
-                ref={ref}
-                onClick={(e) => {
-                    e.preventDefault();
-                    onClick(e);
-                }}
-                onChange={(e) => {
-                    e.preventDefault();
-                    onChange(e);
-                }}
-                placeholder={'Role name'}
-            />
-        </div>
-    )
-});
+export default class RoleSelect extends Component{
 
-export default class RoleSelect extends Component {
 
     state = {
-        value: '',
-        show: false
+        selected: [],
+        label:this.props.label,
+        options: [],
     }
 
-    componentDidMount() {
-        apis.role.getRoles().then(roles => {
-            this.setState({roles})
-        });
-    }
-
-    handleChange = (event) => {
-        this.setState({value: event.target.value, show: true});
-    }
-
-    handleSelect = (event) => {
-        let val = this.props.roles.filter(role => role.name === event)[0];
-        if (val) {
-            this.props.handleSelect(val);
+    componentDidMount = async () => {
+        let roles = await apis.role.getRoles()
+        for(var i = 0; i < roles.length; i++){
+            roles[i].value=roles[i].name
+            roles[i].label=roles[i].value
         }
-        this.setState({value: '', show: false});
-    }
 
-    handleEnter = () => {
-        let val = this.props.roles.filter(role => role.name === this.state.value)[0];
-        if (val) {
-            this.props.handleSelect(val);
+        let selectedRoles = await rolelabel.getLabelRoles(this.props.label)
+        for(var j = 0; j < selectedRoles.length; j++){
+            selectedRoles[j].value=selectedRoles[j].role_name
+            selectedRoles[j].label=selectedRoles[j].value
         }
-        this.setState({value: '', show: false});
+        this.setState({
+            options:roles,
+            selected:selectedRoles
+        })
     }
 
-    handleClick = (event) => {
-        this.setState({show: !this.state.show});
+    handleOnChange = async (value) => {
+
+        var selected = this.state.selected
+        var difference = []
+        if(value.length<selected.length){
+            for(let i = 0;i<selected.length;i++){
+                if(!(value.includes(selected[i]))){
+                    difference.push(selected[i])
+                }
+            }
+            console.log('removed role: ',difference[0].value,' | to label: ',this.state.label)
+            await apis.rolelabel.deleteRoleLabel(this.props.username,difference[0].value,this.state.label)
+        }
+        else if(value.length>selected.length){
+            for(let i = 0;i<value.length;i++){
+                if(!(selected.includes(value[i]))){
+                    difference.push(value[i])
+                }
+            }
+            console.log('added role:',difference[0].value,' | to label: ',this.state.label)
+            await apis.rolelabel.createRoleLabel(this.props.username,difference[0].value,this.state.label)
+        }else{
+            console.error('Selector Change Error : Selected Values didn\'t change')
+        }
+        this.setState({ selected: value });
     }
+
+    choiceStyle = {
+        control: styles => ({ ...styles, backgroundColor: 'white' }),
+        multiValue: (styles) => {
+            return {
+              ...styles,
+            };
+          },
+          multiValueLabel: (styles) => ({
+            ...styles,
+          }),
+          multiValueRemove: (styles => ({
+            ...styles,
+          }))
+        };
 
     render() {
-        let elements = this.props.roles
-            .filter(role => role.name.includes(this.state.value))
-            .map(role => <Dropdown.Item key={role.name} eventKey={role.name}>{role.name}</Dropdown.Item>)
-
         return (
-            <Dropdown onSelect={this.handleSelect} show={this.state.show}>
-                <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components" onClick={this.handleClick}
-                                 onChange={this.handleChange}
-                                 onEnter={this.handleEnter}
-                                 value={this.state.value}/>
-                <Dropdown.Menu>
-                    {elements}
-                </Dropdown.Menu>
-            </Dropdown>
-        )
+            <div>
+            <Select
+                closeMenuOnSelect={false}
+                isMulti
+                options={this.state.options}
+                onChange={this.handleOnChange.bind(this)}
+                value={this.state.selected}
+                style={ this.choiceStyle}
+            />
+            </div>
+        );
     }
 }
