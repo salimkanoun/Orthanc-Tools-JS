@@ -25,7 +25,7 @@ const rolelabel = {
                 'Content-Type': 'application/json'
             },
         }
-        return fetch('/api/users/' + username +'/role/'+role_name+'/labels', getRoleLabelsOptions).then((answer) => {
+        return fetch('/api/users/' + username +'/roles/'+role_name+'/labels', getRoleLabelsOptions).then((answer) => {
             if (!answer.ok) {
                 throw answer
             }

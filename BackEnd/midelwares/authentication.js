@@ -173,24 +173,26 @@ const ownTaskOrIsAdminMidelware = async function (req,res,next){
 }
 
 const roleAccessLabelMidelware = async function(req,res,next){
-  if(process.env.NODE_ENV=='test'){
+  if(process.env.NODE_ENV==='test'){
     next()
   }
-  const RoleLabel = require('../model/RoleLabel')
-  const role_label = await RoleLabel.getLabelsFromRoleName(req.roles.name)
-  let access = false
+  else{
+    const RoleLabel = require('../model/RoleLabel')
+    const role_label = await RoleLabel.getLabelsFromRoleName(req.roles.name)
+    let access = false
 
-  for(var i = 0;i<role_label.length;i++){
-    if(req.params.name===role_label[i].label_name){
-      access=true
-      break
-    } 
-  }
+    for(var i = 0;i<role_label.length;i++){
+      if(req.params.name===role_label[i].label_name){
+        access=true
+        break
+      } 
+    }
 
-  if(access){
-    next()
-  }else{
-    userAdminMidelware(req,res,next)
+    if(access){
+      next()
+    }else{
+      userAdminMidelware(req,res,next)
+    }
   }
 }
 

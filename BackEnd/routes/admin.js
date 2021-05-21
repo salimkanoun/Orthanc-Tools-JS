@@ -168,7 +168,7 @@ adminRouter.delete('/labels/:name', [userAuthMidelware, userAdminMidelware], del
 //RoleLabel
 adminRouter.get('/users/labels', [userAuthMidelware,userAdminMidelware], getAllRolesLabels)
 adminRouter.get('/users/labels/:label', [userAuthMidelware,roleAccessLabelMidelware], getLabelRoles)
-adminRouter.get('/users/:name/role/:role_name/labels', [userAuthMidelware], getRoleLabels)
+adminRouter.get('/users/:name/roles/:role_name/labels', [userAuthMidelware], getRoleLabels)
 adminRouter.post('/users/:name/labels/:name', [userAuthMidelware, userAdminMidelware], createRoleLabel)
 adminRouter.delete('/users/:name/labels/:name', [userAuthMidelware, userAdminMidelware], deleteRoleLabel)
 
