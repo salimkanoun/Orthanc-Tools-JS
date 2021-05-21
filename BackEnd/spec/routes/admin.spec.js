@@ -282,7 +282,7 @@ describe('POST/',()=>{
         protocol : 'ftp'
     }
     const res = await request(app)
-    .post('/api/endpoints/create')
+    .post('/api/endpoints/')
     .set('Accept', 'application/json')
     .send(endpoint)
     .then((response)=>{
@@ -297,34 +297,6 @@ describe('POST/',()=>{
         break
       }
     }
-    await Endpoint.removeEndpoint(id)
-  })
-
-  it('Endpoints update',async ()=>{
-    await Endpoint.saveEndpoint(null,'test','localhost','','ftp',168,null,null,null,null,null)
-    let endpoint_delete = await Endpoint.getAllEndpoints()
-    var id
-    for(var i = 0; i<endpoint_delete.length; i++){
-      if(endpoint_delete[i].label==='test'){
-        id = endpoint_delete[i].id
-        break
-      }
-    }
-    const endpoint = {
-      id:id,
-      label : 'test2',
-      host : 'localhost',
-      targetFolder : 'oui',
-      protocol : 'webdav'
-    }
-    const res = await request(app)
-    .post('/api/endpoints/update')
-    .set('Accept', 'application/json')
-    .send(endpoint)
-    .then((response)=>{
-      expect(response.statusCode).toBe(200)
-    })
-
     await Endpoint.removeEndpoint(id)
   })
 
@@ -335,7 +307,7 @@ describe('POST/',()=>{
       pass:'\uD800\uDFFF'
     }
     const res  = await request(app)
-    .post('/api/keys/create')
+    .post('/api/keys/')
     .set('Accept', 'application/json')
     .send(sshkey)
     .then(async (response)=>{
@@ -347,23 +319,17 @@ describe('POST/',()=>{
     })
   })
 
-  it('SSHKeys update',async()=>{
+  it('SSHKeys upload',async()=>{
     let key = new SSHKeys({id:null,label:'test',path:'/uD800/uDFFF',pass:'\uD800\uDFFF'})
     var id = await SSHKeys.saveSshKey(key)
-    const sshkey={
-      id : id,
-      label : 'test2'
-    }
     const res  = await request(app)
-    .post('/api/keys/update')
+    .post('/api/keys/upload/'+id)
     .set('Accept', 'application/json')
-    .send(sshkey)
-    .then((response)=>{
+    .then(async (response)=>{
       expect(response.statusCode).toBe(200)
+      let key = await SSHKeys.getFromId(id)
+      await key.deleteSshKey()
     })
-    let key_modified = await SSHKeys.getFromId(id)
-    expect(key_modified.label).toBe('test2')
-    key_modified.deleteSshKey()
   })
 
   it('Autorouters',async () => {
@@ -385,6 +351,54 @@ describe('POST/',()=>{
 })
 
 describe('PUT/',()=>{
+
+  it('Endpoints update',async ()=>{
+    await Endpoint.saveEndpoint(null,'test','localhost','','ftp',168,null,null,null,null,null)
+    let endpoint_delete = await Endpoint.getAllEndpoints()
+    var id
+    for(var i = 0; i<endpoint_delete.length; i++){
+      if(endpoint_delete[i].label==='test'){
+        id = endpoint_delete[i].id
+        break
+      }
+    }
+    const endpoint = {
+      id:id,
+      label : 'test2',
+      host : 'localhost',
+      targetFolder : 'oui',
+      protocol : 'webdav'
+    }
+    const res = await request(app)
+    .put('/api/endpoints/')
+    .set('Accept', 'application/json')
+    .send(endpoint)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+
+    await Endpoint.removeEndpoint(id)
+  })
+
+  it('SSHKeys update',async()=>{
+    let key = new SSHKeys({id:null,label:'test',path:'/uD800/uDFFF',pass:'\uD800\uDFFF'})
+    var id = await SSHKeys.saveSshKey(key)
+    const sshkey={
+      id : id,
+      label : 'test2'
+    }
+    const res  = await request(app)
+    .put('/api/keys/')
+    .set('Accept', 'application/json')
+    .send(sshkey)
+    .then((response)=>{
+      expect(response.statusCode).toBe(200)
+    })
+    let key_modified = await SSHKeys.getFromId(id)
+    expect(key_modified.label).toBe('test2')
+    key_modified.deleteSshKey()
+  })
+
   it('Labels',async()=>{
     await Label.createLabels('test')
     const label ={

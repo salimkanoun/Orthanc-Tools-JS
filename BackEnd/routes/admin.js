@@ -138,8 +138,8 @@ adminRouter.delete('/tasks/type/:type/flush', [userAuthMidelware, userAdminMidel
 
 // Export endpoints
 adminRouter.get('/endpoints/', [userAuthMidelware, userAdminMidelware], allEndpoints)
-adminRouter.post('/endpoints/update', [userAuthMidelware, userAdminMidelware], updateEndpoint)
-adminRouter.post('/endpoints/create', [userAuthMidelware, userAdminMidelware], newEndpoint)
+adminRouter.put('/endpoints/', [userAuthMidelware, userAdminMidelware], updateEndpoint)
+adminRouter.post('/endpoints/', [userAuthMidelware, userAdminMidelware], newEndpoint)
 adminRouter.delete('/endpoints/', [userAuthMidelware, userAdminMidelware], removeEndpoint)
 
 // Certificates
@@ -151,8 +151,8 @@ adminRouter.post('/certificates/upload/:id', [userAuthMidelware, userAdminMidelw
 
 //Ssh keys
 adminRouter.get('/keys', [userAuthMidelware, userAdminMidelware], allKeys)
-adminRouter.post('/keys/update', [userAuthMidelware, userAdminMidelware], updateKey)
-adminRouter.post('/keys/create', [userAuthMidelware, userAdminMidelware], newKey)
+adminRouter.put('/keys/', [userAuthMidelware, userAdminMidelware], updateKey)
+adminRouter.post('/keys/', [userAuthMidelware, userAdminMidelware], newKey)
 adminRouter.delete('/keys/', [userAuthMidelware, userAdminMidelware], removeKey)
 adminRouter.post('/keys/upload/:id', [userAuthMidelware, userAdminMidelware], uploadKey)
 

@@ -11,7 +11,7 @@ const allCertificates = async function (req, res) {
 }
 
 const uploadCertificate = async function (req, res) {
-    await Certificate.setCertContent(req.params.id, JSON.stringify(req.body));
+    await Certificate.setCertContent(req.params.id,req.body);
     res.sendStatus(201)
 }
 
