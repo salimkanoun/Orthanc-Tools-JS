@@ -326,7 +326,7 @@ describe('POST/',()=>{
     .post('/api/keys/upload/'+id)
     .set('Accept', 'application/json')
     .then(async (response)=>{
-      expect(response.statusCode).toBe(200)
+      expect(response.statusCode).toBe(201)
       let key = await SSHKeys.getFromId(id)
       await key.deleteSshKey()
     })
