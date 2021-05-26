@@ -21,6 +21,23 @@ const orthancContent = {
         })
     },
 
+    getPatientDetails(ID){
+        const getPatientsDetailsOption = {
+            method: 'GET', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        }
+
+        return fetch('/api/patients/' + ID+ '?expand', getPatientsDetailsOption ).then((response) => {
+            if (!response.ok) {throw response}
+            return response.json()
+        }).catch((error) => {
+            toast.error(error)
+        })
+    },
+
     getStudiesDetails(ID){
 
         const getStudiesDetailsOption = {

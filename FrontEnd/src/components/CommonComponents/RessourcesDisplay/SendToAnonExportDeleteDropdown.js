@@ -8,6 +8,8 @@ import {addStudiesToDeleteList} from '../../../actions/DeleteList'
 import {addStudiesToExportList} from '../../../actions/ExportList'
 import {addStudiesToAnonList} from '../../../actions/AnonList'
 
+import apis from '../../../services/apis'
+
 /*
 * props :
 *     - studies : an array on OrthancID
@@ -16,49 +18,65 @@ import {addStudiesToAnonList} from '../../../actions/AnonList'
 
 class SendToAnonExportDeleteDropwdown extends Component {
 
-    getStudySelectedDetails = () => {
+    getStudySelectedDetails = async () => {
       let selectedIds = {}
       selectedIds.selectedPatients=this.props.patients || []
       selectedIds.selectedStudies=this.props.studies || []
 
-      console.log(selectedIds.selectedStudies)
       let studiesOfSelectedPatients = []
 
       //Add all studies of selected patient
-      selectedIds.selectedPatients.forEach(orthancPatientId => {
-        //loop the redux and add all studies that had one of the selected patient ID
-        let studyArray = this.props.orthancContent.filter(study => {
-            if (study.ParentPatient === orthancPatientId) return true
-            else return false
-        })
-        //Add to the global list of selected studies
-        studiesOfSelectedPatients.push(...studyArray)
-      })
+      for(let i = 0;i<selectedIds.selectedPatients.length;i++){
+        let studyArray = await apis.content.getPatientDetails(selectedIds.selectedPatients[i])
+        for(var j = 0;j<studyArray.Studies.length;j++){
+          let study = await apis.content.getStudiesDetails(studyArray.Studies[j])
+          studiesOfSelectedPatients.push(study)
+        }
+      }
 
-        //add selected level studies
-        selectedIds.selectedStudies.forEach(element => {
-          this.props.orthancContent.forEach(study => {
-              if (element === study.ID)
-                  studiesOfSelectedPatients.push(study)
-          });
-      });
+      //add selected level studies
+      for(let i=0;i<selectedIds.selectedStudies.length;i++){
+        let study = await apis.content.getStudiesDetails(selectedIds.selectedStudies[i])
+        studiesOfSelectedPatients.push(study)
+      }
+
       //Get only unique study ids
-      let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
+      
+      let uniqueSelectedOrthancStudyId = []
+      for(let i = 0;i<studiesOfSelectedPatients.length;i++){
+        var count = 0
+        for(let j = 0;j<studiesOfSelectedPatients.length;j++){
+          if(studiesOfSelectedPatients[i].ID===studiesOfSelectedPatients[j].ID) count++
+        }
+        if(count===1){
+          uniqueSelectedOrthancStudyId.push(studiesOfSelectedPatients[i])
+        }else{
+          let countU = 0
+          for(let k=0;k<uniqueSelectedOrthancStudyId.length;k++){
+            if(studiesOfSelectedPatients[i].ID===uniqueSelectedOrthancStudyId[k].ID) countU++
+          }
+          if(countU===0)uniqueSelectedOrthancStudyId.push(studiesOfSelectedPatients[i])
+        }
+      }
+      console.log(uniqueSelectedOrthancStudyId)
 
       return uniqueSelectedOrthancStudyId
     }
 
-    sendToDeleteList = () => {
-        this.props.addStudiesToDeleteList(this.getStudySelectedDetails())
+    sendToDeleteList = async () => {
+        let studies = await this.getStudySelectedDetails()
+        this.props.addStudiesToDeleteList(studies)
     }
 
-    sendToAnonList = () => {
-        this.props.addStudiesToAnonList(this.getStudySelectedDetails())
+    sendToAnonList = async () => {
+        let studies = await this.getStudySelectedDetails()
+        this.props.addStudiesToAnonList(studies)
     }
 
     sendToExportList = async () => {
+         let studies = await this.getStudySelectedDetails()
         //Get selected studies array
-        let selectedStudiesArray = treeToStudyArray(this.getStudySelectedDetails())
+        let selectedStudiesArray = treeToStudyArray(studies)
         //Send it to redux
         this.props.addStudiesToExportList(selectedStudiesArray)
     }
@@ -85,16 +103,10 @@ class SendToAnonExportDeleteDropwdown extends Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-      orthancContent: state.OrthancContent.orthancContent
-  }
-}
-
 const mapDispatchToProps = {
   addStudiesToDeleteList,
   addStudiesToAnonList,
   addStudiesToExportList
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SendToAnonExportDeleteDropwdown)
+export default connect(null,mapDispatchToProps)(SendToAnonExportDeleteDropwdown)
