@@ -21,7 +21,7 @@ class SendToAnonExportDeleteDropwdown extends Component {
       selectedIds.selectedPatients=this.props.patients || []
       selectedIds.selectedStudies=this.props.studies || []
 
-      console.log(selectedIds.selectedPatients)
+      console.log(selectedIds.selectedStudies)
       let studiesOfSelectedPatients = []
 
       //Add all studies of selected patient

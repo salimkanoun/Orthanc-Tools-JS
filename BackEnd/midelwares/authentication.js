@@ -59,14 +59,9 @@ const importMidelware = async function (req, res, next) {
 const contentMidelware = async function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
-  }
-  else if (req.roles.content) {
+  } else if (req.roles.content) {
     next()
-  }else if(req.headers.referer.includes('mydicom')){
-    next()
-  }
-   else {
-    console.error
+  } else {
     res.sendStatus(403);
   }
 }
