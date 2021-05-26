@@ -1,6 +1,5 @@
 import React, { Component } from "react"
 import { connect } from "react-redux"
-import Select from "react-select"
 
 import papa from 'papaparse'
 
