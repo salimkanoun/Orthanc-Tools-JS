@@ -78,10 +78,10 @@ class Autorouting{
   /**
    * Dispatch the different jobs for each rules when a new event commes
    * @param {String} orthancID OrthancID of the target
-   * @param {String} changeType type of the target
+   * @param {String} targetType type of the target ('Patient','Study','Series')
    */
-  _jobDispatcher = async (orthancID,changeType) => {
-    switch(changeType){
+  _jobDispatcher = async (orthancID,targetType) => {
+    switch(targetType){
       case 'Patient':
         let patient = await this.orthanc.getOrthancDetails('patients', orthancID)
         let studies = await this.orthanc.getStudiesDetailsOfPatient(orthancID)
@@ -152,11 +152,15 @@ class Autorouting{
   _ruleToBoolean = (rule,object) => {
     switch(rule.operator){
       case "IN":
-        break
+        let target = rule.target.toLowerCase()
+        let value = rule.value.toLowerCase()
+        return target.contains(value)
       case "==":
-        break
+        let target = rule.target.toLowerCase()
+        let value = rule.value.toLowerCase()
+        return target==value
       default:
-        break
+        throw new Error('Failed to find an operator for this rule: '+rule)
     }
   }
 }
