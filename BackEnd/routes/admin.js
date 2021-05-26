@@ -31,7 +31,7 @@ const {
 
 const {userAuthMidelware, userAdminMidelware, roleAccessLabelMidelware} = require('../midelwares/authentication')
 
-const {allEndpoints, updateEndpoint, newEndpoint, removeEndpoint} = require('../controllers/endpoints')
+const {updateEndpoint, newEndpoint, removeEndpoint} = require('../controllers/endpoints')
 const {newCertificate, allCertificates, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const {newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
 const {getTasksOfType, validateRetrieve, flushTasks} = require('../controllers/task')
@@ -127,7 +127,6 @@ adminRouter.delete('/tasks/type/:type/flush', [userAuthMidelware, userAdminMidel
 */
 
 // Export endpoints
-adminRouter.get('/endpoints/', [userAuthMidelware, userAdminMidelware], allEndpoints)
 adminRouter.post('/endpoints/update', [userAuthMidelware, userAdminMidelware], updateEndpoint)
 adminRouter.post('/endpoints/create', [userAuthMidelware, userAdminMidelware], newEndpoint)
 adminRouter.delete('/endpoints/', [userAuthMidelware, userAdminMidelware], removeEndpoint)

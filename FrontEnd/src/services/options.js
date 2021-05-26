@@ -63,7 +63,7 @@ const options = {
     }).catch(error => { throw error })
   },
 
-  getRedisServer(){
+  getRedisServer() {
 
     let optionRedisServer = {
       method: 'GET',
@@ -228,7 +228,7 @@ const options = {
     })
 
   },
-  
+
   setExportOptions(export_transcoding) {
 
     let payload = {
@@ -248,6 +248,18 @@ const options = {
       if (response.ok) {
         return true
       } else throw response
+    }).catch(error => {
+      throw error
+    })
+
+  },
+
+  getExportOption() {
+    return fetch('/api/options/export-transcoding').then(response => {
+      if (response.ok) {
+        return response.text()
+      }
+      else throw response
     }).catch(error => {
       throw error
     })

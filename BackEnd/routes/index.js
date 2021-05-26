@@ -13,6 +13,9 @@ const { importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
 
 const { checkForOrthancQueueReady, getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, deleteRetrieveItem, addExportTask } = require('../controllers/task')
 
+const {allEndpoints} = require('../controllers/endpoints')
+const { getExportTranscoding } = require('../controllers/options')
+
 router.get('/modalities', userAuthMidelware, reverseProxyGet)
 router.post('/modalities/*/store', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
 
@@ -69,6 +72,10 @@ router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', [userAuthMidelware,cd
 router.get('/tools/time', userAuthMidelware, (req, res)=>{
     res.send((new Date()).toLocaleString());
 })
+
+//Endpoints and transcoding option
+router.get('/endpoints/', [userAuthMidelware], allEndpoints)
+router.get('/options/export-transcoding', [userAuthMidelware], getExportTranscoding)
 
 /*
 ** TASKS
