@@ -1,9 +1,9 @@
-const {OTJSForbiddenException, OTJSNotFoundException} = require("../../Exceptions/OTJSErrors");
+const { OTJSForbiddenException, OTJSNotFoundException, OTJSBadRequestException } = require("../../Exceptions/OTJSErrors");
 const Orthanc = require("../Orthanc");
 const TaskType = require("../TaskType");
 const Queue = require("../../adapter/bullAdapter");
 const OrthancQueryAnswer = require("../OrthancData/queries-answer/OrthancQueryAnswer");
-const {v4: uuid} = require('uuid');
+const { v4: uuid } = require('uuid');
 const schedule = require('node-schedule');
 const Options = require('../Options');
 const time = require('../../utils/time');
@@ -29,8 +29,10 @@ class RetrieveTask {
 
         let retrieve = 0;
         for (const job of retrieveJobs) {
-            retrieve += await job.progress();
+            let jobProgress = await job.progress()
+            if (jobProgress != null) retrieve += jobProgress
         }
+        
         retrieve /= (retrieveJobs.length === 0 ? 1 : retrieveJobs.length);
         return {
             validation,
@@ -110,17 +112,18 @@ class RetrieveTask {
      */
     static async validateTask(id) {
         let task = await RetrieveTask.getTask(id);
-        if (task === null) throw new OTJSNotFoundException("No task of this kind");
 
-        let jobs = await validationQueue.getJobs();
+        if (task === null) throw new OTJSNotFoundException("No task of this kind");
+        if (task.progress.validation != 100 ) throw OTJSBadRequestException("Items validation still in progress")
+        let jobs = await validationQueue.getJobs()
 
         let jobsData = [];
         for (const job of jobs) {
             jobsData.push(
                 {
                     data: job.data
-                });
-            if (!await job.finished()) return;
+                }
+            );
         }
         await retrieveQueue.addJobs(jobsData);
     }
@@ -138,15 +141,14 @@ class RetrieveTask {
         let progress = await RetrieveTask.getProgress(validationJobs, retrieveJobs);
 
         //Making state
-        let state = null;
-        if (progress.validation === 0) {
-            state = 'waiting validation';
-        } else if (progress.validation < 100) {
-            state = 'validation';
+        let state = null
+        
+        if (progress.validation < 100) {
+            state = 'validating robot';
         } else if (progress.validation === 100 && progress.retrieve === 0 && retrieveJobs.length === 0) {
-            state = 'waiting retireve'
+            state = 'waiting admin validation'
         } else if (progress.validation === 100 && progress.retrieve < 100 && retrieveJobs.length !== 0) {
-            state = 'retrieve';
+            state = 'retrieving';
         } else if (progress.validation === 100 && progress.retrieve === 100 && retrieveJobs.length !== 0) {
             state = 'completed';
             for (const job of validationJobs) {

@@ -33,7 +33,7 @@ const AutoQueryRoot = () => {
         component = <TableQuery switchTab={switchTab} />
         break
       case RESULT:
-        component = <Results switchusernameTab={switchTab} setTaskId={setLastTaskId}/>
+        component = <Results switchTab={switchTab} setTaskId={setLastTaskId}/>
         break
       case MY_ROBOT:
         component = <RobotView id={lastTaskId} />

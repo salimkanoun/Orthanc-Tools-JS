@@ -74,6 +74,11 @@ class ExportPanel extends Component {
             let aets = await apis.aets.getAets()
             let peers = await apis.peers.getPeers()
             let endpoints = await apis.endpoints.getEndpoints()
+            endpoints.push({        
+                id: -1,
+                label: 'Local on Mounted Disk',
+                protocol: 'local',
+            })
             this.setState({
                 aets: aets,
                 peers: peers,

@@ -7,7 +7,9 @@ const crypto = require('../../adapter/cryptoAdapter');
 
 class Endpoint {
     constructor(params) {
-        Endpoint._checkParams(params)
+        if(params.id!=-1){
+            Endpoint._checkParams(params)
+        }
 
         //Setting the variables that are commune between a manual call and a call with DB entity
         this.id = params.id || null
@@ -37,12 +39,12 @@ class Endpoint {
     }
 
     static _checkParams(params) {
-        if (params.label === undefined || params.label === null || params.label === "")
-            throw new OTJSBadRequestException('Endpoint : Invalid label')
-        if (params.host === undefined || params.host === null || params.host === "")
-            throw new OTJSBadRequestException('Endpoint : Invalid host')
-        if (params.protocol === undefined || params.protocol === null || !['ftp', 'sftp', 'ftps', 'webdav'].includes(params.protocol))
-            throw new OTJSBadRequestException('Endpoint : Invalid protocol')
+            if (params.label === undefined || params.label === null || params.label === "")
+                throw new OTJSBadRequestException('Endpoint : Invalid label')
+            if (params.host === undefined || params.host === null || params.host === "")
+                throw new OTJSBadRequestException('Endpoint : Invalid host')
+            if (params.protocol === undefined || params.protocol === null || !['ftp', 'sftp', 'ftps', 'webdav'].includes(params.protocol))
+                throw new OTJSBadRequestException('Endpoint : Invalid protocol')
     }
 
     async set(params) {
@@ -51,7 +53,7 @@ class Endpoint {
         this.host = params.host || this.host
         this.targetFolder = params.targetFolder || this.targetFolder
         this.protocol = params.protocol || this.protocol
-        this.port = params.port || this.protocol
+        this.port = params.port || this.port
         this.digest = params.digest || this.digest
         this.sshKey = params.sshKey || this.sshKey
         this.ssl = params.ssl || this.ssl

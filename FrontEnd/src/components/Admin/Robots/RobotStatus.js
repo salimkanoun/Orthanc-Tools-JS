@@ -20,8 +20,11 @@ export default class RobotStatus extends Component {
         dataField: 'queriesNb',
         text: 'Number of Queries'
     }, {
-        dataField: 'progress',
-        text: 'Progress'
+        dataField: 'validation',
+        text: 'Progress Validation'
+    }, {
+        dataField: 'retrieve',
+        text: 'Progress Retrieve'
     }, {
         dataField: 'state',
         text: 'State'
@@ -107,7 +110,8 @@ export default class RobotStatus extends Component {
                     key: Math.random(),
                     name: robotJob.details.projectName,
                     username: robotJob.creator,
-                    progress: (robotJob.progress.retrieve+robotJob.progress.validation)/2,
+                    retrieve: robotJob.progress.retrieve + '%',
+                    validation: robotJob.progress.validation + '%',
                     state: robotJob.state,
                     queriesNb: robotJob.details.items.length,
                     valid: robotJob.details.valid,

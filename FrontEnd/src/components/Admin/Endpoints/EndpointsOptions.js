@@ -75,7 +75,7 @@ export default class EndpointsOptions extends Component{
     render = () => {
         return (
             <div>
-                <h2>Endpoint Options</h2>
+                <h2>Export Transcoding </h2>
                 <div className='grid-form-group'>
                     <label htmlFor="export_transcoding">Transfer Syntax : </label>
                     <Select single options={TRANSCODING_OPTIONS} name='export_transcoding' value={this.getSelectedObject(TRANSCODING_OPTIONS, this.state.export_transcoding)} onChange={this.handleChangeSelect} />

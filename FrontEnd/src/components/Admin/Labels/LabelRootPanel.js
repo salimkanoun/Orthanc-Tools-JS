@@ -2,14 +2,15 @@ import React, {Component} from "react";
 import LabelsTable from "./LabelsTable";
 import apis from "../../../services/apis";
 import {Button, Form, FormControl, InputGroup} from "react-bootstrap";
-import UserManagementModal from "./UserManagementModal";
+import RoleManagementModal from "./RoleManagementModal";
 
 class LabelRootPanel extends Component {
 
     state = {
-        userManagement: null,
+        roleManagement: null,
         labels: [],
-        search: ''
+        search: '',
+        createLabel:''
     }
 
     componentDidMount() {
@@ -18,8 +19,8 @@ class LabelRootPanel extends Component {
         })
     }
 
-    handleManageUser = (label) => {
-        this.setState({userManagement: label});
+    handleManageRole = (label) => {
+        this.setState({roleManagement: label});
     }
 
     handlerDelete = (label) => {
@@ -68,7 +69,7 @@ class LabelRootPanel extends Component {
                     <InputGroup.Text>{filteredLabel.length}</InputGroup.Text>
                 </InputGroup.Append>
             </InputGroup>
-            <LabelsTable labels={filteredLabel} handlerManageUser={this.handleManageUser}
+            <LabelsTable labels={filteredLabel} handlerManageRole={this.handleManageRole}
                          handlerDelete={this.handlerDelete}/>
             <Form onSubmitCapture={this.handleCreateSubmit}>
                 <InputGroup>
@@ -82,7 +83,7 @@ class LabelRootPanel extends Component {
                     </InputGroup.Append>
                 </InputGroup>
             </Form>
-            <UserManagementModal label={this.state.userManagement} handlerManageUser={this.handleManageUser}/>
+            <RoleManagementModal label={this.state.roleManagement} handlerManageRole={this.handleManageRole}/>
         </>)
     }
 }

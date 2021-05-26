@@ -1,13 +1,13 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
-import {toast} from 'react-toastify';
-import {connect} from 'react-redux'
+import { toast } from 'react-toastify';
+import { connect } from 'react-redux'
 import apis from '../../services/apis';
 import AnonymizedResults from './AnonymizedResults';
 import task from '../../services/task';
-import {Modal} from "react-bootstrap";
-import {addStudiesToDeleteList} from "../../actions/DeleteList";
-import {addStudiesToExportList} from "../../actions/ExportList";
+import { Modal } from "react-bootstrap";
+import { addStudiesToDeleteList } from "../../actions/DeleteList";
+import { addStudiesToExportList } from "../../actions/ExportList";
 
 class AnonHistoric extends Component {
 
@@ -17,8 +17,9 @@ class AnonHistoric extends Component {
     }
 
     columns = [{
-        dataField: 'name',
-        text: 'Name'
+        dataField: 'id',
+        text: 'id'
+
     }, {
         dataField: 'queriesNb',
         text: 'Number of Queries'
@@ -31,20 +32,19 @@ class AnonHistoric extends Component {
         formatter: (cell, row, rowIndex, parentComponent) => {
             return (<div className="text-center">
                 <input type="button" className='btn btn-primary' onClick={() => {
-                    this.setState({selectedTask: row.id})
-                }} value="Show Result"/>
+                    this.setState({ selectedTask: row.id })
+                }} value="Show Result" />
             </div>)
         }
     }, {
         dataField: 'remove',
         text: 'Remove Robot',
-        formatExtraData: this,
-        formatter: (cell, row, rowIndex, parentComponent) => {
+        formatter: (cell, row, rowIndex) => {
             return (
                 <div className="text-center">
                     <input type="button" className='btn btn-danger'
-                           onClick={() => parentComponent.deleteJobHandler(row.id, parentComponent.refreshHandler)}
-                           value="Remove Job"/>
+                        onClick={() => this.deleteJobHandler(row.id)}
+                        value="Remove Job" />
                 </div>
             )
         }
@@ -68,24 +68,25 @@ class AnonHistoric extends Component {
         clearInterval(this.intervalChcker)
     }
 
-    deleteJobHandler = async (id, refreshHandler) => {
+    deleteJobHandler = async (id) => {
         try {
             await apis.retrieveRobot.deleteRobot(id)
-            refreshHandler()
+            await this.refreshHandler()
         } catch (error) {
             toast.error(error.statusText)
         }
     }
 
     refreshHandler = () => {
+        let rows = []
+
         apis.task.getTaskOfUser(this.props.username, 'anonymize')
             .then(async taksIds => await Promise.all(taksIds.map(id => task.getTask(id))))
             .then((answerData) => {
-                let rows = []
+                
                 answerData.forEach(robotJob => {
                     rows.push({
                         id: robotJob.id,
-                        name: robotJob.details.projectName,
                         username: robotJob.creator,
                         state: robotJob.state,
                         queriesNb: robotJob.details.items.length
@@ -97,33 +98,34 @@ class AnonHistoric extends Component {
                 })
 
             }).catch(error => {
-            if (error.statusCode === 404) {
-                toast.error(error.statusMessage);
-            }
-        })
+                console.log(error)
+                if (error.status === 404) {
+                    toast.error(error.statusMessage);
+                }
+            }).finally( () => {
+                this.setState({
+                    rows: rows
+                })
+            })
     }
 
     render = () => {
-        let resultTable = (this.state.selectedTask ?
-            <AnonymizedResults anonTaskID={this.state.selectedTask}
-                               addStudiesToDeleteList={this.props.addStudiesToDeleteList}
-                               addStudiesToExportList={this.props.addStudiesToExportList}/> :
-            <></>)
-
         return (
             <>
                 <Modal dialogClassName={"big-modal"} show={!!this.state.selectedTask}
-                       onHide={() => this.setState({selectedTask: null})}>
+                    onHide={() => this.setState({ selectedTask: null })} size="lg">
                     <Modal.Header closeButton>
-                        <Modal.Title>Task Results</Modal.Title>
+                        <Modal.Title>Anonymize Result</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {resultTable}
+                        {this.state.selectedTask ?
+                            <AnonymizedResults anonTaskID={this.state.selectedTask} /> :
+                            null
+                        }
                     </Modal.Body>
                 </Modal>
-                <h2 className="card-title">Anonimizations : </h2>
-                <BootstrapTable keyField="username" striped={true} data={this.state.rows} columns={this.columns}
-                                wrapperClasses='table-responsive'/>
+                <BootstrapTable keyField="id" striped={true} data={this.state.rows} columns={this.columns}
+                    wrapperClasses='table-responsive' />
             </>
         )
     }
