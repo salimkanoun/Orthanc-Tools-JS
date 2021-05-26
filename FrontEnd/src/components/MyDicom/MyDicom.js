@@ -8,7 +8,7 @@ import SendTo from '../CommonComponents/RessourcesDisplay/SendToAnonExportDelete
 
 class MyDicom extends Component{
   state = {
-    user:null,
+    role_name:this.props.roles.name,
     labels:[],
     username:this.props.username,
     studies:[],
@@ -19,32 +19,15 @@ class MyDicom extends Component{
 
   async componentDidMount(){
     try{
-      await this.getUser()
-      await this.getUserLabels()  
-    }catch(err){}
+      await this.getRoleLabels()  
+    }catch(err){console.log(err)}
   }
 
-  getUser = async () => {
-    let users = await apis.User.getUsers()
-    for(var i = 0;i<users.length;i++){
-      if(users[i].username===this.props.username){
-        this.setState({
-          user:users[i]
-        })
-        break
-      }
-    }
-  }
-
-  getUserLabels = async () => {
-    if(this.state.user!==null){
-      let label_tab = await apis.userlabel.getUserLabels(this.state.user.id)
-      this.setState({
-        labels:label_tab
-      })
-    }else{
-      throw new Error('Undefined user')
-    }
+  getRoleLabels = async () => {
+    let label_tab = await apis.rolelabel.getRoleLabels(this.state.username,this.state.role_name)
+    this.setState({
+      labels:label_tab
+    })
   }
 
   getStudiesByLabel = async (name) => {
@@ -61,7 +44,7 @@ class MyDicom extends Component{
     this.setState({currentLabel:label})
     var studies = await this.getStudiesByLabel(label)
     var studies_tab = []
-
+    
     for(var i = 0;i<studies.length;i++){
       var study = studies[i]
       var orthancID = this._getOrthancStudyID(study.patient_id,study.study_instance_uid)
@@ -116,7 +99,7 @@ class MyDicom extends Component{
         <div className='jumbotron'>
         <h1>Labels</h1> 
           {this.state.labels.map(label => (
-            <button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} type='button' className='btn btn-primary' onClick={this.handleLabelClick}> {label.label_name} </button>
+            <button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} type='button' className={label.label_name===this.state.currentLabel ? 'btn btn-success':'btn btn-primary'} onClick={this.handleLabelClick}> {label.label_name} </button>
           ))}
 
           <div className='row'>
@@ -148,7 +131,8 @@ class MyDicom extends Component{
 
 const mapStateToProps = (state) => {
   return {
-    username: state.OrthancTools.username
+    username: state.OrthancTools.username,
+    roles: state.OrthancTools.roles
   }
 }
 

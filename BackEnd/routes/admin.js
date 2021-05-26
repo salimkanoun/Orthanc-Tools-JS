@@ -29,7 +29,7 @@ const {
     setLdapCorrespondence, deleteCorrespondence, getLdapGroupeNames
 } = require('../controllers/ldap')
 
-const {userAuthMidelware, userAdminMidelware} = require('../midelwares/authentication')
+const {userAuthMidelware, userAdminMidelware, roleAccessLabelMidelware} = require('../midelwares/authentication')
 
 const {allEndpoints, updateEndpoint, newEndpoint, removeEndpoint} = require('../controllers/endpoints')
 const {newCertificate, allCertificates, removeCertificate, uploadCertificate} = require('../controllers/certificates')
@@ -38,12 +38,8 @@ const {getTasksOfType, validateRetrieve, flushTasks} = require('../controllers/t
 
 const {getLabels, createLabel, modifyLabel, deleteLabel} = require('../controllers/label')
 const {
-    getUsersLabels,
-    createUserLabel,
-    deleteUserLabel,
-    getUserLabels,
-    getLabelUsers
-} = require('../controllers/userLabel')
+    createRoleLabel, deleteRoleLabel, getAllRolesLabels, getLabelRoles, getRoleLabels
+} = require('../controllers/roleLabel')
 const {
     getStudiesLabels,
     createStudyLabel,
@@ -154,22 +150,22 @@ adminRouter.post('/keys/upload/:id', [userAuthMidelware, userAdminMidelware], up
 **LABELS
 */
 // Labels
-adminRouter.get('/labels', [userAuthMidelware, userAdminMidelware], getLabels)
+adminRouter.get('/labels', [userAuthMidelware], getLabels)
 adminRouter.put('/labels/:name', [userAuthMidelware, userAdminMidelware], modifyLabel)
 adminRouter.post('/labels/:name', [userAuthMidelware, userAdminMidelware], createLabel)
 adminRouter.delete('/labels/:name', [userAuthMidelware, userAdminMidelware], deleteLabel)
 
-//UserLabel
-adminRouter.get('/users/labels', [userAuthMidelware, userAdminMidelware], getUsersLabels)
-adminRouter.get('/users/labels/:label', [userAuthMidelware, userAdminMidelware], getLabelUsers)
-adminRouter.get('/users/:id/labels', [userAuthMidelware, userAdminMidelware], getUserLabels)
-adminRouter.post('/users/:id/labels/:name', [userAuthMidelware, userAdminMidelware], createUserLabel)
-adminRouter.delete('/users/:id/labels/:name', [userAuthMidelware, userAdminMidelware], deleteUserLabel)
+//RoleLabel
+adminRouter.get('/users/labels', [userAuthMidelware,userAdminMidelware], getAllRolesLabels)
+adminRouter.get('/users/labels/:label', [userAuthMidelware,roleAccessLabelMidelware], getLabelRoles)
+adminRouter.get('/users/:name/role/:role_name/labels', [userAuthMidelware], getRoleLabels)
+adminRouter.post('/users/:name/labels/:name', [userAuthMidelware, userAdminMidelware], createRoleLabel)
+adminRouter.delete('/users/:name/labels/:name', [userAuthMidelware, userAdminMidelware], deleteRoleLabel)
 
 //StudyLabel
-adminRouter.get('/studies/labels', [userAuthMidelware, userAdminMidelware], getStudiesLabels)
-adminRouter.get('/studies/labels/:name', [userAuthMidelware, userAdminMidelware], getStudiesLabel)
-adminRouter.get('/studies/:uid/labels/', [userAuthMidelware, userAdminMidelware], getStudyLabels)
+adminRouter.get('/studies/labels', [userAuthMidelware,userAdminMidelware], getStudiesLabels)
+adminRouter.get('/studies/labels/:name', [userAuthMidelware,roleAccessLabelMidelware], getStudiesLabel)
+adminRouter.get('/studies/:uid/labels/', [userAuthMidelware,userAdminMidelware], getStudyLabels)
 adminRouter.post('/patient/:id/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], createStudyLabel)
 adminRouter.delete('/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], deleteStudyLabel)
 

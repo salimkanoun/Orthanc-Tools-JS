@@ -11,11 +11,11 @@ export default class LabelsTable extends Component {
             hidden: false
         },
         {
-            dataField: '_u',
-            text: 'Users',
+            dataField: '_r',
+            text: 'Roles',
             formatter: (cell, row, index) => <Button variant={"primary"}
-                                                     onClick={() => this.props.handlerManageUser(row.label_name)}>Manage
-                Users</Button>
+                                                     onClick={() => this.props.handlerManageRole(row.label_name)}>Manage
+                Roles</Button>
         },
         {
             dataField: '_d',
