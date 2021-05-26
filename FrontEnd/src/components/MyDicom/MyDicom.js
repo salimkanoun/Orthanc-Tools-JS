@@ -48,17 +48,19 @@ class MyDicom extends Component{
     for(var i = 0;i<studies.length;i++){
       var study = studies[i]
       var orthancID = this._getOrthancStudyID(study.patient_id,study.study_instance_uid)
-      let study_details = await apis.content.getStudiesDetails(orthancID)
-      let row = {
-        StudyOrthancID:study_details.ID,
-        StudyInstanceUID:study_details.MainDicomTags.StudyInstanceUID,
-        PatientID:study_details.PatientMainDicomTags.PatientID,
-        PatientName:study_details.PatientMainDicomTags.PatientName,
-        StudyDate:study_details.MainDicomTags.StudyDate,
-        StudyDescription:study_details.MainDicomTags.StudyDescription,
-        AccessionNumber:study_details.MainDicomTags.AccessionNumber
-      }
-      studies_tab.push(row)
+      try{
+        let study_details = await apis.content.getStudiesDetails(orthancID)
+        let row = {
+          StudyOrthancID:study_details.ID,
+          StudyInstanceUID:study_details.MainDicomTags.StudyInstanceUID,
+          PatientID:study_details.PatientMainDicomTags.PatientID,
+          PatientName:study_details.PatientMainDicomTags.PatientName,
+          StudyDate:study_details.MainDicomTags.StudyDate,
+          StudyDescription:study_details.MainDicomTags.StudyDescription,
+          AccessionNumber:study_details.MainDicomTags.AccessionNumber
+        }
+        studies_tab.push(row)
+      }catch(err){}
     }
 
     this.setState({
