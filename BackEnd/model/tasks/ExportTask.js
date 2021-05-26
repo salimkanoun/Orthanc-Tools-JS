@@ -149,8 +149,17 @@ class ExportTask {
 }
 
 let archiveQueue = new Queue('archive', ExportTask._getArchiveDicom);
-archiveQueue.on("completed", async (job, result) => {
-    let endpoint = await Endpoint.getFromId(job.data.endpoint);
+archiveQueue.on("completed", async (job, result) => {   
+    let endpoint
+    if(job.data.endpoint==-1){
+        endpoint = {        
+            id: -1,
+            label: 'local',
+            protocol: 'local',}
+    }
+    else{
+        endpoint = await Endpoint.getFromId(job.data.endpoint);
+    }
     await exporter.uploadFile(job.data.taskId, endpoint, result.path);
 });
 
