@@ -5,22 +5,37 @@ import apis from '../../../services/apis';
 export default class Plugins extends Component {
 
     state = {
-        plugins: []
+        plugins: [],
+        system: {}
     }
 
-    componentDidMount = () => {
+    componentDidMount = async () => {
         //Fetch plugin list from backend
-        apis.options.getPlugins().then(plugins => {
-            let answer = []
-            plugins.forEach(element => answer.push(<li key={element}>{element}</li>))
-            this.setState({ plugins: answer })
-        }).catch((error) => { toast.error(error.statusText) })
+        let orthancSystem = null
+        let plugins = null
+        try {
+            orthancSystem = await apis.options.getOrthancSystem()
+            plugins = await apis.options.getPlugins()
+        } catch (error) {
+            toast.error(error.statusText)
+        }
+
+        let answer = []
+        plugins.forEach(element => answer.push(<li key={element}>{element}</li>))
+        this.setState({
+            plugins: answer,
+            system: orthancSystem
+        })
     }
 
     render = () => {
         return (
             <Fragment>
-                <h2 className="card-title">Installed plugins</h2>
+                <h3 className="card-title">System</h3>
+                <ul>
+                    {JSON.stringify(this.state.system, null, 2)}
+                </ul>
+                <h3 className="card-title">Plugins</h3>
                 <ul>
                     {this.state.plugins}
                 </ul>

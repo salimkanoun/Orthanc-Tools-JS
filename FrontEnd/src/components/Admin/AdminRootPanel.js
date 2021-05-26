@@ -39,8 +39,6 @@ const AdminRootPanel = () => {
                 return (<JobsRootPanel/>)
             case 'CD Burner':
                 return (<BurnerOptions/>)
-            case 'Orthanc Plugins':
-                return (<Plugins/>)
             case 'Users':
                 return (<UserManagement/>)
             case 'Labels':
@@ -66,8 +64,6 @@ const AdminRootPanel = () => {
                         <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Jobs'/>
                         <input className='btn btn-link text-left' type='button' onClick={clickHandler}
                                value='CD Burner'/>
-                        <input className='btn btn-link text-left' type='button' onClick={clickHandler}
-                               value='Orthanc Plugins'/>
                         <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Labels'/>
 
                     </div>
