@@ -190,6 +190,15 @@ describe('POST/',()=>{
     })
   })
 
+  it('StudyLabels by StudyOrthancID',async()=>{
+    const res = await request(app)
+    .post('/api/studies/a/labels')
+    .set('Accept', 'application/json')
+    .then((response)=>{
+      expect(response.statusCode).toBe(201)
+    })
+  })
+
   it('RoleLabels',async()=>{
     const Label = require ('../../repository/Label.js')
     const label = await Label.getLabel('test')
