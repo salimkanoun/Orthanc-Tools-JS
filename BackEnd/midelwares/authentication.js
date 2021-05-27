@@ -128,14 +128,7 @@ const deleteMidelware = async function (req, res, next) {
     next()
   }
   else if (req.roles.delete) {
-    const StudyLabel = require('../model/StudyLabel')
-    let studies = await StudyLabel.getStudyLabelsByStudyOrthancID(req.params.id)
-    if(studies.length==0) {
-      next()
-    }
-    else{
-      res.sendStatus(409);
-    }
+    next()
   } else {
     res.sendStatus(403);
   }
