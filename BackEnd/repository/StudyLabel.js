@@ -29,7 +29,7 @@ class StudyLabel{
     return db.StudyLabel.findAll({
       where:{
         label_name:label_name
-      },attributes:['study_instance_uid','patient_id']
+      }
     })
   }
 
@@ -37,7 +37,7 @@ class StudyLabel{
     return db.StudyLabel.findAll({
       where:{
         study_instance_uid:study_instance_uid
-      },attributes:['label_name']
+      }
     })
   }
 

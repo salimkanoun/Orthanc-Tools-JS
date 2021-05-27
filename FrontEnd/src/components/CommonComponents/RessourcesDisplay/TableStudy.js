@@ -4,6 +4,7 @@ import ActionBouton from './ActionBouton'
 import paginationFactory from 'react-bootstrap-table2-paginator'
 import ToolkitProvider, { CSVExport } from 'react-bootstrap-table2-toolkit'
 import LabelDropdown from "../../OrthancContent/LabelDropdown";
+import apis from '../../../services/apis'
 
 const { ExportCSVButton } = CSVExport;
 
@@ -124,14 +125,17 @@ export default class TableStudy extends Component {
                 <ActionBouton level='studies' orthancID={row.StudyOrthancID}
                     StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} row={row}
                     refresh={this.props.refresh} />
-                <LabelDropdown selectedStudiesGetter={() => [{
+                <LabelDropdown selectedStudiesGetter={() =>{ let study = apis.content.getStudiesDetails(row.StudyOrthancID)
+                return({
+                    ID:row.StudyOrthancID,
                     MainDicomTags: {
                         StudyInstanceUID: row.StudyInstanceUID,
                     },
                     PatientMainDicomTags: {
                         PatientID: row.PatientID
-                    }
-                }]} />
+                    },
+                    ParentPatient:study.ParentPatient
+                })}} />
             </>)
             ),
             clickToSelect: false,

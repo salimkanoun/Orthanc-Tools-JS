@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import apis from '../../services/apis'
 import { connect } from 'react-redux'
-import SHA1 from 'crypto-js/sha1'
 import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
 import TableMyDicomSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeriesFillFromParent'
 import SendTo from '../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown'
@@ -34,11 +33,6 @@ class MyDicom extends Component{
     return await apis.studylabel.getStudiesLabel(name)
   }
 
-  _getOrthancStudyID = (patientID,studyInstanceUID) => {
-    let hash = SHA1(patientID + "|" + studyInstanceUID).toString()
-    return `${hash.substring(0, 8)}-${hash.substring(8, 16)}-${hash.substring(16, 24)}-${hash.substring(24, 32)}-${hash.substring(32, 40)}`
-  }
-
   handleLabelClick = async (e) => {
     var label = e.target.name
     this.setState({currentLabel:label})
@@ -47,9 +41,8 @@ class MyDicom extends Component{
     
     for(var i = 0;i<studies.length;i++){
       var study = studies[i]
-      var orthancID = this._getOrthancStudyID(study.patient_id,study.study_instance_uid)
       try{
-        let study_details = await apis.content.getStudiesDetails(orthancID)
+        let study_details = await apis.content.getStudiesDetails(study.study_orthanc_id)
         let row = {
           StudyOrthancID:study_details.ID,
           StudyInstanceUID:study_details.MainDicomTags.StudyInstanceUID,
