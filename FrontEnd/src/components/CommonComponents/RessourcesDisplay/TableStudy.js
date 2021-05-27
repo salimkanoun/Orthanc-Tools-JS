@@ -125,8 +125,8 @@ export default class TableStudy extends Component {
                 <ActionBouton level='studies' orthancID={row.StudyOrthancID}
                     StudyInstanceUID={row.StudyInstanceUID} onDelete={this.props.onDelete} row={row}
                     refresh={this.props.refresh} />
-                <LabelDropdown selectedStudiesGetter={() =>{ let study = apis.content.getStudiesDetails(row.StudyOrthancID)
-                return({
+                <LabelDropdown selectedStudiesGetter={async () =>{ let study = await apis.content.getStudiesDetails(row.StudyOrthancID)
+                return([{
                     ID:row.StudyOrthancID,
                     MainDicomTags: {
                         StudyInstanceUID: row.StudyInstanceUID,
@@ -135,7 +135,7 @@ export default class TableStudy extends Component {
                         PatientID: row.PatientID
                     },
                     ParentPatient:study.ParentPatient
-                })}} />
+                }])}} />
             </>)
             ),
             clickToSelect: false,
