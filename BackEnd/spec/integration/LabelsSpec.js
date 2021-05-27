@@ -1,8 +1,8 @@
 const Label = require('../../repository/Label')
 const StudyLabel = require('../../repository/StudyLabel')
 const RoleLabel = require('../../repository/RoleLabel')
-const {OTJSDBEntityNotFoundException} = require('../../Exceptions/OTJSErrors');
-const Role = require('../../repository/Role');
+const {OTJSDBEntityNotFoundException} = require('../../Exceptions/OTJSErrors')
+const crypto = require('../../adapter/cryptoAdapter')
 
 describe('Test Label Table', function () {
 
@@ -17,21 +17,11 @@ describe('Test Label Table', function () {
         if (!(sl == null)) {
             await StudyLabel.delete('test2', 'label test2')
         }
-        //end cascade part
-        let rl = await RoleLabel.getRoleLabel('admin','label test')
-        if(!(rl==null)){
-            await RoleLabel.delete('admin','label test')
-        }
-
-        rl = await RoleLabel.getRoleLabel('admin','label test2')
-        if(!(rl==null)){
-            await RoleLabel.delete('admin','label test2')
-        }
-
         const l = await Label.getLabel('label test2')
         if (!(l == null)) {
             await Label.delete('label test2')
         }
+        //end cascade part
 
         const label = await Label.getLabel('label test')
         if (label == null) {
@@ -103,12 +93,14 @@ describe('Test Label Table', function () {
               modify label_name on Labels
               verify that the row a StudyLabels as been modified then delete it
             */
-            await StudyLabel.create('test2', 'label test','a')
-            var study_label = await StudyLabel.getStudyLabel('test2', 'label test')
+            await StudyLabel.create('test2', 'label test','a','a','a')
+            var study_label = await StudyLabel.getStudyLabel('test2', 'label test',)
             expect(study_label).not.toBeNull()
             expect(study_label.study_instance_uid).toBe('test2')
             expect(study_label.label_name).toBe('label test')
             expect(study_label.patient_id).toBe('a')
+            expect(study_label.patient_orthanc_id).toBe('a')
+            expect(study_label.study_orthanc_id).toBe('a')
 
             await Label.update('label test', 'label test2')
             let label = await Label.getLabel('label test2')
@@ -118,7 +110,6 @@ describe('Test Label Table', function () {
             expect(study_label).not.toBeNull()
             expect(study_label.study_instance_uid).toBe('test2')
             expect(study_label.label_name).toBe('label test2')
-            expect(study_label.patient_id).toBe('a')
 
             await StudyLabel.delete(study_label.study_instance_uid, study_label.label_name)
             await Label.delete(study_label.label_name)
@@ -146,7 +137,7 @@ describe('Test Label Table', function () {
             expect(role_label.role_name).toBe('admin')
             expect(role_label.label_name).toBe('label test2')
 
-            await RoleLabel.delete('admin', role_label.label_name)
+            await RoleLabel.delete(role_label.role_name, role_label.label_name)
             await Label.delete(role_label.label_name)
         })
 

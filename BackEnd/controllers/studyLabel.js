@@ -25,4 +25,9 @@ const getStudyLabels = async function(req,res){
   res.json(studieslabels)
 }
 
-module.exports = {createStudyLabel,deleteStudyLabel,getStudiesLabels,getStudiesLabel,getStudyLabels}
+const getStudyLabelsByStudyOrthancID = async function(req,res){
+  let studieslabels = await StudyLabel.getStudyLabelsByStudyOrthancID(req.params.id)
+  res.json(studieslabels)
+}
+
+module.exports = {createStudyLabel,deleteStudyLabel,getStudiesLabels,getStudiesLabel,getStudyLabels,getStudyLabelsByStudyOrthancID}
