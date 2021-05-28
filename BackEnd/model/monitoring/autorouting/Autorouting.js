@@ -3,6 +3,7 @@ const Queue = require('promise-queue')
 const Autorouter = require('../../Autorouters')
 
 class Autorouting{
+
   constructor(monitoring){
     this.orthanc = monitoring.orthanc
     this.monitoring = monitoring
@@ -10,7 +11,6 @@ class Autorouting{
     this.monitorJobs = this.monitorJobs.bind(this)
     this.jobQueue = new Queue(1, Infinity);
   }
-
 
   /** 
   * Make the settings for the monitoring.
@@ -87,7 +87,7 @@ class Autorouting{
         let studies = await this.orthanc.getStudiesDetailsOfPatient(orthancID)
         for(let i = 0;i<this.autorouters_patients.length;i++){
           this.jobQueue.add(async ()=>{
-            await this._processPatient(orthancID,this.autorouters_patients[i].rule,patient,studies)
+            await this._processPatient(orthancID,this.autorouters_patients[i],patient,studies)
           })
         }
         break
@@ -97,15 +97,16 @@ class Autorouting{
         let series = await this.orthanc.getSeriesDetailsOfStudy(orthancID)
         for(let i = 0;i<this.autorouters_studies.length;i++){
           this.jobQueue.add(async ()=>{
-            await this._processStudy(orthancID,this.autorouters_series[i].rule,study,patient,series)
+            await this._processStudy(orthancID,this.autorouters_series[i],study,patient,series)
           })
         }
         break
       case 'Series':
         let series = await this.orthanc.getOrthancDetails('series', orthancID)
+        let study = await this.orthanc.getOrthancDetails('studies',series.ParentStudy)
         for(let i = 0;i<this.autorouters_series.length;i++){
           this.jobQueue.add(async ()=>{
-            await this._processSeries(orthancID,this.autorouters_series[i].rule,series)
+            await this._processSeries(orthancID,this.autorouters_series[i],series,study)
           })
         }
         break
@@ -115,49 +116,70 @@ class Autorouting{
   /**
    * Process a new Patient event
    * @param {String} orthancID OrthancID of the Patient
-   * @param {JSON} rule Rule to check for this Patient
+   * @param {JSON} router Rules to check for this Patient
    * @param {JSON} patient Patient details
-   * @param {JSON} studies Study attached to the Patient
+   * @param {JSON} studies Studies attached to the Patient
    */
-  _processPatient = async (orthancID,rule,patient,studies) => {
-
+  _processPatient = async (orthancID,router,patient,studies) => {
+    for(let i=0;i<router.rules.length;i++){
+      let rule_check = this._ruleToBoolean(router.rules[i],patient)
+      if(rule_check){
+        //code for routing to path
+        break
+      } 
+    }
   }
+
   /**
    * Process a new Study event
    * @param {String} orthancID OrthancID of the Study
-   * @param {JSON} rule Rule to check for this Study
+   * @param {JSON} router Rules to check for this Study
    * @param {JSON} study Study details
    * @param {JSON} patient Patient attached to the Study
    * @param {Array} series Series attached to the Study
    */
-  _processStudy = async (orthancID,rule,study,patient,series) => {
-    
+  _processStudy = async (orthancID,router,study,patient,series) => {
+    for(let i=0;i<router.rules.length;i++){
+      let rule_check = this._ruleToBoolean(router.rules[i],study)
+      if(rule_check){
+        //code for routing to path
+        break
+      } 
+    }
   }
+
   /**
    * Process new Series event
    * @param {String} orthancID OrthancID of the Series
-   * @param {JSON} rule Rule to check for this Series
+   * @param {JSON} router Rules to check for this Series
    * @param {JSON} series Series details
+   * @param {JSON} study Study attached to the Series
    */
-  _processSeries = async (orthancID,rule,series) => {
-    
+  _processSeries = async (orthancID,router,series,study) => {
+    for(let i=0;i<router.rules.length;i++){
+      let rule_check = this._ruleToBoolean(router.rules[i],series)
+      if(rule_check){
+        //code for routing to path
+        break
+      } 
+    }
   }
 
   /**
    * Convert a rule for an object into a boolean
-   * @param {JSON} rule rule for the observed object
+   * @param {JSON} rule rule for the observed object rule:{value:,operator:,target:}
    * @param {JSON} object object to observe
    * @return {boolean}
    */
   _ruleToBoolean = (rule,object) => {
     switch(rule.operator){
       case "IN":
-        let target = rule.target.toLowerCase()
-        let value = rule.value.toLowerCase()
+        let target
+        let value 
         return target.contains(value)
       case "==":
-        let target = rule.target.toLowerCase()
-        let value = rule.value.toLowerCase()
+        let target
+        let value 
         return target==value
       default:
         throw new Error('Failed to find an operator for this rule: '+rule)
