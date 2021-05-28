@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     name: DataTypes.STRING,
-    rules: DataTypes.JSON,
+    rules: DataTypes.ARRAY(DataTypes.JSONB),
     target: DataTypes.STRING,
     running: DataTypes.BOOLEAN,
     destination: DataTypes.JSON

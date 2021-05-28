@@ -13,7 +13,7 @@ module.exports = {
         allowNull: false,
       },
       rules: {
-        type: Sequelize.JSONB,
+        type: Sequelize.ARRAY(Sequelize.JSONB),
         allowNull: false,
       },
       target: {

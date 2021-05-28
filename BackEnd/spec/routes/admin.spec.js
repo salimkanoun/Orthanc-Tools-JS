@@ -164,7 +164,7 @@ describe('GET/',()=>{
   })
 
   it('Autorouter by ID', async () => {
-    await Autorouter.create('test',{value1:'t',operator:'in',value2:'test'},"New Studies",{location:'disk c'})
+    await Autorouter.create('test',[{value1:'t',operator:'in',value2:'test'}],"New Studies",{location:'disk c'})
     let autorouter = await Autorouter.getOneByName('test')
     const res = await request(app)
     .get('/api/autorouting/'+autorouter.id)
@@ -334,7 +334,7 @@ describe('POST/',()=>{
 
   it('Autorouters',async () => {
     const autorouter = {
-      rules : {value1:'t',operator:'in',value2:'test'},
+      rules : [{value1:'t',operator:'in',value2:'test'}],
       target : "New Studies",
       destination : {location:'disk c'},
     }
@@ -444,10 +444,10 @@ describe('PUT/',()=>{
   })
 
   it('Autorouters', async ()=>{
-    await Autorouter.create('test',{val:1},'New Studies','lol')
+    await Autorouter.create('test',[{val:1}],'New Studies','lol')
     let autorouter = await Autorouter.getOneByName('test')
     const modify = {
-      rules:{test:'conclude'}
+      rules:[{test:'conclude'}]
     }
     const res = await request(app)
     .put('/api/autorouting/'+autorouter.id)
@@ -458,13 +458,13 @@ describe('PUT/',()=>{
     })
 
     autorouter = await Autorouter.getOneByName('test')
-    expect(autorouter.rules.test).toEqual('conclude')
+    expect(autorouter.rules[0].test).toEqual('conclude')
     expect(autorouter.target).toBe("New Studies")
     await Autorouter.delete(autorouter.id)
   })
 
   it('Autorouters switch ON/OFF', async ()=>{
-    await Autorouter.create('test',{val:1},'New Studies','lol')
+    await Autorouter.create('test',[{val:1}],'New Studies','lol')
     let autorouter = await Autorouter.getOneByName('test')
     const modify = {
       running:!autorouter.running
@@ -578,7 +578,7 @@ describe('DELETE/',()=>{
   })
 
   it('Autorouters', async () => {
-    await Autorouter.create('test',{val:1},'New Studies','lol')
+    await Autorouter.create('test',[{val:1}],'New Studies','lol')
     let autorouter = await Autorouter.getOneByName('test')
 
     const res = await request(app)

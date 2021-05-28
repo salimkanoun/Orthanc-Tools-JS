@@ -5,7 +5,7 @@ const {OTJSDBEntityNotFoundException} = require('../../Exceptions/OTJSErrors')
 describe('Test Autorouters Table', () => {
   beforeEach(async () => {
     let autorouter = await Autorouter.getOneByName('test')
-    if(!autorouter) await Autorouter.create('test',{value1:'t',operator:'in',value2:'test'},"New Studies",{location:'disk c'})
+    if(!autorouter) await Autorouter.create('test',[{value1:'t',operator:'in',value2:'test'}],"New Studies",{location:'disk c'})
   })
 
   afterEach(async () => {
@@ -18,7 +18,7 @@ describe('Test Autorouters Table', () => {
 
     expect(autorouter).not.toBeNull()
     expect(autorouter.name).toBe('test')
-    expect(autorouter.rules).toEqual({value1:'t',operator:'in',value2:'test'})
+    expect(autorouter.rules).toEqual([{value1:'t',operator:'in',value2:'test'}])
     expect(autorouter.target).toBe("New Studies")
     expect(autorouter.destination).toEqual({location:'disk c'})
     expect(autorouter.running).toBeFalse()
