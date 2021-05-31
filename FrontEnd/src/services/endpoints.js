@@ -15,7 +15,7 @@ const endpoints =  {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify({ id: id })
     }).then((answer) => {
@@ -32,7 +32,7 @@ const endpoints =  {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify(postData)
     }).then((answer) => {

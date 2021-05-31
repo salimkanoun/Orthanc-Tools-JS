@@ -4,7 +4,7 @@ const studylabel = {
       method:'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       }
     }
     return fetch('/api/studies/labels', getStudiesLabelsOptions).then((answer) => {
@@ -20,7 +20,7 @@ const studylabel = {
       method:'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       }
     }
     return fetch('/api/studies/labels/'+name, getStudiesLabelOptions).then((answer) => {
@@ -36,7 +36,7 @@ const studylabel = {
       method:'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       }
     }
     return fetch('/api/studies/'+study_instance_uid+'/labels', getStudyLabelsOptions).then((answer) => {
@@ -52,7 +52,7 @@ const studylabel = {
       method:'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       }
     }
     return fetch('/api/studies/orthanc/'+study_orthanc_id+'/labels', getStudyLabelsByStudyOrthancIDOptions).then((answer) => {
@@ -68,7 +68,7 @@ const studylabel = {
       method:'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body:JSON.stringify({
         study_orthanc_id:study_orthanc_id,
@@ -88,7 +88,7 @@ const studylabel = {
       method:'DELETE',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
     }
 
