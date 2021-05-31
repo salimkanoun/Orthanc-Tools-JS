@@ -26,7 +26,7 @@ module.exports = {
         defaultValue:false
       },
       destination: {
-        type: Sequelize.JSONB,
+        type: Sequelize.ARRAY(Sequelize.STRING),
         allowNull:false,
       },
       createdAt: {

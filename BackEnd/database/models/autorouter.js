@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     rules: DataTypes.ARRAY(DataTypes.JSONB),
     target: DataTypes.STRING,
     running: DataTypes.BOOLEAN,
-    destination: DataTypes.JSON
+    destination: DataTypes.ARRAY(DataTypes.STRING)
     
   }, {})
   Autorouter.associate = function (models) {

@@ -164,7 +164,7 @@ describe('GET/',()=>{
   })
 
   it('Autorouter by ID', async () => {
-    await Autorouter.create('test',[{value1:'t',operator:'in',value2:'test'}],"New Studies",{location:'disk c'})
+    await Autorouter.create('test',[{value1:'t',operator:'in',value2:'test'}],"New Studies",['aet'])
     let autorouter = await Autorouter.getOneByName('test')
     const res = await request(app)
     .get('/api/autorouting/'+autorouter.id)
@@ -336,7 +336,7 @@ describe('POST/',()=>{
     const autorouter = {
       rules : [{value1:'t',operator:'in',value2:'test'}],
       target : "New Studies",
-      destination : {location:'disk c'},
+      destination : ['aet'],
     }
     const res = await request(app)
     .post('/api/autorouting/test')
@@ -444,7 +444,7 @@ describe('PUT/',()=>{
   })
 
   it('Autorouters', async ()=>{
-    await Autorouter.create('test',[{val:1}],'New Studies','lol')
+    await Autorouter.create('test',[{val:1}],'New Studies',['aet'])
     let autorouter = await Autorouter.getOneByName('test')
     const modify = {
       rules:[{test:'conclude'}]
@@ -464,7 +464,7 @@ describe('PUT/',()=>{
   })
 
   it('Autorouters switch ON/OFF', async ()=>{
-    await Autorouter.create('test',[{val:1}],'New Studies','lol')
+    await Autorouter.create('test',[{val:1}],'New Studies',['aet'])
     let autorouter = await Autorouter.getOneByName('test')
     const modify = {
       running:!autorouter.running
@@ -578,7 +578,7 @@ describe('DELETE/',()=>{
   })
 
   it('Autorouters', async () => {
-    await Autorouter.create('test',[{val:1}],'New Studies','lol')
+    await Autorouter.create('test',[{val:1}],'New Studies',['aet'])
     let autorouter = await Autorouter.getOneByName('test')
 
     const res = await request(app)
