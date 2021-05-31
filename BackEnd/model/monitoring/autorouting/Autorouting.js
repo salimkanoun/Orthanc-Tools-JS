@@ -172,19 +172,35 @@ class Autorouting{
    * @return {boolean}
    */
   _ruleToBoolean = (rule,object) => {
-    switch(rule.operator){
-      case "IN":
-        let target
-        let value 
-        return target.contains(value)
-      case "==":
-        let target
-        let value 
-        return target==value
+    switch(rule.target){
+      case 'ArrayOfKnownAET':
+        break
       default:
-        throw new Error('Failed to find an operator for this rule: '+rule)
+        let target = this._findKey(object.MainDicomTags,rule.target)
+        let value = rule.value
+        switch(rule.operator){
+          case "IN":
+            return target.contains(value)
+          case "==":
+            return target==value
+          default:
+            throw new Error('Failed to find an operator for this rule: \n'+rule)
+        }
+        break
     }
   }
+
+  _findKey= (obj, key) => {
+    for ([k, v] of Object.entries(obj)){
+        if (k == key) return v
+        if (typeof v === 'object' &&  v !== null ){
+            let found = findKey(v, key)
+            if (found) return found
+        }
+    }
+    
+}
+
 }
 
 module.exports = Autorouting
