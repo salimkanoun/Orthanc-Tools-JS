@@ -4,7 +4,7 @@ import Select from 'react-select'
 
 import { toast } from 'react-toastify'
 import Modal from 'react-bootstrap/Modal'
-import Plugins from '../../Plugins/Plugins'
+import OrthancInfos from './OrthancInfos'
 
 export default class OrthancSettings extends Component {
 
@@ -149,7 +149,7 @@ export default class OrthancSettings extends Component {
                             <Modal.Title>Orthanc Details</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <Plugins/>
+                            <OrthancInfos/>
                         </Modal.Body>
                     </Modal>
 
