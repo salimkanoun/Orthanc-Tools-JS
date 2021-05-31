@@ -45,7 +45,8 @@ const {
     createStudyLabel,
     deleteStudyLabel,
     getStudiesLabel,
-    getStudyLabels
+    getStudyLabels,
+    getStudyLabelsByStudyOrthancID
 } = require('../controllers/studyLabel')
 
 // OrthancToolsJS Options routes
@@ -164,6 +165,7 @@ adminRouter.delete('/users/:name/labels/:name', [userAuthMidelware, userAdminMid
 //StudyLabel
 adminRouter.get('/studies/labels', [userAuthMidelware,userAdminMidelware], getStudiesLabels)
 adminRouter.get('/studies/labels/:name', [userAuthMidelware,roleAccessLabelMidelware], getStudiesLabel)
+adminRouter.get('/studies/orthanc/:id/labels',[userAuthMidelware,userAdminMidelware], getStudyLabelsByStudyOrthancID)
 adminRouter.get('/studies/:uid/labels/', [userAuthMidelware,userAdminMidelware], getStudyLabels)
 adminRouter.post('/patient/:id/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], createStudyLabel)
 adminRouter.delete('/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], deleteStudyLabel)

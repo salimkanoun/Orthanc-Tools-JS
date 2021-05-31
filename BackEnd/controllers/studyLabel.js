@@ -1,7 +1,7 @@
 var StudyLabel = require('../model/StudyLabel')
 
 const createStudyLabel = async function(req,res){
-  await StudyLabel.createStudyLabel(req.params.uid,req.params.name,req.params.id)
+  await StudyLabel.createStudyLabel(req.params.uid,req.params.name,req.params.id,req.body.study_orthanc_id,req.body.patient_orthanc_id)
   res.sendStatus(201)
 }
 
@@ -25,4 +25,9 @@ const getStudyLabels = async function(req,res){
   res.json(studieslabels)
 }
 
-module.exports = {createStudyLabel,deleteStudyLabel,getStudiesLabels,getStudiesLabel,getStudyLabels}
+const getStudyLabelsByStudyOrthancID = async function(req,res){
+  let studieslabels = await StudyLabel.getStudyLabelsByStudyOrthancID(req.params.id)
+  res.json(studieslabels)
+}
+
+module.exports = {createStudyLabel,deleteStudyLabel,getStudiesLabels,getStudiesLabel,getStudyLabels,getStudyLabelsByStudyOrthancID}
