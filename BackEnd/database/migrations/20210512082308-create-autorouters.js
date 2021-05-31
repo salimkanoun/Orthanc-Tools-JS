@@ -18,7 +18,8 @@ module.exports = {
       },
       target: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
+        defaultValue:'StableStudy'
       },
       running: {
         type: Sequelize.BOOLEAN,
