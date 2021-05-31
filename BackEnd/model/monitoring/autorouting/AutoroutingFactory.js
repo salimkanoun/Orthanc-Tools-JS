@@ -1,6 +1,10 @@
 const Autorouting = require('./Autorouting')
-const Orthanc_Monitoring = require('../Orthanc_Monitoring')
+const MonitoringFactory = require('../MonitoringFactory')
 
+/**
+ * Create an instance of autorouting
+ * @returns instance of Autourouting
+ */
 const AutoroutingFactory = (function (){
     var instance;
  
@@ -19,24 +23,6 @@ const AutoroutingFactory = (function (){
             return instance;
         }
     };
-})
-
-const MonitoringFactory =  (function () {
-  var instance;
-
-  function createInstance() {
-      let orthancMonitoring = new Orthanc_Monitoring()
-      return orthancMonitoring;
-  }
-
-  return {
-      getInstance: function () {
-          if (!instance) {
-              instance = createInstance();
-          }
-          return instance;
-      }
-  };
-})();
+}) ();
 
 module.exports= AutoroutingFactory
