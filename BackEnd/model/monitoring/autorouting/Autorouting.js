@@ -2,13 +2,12 @@ const Orthanc_Monitoring = require ('../Orthanc_Monitoring')
 const Queue = require('promise-queue')
 const Autorouter = require('../../Autorouters')
 
-class Autorouting{
+class Autorouting {
 
-  constructor(monitoring){
+  constructor(monitoring) {
     this.orthanc = monitoring.orthanc
     this.monitoring = monitoring
     this.monitoringStarted = false
-    this.monitorJobs = this.monitorJobs.bind(this)
     this.jobQueue = new Queue(1, Infinity);
   }
 
@@ -17,26 +16,12 @@ class Autorouting{
   * Recuperate all autorouters rules and divide them into 3 arrays
   */
   setSettings = async () => {
-    this.autorouters_series= []
-    this.autorouters_studies = []
-    this.autorouters_patients = []
+    this.autorouters = []
     //put on variable all autorouters that are enabled
     let autorouter = await Autorouter.getAllAutorouters()
     for(var i = 0 ; i < autorouter.lentgh ; i++){
       if(autorouter[i].running==true){
-        switch (autorouter[i].target){
-          case 'Patients':
-            this.autorouters_patients.push(autorouter[i])  
-            break
-          case 'Studies':
-            this.autorouters_studies.push(autorouter[i])
-            break
-          case 'Series':
-            this.autorouters_series.push(autorouter[i])
-            break
-          default:
-            break
-        }
+        this.autorouters.push(autorouter[i])
       }
     }
   }
@@ -50,116 +35,62 @@ class Autorouting{
     this.setSettings()
     this.monitoringStarted=true
     this._makeListener()
-  }
-
-    /**
-   * AutoStart the autorouter if needed
-   */
-  autoStartIfNeeded = async () => {
-    await this.setSettings()
-    this.startAutorouting()
+    this.monitoring.startMonitoringService('Autorouting')
   }
 
   /**
-   * Set the event listerners and dispatch the jobs
+   * Set the event listerners and dispatch jobs (in case of multiple target event possibilities)
    */
   _makeListener = () => {
-    this.monitoring.on('StablePatient',(orthancID)=>{
-      this._jobDispatcher(orthancID,'Patient')
-    })
     this.monitoring.on('StableStudy',(orthancID)=>{
-      this._jobDispatcher(orthancID,'Study')
+      this._jobDispatcher(orthancID)
     })
-    this.monitoring.on('StableSeries',(orthancID)=>{
-      this._jobDispatcher(orthancID,'Series')
+  }
+
+  /**
+   * Remove the event listener that dispatch jobs
+   */
+  _removeListener = () => {
+    this.monitoring.removeListener('StableStudy',(orthancID)=>{
+      this._jobDispatcher(orthancID)
     })
+  }
+
+  /**
+   * Stop the autorouter
+   */
+  stopAutorouting = async () => {
+    this.monitoringStarted = false
+    this._removeListener()
+    this.monitoring.stopMonitoringService('Autorouting')
   }
 
   /**
    * Dispatch the different jobs for each rules when a new event commes
    * @param {String} orthancID OrthancID of the target
-   * @param {String} targetType type of the target ('Patient','Study','Series')
    */
-  _jobDispatcher = async (orthancID,targetType) => {
-    switch(targetType){
-      case 'Patient':
-        let patient = await this.orthanc.getOrthancDetails('patients', orthancID)
-        let studies = await this.orthanc.getStudiesDetailsOfPatient(orthancID)
-        for(let i = 0;i<this.autorouters_patients.length;i++){
-          this.jobQueue.add(async ()=>{
-            await this._processPatient(orthancID,this.autorouters_patients[i],patient,studies)
-          })
-        }
-        break
-      case 'Study':
-        let study = await this.orthanc.getOrthancDetails('studies', orthancID)
-        let patient = await this.orthanc.getOrthancDetails('patients', study.ParentPatient)
-        let series = await this.orthanc.getSeriesDetailsOfStudy(orthancID)
-        for(let i = 0;i<this.autorouters_studies.length;i++){
-          this.jobQueue.add(async ()=>{
-            await this._processStudy(orthancID,this.autorouters_series[i],study,patient,series)
-          })
-        }
-        break
-      case 'Series':
-        let series = await this.orthanc.getOrthancDetails('series', orthancID)
-        let study = await this.orthanc.getOrthancDetails('studies',series.ParentStudy)
-        for(let i = 0;i<this.autorouters_series.length;i++){
-          this.jobQueue.add(async ()=>{
-            await this._processSeries(orthancID,this.autorouters_series[i],series,study)
-          })
-        }
-        break
+  _jobDispatcher = async (orthancID) => {
+    let study = await this.orthanc.getOrthancDetails('studies', orthancID)
+    for(let i = 0;i<this.autorouters.length;i++){
+      this.jobQueue.add(async ()=>{
+        await this._process(orthancID,this.autorouters[i],study)
+      })
     }
   }
 
   /**
-   * Process a new Patient event
-   * @param {String} orthancID OrthancID of the Patient
-   * @param {JSON} router Rules to check for this Patient
-   * @param {JSON} patient Patient details
-   * @param {JSON} studies Studies attached to the Patient
-   */
-  _processPatient = async (orthancID,router,patient,studies) => {
-    for(let i=0;i<router.rules.length;i++){
-      let rule_check = this._ruleToBoolean(router.rules[i],patient)
-      if(rule_check){
-        //code for routing to path
-        break
-      } 
-    }
-  }
-
-  /**
-   * Process a new Study event
+   * Process a StableStudy event
    * @param {String} orthancID OrthancID of the Study
-   * @param {JSON} router Rules to check for this Study
+   * @param {JSON} router router config for this study to check
    * @param {JSON} study Study details
-   * @param {JSON} patient Patient attached to the Study
-   * @param {Array} series Series attached to the Study
    */
-  _processStudy = async (orthancID,router,study,patient,series) => {
+  _process = async (orthancID,router,study) => {
     for(let i=0;i<router.rules.length;i++){
       let rule_check = this._ruleToBoolean(router.rules[i],study)
-      if(rule_check){
-        //code for routing to path
-        break
-      } 
-    }
-  }
-
-  /**
-   * Process new Series event
-   * @param {String} orthancID OrthancID of the Series
-   * @param {JSON} router Rules to check for this Series
-   * @param {JSON} series Series details
-   * @param {JSON} study Study attached to the Series
-   */
-  _processSeries = async (orthancID,router,series,study) => {
-    for(let i=0;i<router.rules.length;i++){
-      let rule_check = this._ruleToBoolean(router.rules[i],series)
-      if(rule_check){
-        //code for routing to path
+      if(rule_check){ //send to all path
+        for(let j = 0;j<router.path.length;j++){
+          this.orthanc.sendToAET(router.path[j],[orthancID])
+        }//need to check one rule to send to path then stop the for loop
         break
       } 
     }
@@ -172,24 +103,25 @@ class Autorouting{
    * @return {boolean}
    */
   _ruleToBoolean = (rule,object) => {
-    switch(rule.target){
-      case 'ArrayOfKnownAET':
-        break
+    let target = this._findKey(object.MainDicomTags,rule.target)
+    target = target.toLowerCase()
+    let value = rule.value.toLowerCase()
+    switch(rule.operator){
+      case "IN":
+        return target.contains(value)
+      case "==":
+        return target==value
       default:
-        let target = this._findKey(object.MainDicomTags,rule.target)
-        let value = rule.value
-        switch(rule.operator){
-          case "IN":
-            return target.contains(value)
-          case "==":
-            return target==value
-          default:
-            throw new Error('Failed to find an operator for this rule: \n'+rule)
-        }
-        break
+        throw new Error('Failed to find an operator for this rule: \n'+rule)
     }
   }
 
+  /**
+   * Find the value associate to a key of a JSON Object
+   * @param {JSON} obj object to check
+   * @param {String} key key to find in the object
+   * @returns {String} value of the target key
+   */
   _findKey= (obj, key) => {
     for ([k, v] of Object.entries(obj)){
         if (k == key) return v
@@ -197,10 +129,8 @@ class Autorouting{
             let found = findKey(v, key)
             if (found) return found
         }
-    }
-    
-}
-
+      }
+  }
 }
 
 module.exports = Autorouting
