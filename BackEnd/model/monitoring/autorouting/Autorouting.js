@@ -87,10 +87,10 @@ class Autorouting {
   _process = async (orthancID,router,study) => {
     for(let i=0;i<router.rules.length;i++){
       let rule_check = this._ruleToBoolean(router.rules[i],study)
-      if(rule_check){ //send to all path
-        for(let j = 0;j<router.path.length;j++){
-          this.orthanc.sendToAET(router.path[j],[orthancID])
-        }//need to check one rule to send to path then stop the for loop
+      if(rule_check){ //send to all destination
+        for(let j = 0;j<router.destination.length;j++){
+          this.orthanc.sendToAET(router.destination[j],[orthancID])
+        }//need to check one rule to send to destination then stop the for loop
         break
       } 
     }
