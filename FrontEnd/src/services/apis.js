@@ -22,6 +22,7 @@ import endpoints from './endpoints'
 import label from './label'
 import studylabel from './studylabel'
 import rolelabel from './rolelabel'
+import autorouter from './autorouter'
 
 const apis = {
   importDicom,
@@ -47,7 +48,8 @@ const apis = {
   endpoints,
   label,
   studylabel,
-  rolelabel
+  rolelabel,
+  autorouter
 }
 
 export default apis
