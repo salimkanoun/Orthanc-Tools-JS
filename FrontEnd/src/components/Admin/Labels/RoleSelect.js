@@ -1,7 +1,6 @@
 import Select from 'react-select';
 import {Component} from 'react';
 import apis from "../../../services/apis";
-import rolelabel from '../../../services/rolelabel';
 
 export default class RoleSelect extends Component{
 
@@ -19,7 +18,7 @@ export default class RoleSelect extends Component{
             roles[i].label=roles[i].value
         }
 
-        let selectedRoles = await rolelabel.getLabelRoles(this.props.label)
+        let selectedRoles = await apis.rolelabel.getLabelRoles(this.props.label)
         for(var j = 0; j < selectedRoles.length; j++){
             selectedRoles[j].value=selectedRoles[j].role_name
             selectedRoles[j].label=selectedRoles[j].value
