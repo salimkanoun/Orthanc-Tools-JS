@@ -51,12 +51,11 @@ class ToolsPanel extends Component {
                         <span className="badge badge-light">{this.props.deleteList.length}</span>
                     </Link>
                 </div>
-                <div className="mr-2" hidden={!this.props.roles.delete || !this.props.apercu} >
-                    <button id='delete' ref={refDelete} type="button" className="btn btn-danger" onMouseOver={this.props.apercu ? () => this.setState({ show: 'delete' }) : null} onClick={() => this.setState({ confirmDelete: true })} >
+                <div className="mr-2" onMouseOver={this.props.apercu ? () => this.setState({ show: '' }) : null} hidden={!this.props.roles.delete || !this.props.apercu} >
+                    <Link id='delete' ref={refDelete} type="button" className="btn btn-danger" to='/delete' >
                         Delete <br />
-                        <span className="badge badge-light" onMouseOver={this.props.apercu ? () => this.setState({ show: 'delete' }) : null} >{(this.props.deleteList.length)}</span>
-                    </button>
-                    <DeleteTool target={refDelete} show={this.state.show === 'delete' ? true : false} onHide={this.closePopovers} confirmDelete={this.state.confirmDelete} setConfirm={this.setConfirmDelete} />
+                        <span className="badge badge-light" onMouseOver={this.props.apercu ? () => this.setState({ show: 'delete' }) : null}>{this.props.deleteList.length}</span>
+                    </Link>
                 </div>
             </div>
         )

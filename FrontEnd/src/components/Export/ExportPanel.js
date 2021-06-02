@@ -54,7 +54,7 @@ class ExportPanel extends Component {
             
             endpoints.push({        
                 id: -1,
-                label: 'Local on Mounted Disk',
+                label: 'On Server Hard Disk',
                 protocol: 'local',
             })
 
@@ -63,7 +63,7 @@ class ExportPanel extends Component {
                 peers: peers,
                 endpoints: endpoints,
                 currentTS : TS
-            }, () => console.log(this.state))
+            })
 
 
         } catch (error) {
@@ -229,7 +229,6 @@ class ExportPanel extends Component {
 const mapStateToProps = state => {
     return {
         exportList: state.ExportList,
-        orthancContent: state.OrthancContent.orthancContent,
         username: state.OrthancTools.username
     }
 }
