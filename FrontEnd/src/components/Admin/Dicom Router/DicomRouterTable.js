@@ -44,19 +44,21 @@ class DicomRouterTable extends Component {
       },
     ]
 
-    handleSwitch(row){
+    handleSwitch= async (row) => {
       let data = this.state.data
       for(let i = 0;i<data.length;i++){
         if(data[i].id===row.row.values.id){
+          await apis.autorouter.switchOnOff(row.row.values.id,!(data[i].running))
           row.row.values.running=!(data[i].running)
           data[i].running=!(data[i].running)
+          this.props.refresh()
           break
         }
       }
       this.setState({data:data})
     }
 
-    render (){
+    render = () => {
       return(
         <Table columns={this.columns} tableData={this.state.data}/>
       )
