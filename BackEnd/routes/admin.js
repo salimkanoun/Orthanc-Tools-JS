@@ -68,7 +68,6 @@ adminRouter.put('/options/export', [userAuthMidelware, userAdminMidelware], setE
 adminRouter.get('/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 
 // Orthanc Job API
-adminRouter.get('/jobs*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 adminRouter.post('/jobs/*', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
 
 // Orthanc Aets Routes
@@ -77,7 +76,6 @@ adminRouter.post('/modalities/:dicom/echo', [userAuthMidelware, userAdminMidelwa
 adminRouter.put('/modalities/:dicom', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
 
 //Orthanc Peers Routes
-adminRouter.get('/peers*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 adminRouter.delete('/peers/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 adminRouter.get('/peers/:peer/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 adminRouter.put('/peers/:peer/', [userAuthMidelware, userAdminMidelware], reverseProxyPut)

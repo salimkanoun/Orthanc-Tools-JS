@@ -38,7 +38,11 @@ router.post('/tools/create-media-extended', [userAuthMidelware,exportLocalMidelw
 router.post('/tools/create-dicom', [userAuthMidelware, importMidelware], reverseProxyPost)
 
 //Orthanc Peers Routes
+router.get('/peers*', [userAuthMidelware, exportExternMidelware], reverseProxyGet)
 router.post('/peers/*/store', [userAuthMidelware,exportExternMidelware], reverseProxyPost)
+
+//Jobs to monitor orthanc
+router.get('/jobs*', [userAuthMidelware], reverseProxyGet)
 
 //Orthanc Modify
 router.post('/patients/*/modify', [userAuthMidelware,modifyMidelware], reverseProxyPost)
