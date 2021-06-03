@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 
 import AnonTool from './AnonTool'
 import ExportTool from './ExportTool'
-import DeleteTool from './DeleteTool'
 
 class ToolsPanel extends Component {
 
