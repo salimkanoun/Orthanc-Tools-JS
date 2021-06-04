@@ -27,35 +27,50 @@ class RuleRow extends Component{
   ]
 
   generateRule = () => {
-    console.log(this.state)
     if(!this.state.operator || !this.operators.includes(this.state.operator)){
       throw new Error('Missing or incorrect operator!')
     }
     if(!this.state.target || !this.targets.includes(this.state.target)){
       throw new Error('Missing or incorrect target')
     }
-    if(!this.name){
-      throw new Error('Missing name !')
+    if(this.value===""){
+      throw new Error('Missing value !')
     }
-    return {id:this.props.id,value:this.state.value, operator:this.state.operator, target:this.state.target}
+    let rule = {
+      id:this.props.id,
+      value:this.state.value, 
+      operator:this.state.operator.value,
+      target:this.state.target.value
+    }
+    return rule
   }
 
-  handleChangeValue = (e) => {
-    this.setState({
+  handleChangeValue = async (e) => {
+    await this.setState({
       value:e.target.value
     })
+    this.refreshRule()
   }
 
-  handleChangeOperator = (e) => {
-    this.setState({
+  handleChangeOperator = async (e) => {
+    await this.setState({
       operator:e
     })
+    this.refreshRule()
   }
 
-  handleChangeTarget = (e) => {
-    this.setState({
+  handleChangeTarget = async (e) => {
+    await this.setState({
       target:e
     })
+    this.refreshRule()
+  }
+
+  refreshRule = async () => {
+    try{
+      let rule = await this.generateRule()
+      this.props.refresh(rule)
+    }catch(err){}
   }
 
   render(){
@@ -83,7 +98,7 @@ class RuleRow extends Component{
           />
         </div>
         <div className='col d-flex justify-content-left'>
-          <Button className='btn btn-danger' onClick={() => this.generateRule()} >X</Button>
+          <Button className='btn btn-danger' onClick={() => this.props.delete(this.props.id)} >X</Button>
         </div>
       </div>
     )

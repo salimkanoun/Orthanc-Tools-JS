@@ -18,19 +18,28 @@ class CreateDicomRouterModal extends Component {
     this.handleAddRule()
   }
 
-  handleSave= ()=> {
+  /**
+   * Saving the current Dicom router if all state parameters are correct
+   */
+  handleSave= async () => {
     //console.log(this.state)
     if(this.state.name==="" || this.state.rules.length===0 || this.state.destination.length===0){
       toast.error('Arguments missing to create a router')
+    }else if(this.state.rules.length!==this.state.ruleList.length){
+      toast.error('Invalid rule, arguments missing')
     }
     else{
-      //await apis.autorouter.createAutorouter(this.state.name,this.state.rules,this.state.destination)
+      await apis.autorouter.createAutorouter(this.state.name,this.state.rules,this.state.destination)
       this.props.refresh()
-      this.resetOnClose()
       this.props.close()
+      this.resetOnClose()
     }
   }
 
+  /**
+   * Reset the state from the target of the event
+   * @param {*} e event to catch
+   */
   handleChange = (e) => {
     const target = e.target
     const name = target.name
@@ -41,18 +50,24 @@ class CreateDicomRouterModal extends Component {
     })
   }
 
-  resetOnClose= () => {
-    console.log('first')
-    this.setState({
+  /**
+   * Reset the modal state and component with empty components
+   */
+  resetOnClose= async () => {
+    await this.setState({
       name:"",
       rules:[],
       destination:[],
       ruleList:[]
     })
-    console.log(this.state)
+
     this.handleAddRule()
   }
 
+  /**
+   * Refresh the destination array with the current selected Destination
+   * @param {Array.<String>} selected 
+   */
   refreshDestination = (selected) => {
     let destination = []
     for(let i =0;i<selected.length;i++){
@@ -63,20 +78,36 @@ class CreateDicomRouterModal extends Component {
     })
   }
 
-  refreshRules = (rules) => {
-    
+  refreshRules = async (rule) => {
+    let rules = [...this.state.rules]
+    for(let i=0;i<rules.length;i++){
+      if(rules[i].id===rule.id){
+        rules.splice(i,1)
+        break
+      }
+    }
+    rules.push(rule)
+    await this.setState({rules:rules})
   }
 
+  /**
+   * Add a rule to the ruleList and generate a RuleRow component to display
+   * Create an identifier with a random string
+   */
   handleAddRule = () => {
-    console.log(this.state.ruleList)
     const ruleList = this.state.ruleList
-    let randomString = this.makeKey(8)
+    let randomString = this._makeKey(8)
     this.setState({
-      ruleList:ruleList.concat(<RuleRow key={randomString} id={randomString} delete={this.onDeleteRule}/>)
+      ruleList:ruleList.concat(<RuleRow key={randomString} id={randomString} delete={this.onDeleteRule} refresh={this.refreshRules} />)
     })
   }
 
-  makeKey = (length) => {
+  /**
+   * Create a random string of hte length assigned in parameter
+   * @param {number} length 
+   * @returns {String} a random string of the length in parameter
+   */
+  _makeKey = (length) => {
     var result           = [];
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     var charactersLength = characters.length;
@@ -86,19 +117,34 @@ class CreateDicomRouterModal extends Component {
     return result.join('');
   }
 
-  onDeleteRule = (id) => {
+  /**
+   * Delete the rule on the ruleList according to his id
+   * @param {String} id random id given in props identify the rule on the rule list
+   */
+  onDeleteRule = async (id) => {
     let ruleList = [...this.state.ruleList]
+    let rules = [...this.state.rules]
     for(var i = 0;i<ruleList.length;i++){
       if(ruleList[i].props.id===id){
         ruleList.splice(i,1)
         break
       }
     }
-    this.setState(({
-      ruleList:ruleList
+    for(let j=0;j<rules.length;j++){
+      if(rules[j].id===id){
+        rules.splice(j,1)
+        break
+      }
+    }
+    await this.setState(({
+      ruleList:ruleList,
+      rules:rules
     }))
   }
 
+  /**
+   * Function to close the modal and reset all the state parameters (name, rules, destination)
+   */
   onHide = () => {
     this.props.close()
     this.resetOnClose()
@@ -151,7 +197,5 @@ class CreateDicomRouterModal extends Component {
     )
   }
 }
-
-
 
 export default CreateDicomRouterModal

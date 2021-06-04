@@ -42,7 +42,6 @@ export default class AETSelect extends Component{
                     difference.push(selected[i])
                 }
             }
-            console.log('removed aet: ',difference[0].value)
         }
         else if(value.length>selected.length){
             for(let i = 0;i<value.length;i++){
@@ -50,7 +49,6 @@ export default class AETSelect extends Component{
                     difference.push(value[i])
                 }
             }
-            console.log('added aet:',difference[0].value)
         }else{
             console.error('Selector Change Error : Selected Values didn\'t change')
         }
