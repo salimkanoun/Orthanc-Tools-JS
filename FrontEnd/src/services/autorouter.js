@@ -72,7 +72,7 @@ const autorouter = {
         body: JSON.stringify(autorouter)
     }
 
-    return fetch('/api/autorouting'+id, modifyAutorouterOptions).then((answer) => {
+    return fetch('/api/autorouting/'+id, modifyAutorouterOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return true
     })
@@ -91,7 +91,7 @@ const autorouter = {
         body: JSON.stringify(autorouter)
     }
 
-    return fetch('/api/autorouting'+id, switchOnOffOptions).then((answer) => {
+    return fetch('/api/autorouting/'+id+'/running', switchOnOffOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return true
     })
@@ -106,7 +106,7 @@ const autorouter = {
           },
       }
 
-      return fetch('/api/autorouting' + id, deleteAutorouterOptions).then((answer) => {
+      return fetch('/api/autorouting/' + id, deleteAutorouterOptions).then((answer) => {
           if (!answer.ok) {
               throw answer
           }

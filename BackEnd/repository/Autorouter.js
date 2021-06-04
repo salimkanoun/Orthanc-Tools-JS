@@ -36,11 +36,14 @@ class Autorouter{
     if(autorouter==null)throw new OTJSDBEntityNotFoundException('This Autorouter doesn\'t exist')
 
     let modify = {}
-    if(name) modify.name=name
-    if(rules) modify.rules=rules
-    if(target) modify.target=target
-    if(running) modify.running=running
-    if(destination) modify.destination=destination
+
+    let modify = {id:id}
+    if(name){modify.name=name}
+    if(rules) {modify.rules=rules}
+    if(target) {modify.target=target}
+    if(running!==null) {modify.running=running}
+    if(destination) {modify.destination=destination}
+
 
     return db.Autorouter.update(modify,{where:{id:id}})
   }
