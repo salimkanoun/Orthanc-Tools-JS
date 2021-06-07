@@ -1,46 +1,32 @@
+const { OTJSBadRequestException } = require('../Exceptions/OTJSErrors')
+
 var Users = require('../model/Users')
 
     createUser = async function (req, res) {
         const body = req.body
-        try {
-            await Users.createUser(body)
-            res.json(true)
-        } catch (error) {
-            console.log(error)
-            res.status(401).send('Fail to create user')
+        if( !body.username || !body.password || !body.role){
+            throw new OTJSBadRequestException('Username, Password and Role must be specified')
         }
+        await Users.createUser(body.username, body.firstname, body.lastname, body.email, body.password, body.role, body.super_admin)
+        res.sendStatus(201)
     }
 
     getUsers = async function (req, res) {
-        let user
-        try {
-            user = await Users.getUsers()
-        } catch (error) {
-            console.log(error)
-            res.status(401).send('fail to get users')
-        }
+        let user = await Users.getUsers()
         res.json(user)
     }
 
     modifyUser = async function(req, res){
+        const username = req.params.username
         const body = req.body
-        console.log('BODY : ', body)
-        try {
-            await Users.modifyUser(body)
-            res.json(true)
-        } catch (error) {
-            res.status(401).send('Fail to modify user')
-        }
+        await Users.modifyUser(username, body.firstname, body.lastname, body.password, body.email, body.role, body.superAdmin)
+        res.sendStatus(200)
     }
 
     deleteUser = async function(req, res){
-        const name = req.body
-        try {
-            await Users.deleteUser(name)
-            res.json(true)
-        } catch (error) {
-            res.status(401).send('Fail to user')
-        }
+        const username = req.params.username
+        await Users.deleteUser(username)
+        res.sendStatus(200)
     }
 
 module.exports = { createUser, modifyUser, deleteUser, getUsers }

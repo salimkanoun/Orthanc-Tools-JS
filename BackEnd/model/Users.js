@@ -1,332 +1,229 @@
-const bcrypt = require('bcryptjs')
-const db = require('../database/models')
-const AdClient = require('../ldap/adClient')
+const crypto = require('../adapter/cryptoAdapter')
+const {OTJSNotFoundException, OTJSBadRequestException} = require('../Exceptions/OTJSErrors')
+const Ldap = require('./Ldap')
+const Role = require('../repository/Role')
+const User = require('../repository/User')
+const Option = require('../repository/Option')
+const DistantUser = require('../repository/DistantUser')
 
 class Users {
-  constructor (username) {
-    this.username = username
-  }
 
-  async _getUserEntity () {
-    if (this.user !== undefined) {
-      return this.user
-    } else {
-      try {
-        const user = await db.User.findOne({ where: { username: this.username } })
-        this.user = user
-        return this.user
-      } catch (error) {
-        console.log(error)
-        throw new Error('User Not Found')
-      }
-      
-    }
-  }
+    constructor(username) {
 
-  async checkLDAPPassword (plainPassword, callback) {
-    let username = this.username;
-    if(this.username.indexOf('@') === 0) {
-      username = username.substr(1)
-    }
+        this.username = username
+        this.ldapUser = false
 
-    const option = await db.LdapOptions.findOne(({ where: { id: 1 }, attributes: ['TypeGroupe',
-        'protocole',
-        'adresse',
-        'port',
-        'DN',
-        'mdp','user','groupe','base'] }))
-
-        let client;
-        if(option.TypeGroupe === 'ad') {
-            client = new AdClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp, option.base, option.user, option.groupe )
-          } else if(option.TypeGroupe === 'ldap') {
-            //ToDo
-            throw 'ToDo'
-        } else {
-            throw 'inccorect TypeGroupe'
+        //if contain @, called User is from LDAP
+        if (this.username.indexOf('@') !== -1) {
+            this.ldapUsername = this.username
+            if (this.username.indexOf('@') === 0) {
+                this.username = this.username.substr(1)
+                this.ldapUsername = this.username
+            } else {
+                this.username = this.username.split('@')[0];
+            }
+            this.ldapUser = true
         }
-        await client.autentification(username, plainPassword, function(response) { 
-          return callback(response)
+
+    }
+
+    _getUserEntity() {
+        return User.getUser(this.username).then(entity => {
+            if (!entity) {
+                throw new OTJSNotFoundException('Not Found')
+            } else {
+                return entity
+            }
+        }).catch(error => {
+            throw error
         })
-  }
-
-  async checkLocalPassword (plainPassword, callback) {
-    const check = await this._getUserEntity().then(user => {
-       return bcrypt.compare(plainPassword, user.password)
-    }).catch( () => callback(false))
-    return callback(check)
-  }
-
-  async checkPassword (plainPassword, callback) {
-   
-    const mode = await db.Option.findOne({ 
-      attributes: ['ldap'],
-      where: {id: '1'}
-    });
-
-    try {
-        if(mode.ldap && this.username.indexOf('@') !== -1) {
-          //LDAP user
-          await this.checkLDAPPassword(plainPassword, async function(response) {
-            return await callback(response)
-          });
-
-        } else {
-          //Local user
-          await this.checkLocalPassword(plainPassword, async function(response) {
-            return await callback(response)
-          });
-          
-        }
-    } catch(err) {
-      console.log(err)
     }
-  }
 
-  async isAdmin () {
-    const user = await this._getUserEntity()
-    return user.admin
-  }
-
-  static async createUser (body) {
-
-    if(body.username.indexOf('@') !== -1) throw new Error('@ is forbiden') 
-
-    const saltRounds = 10
-    let id = null
-    await db.User.max('id').then(max => id = max + 1).catch((error) => console.log(error))
-    const promise = bcrypt.hash(body.password, saltRounds).then(function (hash) {
-      db.User.create({
-        id: id,
-        username: body.username,
-        first_name: body.firstName,
-        last_name: body.lastName,
-        mail: body.mail,
-        password: hash,
-        role: body.role,
-        admin: false
-      }).catch(e => console.log(e))
-    })
-
-    return promise
-  }
-
-  static async deleteUser (username) {
-    let user = new Users(username)
-    
-    if(await user.isAdmin()) throw 'Can\'t delete superAdmin'
-  
-    try {
-      await db.User.destroy({
-      where: {
-          username: username
-       }
-    })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  static async modifyUser(data){
-    
-    if(data.username.indexOf('@') !== -1) throw '@ is forbiden'
-
-    let user = new Users(data.username)
-    
-    if(await user.isAdmin() && data.role !=='admin') throw 'Can\'t modify superAdmin\'s role'
-
-    const saltRounds = 10
-
-    if(data.password !== null) {
-      try {
-        const promise = bcrypt.hash(data.password, saltRounds).then(function (hash) {db.User.upsert({
-          id: data.id,
-          password: hash
+    isAdmin() {
+        return this._getUserEntity().then(user => user.super_admin).catch((error) => {
+            throw error
         })
-      })
-      } catch (error) {
-        console.log(error)
-      }
     }
 
-  try {
-      const mod = await db.User.findOne(({ where: { id:data.id } }))
-      mod.id = data.id
-      mod.username = data.username, 
-      mod.isAdmin = data.admin, 
-      mod.first_name = data.first_name, 
-      mod.last_name = data.last_name, 
-      mod.mail = data.mail, 
-      mod.role = data.role
-      await mod.save()
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-  static async getUsers(){
-    
-    let users;
-    
-    try{
-        users = await db.User.findAll({
-        attributes: ['id', 'username', 'first_name', 'last_name', 'admin', 'mail', 'role']
-      })
-      if (users === null) {
-        throw new Error('User Not Found')
-      }
-      } catch (error) {
-        console.log(error)
-    } finally {
-      return users
-    }
-  
-  }
-
-  async getInfoUser(){
-    let user;
-    
-    try {
-        user = await db.User.findOne({ 
-        where: {username: this.username}
-      });
-      if (user === null) {
-        throw new Error('User Not Found')
-      }
-      } catch(error) {
-        console.log(error)
-    } finally {
-      return user
-    }
-    
-  }
-
-  async getLocalUserRight(callback) {
-    let rights;
-
-    try {
-      const user = await db.User.findOne({ 
-        attributes: ['role'],
-        where: {username: this.username}
-      });
-
-      if (user === null) {
-        throw new Error('User Not Found')
-      }
-
-        rights = await db.Role.findOne({
-        attributes: ['import', 'content', 'anon', 'export_local', 'export_extern','query', 'auto_query', 'delete', 'admin','modify', 'cd_burner'],
-        where: {name: user.role}
-      });
-
-      if (rights === null) {
-        throw new Error('Rights Not Found')
-      }
-      } catch (error) {
-      console.log(error)
-      } finally {
-        return callback(rights)
-      }
-  }
-
-  async getLDAPUserRight(callback) { 
-    let username = this.username;
-    if(this.username.indexOf('@') === 0) {
-      username = username.substr(1)
+    checkLocalPassword(plainPassword) {
+        return this._getUserEntity().then(user => {
+            return crypto.compare(plainPassword, user.password)
+        }).catch((error) => {
+            throw error
+        })
     }
 
-    const option = await db.LdapOptions.findOne(({ where: { id: 1 }, attributes: ['TypeGroupe',
-        'protocole',
-        'adresse',
-        'port',
-        'DN',
-        'mdp','user','groupe','base'] }))
+    getAuthenticationMode() {
+        return Option.getOneAuthenticationMode()
+    }
 
-        let client;
-        if(option.TypeGroupe === 'ad') {
-            client = new AdClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp, option.base, option.user, option.groupe )
-          } else if(option.TypeGroupe === 'ldap') {
-            //ToDo
-            throw 'ToDo'
-        } else {
-            throw 'inccorect TypeGroupe'
-        }
+    async checkPassword(plainPassword) {
 
-        const opt = await db.DistantUser.findAll(({attributes: ['groupName'] }))
-        const roles = []; 
-        for(let u=0;u<opt.length;u++) {roles.push(opt[u].dataValues.groupName)}
-
-    await client.getPermission(username, roles, async function(response) { 
-      
-      let res = {
-        import:false,
-        content:false,
-        anon:false,
-        export_local:false,
-        export_extern:false,
-        query:false,
-        auto_query:false,
-        delete:false,
-        admin:false,
-        modify:false
-      }
-
-      for(let i=0;i<response.length;i++) {
-
-        let resp = await db.DistantUser.findOne(({where: {groupName: response[i]}, attributes: ['roleDistant'] }))
-        let role = await resp.dataValues.roleDistant; 
-
-        let option = await db.Role.findOne(({ where: { name: role }, attributes: ['import',
-        'content',
-        'anon',
-        'export_local',
-        'export_extern',
-        'query','auto_query','delete','admin','modify'] }))
-
-        res = {
-          import:res.import || option.dataValues.import,
-          content:res.content || option.dataValues.content,
-          anon:res.anon || option.dataValues.anon,
-          export_local:res.export_local || option.dataValues.export_local,
-          export_extern:res.export_extern || option.dataValues.export_extern,
-          query:res.query || option.dataValues.query,
-          auto_query:res.auto_query || option.dataValues.auto_query,
-          delete:res.delete || option.dataValues.delete,
-          admin:res.admin || option.dataValues.admin,
-          modify:res.modify || option.dataValues.modify
-        }
-
-        console.log(res)
-      }
-
-      return callback(res)
-    })
-  }  
-
-  async getUserRight(callback){
-      const mode = await db.Option.findOne({ 
-        attributes: ['ldap'],
-        where: {id: '1'}
-      });
-
-      try {
-          if(mode.ldap && this.username.indexOf('@') !== -1) {
+        let option = await this.getAuthenticationMode()
+        if (option.ldap && this.ldapUser) {
             //LDAP user
-            await this.getLDAPUserRight(async function(response) {
-              return await callback(response)
-            });
-
-          } else {
+            return await Ldap.authenticateUser(this.ldapUsername, plainPassword).catch((error) => {
+                throw error
+            })
+        } else {
             //Local user
-            await this.getLocalUserRight(async function(response) {
-              return await callback(response)
-            });            
-          }
+            return await this.checkLocalPassword(plainPassword).catch((error) => {
+                throw error
+            })
+        }
 
-    } catch(err) {
-      console.log(err)
+
     }
-  }
+
+    static async createUser(username, firstname, lastname, email, password, role, super_admin) {
+
+        if (username.indexOf('@') !== -1) throw new OTJSBadRequestException('@ not allowed for local username definition')
+
+        var hash = crypto.hash(password,16)
+        
+        return User.create(username, firstname, lastname, email, hash, role, super_admin)
+
+    }
+
+    static async deleteUser(username) {
+        let user = new Users(username)
+
+        if (await user.isAdmin()) {
+            let superUserCount = await User.findAndCountAllSuperUser()
+            if (superUserCount <= 1) throw 'Can\'t delete last super user'
+        }
+
+        await User.delete(username)
+
+    }
+
+    static async modifyUser(username, firstname, lastname, password, email, role, isSuperAdmin) {
+
+        if (username.indexOf('@') !== -1) throw '@ is forbiden'
+
+        let user = new Users(username)
+
+        if (await user.isAdmin() && role !== 'admin') throw 'Can\'t modify superAdmin\'s role'
+
+        const mod = await user._getUserEntity()
+        mod.username = username
+        mod.firstname = firstname
+        mod.lastname = lastname
+        mod.super_admin = isSuperAdmin
+        mod.email = email
+
+        if (password !== null) {
+            try{
+                mod.password = crypto.hash(password,16)
+            }catch(error){
+                throw error
+            }
+        }
+
+        mod.role = role
+        await mod.save()
+
+    }
+
+    static async getUsers() {
+        let userEntities = await User.getAllUser()
+        let usersAnswer = []
+        userEntities.forEach((user) => {
+            usersAnswer.push({
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                role: user.role,
+                superAdmin: user.super_admin
+            })
+        })
+        return usersAnswer
+    }
+
+    getLocalUserRight() { //add
+        return this._getUserEntity().then(user => {
+            return Role.getRole(user.role)
+        })
+    }
+
+    async getLDAPUserRight() {
+
+        //Get Ldap Group having a local role correspondance
+        const ldapMatches = await DistantUser.getAllLocalRoleAndLdapGroup()
+
+        //Flatten known LdapGroup in Array
+        let knownLdapGroups = ldapMatches.map((match) => {
+            return match.ldap_group
+        })
+
+        //Get user's group from LDAP
+        let userLdapGroups = await Ldap.getGroupMembershipForUser(this.ldapUsername)
+
+        let role = {
+            import: false,
+            content: false,
+            anon: false,
+            export_local: false,
+            export_extern: false,
+            query: false,
+            auto_query: false,
+            delete: false,
+            modify: false,
+            cd_burner: false,
+            admin: false
+        }
+
+        //Loop user's group until we found a known group having a local role
+        for (let i = 0; i < userLdapGroups.length; i++) {
+
+            //Get and return the first match
+            if (knownLdapGroups.includes(userLdapGroups[i].cn)) {
+
+                let local_role = ldapMatches.filter((match) => {
+                    return match.ldap_group === userLdapGroups[i].cn
+                })
+
+                //get Role data and return it to controller
+                let currentRole = await Role.getRole(local_role[0].local_role)
+
+                if (role.import === false) role.import = currentRole.import
+                if (role.content === false) role.content = currentRole.content
+                if (role.anon === false) role.anon = currentRole.anon
+                if (role.export_local === false) role.export_local = currentRole.export_local
+                if (role.export_extern === false) role.export_extern = currentRole.export_extern
+                if (role.query === false) role.query = currentRole.query
+                if (role.auto_query === false) role.auto_query = currentRole.auto_query
+                if (role.delete === false) role.delete = currentRole.delete
+                if (role.modify === false) role.modify = currentRole.modify
+                if (role.cd_burner === false) role.cd_burner = currentRole.cd_burner
+                if (role.admin === false) role.admin = currentRole.admin
+
+            }
+
+        }
+
+        return role
+
+
+    }
+
+    getUserRight() {
+        return this.getAuthenticationMode().then(async option => {
+            if (option.ldap && this.ldapUser) {
+                //LDAP user
+                return await this.getLDAPUserRight()
+            } else {
+                //Local user
+                return await this.getLocalUserRight()
+            }
+
+        }).catch(error => {
+            throw error
+        })
+
+    }
 
 }
 

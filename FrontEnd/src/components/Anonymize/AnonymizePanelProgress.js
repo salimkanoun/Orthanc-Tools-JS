@@ -1,101 +1,81 @@
-import React, { Component, Fragment } from 'react'
-import { connect } from 'react-redux';
+import React, { Component } from 'react';
 
-import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
+import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
 
-import AnonymizeRobotDetails from './AnonymizeRobotDetails'
-
-import { addToAnonymizedList, emptyAnonymizeList } from '../../actions/AnonList'
-
-import apis from '../../services/apis';
+import MonitorTask from '../../tools/MonitorTask';
 
 
 class AnonymizePanelProgress extends Component {
 
-    state = { 
-            showRobotDetails: false, 
-            success: 0, 
-            failures: 0,
-            numberOfItem : 0,
-            robotItems : []
+    state = {
+        success: 0,
+        failures: 0,
+        numberOfItem: 0,
+        robotItems: []
     }
 
-    constructor(props) {
-        super(props);
-        this.getInfo = this.getInfo.bind(this)
-        this.toogleModal = this.toogleModal.bind(this)
-    }
-
-    toogleModal(){
+    toogleModal = () => {
         this.setState({
             showRobotDetails: !this.state.showRobotDetails
         })
     }
-    
-    componentDidMount() {
-        this.startMonitoring()
+
+    componentDidMount = () => {
+        if (this.props.anonTaskID) {
+            this.startMonitoring();
+        }
     }
 
-    componentWillUnmount(){
+    componentWillUnmount = () => {
         this.stopMonitoring()
     }
-    
-    startMonitoring(){
-        this.intervalChcker = setInterval(() => this.getInfo(), 2000)
-    }
 
-    stopMonitoring(){
-        if(this.intervalChcker !== undefined) clearInterval(this.intervalChcker)
-        this.props.emptyAnonymizeList()
-        this.props.setProgress(false)
-    }
-
-    async getInfo(){
-        let success = 0
-        let failures = 0
-        let robot = await apis.anon.getAnonJob(this.props.username)
-        console.log(robot.items)
-        this.setState({
-            robotItems : robot.items
-        })
-
-        robot.items.forEach(async item => {
-
-            
-            switch (item.Status) {
-                case 'Success':
-                    success = success + 1
-                    let studyDetail = await apis.content.getStudiesDetails(item.anonymizedOrthancStudyID)
-                    if (studyDetail !== undefined)
-                        this.props.addToAnonymizedList([studyDetail])
-                    break
-                case 'Failures':
-                    failures = failures + 1
-                    break
-                default:
-                    break
+    startMonitoring = () => {
+        this.task = new MonitorTask(this.props.anonTaskID, 2000)
+        this.task.onUpdate((info) => {
+            let success = 0
+            let failures = 0
+            info.details.items.forEach(async item => {
+                switch (item.state) {
+                    case 'completed':
+                        success++
+                        break
+                    case 'failed':
+                        failures++
+                        break
+                    default:
+                        break
+                }
+            })
+            this.setState({
+                success,
+                failures,
+                numberOfItem: info.details.items.length
+            })
+            if (success + failures === info.details.items.length) {
+                this.stopMonitoring()
             }
         })
 
-        this.setState({
-            success: success, 
-            failures: failures,
-            numberOfItem : robot.items.length
-        })
-        if (robot.status === 'Finished') {this.stopMonitoring()}
+
+        this.task.startMonitoringJob()
     }
 
-    render() {
+    stopMonitoring = () => {
+        if (this.task) this.task.stopMonitoringJob()
+    }
+
+    render = () => {
         //Calculate progression to display
         let successPercent
         let failuresPercent
         let itemProgression
-        if(this.state.numberOfItem !== 0){
-            successPercent = 100*this.state.success/this.state.numberOfItem
-            failuresPercent = 100*this.state.failures/this.state.numberOfItem
+        if (this.state.numberOfItem !== 0) {
+            successPercent = 100 * this.state.success / this.state.numberOfItem
+            failuresPercent = 100 * this.state.failures / this.state.numberOfItem
             itemProgression = this.state.success + this.state.failures
 
-        }else {
+        } else {
             successPercent = 0
             failuresPercent = 0
             itemProgression = 0
@@ -103,45 +83,26 @@ class AnonymizePanelProgress extends Component {
 
 
         return (
-            <Fragment>
-                <AnonymizeRobotDetails show = {this.state.showRobotDetails} onHide = {this.toogleModal} robotItems={this.state.robotItems}/>
-                <div className="col-md-2 text-left">
-                    <CircularProgressbarWithChildren
-                        value={successPercent}
-                        text={'Studies Done : ' + itemProgression + '/'+ this.state.numberOfItem}
-                        styles={buildStyles({
-                            textSize: '8px'
-                        })}>
-                    
-                        <CircularProgressbar
-                            value={failuresPercent}
-                            styles={buildStyles({
-                            pathColor: "#f00",
-                            trailColor: "transparent"
-                            })}
-                        />
-                    </CircularProgressbarWithChildren>
-                </div>
+            <CircularProgressbarWithChildren
+                value={successPercent}
+                text={'Studies Done : ' + itemProgression + '/' + this.state.numberOfItem}
+                styles={buildStyles({
+                    textSize: '8px'
+                })}>
 
-                <button type='button' className='btn btn-info float-right mr-2' onClick={()=>this.toogleModal()} >Show Details</button>
-                <button type='button' className='btn btn-danger float-right mr-2' onClick={()=>alert('not implemented yet')} disabled>Delete</button>
-                <button type='button' className='btn btn-primary float-right mr-2' onClick={()=>alert('not implemented yet')} disabled>Resume</button>
-                <button type='button' className='btn btn-warning float-right mr-2' onClick={()=>alert('not implemented yet')} disabled>Pause</button>
-            </Fragment>
+                <CircularProgressbar
+                    value={failuresPercent}
+                    styles={buildStyles({
+                        pathColor: "#f00",
+                        trailColor: "transparent"
+                    })}
+                />
+            </CircularProgressbarWithChildren>
+
         )
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        anonymizedList: state.AnonList.anonymizedList,
-        username: state.OrthancTools.username
-    }
-}
 
-const mapsDispatchToProps = {
-    addToAnonymizedList,
-    emptyAnonymizeList
-}
 
-export default connect(mapStateToProps, mapsDispatchToProps)(AnonymizePanelProgress)
+export default AnonymizePanelProgress

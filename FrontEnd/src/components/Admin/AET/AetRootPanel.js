@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import Aets from './AetsListTable'
 import AetForm from './AetForm'
 import apis from '../../../services/apis'
+import { toast } from 'react-toastify'
 
 /**
  * Root Panel of AETs options
  */
 const AetRootPanel = () => {
+
   const [aets, setAets] = useState([])
 
   /**
@@ -15,15 +17,19 @@ const AetRootPanel = () => {
      */
   useEffect(() => {
     refreshAetsData()
-  }, []
-  )
+  }, [])
 
   /**
      * Get Aets Data from backend
      */
-  async function refreshAetsData () {
-    const aetsAnswer = await apis.aets.getAetsExpand()
-    setAets(aetsAnswer)
+  const refreshAetsData = async () => {
+    try {
+      let aets = await apis.aets.getAetsExpand()
+      setAets(aets)
+    } catch (error) {
+      toast.error(error.statusText)
+    }
+
   }
 
   return (

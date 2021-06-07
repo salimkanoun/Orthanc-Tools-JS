@@ -1,5 +1,3 @@
-import { toastifyError } from './toastify'
-
 const cdBurner = {
 
       startCdBurnerService() {
@@ -7,34 +5,32 @@ const cdBurner = {
                   method: 'POST',
                   headers: {
                         Accept: 'application/json',
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json; charset=utf-8'
                   },
                   body: JSON.stringify([])
-            }
-
-            return fetch('/api/monitoring/burner/', options).then( (answer) => {
-                  if (!answer.ok) { throw answer }
-                  return (answer.json())
-            }).catch(async error => {
-                  let errorText = await error.text()
-                  toastifyError(errorText)
-            })
-
-      },
-
-      stopCdBurnerService() {
-            let options = {
-                  method: 'DELETE',
-                  headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json'
-                  }
             }
 
             return fetch('/api/monitoring/burner/', options).then((answer) => {
                   if (!answer.ok) { throw answer }
                   return (answer.json())
+            }).catch(error => {
+                  throw error
             })
+      },
+
+      stopCdBurnerService() {
+
+            let options = {
+                  method: 'DELETE',
+                  headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json; charset=utf-8'
+                  }
+            }
+
+            return fetch('/api/monitoring/burner/', options).then((answer) => {
+                  if (!answer.ok) { throw answer }
+            }).catch((error) => { throw error })
 
       },
 
@@ -51,7 +47,7 @@ const cdBurner = {
                   if (!answer.ok) { throw answer }
                   return (answer.json())
             }).catch((error) => {
-                  toastifyError(error)
+                  throw error
             })
 
       },
@@ -62,22 +58,19 @@ const cdBurner = {
                   method: 'POST',
                   headers: {
                         Accept: 'application/json',
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json; charset=utf-8'
                   },
                   body: JSON.stringify([])
             }
 
-            return fetch('/api/monitoring/burner/jobs/'+jobBurnerID+'/cancel', options).then((answer) => {
+            return fetch('/api/monitoring/burner/jobs/' + jobBurnerID + '/cancel', options).then((answer) => {
                   if (!answer.ok) { throw answer }
-                  return (answer.json())
             }).catch((error) => {
-                  console.log(error)
-                  toastifyError(error)
+                  throw error
             })
 
       }
 
 }
 
-
-export default cdBurner; 
+export default cdBurner

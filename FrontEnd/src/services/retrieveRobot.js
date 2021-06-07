@@ -1,113 +1,122 @@
-import { toastifySuccess, toastifyError } from './toastify'
-
 const retrieveRobot = {
 
-    createRobot(username, projectName, retrieveArray){
+    createRobot(username, projectName, retrieveArray) {
 
-        const createRobotOption =  {
+        const createRobotOption = {
             method: 'POST',
             headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
+                Accept: 'application/json',
+                'Content-Type': 'application/json; charset=utf-8'
             },
-            body: JSON.stringify({ 
-                    projectName: projectName, 
-                    retrieveArray: retrieveArray 
-                })
+            body: JSON.stringify({
+                projectName: projectName,
+                retrieveArray: retrieveArray
+            })
         }
 
-        return fetch('/api/robot/'+username+'/retrieve', createRobotOption ).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return (answer.json())
-        }).then(() => toastifySuccess('Sent To Retrieve Robot'))
-        .catch((error) => {
-            toastifyError(error)
+        return fetch('/api/tasks/' + username + '/retrieve', createRobotOption).then((answer) => {
+            if (!answer.ok) {
+                throw answer
+            }
+            return answer.text();
+        }).catch((error) => {
+            throw error
         })
 
     },
 
-    validateRobot(username){
+    validateRobot(id) {
 
         const validateRobotOption = {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
-        return fetch("/api/robot/"+username+"/retrieve/validate", validateRobotOption ).then((answer) => {
-            if (!answer.ok) { throw answer }
+        return fetch("/api/tasks/retrieve/" + id + "/validate", validateRobotOption).then((answer) => {
+            if (!answer.ok) {
+                throw answer
+            }
             return (answer.json())
-        }).catch((error) => {
-            toastifyError(error)
         })
     },
 
-    deleteRobot(username){
+    deleteRobot(id) {
 
         const deleteRobotOption = {
             method: "DELETE",
         }
 
-        return fetch("/api/robot/"+username+"/retrieve", deleteRobotOption ).catch((error) => {
-            toastifyError(error)
+        return fetch("/api/tasks/" + id, deleteRobotOption).catch((error) => {
+            throw error
         })
     },
 
-    getAllRobotsDetails(){
+    deleteRobotUser(username) {
 
-        const getAllRobotsDetails =  {
+        const deleteRobotOption = {
+            method: "DELETE",
+        }
+
+        return fetch("/api/tasks/" + username + "/retrieve", deleteRobotOption).catch((error) => {
+            throw error
+        })
+    },
+
+    getAllRobotsDetails() {
+
+        const getAllRobotsDetails = {
             method: "GET",
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
-        return fetch("/api/robot/retrieve", getAllRobotsDetails ).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return (answer.json())
-        }).catch((error) => {
-            toastifyError(error)
-        })
-    },
-
-    getRobotDetails(username){
-
-        const getRobotDetailsOption =  {
-            method: "GET",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+        return fetch("/api/tasks/type/retrieve", getAllRobotsDetails).then((answer) => {
+            if (!answer.ok) {
+                throw answer
             }
-        }
-
-        return fetch( "/api/robot/"+username+"/retrieve", getRobotDetailsOption ).then((answer) => {
-            if (!answer.ok) { throw answer }
             return (answer.json())
-        }).catch((error) => {
-            toastifyError(error)
         })
     },
 
-    deleteRobotItem(username, item){
+    deleteRobotItem(id, item) {
 
-        const deleteRobotItemOption =  {
+        const deleteRobotItemOption = {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
-        return fetch("/api/robot/"+username+"/retrieve/"+item, deleteRobotItemOption ).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return (answer.json())
+        return fetch("/api/tasks/retrieve/" + id + "/" + item, deleteRobotItemOption).then((answer) => {
+            if (!answer.ok) {
+                throw answer
+            }
+            return;
         }).catch((error) => {
-            toastifyError(error)
+            throw error
         })
 
+    },
+
+    flush() {
+        const flushRetrRobotsOption = {
+            method: 'DELETE'
+        }
+
+        return fetch('/api/tasks/type/retrieve/flush', flushRetrRobotsOption).then(answer => {
+            if (!answer.ok) {
+                throw answer
+            }
+            return true
+        }).catch(error => {
+            throw error
+        })
     }
 
 }

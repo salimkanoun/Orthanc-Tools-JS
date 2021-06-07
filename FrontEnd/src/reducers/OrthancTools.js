@@ -1,22 +1,27 @@
-import { LOAD_AETS, SAVE_USERNAME } from '../actions/actions-types'
+import { LOAD_AETS, LOG_IN } from '../actions/actions-types'
 
 const initialState = {
-  OrthancAets: [], 
-  username: ''
+  OrthancAets: [],
+  roles: {},
+  username: null
 }
 
-export default function orthancToolsReducer (state = initialState, action) {
+export default function orthancToolsReducer(state = initialState, action) {
   switch (action.type) {
-    case LOAD_AETS :
+
+    case LOAD_AETS:
       return {
-        ...state, 
+        ...state,
         OrthancAets: action.payload
       }
-    case SAVE_USERNAME :
-          return {
-            ...state, 
-            username: action.payload
-          }
+
+    case LOG_IN:
+      return {
+        ...state,
+        username: action.payload.username,
+        roles: {...action.payload}
+      }
+
     default:
       return state
   }

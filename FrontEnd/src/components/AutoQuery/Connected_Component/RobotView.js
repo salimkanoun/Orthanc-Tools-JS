@@ -8,12 +8,23 @@ import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } fro
 import 'react-circular-progressbar/dist/styles.css';
 
 import AnonExportDeleteSendButton from '../../Import/AnonExportDeleteSendButton'
-import OhifLink from '../../Ohif/OhifLink'
+import OhifLink from '../../Viewers/OhifLink'
+import StoneLink from '../../Viewers/StoneLink'
 import apis from '../../../services/apis'
 
-import {addStudiesToExportList} from '../../../actions/ExportList'
-import {addStudiesToDeleteList} from '../../../actions/DeleteList'
-import {addStudiesToAnonList} from '../../../actions/AnonList'
+import { ReactComponent as CheckedSVG } from '../../../assets/images/check-circle.svg'
+import { ReactComponent as XSVG } from '../../../assets/images/x-circle.svg'
+import { ReactComponent as PendingSVG } from '../../../assets/images/pending.svg'
+
+import { addStudiesToExportList } from '../../../actions/ExportList'
+import { addStudiesToDeleteList } from '../../../actions/DeleteList'
+import { addStudiesToAnonList } from '../../../actions/AnonList'
+
+import MonitorTask from '../../../tools/MonitorTask'
+import { toast } from 'react-toastify';
+import { Fragment } from 'react';
+import Dropdown from 'react-bootstrap/esm/Dropdown'
+
 
 /**
  * View page of a sigle Retrieve Robot content
@@ -22,111 +33,122 @@ import {addStudiesToAnonList} from '../../../actions/AnonList'
 class RobotView extends Component {
 
     state = {
-        rows : [],
-        totalPercentageProgress : 0,
+        id : null,
+        valid: null,
+        approved: null,
+        rows: [],
+        totalPercentageProgress: 0,
         percentageFailure: 0
     }
 
-    constructor(props){
-        super(props)
-        this.refreshHandler=this.refreshHandler.bind(this)
-        this.startProgressMonitoring = this.startProgressMonitoring.bind(this)
-        this.stopProgressMonitoring = this.stopProgressMonitoring.bind(this)
-        this.sendToAnon = this.sendToAnon.bind(this)
-        this.sendToExport = this.sendToExport.bind(this)
-        this.sendToDelete = this.sendToDelete.bind(this)
-        this.handleClickDeleteRobot = this.handleClickDeleteRobot.bind(this)
-        
-    }
-
-    componentDidMount(){
-        this.refreshHandler()
+    componentDidMount = () => {
         this.startProgressMonitoring()
     }
 
-    componentWillUnmount(){
+    componentWillUnmount = () => {
         this.stopProgressMonitoring()
     }
 
     columns = [{
-        dataField: 'Key',
+        dataField: 'id',
         hidden: true
     }, {
         dataField: 'Level',
-        text : 'level',
+        text: 'level',
         filter: selectFilter({
-            options: { study : 'study', series : 'series'}
+            options: { study: 'study', series: 'series' }
         })
     }, {
         dataField: 'StudyInstanceUID',
         hidden: true
     }, {
         dataField: 'PatientName',
-        text : 'Patient Name',
+        text: 'Patient Name',
         filter: textFilter(),
         style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
         dataField: 'PatientID',
-        text : 'Patient ID',
+        text: 'Patient ID',
         filter: textFilter(),
         style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
-        dataField : 'StudyDate',
-        text : 'Study Date',
+        dataField: 'StudyDate',
+        text: 'Study Date',
         filter: dateFilter()
     }, {
-        dataField : 'Modality',
-        text : 'Modality',
+        dataField: 'Modality',
+        text: 'Modality',
         filter: textFilter()
     }, {
-        dataField : 'StudyDescription',
-        text : 'Study Description',
+        dataField: 'StudyDescription',
+        text: 'Study Description',
         filter: textFilter(),
         style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
-        dataField : 'SeriesDescription',
-        text : 'Series Description',
+        dataField: 'SeriesDescription',
+        text: 'Series Description',
         filter: textFilter(),
         style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }, {
-        dataField : 'AccessionNumber',
-        text : 'Accession Number',
+        dataField: 'AccessionNumber',
+        text: 'Accession Number',
         filter: textFilter()
     }, {
-        dataField : 'OriginAET',
-        text : 'AET',
+        dataField: 'OriginAET',
+        text: 'AET',
         filter: textFilter()
     }, {
-        dataField : 'Validated',
-        text : 'Validated',
-        filter: textFilter()
-    }, {
-        dataField : 'Status',
-        text : 'Status',
+        dataField: 'Validated',
+        text: 'Validated',
         filter: textFilter(),
-        style: function callback(cell, row, rowIndex, colIndex) {
-            if(cell === 'Success'){
-                return ({backgroundColor: 'green'})
-            }else if (cell === 'Failure'){
-                return ({backgroundColor: 'red'})
-            }
-         }
-    }, {
-        dataField : 'Remove',
-        text : 'Remove Query',
-        formatter : this.removeQueryButton,
-        formatExtraData : this
-    }, {
-        dataField : 'OHIF',
-        text : 'View in OHIF',
-        formatter : function(cell, row, rowIndex, formatExtraData){
-            return (
-                <OhifLink StudyInstanceUID = {row.StudyInstanceUID} />
-            )
+        formatter: (cell, row, rowIndex, formatExtraData) => {
+            if (cell == null) return <div className="text-center"><PendingSVG /></div>
+            return cell === true ? <div className="text-center"><CheckedSVG /></div> : <div className="text-center"><XSVG /></div>
         }
     }, {
-        dataField : 'RetrievedOrthancId',
-        hidden : true
+        dataField: 'Status',
+        text: 'Status',
+        filter: textFilter(),
+        style: function callback(cell, row, rowIndex, colIndex) {
+            if (cell === 'Success') {
+                return ({ backgroundColor: 'green' })
+            } else if (cell === 'Failure') {
+                return ({ backgroundColor: 'red' })
+            }
+        }
+    }, {
+        dataField: 'Remove',
+        text: 'Remove Query',
+        formatter: (cell, row, rowIndex, formatExtraData) => {
+            return this.state.approved === false ?
+                (<div className="text-center">
+                    <input type="button" className='btn btn-danger' onClick={() => formatExtraData.deleteQueryHandler(rowIndex, formatExtraData.refreshHandler)} value="Remove" />
+                </div>)
+                : null
+        },
+        formatExtraData: this
+    }, {
+        dataField: 'Viewers',
+        text: 'Viewers',
+        formatter: function (cell, row, rowIndex, formatExtraData) {
+            return row.Status === RobotView.ITEM_SUCCESS ?
+                <Fragment>
+                    <Dropdown onClick={this.handleClick} drop='left'>
+                        <Dropdown.Toggle variant="success" id="dropdown-basic"  >
+                            Viewers
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <OhifLink className='dropdown-item bg-info' StudyInstanceUID={row.StudyInstanceUID} />
+                            <StoneLink className='dropdown-item bg-info' StudyInstanceUID={row.StudyInstanceUID} />
+                        </Dropdown.Menu>
+                    </Dropdown>
+                </Fragment>
+                : null
+        }
+    }, {
+        dataField: 'RetrievedOrthancId',
+        hidden: true
     }]
 
 
@@ -135,30 +157,41 @@ class RobotView extends Component {
         mode: 'checkbox',
         clickToSelect: true,
         onSelect: (row, isSelect, rowIndex, e) => {
-            console.log(row)
-            if (row.Status !== 'Success') {
-              return false
+            if (row.Status !== RobotView.ITEM_SUCCESS) {
+                return false
             } else {
-              return true
-          }
+                return true
+            }
+        },
+        onSelectAll: (isSelect, rows, e) => {
+            if( ! isSelect) return []
+            let rowsToSelect = rows.map(row => {
+                if (row.Status === RobotView.ITEM_SUCCESS) {
+                    return row.id
+                }else{
+                    return false
+                }
+            })
+            return rowsToSelect;
         }
+
     }
 
-    async getSelectedItemsStudiesDetails(){
+    getSelectedItemsStudiesDetails = async () => {
 
         //get selected row keys
-        let selectedKeyRow = this.node.selectionContext.selected
+        let selectedIdRow = this.node.selectionContext.selected
         //get array of selected rows
-        let seletectedRows = this.state.rows.filter(row =>{
-            if( selectedKeyRow.includes(row.Key) ) return true
+        let seletectedRows = this.state.rows.filter(row => {
+            if (selectedIdRow.includes(row.id)) return true
             else return false
         })
 
         let studyDataRetrieved = []
         //Loop each item to retrieve study level
-        for(let row of seletectedRows){
+        for (let row of seletectedRows) {
             let studyDetails
-            if(row.Level === 'study') {
+            if (row.Level === 'study') {
                 studyDetails = await apis.content.getStudiesDetails(row.RetrievedOrthancId)
             } else {
                 let seriesData = await apis.content.getSeriesDetailsByID(row.RetrievedOrthancId)
@@ -171,89 +204,120 @@ class RobotView extends Component {
 
     }
 
-    async sendToAnon(){
-        let studyArray  = await this.getSelectedItemsStudiesDetails()
+    sendToAnon = async () => {
+        let studyArray = await this.getSelectedItemsStudiesDetails()
         this.props.addStudiesToAnonList(studyArray)
     }
 
-    async sendToExport(){
-        let studyArray  = await this.getSelectedItemsStudiesDetails()
+    sendToExport = async () => {
+        let studyArray = await this.getSelectedItemsStudiesDetails()
         this.props.addStudiesToExportList(studyArray)
     }
 
-    async sendToDelete(){
-        let studyArray  = await this.getSelectedItemsStudiesDetails()
+    sendToDelete = async () => {
+        let studyArray = await this.getSelectedItemsStudiesDetails()
         this.props.addStudiesToDeleteList(studyArray)
     }
 
-    startProgressMonitoring(){
-        this.intervalChcker = setInterval(this.refreshHandler, 2000)
+    startProgressMonitoring = async () => {
+        let response = await apis.task.getTask(this.props.id);
+        this.setState({
+            id:response.id,
+            creator:response.creator
+        });
+        this.task = new MonitorTask(this.props.id);
+        this.task.onUpdate(this.refreshHandler.bind(this));
+        this.task.startMonitoringJob();
+        this.refreshHandler(response);
     }
 
-    stopProgressMonitoring(){
-        clearInterval(this.intervalChcker)
+    stopProgressMonitoring = () => {
+        if (this.task !== undefined) this.task.stopMonitoringJob();
     }
 
-    refreshHandler(){
-        apis.retrieveRobot
-        .getRobotDetails(this.props.username)
-        .then( (answerData) => {
-            
-            let rowsRetrieveList = []
-
-            answerData.items.forEach(robotJob => {
-                rowsRetrieveList.push({
-                    //Merge Modalities (study level) to modality column
-                    Modality : robotJob.ModalitiesInStudy,
-                    ...robotJob
-                })
-            });
-
-            let newTotalPercentageProgress = 0
-            let newPercentageFailure = 0
-            if(answerData.totalInstances !== 0 && answerData.totalInstances !== undefined){
-                newTotalPercentageProgress = Math.round((answerData.progression.Success / answerData.progression.TotalInstances)*100)
-                newPercentageFailure = Math.round((answerData.progression.Failure / answerData.progression.TotalInstances)*100)
-            }
-
+    refreshHandler = (response) => {
+        if (!response) {
             this.setState({
-                projectName : answerData.projectName,
-                rows : rowsRetrieveList,
-                totalPercentageProgress : newTotalPercentageProgress,
-                percentageFailure : newPercentageFailure
+                valid: null,
+                approved: null,
+                projectName: '',
+                rows: [],
+                totalPercentageProgress: 0,
+                percentageFailure: 0
+            })
+            this.stopProgressMonitoring()
+            return;
+        }
+
+        let rowsRetrieveList = []
+
+        let newPercentageFailure = 0
+
+        response.details.items.forEach(item => {
+
+            rowsRetrieveList.push({
+                //Merge Modalities (study level) to modality column
+                Modality: item.ModalitiesInStudy,
+                id: item.AnswerNumber + ":" + item.AnswerId,
+                ...item
             })
 
-        }).catch(error =>{
-            console.log(error)
+            if (item.Status === RobotView.ITEM_FAILED) {
+                ++newPercentageFailure;
+            }
+        });
+
+
+        //SK CALCULER EN INSTANCE ET PAS EN STUDY (1 si pas d'info)
+        newPercentageFailure = (newPercentageFailure / response.details.items.length) * 100
+
+        let newTotalPercentageProgress = Math.round((response.progress.retrieve + Number.EPSILON) * 10) / 10
+        
+        this.setState({
+            valid: response.details.valid,
+            approved: response.details.approved,
+            projectName: response.details.projectName,
+            rows: rowsRetrieveList,
+            totalPercentageProgress: newTotalPercentageProgress,
+            percentageFailure: newPercentageFailure
         })
     }
 
-    deleteQueryHandler(rowIndex, refreshHandler){
-        apis.retrieveRobot
-        .deleteRobotItem(this.props.username, rowIndex)
-        .then( () => {
-            refreshHandler()
+    deleteQueryHandler = async (rowIndex, refreshHandler) => {
+
+        try {
+            let row = this.state.rows[rowIndex];
+            await apis.retrieveRobot.deleteRobotItem(this.state.id, row.id)
+
+            if (this.state.rows.length <= 1) {
+                this.setState({
+                    ...this.state,
+                    rows: [],
+                    id:null
+                })
+                this.task.stopMonitoringJob();
+            } else {
+                apis.task.getTask(this.state.id).then(this.refreshHandler)
+            }
+        } catch (error) {
+            toast.error(error)
+        }
+
+    }
+
+    handleClickDeleteRobot = async () => {
+        await apis.retrieveRobot.deleteRobot(this.state.id);
+        await this.refreshHandler(null);
+        await this.setState({
+            id:null
         })
-
     }
 
-    removeQueryButton(cell, row, rowIndex, formatExtraData) {
-        return (<div className="text-center">
-            <input type="button" className='btn btn-danger' onClick = {() => formatExtraData.deleteQueryHandler(rowIndex, formatExtraData.refreshHandler)} value = "Remove" />
-            </div>)
-    }
-
-    async handleClickDeleteRobot(){
-        console.log('delted Clicked')
-        await apis.retrieveRobot.deleteRobot(this.props.username);
-        await this.refreshHandler();
-    }
-
-    render() {
+    render = () => {
         return (
             <div className="jumbotron">
                 <div className="row mb-5">
-                <h1 className="col"> Robot for user {this.props.username}, project : {this.state.projectName} </h1>
+                    <h1 className="col"> Robot for user {this.state.creator}, project : {this.state.projectName} </h1>
                     <div className="col-md-2 text-right" >
                         <CircularProgressbarWithChildren
                             value={this.state.totalPercentageProgress} text={`Progress : ${this.state.totalPercentageProgress}%`}
@@ -263,18 +327,18 @@ class RobotView extends Component {
                         >
                             {/* Foreground path */}
                             <CircularProgressbar
-                            value={this.state.percentageFailure}
-                            styles={buildStyles({
-                                trailColor: "transparent",
-                                pathColor: "#f00"
-                            })}
+                                value={this.state.percentageFailure}
+                                styles={buildStyles({
+                                    trailColor: "transparent",
+                                    pathColor: "#f00"
+                                })}
                             />
                         </CircularProgressbarWithChildren>
                     </div>
                 </div>
                 <input type='button' className="btn btn-danger" onClick={this.handleClickDeleteRobot} value="Delete Robot" />
-                <BootstrapTable ref={n => this.node = n} wrapperClasses="table-responsive" keyField="Key" striped={true} rowClasses = {this.rowClasses} selectRow = {this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
-                <AnonExportDeleteSendButton onAnonClick = {this.sendToAnon} onExportClick={this.sendToExport} onDeleteClick={this.sendToDelete} />
+                <BootstrapTable ref={n => this.node = n} wrapperClasses="table-responsive" keyField="id" striped={true} rowClasses={this.rowClasses} selectRow={this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
+                <AnonExportDeleteSendButton onAnonClick={this.sendToAnon} onExportClick={this.sendToExport} onDeleteClick={this.sendToDelete} />
             </div>
         )
     }
@@ -286,5 +350,17 @@ const mapDispatchToProps = {
     addStudiesToAnonList
 
 }
+
+RobotView.ITEM_SUCCESS = 'completed'
+RobotView.ITEM_AWAITING = 'wait'
+RobotView.ITEM_PENDING = 'active'
+RobotView.ITEM_FAILED = 'failed'
+RobotView.ITEM_DELAYED = 'delayed'
+
+RobotView.ROBOT_WAITING_VALIDATION = 'waiting validation'
+RobotView.ROBOT_VALIDATING = 'validation'
+RobotView.ROBOT_WAITING_RETRIEVE = 'waiting retireve'
+RobotView.ROBOT_RETRIEVING = 'retrieve'
+RobotView.ROBOT_COMPLETED = 'completed'
 
 export default connect(null, mapDispatchToProps)(RobotView)

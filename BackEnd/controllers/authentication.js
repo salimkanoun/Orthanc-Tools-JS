@@ -1,55 +1,54 @@
-var Users = require('../model/Users')
+const Users = require('../model/Users')
 const jwt = require("jsonwebtoken")
+const { OTJSBadRequestException, OTJSUnauthorizedException } = require('../Exceptions/OTJSErrors')
 
-authentication = async function (req, res) {
+const login = async function (req, res) {
   const body = req.body
-  try {
-    const userObject = new Users(body.username)
-    await userObject.checkPassword(body.password, async function(reponse) {
-      
-      if (reponse) {
-        let user = new Users(body.username)
 
-        await user.getUserRight(function(infosUser) {
-
-          let payload = {
-            username: body.username,
-            admin: infosUser.admin,
-            import: infosUser.import,
-            content: infosUser.content,
-            anon: infosUser.anon,
-            export_local: infosUser.export_local,
-            export_extern: infosUser.export_extern,
-            query: infosUser.query,
-            auto_query: infosUser.auto_query,
-            delete: infosUser.delete,
-            modify: infosUser.modify,
-            cd_burner : infosUser.cd_burner
-          }
-    
-          var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
-    
-          res.cookie("tokenOrthancJs", TOKEN, {httpOnly: true})
-          res.json(true)
-        })
-      } else {
-        res.status(401).send('Wrong Credential')
-      }
-
-    })
-    
-  } catch (Error) {
-    res.status(401).send('Unknown user')
+  if (!body.username || !body.password) {
+    throw new OTJSBadRequestException('Missing Username / Password payload')
   }
-}, 
 
-logOut = function (req, res){
-  try {
-    console.log('user logs out') //Mettre en place un système pour rendre non viable le token apres deconnexion
-  } catch (error){
-    console.log(error)
-    console.log('logOut fail')
+  const userObject = new Users(body.username)
+
+  let check = await userObject.checkPassword(body.password);
+
+  if (check) {
+    let infosUser = await userObject.getUserRight()
+    let payload = {
+      username: body.username,
+      name:infosUser.name,
+      admin: infosUser.admin,
+      import: infosUser.import,
+      content: infosUser.content,
+      anon: infosUser.anon,
+      export_local: infosUser.export_local,
+      export_extern: infosUser.export_extern,
+      query: infosUser.query,
+      auto_query: infosUser.auto_query,
+      delete: infosUser.delete,
+      modify: infosUser.modify,
+      cd_burner: infosUser.cd_burner,
+      autorouting: infosUser.autorouting
+    }
+    if(process.env.NODE_ENV != 'test'){
+      var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
+      res.cookie("tokenOrthancJs", TOKEN, { httpOnly: true })
+    }
+    res.json(payload)
+
+  } else {
+    throw new OTJSUnauthorizedException("Wrong Credentials")
   }
+
 }
 
-module.exports = { authentication, logOut }
+const logOut = function (req, res) {
+  //Invalid the frontend cookie
+  if(process.env.NODE_ENV != 'test'){
+    res.cookie("tokenOrthancJs", '', { httpOnly: true })
+  }
+  res.sendStatus(200)
+}
+
+module.exports = { login, logOut }

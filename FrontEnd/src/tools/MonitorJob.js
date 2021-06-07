@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify'
 import apis from '../services/apis'
 
 export default class MonitorJob {
@@ -25,14 +26,24 @@ export default class MonitorJob {
         if(this.intervalChcker !== undefined) clearInterval(this.intervalChcker)
     }
 
-    cancelJob(){
-        apis.jobs.cancelJob(this.jobID)
+    async cancelJob(){
+        await apis.jobs.cancelJob(this.jobID).catch(error => {toast.error(error.statusText)})
+        toast.success('Job Cancelled')
         this.stopMonitoringJob()
     }
 
     async jobMonitoring(jobUID) {
+        let jobData
 
-        const jobData = await apis.jobs.getJobInfos(jobUID)
+        try{
+             jobData = await apis.jobs.getJobInfos(jobUID)
+        } catch(error){
+            console.error(error)
+            this.stopMonitoringJob()
+            toast.error('Monitoring Failed')
+            return
+        }
+        
         const currentStatus = jobData.State
     
         this.updateCallBack(jobData.Progress)

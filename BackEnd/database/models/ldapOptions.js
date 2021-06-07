@@ -5,14 +5,14 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER
     },
-    TypeGroupe:DataTypes.STRING,
-    protocole:DataTypes.STRING,
-    adresse:DataTypes.STRING,
+    TypeGroup:DataTypes.STRING,
+    protocol:DataTypes.STRING,
+    address:DataTypes.STRING,
     port:DataTypes.INTEGER,
     DN:DataTypes.STRING,
-    mdp:DataTypes.STRING,
+    password:DataTypes.STRING,
     user:DataTypes.STRING,
-    groupe:DataTypes.STRING,
+    group:DataTypes.STRING,
     base:DataTypes.STRING
   }, {})
   LdapOptions.associate = function (models) {

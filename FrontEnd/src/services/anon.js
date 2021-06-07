@@ -1,44 +1,39 @@
-import { toastifyError } from './toastify'
+const anonymize =  {
 
-const anon = {
-
+    //SK ICI DOIT REJOINDRE TASK DU COUP ?
     createAnonRobot(anonymizeArray, username){
         
         const createAnonRobotOption = {
             method: 'POST', 
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
               },
               body: JSON.stringify(anonymizeArray)
         }
         
-        return fetch('/api/robot/' + username + '/anonymize', createAnonRobotOption ).then(answer => {
+        return fetch('/api/tasks/' + username + '/anonymize', createAnonRobotOption ).then(answer => {
             if (!answer.ok) {throw answer}
-            return answer.json()
+            return answer.text()
         }).catch(error => {
-            toastifyError(error)
+            throw error
         })
 
     },
 
-    getAnonJob(username){
-
-        const getAnonJobOption = {
-            method: 'GET', 
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json'
-              }
+    flush(){
+        const flushAnonRobotsOption = {
+            method: 'DELETE'
         }
 
-        return fetch('/api/robot/' + username + '/anonymize', getAnonJobOption ).then(answer => {
+        return fetch('/api/tasks/type/anonymize/flush', flushAnonRobotsOption ).then(answer => {
             if (!answer.ok) {throw answer}
-            return answer.json()
+            return true
         }).catch(error => {
-            toastifyError(error)
+            throw error
         })
     }
+
 }
 
-export default anon
+export default anonymize

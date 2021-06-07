@@ -1,10 +1,12 @@
 'use strict'
 module.exports = (sequelize, DataTypes) => {
   const Option = sequelize.define('Option', {
-    hour: DataTypes.INTEGER,
-    min: DataTypes.INTEGER,
+    hour_start: DataTypes.INTEGER,
+    min_start: DataTypes.INTEGER,
+    hour_stop: DataTypes.INTEGER,
+    min_stop: DataTypes.INTEGER,
     ldap: DataTypes.BOOLEAN,
-    date_format:DataTypes.STRING,
+    burner_date_format:DataTypes.STRING,
     burner_label_path:DataTypes.STRING,
     burner_monitoring_level:DataTypes.STRING,
     burner_manifacturer:DataTypes.STRING,
@@ -14,7 +16,9 @@ module.exports = (sequelize, DataTypes) => {
     burner_support_type:DataTypes.STRING,
     burner_transfer_syntax : DataTypes.STRING,
     monitoring_rate: DataTypes.INTEGER,
-    burner_started : DataTypes.BOOLEAN
+    burner_started : DataTypes.BOOLEAN,
+    export_transcoding : DataTypes.STRING,
+    autorouter_started:DataTypes.BOOLEAN,
   }, {})
   Option.associate = function (models) {
     // associations can be defined here

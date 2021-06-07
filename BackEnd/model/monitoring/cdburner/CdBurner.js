@@ -3,12 +3,12 @@ var JSZip = require("jszip")
 const path = require('path');
 const Queue = require('promise-queue')
 const tmpPromise = require('tmp-promise')
-const {withFile} = require('tmp-promise')
 
 const Options = require('../../Options')
-const orthanc_Monitoring = require('../Orthanc_Monitoring')
+const Orthanc_Monitoring = require('../Orthanc_Monitoring')
 const moment = require('moment')
 const recursive = require("recursive-readdir");
+const { OTJSForbiddenException } = require('../../../Exceptions/OTJSErrors');
 
 //SK RESTE A FAIRE
 //Frequence de monitoring dans DB + front end
@@ -25,17 +25,17 @@ class CdBurner {
         this.jobQueue = new Queue(1, Infinity);
     }
 
-    async setSettings() {
+    setSettings = async () => {
 
         //Date format
         this.dateOptions = { month: 'numeric', day: 'numeric', year : 'numeric' } //precision of the date
-
-        const options = await Options.getCdBurnerOptions()
+        
+        const options = await Options.getOptions()
         
         //format of date (using contry convention)
-        if (options.date_format === "fr") {
+        if (options.burner_date_format === "fr") {
             this.format = "DD/MM/YYYY"
-        } else if (options.date_format === "uk") {
+        } else if (options.burner_date_format === "uk") {
             this.format = "MM/DD/YYYY"
         } else {
             this.format = "MM/DD/YYYY"
@@ -65,7 +65,7 @@ class CdBurner {
      */
     async startCDMonitoring() {
         if (this.monitoringStarted) return
-        if (!this.monitoredFolder) throw 'Monitoring folder not defined'
+        if (!this.monitoredFolder) throw  new OTJSForbiddenException('Monitoring folder not defined')
 
         this.monitoringStarted = true
         await Options.setBurnerStarted(true)
@@ -74,7 +74,7 @@ class CdBurner {
         //Create listener
         this.__makeListener()
         //Start monitoring service
-        this.monitoring.startMonitoringService(orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
+        this.monitoring.startMonitoringService(Orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
     }
 
     /**
@@ -119,7 +119,7 @@ class CdBurner {
         this.monitoringStarted = false
         await Options.setBurnerStarted(false)
         this.__removeListener()
-        this.monitoring.stopMonitoringService(orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
+        this.monitoring.stopMonitoringService(Orthanc_Monitoring.MONITORING_SERVICE_CDBURNER)
     }
 
     /**
@@ -180,7 +180,7 @@ class CdBurner {
         try {
             formattedPatientDOB = this.formatDicomDate(patient.MainDicomTags.PatientBirthDate)
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
 
         let datInfos = []
@@ -193,7 +193,7 @@ class CdBurner {
             try {
                 formattedDateExamen = this.formatDicomDate(studies[i].MainDicomTags.StudyDate)
             } catch (err) {
-                console.log(err)
+                console.error(err)
             }
             let studyDescription = studies[i].MainDicomTags.StudyDescription;
             let accessionNumber = studies[i].MainDicomTags.AccessionNumber;

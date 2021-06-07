@@ -1,19 +1,16 @@
 const Options = require('../model/Options')
-const {robot} = require('../model/robot/Robot')
 
-var changeSchedule = async function (req, res) {
-  await Options.setScheduleTime(req.body.hour, req.body.min)
-  // Refresh Retrieve Robot to the new time
-  robot.updateRetrieveJobsSchelude()
-  res.json(true)
+const changeSchedule = async function (req, res) {
+  await Options.setScheduleTime(req.body.hour_start, req.body.min_start, req.body.hour_stop, req.body.min_stop)
+  res.sendStatus(200)
 }
 
-var getOptions = async function (req, res) {
+const getOptions = async function (req, res) {
   const optionsValues = await Options.getOptions()
   res.json(optionsValues)
 }
 
-var updateRobotOptions = async function(req, res){
+const updateRobotOptions = async function(req, res){
   let body = req.body
   Options.setBurnerOptions(
     body.burner_monitored_path,
@@ -24,32 +21,54 @@ var updateRobotOptions = async function(req, res){
     body.burner_support_type,
     body.burner_delete_study_after_sent,
     body.burner_transfer_syntax,
-    body.date_format
+    body.burner_date_format
   )
-  res.json(true)
+  res.sendStatus(200)
 }
 
 
-var getOrthancServer = function (req, res) {
+const getOrthancServer = function (req, res) {
   const orthancSettings = Options.getOrthancConnexionSettings()
   res.json(orthancSettings)
 }
 
-var setOrthancServer = function (req, res) {
+const setOrthancServer = function (req, res) {
   const data = req.body
-  Options.setOrthancConnexionSettings(data.OrthancAddress, data.OrthancPort, data.OrthancUsername, data.OrthancPassword)
-  res.end()
+  Options.setOrthancConnexionSettings(data.orthancAddress, data.orthancPort, data.orthancUsername, data.orthancPassword)
+  res.sendStatus(200)
 }
 
-var getMode = async function(req, res) {
+const getRedisServer = function (req, res){
+  const redisSettings = Options.getRedisConnexionSettings()
+  res.json(redisSettings)
+}
+
+const setRedisServer = function (req, res){
+  const data = req.body
+  Options.setRedisConnexionSettings(data.redisAddress, data.redisPort, data.redisPassword)
+  res.sendStatus(200)
+}
+
+const getMode = async function(req, res) {
   const mode = await Options.getMode()
   res.json(mode)
 }
 
-var changeMode = async function(req, res) {
+const changeMode = async function(req, res) {
   const mode = await req.body.mode
   Options.changeMode(mode)
   res.json(true)
 }  
 
-module.exports = { changeSchedule, getOptions, getOrthancServer, setOrthancServer, getMode, changeMode, updateRobotOptions }
+
+const setExportOption = async function(req, res){
+  let body = req.body
+  Options.setExportOption(body.export_transcoding);
+  res.sendStatus(200);
+}
+
+const getExportTranscoding = async function(req, res){
+  let transcodeTS = await Options.getExportOption()
+  res.send(transcodeTS)
+}
+module.exports = { changeSchedule, getOptions, getOrthancServer, setOrthancServer, getMode, changeMode, updateRobotOptions, getRedisServer, setRedisServer, setExportOption, getExportTranscoding }

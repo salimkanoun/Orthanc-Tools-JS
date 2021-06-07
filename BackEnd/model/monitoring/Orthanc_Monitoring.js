@@ -1,6 +1,6 @@
 const Orthanc = require('../Orthanc')
 const EventEmitter = require('events').EventEmitter;
-const db = require('../../database/models')
+const Option = require('../../repository/Option')
 
 class Orthanc_Monitoring extends EventEmitter {
     
@@ -16,7 +16,7 @@ class Orthanc_Monitoring extends EventEmitter {
     }
 
     async setSettings() {
-        const options = await db.Option.findOne(({ where: { id: 1 } }));
+        const options = await Option.getOptionById(1)
         //set monitoring rate in secondes 
         this.monitoringRate = (options.monitoring_rate * 1000)
         
@@ -89,8 +89,9 @@ class Orthanc_Monitoring extends EventEmitter {
         this.done = changes.Done
     }
         
+
+    MONITORING_SERVICE_CDBURNER = "CdBurner"
 }
 
-const MONITORING_SERVICE_CDBURNER = "CdBurner"
 
 module.exports = Orthanc_Monitoring

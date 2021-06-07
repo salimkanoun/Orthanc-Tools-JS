@@ -1,84 +1,87 @@
-import { toastifyError, toastifySuccess } from './toastify'
-
 const user = {
-    getUsers(){
+  getUsers() {
 
-      const getUsersOption = {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
-    } 
-
-        return fetch('/users/users', getUsersOption ).then((answer) => {
-            if (!answer.ok) { throw answer }
-              return answer.json()
-          }).catch(async error => {
-            let errorText = await error.text()
-            toastifyError(errorText)
-          })
-    }, 
-
-    modifyUser(data){
-      const modifyUserOption = {
-        method: 'PUT', 
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }, 
-        body: JSON.stringify(data)
+    const getUsersOption = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8'
       }
-
-      return fetch('/users/users', modifyUserOption ).then((answer) => {
-        if (!answer.ok) { throw answer }
-          toastifySuccess('User Modify with success')
-      }).catch(async error => {
-        let errorText = await error.text()
-        toastifyError(errorText)
-      })
-    },
-
-    deleteUser(username){
-      const deleteUserOption = {
-        method: 'DELETE', 
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }, 
-        body: JSON.stringify([username])
-      }
-      
-      return fetch('/users/users', deleteUserOption ).then((answer) => {
-        if (!answer.ok) { throw answer }
-          toastifySuccess('User Delete with success')
-      }).catch(async error => {
-        let errorText = await error.text()
-        toastifyError(errorText)
-      })
-    }, 
-
-    createUser(data){
-
-      const createUserOption = {
-        method: 'POST', 
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }, 
-        body: JSON.stringify(data)
-
-      }
-
-      return fetch('/users/users', createUserOption ).then((answer) => {
-        if (!answer.ok) { throw answer }
-          toastifySuccess('user created with success')
-      }).catch(async error => {
-        console.log(error)
-        let errorText = await error.text()
-        toastifyError(errorText)
-      })
     }
+
+    return fetch('/api/users', getUsersOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+      return answer.json()
+    }).catch(async error => {
+      throw error
+    })
+  },
+
+  modifyUser(username, firstname, lastname, email, role, password, isSuperAdmin) {
+
+    let payload = {
+      firstname : firstname,
+      lastname : lastname,
+      email : email,
+      role : role,
+      password : password,
+      superAdmin : isSuperAdmin
+    }
+
+    const modifyUserOption = {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify(payload)
+    }
+
+    return fetch('/api/users/'+username, modifyUserOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+    }).catch(async error => {
+      throw error
+    })
+  },
+
+  deleteUser(username) {
+
+    const deleteUserOption = {
+      method: 'DELETE'
+    }
+
+    return fetch('/api/users/'+username, deleteUserOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+    })
+  },
+
+  createUser(username, firstname, lastname, password, email, role, isSuperAdmin) {
+
+    let payload = {
+      username : username,
+      firstname : firstname,
+      lastname : lastname,
+      password : password,
+      email : email,
+      role : role,
+      superAdmin : isSuperAdmin
+    }
+
+    const createUserOption = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify(payload)
+    }
+
+    return fetch('/api/users', createUserOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+    }).catch(error => {
+      throw error
+    })
+  }
 }
 
 export default user

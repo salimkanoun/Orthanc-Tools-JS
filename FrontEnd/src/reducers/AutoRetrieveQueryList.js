@@ -30,7 +30,7 @@ export default function queryListReducer (state = initialState, action) {
         DateTo: '',
         StudyDescription: '',
         ModalitiesInStudy: '',
-        Aet: 'Click To Choose'
+        Aet: ''
 
       })
       return {

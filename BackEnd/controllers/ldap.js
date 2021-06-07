@@ -1,67 +1,70 @@
+const { OTJSForbiddenException } = require('../Exceptions/OTJSErrors')
 const Ldap = require('../model/Ldap')
 
-var getLdapSettings = async function(req, res) {
+var getLdapSettings = async function (req, res) {
   const options = await Ldap.getLdapSettings()
   res.json(options)
 }
 
-var setLdapSettings = async function(req, res) {
+var setLdapSettings = async function (req, res) {
+  const options = req.body
+
+  await Ldap.setLdapSettings(
+    options.TypeGroup,
+    options.address,
+    options.port,
+    options.DN,
+    options.password,
+    options.protocol,
+    options.group,
+    options.user,
+    options.base
+  )
+
+  res.sendStatus(200)
+
+}
+
+var testLdapSettings = async function (req, res) {
   try {
-    const options = req.body
-    await Ldap.setLdapSettings(options)
-    res.json(true)
-  } catch(err) {
-    console.log(err)
-    res.status(401).send('settings fail')
+    let answer = await Ldap.testLdapSettings()
+    res.json(answer)
+  } catch (error) {
+    throw new OTJSForbiddenException(error.message)
   }
+
 }
 
-var testLdapSettings = async function(req, res) {
-  try {  
-  await Ldap.testLdapSettings(function(result) {
-    return res.json(result)
-    })
-  } catch(err) {
-    console.log(err)
-  }  
-}
-
-var getLdapCorrespodences = async function(req, res) {
-  const matches = await Ldap.getAllCorrespodences()
-  res.json(matches)
-}
-
-var setLdapCorrespodence = async function(req, res) {
+var getLdapCorrespondences = async function (req, res) {
   try {
-    const matches = req.body
-    await Ldap.setCorrespodence(matches)
-    res.json(true)
-
-  } catch (err) {
-    console.log(err)
-    res.status(401).send('fail to create match')
+    const matches = await Ldap.getAllCorrespondences()
+    res.json(matches)
+  } catch (error) {
+    throw error
   }
+
 }
 
-var deleteCorrespodence = async function(req, res){
-  try{ 
-    const match = req.body
-    await Ldap.deleteCorrespodence(match)
-    res.json(true)
-  } catch (err) {
-      console.log(err)
-      res.status(401).send('fait to delete match')
-  }
+var setLdapCorrespondence = async function (req, res) {
+  let matches = req.body
+  await Ldap.setCorrespondence(matches.groupName, matches.associedRole)
+  res.sendStatus(200)
 }
 
-var getLdapGroupeNames = async function(req, res) {
+var deleteCorrespondence = async function (req, res) {
+  const match = req.body
+  await Ldap.deleteCorrespodence(match.correspodence)
+  res.sendStatus(200)
+}
+
+var getLdapGroupeNames = async function (req, res) {
   try {
-    await Ldap.getAllGroupeNames(async function(matches) {
-      await res.json(matches)
-    })
-  } catch(err) {
-    console.log(err)
+    let groups = await Ldap.getAllLdapGroups()
+    res.json(groups)
+  } catch (error) {
+    throw new OTJSForbiddenException(error.message)
   }
+
 }
 
-module.exports = { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespodences, setLdapCorrespodence, deleteCorrespodence, getLdapGroupeNames }
+module.exports = { getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespondences, setLdapCorrespondence, deleteCorrespondence, getLdapGroupeNames }

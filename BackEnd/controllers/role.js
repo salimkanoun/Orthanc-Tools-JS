@@ -1,70 +1,31 @@
 var Roles = require('../model/Roles')
 
-    createRole = async function (req, res) {
-        const body = req.body
-        try {
-            await Roles.createRoles(body)
-            res.json(true)
-        } catch (error) {
-            console.log(error)
-            res.status(401).send('Fail')
-        }
-    }
+const createRole = async function (req, res) {
+    const body = req.body
+    await Roles.createRoles(body)
+    res.sendStatus(201)
+}
 
-    modifyRole = async function(req, res){
-        const body = req.body
-        try {
-            await Roles.modifyRoles(body.name, body)
-            res.json(true)
-        } catch (error) {
-            console.log(error)
-            res.status(401).send('Fail to modify role')
-        }
-    }
+const modifyRole = async function (req, res) {
+    const body = req.body
+    await Roles.modifyRoles(body.name, body)
+    res.sendStatus(200)
+}
 
-    deleteRole = async function(req, res){
-        const name = req.body
-        try {
-            await Roles.deleteRole(name)
-            res.json(true)
-        } catch (error) {
-            console.log(error)
-            res.status(401).send('Fail to delete')
-        }
-    }
+const deleteRole = async function (req, res) {
+    const body = req.body
+    await Roles.deleteRole(body.name)
+    res.sendStatus(200)
+}
 
-    getRoles = async function(req, res){
-        try {
-            let roles = await Roles.getAllRoles()
-            res.json(roles)
-        } catch (error) {
-            res.json('')
-            console.log(error)
-        }
-    }
+const getRoles = async function (req, res) {
+    let roles = await Roles.getAllRoles()
+    res.json(roles)
+}
 
-    getPermission = async function(req, res){
-        try {
-            let permission = await Roles.getPermission(req.params.name)
-            res.json(permission)
-        } catch (error) {
-            console.log(error)
-            res.status(401).send('Fail to get Permission')
-        }
-    }
+const getPermission = async function (req, res) {
+    let permission = await Roles.getPermission(req.params.name)
+    res.json(permission)
+}
 
-    getRoleFromToken = async function(req, res){
-        try {
-            const token = req.cookies.tokenOrthancJs
-            if (!token) {
-                throw "No token"
-            }
-
-            let answer = await Roles.getRoleFromToken(token)
-            res.json(answer)
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-module.exports = { createRole, modifyRole, deleteRole, getRoles, getPermission, getRoleFromToken }
+module.exports = { createRole, modifyRole, deleteRole, getRoles, getPermission }

@@ -1,125 +1,93 @@
-const db = require('../database/models')
-const AdClient = require('../ldap/adClient')
+const DistantUser = require('../repository/DistantUser')
+const LdapOption = require('../repository/LdapOption')
+const AdClient = require('./ldap/adClient')
 
 const Ldap = {
 
-     getLdapSettings: async() => {
-        const option = await db.LdapOptions.findOne(({ where: { id: 1 }, attributes: ['TypeGroupe',
-        'protocole',
-        'adresse',
-        'port',
-        'DN',
-        'mdp','user','groupe','base'] }))
-        return ({ user:option.user, groupe:option.groupe, base:option.base ,protocoles: option.protocole, TypeGroupe: option.TypeGroupe, adresse: option.adresse, port: option.port, DN: option.DN, mdp: option.mdp })
+    getLdapSettings: () => {
+        return LdapOption.getOneLdap()
     },
 
-     setLdapSettings: async (options) => {
-        try {
-            await db.LdapOptions.upsert({
-                id: 1,
-                TypeGroupe: options.TypeGroupe,
-                adresse: options.adresse,
-                port: options.port,
-                DN: options.DN,
-                mdp: options.mdp,
-                protocole: options.protocole,
-                groupe:options.groupe,
-                user:options.user,
-                base:options.base 
-            })
-          } catch (error) {
-            console.log(error)
-          }
-    },
+    getLdapClient: async () => {
+        let ldapOptions = await Ldap.getLdapSettings()
 
-    testLdapSettings: async(callback) => {
-        try {
-            const option = await db.LdapOptions.findOne(({ where: { id: 1 }, attributes: ['TypeGroupe',
-            'protocole',
-            'adresse',
-            'port',
-            'DN',
-            'mdp','user','groupe','base'] }))
-
-            let client;
-
-            if(option.TypeGroupe === 'ad') {
-                client = new AdClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp, option.base, option.user, option.groupe )
-            } else if(option.TypeGroupe === 'ldap') {
-                //ToDo
-                throw 'ToDo'
-            } else {
-                throw 'inccorect TypeGroupe'
-            }
-            
-            return await client.testSettings(function(response) {
-                return callback(response)
-            })
-        } catch (err) {
-            console.log(err)
-            return callback(false)
-        }    
-    },
-
-    getAllCorrespodences: async() => {
-        const answer = await db.DistantUser.findAll(({attributes: ['groupName', 'roleDistant']}))
-        let res = [] 
-        for(let i=0; i<answer.length; i++){
-            res[i]={groupName:answer[i].dataValues.groupName, associedRole:answer[i].dataValues.roleDistant}
-        } 
-
-        return res
-    },
-
-    setCorrespodence: async(match) => {
-        try{
-            const promise = db.DistantUser.create({
-                groupName: match[0].groupName,
-                roleDistant : match[0].associedRole,
-              }).catch(e => {console.log(e);throw new Error('db create error') })
-        
-            return promise
-        } catch (err) {
-            console.log(err)
-        }
-    },
-
-    deleteCorrespodence: async(match) => {
-        try {
-            await db.DistantUser.destroy({
-                where: {
-                    groupName: match.correspodence
-                 }
-              })
-        } catch (err) {
-            console.log(err)
-        }
-    },
-
-    getAllGroupeNames: async(callback) => {
-
-        const option = await db.LdapOptions.findOne(({ where: { id: 1 }, attributes: ['TypeGroupe',
-        'protocole',
-        'adresse',
-        'port',
-        'DN',
-        'mdp','user','groupe','base'] }))
-
-        let client;
-
-        if(option.TypeGroupe === 'ad') {
-            client = new AdClient(option.TypeGroupe, option.protocole, option.adresse, option.port, option.DN, option.mdp, option.base, option.user, option.groupe )
-        } else if(option.TypeGroupe === 'ldap') {
+        if (ldapOptions.TypeGroup === 'ad') {
+            return new AdClient(ldapOptions.TypeGroup, ldapOptions.protocol, ldapOptions.address, ldapOptions.port, ldapOptions.DN, ldapOptions.password, ldapOptions.base, ldapOptions.user, ldapOptions.group)
+        } else if (ldapOptions.TypeGroup === 'ldap') {
             //ToDo
             throw 'ToDo'
         } else {
-            throw 'inccorect TypeGroupe'
+            throw 'inccorect TypeGroup'
         }
 
-        await client.getAllCorrespodences(function(response) {
-            return callback(response)
-        })
+
     },
-}    
+
+    setLdapSettings: async (typeGroup, address, port, DN, password, protocol, group, user, base) => {
+
+        const option = await Ldap.getLdapSettings()
+
+        option.TypeGroup = typeGroup
+        option.address = address
+        option.port = port
+        option.DN = DN
+        option.password = password
+        option.protocol = protocol
+        option.group = group
+        option.user = user
+        option.base = base
+
+        await option.save()
+
+    },
+
+    testLdapSettings: async () => {
+
+        const client = await Ldap.getLdapClient()
+        return client.authenticateLdapServer().catch( (error) => {throw error})
+
+    },
+
+    authenticateUser : async (username, password) => {
+        const client = await Ldap.getLdapClient()
+        return client.authenticateUser(username, password).catch( () => {return false})
+    },
+
+    getAllCorrespondences: async () => {
+        const correspondances = await DistantUser.getAllLocalRoleAndLdapGroup()
+        let results = []
+        correspondances.forEach( (correspondance) => {
+            results.push({ localRole: correspondance.local_role, ldapGroup: correspondance.ldap_group })
+        });
+
+        return results
+    },
+
+    setCorrespondence: async (ldapGroup, localRole) => {
+        await DistantUser.create(ldapGroup,localRole)
+    },
+
+    deleteCorrespondence: (ldapGroup) => {
+        return DistantUser.delete(ldapGroup)
+    },
+
+    getAllLdapGroups: async () => {
+        const client = await Ldap.getLdapClient()
+        let ldapGroups = await client.getAllLdapGroups().catch( (error)=> {throw error})
+        return ldapGroups
+
+    },
+
+    isUserMemberOf: async (username, ldapGroup) => {
+        let client = await Ldap.getLdapClient()
+        let response = await client.isUserMemberOf(username, ldapGroup).catch( (error)=> {throw error})
+        return response
+    },
+
+    getGroupMembershipForUser : async () => {
+        let client = await Ldap.getLdapClient()
+        return client.getGroupMembershipForUser(this.ldapUsername)
+    }
+}
 
 module.exports = Ldap

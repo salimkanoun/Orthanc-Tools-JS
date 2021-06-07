@@ -1,36 +1,52 @@
 import React, { Component } from 'react'
+import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
 
 export default class AutoRetrieveSchedule extends Component {
 
   /**Init state */
   state = {
-    hour: '00',
-    min: '00'
-  }
-
-  constructor (props) {
-    super(props)
-    this.handleClick = this.handleClick.bind(this)
-    this.handleChange = this.handleChange.bind(this)
+    serverTime: '', 
+    hourStart: '00',
+    minStart: '00',
+    hourStop: '00',
+    minStop: '00'
   }
 
   /**
    * Get defined schedule hour and min from backend
    */
-  async componentDidMount () {
-    const response = await apis.options.getOptions()
+  componentDidMount = async () => {
+    try {
+      const response = await apis.options.getOptions()
+      this.setState({
+        hourStart: response.hour_start,
+        minStart: response.min_start,
+        hourStop: response.hour_stop,
+        minStop: response.min_stop
+      })
+      await this.refreshServerTime()
+
+    } catch (error) {
+      toast.error(error.statusText)
+    }
+
+  }
+
+  refreshServerTime = async () => {
+
+    let serverTime = await apis.options.getServerTime()
     this.setState({
-      hour: response.hour,
-      min: response.min
-    })
+      serverTime : serverTime
+    }) 
+
   }
 
   /**
    * Store written value in state
    * @param {*} event 
    */
-  handleChange (event) {
+  handleChange = (event) => {
     const target = event.target
     const name = target.name
     const value = target.type === 'checkbox' ? target.checked : target.value
@@ -43,27 +59,41 @@ export default class AutoRetrieveSchedule extends Component {
   /**
    * Submission of new values of schedule
    */
-  handleClick () {
-    apis.options.setRobotScheduleHour(this.state.hour, this.state.min )
+  handleClick = () => {
+    apis.options.setRobotScheduleHour(this.state.hourStart, this.state.minStart, this.state.hourStop, this.state.minStop)
+      .then( async () => { 
+        this.refreshServerTime()
+        toast.success('schedule updated')})
+      .catch(error => { toast.error(error.statusText) })
+    
   }
 
-  render () {
+  render = () => {
     return (
-        <div>
-          <h2 className="card-title">Retrieve Schedule Time : </h2>
-          <div className="form-row">
-            <div className="col">
-              <label htmlFor='hour'>Hour : </label>
-              <input type='number' name='hour' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hour} />
-            </div>
-            <div className="col">
-              <label htmlFor='min'>Minutes : </label>
-              <input type='number' name='min' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.min} />
-            </div>
+      <div>
+        <h2 className="card-title">Retrieve Schedule Time : </h2>
+        <div className="form-row">
+          <div className="col">
+            <label htmlFor='hour_start'>Start Hour : </label>
+            <input type='number' name='hourStart' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStart} />
           </div>
-          <div className="text-right">
-            <input type='button' className='btn btn-primary' onClick={this.handleClick} value='send' />
+          <div className="col">
+            <label htmlFor='min_start'>Start Minutes : </label>
+            <input type='number_start' name='minStart' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStart} />
           </div>
+          <div className="col">
+            <label htmlFor='hour_stop'>Stop Hour : </label>
+            <input type='number' name='hourStop' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStop} />
+          </div>
+          <div className="col">
+            <label htmlFor='min_stop'>Stop Minutes : </label>
+            <input type='number' name='minStop' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStop} />
+          </div>
+        </div>
+        <div className="d-flex justify-content-between">
+          <p>Server time : {this.state.serverTime}</p>
+          <input type='button' className='btn btn-primary' onClick={this.handleClick} value='send' />
+        </div>
       </div>
 
     )

@@ -3,7 +3,8 @@ import AutoRetrieveSchedule from './AutoRetrieveSchedule'
 import RobotStatus from './RobotStatus'
 
 export default class AutoRetrieveRootPanel extends Component {
-  render () {
+
+  render() {
     return (
       <Fragment>
         <AutoRetrieveSchedule />
@@ -11,4 +12,5 @@ export default class AutoRetrieveRootPanel extends Component {
       </Fragment>
     )
   }
+  
 }

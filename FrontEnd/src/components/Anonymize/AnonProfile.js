@@ -6,32 +6,30 @@ import Select from 'react-select'
 import { saveProfile } from '../../actions/AnonList'
 
 class AnonProfile extends Component {
-    state = {  }
 
-    
     option = [
-        {value: 'Default', label: 'Default'}, 
-        {value: 'Full', label: 'Full'}
+        { value: 'Default', label: 'Default' },
+        { value: 'Full', label: 'Full' }
     ]
 
-    getProfileSelected(){
+    getProfileSelected = () => {
         let index = -1
         this.option.forEach(element => {
-            if (element.value === this.props.profile){
+            if (element.value === this.props.profile) {
                 index = this.option.indexOf(element)
             }
         })
         return this.option[index]
     }
 
-    render() {
+    render = () => {
         return (
             <div className='row'>
                 <div className="col-auto" >
                     <label htmlFor='profile'>Anon Profile : </label>
                 </div>
                 <div className="col-md" >
-                    <Select name='profile' single options={this.option} onChange={(e) => this.props.saveProfile(e.value)} placeholder='Profile' value={this.getProfileSelected()} />  
+                    <Select name='profile' single options={this.option} onChange={(e) => this.props.saveProfile(e.value)} placeholder='Profile' value={this.getProfileSelected()} />
                 </div>
             </div>
         );
@@ -39,7 +37,7 @@ class AnonProfile extends Component {
 }
 
 const mapStateToProps = state => {
-    return { 
+    return {
         profile: state.AnonList.profile
     }
 }

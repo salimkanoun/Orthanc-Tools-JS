@@ -1,117 +1,102 @@
-import { toastifyError, toastifySuccess } from './toastify'
-
 const jobs = {
 
-    getJobs(){
+  getJobs() {
 
-      const getJobsOption = {
-        method: 'GET'
+    const getJobsOption = {
+      method: 'GET'
+    }
+
+    return fetch('/api/jobs?expand', getJobsOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+      return answer.json()
+    }).catch(error => {
+      throw error
+    })
+  },
+
+  getJobInfos(jobId) {
+
+    const getJobInfosOption = {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8'
       }
+    }
 
-      return fetch('/api/jobs?expand', getJobsOption ).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return answer.json()
-      }).catch(error => {
-        toastifyError(error)
-      })
-    },
+    return fetch('/api/jobs/' + jobId, getJobInfosOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+      return answer.json()
+    }).catch(error => {
+      throw error
+    })
 
-    getJobInfos(jobId){
+  },
 
-      const getJobInfosOption = {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        }
-      }
+  cancelJob(jobId) {
 
-        return fetch('/api/jobs/' + jobId, getJobInfosOption ).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return answer.json()
-          }).catch(error => {
-            toastifyError(error)
-          })
+    const cancelJobOption = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify({})
+    }
 
-    },
+    return fetch('/api/jobs/' + jobId + '/cancel', cancelJobOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+    })
 
-    cancelJob(jobId){
+  },
 
-      const cancelJobOption = {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body : JSON.stringify({})
-      }
+  pauseJob(jobId) {
 
-      return fetch('/api/jobs/' + jobId + '/cancel', cancelJobOption ).then((answer) => {
-        if (!answer.ok) { throw answer }
-        toastifySuccess('Job Cancelled')
-      }).catch(error => {
-        toastifyError('error')
-      })
-      
-    }, 
+    const pauseJobOption = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify({})
+    }
 
-    pauseJob(jobId){
+    return fetch('/api/jobs/' + jobId + '/pause', pauseJobOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+    })
+  },
 
-      const pauseJobOption = {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body : JSON.stringify({})
-      }
+  resumbitJob(jobId) {
 
-      return fetch('/api/jobs/' + jobId + '/pause', pauseJobOption ).then((answer) => {
-          if (!answer.ok) { throw answer }
-          toastifySuccess('Job paused')
-        }).catch(error => {
-          toastifyError('error')
-        })
-    }, 
+    const resumbitJobOption = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify({})
+    }
 
-    resumbitJob(jobId){
+    return fetch('/api/jobs/' + jobId + '/resubmit', resumbitJobOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+    })
+  },
 
-      const resumbitJobOption = {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body : JSON.stringify({})
-      }
+  resumeJob(jobId) {
 
-      return fetch('/api/jobs/' + jobId + '/resubmit', resumbitJobOption ).then((answer) => {
-          if (!answer.ok) { throw answer }
-          toastifySuccess('Job resubmited')
-        }).catch(error => {
-          toastifyError('error')
-        })
-    }, 
+    const resumeJobOption = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      body: JSON.stringify({})
+    }
 
-    resumeJob(jobId){
-
-      const resumeJobOption = {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body : JSON.stringify({})
-      } 
-
-      return fetch('/api/jobs/' + jobId + '/resume', resumeJobOption ).then((answer) => {
-          if (!answer.ok) { throw answer }
-          toastifySuccess('Job resumed')
-        }).catch(error => {
-          toastifyError('error')
-        })
-    }, 
+    return fetch('/api/jobs/' + jobId + '/resume', resumeJobOption).then((answer) => {
+      if (!answer.ok) { throw answer }
+    })
+  },
 }
 
 export default jobs
-

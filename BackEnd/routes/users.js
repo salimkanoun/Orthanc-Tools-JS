@@ -1,14 +1,12 @@
 var express = require('express')
-var router = express.Router()
+var userRouter = express.Router()
 
 const { getUsers, createUser, modifyUser, deleteUser } = require('../controllers/user')
+const { userAdminMidelware, userAuthMidelware } = require('../midelwares/authentication')
 
-const { userAdminMidelware } = require('../midelwares/authentication')
+userRouter.get('/', [userAuthMidelware, userAdminMidelware], userAdminMidelware ,getUsers)
+userRouter.post('/', [userAuthMidelware, userAdminMidelware], userAdminMidelware ,createUser)
+userRouter.put('/:username', [userAuthMidelware, userAdminMidelware], userAdminMidelware ,modifyUser)
+userRouter.delete('/:username', [userAuthMidelware, userAdminMidelware], userAdminMidelware, deleteUser)
 
-/* GET users listing. */
-router.get('/users', userAdminMidelware ,getUsers)
-router.post('/users', userAdminMidelware ,createUser)
-router.put('/users', userAdminMidelware ,modifyUser)
-router.delete('/users', userAdminMidelware, deleteUser)
-
-module.exports = router
+module.exports = userRouter

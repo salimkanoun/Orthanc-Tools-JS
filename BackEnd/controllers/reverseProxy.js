@@ -1,39 +1,39 @@
-var ReverseProxy = require('../model/ReverseProxy')
+const ReverseProxy = require('../model/ReverseProxy')
 
-var reverseProxyGet = async function (req, res) {
+const reverseProxyGet = async function (req, res) {
   const apiAdress = req.originalUrl
   const orthancCalledApi = apiAdress.replace('/api', '')
-  ReverseProxy.streamToRes(orthancCalledApi, 'GET', undefined, res)
+  await ReverseProxy.streamToRes(orthancCalledApi, 'GET', undefined, res)
 }
 
-var reverseProxyPost = function (req, res) {
+const reverseProxyPost = async function (req, res) {
   const apiAdress = req.originalUrl
   const orthancCalledApi = apiAdress.replace('/api', '')
-  ReverseProxy.streamToRes(orthancCalledApi, 'POST', req.body, res)
+  await ReverseProxy.streamToRes(orthancCalledApi, 'POST', req.body, res)
 }
 
-var reverseProxyPostUploadDicom = function (req, res) {
+const reverseProxyPostUploadDicom = function (req, res) {
   const apiAdress = req.originalUrl
   const orthancCalledApi = apiAdress.replace('/api', '')
   ReverseProxy.streamToResUploadDicom(orthancCalledApi, 'POST', req.body, res)
 }
 
-var reverseProxyDelete = function (req, res) {
+const reverseProxyDelete = async function (req, res) {
   const apiAdress = req.originalUrl
   const orthancCalledApi = apiAdress.replace('/api', '')
-  ReverseProxy.streamToRes(orthancCalledApi, 'DELETE', undefined, res)
+  await ReverseProxy.streamToRes(orthancCalledApi, 'DELETE', undefined, res)
 }
 
-var reverseProxyPut = function (req, res) {
+const reverseProxyPut =  async function (req, res) {
   const apiAdress = req.originalUrl
   const orthancCalledApi = apiAdress.replace('/api', '')
-  ReverseProxy.streamToRes(orthancCalledApi, 'PUT', req.body, res)
+  await ReverseProxy.streamToRes(orthancCalledApi, 'PUT', req.body, res)
 }
 
-var reverseProxyPutPlainText = function (req, res) {
+const reverseProxyPutPlainText = async function (req, res) {
   const apiAdress = req.originalUrl
   const orthancCalledApi = apiAdress.replace('/api', '')
-  ReverseProxy.streamToResPlainText(orthancCalledApi, 'PUT', req.body, res)
+  await ReverseProxy.streamToResPlainText(orthancCalledApi, 'PUT', req.body, res)
 }
 
 module.exports = { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete }

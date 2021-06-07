@@ -1,174 +1,176 @@
-const request = require('request-promise-native')
+const {OTJSInternalServerError} = require('../Exceptions/OTJSErrors')
 const Options = require('./Options')
+const got = require('got')
 
 const ReverseProxy = {
 
-  getOrthancAddress () {
-    const orthancSettings = Options.getOrthancConnexionSettings()
-    this.address = orthancSettings.OrthancAddress
-    this.port = orthancSettings.OrthancPort
-    this.username = orthancSettings.OrthancUsername
-    this.password = orthancSettings.OrthancPassword
-    return this.address + ':' + this.port
-  },
+    getOrthancAddress() {
+        const orthancSettings = Options.getOrthancConnexionSettings()
+        this.address = orthancSettings.orthancAddress
+        this.port = orthancSettings.orthancPort
+        this.username = orthancSettings.orthancUsername
+        this.password = orthancSettings.orthancPassword
+        return this.address + ':' + this.port
+    },
 
-  makeOptions (method, api, data) {
-    const serverString = this.getOrthancAddress() + api
+    makeOptions(method, api, data) {
+        const serverString = this.getOrthancAddress() + api
 
-    let options = null
+        let options = null
 
-    if (method === 'GET' || method === 'DELETE') {
-      options = {
-        method: method,
-        url: serverString,
-        headers: {
-          'Forwarded' : 'by=localhost;for=localhost;host='+process.env.DOMAIN_ADDRESS+'/api;proto='+process.env.DOMAIN_PROTOCOL
-        },
-        auth: {
-          user: this.username,
-          password: this.password
-        }
-      }
-    } else {
-      options = {
-        method: method,
-        url: serverString,
-        auth: {
-          user: this.username,
-          password: this.password
-        },
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': JSON.stringify(data).length
-        },
-        body: JSON.stringify(data)
-      }
-    }
-
-    return options
-  },
-
-  makeOptionsUpload (method, api, data, plain=false) {
-    const serverString = this.getOrthancAddress() + api
-
-    const options = {
-      method: method,
-      url: serverString,
-      auth: {
-        user: this.username,
-        password: this.password
-      },
-      headers: {
-        'Content-Type': plain ? 'application/dicom' : 'text/plain',
-        'Content-Length': data.length
-      },
-      body: data
-    }
-
-    return options
-  },
-
-  makeOptionsDownload (method, api, data) {
-    const serverString = this.getOrthancAddress() + api
-
-    const options = {
-      method: method,
-      url: serverString,
-      auth: {
-        user: this.username,
-        password: this.password
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': data.length,
-        'Accept' : 'application/dicom'
-      },
-      body: JSON.stringify(data)
-    }
-
-    return options
-  },
-
-  streamToRes (api, method, data, res) {
-    request(this.makeOptions(method, api, data))
-      .on('response', function (response) {
-        if (response.statusCode === 200) {
-          response.pipe(res)
+        if (method === 'GET' || method === 'DELETE') {
+            options = {
+                method: method,
+                url: serverString,
+                headers: {
+                    'Forwarded': 'by=localhost;for=localhost;host=' + process.env.DOMAIN_ADDRESS + '/api;proto=' + process.env.DOMAIN_PROTOCOL
+                },
+                username: this.username,
+                password: this.password,
+            }
         } else {
-          res.status(response.statusCode).send(response.statusMessage)
+            options = {
+                method: method,
+                url: serverString,
+                username: this.username,
+                password: this.password,
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    'Content-Length': JSON.stringify(data).length
+                },
+                body: JSON.stringify(data)
+            }
         }
-      }).catch((error) => {
-        console.log(error)
-        res.status(500).send(error.statusMessage)
-      })
-  },
 
-  streamToResPlainText(api, method, data, res){
-    request(this.makeOptionsUpload(method, api, data, true))
-      .on('response', function (response) {
-        if (response.statusCode === 200) {
-          response.pipe(res)
-        } else {
-          res.status(response.statusCode).send(response.statusMessage)
+        return options
+    },
+
+    makeOptionsUpload(method, api, data, plain ) {
+        const serverString = this.getOrthancAddress() + api
+
+        const options = {
+            method: method,
+            url: serverString,
+            username: this.username,
+            password: this.password,
+            headers: {
+                'Content-Type': plain ? 'text/plain' : 'application/dicom',
+                'Content-Length': data.length
+            },
+            body: data
         }
-      }).catch((error) => {
-        console.log(error)
-        res.status(500).send(error.statusMessage)
-      })
-  },
 
-  streamToResUploadDicom (api, method, data, res) {
-    request(this.makeOptionsUpload(method, api, data))
-      .on('response', function (response) {
-        if(response.statusCode == 200)
-          response.pipe(res)
-      }).catch((error) => {
-        console.log(error)
-        res.status(error.statusCode).send(error)
-      })
-  },
+        return options
+    },
 
-  streamToFile (api, method, data, streamWriter) {
-    request(this.makeOptions(method, api, data))
-      .on('response', function (response) {
-        if (response.statusCode === 200) {
-          response.pipe(streamWriter)
-            .on('finish', function () { console.log('Writing Done') })
+    makeOptionsDownload(method, api, data) {
+        const serverString = this.getOrthancAddress() + api
+
+        const options = {
+            method: method,
+            url: serverString,
+            username: this.username,
+            password: this.password,
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Content-Length': data.length,
+                'Accept': 'application/dicom'
+            },
+            body: (method !== 'GET' ? JSON.stringify(data) : undefined)
         }
-      }).catch((error) => {
-        console.log(error)
-      })
-  },
 
-  streamToFileWithCallBack (api, method, data, streamWriter, finishCallBack) {
-    request(this.makeOptionsDownload(method, api, data))
-      .on('response', function (response) {
-        if (response.statusCode === 200) {
-          response.pipe(streamWriter)
-            .on('finish', ()=>{
-              finishCallBack()
-            } )
-        }
-      }).catch((error) => {
-        console.log(error)
-      })
-  },
+        return options
+    },
 
-  async getAnswer (api, method, data) {
-    const requestPromise = request(this.makeOptions(method, api, data)).then(function (body) {
-      return JSON.parse(body)
-    }).catch((error) => { console.log('Error Orthanc communication' + error); return false })
+    streamToRes(api, method, data, res) {
+        return got(this.makeOptions(method, api, data))
+            .on('response', function (response) {
+                if (response.statusCode === 200) {
+                    response.pipe(res)
+                } else if (response.statusCode === 401) {
+                    res.status(403).send("Bad orthanc credentials")
+                } else {
+                    res.status(response.statusCode).send(response.statusMessage)
+                }
+            }).catch((error) => {
+                console.error(error)
+            })
+    },
 
-    return await requestPromise
-  },
+    streamToResPlainText(api, method, data, res) {
+        return got(this.makeOptionsUpload(method, api, data, true))
+            .on('response', function (response) {
+                if (response.statusCode === 200) {
+                    response.pipe(res)
+                } else if (response.statusCode === 401) {
+                    res.status(403).send("Bad orthanc credentials")
+                } else {
+                    res.status(response.statusCode).send(response.statusMessage)
+                }
+            }).catch((error) => {
+                console.error(error)
+            })
+    },
 
-  async getAnswerPlainText (api, method, data) {
-    const requestPromise = request(this.makeOptions(method, api, data)).then(function (body) {
-      return body
-    }).catch((error) => { console.log('Error Orthanc communication' + error); return false })
+    streamToResUploadDicom(api, method, data, res) {
+        return got(this.makeOptionsUpload(method, api, data, false ))
+            .on('response', function (response) {
+                if(response.statusCode === 200){
+                    response.pipe(res)
+                } else if (response.statusCode === 401) {
+                    res.status(403).send("Bad orthanc credentials")
+                } else {
+                    res.status(response.statusCode).send(response.statusMessage)
+                }
+            }).catch((error) => {
+                console.error(error)
+            })
+    },
 
-    return await requestPromise
-  }
+    streamToFile(api, method, data, streamWriter) {
+        return got(this.makeOptions(method, api, data))
+            .on('response', function (response) {
+                if (response.statusCode === 200) {
+                    response.pipe(streamWriter)
+                        .on('finish', function () {
+                            console.log('Writing Done')
+                        })
+                }
+            }).catch((error) => {
+                console.error(error)
+            })
+    },
+
+    streamToFileWithCallBack(api, method, data, streamWriter, finishCallBack) {
+        return got(this.makeOptionsDownload(method, api, data))
+            .on('response', function (response) {
+                if (response.statusCode === 200) {
+                    response.pipe(streamWriter)
+                        .on('finish', () => {
+                            finishCallBack();
+                        });
+                }
+            })
+            .catch((error) => {
+                throw new OTJSInternalServerError(error.message);
+            })
+    },
+
+    getAnswer(api, method, data) {
+        return got(this.makeOptions(method, api, data)).then((response) => {
+            return JSON.parse(response.body)
+        }).catch((error) => {
+            throw new OTJSInternalServerError(error.message)
+        })
+    },
+
+    getAnswerPlainText(api, method, data) {
+        return got(this.makeOptions(method, api, data)).then((response) => {
+            return response.body
+        }).catch((error) => {
+            throw new OTJSInternalServerError(error.message)
+        })
+    }
 
 }
 

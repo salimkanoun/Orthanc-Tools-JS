@@ -1,45 +1,42 @@
 import BootstrapTable from "react-bootstrap-table-next";
 
 import React, { Component, Fragment } from "react";
-import apis from '../../../services/apis';
+export default class FtpEndpoints extends Component {
 
-export default class FtpEndpoints extends Component{
     columns = [{
         dataField: 'label',
-        text : 'Label'
+        text: 'Label'
     },
     {
         dataField: 'host',
-        text : 'Host'
+        text: 'Host'
     },
     {
         dataField: 'username',
-        text : 'Username'
+        text: 'Username'
     },
     {
         dataField: 'targetFolder',
-        text : 'Target Folder'
+        text: 'Target Folder'
     },
     {
         dataField: 'ssl',
-        text : 'Use ssl?',
-        formatter : (cell, row, rowIndex, parentComponent)=><p>{(row.ssl?'✓':'✖')}</p>
+        text: 'Use ssl?',
+        formatter: (cell, row, rowIndex, parentComponent) => <p>{(row.ssl ? '✓' : '✖')}</p>
     },
     {
-        dataField : 'delete',
-        text : 'Delete endpoint',
-        formatter : this.removeEndpointButton,
-        formatExtraData : this
+        dataField: 'delete',
+        text: 'Delete endpoint',
+        formatter: (cell, row, rowIndex, parentComponent) => {
+            return (
+                <div className="text-center">
+                    <input type="button" className='btn btn-danger' onClick={async () => { await parentComponent.props.onDeleteEndpoint(row.id) }} value="Remove" />
+                </div>)
+        },
+        formatExtraData: this
     }];
 
-    removeEndpointButton(cell, row, rowIndex, parentComponent) {
-        return (
-        <div className="text-center">
-            <input type="button" className='btn btn-danger' onClick = {async () => {await apis.endpoints.deleteEndpoints(row.id); parentComponent.props.refreshEndpointsData()}} value = "Remove" />
-        </div>)
-    }
-
-    render() {
+    render = () => {
         return (
             <Fragment>
                 <h2>FTP/FTPS Export Endpoints</h2>
@@ -47,5 +44,6 @@ export default class FtpEndpoints extends Component{
             </Fragment>
         )
     }
+
 }
 

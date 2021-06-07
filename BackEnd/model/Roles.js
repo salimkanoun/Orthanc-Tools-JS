@@ -1,95 +1,36 @@
-const db = require('../database/models')
-const jwt = require("jsonwebtoken")
-
+const Role = require('../repository/Role')
+const {OTJSConflictException, OTJSBadRequestException} = require('./../Exceptions/OTJSErrors')
+ 
 class Roles {
 
-    static async createRoles (payload) {
-        const roles = await db.Role.findOne({ 
-          where: { name: payload.name }})
-        if(roles) {
-            throw new Error('This roles already exist');
-        }
+  static async createRoles(payload) {
 
-        const promise = db.Role.create({
-            name: payload.name,
-            import: payload.import,
-            content: payload.content,
-            anon: payload.anon,
-            export_local: payload.exportLocal,
-            export_extern: payload.exportExtern,
-            query: payload.query,
-            auto_query: payload.autoQuery,
-            delete: payload.delete,
-            modify: payload.modify,
-            cd_burner : payload.cd_burner, 
-            admin: payload.admin
-          }).catch(e => console.log(e))
-    
-        return promise
-      }
+    const roles = await Role.getRole(payload.name)
 
-    static async getAllRoles () {
-      try {
-        return await db.Role.findAll(
-            {attributes: ['name']}
-        )
-      } catch (error) {
-        console.log(error)
-      }
+    if (roles) {
+      throw new OTJSConflictException('This roles already exist');
     }
 
-    static async getPermission (name) {
-        return await db.Role.findAll({ where: { name: name }}).catch((error) => console.log(error)) //return a JSON
-    }
+    return Role.create(payload.name,payload.import,payload.content,payload.anon,payload.exportLocal,payload.exportExtern,payload.query,payload.autoQuery,payload.deleteR,payload.modify,payload.cd_burner,payload.autorouting,payload.admin)
+  }
 
-    static async deleteRole(name){
-      if(name === 'admin') throw 'Can\'t delete role admin'
+  static async getAllRoles() {
+    return Role.getAllRole()
+  }
 
-      try {
-        await db.Role.destroy({
-        where: {
-            name: name
-        }
-      })
-      } catch (error) {
-        console.log(error)
-      }
-    }
+  static getPermission(name) {
+    return Role.getRoleByName(name)
+  }
 
-    static async modifyRoles(name, payload){
-      if(name === 'admin') throw 'Can\'t modify role admin'
+  static deleteRole(name) {
+    if (name === 'admin') throw new OTJSBadRequestException('Can\'t delete Admin Role')
+    return Role.delete(name)
+  }
 
-      console.log(payload.import)
-      try {
-        await db.Role.upsert({
-          name: name,
-          content: payload.content,
-          anon: payload.anon,
-          export_local: payload.exportLocal,
-          export_extern: payload.exportExtern,
-          query: payload.query,
-          auto_query: payload.autoQuery,
-          delete: payload.delete,
-          admin: payload.admin,
-          modify: payload.modify,
-          import: payload.import,
-          cd_burner : payload.cd_burner
-        })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    static async getRoleFromToken(token){
-      
-      try { 
-        return jwt.verify(token, process.env.TOKEN_SECRET) 
-      } 
-      catch(err) {
-        console.log(err)
-        throw res.sendStatus(403)//if incorrect token
-      }
-    }
+  static modifyRoles(name, payload) {
+    if (name === 'admin') throw new OTJSBadRequestException('Can\'t modify Admin Role')
+    return Role.update(name,payload.import,payload.content,payload.anon,payload.exportLocal,payload.exportExtern,payload.query,payload.autoQuery,payload.deleteR,payload.modify,payload.cd_burner,payload.autorouting,payload.admin)
+  } 
 
 }
 

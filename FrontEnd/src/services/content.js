@@ -1,14 +1,14 @@
-import { toastifyError } from "./toastify"
+import { toast } from "react-toastify"
 
-const query  = {
+const orthancContent = {
 
-    getContent(contentSerch){
+    getOrthancFind(contentSerch){
 
         const getContentOption = {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
             body: JSON.stringify(contentSerch)
         }
@@ -17,25 +17,24 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            throw(error)
         })
     },
 
-    getPatientsDetails(ID){
-
+    getPatientDetails(ID){
         const getPatientsDetailsOption = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
-        return fetch('/api/patients/' + ID + '?expand', getPatientsDetailsOption ).then((response) => {
+        return fetch('/api/patients/' + ID+ '?expand', getPatientsDetailsOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -45,7 +44,7 @@ const query  = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -53,7 +52,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     }, 
 
@@ -67,7 +66,7 @@ const query  = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -75,7 +74,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -85,7 +84,7 @@ const query  = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -93,7 +92,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -103,7 +102,7 @@ const query  = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -111,7 +110,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -121,7 +120,7 @@ const query  = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -129,7 +128,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -139,15 +138,15 @@ const query  = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
-        return fetch('/api/series/' + serieID + '/shared-tags?simplify', getSharedTagsOption ).then((response) => {
+        return fetch('/api/series/' + serieID + '/shared-tags', getSharedTagsOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -157,7 +156,7 @@ const query  = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -165,7 +164,7 @@ const query  = {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
-            toastifyError(error)
+            toast.error(error)
         })
     },
 
@@ -177,9 +176,8 @@ const query  = {
 
         return fetch('/api/patients/' + ID, deletePatientOption ).then((answer) => {
             if (!answer.ok) {throw answer}
-            return (answer.json())
         }).catch((error) => {
-            toastifyError(error)
+            throw error.statusText
         })
 
     },
@@ -192,9 +190,8 @@ const query  = {
 
         return fetch('/api/studies/' + ID, deleteStudiesOption ).then((answer) => {
             if (!answer.ok) {throw answer}
-            return (answer.json())
         }).catch((error) => {
-            toastifyError(error)
+            throw error.statusText
         })
 
     },
@@ -207,9 +204,8 @@ const query  = {
 
         return fetch('/api/series/' + ID, deleteSeriesOption ).then((answer) => {
             if (!answer.ok) {throw answer}
-            return (answer.json())
         }).catch((error) => {
-            toastifyError(error)
+            throw error.statusText
         })
 
     },
@@ -221,7 +217,7 @@ const query  = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
             body: JSON.stringify({Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }
@@ -230,7 +226,7 @@ const query  = {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     },
 
@@ -240,7 +236,7 @@ const query  = {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
             body: JSON.stringify({Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }
@@ -249,7 +245,7 @@ const query  = {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     },
 
@@ -259,7 +255,7 @@ const query  = {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
             body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }
@@ -268,10 +264,10 @@ const query  = {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
-            console.log(error)
+            console.error(error)
         })
     }
 }
 
-export default query
+export default orthancContent
 

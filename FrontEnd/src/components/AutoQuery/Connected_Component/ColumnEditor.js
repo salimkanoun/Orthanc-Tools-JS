@@ -6,27 +6,23 @@ import { editColumnQuery } from '../../../actions/TableQuery'
  * (editor component of the table header modifier)
  */
 class ColumnEditor extends Component {
-  
-  constructor (props) {
-    super(props)
-    this.editAllRow = this.editAllRow.bind(this)
-  }
 
   /**
    * Use Redux to modify all items proprieties
    * @param {*} event 
    */
-  editAllRow (event) {
+  editAllRow = (event) => {
     const target = event.target
     const value = target.type === 'checkbox' ? target.checked : target.value
     this.props.editColumnQuery(this.props.columnName, value)
   }
 
-  render () {
+  render = () => {
     return (
       <input type='text' placeholder='Modify' onKeyUp={this.editAllRow} className='form-control btn-warning' />
     )
   }
+
 }
 
 const mapStateToProps = (state) => {
@@ -35,7 +31,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps =  {
+const mapDispatchToProps = {
   editColumnQuery
 }
 

@@ -1,0 +1,440 @@
+body {
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-image: url(./../images/wallpaper.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.dropzone {
+    margin: 16px 0;
+    height: 100px;
+    width: 100%;
+    color: rgb(241, 30, 76);
+    line-height: 85px;
+    text-align: center;
+    background-color: rgb(255, 241, 244);
+    border-radius: 16px;
+    border: 5px dashed rgb(209, 19, 63);
+    cursor: pointer;
+}
+
+.dropzone.dz-parsing {
+    transition: 0.1s ease-in-out;
+    box-shadow: inset 0 0 35px rgba(255, 10, 67, 0.2);
+    border: 5px solid rgba(175, 54, 82, 0.8);
+}
+
+.content-panel {
+    padding-top: 100px !important;
+    padding: 50px;
+}
+
+.authentification {
+    background-image: url(./../images/wallpaperAuth.jpg);
+    /* Background image is centered vertically and horizontally at all times */
+    background-position: center center;
+    /* Background image doesn't tile */
+    background-repeat: no-repeat;
+    /* Background image is fixed in the viewport so that it doesn't move when
+        the content's height is greater than the image's height */
+    background-attachment: fixed;
+    /* This is what makes the background image rescale based
+        on the container's size */
+    background-size: cover;
+}
+
+a {
+    color: #00B7FF;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.block {
+    margin: 0px auto;
+    background-color: ghostwhite;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.block-400 {
+    width: 400px;
+}
+
+.block-title {
+    padding: 8px 18px;
+    text-align: center;
+    font-family: SourceSansProItalic;
+    font-size: 24px;
+    color: white;
+    background-color: #891b51;
+    border-radius: 8px 8px 0 0;
+}
+
+.block-content {
+    padding: 32px;
+    border-radius: 0 0 8px 8px !important;
+}
+
+.block-panel {
+    margin: auto 16px;
+    flex: 1;
+}
+
+.block-panel-title {
+    color: #1F5EA7;
+    font-size: 16px;
+    font-family: SourceSansProBold;
+}
+
+.link-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.link-button:hover,
+.link-button:focus {
+    text-decoration: none;
+}
+
+.main-content {
+    padding: 12px 64px;
+    background-color: white;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.react-bootstrap-table table {
+    table-layout: auto !important;
+}
+
+.jumbotron {
+    background-color: white;
+    border-radius: 30px;
+}
+
+.slide-enter {
+    transform: translateX(100%);
+}
+
+.slide-enter-active {
+    transform: translateX(0%);
+    transition: all 500ms
+}
+
+.slide-exit {
+    transform: translateX(0%);
+}
+
+.slide-exit-active {
+    position: absolute;
+    top: 100px;
+    left: 0px;
+    width: 100%;
+    transform: translateX(-100%);
+    transition: all 500ms
+
+}
+
+.auth-enter {
+    opacity: 0%;
+}
+
+.auth-enter-active {
+    opacity: 1;
+    transition: opacity 1500ms;
+}
+
+.auth-exit {
+    opacity: 0;
+}
+
+.auth-exit-active {
+    opacity: 0;
+    transition: opacity 1000ms;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.92) ! important;
+}
+
+.nav-link.active {
+    font-weight: bold !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+.nav-link.disabled {
+    color: rgba(128, 128, 128, 1) !important;
+}
+
+.vertical-center {
+    min-height: 100%; /* Fallback for browsers do NOT support vh unit */
+    min-height: 100vh; /* These two lines are counted as one :-)       */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.react-toggle {
+    touch-action: pan-x;
+
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.react-toggle-screenreader-only {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.react-toggle--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    -webkit-transition: opacity 0.25s;
+    transition: opacity 0.25s;
+}
+
+.react-toggle-track {
+    width: 50px;
+    height: 24px;
+    padding: 0;
+    border-radius: 30px;
+    background-color: #4D4D4D;
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+
+.react-toggle:hover:not(.react-toggle--disabled) .react-toggle-track {
+    background-color: #000000;
+}
+
+.react-toggle--checked .react-toggle-track {
+    background-color: #19AB27;
+}
+
+.react-toggle--checked:hover:not(.react-toggle--disabled) .react-toggle-track {
+    background-color: #128D15;
+}
+
+.react-toggle-track-check {
+    position: absolute;
+    width: 14px;
+    height: 10px;
+    top: 0px;
+    bottom: 0px;
+    margin-top: auto;
+    margin-bottom: auto;
+    line-height: 0;
+    left: 8px;
+    opacity: 0;
+    -webkit-transition: opacity 0.25s ease;
+    -moz-transition: opacity 0.25s ease;
+    transition: opacity 0.25s ease;
+}
+
+.react-toggle--checked .react-toggle-track-check {
+    opacity: 1;
+    -webkit-transition: opacity 0.25s ease;
+    -moz-transition: opacity 0.25s ease;
+    transition: opacity 0.25s ease;
+}
+
+.react-toggle-track-x {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    top: 0px;
+    bottom: 0px;
+    margin-top: auto;
+    margin-bottom: auto;
+    line-height: 0;
+    right: 10px;
+    opacity: 1;
+    -webkit-transition: opacity 0.25s ease;
+    -moz-transition: opacity 0.25s ease;
+    transition: opacity 0.25s ease;
+}
+
+.react-toggle--checked .react-toggle-track-x {
+    opacity: 0;
+}
+
+.react-toggle-thumb {
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 22px;
+    height: 22px;
+    border: 1px solid #4D4D4D;
+    border-radius: 50%;
+    background-color: #FAFAFA;
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    -webkit-transition: all 0.25s ease;
+    -moz-transition: all 0.25s ease;
+    transition: all 0.25s ease;
+}
+
+.react-toggle--checked .react-toggle-thumb {
+    left: 27px;
+    border-color: #19AB27;
+}
+
+.react-toggle--focus .react-toggle-thumb {
+    -webkit-box-shadow: 0px 0px 3px 2px #0099E0;
+    -moz-box-shadow: 0px 0px 3px 2px #0099E0;
+    box-shadow: 0px 0px 2px 3px #0099E0;
+}
+
+.react-toggle:active:not(.react-toggle--disabled) .react-toggle-thumb {
+    -webkit-box-shadow: 0px 0px 5px 5px #0099E0;
+    -moz-box-shadow: 0px 0px 5px 5px #0099E0;
+    box-shadow: 0px 0px 5px 5px #0099E0;
+}
+
+.grid-form-group {
+    display: grid;
+}
+
+
+@media (min-width: 400px) {
+    .grid-form-group {
+        grid-template-columns: 200px 1fr;
+        grid-gap: 16px;
+    }
+
+    .grid-form-group label {
+        grid-column: 1 / 2;
+    }
+
+    .grid-form-group input, .select {
+        grid-column: 2 / 3;
+    }
+}
+
+.grid-button-group {
+    display: grid;
+    max-width: 400px;
+}
+
+
+@media (min-width: 400px) {
+    .grid-button-group {
+        grid-template-columns: 200px 1fr;
+        grid-gap: 16px;
+    }
+
+    .grid-button-group p {
+        grid-column: 1 / 2;
+    }
+
+    .grid-button-group input {
+        grid-column: 3 / 4;
+    }
+}
+
+.label-dropdown-item {
+    min-width: 350px;
+    width: 100%;
+}
+
+.form-control.form-control-search-select {
+    padding: 0;
+}
+
+.form-control.form-control-search-select > input {
+    margin: -1px;
+    border: 1px solid #ced4da;;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    border-radius: .25rem;
+}
+
+.form-control.form-control-search-select:not(:first-child) > input {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}
+
+.form-control.form-control-search-select:not(:last-child) > input {
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.form-control.form-control-search-select > input:focus-visible {
+    margin: -1px;
+    border: 2px solid #80bdff;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
+}
+
+.form-control.form-control-search-select > div {
+    background-color: white;
+    border: 1px solid #ced4da;
+    margin-top: -4px;
+    margin-left: -1px;
+    margin-right: -1px;
+    border-radius: 0 0 4px 4px;
+}
+
+.label-dropdown-item:first-child {
+    border-bottom: 1px solid lightgrey;
+}
+
+
+.text-light-grey {
+    color: white;
+    background-color: #a0a0b0;
+    border-radius: 4px;
+    text-align: center;
+    min-width: 1.5em;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+}
+
+button > p {
+    margin: 0;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}

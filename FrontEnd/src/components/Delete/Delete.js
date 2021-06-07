@@ -5,10 +5,10 @@ import { toast } from 'react-toastify';
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 import { removePatientFromDeleteList, removeStudyFromDeleteList, emptyDeleteList } from '../../actions/DeleteList'
-import { removeOrthancContentStudy } from '../../actions/OrthancContent'
 import {studyArrayToPatientArray} from '../../tools/processResponse'
 import apis from '../../services/apis'
-import ModalDelete from '../Main/ModalDelete';
+import ModalDelete from '../Main/ModalDelete'
+import MonitorTask from '../../tools/MonitorTask'
 
 class Delete extends Component {
 
@@ -16,86 +16,75 @@ class Delete extends Component {
         show: false
     }
 
-
-    constructor(props){
-        super(props)
-        this.handleClickEmpty = this.handleClickEmpty.bind(this)
-        this.handleClickDelete = this.handleClickDelete.bind(this)
-        this.onDeletePatient = this.onDeletePatient.bind(this)
-        this.onDeleteStudy = this.onDeleteStudy.bind(this)
-        this.handleConfirm = this.handleConfirm.bind(this)
-        this.toast = React.createRef(null)
-    }
-
-    handleConfirm(){
+    handleConfirm = () => {
         this.setState(prevState => ({
             show: !prevState.show
         }))
     }
     
-    openToast(){
-        this.toast.current = toast("Delete progress : 0%", { autoClose: false})
+    openToast = () => {
+        this.toast = toast.info("Delete progress : 0%", { autoClose: false})
     }
 
-    updateToast(progress){
-        toast.update(this.toast.current, {type: toast.TYPE.INFO, render: 'Delete progress : ' + progress + '%'})
+    updateToast = (progress) => {
+        toast.update(this.toast, {type: toast.TYPE.INFO, render: 'Delete progress : ' + Math.round(progress) + '%'})
     }
 
-    successToast(){
-        toast.update(this.toast.current, {type: toast.TYPE.INFO, render: 'Delete done', className: 'bg-success', autoClose: 2000})
+    successToast = () => {
+        toast.update(this.toast, {type: toast.TYPE.INFO, render: 'Delete done', className: 'bg-success', autoClose: 2000})
     }
 
-    startMonitoring(){
-        this.openToast()
-        this.intervalChcker = setInterval(() => this.getInfo(), 2000)
-    }
-
-    stopMonitoring(){
-        if(this.intervalChcker !== undefined) clearInterval(this.intervalChcker)
-        this.successToast()
-        this.props.deleteList.forEach(async (study) => {
-            this.props.removeStudyFromDeleteList(study.ID)
-            this.props.removeOrthancContentStudy(study.ID)
-        });
-    }
-
-    async getInfo(){
-        let progress = await apis.deleteRobot.getDeleteRobot(this.props.username)
-        let nb = 100*progress.progression.Success/progress.items.length
-        this.updateToast(nb)
-        if(progress.status === 'Finished') {this.stopMonitoring()}
-    }
-
-    async handleClickDelete(){
+    handleClickDelete = async() => {
         //close Modal
         this.handleConfirm()
-        //call API DELETE
 
         let deletedSeriesIdArray = []
         this.props.deleteList.forEach((item) => {
             deletedSeriesIdArray = [...deletedSeriesIdArray, ...item.Series]
         })
         
-        let answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
-        if (answer){
-            this.startMonitoring()
+        let answer
+
+        try {
+            answer  = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
+        } catch( error ){
+            toast.error(error.statusText)
+            return
         }
+
+        this.task = new MonitorTask(answer, 2000)
+        this.task.startMonitoringJob()
+
+        this.openToast()
+
+        this.task.onUpdate( (info) => {
+            this.updateToast(info.progress)
+        })
+
+        this.task.onFinish( (info) => {
+            this.successToast()
+            
+            this.props.deleteList.forEach(async (study) => {
+                this.props.removeStudyFromDeleteList(study.ID)
+            })
+        })
+        
 
     }
 
-    handleClickEmpty(){
+    handleClickEmpty = () => {
         this.props.emptyDeleteList()
     }
 
-    onDeletePatient(patientOrthancID){
+    onDeletePatient = (patientOrthancID) => {
         this.props.removePatientFromDeleteList(patientOrthancID)
     }
 
-    onDeleteStudy(studyOrthancID){
+    onDeleteStudy = (studyOrthancID) => {
         this.props.removeStudyFromDeleteList(studyOrthancID)
     }
     
-    render(){
+    render = () => {
         return (
             <Fragment>
                 <div className='jumbotron'>
@@ -131,8 +120,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     removePatientFromDeleteList, 
     removeStudyFromDeleteList,
-    emptyDeleteList, 
-    removeOrthancContentStudy
+    emptyDeleteList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Delete)

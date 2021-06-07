@@ -1,99 +1,84 @@
-import { toastifyError, toastifySuccess } from './toastify'
-
 const role = {
 
-
-    getRoles(){
+    getRoles() {
         const getRolesOptions = {
-            method: 'GET', 
+            method: 'GET',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
-        return fetch('/api/roles', getRolesOptions ).then((answer) => {
+        return fetch('/api/roles', getRolesOptions).then((answer) => {
             if (!answer.ok) { throw answer }
-                return answer.json()
-            }).catch(error => {
-                toastifyError(error)
-            })
+            return answer.json()
+        }).catch(error => {
+            throw error
+        })
     },
 
-    getPermission(name){
+    getPermission(name) {
         const getPermissionOptions = {
-            method: 'GET', 
+            method: 'GET',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
-        return fetch('/api/roles/' + name, getPermissionOptions ).then((answer) => {
+        return fetch('/api/roles/' + name, getPermissionOptions).then((answer) => {
             if (!answer.ok) { throw answer }
-                return answer.json()
-            }).catch(error => {
-                console.log(error)
-                toastifyError(error)
-            })
+            return answer.json()
+        })
     },
 
-    createRole(payload){
+    createRole(payload) {
+
         const createRoleOptions = {
-            method: 'POST', 
+            method: 'POST',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
-            }, 
+                'Content-Type': 'application/json; charset=utf-8'
+            },
             body: JSON.stringify(payload)
         }
 
-        return fetch('/api/roles', createRoleOptions ).then((answer) => {
-                if (!answer.ok) { throw answer }
-                toastifySuccess('Role created with success')
-                return answer.json()
-            }).catch(error => {
-                toastifyError('error')
-            })
+        return fetch('/api/roles', createRoleOptions).then((answer) => {
+            if (!answer.ok) { throw answer }
+            return true
+        })
     },
 
-    modifyRole(payload){
+    modifyRole(payload) {
         const modifyRoleOptions = {
-            method: 'PUT', 
+            method: 'PUT',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
-            }, 
+                'Content-Type': 'application/json; charset=utf-8'
+            },
             body: JSON.stringify(payload)
         }
 
-        return fetch('/api/roles', modifyRoleOptions ).then((answer) => {
+        return fetch('/api/roles', modifyRoleOptions).then((answer) => {
             if (!answer.ok) { throw answer }
-            toastifySuccess('Role have been motified with success')
-                return answer.json()
-            }).catch(error => {
-                console.log(error)
-                toastifyError(error)
-            })
-    }, 
-    
-    deleteRole(name){
+            return true
+        })
+    },
+
+    deleteRole(name) {
         const deleteRoleOptions = {
-            method: 'DELETE', 
+            method: 'DELETE',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
-            }, 
+                'Content-Type': 'application/json; charset=utf-8'
+            },
             body: JSON.stringify([name])
         }
 
-        return fetch('/api/roles', deleteRoleOptions ).then((answer) => {
-                if (!answer.ok) { throw answer }
-                toastifySuccess('Role deleted with success')
-                return answer.json()
-            }).catch(error => {
-                toastifyError(error)
-            })
+        return fetch('/api/roles', deleteRoleOptions).then((answer) => {
+            if (!answer.ok) { throw answer }
+            return true
+        })
     }
 
 }

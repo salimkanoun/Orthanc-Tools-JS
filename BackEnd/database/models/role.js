@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     delete: DataTypes.BOOLEAN,
     admin: DataTypes.BOOLEAN,
     cd_burner : DataTypes.BOOLEAN,
+    autorouting : DataTypes.BOOLEAN,
     name: {
       primaryKey: true,
       type: DataTypes.STRING},
@@ -23,8 +24,8 @@ module.exports = (sequelize, DataTypes) => {
       as:'role'
     }),
     Role.hasOne(models.DistantUser, {
-      foreignKey: 'roleDistant',
-      as:'roleDistant'
+      foreignKey: 'local_role',
+      as:'local_role'
     })
   };
   return Role;

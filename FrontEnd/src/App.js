@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
-import {
-  BrowserRouter
-} from 'react-router-dom'
+
 import { toast } from 'react-toastify'
+import fetchIntercept from 'fetch-intercept'
 
-
-import Footer from './components/Main/Footer'
 import NavBar from './components/Main/NavBar'
 import Authentication from './components/Authentication'
+
+import { login, logout } from './actions/login'
+import { connect } from 'react-redux'
+import apis from './services/apis'
 
 //CSS Boostrap
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -18,7 +19,8 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 
 //Custom CSS
-import './style.css'
+import './assets/styles/orthancToolsJs.css'
+import { BrowserRouter } from 'react-router-dom'
 
 // Configuring Toastify params that will be used all over the app
 toast.configure({
@@ -32,34 +34,69 @@ toast.configure({
 
 class App extends Component {
 
-  state = {
-    auth: true
-  }
-
-  constructor (props) {
+  constructor(props){
     super(props)
-    this.setAuthPanel = this.setAuthPanel.bind(this)
-  }
-  
-  setAuthPanel(location){
-    this.setState({
-      auth: location === '/'
+
+    fetchIntercept.register({
+      request: function (url, config) {
+        // Modify the url or config here
+        return [url, config];
+      },
+    
+      requestError: function (error) {
+        // Called when an error occured during another 'request' interceptor call
+        return Promise.reject(error);
+      },
+    
+      response: async (response) => {
+        if (response.status === 401 && !response.url.includes('authentication')) {
+          toast.error('Session exprired, please re-identify')
+          await this.logout()
+          
+        }
+        return response;
+      },
+    
+      responseError: function (error) {
+        return Promise.reject(error);
+      }
     })
+
   }
 
-  
+
+  login = (logInAnwser) => {
+    this.props.login(logInAnwser)
+  }
+
+  logout = async () => {
+    this.props.logout() //empty all reducer
+    await apis.authentication.logOut() //ask backend to reset cookie http only
+  }
+
+
 
   render() {
     return (
-      <div className={this.state.auth ? 'authentification' : 'app'}>
-        <BrowserRouter>
-          {!this.state.auth ? <NavBar setLocation={this.setAuthPanel}/> : <Authentication setLocation={this.setAuthPanel}/>}
-          {this.state.auth ? null : <Footer />}
-        </BrowserRouter>
-      </div>
+      <BrowserRouter>
+        {this.props.username ? <NavBar onLogout={this.logout} username={this.props.username} roles={this.props.roles} /> : <Authentication onLogin={this.login} />}
+      </BrowserRouter>
     );
   }
 }
 
-export default App;
+
+const mapsDispatchToProps = {
+  logout,
+  login
+}
+
+const mapStateToProps = (state) => {
+  return {
+    username: state.OrthancTools.username,
+    roles: state.OrthancTools.roles
+  }
+}
+
+export default connect(mapStateToProps, mapsDispatchToProps)(App)
 
