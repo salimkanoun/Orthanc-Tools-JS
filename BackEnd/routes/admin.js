@@ -29,7 +29,7 @@ const {
     setLdapCorrespondence, deleteCorrespondence, getLdapGroupeNames
 } = require('../controllers/ldap')
 
-const {userAuthMidelware, userAdminMidelware, roleAccessLabelMidelware} = require('../midelwares/authentication')
+const {userAuthMidelware, userAdminMidelware, roleAccessLabelMidelware, autoroutingMidelware} = require('../midelwares/authentication')
 
 const {allEndpoints, updateEndpoint, newEndpoint, removeEndpoint} = require('../controllers/endpoints')
 const {newCertificate, allCertificates, removeCertificate, uploadCertificate} = require('../controllers/certificates')
@@ -182,11 +182,11 @@ adminRouter.delete('/studies/:uid/labels/:name', [userAuthMidelware, userAdminMi
 /*
 **AUTO ROUTING
 */
-adminRouter.get('/autorouting',[userAuthMidelware, userAdminMidelware],getAutorouters)
-adminRouter.get('/autorouting/:id',[userAuthMidelware, userAdminMidelware],getAutorouterById)
-adminRouter.post('/autorouting/:name',[userAuthMidelware, userAdminMidelware],createAutorouter)
-adminRouter.put('/autorouting/:id',[userAuthMidelware, userAdminMidelware],modifyAutorouter)
-adminRouter.put('/autorouting/:id/running',[userAuthMidelware, userAdminMidelware],switchOnOff)
-adminRouter.delete('/autorouting/:id',[userAuthMidelware, userAdminMidelware],deleteAutorouter)
+adminRouter.get('/autorouting',[userAuthMidelware, autoroutingMidelware],getAutorouters)
+adminRouter.get('/autorouting/:id',[userAuthMidelware, autoroutingMidelware],getAutorouterById)
+adminRouter.post('/autorouting/:name',[userAuthMidelware, autoroutingMidelware],createAutorouter)
+adminRouter.put('/autorouting/:id',[userAuthMidelware, autoroutingMidelware],modifyAutorouter)
+adminRouter.put('/autorouting/:id/running',[userAuthMidelware, autoroutingMidelware],switchOnOff)
+adminRouter.delete('/autorouting/:id',[userAuthMidelware, autoroutingMidelware],deleteAutorouter)
 
 module.exports = adminRouter

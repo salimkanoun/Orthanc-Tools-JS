@@ -161,6 +161,17 @@ const cdBurnerMidelware = async function (req, res, next) {
   }
 }
 
+const autoroutingMidelware = async function (req, res, next) {
+  if(process.env.NODE_ENV=='test'){
+    next()
+  }
+  else if (req.roles.autorouting) {
+    next()
+  } else {
+    res.sendStatus(403);
+  }
+}
+
 const ownTaskOrIsAdminMidelware = async function (req,res,next){
   if(process.env.NODE_ENV=='test'){
     next()
@@ -200,5 +211,5 @@ const roleAccessLabelMidelware = async function(req,res,next){
 module.exports = {
   userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
   exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, cdBurnerMidelware, isCurrentUserOrAdminMidelWare,
-  ownTaskOrIsAdminMidelware, roleAccessLabelMidelware
+  ownTaskOrIsAdminMidelware, roleAccessLabelMidelware, autoroutingMidelware
 }    
