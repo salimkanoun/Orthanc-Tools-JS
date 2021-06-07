@@ -4,7 +4,7 @@ const rolelabel = {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
         return fetch('/api/users/labels', getRolesLabelsOptions).then((answer) => {
@@ -22,7 +22,7 @@ const rolelabel = {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
         }
         return fetch('/api/users/' + username +'/roles/'+role_name+'/labels', getRoleLabelsOptions).then((answer) => {
@@ -40,7 +40,7 @@ const rolelabel = {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
         return fetch('/api/users/labels/' + label_name + '/', getLabelRolesOptions).then((answer) => {
@@ -61,7 +61,7 @@ const rolelabel = {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
             body: JSON.stringify(rolename)
         }
@@ -83,7 +83,7 @@ const rolelabel = {
             method: 'DELETE',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
             body: JSON.stringify(rolename)
         }

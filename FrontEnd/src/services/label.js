@@ -6,7 +6,7 @@ const label = {
       methode:'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       }
     }
     return fetch('api/labels',getAllLabelsOptions).then((answer) => {
@@ -22,7 +22,7 @@ const label = {
       method:'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
     }
 
@@ -37,7 +37,7 @@ const label = {
       method:'PUT',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify(payload)
     }
@@ -53,7 +53,7 @@ const label = {
       method:'DELETE',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
     }
 

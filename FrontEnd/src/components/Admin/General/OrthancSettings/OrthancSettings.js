@@ -4,6 +4,7 @@ import Select from 'react-select'
 
 import { toast } from 'react-toastify'
 import Modal from 'react-bootstrap/Modal'
+import OrthancInfos from './OrthancInfos'
 
 export default class OrthancSettings extends Component {
 
@@ -15,6 +16,7 @@ export default class OrthancSettings extends Component {
         orthancPassword: '',
         showRestart: false,
         showShutdown: false,
+        showOrthancDetails : false,
         verbositySelected: null
     }
 
@@ -140,6 +142,16 @@ export default class OrthancSettings extends Component {
                 <div className="form-group text-right">
                     <input type='button' className='btn btn-primary mr-1' onClick={this.submitOrthancSettings} value='Update' />
                     <input type='button' className='btn btn-info mr-1' onClick={this.testConnexion} value='Check Connexion' />
+
+                    <input type='button' className='btn btn-info mr-1' onClick={() => this.setState({ showOrthancDetails: true })} value='Orthanc Details' />
+                    <Modal show={this.state.showOrthancDetails} onHide={() => this.setState({ showOrthancDetails: false })}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Orthanc Details</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <OrthancInfos/>
+                        </Modal.Body>
+                    </Modal>
 
                     <input type='button' className='btn btn-warning mr-1' onClick={() => this.setState({ showRestart: true })} value='Restart' />
                     <Modal show={this.state.showRestart} onHide={() => this.setState({ showRestart: false })}>

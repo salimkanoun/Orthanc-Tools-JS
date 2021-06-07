@@ -12,7 +12,6 @@ import {connect} from 'react-redux'
 import {addStudiesToDeleteList} from '../../actions/DeleteList'
 import {addStudiesToExportList} from '../../actions/ExportList'
 import {addStudiesToAnonList} from '../../actions/AnonList'
-import {addOrthancContent, removeOrthancContentPatient, removeOrthancContentStudy} from '../../actions/OrthancContent'
 import {toast} from 'react-toastify'
 import LabelDropdown from "./LabelDropdown";
 
@@ -21,7 +20,8 @@ class ContentRootPanel extends Component {
 
     state = {
         currentSelectedStudyId: '',
-        dataForm: {}
+        dataForm: {},
+        orthancContent : []
     }
 
     constructor(props) {
@@ -46,7 +46,9 @@ class ContentRootPanel extends Component {
     sendFindRequest = async (dataForm) => {
         try {
             let studies = await apis.content.getOrthancFind(dataForm)
-            this.props.addOrthancContent(studies)
+            this.setState({
+                orthancContent : studies
+            })
         } catch (error) {
             toast.error(error.statusText)
         }
@@ -65,13 +67,13 @@ class ContentRootPanel extends Component {
 
     //Rappelé par le dropdown lors du delete de Patietn sur Orthanc
     onDeletePatient = (idDeleted) => {
-        this.props.removeOrthancContentPatient(idDeleted)
+        this.sendSearch()
         this.setState({currentSelectedStudyId: ''})
     }
 
     //rappelé par le dropdow lors du delete de study sur Orthanc
     onDeleteStudy = (idDeleted) => {
-        this.props.removeOrthancContentStudy(idDeleted)
+        this.sendSearch()
         this.setState({currentSelectedStudyId: ''})
     }
 
@@ -97,7 +99,7 @@ class ContentRootPanel extends Component {
         //Add all studies of selected patient
         selectedIds.selectedPatients.forEach(orthancPatientId => {
           //loop the redux and add all studies that had one of the selected patient ID
-          let studyArray = this.props.orthancContent.filter(study => {
+          let studyArray = this.state.orthancContent.filter(study => {
               if (study.ParentPatient === orthancPatientId) return true
               else return false
           })
@@ -132,9 +134,8 @@ class ContentRootPanel extends Component {
                             />
                         </div>
 
-
                         <TablePatientsWithNestedStudies
-                            patients={studyArrayToPatientArray(this.props.orthancContent)}
+                            patients={studyArrayToPatientArray(this.state.orthancContent)}
                             rowEventsStudies={this.rowEventsStudies}
                             rowStyle={this.rowStyleStudies}
                             onDeletePatient={this.onDeletePatient}
@@ -158,19 +159,10 @@ class ContentRootPanel extends Component {
 
 }
 
-const mapStateToProps = state => {
-    return {
-        orthancContent: state.OrthancContent.orthancContent
-    }
-}
-
 const mapDispatchToProps = {
     addStudiesToDeleteList,
     addStudiesToAnonList,
-    addOrthancContent,
-    removeOrthancContentStudy,
-    removeOrthancContentPatient,
     addStudiesToExportList
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContentRootPanel)
+export default connect(null, mapDispatchToProps)(ContentRootPanel)

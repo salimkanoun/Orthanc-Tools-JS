@@ -54,6 +54,15 @@ describe('GET/',()=>{
     })
   })
 
+  it('StudyLabels by StudyOrthancID',async()=>{
+    const res = await request(app)
+    .get('/api/studies/orthanc/a/labels')
+    .set('Accept', 'application/json')
+    .then((response)=>{
+      expect(response.statusCode).toBe(201)
+    })
+  })
+
   it('RoleLabels',async ()=>{
     const route = '/api/users/labels'
     const res = await request(app)
@@ -202,11 +211,20 @@ describe('POST/',()=>{
   })
   
   it('StudyLabels',async()=>{
-    await Label.createLabels('test')
+    const Label = require ('../../repository/Label.js')
+    const label = await Label.getLabel('test')
+    if(label==null){
+      await Label.create('test')
+    }
+    const payload= {
+      study_orthanc_id:'a',
+      patient_orthanc_id:'a'
+    }
 
     const res = await request(app)
     .post('/api/patient/patient_test/studies/ABCDEFGH/labels/test')
     .set('Accept', 'application/json')
+    .send(payload)
     .then((response)=>{
       expect(response.statusCode).toBe(201)
     })

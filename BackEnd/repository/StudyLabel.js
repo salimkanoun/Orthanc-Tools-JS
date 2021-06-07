@@ -11,11 +11,13 @@ class StudyLabel{
     })
   }
 
-  static async create(study_instance_uid,label_name,patient_id){
+  static async create(study_instance_uid,label_name,patient_id,study_orthanc_id,patient_orthanc_id){
     return db.StudyLabel.create({
       study_instance_uid:study_instance_uid,
       label_name:label_name,
-      patient_id:patient_id
+      patient_id:patient_id,
+      study_orthanc_id:study_orthanc_id,
+      patient_orthanc_id:patient_orthanc_id
     })
   }
 
@@ -27,7 +29,7 @@ class StudyLabel{
     return db.StudyLabel.findAll({
       where:{
         label_name:label_name
-      },attributes:['study_instance_uid','patient_id']
+      }
     })
   }
 
@@ -35,7 +37,15 @@ class StudyLabel{
     return db.StudyLabel.findAll({
       where:{
         study_instance_uid:study_instance_uid
-      },attributes:['label_name']
+      }
+    })
+  }
+
+  static async getStudyLabelsByStudyOrthancID (study_orthanc_id){
+    return db.StudyLabel.findAll({
+      where:{
+        study_orthanc_id:study_orthanc_id
+      }
     })
   }
 
