@@ -142,6 +142,13 @@ class Autorouting {
         }
       }
   }
+
+  toJSON(){
+    return {
+        AutorouterService : this.monitoringStarted,
+        QuededJobs : this.jobQueue.queue.length
+    }
+  }
 }
 
 module.exports = Autorouting

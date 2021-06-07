@@ -1,4 +1,4 @@
-const autorouter = {
+const autorouting = {
   getAutorouters() {
       const getAutoroutersOptions = {
           method: 'GET',
@@ -114,4 +114,4 @@ const autorouter = {
       })
   }
 }
-export default autorouter
+export default autorouting

@@ -10,7 +10,7 @@ const autorouter = {
               body: JSON.stringify([])
         }
 
-        return fetch('/api/monitoring/autorouter/', options).then((answer) => {
+        return fetch('/api/monitoring/autorouter', options).then((answer) => {
               if (!answer.ok) { throw answer }
               return (answer.json())
         }).catch(error => {
@@ -28,28 +28,26 @@ const autorouter = {
               }
         }
 
-        return fetch('/api/monitoring/autorouter/', options).then((answer) => {
+        return fetch('/api/monitoring/autorouter', options).then((answer) => {
               if (!answer.ok) { throw answer }
         }).catch((error) => { throw error })
 
   },
 
-  getAutorouter() {
-
-        let options = {
-              method: 'GET',
-              headers: {
-                    Accept: 'application/json'
-              }
-        }
-
-        return fetch('/api/monitoring/autorouter/', options).then((answer) => {
-              if (!answer.ok) { throw answer }
-              return (answer.json())
-        }).catch((error) => {
-              throw error
-        })
-
+  getAutorouter(){ 
+    const getAutorouterOptions={
+      method:'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8'
+      }
+    }
+    return fetch('/api/monitoring/autorouter', getAutorouterOptions).then((answer) => {
+        if (!answer.ok) { throw answer }
+        return answer.json()
+    }).catch(error => {
+        throw error
+    })
   },
 
 }
