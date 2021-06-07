@@ -27,7 +27,7 @@ class DicomRouterTable extends Component {
         let rules = row.row.values.rules
         return(
           <div className='container'>
-            {rules.map(rule => (<div className='row m-1 p-2 border border-dark rounded justify-content-center' style={{'background-color':'rgb(88,220,124)'}}>
+            {rules.map(rule => (<div key={rule.id} className='row m-1 p-2 border border-dark rounded justify-content-center' style={{'backgroundColor':'rgb(88,220,124)'}}>
               <div className='col justify-content-center'>{rule.value}</div>
               <div className='col justify-content-center'>{rule.operator}</div>
               <div className='col justify-content-center'>{rule.target}</div>
@@ -51,7 +51,7 @@ class DicomRouterTable extends Component {
       Cell:(row)=>{
         return(
         <span>
-          <Toggle checked={row.row.values.running} onChange={()=>{this.handleSwitch(row.row.original.id,row.row.values.running)}}/>
+          <Toggle key={row.row.values.id} checked={row.row.values.running} onChange={()=>{this.handleSwitch(row.row.original.id,row.row.values.running)}}/>
         </span>
         )
       }
