@@ -13,7 +13,7 @@ describe('Testing the study label table', function () {
         }
         var sl = await StudyLabel.getStudyLabel(study_instance_uid, l.label_name)
         if (sl == null) {
-            await StudyLabel.create(study_instance_uid, l.label_name,'a')
+            await StudyLabel.create(study_instance_uid, l.label_name,'a','a','a')
         }
     })
 
@@ -38,6 +38,8 @@ describe('Testing the study label table', function () {
             expect(schedule.study_instance_uid).toBe('ABCDEFG')
             expect(schedule.label_name).toBe('test_study_label')
             expect(schedule.patient_id).toBe('a')
+            expect(schedule.patient_orthanc_id).toBe('a')
+            expect(schedule.study_orthanc_id).toBe('a')
         })
 
         it('should not get a StudyLabel', async () => {

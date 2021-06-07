@@ -35,7 +35,7 @@ const ReverseProxy = {
                 username: this.username,
                 password: this.password,
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json; charset=utf-8',
                     'Content-Length': JSON.stringify(data).length
                 },
                 body: JSON.stringify(data)
@@ -72,7 +72,7 @@ const ReverseProxy = {
             username: this.username,
             password: this.password,
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8',
                 'Content-Length': data.length,
                 'Accept': 'application/dicom'
             },

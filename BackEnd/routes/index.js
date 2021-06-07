@@ -13,6 +13,9 @@ const { importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
 
 const { checkForOrthancQueueReady, getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, deleteRetrieveItem, addExportTask } = require('../controllers/task')
 
+const {allEndpoints} = require('../controllers/endpoints')
+const { getExportTranscoding } = require('../controllers/options')
+
 router.get('/modalities', userAuthMidelware, reverseProxyGet)
 router.post('/modalities/*/store', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
 
@@ -27,10 +30,6 @@ router.get('/queries/:orthancIdQuery/parsedAnswers', [userAuthMidelware,queryMid
 // Orthanc Dicom Import Route
 router.post('/instances', [userAuthMidelware,importMidelware], reverseProxyPostUploadDicom)
 
-// Orthanc DicomWebRoutes
-router.get('/dicom-web/*', [userAuthMidelware, contentMidelware], reverseProxyGet)
-router.get('/wado/*', [userAuthMidelware, contentMidelware], reverseProxyGet)
-
 //Orthanc export routes
 router.post('/tools/create-archive', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
 router.post('/tools/create-media-extended', [userAuthMidelware,exportLocalMidelware], reverseProxyPost)
@@ -39,19 +38,30 @@ router.post('/tools/create-media-extended', [userAuthMidelware,exportLocalMidelw
 router.post('/tools/create-dicom', [userAuthMidelware, importMidelware], reverseProxyPost)
 
 //Orthanc Peers Routes
+router.get('/peers*', [userAuthMidelware, exportExternMidelware], reverseProxyGet)
 router.post('/peers/*/store', [userAuthMidelware,exportExternMidelware], reverseProxyPost)
+
+//Jobs to monitor orthanc
+router.get('/jobs*', [userAuthMidelware], reverseProxyGet)
 
 //Orthanc Modify
 router.post('/patients/*/modify', [userAuthMidelware,modifyMidelware], reverseProxyPost)
 router.post('/studies/*/modify', [userAuthMidelware,modifyMidelware], reverseProxyPost)
 router.post('/series/*/modify', [userAuthMidelware,modifyMidelware], reverseProxyPost)
 
-//Orthanc content
+//Tools Find API for Orthanc Content Role
 router.post('/tools/find', [userAuthMidelware,contentMidelware], reverseProxyPost)
-router.get('/patients/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
-router.get('/studies/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
-router.get('/series/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
-router.get('/instances/*', [userAuthMidelware,contentMidelware], reverseProxyGet)
+
+//Reverse Proxy Routes for orthanc content => Warning non RBAC Protected
+//SK A VERIFIER QUE LES RACINES SONT BIEN VEROUILLEES
+router.get('/patients/*', [userAuthMidelware], reverseProxyGet)
+router.get('/studies/*', [userAuthMidelware], reverseProxyGet)
+router.get('/series/*', [userAuthMidelware], reverseProxyGet)
+router.get('/instances/*', [userAuthMidelware], reverseProxyGet)
+router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet)
+router.get('/wado/*', [userAuthMidelware], reverseProxyGet)
+
+//Delete Orthanc ressource API
 router.delete('/patients/*', [userAuthMidelware, deleteMidelware], reverseProxyDelete)
 router.delete('/studies/*', [userAuthMidelware, deleteMidelware], reverseProxyDelete)
 router.delete('/series/*', [userAuthMidelware, deleteMidelware], reverseProxyDelete)
@@ -66,6 +76,10 @@ router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', [userAuthMidelware,cd
 router.get('/tools/time', userAuthMidelware, (req, res)=>{
     res.send((new Date()).toLocaleString());
 })
+
+//Endpoints and transcoding option
+router.get('/endpoints/', [userAuthMidelware], allEndpoints)
+router.get('/options/export-transcoding', [userAuthMidelware], getExportTranscoding)
 
 /*
 ** TASKS

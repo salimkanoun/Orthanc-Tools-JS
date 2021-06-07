@@ -31,7 +31,7 @@ const {
 
 const {userAuthMidelware, userAdminMidelware, roleAccessLabelMidelware, autoroutingMidelware} = require('../midelwares/authentication')
 
-const {allEndpoints, updateEndpoint, newEndpoint, removeEndpoint} = require('../controllers/endpoints')
+const {updateEndpoint, newEndpoint, removeEndpoint} = require('../controllers/endpoints')
 const {newCertificate, allCertificates, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const {newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
 const {getTasksOfType, validateRetrieve, flushTasks} = require('../controllers/task')
@@ -45,7 +45,8 @@ const {
     createStudyLabel,
     deleteStudyLabel,
     getStudiesLabel,
-    getStudyLabels
+    getStudyLabels,
+    getStudyLabelsByStudyOrthancID
 } = require('../controllers/studyLabel')
 
 const{
@@ -77,7 +78,6 @@ adminRouter.put('/options/export', [userAuthMidelware, userAdminMidelware], setE
 adminRouter.get('/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 
 // Orthanc Job API
-adminRouter.get('/jobs*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 adminRouter.post('/jobs/*', [userAuthMidelware, userAdminMidelware], reverseProxyPost)
 
 // Orthanc Aets Routes
@@ -86,7 +86,6 @@ adminRouter.post('/modalities/:dicom/echo', [userAuthMidelware, userAdminMidelwa
 adminRouter.put('/modalities/:dicom', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
 
 //Orthanc Peers Routes
-adminRouter.get('/peers*', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 adminRouter.delete('/peers/*', [userAuthMidelware, userAdminMidelware], reverseProxyDelete)
 adminRouter.get('/peers/:peer/system', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
 adminRouter.put('/peers/:peer/', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
@@ -175,6 +174,7 @@ adminRouter.delete('/users/:name/labels/:name', [userAuthMidelware, userAdminMid
 //StudyLabel
 adminRouter.get('/studies/labels', [userAuthMidelware,userAdminMidelware], getStudiesLabels)
 adminRouter.get('/studies/labels/:name', [userAuthMidelware,roleAccessLabelMidelware], getStudiesLabel)
+adminRouter.get('/studies/orthanc/:id/labels',[userAuthMidelware,userAdminMidelware], getStudyLabelsByStudyOrthancID)
 adminRouter.get('/studies/:uid/labels/', [userAuthMidelware,userAdminMidelware], getStudyLabels)
 adminRouter.post('/patient/:id/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], createStudyLabel)
 adminRouter.delete('/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], deleteStudyLabel)

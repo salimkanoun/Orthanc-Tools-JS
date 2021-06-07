@@ -6,7 +6,7 @@ const options = {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify({ hour_start, min_start, hour_stop, min_stop })
     }
@@ -37,7 +37,7 @@ const options = {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify(postData)
     }
@@ -54,7 +54,7 @@ const options = {
       method: 'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       }
     }
 
@@ -63,13 +63,13 @@ const options = {
     }).catch(error => { throw error })
   },
 
-  getRedisServer(){
+  getRedisServer() {
 
     let optionRedisServer = {
       method: 'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       }
     }
 
@@ -85,7 +85,7 @@ const options = {
       method: 'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       }
     }
 
@@ -180,7 +180,7 @@ const options = {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify(payload)
     }
@@ -214,7 +214,7 @@ const options = {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify(payload)
     }
@@ -228,7 +228,7 @@ const options = {
     })
 
   },
-  
+
   setExportOptions(export_transcoding) {
 
     let payload = {
@@ -239,7 +239,7 @@ const options = {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify(payload)
     }
@@ -248,6 +248,18 @@ const options = {
       if (response.ok) {
         return true
       } else throw response
+    }).catch(error => {
+      throw error
+    })
+
+  },
+
+  getExportOption() {
+    return fetch('/api/options/export-transcoding').then(response => {
+      if (response.ok) {
+        return response.text()
+      }
+      else throw response
     }).catch(error => {
       throw error
     })
