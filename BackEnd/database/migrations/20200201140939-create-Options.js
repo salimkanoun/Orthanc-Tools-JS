@@ -88,6 +88,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'None' 
+      },
+      autorouter_started : {
+        type:Sequelize.BOOLEAN,
+        defaultValue:false,
       }
 
     }).then(() => {

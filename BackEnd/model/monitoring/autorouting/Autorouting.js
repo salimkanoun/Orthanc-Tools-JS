@@ -1,6 +1,7 @@
 const Orthanc_Monitoring = require ('../Orthanc_Monitoring')
 const Queue = require('promise-queue')
 const Autorouter = require('../../Autorouters')
+const Options = require('../../Options')
 
 class Autorouting {
 
@@ -16,6 +17,8 @@ class Autorouting {
   * Recuperate all autorouters rules and divide them into 3 arrays
   */
   setSettings = async () => {
+    let options = await Options.getOptions()
+    this.autoStart = options.autorouter_started
     this.autorouters = []
     //put on variable all autorouters that are enabled
     let autorouter = await Autorouter.getAllAutorouters()
@@ -27,12 +30,20 @@ class Autorouting {
   }
 
   /**
+   * Autostart the autorouter if the option tells it
+   */
+  autoStartIfNeeded = async () => {
+    await this.setSettings()
+    if(this.autoStart) this.startAutorouting()
+  }
+
+  /**
    * Start autourouter
    */
   startAutorouting = async () => {
     if(this.monitoringStarted) return
     
-    this.setSettings()
+    await this.setSettings()
     this.monitoringStarted=true
     this._makeListener()
     this.monitoring.startMonitoringService('Autorouting')

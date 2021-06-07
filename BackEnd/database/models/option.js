@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     monitoring_rate: DataTypes.INTEGER,
     burner_started : DataTypes.BOOLEAN,
     export_transcoding : DataTypes.STRING,
+    autorouter_started:DataTypes.BOOLEAN,
   }, {})
   Option.associate = function (models) {
     // associations can be defined here
