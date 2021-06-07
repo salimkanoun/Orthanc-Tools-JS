@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     delete: DataTypes.BOOLEAN,
     admin: DataTypes.BOOLEAN,
     cd_burner : DataTypes.BOOLEAN,
+    autorouting : DataTypes.BOOLEAN,
     name: {
       primaryKey: true,
       type: DataTypes.STRING},

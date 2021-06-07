@@ -28,7 +28,8 @@ const login = async function (req, res) {
       auto_query: infosUser.auto_query,
       delete: infosUser.delete,
       modify: infosUser.modify,
-      cd_burner: infosUser.cd_burner
+      cd_burner: infosUser.cd_burner,
+      autorouting: infosUser.autorouting
     }
     if(process.env.NODE_ENV != 'test'){
       var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });

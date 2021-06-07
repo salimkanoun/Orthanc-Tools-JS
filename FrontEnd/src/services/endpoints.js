@@ -28,7 +28,7 @@ const endpoints =  {
 
   createEndpoint(postData) {
 
-    return fetch('api/endpoints/create', {
+    return fetch('api/endpoints/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

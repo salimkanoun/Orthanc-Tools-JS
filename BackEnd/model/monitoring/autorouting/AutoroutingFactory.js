@@ -1,14 +1,18 @@
-const CdBurner = require('./CdBurner')
+const Autorouting = require('./Autorouting')
 const MonitoringFactory = require('../MonitoringFactory')
 
-const CdBurnerFactory =  ( function () {
+/**
+ * Create an instance of autorouting
+ * @returns instance of Autourouting
+ */
+const AutoroutingFactory = (function (){
     var instance;
  
     async function createInstance() {
         let monitoring =  MonitoringFactory.getInstance();
         await monitoring.setSettings()
-        let instanceBurner = new CdBurner( monitoring )
-        return instanceBurner;
+        let instanceAutorouting = new Autorouting( monitoring )
+        return instanceAutorouting;
     }
  
     return {
@@ -20,4 +24,5 @@ const CdBurnerFactory =  ( function () {
         }
     };
 }) ();
-module.exports = CdBurnerFactory
+
+module.exports= AutoroutingFactory

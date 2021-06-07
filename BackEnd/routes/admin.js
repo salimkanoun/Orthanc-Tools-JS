@@ -29,7 +29,7 @@ const {
     setLdapCorrespondence, deleteCorrespondence, getLdapGroupeNames
 } = require('../controllers/ldap')
 
-const {userAuthMidelware, userAdminMidelware, roleAccessLabelMidelware} = require('../midelwares/authentication')
+const {userAuthMidelware, userAdminMidelware, roleAccessLabelMidelware, autoroutingMidelware} = require('../midelwares/authentication')
 
 const {updateEndpoint, newEndpoint, removeEndpoint} = require('../controllers/endpoints')
 const {newCertificate, allCertificates, removeCertificate, uploadCertificate} = require('../controllers/certificates')
@@ -48,6 +48,16 @@ const {
     getStudyLabels,
     getStudyLabelsByStudyOrthancID
 } = require('../controllers/studyLabel')
+
+const{
+    createAutorouter,
+    getAutorouterById,
+    getAutorouters,
+    switchOnOff,
+    modifyAutorouter,
+    deleteAutorouter,
+} = require('../controllers/autorouter')
+
 
 // OrthancToolsJS Options routes
 adminRouter.get('/options', [userAuthMidelware, userAdminMidelware], getOptions)
@@ -126,8 +136,9 @@ adminRouter.delete('/tasks/type/:type/flush', [userAuthMidelware, userAdminMidel
 */
 
 // Export endpoints
-adminRouter.post('/endpoints/update', [userAuthMidelware, userAdminMidelware], updateEndpoint)
-adminRouter.post('/endpoints/create', [userAuthMidelware, userAdminMidelware], newEndpoint)
+adminRouter.get('/endpoints/', [userAuthMidelware, userAdminMidelware], allEndpoints)
+adminRouter.put('/endpoints/', [userAuthMidelware, userAdminMidelware], updateEndpoint)
+adminRouter.post('/endpoints/', [userAuthMidelware, userAdminMidelware], newEndpoint)
 adminRouter.delete('/endpoints/', [userAuthMidelware, userAdminMidelware], removeEndpoint)
 
 // Certificates
@@ -139,8 +150,8 @@ adminRouter.post('/certificates/upload/:id', [userAuthMidelware, userAdminMidelw
 
 //Ssh keys
 adminRouter.get('/keys', [userAuthMidelware, userAdminMidelware], allKeys)
-adminRouter.post('/keys/update', [userAuthMidelware, userAdminMidelware], updateKey)
-adminRouter.post('/keys/create', [userAuthMidelware, userAdminMidelware], newKey)
+adminRouter.put('/keys/', [userAuthMidelware, userAdminMidelware], updateKey)
+adminRouter.post('/keys/', [userAuthMidelware, userAdminMidelware], newKey)
 adminRouter.delete('/keys/', [userAuthMidelware, userAdminMidelware], removeKey)
 adminRouter.post('/keys/upload/:id', [userAuthMidelware, userAdminMidelware], uploadKey)
 
@@ -156,7 +167,7 @@ adminRouter.delete('/labels/:name', [userAuthMidelware, userAdminMidelware], del
 //RoleLabel
 adminRouter.get('/users/labels', [userAuthMidelware,userAdminMidelware], getAllRolesLabels)
 adminRouter.get('/users/labels/:label', [userAuthMidelware,roleAccessLabelMidelware], getLabelRoles)
-adminRouter.get('/users/:name/role/:role_name/labels', [userAuthMidelware], getRoleLabels)
+adminRouter.get('/users/:name/roles/:role_name/labels', [userAuthMidelware], getRoleLabels)
 adminRouter.post('/users/:name/labels/:name', [userAuthMidelware, userAdminMidelware], createRoleLabel)
 adminRouter.delete('/users/:name/labels/:name', [userAuthMidelware, userAdminMidelware], deleteRoleLabel)
 
@@ -167,5 +178,15 @@ adminRouter.get('/studies/orthanc/:id/labels',[userAuthMidelware,userAdminMidelw
 adminRouter.get('/studies/:uid/labels/', [userAuthMidelware,userAdminMidelware], getStudyLabels)
 adminRouter.post('/patient/:id/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], createStudyLabel)
 adminRouter.delete('/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], deleteStudyLabel)
+
+/*
+**AUTO ROUTING
+*/
+adminRouter.get('/autorouting',[userAuthMidelware, autoroutingMidelware],getAutorouters)
+adminRouter.get('/autorouting/:id',[userAuthMidelware, autoroutingMidelware],getAutorouterById)
+adminRouter.post('/autorouting/:name',[userAuthMidelware, autoroutingMidelware],createAutorouter)
+adminRouter.put('/autorouting/:id',[userAuthMidelware, autoroutingMidelware],modifyAutorouter)
+adminRouter.put('/autorouting/:id/running',[userAuthMidelware, autoroutingMidelware],switchOnOff)
+adminRouter.delete('/autorouting/:id',[userAuthMidelware, autoroutingMidelware],deleteAutorouter)
 
 module.exports = adminRouter

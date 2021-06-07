@@ -34,7 +34,7 @@ const sshKeys = {
       pass: pass
     }
 
-    return fetch('api/keys/create', {
+    return fetch('api/keys/', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

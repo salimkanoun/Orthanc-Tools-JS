@@ -7,7 +7,7 @@ import BurnerOptions from './CDBurner/BurnerOptions'
 import EndpointsRootPanel from './Endpoints/EndpointsRootPanel'
 import GeneralRoot from './General/GeneralRoot'
 import TaskRootPanel from './Robots/TaskRootPanel'
-import LabelRootPanel from "./Labels/LabelRootPanel";
+import LabelRootPanel from "./Labels/LabelRootPanel"
 
 /**
  * Root Panel of Admin route
