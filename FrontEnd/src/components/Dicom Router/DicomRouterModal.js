@@ -66,9 +66,9 @@ class DicomRouterModal extends Component {
     }
     else{
       if(this.state.id){
-        await apis.autorouter.modifyAutorouter(this.state.id,this.state.name,this.state.rules,this.state.destination)
+        await apis.autorouting.modifyAutorouter(this.state.id,this.state.name,this.state.rules,this.state.destination)
       }else{
-        await apis.autorouter.createAutorouter(this.state.name,this.state.rules,this.state.destination)
+        await apis.autorouting.createAutorouter(this.state.name,this.state.rules,this.state.destination)
       }
       this.props.refresh()
       this.props.close()

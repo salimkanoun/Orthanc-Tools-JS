@@ -76,7 +76,7 @@ class DicomRouterTable extends Component {
    * @param {boolean} running current value of the switch
    */
   handleSwitch= async (id,running) => {
-    await apis.autorouter.switchOnOff(id,!running)
+    await apis.autorouting.switchOnOff(id,!running)
     await this.props.refresh()
   }
 
@@ -105,7 +105,7 @@ class DicomRouterTable extends Component {
    * Remove the router after deleting was confirmed on the opened modal dialog
    */
   removeRouter = async () => {
-    await apis.autorouter.deleteAutorouter(this.state.id_delete)
+    await apis.autorouting.deleteAutorouter(this.state.id_delete)
     this.onHide()
     this.props.refresh()
   }
