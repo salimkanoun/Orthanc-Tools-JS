@@ -95,6 +95,7 @@ describe('Test Label Table', function () {
             */
             await StudyLabel.create('test2', 'label test','a','a','a')
             var study_label = await StudyLabel.getStudyLabel('test2', 'label test',)
+            
             expect(study_label).not.toBeNull()
             expect(study_label.study_instance_uid).toBe('test2')
             expect(study_label.label_name).toBe('label test')

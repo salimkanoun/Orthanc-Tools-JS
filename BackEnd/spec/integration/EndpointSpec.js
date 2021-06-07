@@ -18,13 +18,13 @@ describe("Testing Endpoint Table", () => {
     describe('saveEndpoint(id, label, host, targetFolder, protocol, port, identifiants, pass, digest, sshKey, ssl)', function () {
         it('should create an entity', async function () {
             let count = await Endpoint.getAllEndpoints().then(m => m.length);
-            let res = await Endpoint.saveEndpoint(null, 'label', 'host', 'targetFolder', 'protocol', 'port', 'identifiants', true, true, sshKey.id, true);
+            let res = await Endpoint.saveEndpoint(null, 'label', 'host', 'targetFolder', 'protocol', 1664 , 'identifiants', true, true, sshKey.id, true);
             expect(res).toEqual(joc({
                 label: 'label',
                 host: 'host',
                 targetFolder: 'targetFolder',
                 protocol: 'protocol',
-                port: 'port',
+                port: 1664,
                 identifiants: 'identifiants',
                 pass: true,
                 digest: true,
@@ -37,13 +37,13 @@ describe("Testing Endpoint Table", () => {
 
         it('should create an entity', async function () {
             let count = await Endpoint.getAllEndpoints().then(m => m.length);
-            let res = await Endpoint.saveEndpoint(null, 'label', 'host', 'targetFolder', 'protocol', 'port', 'identifiants', true, true, null, true);
+            let res = await Endpoint.saveEndpoint(null, 'label', 'host', 'targetFolder', 'protocol', 1664, 'identifiants', true, true, null, true);
             expect(res).toEqual(joc({
                 label: 'label',
                 host: 'host',
                 targetFolder: 'targetFolder',
                 protocol: 'protocol',
-                port: 'port',
+                port: 1664,
                 identifiants: 'identifiants',
                 pass: true,
                 digest: true,
@@ -55,15 +55,15 @@ describe("Testing Endpoint Table", () => {
         });
 
         it('should update the entity', async function () {
-            let initial = await Endpoint.saveEndpoint(null, 'label', 'host', 'targetFolder', 'protocol', 'port', 'identifiants', true, true, sshKey.id, true);
+            let initial = await Endpoint.saveEndpoint(null, 'label', 'host', 'targetFolder', 'protocol', 1664, 'identifiants', true, true, sshKey.id, true);
             let count = await Endpoint.getAllEndpoints().then(m => m.length);
-            let res = await Endpoint.saveEndpoint(initial.id, 'label2', null, 'targetFolderChanged', 'protocol', 'port', 'identifiants', true, false, sshKey.id, true);
+            let res = await Endpoint.saveEndpoint(initial.id, 'label2', null, 'targetFolderChanged', 'protocol', 0666, 'identifiants', true, false, sshKey.id, true);
             expect(res).toEqual(joc({
                 label: 'label2',
                 host: 'host',
                 targetFolder: 'targetFolderChanged',
                 protocol: 'protocol',
-                port: 'port',
+                port: 0666,
                 identifiants: 'identifiants',
                 pass: true,
                 digest: false,
@@ -74,15 +74,15 @@ describe("Testing Endpoint Table", () => {
         });
 
         it('should update the entity', async function () {
-            let initial = await Endpoint.saveEndpoint(null, 'label', 'host', 'targetFolder', 'protocol', 'port', 'identifiants', true, true, sshKey.id, true);
+            let initial = await Endpoint.saveEndpoint(null, 'label', 'host', 'targetFolder', 'protocol', 1664, 'identifiants', true, true, sshKey.id, true);
             let count = await Endpoint.getAllEndpoints().then(m => m.length);
-            let res = await Endpoint.saveEndpoint(initial.id, 'label2', null, 'targetFolderChanged', 'protocol', 'port', 'identifiants', true, false, null, null);
+            let res = await Endpoint.saveEndpoint(initial.id, 'label2', null, 'targetFolderChanged', 'protocol', 1665, 'identifiants', true, false, null, null);
             expect(res).toEqual(joc({
                 label: 'label2',
                 host: 'host',
                 targetFolder: 'targetFolderChanged',
                 protocol: 'protocol',
-                port: 'port',
+                port: 1665,
                 identifiants: 'identifiants',
                 pass: true,
                 digest: false,
@@ -92,21 +92,21 @@ describe("Testing Endpoint Table", () => {
             expect(await Endpoint.getAllEndpoints().then(m => m.length)).toEqual(count, "Expected count to stay the same");
         });
 
-        it('should throw an error', async function () {
+        it('should throw an error 1', async function () {
             let count = await Endpoint.getAllEndpoints().then(m => m.length);
             try {
-                let res = await Endpoint.saveEndpoint(3000, 'label2', null, 'targetFolderChanged', 'protocol', 'port', 'identifiants', true, false, sshKey.id, true);
+                let res = await Endpoint.saveEndpoint(3000, 'label2', null, 'targetFolderChanged', 'protocol', 1664, 'identifiants', true, false, sshKey.id, true);
                 expect(false).toBe(true, "expected an exception");
             } catch (e) {
-                expect(e).toEqual(new OTJSDBEntityNotFoundException());
+                expect(e).toBeInstanceOf(OTJSDBEntityNotFoundException);
             }
             expect(await Endpoint.getAllEndpoints().then(m => m.length)).toEqual(count, "Expected count to stay the same");
         });
 
-        it('should throw an error', async function () {
+        it('should throw an error 2', async function () {
             let count = await Endpoint.getAllEndpoints().then(m => m.length);
             try {
-                let res = await Endpoint.saveEndpoint(null, 'label2', null, 'targetFolderChanged', 'protocol', 'port', 'identifiants', true, false, -9, true);
+                let res = await Endpoint.saveEndpoint(null, 'label2', null, 'targetFolderChanged', 'protocol', 1664, 'identifiants', true, false, -9, true);
                 expect(false).toBe(true, "expected an exception");
             } catch (e) {
                 expect(e).toBeInstanceOf(OTJSDBEntityNotFoundException);
@@ -118,7 +118,7 @@ describe("Testing Endpoint Table", () => {
     describe('getFromId(id)', function () {
 
         it('should find the right object', async function () {
-            let init = await Endpoint.saveEndpoint(null, 'label', 'host', 'targetFolder', 'protocol', 'port', 'identifiants', true, true, null, true);
+            let init = await Endpoint.saveEndpoint(null, 'label', 'host', 'targetFolder', 'protocol', 1664, 'identifiants', true, true, null, true);
             let res = await Endpoint.getFromId(init.id);
             expect(res).toEqual(joc({
                 id: init.id,
@@ -126,7 +126,7 @@ describe("Testing Endpoint Table", () => {
                 host: 'host',
                 targetFolder: 'targetFolder',
                 protocol: 'protocol',
-                port: 'port',
+                port: 1664,
                 identifiants: 'identifiants',
                 pass: true,
                 digest: true,
@@ -143,9 +143,9 @@ describe("Testing Endpoint Table", () => {
 
     describe('getAll()', function () {
         it('should return a list of all keys', async function () {
-            await Endpoint.saveEndpoint(null, 'label1', 'host', 'targetFolder', 'protocol', 'port', 'identifiants', true, true, null, true);
-            await Endpoint.saveEndpoint(null, 'label2', 'host', 'targetFolder', 'protocol', 'port', 'identifiants', true, true, null, true);
-            await Endpoint.saveEndpoint(null, 'label3', 'host', 'targetFolder', 'protocol', 'port', 'identifiants', true, true, null, true);
+            await Endpoint.saveEndpoint(null, 'label1', 'host', 'targetFolder', 'protocol', 1664, 'identifiants', true, true, null, true);
+            await Endpoint.saveEndpoint(null, 'label2', 'host', 'targetFolder', 'protocol', 1665, 'identifiants', true, true, null, true);
+            await Endpoint.saveEndpoint(null, 'label3', 'host', 'targetFolder', 'protocol', 1666, 'identifiants', true, true, null, true);
 
             let res = await Endpoint.getAllEndpoints();
             expect(res).toEqual([
@@ -163,7 +163,7 @@ describe("Testing Endpoint Table", () => {
 
     describe('delete(id)', function () {
         it('should remove the key from the table', async function () {
-            let e = await Endpoint.saveEndpoint(null, 'label1', 'host', 'targetFolder', 'protocol', 'port', 'identifiants', true, true, null, true);
+            let e = await Endpoint.saveEndpoint(null, 'label1', 'host', 'targetFolder', 'protocol', 1664, 'identifiants', true, true, null, true);
             await Endpoint.removeEndpoint(e.id);
             expect(await Endpoint.getAllEndpoints()).toEqual([]);
         });
