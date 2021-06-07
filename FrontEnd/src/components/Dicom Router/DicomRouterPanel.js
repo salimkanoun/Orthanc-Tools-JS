@@ -35,7 +35,7 @@ class DicomRouterPanel extends Component {
    * They get sorted by old to recent
    */
   refreshData = async () => {
-    let routers = await apis.autorouter.getAutorouters()
+    let routers = await apis.autorouting.getAutorouters()
     routers = await routers.sort(this._compareRouters)
     this.setState({
       routers:routers,

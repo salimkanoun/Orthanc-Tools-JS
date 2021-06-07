@@ -31,7 +31,7 @@ const {
 
 const {userAuthMidelware, userAdminMidelware, roleAccessLabelMidelware, autoroutingMidelware} = require('../midelwares/authentication')
 
-const {updateEndpoint, newEndpoint, removeEndpoint} = require('../controllers/endpoints')
+const {allEndpoints, updateEndpoint, newEndpoint, removeEndpoint} = require('../controllers/endpoints')
 const {newCertificate, allCertificates, removeCertificate, uploadCertificate} = require('../controllers/certificates')
 const {newKey, allKeys, updateKey, removeKey, uploadKey} = require('../controllers/sshKey')
 const {getTasksOfType, validateRetrieve, flushTasks} = require('../controllers/task')

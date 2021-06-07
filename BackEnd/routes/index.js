@@ -5,11 +5,11 @@ require('express-async-errors')
 
 const { getParsedAnswer, postRetrieve } = require('../controllers/queryRetrieve')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyDelete } = require('../controllers/reverseProxy')
-const { startBurner, getBurner, stopBurner, cancelJobBurner } = require('../controllers/monitoring')
+const { startBurner, getBurner, stopBurner, cancelJobBurner, startAutorouter,stopAutorouter,getAutorouter } = require('../controllers/monitoring')
 
 const { importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
         exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, 
-        modifyMidelware,cdBurnerMidelware, isCurrentUserOrAdminMidelWare, userAuthMidelware, userAdminMidelware, ownTaskOrIsAdminMidelware } = require('../midelwares/authentication')
+        modifyMidelware,cdBurnerMidelware, isCurrentUserOrAdminMidelWare, userAuthMidelware, userAdminMidelware, ownTaskOrIsAdminMidelware, autoroutingMidelware} = require('../midelwares/authentication')
 
 const { checkForOrthancQueueReady, getTask, getTasks, getTasksIds, getTaskWithUser, getTasksOfType, deleteTask, deleteTaskOfUser, addAnonTask, addDeleteTask, addRetrieveTask, deleteRetrieveItem, addExportTask } = require('../controllers/task')
 
@@ -67,10 +67,15 @@ router.delete('/studies/*', [userAuthMidelware, deleteMidelware], reverseProxyDe
 router.delete('/series/*', [userAuthMidelware, deleteMidelware], reverseProxyDelete)
 
 //Monitoring
+//cdBurner
 router.post('/monitoring/burner', [userAuthMidelware,cdBurnerMidelware], startBurner)
 router.delete('/monitoring/burner', [userAuthMidelware,cdBurnerMidelware], stopBurner)
 router.get('/monitoring/burner', [userAuthMidelware,cdBurnerMidelware], getBurner)
 router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', [userAuthMidelware,cdBurnerMidelware], cancelJobBurner)
+//Autorouter
+router.get('/monitoring/autorouter',[userAuthMidelware, autoroutingMidelware],startAutorouter)
+router.post('/monitoring/autorouter',[userAuthMidelware, autoroutingMidelware],stopAutorouter)
+router.delete('/monitoring/autorouter',[userAuthMidelware, autoroutingMidelware],getAutorouter)
 
 //Server Time
 router.get('/tools/time', userAuthMidelware, (req, res)=>{
