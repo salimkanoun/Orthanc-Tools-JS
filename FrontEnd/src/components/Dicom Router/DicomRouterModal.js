@@ -188,9 +188,6 @@ class DicomRouterModal extends Component {
    * Function to close the modal and reset all the state parameters (name, rules, destination)
    */
   onHide = () => {
-    this.setState({
-      data_load:false
-    })
     this.props.close()
     this.resetOnClose()
   }
@@ -208,7 +205,7 @@ class DicomRouterModal extends Component {
       centered
     >
       <Modal.Header closeButton>
-        <h3>Modify an autorouter</h3>
+        <h3>{this.state.id ? 'Modify an autorouter' : 'Create an autorouter'}</h3>
       </Modal.Header>
 
       <Modal.Body>
