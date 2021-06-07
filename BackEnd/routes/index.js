@@ -5,7 +5,7 @@ require('express-async-errors')
 
 const { getParsedAnswer, postRetrieve } = require('../controllers/queryRetrieve')
 const { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyDelete } = require('../controllers/reverseProxy')
-const { startBurner, getBurner, stopBurner, cancelJobBurner, startAutorouter,stopAutorouter,getAutorouter } = require('../controllers/monitoring')
+const { startBurner, getBurner, stopBurner, cancelJobBurner, startAutorouter,stopAutorouter, getAutorouter } = require('../controllers/monitoring')
 
 const { importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
         exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, 
@@ -73,9 +73,9 @@ router.delete('/monitoring/burner', [userAuthMidelware,cdBurnerMidelware], stopB
 router.get('/monitoring/burner', [userAuthMidelware,cdBurnerMidelware], getBurner)
 router.post('/monitoring/burner/jobs/:jobBurnerId/cancel', [userAuthMidelware,cdBurnerMidelware], cancelJobBurner)
 //Autorouter
-router.get('/monitoring/autorouter',[userAuthMidelware, autoroutingMidelware],startAutorouter)
-router.post('/monitoring/autorouter',[userAuthMidelware, autoroutingMidelware],stopAutorouter)
-router.delete('/monitoring/autorouter',[userAuthMidelware, autoroutingMidelware],getAutorouter)
+router.get('/monitoring/autorouter',[userAuthMidelware, autoroutingMidelware],getAutorouter)
+router.post('/monitoring/autorouter',[userAuthMidelware, autoroutingMidelware],startAutorouter)
+router.delete('/monitoring/autorouter',[userAuthMidelware, autoroutingMidelware],stopAutorouter)
 
 //Server Time
 router.get('/tools/time', userAuthMidelware, (req, res)=>{

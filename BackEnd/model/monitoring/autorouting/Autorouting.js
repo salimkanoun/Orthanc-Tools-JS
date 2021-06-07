@@ -22,8 +22,8 @@ class Autorouting {
     this.autorouters = []
     //put on variable all autorouters that are enabled
     let autorouter = await Autorouter.getAllAutorouters()
-    for(var i = 0 ; i < autorouter.lentgh ; i++){
-      if(autorouter[i].running==true){
+    for(var i = 0 ; i < autorouter.length ; i++){
+      if(autorouter[i].dataValues.running===true){
         this.autorouters.push(autorouter[i])
       }
     }

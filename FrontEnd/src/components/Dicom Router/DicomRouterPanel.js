@@ -63,10 +63,16 @@ class DicomRouterPanel extends Component {
     this.setState({modify:{id:null,rules:[],destination:[],name:""},showModal:false})
   }
 
+  handleAutorouterService = async () => {
+    let autorouter = await apis.autorouter.getAutorouter()
+    console.log(autorouter)
+  }
+
   render (){
     return(
       <div className='jumbotron'>
-        <h2>Dicom Router</h2> <i>(to apply changes to routing system, restart the server)</i> 
+        <h2>Dicom Router</h2> 
+        <Button className='btn btn-primary' onClick={()=>{this.handleAutorouterService()}}>Test get autorouter</Button>
         <Button className='btn btn-warning float-right' onClick={() => this.handleOpenModal()}>Create Router</Button>
         <DicomRouterTable data={this.state.routers} refresh={() => this.refreshData()} modify={this.handleOpenModal}/>
         <ModifyDicomRouterModal data={this.state.modify} showModal={this.state.showModal} close={()=> this.handleCloseModal()} refresh={() => this.refreshData()}/>
