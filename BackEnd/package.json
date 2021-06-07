@@ -50,7 +50,6 @@
     "redis-parser": "^3.0.0",
     "sequelize": "^6.6.2",
     "sequelize-cli": "^6.2.0",
-    "sqlite3": "^5.0.2",
     "ssh2-sftp-client": "^6.0.1",
     "tmp-promise": "^3.0.2",
     "uuid": "^8.3.2",
