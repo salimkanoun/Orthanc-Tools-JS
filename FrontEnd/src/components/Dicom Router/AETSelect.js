@@ -1,6 +1,6 @@
 import Select from 'react-select';
 import {Component} from 'react';
-import apis from "../../../services/apis";
+import apis from "../../services/apis";
 
 /**
  * To use it to edit AETs choice, pass an Array of AETs Name through the props named 'aets'

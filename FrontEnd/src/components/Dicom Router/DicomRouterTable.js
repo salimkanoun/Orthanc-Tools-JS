@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Button,Modal} from 'react-bootstrap'
-import apis from "../../../services/apis";
-import Table from '../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable'
+import apis from "../../services/apis";
+import Table from '../CommonComponents/RessourcesDisplay/ReactTable/CommonTable'
 import Toggle from 'react-toggle'
 
 class DicomRouterTable extends Component {
@@ -58,11 +58,11 @@ class DicomRouterTable extends Component {
     },
     {
       Header :'',
-      accessor:'modify and delte',
+      accessor:'modify and delete',
       Cell:(row)=>{
         return(
-          <span>
-          <Button className='btn btn-primary mr-1' onClick={()=>{console.log('modify')}}>Modify</Button>
+        <span>
+          <Button className='btn btn-primary mr-1' onClick={()=>{this.props.modify(row.row.values)}}>Modify</Button>
           <Button className='btn btn-danger' onClick={()=>{this.showDeleteConfirmation(row.row.values.id)}}>Delete</Button>
         </span>
         )
@@ -70,11 +70,20 @@ class DicomRouterTable extends Component {
     }
   ]
 
+  /**
+   * Switch ON/OFF the running button by updating the database
+   * @param {number} id id of the autorouter to switch
+   * @param {boolean} running current value of the switch
+   */
   handleSwitch= async (id,running) => {
     await apis.autorouter.switchOnOff(id,!running)
     await this.props.refresh()
   }
 
+  /**
+   * Show the modal dialog that confirm the delete process
+   * @param {number} id id of the autorouter to delete
+   */
   showDeleteConfirmation = (id) => {
     this.setState({
       delete:true,
@@ -82,6 +91,9 @@ class DicomRouterTable extends Component {
     })
   }
 
+  /**
+   * Close the modal dialog made for deleting
+   */
   onHide = () => {
     this.setState({
       delete:false,
@@ -89,11 +101,14 @@ class DicomRouterTable extends Component {
     })
   }
 
-   removeRouter = async () => {
+  /**
+   * Remove the router after deleting was confirmed on the opened modal dialog
+   */
+  removeRouter = async () => {
     await apis.autorouter.deleteAutorouter(this.state.id_delete)
     this.onHide()
     this.props.refresh()
-   }
+  }
 
   render = () => {
     return(<>

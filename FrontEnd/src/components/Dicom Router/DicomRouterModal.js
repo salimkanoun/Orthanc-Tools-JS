@@ -1,21 +1,57 @@
 import React, {Component} from "react";
-import apis from "../../../services/apis";
+import apis from "../../services/apis";
 import {Modal,Button} from "react-bootstrap";
 import { toast } from 'react-toastify'
 import AETSelect from './AETSelect'
 import RuleRow from './RuleRow'
 
-class CreateDicomRouterModal extends Component {
+class DicomRouterModal extends Component {
 
   state={
-    name:"",
-    rules:[],
-    destination:[],
-    ruleList:[]
+    id:this.props.data.id,
+    name:this.props.data.name,
+    rules:this.props.data.rules,
+    destination:this.props.data.destination,
+    ruleList:[],
+    data_load:false
   }
   
   componentDidMount = () => {
     this.handleAddRule()
+  }
+
+  componentDidUpdate = async () => {
+    await this.updateData()
+  }
+
+  /**
+   * Update from props and add RuleRow for each Rule
+   */
+  updateData = async () => {
+    if(this.state.name==="" && this.props.data.name!=="" && this.state.data_load===false){
+      await this.setState({
+        id:this.props.data.id,
+        name:this.props.data.name,
+        rules:this.props.data.rules,
+        destination:this.props.data.destination,
+        ruleList:[],
+        data_load:true
+      })
+      this.updateRuleList()
+    }
+  }
+
+  /**
+   * Create a RuleRow for each rule
+   */
+  updateRuleList = () => {
+    let rules = this.state.rules
+    for(var i = 0;i<rules.length;i++){
+      let ruleList = this.state.ruleList
+      this.setState({
+        ruleList:ruleList.concat(<RuleRow key={rules[i].id} id={rules[i].id} delete={this.onDeleteRule} refresh={this.refreshRules} rule={rules[i]}/>)
+      })
+    }
   }
 
   /**
@@ -29,7 +65,11 @@ class CreateDicomRouterModal extends Component {
       toast.error('Invalid rule, arguments missing')
     }
     else{
-      await apis.autorouter.createAutorouter(this.state.name,this.state.rules,this.state.destination)
+      if(this.state.id){
+        await apis.autorouter.modifyAutorouter(this.state.id,this.state.name,this.state.rules,this.state.destination)
+      }else{
+        await apis.autorouter.createAutorouter(this.state.name,this.state.rules,this.state.destination)
+      }
       this.props.refresh()
       this.props.close()
       this.resetOnClose()
@@ -55,10 +95,12 @@ class CreateDicomRouterModal extends Component {
    */
   resetOnClose= async () => {
     await this.setState({
+      id:null,
       name:"",
       rules:[],
       destination:[],
-      ruleList:[]
+      ruleList:[],
+      data_load:false
     })
 
     this.handleAddRule()
@@ -146,6 +188,9 @@ class CreateDicomRouterModal extends Component {
    * Function to close the modal and reset all the state parameters (name, rules, destination)
    */
   onHide = () => {
+    this.setState({
+      data_load:false
+    })
     this.props.close()
     this.resetOnClose()
   }
@@ -163,7 +208,7 @@ class CreateDicomRouterModal extends Component {
       centered
     >
       <Modal.Header closeButton>
-        <h3>Create an autorouter</h3>
+        <h3>Modify an autorouter</h3>
       </Modal.Header>
 
       <Modal.Body>
@@ -180,7 +225,7 @@ class CreateDicomRouterModal extends Component {
 
         <div>
           <h5>Destination</h5>
-          <AETSelect refresh={this.refreshDestination}/>
+          <AETSelect refresh={this.refreshDestination} aets={this.state.destination}/>
         </div>
       </Modal.Body>
 
@@ -189,7 +234,7 @@ class CreateDicomRouterModal extends Component {
           Cancel
         </Button>
         <Button className="btn btn-success" onClick={() => this.handleSave()}>
-          Save Changes
+          {this.state.id ? 'Save changes' : 'Create'}
         </Button>
       </Modal.Footer>
 
@@ -198,4 +243,4 @@ class CreateDicomRouterModal extends Component {
   }
 }
 
-export default CreateDicomRouterModal
+export default DicomRouterModal

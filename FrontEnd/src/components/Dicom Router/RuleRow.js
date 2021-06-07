@@ -3,11 +3,33 @@ import Select from 'react-select'
 import {Button} from 'react-bootstrap'
 
 class RuleRow extends Component{
+
   state={
     value:"",
     operator:"",
     target:""
   }
+
+  /**
+   * Check if data propertie is pass when creating the row
+   */
+  componentDidMount = () => {
+    if(this.props.rule){
+      this.setState({
+        value:this.props.rule.value,
+        operator:{value:this.props.rule.operator,label:this.props.rule.operator},
+        target:{value:this.props.rule.target,label:this.props.rule.target}
+      })
+    }
+    else{
+      this.setState({
+        value:"",
+        operator:"",
+        target:""
+      })
+    }
+  }
+
 
   operators = [
     {value:"==",label:"=="},
@@ -26,6 +48,10 @@ class RuleRow extends Component{
     {value:"StudyTime",label:"StudyTime"},
   ]
 
+  /**
+   * generate from the state a rule with the format for the database
+   * @returns {JSON} rule with the format of the database
+   */
   generateRule = () => {
     if(!this.state.operator || !this.operators.includes(this.state.operator)){
       throw new Error('Missing or incorrect operator!')
@@ -45,6 +71,10 @@ class RuleRow extends Component{
     return rule
   }
 
+  /**
+   * Change the state of the value when the field is modified
+   * @param {*} e event to check
+   */
   handleChangeValue = async (e) => {
     await this.setState({
       value:e.target.value
@@ -52,6 +82,10 @@ class RuleRow extends Component{
     this.refreshRule()
   }
 
+  /**
+   * Change the state of the operator when an other one is selected
+   * @param {*} e event to check
+   */
   handleChangeOperator = async (e) => {
     await this.setState({
       operator:e
@@ -59,6 +93,10 @@ class RuleRow extends Component{
     this.refreshRule()
   }
 
+  /**
+   * Change the state of the target when an other one is selected
+   * @param {*} e 
+   */
   handleChangeTarget = async (e) => {
     await this.setState({
       target:e
@@ -66,6 +104,9 @@ class RuleRow extends Component{
     this.refreshRule()
   }
 
+  /**
+   * Refresh the rule, with a formatted rule, on the parent component
+   */
   refreshRule = async () => {
     try{
       let rule = await this.generateRule()
