@@ -42,4 +42,4 @@ var stopAutorouter = async function(req,res){
     res.status(200)
 }
 
-module.exports = { startBurner, getBurner, stopBurner, cancelJobBurner , startAutorouter, getAutorouter}
+module.exports = { startBurner, getBurner, stopBurner, cancelJobBurner , startAutorouter, getAutorouter, stopAutorouter}
