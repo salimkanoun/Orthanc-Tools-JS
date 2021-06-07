@@ -9,7 +9,6 @@ import EndpointsRootPanel from './Endpoints/EndpointsRootPanel'
 import GeneralRoot from './General/GeneralRoot'
 import TaskRootPanel from './Robots/TaskRootPanel'
 import LabelRootPanel from "./Labels/LabelRootPanel"
-import DicomRouterPanel from './Dicom Router/DicomRouterPanel';
 
 /**
  * Root Panel of Admin route
@@ -46,8 +45,6 @@ const AdminRootPanel = () => {
                 return (<UserManagement/>)
             case 'Labels':
                 return (<LabelRootPanel/>)
-            case 'Dicom Router':
-                return (<DicomRouterPanel/>)
             default:
                 return ([])
         }
@@ -61,7 +58,6 @@ const AdminRootPanel = () => {
                         <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='General'/>
                         <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Users'/>
                         <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Aets'/>
-                        <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Dicom Router'/>
                         <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers'/>
                         <input className='btn btn-link text-left' type='button' onClick={clickHandler}
                                value='External Endpoints'/>
