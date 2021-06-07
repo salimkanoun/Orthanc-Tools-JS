@@ -15,7 +15,7 @@ RUN cd Viewers && yarn install && QUICK_BUILD=true PUBLIC_URL=/viewer-ohif/ yarn
 FROM alpine as stone
 RUN apk --no-cache add wget
 RUN apk add --update zip
-RUN wget https://lsb.orthanc-server.com/stone-webviewer/1.0/wasm-binaries.zip
+RUN wget https://lsb.orthanc-server.com/stone-webviewer/2.0/wasm-binaries.zip
 RUN mkdir /stone
 RUN unzip wasm-binaries.zip -d /stone
 

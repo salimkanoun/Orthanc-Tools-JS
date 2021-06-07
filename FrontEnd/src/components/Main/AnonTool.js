@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 
 import Overlay from 'react-bootstrap/Overlay'
 import Popover from 'react-bootstrap/Popover'
@@ -30,9 +29,6 @@ class AnonTool extends Component {
                 <Popover id="popover-basic" style={{ maxWidth: '100%' }} >
                     <Popover.Title as="h3">Anon List</Popover.Title>
                     <Popover.Content>
-                        <div className="float-left">
-                            <Link className='btn btn-primary' to='/anonymize' onClick={this.props.onHide}>Open Anon Tools</Link>
-                        </div>
                         <div className="float-right mb-3">
                             <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
                         </div>

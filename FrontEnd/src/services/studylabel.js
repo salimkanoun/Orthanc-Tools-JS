@@ -4,7 +4,7 @@ const studylabel = {
       method:'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       }
     }
     return fetch('/api/studies/labels', getStudiesLabelsOptions).then((answer) => {
@@ -20,7 +20,7 @@ const studylabel = {
       method:'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       }
     }
     return fetch('/api/studies/labels/'+name, getStudiesLabelOptions).then((answer) => {
@@ -36,7 +36,7 @@ const studylabel = {
       method:'GET',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       }
     }
     return fetch('/api/studies/'+study_instance_uid+'/labels', getStudyLabelsOptions).then((answer) => {
@@ -47,13 +47,33 @@ const studylabel = {
     })
   },
 
-  createStudyLabel(study_instance_uid,label_name,patient_id){
+  getStudyLabelsByStudyOrthancID(study_orthanc_id){
+    const getStudyLabelsByStudyOrthancIDOptions={
+      method:'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8'
+      }
+    }
+    return fetch('/api/studies/orthanc/'+study_orthanc_id+'/labels', getStudyLabelsByStudyOrthancIDOptions).then((answer) => {
+        if (!answer.ok) { throw answer }
+        return answer.json()
+    }).catch(error => {
+        throw error
+    })
+  },
+
+  createStudyLabel(study_instance_uid,label_name,patient_id,study_orthanc_id,patient_orthanc_id){
     const createStudyLabelOptions={
       method:'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
+      body:JSON.stringify({
+        study_orthanc_id:study_orthanc_id,
+        patient_orthanc_id:patient_orthanc_id
+      })
     }
 
     return fetch('/api/patient/'+patient_id+'/studies/'+study_instance_uid+'/labels/'+label_name, createStudyLabelOptions).then((answer) => {
@@ -68,7 +88,7 @@ const studylabel = {
       method:'DELETE',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
     }
 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 import Overlay from 'react-bootstrap/Overlay'
 import Popover from 'react-bootstrap/Popover'
 
@@ -62,9 +61,6 @@ class ExportTool extends Component {
                     <Popover.Title as='h3'>Export List</Popover.Title>
                     <Popover.Content>
                         <div className="row mb-3">
-                            <div className="col float-left">
-                                <Link className='btn btn-primary float-left' to='/export' onClick={this.props.onHide}>Open Export Tools</Link>
-                            </div>
                             <div className="col float-right">
                                 <button type="button" className="btn btn-warning float-right" onClick={this.handleClickEmpty} >Empty List</button>
                             </div>

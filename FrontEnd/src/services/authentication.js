@@ -5,7 +5,7 @@ const authentication = {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify({
         username: username,
@@ -21,7 +21,7 @@ const authentication = {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
     }).catch((error) => { console.error(error) })
   }
