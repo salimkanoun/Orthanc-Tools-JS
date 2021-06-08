@@ -78,6 +78,7 @@ class DicomRouterTable extends Component {
   handleSwitch= async (id,running) => {
     await apis.autorouting.switchOnOff(id,!running)
     await this.props.refresh()
+    this.props.showMessage()
   }
 
   /**
@@ -108,6 +109,7 @@ class DicomRouterTable extends Component {
     await apis.autorouting.deleteAutorouter(this.state.id_delete)
     this.onHide()
     this.props.refresh()
+    this.props.showMessage()
   }
 
   render = () => {

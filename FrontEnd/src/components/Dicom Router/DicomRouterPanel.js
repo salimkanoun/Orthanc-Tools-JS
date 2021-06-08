@@ -1,11 +1,13 @@
 import React, {Component} from "react";
-import Button from "react-bootstrap/esm/Button";
+import {Button, Alert} from "react-bootstrap/";
+import Toggle from 'react-toggle'
 import apis from "../../services/apis";
 import DicomRouterTable from './DicomRouterTable'
-import ModifyDicomRouterModal from './DicomRouterModal'
+import DicomRouterModal from './DicomRouterModal'
 
 class DicomRouterPanel extends Component {
   state = {
+    message:false,
     routers:[],
     showModal:false,
     showModify:false,
@@ -13,7 +15,8 @@ class DicomRouterPanel extends Component {
   }
   
   componentDidMount= async () => {
-    await this.refreshData()
+    this.refreshData()
+    this.refreshServiceState()
   }
 
   /**
@@ -23,7 +26,7 @@ class DicomRouterPanel extends Component {
    * @returns {number} 1 if A more recent than b, -1 if B more recent thant A
    */
   _compareRouters =  (a,b) => {
-    if(a.id<b.id){
+    if(a.id<b.id){ 
       return -1
     }else{
       return 1
@@ -40,6 +43,13 @@ class DicomRouterPanel extends Component {
     this.setState({
       routers:routers,
       modify:{id:null,rules:[],destination:[],name:""}
+    })
+  }
+
+  refreshServiceState = async () => {
+    let service = await apis.autorouter.getAutorouter()
+    this.setState({
+      service_running:service.AutorouterService
     })
   }
 
@@ -63,19 +73,40 @@ class DicomRouterPanel extends Component {
     this.setState({modify:{id:null,rules:[],destination:[],name:""},showModal:false})
   }
 
-  handleAutorouterService = async () => {
-    let autorouter = await apis.autorouter.getAutorouter()
-    console.log(autorouter)
+  handleAutorouterService = async (e) => {
+    if(e.target.checked){
+      await apis.autorouter.startAutorouterService()
+      console.log('LOG : Start Autorouter')
+      this.setState({message:false})
+    }else{
+      await apis.autorouter.stopAutorouterService()
+      console.log('LOG : Stop Autorouter')
+    }
+
+    this.refreshServiceState()
+  }
+
+  showMessage = () => {
+    if(!this.state.message){
+      this.setState({
+        message:true
+      })
+    }
   }
 
   render (){
     return(
       <div className='jumbotron'>
-        <h2>Dicom Router</h2> 
-        <Button className='btn btn-primary' onClick={()=>{this.handleAutorouterService()}}>Test get autorouter</Button>
+        <div><Alert show={this.state.message} variant='info'>To apply changes on the router restart it</Alert></div>
+
+        <div>
+          <h2>Dicom Router</h2>
+          <Toggle checked={this.state.service_running} onChange={(e) => this.handleAutorouterService(e)} />
+        </div>
+      
         <Button className='btn btn-warning float-right' onClick={() => this.handleOpenModal()}>Create Router</Button>
-        <DicomRouterTable data={this.state.routers} refresh={() => this.refreshData()} modify={this.handleOpenModal}/>
-        <ModifyDicomRouterModal data={this.state.modify} showModal={this.state.showModal} close={()=> this.handleCloseModal()} refresh={() => this.refreshData()}/>
+        <DicomRouterTable data={this.state.routers} refresh={() => this.refreshData()} modify={this.handleOpenModal} showMessage={this.showMessage} />
+        <DicomRouterModal data={this.state.modify} showModal={this.state.showModal} close={()=> this.handleCloseModal()} refresh={() => this.refreshData()} showMessage={this.showMessage}/>
       </div>
     )
   }

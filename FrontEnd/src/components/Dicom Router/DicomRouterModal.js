@@ -73,6 +73,7 @@ class DicomRouterModal extends Component {
       this.props.refresh()
       this.props.close()
       this.resetOnClose()
+      this.props.showMessage()
     }
   }
 
