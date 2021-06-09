@@ -29,7 +29,6 @@ var startAutorouter = async function (req,res){
     let autorouterInstance = await AutoroutingFactory.getInstance()
     await autorouterInstance.startAutorouting()
     res.sendStatus(200)
-    console.log(res)
 }
 
 var getAutorouter = async function (req,res){
@@ -40,7 +39,6 @@ var getAutorouter = async function (req,res){
 var stopAutorouter = async function(req,res){
     let autorouterInstance = await AutoroutingFactory.getInstance()
     await autorouterInstance.stopAutorouting()
-    console.log(res)
     res.sendStatus(200)
 }
 
