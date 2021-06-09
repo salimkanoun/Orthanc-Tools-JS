@@ -21,6 +21,10 @@ class DicomRouterTable extends Component {
       accessor : 'name',
     },
     {
+      Header:'Condition',
+      accessor:'condition',
+    },
+    {
       Header: 'Rules',
       accessor:'rules',
       Cell: (row) => {

@@ -7,7 +7,7 @@ class RuleRow extends Component{
   state={
     value:"",
     operator:"",
-    target:""
+    target:"",
   }
 
   /**
@@ -18,23 +18,36 @@ class RuleRow extends Component{
       this.setState({
         value:this.props.rule.value,
         operator:{value:this.props.rule.operator,label:this.props.rule.operator},
-        target:{value:this.props.rule.target,label:this.props.rule.target}
+        target:{value:this.props.rule.target,label:this.props.rule.target},
+        operators:this.classic_operators,
       })
+      if(this.props.rule.target==="StudyDate"){
+        this.setState({
+          operators:this.date_operators,
+        })
+      }
     }
     else{
       this.setState({
         value:"",
         operator:"",
-        target:""
+        target:"",
+        operators:this.classic_operators,
       })
     }
   }
 
 
-  operators = [
+  classic_operators = [
     {value:"==",label:"=="},
     {value:"IN",label:"IN"}
   ]
+
+  date_operators = [
+    {value:">",label:">"},
+    {value:"<",label:"<"}
+  ]
+
 
   targets = [
     {value:"AccessionNumber",label:"AccessionNumber"},
@@ -43,9 +56,6 @@ class RuleRow extends Component{
     {value:"RequestedProcedureDescription",label:"RequestedProcedureDescription"},
     {value:"StudyDate",label:"StudyDate"},
     {value:"StudyDescription",label:"StudyDescription"},
-    {value:"StudyID",label:"StudyID"},
-    {value:"StudyInstanceUID",label:"StudyInstanceUID"},
-    {value:"StudyTime",label:"StudyTime"},
   ]
 
   /**
@@ -53,7 +63,7 @@ class RuleRow extends Component{
    * @returns {JSON} rule with the format of the database
    */
   generateRule = () => {
-    if(!this.state.operator || !this.operators.includes(this.state.operator)){
+    if(!this.state.operator || !this.state.operators.includes(this.state.operator)){
       throw new Error('Missing or incorrect operator!')
     }
     if(!this.state.target || !this.targets.includes(this.state.target)){
@@ -98,6 +108,21 @@ class RuleRow extends Component{
    * @param {*} e 
    */
   handleChangeTarget = async (e) => {
+    if(e.value==="StudyDate" && this.state.target.value!=="StudyDate"){
+      this.setState({
+        value:"",
+        operator:"",
+        operators:this.date_operators
+      })
+    }else{
+      if(this.state.target.value==="StudyDate"){
+        this.setState({
+          value:"",
+          operator:"",
+          operators:this.classic_operators
+        })
+      }
+    }
     await this.setState({
       target:e
     })
@@ -118,13 +143,16 @@ class RuleRow extends Component{
     return(
       <div className='row mb-1'>
         <div className='col'>
-          <input type='text' name='value' className='form-control' value={this.state.value} onChange={(e) => this.handleChangeValue(e)} />
+          {this.state.target.value==="StudyDate" ? 
+            <input type='date' name='value' className='form-control' placeholder='Date To' onChange={(e)=>{this.handleChangeValue(e)}} value={this.state.value}/> :
+            <input type='text' name='value' className='form-control' value={this.state.value} onChange={(e) => this.handleChangeValue(e)} />}
+          
         </div>
         <div className='col'>
           <Select
             name='operator'
             closeMenuOnSelect={true}
-            options={this.operators}
+            options={this.state.operators}
             onChange={(e) => this.handleChangeOperator(e)}
             value={this.state.operator}
           />

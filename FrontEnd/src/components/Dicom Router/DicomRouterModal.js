@@ -4,12 +4,14 @@ import {Modal,Button} from "react-bootstrap";
 import { toast } from 'react-toastify'
 import AETSelect from './AETSelect'
 import RuleRow from './RuleRow'
+import Select from 'react-select'
 
 class DicomRouterModal extends Component {
 
   state={
     id:this.props.data.id,
     name:this.props.data.name,
+    condition:this.props.data.condition,
     rules:this.props.data.rules,
     destination:this.props.data.destination,
     ruleList:[],
@@ -17,6 +19,23 @@ class DicomRouterModal extends Component {
   }
   
   componentDidMount = () => {
+    switch(this.props.data.condition){
+      case "OR":
+        this.setState({
+          condition_selected:{value:"OR",label:"OR (check one rule)"},
+        })
+        break
+      case "AND":
+        this.setState({
+          condition_selected:{value:"AND",label:"AND (check all rules)"}
+        })
+        break
+      default:
+        this.setState({
+          condition_selected:""
+        })
+        break
+    }
     this.handleAddRule()
   }
 
@@ -32,11 +51,29 @@ class DicomRouterModal extends Component {
       await this.setState({
         id:this.props.data.id,
         name:this.props.data.name,
+        condition:this.props.data.condition,
         rules:this.props.data.rules,
         destination:this.props.data.destination,
         ruleList:[],
         data_load:true
       })
+      switch(this.props.data.condition){
+        case "OR":
+          this.setState({
+            condition_selected:{value:"OR",label:"OR (check one rule)"},
+          })
+          break
+        case "AND":
+          this.setState({
+            condition_selected:{value:"AND",label:"AND (check all rules)"}
+          })
+          break
+        default:
+          this.setState({
+            condition_selected:""
+          })
+          break
+      }
       this.updateRuleList()
     }
   }
@@ -58,17 +95,16 @@ class DicomRouterModal extends Component {
    * Saving the current Dicom router if all state parameters are correct
    */
   handleSave= async () => {
-    //console.log(this.state)
-    if(this.state.name==="" || this.state.rules.length===0 || this.state.destination.length===0){
+    if(this.state.name==="" || this.state.rules.length===0 || this.state.destination.length===0 || this.state.condition===""){
       toast.error('Arguments missing to create a router')
     }else if(this.state.rules.length!==this.state.ruleList.length){
       toast.error('Invalid rule, arguments missing')
     }
     else{
       if(this.state.id){
-        await apis.autorouting.modifyAutorouter(this.state.id,this.state.name,this.state.rules,this.state.destination)
+        await apis.autorouting.modifyAutorouter(this.state.id,this.state.name,this.state.condition,this.state.rules,this.state.destination)
       }else{
-        await apis.autorouting.createAutorouter(this.state.name,this.state.rules,this.state.destination)
+        await apis.autorouting.createAutorouter(this.state.name,this.state.condition,this.state.rules,this.state.destination)
       }
       this.props.refresh()
       this.props.close()
@@ -91,6 +127,18 @@ class DicomRouterModal extends Component {
     })
   }
 
+  handleChangeCondition = (e) => {
+    this.setState({
+      condition:e.value,
+      condition_selected:e
+    })
+  }
+
+  condition = [ 
+    {value:"OR",label:"OR (check one rule)"},
+    {value:"AND",label:"AND (check all rules)"}
+  ]
+
   /**
    * Reset the modal state and component with empty components
    */
@@ -98,6 +146,8 @@ class DicomRouterModal extends Component {
     await this.setState({
       id:null,
       name:"",
+      condition:"",
+      condition_selected:"",
       rules:[],
       destination:[],
       ruleList:[],
@@ -213,6 +263,17 @@ class DicomRouterModal extends Component {
         <div>
           <h5>Name</h5>
           <input type='text' name="name" value={this.state.name} className="form-control" onChange={(e) => this.handleChange(e)} />
+        </div>
+
+        <div>
+          <h5>Condition</h5>
+          <Select
+            name='condition'
+            closeMenuOnSelect={true}
+            options={this.condition}
+            onChange={(e) => this.handleChangeCondition(e)}
+            value={this.state.condition_selected}
+          />
         </div>
 
         <div>

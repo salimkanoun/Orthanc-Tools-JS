@@ -34,8 +34,9 @@ const autorouting = {
     })
   },
 
-  createAutorouter(name,rules,destination) {
+  createAutorouter(name,condition,rules,destination) {
     const autorouter = {
+        condition:condition,
         rules:rules,
         destination:destination
     }
@@ -57,9 +58,10 @@ const autorouting = {
 
   },
 
-  modifyAutorouter(id,name,rules,destination) {
+  modifyAutorouter(id,name,condition,rules,destination) {
     const autorouter = {
       name:name,
+      condition:condition,
       rules:rules,
       destination:destination
     }

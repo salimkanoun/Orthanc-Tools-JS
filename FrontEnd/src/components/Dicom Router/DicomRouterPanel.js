@@ -11,7 +11,7 @@ class DicomRouterPanel extends Component {
     routers:[],
     showModal:false,
     showModify:false,
-    modify:{id:null,rules:[],destination:[],name:""}
+    modify:{id:null,condition:"",rules:[],destination:[],name:""}
   }
   
   componentDidMount= async () => {
@@ -42,7 +42,7 @@ class DicomRouterPanel extends Component {
     routers = await routers.sort(this._compareRouters)
     this.setState({
       routers:routers,
-      modify:{id:null,rules:[],destination:[],name:""}
+      modify:{id:null,condition:"",rules:[],destination:[],name:""}
     })
   }
 
@@ -70,7 +70,7 @@ class DicomRouterPanel extends Component {
    * Close the modal dialog that permit to create or modify routers
    */
   handleCloseModal = () => {
-    this.setState({modify:{id:null,rules:[],destination:[],name:""},showModal:false})
+    this.setState({modify:{id:null,condition:"",rules:[],destination:[],name:""},showModal:false})
   }
 
   handleAutorouterService = async (e) => {
