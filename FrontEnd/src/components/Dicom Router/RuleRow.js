@@ -44,8 +44,8 @@ class RuleRow extends Component{
   ]
 
   date_operators = [
-    {value:">",label:">"},
-    {value:"<",label:"<"}
+    {value:">=",label:"> (value over or equal StudyDate)"},
+    {value:"<=",label:"< (value under or equal StudyDate)"}
   ]
 
 

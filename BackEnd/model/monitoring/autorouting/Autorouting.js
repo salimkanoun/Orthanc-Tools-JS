@@ -96,15 +96,42 @@ class Autorouting {
    * @param {JSON} study Study details
    */
   _process = async (orthancID,router,study) => {
-    for(let i=0;i<router.rules.length;i++){
-      let rule_check = this._ruleToBoolean(router.rules[i],study)
-      if(rule_check){ //send to all destination
-        for(let j = 0;j<router.destination.length;j++){
-          this.orthanc.sendToAET(router.destination[j],[orthancID])
-        }//need to check one rule to send to destination then stop the for loop
+    switch(router.condition){
+
+      case "OR":
+        for(let i=0;i<router.rules.length;i++){
+          let rule_check = this._ruleToBoolean(router.rules[i],study)
+          if(rule_check){ //send to all destination
+            console.log('send to AET for OR condition')
+            for(let j = 0;j<router.destination.length;j++){
+              this.orthanc.sendToAET(router.destination[j],[orthancID])
+            }//need to check one rule to send to destination then stop the for loop
+            break
+          } 
+        }
         break
-      } 
+
+      case "AND":
+        let failed = false
+        for(let i=0;i<router.rules.length;i++){
+          let rule_check = this._ruleToBoolean(router.rules[i],study)
+          if(!rule_check){ //send to all destination
+            console.log('do not send to AET for AND condition')
+            failed = true
+            break
+          } 
+        }
+        if(!failed){
+          console.log('send to AET for AND condition')
+          for(let j = 0;j<router.destination.length;j++){
+            this.orthanc.sendToAET(router.destination[j],[orthancID])
+          }
+        }
+        break
+      default:
+        throw new Error('Autorouting : Wrong condition')
     }
+
   }
 
   /**
@@ -122,8 +149,25 @@ class Autorouting {
         return target.contains(value)
       case "==":
         return target==value
+      case "<=": //studyDate over or equal value
+        return this.checkDate(operator,target,value)
+      case ">="://studyDate under or equal value
+        return this.checkDate(operator,target,value)
       default:
-        throw new Error('Failed to find an operator for this rule: \n'+rule)
+        throw new Error('Autorouting : Failed to find an operator for this rule: \n'+rule)
+    }
+  }
+
+  checkDate = async (operator,target, value) => {
+    let target_timestamp = Date.parse(target)
+    let value_timestamp = Date.parse(value)
+
+    if(operator=="<="){
+      return (value_timestamp<=target_timestamp)
+    }else if(operator==">="){
+      return (value_timestamp>=target_timestamp)
+    }else{
+      throw new Error('Autorouting : Wrong operator')
     }
   }
 
