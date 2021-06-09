@@ -5,7 +5,7 @@ const { OTJSBadRequestException } = require('../Exceptions/OTJSErrors')
     let name = req.params.name
     let body = req.body
     if(!body.rules || !body.destination || !name) throw new OTJSBadRequestException('A Name must be specified in parameters, an Autorouter request Rules and a Destination!')
-    await Autorouter.createAutorouters(name,body.rules,null,body.destination)
+    await Autorouter.createAutorouters(name, body.condition, body.rules, null, body.destination)
     res.sendStatus(201)
   }
 
@@ -27,7 +27,7 @@ const { OTJSBadRequestException } = require('../Exceptions/OTJSErrors')
 
   modifyAutorouter = async function(req,res){
     let body = req.body
-    await Autorouter.modifyAutorouter(req.params.id, body.name || null, body.rules || null, body.target || null, body.destination || null)
+    await Autorouter.modifyAutorouter(req.params.id, body.name || null, body.condition || null , body.rules || null, body.target || null, body.destination || null)
     res.sendStatus(200)
   }
 
