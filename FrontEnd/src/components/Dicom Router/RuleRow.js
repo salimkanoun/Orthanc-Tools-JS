@@ -12,6 +12,7 @@ class RuleRow extends Component{
 
   /**
    * Check if data propertie is pass when creating the row
+   * If this a modification of an existing Rule, check if the target is StudyDate to place the good operators on select menu
    */
   componentDidMount = () => {
     if(this.props.rule){
@@ -36,14 +37,6 @@ class RuleRow extends Component{
       })
     }
   }
-
-  operators =[
-    {value:">=",label:">= (value over or equal StudyDate)"},
-    {value:"<=",label:"<= (value under or equal StudyDate)"},
-    {value:"==",label:"=="},
-    {value:"IN",label:"IN"},
-  ]
-
 
   classic_operators = [
     {value:"==",label:"=="},
@@ -90,7 +83,7 @@ class RuleRow extends Component{
 
   /**
    * Change the state of the value when the field is modified
-   * @param {*} e event to check
+   * @param {JSON} e Value to catch
    */
   handleChangeValue = async (e) => {
     await this.setState({
@@ -101,7 +94,7 @@ class RuleRow extends Component{
 
   /**
    * Change the state of the operator when an other one is selected
-   * @param {*} e event to check
+   * @param {JSON} e Operator to catch
    */
   handleChangeOperator = async (e) => {
     await this.setState({
@@ -112,7 +105,7 @@ class RuleRow extends Component{
 
   /**
    * Change the state of the target when an other one is selected
-   * @param {*} e 
+   * @param {JSON} e target to catch
    */
   handleChangeTarget = async (e) => {
     if(e.value==="StudyDate" && this.state.target.value!=="StudyDate"){

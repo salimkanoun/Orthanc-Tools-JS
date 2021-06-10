@@ -46,6 +46,9 @@ class DicomRouterPanel extends Component {
     })
   }
 
+  /**
+   * Refresh the status of the router for the toggle button value
+   */
   refreshServiceState = async () => {
     let service = await apis.autorouter.getAutorouter()
     this.setState({
@@ -73,19 +76,24 @@ class DicomRouterPanel extends Component {
     this.setState({modify:{id:null,condition:"",rules:[],destination:[],name:""},showModal:false})
   }
 
+  /**
+   * Catch the event on the toggle to Start or Stop the dicom router
+   * @param {JSON} e Toggle button to catch
+   */
   handleAutorouterService = async (e) => {
     if(e.target.checked){
       await apis.autorouter.startAutorouterService()
-      console.log('LOG : Start Autorouter')
       this.setState({message:false})
     }else{
       await apis.autorouter.stopAutorouterService()
-      console.log('LOG : Stop Autorouter')
     }
 
     this.refreshServiceState()
   }
 
+  /**
+   * Show the information message on top of the screen
+   */
   showMessage = () => {
     if(!this.state.message){
       this.setState({
@@ -97,7 +105,7 @@ class DicomRouterPanel extends Component {
   render (){
     return(
       <div className='jumbotron'>
-        <div><Alert show={this.state.message} variant='info'>To apply changes on the router restart it</Alert></div>
+        <div><Alert show={this.state.message} variant='info'>To apply changes on the router (re)start it !</Alert></div>
 
         <div>
           <h2>Dicom Router</h2>

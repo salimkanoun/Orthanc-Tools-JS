@@ -127,6 +127,10 @@ class DicomRouterModal extends Component {
     })
   }
 
+  /**
+   * Change the condition value to save, and the one that is select on the select menu
+   * @param {JSON} e condition to catch
+   */
   handleChangeCondition = (e) => {
     this.setState({
       condition:e.value,
