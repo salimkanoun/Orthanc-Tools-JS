@@ -97,15 +97,12 @@ class Autorouting {
    */
   _process = async (orthancID,router,study) => {
     switch(router.condition){
-
       case "OR":
         for(let i=0;i<router.rules.length;i++){
-          let rule_check = this._ruleToBoolean(router.rules[i],study)
+          let rule_check = await this._ruleToBoolean(router.rules[i],study)
           if(rule_check){ //send to all destination
-            console.log('send to AET for OR condition')
-            for(let j = 0;j<router.destination.length;j++){
-              this.orthanc.sendToAET(router.destination[j],[orthancID])
-            }//need to check one rule to send to destination then stop the for loop
+            this.sendToAETs(router.destination,orthancID)
+            //need to check one rule to send to destination then stop the for loop
             break
           } 
         }
@@ -114,18 +111,14 @@ class Autorouting {
       case "AND":
         let failed = false
         for(let i=0;i<router.rules.length;i++){
-          let rule_check = this._ruleToBoolean(router.rules[i],study)
+          let rule_check = await this._ruleToBoolean(router.rules[i],study)
           if(!rule_check){ //send to all destination
-            console.log('do not send to AET for AND condition')
             failed = true
             break
           } 
         }
         if(!failed){
-          console.log('send to AET for AND condition')
-          for(let j = 0;j<router.destination.length;j++){
-            this.orthanc.sendToAET(router.destination[j],[orthancID])
-          }
+          this.sendToAETs(router.destination,orthancID)
         }
         break
       default:
@@ -135,29 +128,52 @@ class Autorouting {
   }
 
   /**
+   * Loop to send to every aet
+   * @param {Array.<String>} destination aets name
+   * @param {String} orthancID ressources to send to the aet
+   */
+  sendToAETs(destination,orthancID){
+    for(let j = 0;j<destination.length;j++){
+      this.orthanc.sendToAET(destination[j],[orthancID])
+    }
+  }
+
+  /**
    * Convert a rule for an object into a boolean
    * @param {JSON} rule rule for the observed object rule:{value:,operator:,target:}
    * @param {JSON} object object to observe
    * @return {boolean}
    */
-  _ruleToBoolean = (rule,object) => {
-    let target = this._findKey(object.MainDicomTags,rule.target)
+  _ruleToBoolean = async (rule,object) => {
+    let target = object.MainDicomTags[rule.target]
     target = target.toLowerCase()
     let value = rule.value.toLowerCase()
+    
     switch(rule.operator){
       case "IN":
-        return target.contains(value)
+        return target.includes(value)
       case "==":
         return target==value
       case "<=": //studyDate over or equal value
-        return this.checkDate(operator,target,value)
+        target = target.substring(0,4)+'-'+target.substring(4,6)+'-'+target.substring(6) //adapt format YYYYMMDD to YYYY-MM-DD
+        let res1 = await this.checkDate(rule.operator,target,value)
+        return res1
       case ">="://studyDate under or equal value
-        return this.checkDate(operator,target,value)
+        target = target.substring(0,4)+'-'+target.substring(4,6)+'-'+target.substring(6) //adapt format YYYYMMDD to YYYY-MM-DD
+        let res2 = await this.checkDate(rule.operator,target,value)
+        return res2
       default:
         throw new Error('Autorouting : Failed to find an operator for this rule: \n'+rule)
     }
   }
 
+  /**
+   * Compare two dates according to the operator
+   * @param {String} operator could be >= or <=
+   * @param {String} target date to compare to
+   * @param {String} value reference date value
+   * @returns {boolean}
+   */
   checkDate = async (operator,target, value) => {
     let target_timestamp = Date.parse(target)
     let value_timestamp = Date.parse(value)
@@ -169,22 +185,6 @@ class Autorouting {
     }else{
       throw new Error('Autorouting : Wrong operator')
     }
-  }
-
-  /**
-   * Find the value associate to a key of a JSON Object
-   * @param {JSON} obj object to check
-   * @param {String} key key to find in the object
-   * @returns {String} value of the target key
-   */
-  _findKey= (obj, key) => {
-    for ([k, v] of Object.entries(obj)){
-        if (k == key) return v
-        if (typeof v === 'object' &&  v !== null ){
-            let found = findKey(v, key)
-            if (found) return found
-        }
-      }
   }
 
   toJSON(){

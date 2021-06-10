@@ -37,6 +37,13 @@ class RuleRow extends Component{
     }
   }
 
+  operators =[
+    {value:">=",label:">= (value over or equal StudyDate)"},
+    {value:"<=",label:"<= (value under or equal StudyDate)"},
+    {value:"==",label:"=="},
+    {value:"IN",label:"IN"},
+  ]
+
 
   classic_operators = [
     {value:"==",label:"=="},
@@ -44,8 +51,8 @@ class RuleRow extends Component{
   ]
 
   date_operators = [
-    {value:">=",label:"> (value over or equal StudyDate)"},
-    {value:"<=",label:"< (value under or equal StudyDate)"}
+    {value:">=",label:">= (value over or equal StudyDate)"},
+    {value:"<=",label:"<= (value under or equal StudyDate)"}
   ]
 
 
@@ -63,11 +70,11 @@ class RuleRow extends Component{
    * @returns {JSON} rule with the format of the database
    */
   generateRule = () => {
-    if(!this.state.operator || !this.state.operators.includes(this.state.operator)){
-      throw new Error('Missing or incorrect operator!')
+    if(!this.state.operator){
+      throw new Error('Missing operator!')
     }
-    if(!this.state.target || !this.targets.includes(this.state.target)){
-      throw new Error('Missing or incorrect target')
+    if(!this.state.target){
+      throw new Error('Missing target')
     }
     if(this.value===""){
       throw new Error('Missing value !')
