@@ -18,6 +18,10 @@ import apis from '../../../services/apis'
 
 class SendToAnonExportDeleteDropwdown extends Component {
 
+    /**
+     * Make a common array from all the studies selected
+     * @returns {Array.<JSON>} Selected studies
+     */
     getStudySelectedDetails = async () => {
       let selectedIds = {}
       selectedIds.selectedPatients=this.props.patients || []

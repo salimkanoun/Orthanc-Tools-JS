@@ -32,6 +32,10 @@ export default class AETSelect extends Component{
       })
     }
 
+    /**
+     * When the value of the selector change
+     * @param {Array.<JSON>} value new value of the selected array
+     */
     handleOnChange = async (value) => {
 
         var selected = this.state.selected

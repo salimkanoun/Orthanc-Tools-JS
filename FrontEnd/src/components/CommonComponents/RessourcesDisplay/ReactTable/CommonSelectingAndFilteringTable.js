@@ -71,9 +71,11 @@ function Table({columns,tableData,hiddenSelection,onRowClick,onSelect,rowStyle})
     }}
   )
 
+  /**
+   * When selectedFlatRows array (array of row selected) length change, use onSelect callback function
+   */
   React.useEffect(() => { 
           onSelect(selectedFlatRows);
-          // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [selectedFlatRows.length]);
   
   return (
