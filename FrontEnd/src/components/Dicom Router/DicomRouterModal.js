@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import apis from "../../services/apis";
-import {Modal,Button} from "react-bootstrap";
+import {Modal,Button, Alert} from "react-bootstrap";
 import { toast } from 'react-toastify'
 import AETSelect from './AETSelect'
 import RuleRow from './RuleRow'
@@ -15,7 +15,8 @@ class DicomRouterModal extends Component {
     rules:this.props.data.rules,
     destination:this.props.data.destination,
     ruleList:[],
-    data_load:false
+    data_load:false,
+    message:false
   }
   
   componentDidMount = () => {
@@ -55,7 +56,8 @@ class DicomRouterModal extends Component {
         rules:this.props.data.rules,
         destination:this.props.data.destination,
         ruleList:[],
-        data_load:true
+        data_load:true,
+        message:false
       })
       switch(this.props.data.condition){
         case "OR":
@@ -74,6 +76,7 @@ class DicomRouterModal extends Component {
           })
           break
       }
+      await this.checkConflict()
       this.updateRuleList()
     }
   }
@@ -99,6 +102,8 @@ class DicomRouterModal extends Component {
       toast.error('Arguments missing to create a router')
     }else if(this.state.rules.length!==this.state.ruleList.length){
       toast.error('Invalid rule, arguments missing')
+    }else if(this.state.message){
+      toast.error("Rule conflict!")
     }
     else{
       if(this.state.id){
@@ -131,11 +136,12 @@ class DicomRouterModal extends Component {
    * Change the condition value to save, and the one that is select on the select menu
    * @param {JSON} e condition to catch
    */
-  handleChangeCondition = (e) => {
-    this.setState({
+  handleChangeCondition = async (e) => {
+    await this.setState({
       condition:e.value,
       condition_selected:e
     })
+    await this.checkConflict()
   }
 
   condition = [ 
@@ -155,7 +161,8 @@ class DicomRouterModal extends Component {
       rules:[],
       destination:[],
       ruleList:[],
-      data_load:false
+      data_load:false,
+      message:false
     })
 
     this.handleAddRule()
@@ -185,6 +192,7 @@ class DicomRouterModal extends Component {
     }
     rules.push(rule)
     await this.setState({rules:rules})
+    await this.checkConflict()
   }
 
   /**
@@ -240,6 +248,77 @@ class DicomRouterModal extends Component {
   }
 
   /**
+   * Check if there is a conflict between 2 date rules
+   */
+  checkConflict = async () => {
+    console.log('conflict')
+    if(this.state.condition==="AND"){
+      let rules = this.state.rules
+      let date_rules = []
+      for(let i = 0 ; i < rules.length ; i++){
+        if(rules[i].target==="StudyDate"){date_rules.push(rules[i])}
+      }
+
+      if(date_rules.length<2){
+        this.setState({message:false})
+      }
+      else if(date_rules.length===2){
+        let conflict = false
+        for(let i = 0;i<date_rules.length;i++){
+          for(let j = 0;j<date_rules.length;j++){
+            if(i!==j && !(conflict)){
+              conflict = await this._checkDate(date_rules[i],date_rules[j])
+            }
+          }
+        }
+        await this.setState({message:conflict})
+        console.log(this.state)
+      }
+      else{
+        this.setState({message:true})
+      }
+    }else{
+      this.setState({message:false})
+    }
+  }
+
+  /**
+   * Check if two dates rules are in conflict
+   * @param {JSON} rule1 first rule
+   * @param {JSON} rule2 second rule
+   * @returns 
+   */
+  _checkDate= async (rule1,rule2) => {
+    let value1 = Date.parse(rule1.value)
+    let value2 = Date.parse(rule2.value)
+
+    if(rule1.operator === ">="){
+      if(rule2.operator==="<="){
+        if(value1>=value2){
+          console.log(false)
+          return false
+        }else{
+          return true
+        }
+      }
+    }else{
+      if(rule2.operator===">="){
+        if(value2>=value1){
+          return false
+        }else{
+          return true
+        }
+      }
+    }
+    
+    if(value1===value2){
+      return false
+    }else{
+      return true
+    }
+  }
+
+  /**
    * Function to close the modal and reset all the state parameters (name, rules, destination)
    */
   onHide = () => {
@@ -282,6 +361,7 @@ class DicomRouterModal extends Component {
 
         <div>
           <h5>Rules</h5>
+          <Alert show={this.state.message} variant='danger'>Conflict between date rules!</Alert>
           <Button className='btn btn-secondary mb-1' onClick={()=>{this.handleAddRule()}}>+</Button>
           {this.state.ruleList}
         </div>

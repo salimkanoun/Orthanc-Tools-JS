@@ -76,6 +76,7 @@ function Table({columns,tableData,hiddenSelection,onRowClick,onSelect,rowStyle})
    */
   React.useEffect(() => { 
           onSelect(selectedFlatRows);
+          // eslint-disable-next-line
       }, [selectedFlatRows.length]);
   
   return (
