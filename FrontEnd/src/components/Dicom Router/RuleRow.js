@@ -69,7 +69,7 @@ class RuleRow extends Component{
     if(!this.state.target){
       throw new Error('Missing target')
     }
-    if(this.value===""){
+    if(this.state.value===""){
       throw new Error('Missing value !')
     }
     let rule = {
