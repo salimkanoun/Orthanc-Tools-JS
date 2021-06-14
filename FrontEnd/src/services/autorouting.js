@@ -1,4 +1,8 @@
 const autorouting = {
+    /**
+     * Get all the autorouters
+     * @returns {Array.<JSON>} Autorouters
+     */
   getAutorouters() {
       const getAutoroutersOptions = {
           method: 'GET',
@@ -16,6 +20,11 @@ const autorouting = {
           throw error
       })
   },
+  /**
+   * Get an autorouter by id
+   * @param {number} id id of the autorouter
+   * @returns {JSON} Autorouter
+   */
   getAutorouterByID(id) {
     const getAutorouterByIDOptions = {
         method: 'GET',
@@ -34,6 +43,14 @@ const autorouting = {
     })
   },
 
+  /**
+   * Create an autorouter
+   * @param {String} name name of the autorouter
+   * @param {String} condition "OR" / "AND"
+   * @param {Array.<JSON>} rules rules to check
+   * @param {Array.<String>} destination Aets name
+   * @returns 
+   */
   createAutorouter(name,condition,rules,destination) {
     const autorouter = {
         condition:condition,
@@ -58,6 +75,15 @@ const autorouting = {
 
   },
 
+    /**
+   * Modify an autorouter
+   * @param {number} id autorouter's id to modify
+   * @param {String} name name of the autorouter
+   * @param {String} condition "OR" / "AND"
+   * @param {Array.<JSON>} rules rules to check
+   * @param {Array.<String>} destination Aets name
+   * @returns 
+   */
   modifyAutorouter(id,name,condition,rules,destination) {
     const autorouter = {
       name:name,
@@ -80,6 +106,12 @@ const autorouting = {
     })
   },
 
+  /**
+   * Turn on/off an Autorouter
+   * @param {number} id autourouter's id to switch
+   * @param {boolean} running boolean of running process
+   * @returns 
+   */
   switchOnOff(id,running) {
     const autorouter = {
       running:running
@@ -99,6 +131,11 @@ const autorouting = {
     })
   },
 
+  /**
+   * Delete an autorouter
+   * @param {number} id autorouter's id
+   * @returns 
+   */
   deleteAutorouter(id) {
       const deleteAutorouterOptions = {
           method: 'DELETE',

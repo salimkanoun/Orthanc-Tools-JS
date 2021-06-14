@@ -1,4 +1,8 @@
 const rolelabel = {
+    /**
+     * get all RoleLabels
+     * @returns {Array.<JSON>}
+     */
     getRolesLabels() {
         const getRolesLabelsOptions = {
             method: 'GET',
@@ -17,6 +21,12 @@ const rolelabel = {
         })
     },
 
+    /**
+     * Get Labels linked to a Role name
+     * @param {String} username username of the active
+     * @param {String} role_name role to search for
+     * @returns {Array.<JSON>}
+     */
     getRoleLabels(username,role_name) {
         const getRoleLabelsOptions = {
             method: 'GET',
@@ -35,6 +45,11 @@ const rolelabel = {
         })
     },
 
+    /**
+     * Get Roles linked to a label name
+     * @param {String} label_name name of the label to search for
+     * @returns {Array.<JSON>}
+     */
     getLabelRoles(label_name) {
         const getLabelRolesOptions = {
             method: 'GET',
@@ -53,6 +68,13 @@ const rolelabel = {
         })
     },
 
+    /**
+     * Create a RoleLabel
+     * @param {String} username username of the active user
+     * @param {String} role_name name of the role to link
+     * @param {String} label_name name of the label to link
+     * @returns 
+     */
     createRoleLabel(username,role_name, label_name) {
         const rolename = {
             role_name : role_name
@@ -75,6 +97,13 @@ const rolelabel = {
 
     },
 
+    /**
+     * Delete a RoleLabel
+     * @param {String} username username of the active user
+     * @param {*} role_name name of the role
+     * @param {*} label_name name of the label
+     * @returns 
+     */
     deleteRoleLabel(username,role_name, label_name) {
         const rolename = {
             role_name : role_name

@@ -1,5 +1,8 @@
 const autorouter = {
-
+      /**
+       * Start the Dicom Router
+       * @returns 
+       */
       startAutorouterService(){
       const startAutorouterServiceOptions={
             method:'POST',
@@ -15,10 +18,14 @@ const autorouter = {
             return true
       }).catch(error => {
             throw error
-        })
+            })
 
       },
 
+      /**
+       * Stop the dicom router
+       * @returns 
+       */
       stopAutorouterService(){
       const stopAutorouterServiceOptions={
             method:'DELETE',
@@ -33,9 +40,13 @@ const autorouter = {
             return true
       }).catch(error => {
             throw error
-        })
+            })
       },
 
+      /**
+       * get the info about the Dicom router
+       * @returns 
+       */
   getAutorouter(){ 
     const getAutorouterOptions={
       method:'GET',
