@@ -245,13 +245,13 @@ class DicomRouterModal extends Component {
       ruleList:ruleList,
       rules:rules
     }))
+    await this.checkConflict()
   }
 
   /**
    * Check if there is a conflict between 2 date rules
    */
   checkConflict = async () => {
-    console.log('conflict')
     if(this.state.condition==="AND"){
       let rules = this.state.rules
       let date_rules = []
@@ -272,7 +272,6 @@ class DicomRouterModal extends Component {
           }
         }
         await this.setState({message:conflict})
-        console.log(this.state)
       }
       else{
         this.setState({message:true})
@@ -295,7 +294,6 @@ class DicomRouterModal extends Component {
     if(rule1.operator === ">="){
       if(rule2.operator==="<="){
         if(value1>=value2){
-          console.log(false)
           return false
         }else{
           return true
