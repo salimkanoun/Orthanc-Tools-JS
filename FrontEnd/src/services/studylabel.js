@@ -1,4 +1,8 @@
 const studylabel = {
+  /**
+   * Get all StudyLabels
+   * @returns 
+   */
   getStudiesLabels(){ //get ALL
     const getStudiesLabelsOptions={
       method:'GET',
@@ -15,6 +19,11 @@ const studylabel = {
     })
   },
 
+  /**
+   * Get all the studies associate to a label
+   * @param {String} name name of the label
+   * @returns {Array.<JSON>}
+   */
   getStudiesLabel(name){ //get Studies for one particular Label
     const getStudiesLabelOptions={
       method:'GET',
@@ -31,6 +40,11 @@ const studylabel = {
     })
   },
 
+  /**
+   * Get all the labels associate to a study
+   * @param {String} study_instance_uid instance uid of the study
+   * @returns {Array.<JSON>}
+   */
   getStudyLabels(study_instance_uid){ //get Labels for one particular study
     const getStudyLabelsOptions={
       method:'GET',
@@ -47,6 +61,11 @@ const studylabel = {
     })
   },
 
+  /**
+   * get all the StudyLabels associate to a Study Orthanc ID
+   * @param {String} study_orthanc_id study orthanc id to search for
+   * @returns {Array.<JSON>}
+   */
   getStudyLabelsByStudyOrthancID(study_orthanc_id){
     const getStudyLabelsByStudyOrthancIDOptions={
       method:'GET',
@@ -63,6 +82,15 @@ const studylabel = {
     })
   },
 
+  /**
+   * Create a Studylabel
+   * @param {String} study_instance_uid instance_uid of the study
+   * @param {String} label_name name of the label
+   * @param {String} patient_id id of patient
+   * @param {String} study_orthanc_id orthanc_id associate to the study
+   * @param {String} patient_orthanc_id orthanc_id associate to the patient
+   * @returns 
+   */
   createStudyLabel(study_instance_uid,label_name,patient_id,study_orthanc_id,patient_orthanc_id){
     const createStudyLabelOptions={
       method:'POST',
@@ -83,6 +111,12 @@ const studylabel = {
     
   },
 
+  /**
+   * Delete a StudyLabel
+   * @param {String} study_instance_uid instance_uid of the study
+   * @param {String} name name of the label
+   * @returns 
+   */
   deleteStudyLabel(study_instance_uid,name){
     const deleteStudyLabelOptions={
       method:'DELETE',

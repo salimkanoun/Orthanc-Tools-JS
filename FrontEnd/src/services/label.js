@@ -1,6 +1,10 @@
 import { toast } from 'react-toastify'
 
 const label = {
+  /**
+   * Get all labels
+   * @returns {Array.<JSON>}
+   */
   getAllLabels(){
     const getAllLabelsOptions={
       methode:'GET',
@@ -17,6 +21,11 @@ const label = {
     })
   },
 
+  /**
+   * Create a label
+   * @param {String} name label name
+   * @returns 
+   */
   createLabels(name){
     const createLabelsOptions = {
       method:'POST',
@@ -32,6 +41,12 @@ const label = {
     })
   },
 
+  /**
+   * Modify a label
+   * @param {String} name label name to modify
+   * @param {JSON} payload contains the label to modify
+   * @returns 
+   */
   modifyLabels(name,payload){
     const modifyLabelsOptions = {
       method:'PUT',
@@ -48,6 +63,11 @@ const label = {
     })
   },
 
+  /**
+   * Delete a label
+   * @param {String} name label name to delete
+   * @returns 
+   */
   deleteLabels(name){
     const deleteLabelsOptions = {
       method:'DELETE',

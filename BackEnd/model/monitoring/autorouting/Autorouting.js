@@ -22,8 +22,8 @@ class Autorouting {
     this.autorouters = []
     //put on variable all autorouters that are enabled
     let autorouter = await Autorouter.getAllAutorouters()
-    for(var i = 0 ; i < autorouter.lentgh ; i++){
-      if(autorouter[i].running==true){
+    for(var i = 0 ; i < autorouter.length ; i++){
+      if(autorouter[i].dataValues.running===true){
         this.autorouters.push(autorouter[i])
       }
     }
@@ -96,14 +96,45 @@ class Autorouting {
    * @param {JSON} study Study details
    */
   _process = async (orthancID,router,study) => {
-    for(let i=0;i<router.rules.length;i++){
-      let rule_check = this._ruleToBoolean(router.rules[i],study)
-      if(rule_check){ //send to all destination
-        for(let j = 0;j<router.destination.length;j++){
-          this.orthanc.sendToAET(router.destination[j],[orthancID])
-        }//need to check one rule to send to destination then stop the for loop
+    switch(router.condition){
+      case "OR":
+        for(let i=0;i<router.rules.length;i++){
+          let rule_check = await this._ruleToBoolean(router.rules[i],study)
+          if(rule_check){ //send to all destination
+            this.sendToAETs(router.destination,orthancID)
+            //need to check one rule to send to destination then stop the for loop
+            break
+          } 
+        }
         break
-      } 
+
+      case "AND":
+        let failed = false
+        for(let i=0;i<router.rules.length;i++){
+          let rule_check = await this._ruleToBoolean(router.rules[i],study)
+          if(!rule_check){ //send to all destination
+            failed = true
+            break
+          } 
+        }
+        if(!failed){
+          this.sendToAETs(router.destination,orthancID)
+        }
+        break
+      default:
+        throw new Error('Autorouting : Wrong condition')
+    }
+
+  }
+
+  /**
+   * Loop to send to every aet
+   * @param {Array.<String>} destination aets name
+   * @param {String} orthancID ressources to send to the aet
+   */
+  sendToAETs(destination,orthancID){
+    for(let j = 0;j<destination.length;j++){
+      this.orthanc.sendToAET(destination[j],[orthancID])
     }
   }
 
@@ -113,34 +144,47 @@ class Autorouting {
    * @param {JSON} object object to observe
    * @return {boolean}
    */
-  _ruleToBoolean = (rule,object) => {
-    let target = this._findKey(object.MainDicomTags,rule.target)
+  _ruleToBoolean = async (rule,object) => {
+    let target = object.MainDicomTags[rule.target]
     target = target.toLowerCase()
     let value = rule.value.toLowerCase()
+    
     switch(rule.operator){
       case "IN":
-        return target.contains(value)
+        return target.includes(value)
       case "==":
         return target==value
+      case "<=": //studyDate over or equal value
+        target = target.substring(0,4)+'-'+target.substring(4,6)+'-'+target.substring(6) //adapt format YYYYMMDD to YYYY-MM-DD
+        let res1 = await this.checkDate(rule.operator,target,value)
+        return res1
+      case ">="://studyDate under or equal value
+        target = target.substring(0,4)+'-'+target.substring(4,6)+'-'+target.substring(6) //adapt format YYYYMMDD to YYYY-MM-DD
+        let res2 = await this.checkDate(rule.operator,target,value)
+        return res2
       default:
-        throw new Error('Failed to find an operator for this rule: \n'+rule)
+        throw new Error('Autorouting : Failed to find an operator for this rule: \n'+rule)
     }
   }
 
   /**
-   * Find the value associate to a key of a JSON Object
-   * @param {JSON} obj object to check
-   * @param {String} key key to find in the object
-   * @returns {String} value of the target key
+   * Compare two dates according to the operator
+   * @param {String} operator could be >= or <=
+   * @param {String} target date to compare to
+   * @param {String} value reference date value
+   * @returns {boolean}
    */
-  _findKey= (obj, key) => {
-    for ([k, v] of Object.entries(obj)){
-        if (k == key) return v
-        if (typeof v === 'object' &&  v !== null ){
-            let found = findKey(v, key)
-            if (found) return found
-        }
-      }
+  checkDate = async (operator,target, value) => {
+    let target_timestamp = Date.parse(target)
+    let value_timestamp = Date.parse(value)
+
+    if(operator=="<="){
+      return (value_timestamp<=target_timestamp)
+    }else if(operator==">="){
+      return (value_timestamp>=target_timestamp)
+    }else{
+      throw new Error('Autorouting : Wrong operator')
+    }
   }
 
   toJSON(){

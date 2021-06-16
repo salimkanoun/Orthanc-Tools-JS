@@ -12,6 +12,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      condition: {
+        type:Sequelize.STRING,
+        allowNull:false,
+      },
       rules: {
         type: Sequelize.ARRAY(Sequelize.JSONB),
         allowNull: false,

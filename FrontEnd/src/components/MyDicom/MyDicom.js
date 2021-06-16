@@ -22,6 +22,9 @@ class MyDicom extends Component{
     }catch(err){console.log(err)}
   }
 
+  /**
+   * Recuperate labels associate to User's role
+   */
   getRoleLabels = async () => {
     let label_tab = await apis.rolelabel.getRoleLabels(this.state.username,this.state.role_name)
     this.setState({
@@ -29,10 +32,19 @@ class MyDicom extends Component{
     })
   }
 
+  /**
+   * Get all the studies linked to a label
+   * @param {String} name label name
+   * @returns [Array of StudyLabels]
+   */
   getStudiesByLabel = async (name) => {
     return await apis.studylabel.getStudiesLabel(name)
   }
 
+  /**
+   * Action to do when user click on a label button
+   * @param {*} e event to check
+   */
   handleLabelClick = async (e) => {
     var label = e.target.name
     this.setState({currentLabel:label})
@@ -63,12 +75,20 @@ class MyDicom extends Component{
     })
   }
 
+  /**
+   * Handle a click on row for Study
+   * @param {JSON} row row values
+   */
   onStudyRowClick = (row)=> {
     this.setState({ 
       currentStudyID: row.StudyOrthancID
     })
+  }
 
-}
+  /**
+   * Recuperate all the selected row on study tab when row is selected/unselected
+   * @param {Array.<JSON>} tab 
+   */
   onStudyCheckboxClick = (tab) =>{
     var selectedRows = []
     for(var i = 0; i<tab.length;i++){

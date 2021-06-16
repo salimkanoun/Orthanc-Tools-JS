@@ -5,7 +5,7 @@ var startBurner = async function(req, res) {
     let cdBurnerInstance = await CdBurnerFactory.getInstance()
     await cdBurnerInstance.setSettings()
     await cdBurnerInstance.startCDMonitoring()
-    res.status(200)
+    res.sendStatus(200)
 }
 
 var getBurner = async function(req, res) {
@@ -16,19 +16,19 @@ var getBurner = async function(req, res) {
 var stopBurner = async function (req, res){
     let cdBurnerInstance = await CdBurnerFactory.getInstance()
     await cdBurnerInstance.stopCDMonitoring()
-    res.status(200)
+    res.sendStatus(200)
 }
 
 var cancelJobBurner = async function(req, res){
     let cdBurnerInstance = await CdBurnerFactory.getInstance()
     cdBurnerInstance.cancelCdJob(req.params.jobBurnerId)
-    res.status(200)
+    res.sendStatus(200)
 }
 
 var startAutorouter = async function (req,res){
     let autorouterInstance = await AutoroutingFactory.getInstance()
     await autorouterInstance.startAutorouting()
-    res.status(200)
+    res.sendStatus(200)
 }
 
 var getAutorouter = async function (req,res){
@@ -39,7 +39,7 @@ var getAutorouter = async function (req,res){
 var stopAutorouter = async function(req,res){
     let autorouterInstance = await AutoroutingFactory.getInstance()
     await autorouterInstance.stopAutorouting()
-    res.status(200)
+    res.sendStatus(200)
 }
 
 module.exports = { startBurner, getBurner, stopBurner, cancelJobBurner , startAutorouter, getAutorouter, stopAutorouter}
