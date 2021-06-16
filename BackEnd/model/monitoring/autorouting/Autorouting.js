@@ -1,5 +1,6 @@
 const Orthanc_Monitoring = require ('../Orthanc_Monitoring')
 const Queue = require('promise-queue')
+//const Queue = require('../../../adapter/bullAdapter')
 const Autorouter = require('../../Autorouters')
 const Options = require('../../Options')
 
@@ -83,9 +84,12 @@ class Autorouting {
   _jobDispatcher = async (orthancID) => {
     let study = await this.orthanc.getOrthancDetails('studies', orthancID)
     for(let i = 0;i<this.autorouters.length;i++){
-      this.jobQueue.add(async ()=>{
-        await this._process(orthancID,this.autorouters[i],study)
-      })
+      let sendJob = await this.isSendable(orthancID,this.autorouters[i],study)
+      if(sendJob){
+        this.jobQueue.add(async ()=>{
+          this.sendToAETs(router.destination,orthancID)
+        })
+      }
     }
   }
 
@@ -95,32 +99,30 @@ class Autorouting {
    * @param {JSON} router router config for this study to check
    * @param {JSON} study Study details
    */
-  _process = async (orthancID,router,study) => {
+  isSendable = async (orthancID,router,study) => {
     switch(router.condition){
       case "OR":
         for(let i=0;i<router.rules.length;i++){
           let rule_check = await this._ruleToBoolean(router.rules[i],study)
           if(rule_check){ //send to all destination
-            this.sendToAETs(router.destination,orthancID)
+            return true
             //need to check one rule to send to destination then stop the for loop
-            break
           } 
         }
-        break
+        return false
 
       case "AND":
         let failed = false
         for(let i=0;i<router.rules.length;i++){
           let rule_check = await this._ruleToBoolean(router.rules[i],study)
           if(!rule_check){ //send to all destination
-            failed = true
-            break
+            return false
           } 
         }
         if(!failed){
-          this.sendToAETs(router.destination,orthancID)
+          return true
         }
-        break
+        return false
       default:
         throw new Error('Autorouting : Wrong condition')
     }
