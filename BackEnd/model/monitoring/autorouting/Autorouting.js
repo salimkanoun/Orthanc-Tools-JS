@@ -1,6 +1,5 @@
 const Orthanc_Monitoring = require ('../Orthanc_Monitoring')
-const Queue = require('promise-queue')
-//const Queue = require('../../../adapter/bullAdapter')
+const Queue = require('../../../adapter/bullAdapter')
 const Autorouter = require('../../Autorouters')
 const Options = require('../../Options')
 
@@ -10,7 +9,8 @@ class Autorouting {
     this.orthanc = monitoring.orthanc
     this.monitoring = monitoring
     this.monitoringStarted = false
-    this.jobQueue = new Queue(1, Infinity);
+    this.jobQueue = new Queue('autorouting',this.sendToAETs)
+    this.history = this.jobQueue.getJobs()
   }
 
   /** 
@@ -84,22 +84,19 @@ class Autorouting {
   _jobDispatcher = async (orthancID) => {
     let study = await this.orthanc.getOrthancDetails('studies', orthancID)
     for(let i = 0;i<this.autorouters.length;i++){
-      let sendJob = await this.isSendable(orthancID,this.autorouters[i],study)
+      let sendJob = await this.isSendable(this.autorouters[i],study)
       if(sendJob){
-        this.jobQueue.add(async ()=>{
-          this.sendToAETs(router.destination,orthancID)
-        })
+        this.jobQueue.addJob({destination:this.autorouters[i].destination,orthancID:orthancID})
       }
     }
   }
 
   /**
    * Process a StableStudy event
-   * @param {String} orthancID OrthancID of the Study
    * @param {JSON} router router config for this study to check
    * @param {JSON} study Study details
    */
-  isSendable = async (orthancID,router,study) => {
+  isSendable = async (router,study) => {
     switch(router.condition){
       case "OR":
         for(let i=0;i<router.rules.length;i++){
@@ -134,10 +131,17 @@ class Autorouting {
    * @param {Array.<String>} destination aets name
    * @param {String} orthancID ressources to send to the aet
    */
-  sendToAETs(destination,orthancID){
+  sendToAETs = async(job,done) => {
+    let destination = job.data.destination
+    let orthancID = job.data.orthancID
     for(let j = 0;j<destination.length;j++){
-      this.orthanc.sendToAET(destination[j],[orthancID])
+      await this.orthanc.sendToAET(destination[j],[orthancID])
     }
+    done()
+  }
+
+  refreshHistory = async () => {
+    this.history=await this.jobQueue.getJobs()
   }
 
   /**
@@ -189,10 +193,12 @@ class Autorouting {
     }
   }
 
-  toJSON(){
+  async toJSON(){
+    this.refreshHistory() //problème de synchronisation
     return {
         AutorouterService : this.monitoringStarted,
-        QuededJobs : this.jobQueue.queue.length
+        QueudedJobs : this.history,
+        
     }
   }
 }
