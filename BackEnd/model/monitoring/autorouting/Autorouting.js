@@ -1,4 +1,3 @@
-const Orthanc_Monitoring = require ('../Orthanc_Monitoring')
 const Queue = require('../../../adapter/bullAdapter')
 const Autorouter = require('../../Autorouters')
 const Options = require('../../Options')
@@ -9,8 +8,8 @@ class Autorouting {
     this.orthanc = monitoring.orthanc
     this.monitoring = monitoring
     this.monitoringStarted = false
-    this.jobQueue = new Queue('autorouting',this.sendToAETs)
-    this.history = this.jobQueue.getJobs()
+    this.jobQueue = new Queue('autorouting',this.sendToAET)
+    this.history=[]
   }
 
   /** 
@@ -74,7 +73,7 @@ class Autorouting {
   stopAutorouting = async () => {
     this.monitoringStarted = false
     this._removeListener()
-    this.monitoring.stopMonitoringService('Autorouting')
+    this.monitoring.stopMonitoringService('Autorouting test')
   }
 
   /**
@@ -86,7 +85,7 @@ class Autorouting {
     for(let i = 0;i<this.autorouters.length;i++){
       let sendJob = await this.isSendable(this.autorouters[i],study)
       if(sendJob){
-        this.jobQueue.addJob({destination:this.autorouters[i].destination,orthancID:orthancID})
+        this.sendToAETs(this.autorouters[i].destination,orthancID)
       }
     }
   }
@@ -131,17 +130,23 @@ class Autorouting {
    * @param {Array.<String>} destination aets name
    * @param {String} orthancID ressources to send to the aet
    */
-  sendToAETs = async(job,done) => {
-    let destination = job.data.destination
-    let orthancID = job.data.orthancID
+  sendToAETs = async(destination,orthancID) => {
     for(let j = 0;j<destination.length;j++){
-      await this.orthanc.sendToAET(destination[j],[orthancID])
+      this.jobQueue.addJob({destination:destination[j],orthancID:orthancID})
     }
-    done()
   }
 
-  refreshHistory = async () => {
-    this.history=await this.jobQueue.getJobs()
+  /**
+   * Function for the job to send AET
+   * @param {*} job 
+   * @param {*} done 
+   */
+   
+  sendToAET = async(job,done)=>{
+    let destination = job.data.destination
+    let orthancID = job.data.orthancID
+    await this.orthanc.sendToAET(destination,[orthancID]).catch(err => {console.error(err); done(err)})
+    done()
   }
 
   /**
@@ -193,12 +198,59 @@ class Autorouting {
     }
   }
 
-  async toJSON(){
-    this.refreshHistory() //problème de synchronisation
+  /**
+   * Create or refresh the queue history
+   */
+  refreshHistory = async () => {
+    let jobQueue =await this.jobQueue.getJobs()
+    if(jobQueue.length!==this.history.length){
+      let history = []
+      for(let i = 0 ; i < jobQueue.length ; i++){
+        let state
+        if(jobQueue[i]._bullJob.failedReason){
+          state = 'failed'
+        }else if(jobQueue[i]._bullJob.finishedOn){
+          state = 'finished'
+        }else{
+          state = 'running'
+        }
+        let study = await this.orthanc.getOrthancDetails('studies',jobQueue[i].data.orthancID)
+        let job = {
+          id:Number.parseInt(jobQueue[i]._bullJob.id),
+          state,
+          AET:jobQueue[i].data.destination,
+          Study:study,
+        }
+        if(state==='failed'){
+          job.message=jobQueue[i]._bullJob.failedReason
+        }
+        history.push(job)
+      }
+      await history.sort(this.compareJobs)
+      this.history=history
+    }
+  }
+
+  /**
+   * Sort functionn for history sorting (from recent to oldest)
+   * @param {JSON} a 
+   * @param {JSON} b 
+   * @returns 
+   */
+  compareJobs(a,b){
+    if(a.id<b.id){
+      return 1
+    }else if(a.id>b.id){
+      return -1
+    }else{
+      return 0
+    }
+  }
+
+  toJSON(){
     return {
         AutorouterService : this.monitoringStarted,
         QueudedJobs : this.history,
-        
     }
   }
 }

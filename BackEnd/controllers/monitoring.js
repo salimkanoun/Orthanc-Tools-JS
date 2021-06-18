@@ -33,6 +33,7 @@ var startAutorouter = async function (req,res){
 
 var getAutorouter = async function (req,res){
     let autorouterInstance = await AutoroutingFactory.getInstance()
+    await autorouterInstance.refreshHistory()
     res.json(autorouterInstance)
 }
 
