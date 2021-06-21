@@ -1,4 +1,5 @@
 const SftpClient = require("ssh2-sftp-client")
+const path = require('path')
 
 async function sendOverSftp(job, done) {
     let endpoint = job.data.endpoint;

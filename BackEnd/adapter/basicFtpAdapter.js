@@ -1,4 +1,5 @@
 const FtpClient = require("basic-ftp")
+const path = require("path")
 
 async function sendOverFtp(job, done) {
     let endpoint = job.data.endpoint;

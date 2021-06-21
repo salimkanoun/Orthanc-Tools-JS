@@ -125,6 +125,7 @@ class Endpoint {
 
         if (this.sshKey) {
             let keyObject = await this.getSshKey();
+            if (keyObject.path === null) throw "The endpoint has no key file yet is tag with a sshKey"
             return {
                 host: this.host,
                 username: this.username,
