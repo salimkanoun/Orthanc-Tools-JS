@@ -7,7 +7,7 @@ const crypto = require('../../adapter/cryptoAdapter');
 
 class Endpoint {
     constructor(params) {
-        if(params.id!=-1){
+        if (params.id != -1) {
             Endpoint._checkParams(params)
         }
 
@@ -39,12 +39,12 @@ class Endpoint {
     }
 
     static _checkParams(params) {
-            if (params.label === undefined || params.label === null || params.label === "")
-                throw new OTJSBadRequestException('Endpoint : Invalid label')
-            if (params.host === undefined || params.host === null || params.host === "")
-                throw new OTJSBadRequestException('Endpoint : Invalid host')
-            if (params.protocol === undefined || params.protocol === null || !['ftp', 'sftp', 'ftps', 'webdav'].includes(params.protocol))
-                throw new OTJSBadRequestException('Endpoint : Invalid protocol')
+        if (params.label === undefined || params.label === null || params.label === "")
+            throw new OTJSBadRequestException('Endpoint : Invalid label')
+        if (params.host === undefined || params.host === null || params.host === "")
+            throw new OTJSBadRequestException('Endpoint : Invalid host')
+        if (params.protocol === undefined || params.protocol === null || !['ftp', 'sftp', 'ftps', 'webdav'].includes(params.protocol))
+            throw new OTJSBadRequestException('Endpoint : Invalid protocol')
     }
 
     async set(params) {
@@ -145,8 +145,11 @@ class Endpoint {
     }
 
     webdavOptionFormat() {
-        const url = new URL(this.host)
-        url.port = this.port
+        let host = this.host;
+        if (!(this.host.startsWith("https://") || this.host.startsWith("http://")))
+            host = (this.port === 43 ? "https://" : "http://") + this.host;
+        const url = new URL(host);
+        url.port = this.port;
         return {
             url,
             username: this.username,
