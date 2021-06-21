@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, {Component, Fragment} from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
 import apis from '../../../services/apis'
 
@@ -7,9 +7,11 @@ import StoneLink from '../../Viewers/StoneLink'
 import Modal from 'react-bootstrap/Modal'
 import Metadata from '../../Metadata/Metadata'
 import Modify from '../../Modify/Modify'
-import { toast } from 'react-toastify'
+import {toast} from 'react-toastify'
 import CreateDicom from '../../CreateDicom/CreateDicom'
-export default class ActionBouton extends Component{
+import LabelDropdown from "../../OrthancContent/LabelDropdown";
+
+export default class ActionBouton extends Component {
 
     state = {
         showMetadata: false
@@ -17,7 +19,7 @@ export default class ActionBouton extends Component{
 
     static defaultProps = {
         hiddenMetadata: true,
-        hiddenCreateDicom : false
+        hiddenCreateDicom: false
     }
 
     setMetadata = () => {
@@ -28,38 +30,38 @@ export default class ActionBouton extends Component{
 
     delete = async () => {
         let orthancID = this.props.orthancID
-        switch(this.props.level){
+        switch (this.props.level) {
             case 'patients':
-                try{
+                try {
                     await apis.content.deletePatient(orthancID)
                     toast.success("Patient " + orthancID + " have been deleted")
                     this.props.onDelete(orthancID, this.props.parentID)
-                }catch(error){
+                } catch (error) {
                     toast.error(error)
                 }
                 break
             case 'studies':
-                try{
+                try {
                     await apis.content.deleteStudies(orthancID)
                     toast.success("Studies " + orthancID + " have been deleted")
                     this.props.onDelete(orthancID, this.props.parentID)
-                }catch(error){
+                } catch (error) {
                     toast.error(error)
                 }
                 break
             case 'series':
-                try{
+                try {
                     await apis.content.deleteSeries(orthancID)
                     toast.success("Series " + orthancID + " have been deleted")
                     this.props.onDelete(orthancID, this.props.parentID)
-                }catch(error){
+                } catch (error) {
                     toast.error(error)
                 }
                 break
             default:
                 toast.error("Wrong level")
         }
-        
+
     }
 
     handleClick = (e) => {
@@ -74,27 +76,35 @@ export default class ActionBouton extends Component{
                     <Modal.Header closeButton>
                         <Modal.Title>Metadata</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body >
-                        <Metadata serieID={this.props.orthancID} />
+                    <Modal.Body>
+                        <Metadata serieID={this.props.orthancID}/>
                     </Modal.Body>
                 </Modal>
 
                 <Dropdown onClick={this.handleClick} drop='left'>
-                    <Dropdown.Toggle variant="success" id="dropdown-basic"  >
+                    <Dropdown.Toggle variant="success" id="dropdown-basic">
                         Action
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
                         <OhifLink className='dropdown-item bg-info' {...this.props} />
                         <StoneLink className='dropdown-item bg-info' {...this.props} />
-                        <button className='dropdown-item bg-info' type='button' onClick={ this.setMetadata} hidden={this.props.hiddenMetadata}>View Metadata</button>
-                        <CreateDicom {...this.props} hidden={this.props.hiddenCreateDicom}  />
+                        <button className='dropdown-item bg-info' type='button' onClick={this.setMetadata}
+                                hidden={this.props.hiddenMetadata}>View Metadata
+                        </button>
+                        <CreateDicom {...this.props} hidden={this.props.hiddenCreateDicom}/>
                         <Modify hidden={this.props.hiddenModify} {...this.props} />
-                        <button className='dropdown-item bg-danger' type='button' hidden={this.props.hiddenDelete} onClick={ this.delete }>Delete</button>
+                        <button className='dropdown-item bg-danger' type='button' hidden={this.props.hiddenDelete}
+                                onClick={this.delete}>Delete
+                        </button>
+                        {(this.props.labelDropdownStudyGetter ?
+                            <LabelDropdown className={'dropdown-item bg-primary'}
+                                           selectedStudiesGetter={this.props.labelDropdownStudyGetter}/> : null)}
+
                     </Dropdown.Menu>
                 </Dropdown>
             </Fragment>
-            )
+        )
     }
 
 

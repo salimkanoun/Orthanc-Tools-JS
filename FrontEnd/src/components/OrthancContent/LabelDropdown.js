@@ -40,7 +40,7 @@ export default class LabelDropdown extends Component {
         let studies = {}
         await Promise.all(studies_tab.map(study => apis.studylabel.getStudyLabels(study.MainDicomTags.StudyInstanceUID)
             .then(labels => {
-                studies[study.MainDicomTags.StudyInstanceUID + ':' + study.PatientMainDicomTags.PatientID + ':' + study.ID + ':' + study.ParentPatient ] = labels.map(label => label.label_name);
+                studies[study.MainDicomTags.StudyInstanceUID + ':' + study.PatientMainDicomTags.PatientID + ':' + study.ID + ':' + study.ParentPatient] = labels.map(label => label.label_name);
             })))
         this.setState({studies});
     }
@@ -51,7 +51,7 @@ export default class LabelDropdown extends Component {
             let v = Object.entries(this.state.studies).length;
             if (count !== v) {
                 await Promise.all(Object.entries(this.state.studies)
-                    .map(([study, labels]) => apis.studylabel.createStudyLabel(study.split(':')[0], label, study.split(':')[1],study.split(':')[2],study.split(':')[3]).catch(err => {
+                    .map(([study, labels]) => apis.studylabel.createStudyLabel(study.split(':')[0], label, study.split(':')[1], study.split(':')[2], study.split(':')[3]).catch(err => {
                         if (err.status !== 409) throw err;
                     })));
             } else {
@@ -94,7 +94,7 @@ export default class LabelDropdown extends Component {
     render() {
         let filteredLabels = this.state.labels.filter(label => label.includes(this.state.search))
         return (
-            <DropdownButton title="Labels" onClick={this.handleOpenClick} className={''}>
+            <DropdownButton className={this.props.className} title="Labels" onClick={this.handleOpenClick}>
                 <Dropdown.ItemText className={'label-dropdown-item'}>
                     <InputGroup>
                         <InputGroup.Prepend>

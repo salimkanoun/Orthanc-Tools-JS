@@ -334,6 +334,9 @@ code {
     display: grid;
 }
 
+.react-bootstrap-table.table-responsive {
+    overflow: visible;
+}
 
 @media (min-width: 400px) {
     .grid-form-group {
