@@ -9,7 +9,6 @@ import Metadata from '../../Metadata/Metadata'
 import Modify from '../../Modify/Modify'
 import {toast} from 'react-toastify'
 import CreateDicom from '../../CreateDicom/CreateDicom'
-import LabelDropdown from "../../OrthancContent/LabelDropdown";
 
 export default class ActionBouton extends Component {
 
@@ -97,9 +96,10 @@ export default class ActionBouton extends Component {
                         <button className='dropdown-item bg-danger' type='button' hidden={this.props.hiddenDelete}
                                 onClick={this.delete}>Delete
                         </button>
-                        {(this.props.labelDropdownStudyGetter ?
-                            <LabelDropdown className={'dropdown-item bg-primary'}
-                                           selectedStudiesGetter={this.props.labelDropdownStudyGetter}/> : null)}
+                        {(this.props.level === "studies" && !!this.props.openLabelModal ?
+                            <button className='dropdown-item bg-primary' type='button' hidden={this.props.hiddenDelete}
+                                    onClick={this.props.openLabelModal}>Labels
+                            </button> : null)}
 
                     </Dropdown.Menu>
                 </Dropdown>

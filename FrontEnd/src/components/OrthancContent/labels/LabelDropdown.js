@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import apis from "../../services/apis";
+import apis from "../../../services/apis";
 import {Dropdown, FormControl, InputGroup} from "react-bootstrap";
 
 export default class LabelDropdown extends Component {
