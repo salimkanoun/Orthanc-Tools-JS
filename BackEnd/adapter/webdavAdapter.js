@@ -14,7 +14,7 @@ async function sendOverWebdav(job, done) {
                 password: endpoint.password,
                 digest: endpoint.digest || false
             })
-        let r = await client.stat("./"); // Canary in a coal mine (will throw while createWriteStream wont)
+        await client.stat("./"); // Canary in a coal mine (will throw while createWriteStream wont)
         //Transfering archive
         let rs = fs.createReadStream(file.path, {autoClose: true})
         await new Promise((resolve, reject) => {
