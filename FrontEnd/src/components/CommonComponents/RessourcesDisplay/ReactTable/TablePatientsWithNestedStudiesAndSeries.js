@@ -1,49 +1,72 @@
 import ActionBouton from "../ActionBouton";
 
-import React, {Component, useMemo} from "react";
+import React, {useMemo} from "react";
 import LabelDropdown from "../../../OrthancContent/LabelDropdown";
 import apis from "../../../../services/apis";
 import NestedTable from "./NestedTable";
-import {studyArrayToPatientArray} from "../../../../tools/processResponse";
 
 
-function isObject(item) {
-    return (item && typeof item === 'object' && !Array.isArray(item));
-}
-
-function mergeDeep(target, ...sources) {
-    if (!sources.length) return target;
-    const source = sources.shift();
-
-    if (isObject(target) && isObject(source)) {
-        for (const key in source) {
-            if (isObject(source[key])) {
-                if (!target[key]) Object.assign(target, {[key]: {}});
-                mergeDeep(target[key], source[key]);
-            } else {
-                Object.assign(target, {[key]: source[key]});
-            }
-        }
-    }
-
-    return mergeDeep(target, ...sources);
-}
-
-function TablePatientsWithNestedStudies({
-                                            studies,
-                                            onDelete,
-                                            onModify,
-                                            refresh,
-                                            hiddenAccessionNumber,
-                                            hiddenActionBouton,
-                                            hiddenRemoveRow,
-                                            setSelected,
-                                            hiddenSelect
-                                        }) {
-    const data = useMemo(() => studyArrayToPatientArray(studies).map(patient => {
-        patient.studies = Object.entries(patient.studies).map(([key, val]) => ({StudyOrthancID: key, ...val}))
+function TablePatientsWithNestedStudiesAndSeries({
+                                                     patients,
+                                                     onDelete,
+                                                     onModify,
+                                                     refresh,
+                                                     hiddenAccessionNumber,
+                                                     hiddenActionBouton,
+                                                     hiddenRemoveRow,
+                                                 }) {
+    hiddenActionBouton = hiddenActionBouton || true;
+    hiddenRemoveRow = hiddenActionBouton || true;
+    const data = useMemo(() => patients.map(patient => {
+        patient.studies = Object.entries(patient.studies)
+            .map(([key, val]) => ({StudyOrthancID: key, ...val}))
+        patient.studies.forEach(study => {
+            study.series = Object.entries(study.series)
+                .map(([key, val]) => ({SeriesOrthancID: key, ...val}))
+        })
         return patient;
-    }), [studies]);
+    }), [patients]);
+    const columnSerie = [
+        {
+            accessor: 'SeriesOrthancID',
+            show: false,
+        }, {
+            accessor: 'SeriesDescription',
+            Header: 'Series Description',
+            sort: true,
+            style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+        }, {
+            accessor: 'Modality',
+            Header: 'Modality',
+            sort: true
+        }, {
+            accessor: 'Instances',
+            Header: 'Instances',
+            sort: true
+        }, {
+            accessor: 'SeriesNumber',
+            Header: 'Series Number',
+            sort: true
+        }, {
+            accessor: 'Action',
+            Header: 'Action',
+            show: !hiddenActionBouton,
+            formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.SeriesOrthancID}
+                                                             parentID={row.StudyID} onDelete={this.props.onDelete}
+                                                             row={row} refresh={this.props.refreshSerie}
+                                                             hiddenMetadata={false} hiddenCreateDicom={true}/>)
+        }, {
+            accessor: 'Remove',
+            Header: 'Remove',
+            show: !hiddenRemoveRow,
+            formatter: (cell, row, index) => {
+                return <button type="button" className="btn btn-danger" onClick={(e) => {
+                    e.stopPropagation();
+                    this.props.onDelete(row.SeriesOrthancID)
+                }}>Remove</button>
+            }
+
+        }];
     const columnStudy = [
         {
             accessor: 'StudyOrthancID',
@@ -109,6 +132,9 @@ function TablePatientsWithNestedStudies({
             },
             editable: false,
             csvExport: false
+        }, {
+            accessor: "series",
+            table: columnSerie
         }];
     const columnsPatient = [
         {
@@ -157,35 +183,9 @@ function TablePatientsWithNestedStudies({
         hiddenActionBouton,
         hiddenRemoveRow]);
 
-    return <NestedTable columns={columns} data={data} setSelected={setSelected} hiddenSelect={hiddenSelect}/>
+    return <NestedTable columns={columns} data={data} setSelected={() => {
+    }} hiddenSelect={true}/>
 }
 
-class TablePatientsWithNestedStudiesWrapper extends Component {
-    selected = {
-        root: [],
-        sub: []
-    }
 
-    getSelectedRessources() {
-        let studies = [];
-        return {
-            selectedPatients: this.selected.root.map(x => x.PatientOrthancID),
-            selectedStudies: this.selected.sub.map(x => x.root).flat().map(x => x.StudyOrthancID)
-        };
-    }
-
-    render() {
-        return <TablePatientsWithNestedStudies {...this.props} setSelected={(s) => {
-            this.selected = mergeDeep(this.selected, s);
-            if (this.props.setSelectedStudies) this.props.setSelectedStudies(this.selected.root
-                .map(patient => patient.studies)
-                .flat().concat(
-                    this.selected.sub
-                        .map(x => x.root)
-                        .flat()
-                        .map(x => x.StudyOrthancID)));
-        }}/>
-    }
-}
-
-export default TablePatientsWithNestedStudiesWrapper;
+export default TablePatientsWithNestedStudiesAndSeries;
