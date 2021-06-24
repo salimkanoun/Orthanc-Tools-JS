@@ -438,3 +438,11 @@ button > p {
 .table-responsive {
     overflow-x: auto;
 }
+
+.subtable-row {
+    padding: 0 !important;
+}
+
+.subtable-row > .table-responsive > table {
+    margin: 0 !important;
+}

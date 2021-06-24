@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import TableStudy from './TableStudy'
 import TablePatients from './TablePatients'
+
 export default class TablePatientsWithNestedStudies extends Component {
 
     selection = {
@@ -14,10 +15,15 @@ export default class TablePatientsWithNestedStudies extends Component {
 
     handleRowSelect = (row, isSelected) => {
         if (isSelected) {
-            this.setState(prevState => ({ selectedStudy: [...prevState.selectedStudy, { studyID: row.StudyOrthancID, row: row }] }))
+            this.setState(prevState => ({
+                selectedStudy: [...prevState.selectedStudy, {
+                    studyID: row.StudyOrthancID,
+                    row: row
+                }]
+            }))
         } else {
             let newList = this.state.selectedStudy.filter(study => study.studyID !== row.StudyOrthancID)
-            this.setState({ selectedStudy: newList })
+            this.setState({selectedStudy: newList})
         }
     }
 
@@ -26,7 +32,7 @@ export default class TablePatientsWithNestedStudies extends Component {
     }
 
     removeIdFromList = (selectionArray, id) => {
-        var index = selectionArray.indexOf(id);
+        let index = selectionArray.indexOf(id);
         if (index !== -1) selectionArray.splice(index, 1);
     }
 
@@ -91,7 +97,10 @@ export default class TablePatientsWithNestedStudies extends Component {
                 })
             }
             return (
-                <TableStudy {...this.props} data={answer} selectRow={this.props.setSelection ? this.selectRowStudies : undefined} parentPatientId={row.PatientOrthancID} onDelete={this.props.onDeleteStudy} rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyle} />
+                <TableStudy {...this.props} data={answer}
+                            selectRow={this.props.setSelection ? this.selectRowStudies : undefined}
+                            parentPatientId={row.PatientOrthancID} onDelete={this.props.onDeleteStudy}
+                            rowEvents={this.props.rowEventsStudies} rowStyle={this.props.rowStyle}/>
             )
         },
         parentClassName: (isExpanded, row, rowIndex) => {
@@ -106,7 +115,10 @@ export default class TablePatientsWithNestedStudies extends Component {
 
     render = () => {
         return (
-            <TablePatients studies={this.props.studies} selectRow={this.props.setSelection ? this.selectRowPatients : undefined} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} rowEvents={this.rowEvents} {...this.props} />
+            <TablePatients studies={this.props.studies}
+                           selectRow={this.props.setSelection ? this.selectRowPatients : undefined}
+                           expandRow={this.expandRow} onDelete={this.props.onDeletePatient}
+                           rowEvents={this.rowEvents} {...this.props} />
         )
     }
 }
