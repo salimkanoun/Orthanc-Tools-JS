@@ -98,8 +98,8 @@ class ExportTask {
      * Remove all jobs for export
      */
     static async flush() {
-         archiveQueue.clean()
-         exporter.sendQueue.clean()
+        archiveQueue.clean()
+        exporter.sendQueue.clean()
     }
 
     /**
@@ -149,18 +149,20 @@ class ExportTask {
 }
 
 let archiveQueue = new Queue('archive', ExportTask._getArchiveDicom);
-archiveQueue.on("completed", async (job, result) => {   
+archiveQueue.on("completed", async (job, result) => {
     let endpoint
-    if(job.data.endpoint==-1){
-        endpoint = {        
+    if (job.data.endpoint == -1) {
+        endpoint = {
             id: -1,
             label: 'local',
-            protocol: 'local',}
-    }
-    else{
+            protocol: 'local',
+        }
+    } else {
         endpoint = await Endpoint.getFromId(job.data.endpoint);
     }
-    await exporter.uploadFile(job.data.taskId, endpoint, result.path);
+    await exporter.uploadFile(job.data.taskId, endpoint, result.path).catch((err) => {
+        job.moveToFailed(err)
+    });
 });
 
 module.exports = ExportTask
