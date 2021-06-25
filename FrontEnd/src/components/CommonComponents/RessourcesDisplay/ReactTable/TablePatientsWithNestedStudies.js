@@ -27,6 +27,9 @@ function mergeDeep(target, ...sources) {
 }
 
 function TablePatientsWithNestedStudies({
+                                            rowStyle,
+                                            rowEventsStudies,
+                                            rowEventsPatients,
                                             studies,
                                             onDelete,
                                             onModify,
@@ -62,7 +65,12 @@ function TablePatientsWithNestedStudies({
         hiddenActionBouton,
         hiddenRemoveRow]);
 
-    return <NestedTable columns={columns} data={data} setSelected={setSelected} hiddenSelect={hiddenSelect}/>
+    return <NestedTable columns={columns} data={data} setSelected={setSelected} hiddenSelect={hiddenSelect}
+                        rowStyle={rowStyle}
+                        rowEvent={(row) => {
+                            if (row.PatientOrthancID && rowEventsPatients) rowEventsPatients(row);
+                            else if (row.StudyOrthancID && rowEventsStudies) rowEventsStudies(row);
+                        }}/>
 }
 
 class TablePatientsWithNestedStudiesWrapper extends Component {

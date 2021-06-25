@@ -77,10 +77,8 @@ class ContentRootPanel extends Component {
         this.setState({currentSelectedStudyId: ''})
     }
 
-    rowEventsStudies = {
-        onClick: (e, row) => {
-            this.setState({currentSelectedStudyId: row.StudyOrthancID})
-        }
+    rowEventsStudies = (row) => {
+        this.setState({currentSelectedStudyId: row.StudyOrthancID});
     }
 
     rowStyleStudies = (row) => {

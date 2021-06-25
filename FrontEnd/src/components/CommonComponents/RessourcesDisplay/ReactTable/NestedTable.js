@@ -9,7 +9,7 @@ actions.toggleAllRowsSelected = 'toggleAllRowsSelected'
 actions.toggleRowSelected = 'toggleRowSelected'
 actions.toggleAllPageRowsSelected = 'toggleAllPageRowsSelected'
 
-function NestedTable({columns, data, setSelected, hiddenSelect}) {
+function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowStyle}) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -20,7 +20,6 @@ function NestedTable({columns, data, setSelected, hiddenSelect}) {
         setPageSize,
         prepareRow,
         visibleColumns,
-        selectedFlatRows,
         state: {expanded, pageIndex, pageSize, selectedRowIds}
     } = useTable(
         {
@@ -83,7 +82,7 @@ function NestedTable({columns, data, setSelected, hiddenSelect}) {
         <Table striped bordered responsive {...getTableProps()}>
             <thead>
             {headerGroups.map(headerGroup => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
+                <tr {...headerGroup.getHeaderGroupProps()} >
                     {headerGroup.headers.map(column => (
                         <th {...column.getHeaderProps()}>{column.render('Header')}</th>
                     ))}
@@ -97,7 +96,9 @@ function NestedTable({columns, data, setSelected, hiddenSelect}) {
                 return (
                     // Use a React.Fragment here so the table markup is still valid
                     <React.Fragment>
-                        <tr {...row.getRowProps()}>
+                        <tr {...row.getRowProps()} onClick={((event) => {
+                            if (rowEvent) rowEvent(row.values);
+                        })} style={(rowStyle ? rowStyle(row.values) : null)}>
                             {row.cells.map(cell => {
                                 return (
                                     <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
@@ -118,6 +119,8 @@ function NestedTable({columns, data, setSelected, hiddenSelect}) {
                                                             setSelected({sub: t})
                                                         }}
                                                         hiddenSelect={hiddenSelect}
+                                                        rowEvent={rowEvent}
+                                                        rowStyle={rowStyle}
                                                     />
                                                 </td>
                                             </tr> :
