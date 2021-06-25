@@ -46,7 +46,7 @@ jobs:
       run: |
         mkdir stone
         cd stone
-        wget https://lsb.orthanc-server.com/stone-webviewer/1.0/wasm-binaries.zip
+        wget https://lsb.orthanc-server.com/stone-webviewer/2.0/wasm-binaries.zip
         unzip wasm-binaries.zip -d .
         rm wasm-binaries.zip
         rm./wasm-binaries/StoneWebViewer/configuration.json

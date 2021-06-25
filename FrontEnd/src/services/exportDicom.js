@@ -10,7 +10,7 @@ const exportDicom = {
     let body = {}
     if (TS !== 'None') {
       body = {
-        Synchronous: false,
+        Synchronous: true,
         Resources: OrthancIDsArray,
         Transcode: TS
       }
@@ -30,10 +30,7 @@ const exportDicom = {
       body: JSON.stringify(body)
     }
 
-    return fetch('/api/tools/create-archive/', exportHirachicalDicomsOption).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return answer.json()
-    }).catch((error) => {
+    return fetch('/api/tools/create-archive/', exportHirachicalDicomsOption).catch((error) => {
       throw error
     })
   },
@@ -42,7 +39,7 @@ const exportDicom = {
     let body = {}
     if (TS !== 'None') {
       body = {
-        Synchronous: false,
+        Synchronous: true,
         Resources: OrthancIDsArray,
         Transcode: TS
       }
@@ -62,12 +59,51 @@ const exportDicom = {
       body: JSON.stringify(body)
     }
 
-    return fetch('/api/tools/create-media-extended/', exportDicomDirDicomsOption).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
+    return fetch('/api/tools/create-media-extended/', exportDicomDirDicomsOption).catch((error) => {
+      throw error
+    })
+  },
+
+
+  downloadZipSync(orthancIDsArray, TS, dicomDir) {
+
+    let fetchPromise = null
+    if(dicomDir){
+      fetchPromise = this.exportDicomDirDicoms(orthancIDsArray, TS)
+    }else{
+      fetchPromise = this.exportHirachicalDicoms(orthancIDsArray, TS)
+    }
+
+    fetchPromise.then( (answer) => {
+
+      const fileStream = streamSaver.createWriteStream('Dicom_' + Date.now() + '.zip')
+
+      console.log("ici reponse recue")
+
+      if (!answer.ok) throw answer
+
+      const readableStream = answer.body
+
+      // more optimized
+      if (window.WritableStream && readableStream.pipeTo) {
+        return readableStream.pipeTo(fileStream)
+          .then(() => console.log('done writing'))
+      }
+
+      let writer = fileStream.getWriter()
+
+      const reader = answer.body.getReader()
+      const pump = () => reader.read()
+        .then(res => res.done
+          ? writer.close()
+          : writer.write(res.value).then(pump))
+
+      pump()
+
     }).catch((error) => {
       throw error
     })
+
   },
 
   downloadZip(jobID) {
