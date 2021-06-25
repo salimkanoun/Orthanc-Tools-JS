@@ -69,8 +69,8 @@ function NestedTable({columns, data, setSelected, hiddenSelect}) {
                     if (action.type === actions.resetSelectedRows ||
                         action.type === actions.toggleAllRowsSelected ||
                         action.type === actions.toggleRowSelected) {
+                        instance.selectChange = true;
                     }
-                    instance.selectChange = true;
                     return state;
                 }
             )

@@ -1,13 +1,16 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import TableStudiesWithNestedSeries from './TableStudiesWithNestedSeries'
-import TablePatients from './TablePatients'
+import TablePatients from '../TablePatients'
 
 export default class TablePatientsWithNestedStudiesAndSeries extends Component {
 
     static defaultProps = {
-        onDeletePatient: function () { },
-        onDeleteStudy: function () { },
-        onDeleteSeries: function () { }
+        onDeletePatient: function () {
+        },
+        onDeleteStudy: function () {
+        },
+        onDeleteSeries: function () {
+        }
     }
 
     expandRow = {
@@ -24,7 +27,10 @@ export default class TablePatientsWithNestedStudiesAndSeries extends Component {
             }
 
             return (
-                <TableStudiesWithNestedSeries data={answer} hiddenActionBouton={true} parentPatientId={row.PatientOrthancID} onDeleteStudy={this.props.onDeleteStudy} onDeleteSeries={this.props.onDeleteSeries} />
+                <TableStudiesWithNestedSeries data={answer} hiddenActionBouton={true}
+                                              parentPatientId={row.PatientOrthancID}
+                                              onDeleteStudy={this.props.onDeleteStudy}
+                                              onDeleteSeries={this.props.onDeleteSeries}/>
             )
         },
         parentClassName: (isExpanded, row, rowIndex) => {
@@ -39,7 +45,8 @@ export default class TablePatientsWithNestedStudiesAndSeries extends Component {
 
     render = () => {
         return (
-            <TablePatients hiddenActionBouton={true} patients={this.props.patients} expandRow={this.expandRow} onDelete={this.props.onDeletePatient} {...this.props} />
+            <TablePatients hiddenActionBouton={true} patients={this.props.patients} expandRow={this.expandRow}
+                           onDelete={this.props.onDeletePatient} {...this.props} />
         )
     }
 }

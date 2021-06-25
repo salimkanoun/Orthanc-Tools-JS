@@ -1,12 +1,14 @@
-import React, { Component } from 'react'
-import TableSeries from './TableSeries'
-import TableStudy from './TableStudy'
+import React, {Component} from 'react'
+import TableSeries from '../TableSeries'
+import TableStudy from '../TableStudy'
 
 export default class TableStudiesWithNestedSeries extends Component {
 
     static defaultProps = {
-        onDeleteStudy: function () { },
-        onDeleteSeries: function () { }
+        onDeleteStudy: function () {
+        },
+        onDeleteSeries: function () {
+        }
     }
 
     expandRow = {
@@ -22,7 +24,8 @@ export default class TableStudiesWithNestedSeries extends Component {
                 })
             }
             return (
-                <TableSeries {...this.props} data={answer} parentStudyId={row.StudyOrthancID} onDelete={this.props.onDeleteSeries} />
+                <TableSeries {...this.props} data={answer} parentStudyId={row.StudyOrthancID}
+                             onDelete={this.props.onDeleteSeries}/>
             )
         },
         parentClassName: (isExpanded, row, rowIndex) => {
@@ -37,7 +40,8 @@ export default class TableStudiesWithNestedSeries extends Component {
 
     render = () => {
         return (
-            <TableStudy studies={this.props.studies} expandRow={this.expandRow} onDelete={this.props.onDeleteStudy} {...this.props} />
+            <TableStudy studies={this.props.studies} expandRow={this.expandRow}
+                        onDelete={this.props.onDeleteStudy} {...this.props} />
         )
     }
 }
