@@ -8,7 +8,7 @@ class Certificate {
      * @param label of the new certificate
      * @returns {Promise<int>} Returns a promise for the id of the new certicate
      */
-    static createCertificate(label) {
+    static async createCertificate(label) {
         return CertificateRepo.createCertificate(label).then(cert => cert.id);
     }
 
@@ -19,7 +19,7 @@ class Certificate {
      * @param path of the certificate file
      * @returns {Promise<>} Returns a promise that complete once the modification is completed
      */
-    static updateCertificate(id, label, path) {
+    static async updateCertificate(id, label, path) {
         return CertificateRepo.updateCertificate(id, label, path);
     }
 
@@ -28,7 +28,7 @@ class Certificate {
      * @param id of the certificate
      * @returns {Promise<Certificate>}
      */
-    static getFromId(id) {
+    static async getFromId(id) {
         return CertificateRepo.getFromId(id);
     }
 
@@ -36,7 +36,7 @@ class Certificate {
      * Returns a list of all existing certificates
      * @returns {Promise<[Certificate]>}
      */
-    static getAllCertificates() {
+    static async getAllCertificates() {
         return CertificateRepo.getAllCertificates();
     }
 

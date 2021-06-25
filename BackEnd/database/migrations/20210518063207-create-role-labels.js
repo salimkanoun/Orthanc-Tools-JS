@@ -1,16 +1,16 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('UserLabels', {
+    await queryInterface.createTable('RoleLabels', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      user_id: {
+      role_name: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       label_name: {
         allowNull: false,
@@ -25,23 +25,23 @@ module.exports = {
         type: Sequelize.DATE
       }
     }).then(() => {
-      return queryInterface.addConstraint('UserLabels',  {
-        fields: ['user_id','label_name'],
+      return queryInterface.addConstraint('RoleLabels',  {
+        fields: ['role_name','label_name'],
         type: 'unique',
-        name: 'unique_combined_userID&label'
+        name: 'unique_combined_role&label'
       })
     }).then(() => {
-      return queryInterface.addConstraint('UserLabels', {
+      return queryInterface.addConstraint('RoleLabels', {
         type: 'foreign key',
-        fields: ['user_id'],
+        fields: ['role_name'],
         references: {
-          fields: ['id'],
-          table: 'Users',
+          fields: ['name'],
+          table: 'Roles',
         },
-        name: 'UL_users_id_fkey',
+        name: 'RL_role_name_fkey',
       })
     }).then(() => {
-      return queryInterface.addConstraint('UserLabels', {
+      return queryInterface.addConstraint('RoleLabels', {
         type: 'foreign key',
         fields: ['label_name'],
         onUpdate: 'CASCADE',
@@ -49,11 +49,11 @@ module.exports = {
           fields: ['label_name'],
           table: 'Labels',
         },
-        name: 'UL_labels_name_fkey',
+        name: 'RL_labels_name_fkey',
       })
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('UserLabels');
+    await queryInterface.dropTable('RoleLabels');
   }
 };

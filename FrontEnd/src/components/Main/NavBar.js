@@ -23,6 +23,7 @@ import AnonRootPanel from '../Anonymize/AnonRootPanel'
 import Delete from '../Delete/Delete'
 import CDBurner from './../CDBurner/CDBurner'
 import MyDicom from '../MyDicom/MyDicom'
+import DicomRouterPanel from '../Dicom Router/DicomRouterPanel'
 
 
 export default class NavBar extends Component {
@@ -79,6 +80,7 @@ export default class NavBar extends Component {
               <Link className={this.getLinkClass('auto-query')} onClick={this.selectTabHandler} name='auto-query' to='/auto-query' hidden={!this.props.roles.auto_query}>Auto-Retrieve</Link>
               <Link className={this.getLinkClass('burner')} onClick={this.selectTabHandler} name='burner' to='/cd-burner' hidden={!this.props.roles.cd_burner}>CD-burner</Link>
               <Link className={this.getLinkClass('mydicom')} onClick={this.selectTabHandler} name='mydicom' to='/mydicom'>MyDicom</Link>
+              <Link className={this.getLinkClass('dicom-router')} onClick={this.selectTabHandler} name='dicom-router' to='/dicom-router' hidden={!this.props.roles.autorouting}>Dicom-Router </Link>
               <Link className={this.getLinkClass('administration')} onClick={this.selectTabHandler} name='administration' to='/administration' hidden={!this.props.roles.admin}>Administration</Link>
               <Link className={this.getLinkClass('log-out')} name='log-out' onClick={this.props.onLogout} to='/'>Log out</Link>
             </Nav>
@@ -112,6 +114,7 @@ const AnimatedSwitch = withRouter(({ location }) => (
         <Route exact path='/cd-burner' component={CDBurner} />
         <Route exact path='/mydicom' component={MyDicom}/>
         <Route exact path='/delete' component={Delete} />
+        <Route exact path='/dicom-router' component={DicomRouterPanel}/>
       </Switch>
     </CSSTransition>
   </TransitionGroup>

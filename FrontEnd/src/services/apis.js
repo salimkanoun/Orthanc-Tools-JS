@@ -21,7 +21,9 @@ import sshKeys from './sshKeys'
 import endpoints from './endpoints'
 import label from './label'
 import studylabel from './studylabel'
-import userlabel from './userlabel'
+import rolelabel from './rolelabel'
+import autorouting from './autorouting'
+import autorouter from './autorouter'
 
 const apis = {
   importDicom,
@@ -47,7 +49,9 @@ const apis = {
   endpoints,
   label,
   studylabel,
-  userlabel
+  rolelabel,
+  autorouting,
+  autorouter
 }
 
 export default apis

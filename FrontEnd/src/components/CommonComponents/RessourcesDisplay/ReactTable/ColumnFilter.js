@@ -5,6 +5,7 @@ export default function ColumnFilter({
   return (
     <input
       value={filterValue || ''}
+      className='form-control'
       onChange={e => {
         setFilter(e.target.value.replace(' ','') || undefined) // Set undefined to remove the filter entirely
       }}

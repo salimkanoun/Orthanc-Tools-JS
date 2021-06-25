@@ -88,7 +88,7 @@ class AnonRootPanel extends Component {
                         <li className='nav-item'>
                             <button
                                 className={this.state.currentMainTab === HISTORIC_TAB ? 'col nav-link active link-button' : 'col nav-link link-button'}
-                                onClick={() => this.setCurrentMainTab(HISTORIC_TAB)}>Historic
+                                onClick={() => this.setCurrentMainTab(HISTORIC_TAB)}> History
                             </button>
                         </li>
                     </ul>
