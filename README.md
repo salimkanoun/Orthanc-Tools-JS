@@ -34,5 +34,7 @@ Demo Server : https://orthanctoolsjs.ddns.net/
 login : admin
 password : admin
 
+WIP : AutoRouting, Dicom ressource labelling, Dicom creation (image or pdf)
+
 Roadmap : 
-Monitoring  : Tag collection (in Elastic Search), Prefecthing, AutoRouting, Dicom ressource labelling, Dicom creation (image or pdf)
+Monitoring  : Tag collection (in Elastic Search), Prefecthing, Remote AET Monitoring
