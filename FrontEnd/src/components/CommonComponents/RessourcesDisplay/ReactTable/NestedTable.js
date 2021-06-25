@@ -96,8 +96,8 @@ function NestedTable({columns, data, setSelected, hiddenSelect}) {
                 prepareRow(row)
                 return (
                     // Use a React.Fragment here so the table markup is still valid
-                    <React.Fragment {...row.getRowProps()}>
-                        <tr>
+                    <React.Fragment>
+                        <tr {...row.getRowProps()}>
                             {row.cells.map(cell => {
                                 return (
                                     <td {...cell.getCellProps()}>{cell.render('Cell')}</td>

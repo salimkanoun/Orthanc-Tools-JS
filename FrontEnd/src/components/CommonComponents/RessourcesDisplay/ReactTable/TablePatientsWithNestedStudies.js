@@ -1,10 +1,7 @@
-import ActionBouton from "../ActionBouton";
-
 import React, {Component, useMemo} from "react";
-import LabelDropdown from "../../../OrthancContent/LabelDropdown";
-import apis from "../../../../services/apis";
 import NestedTable from "./NestedTable";
 import {studyArrayToPatientArray} from "../../../../tools/processResponse";
+import {columnPatientsFactory, columnStudyFactory} from "./ColumnFactories";
 
 
 function isObject(item) {
@@ -44,112 +41,20 @@ function TablePatientsWithNestedStudies({
         patient.studies = Object.entries(patient.studies).map(([key, val]) => ({StudyOrthancID: key, ...val}))
         return patient;
     }), [studies]);
-    const columnStudy = [
-        {
-            accessor: 'StudyOrthancID',
-            Header: 'Study Orthanc ID',
-            show: false
-        }, {
-            accessor: 'StudyInstanceUID',
-            Header: 'StudyInstanceUID',
-            show: false
-        }, {
-            accessor: 'StudyDate',
-            Header: 'Study Date',
-            sort: true,
-            editable: false
-        }, {
-            accessor: 'StudyDescription',
-            Header: 'Description',
-            sort: true,
-            title: (cell, row, rowIndex, colIndex) => row.StudyDescription,
-            editable: false,
-            style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-        }, {
-            accessor: 'AccessionNumber',
-            Header: 'Accession Number',
-            sort: true,
-            show: !hiddenAccessionNumber,
-            editable: false
-        }, {
-            accessor: 'Action',
-            Header: 'Action',
-            show: !hiddenActionBouton,
-            Cell: ((row) =>
-                    (<>
-                        <ActionBouton level='studies' orthancID={row.StudyOrthancID}
-                                      StudyInstanceUID={row.StudyInstanceUID} onDelete={onDelete} row={row}
-                                      refresh={refresh}/>
-                        <LabelDropdown selectedStudiesGetter={async () => {
-                            let study = await apis.content.getStudiesDetails(row.StudyOrthancID)
-                            return ([{
-                                ID: row.StudyOrthancID,
-                                MainDicomTags: {
-                                    StudyInstanceUID: row.StudyInstanceUID,
-                                },
-                                PatientMainDicomTags: {
-                                    PatientID: row.PatientID
-                                },
-                                ParentPatient: study.ParentPatient
-                            }])
-                        }}/>
-                    </>)
-            ),
-            editable: false,
-            csvExport: false
-        }, {
-            accessor: 'Remove',
-            Header: 'Remove',
-            show: !hiddenRemoveRow,
-            Cell: (row) => {
-                return <button type="button" className="btn btn-danger" onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(row.StudyOrthancID)
-                }}>Remove</button>
-            },
-            editable: false,
-            csvExport: false
-        }];
-    const columnsPatient = [
-        {
-            accessor: 'PatientOrthancID',
-            show: false
-        }, {
-            accessor: 'PatientName',
-            Header: 'Patient Name',
-            sort: true,
-            editable: false,
-            style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-        }, {
-            accessor: 'PatientID',
-            Header: 'Patient ID',
-            sort: true,
-            editable: false,
-            style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-        }, {
-            accessor: 'Action',
-            Header: 'Action',
-            show: !hiddenActionBouton,
-            Cell: (row) => {
-                return <ActionBouton level='patients' orthancID={row.PatientOrthancID} onDelete={onDelete}
-                                     onModify={onModify} row={row} refresh={refresh}/>
-            }
-        }, {
-            accessor: 'studies',
-            table: columnStudy
-        }, {
-            accessor: 'Remove',
-            Header: 'Remove',
-            show: !hiddenRemoveRow,
-            Cell: (row) => {
-                return <button type="button" className="btn btn-danger" onClick={(e) => {
-                    e.stopPropagation();
-                    onDelete(row.PatientOrthancID)
-                }}>Remove</button>
-            },
-            editable: false
-        }];
-    const columns = useMemo(() => columnsPatient, [
+    const columns = useMemo(() => {
+        let patientsColumns = columnPatientsFactory(
+            hiddenActionBouton,
+            hiddenRemoveRow,
+            onDelete,
+            onModify,
+            refresh);
+        let studiesColumns = columnStudyFactory(hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, true, true, onDelete, refresh);
+        patientsColumns.push({
+            accessor: "studies",
+            table: studiesColumns
+        });
+        return patientsColumns;
+    }, [
         onDelete,
         onModify,
         refresh,
