@@ -1,6 +1,7 @@
 import React from 'react'
-import {usePagination, useTable} from 'react-table'
+import {useTable} from 'react-table'
 import BTable from 'react-bootstrap/Table'
+import {usePagination} from "@material-ui/lab";
 
 const LOWEST_PAGE_SIZE = 10;
 
@@ -19,7 +20,6 @@ function Table({
         previousPage,
         setPageSize,
         visibleColumns,
-        state: {pageIndex, pageSize}
     } = useTable({
             columns,
             data: tableData,
@@ -49,7 +49,7 @@ function Table({
                 ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                {(pagination ? page : rows).map((row, i) => {
+                {rows.map((row, i) => {
                     prepareRow(row)
                     return (
                         // Use a React.Fragment here so the table markup is still valid
@@ -59,36 +59,13 @@ function Table({
                             }]))} style={rowStyle(row.values)}>
                                 {row.cells.map(cell => {
                                     return (
-                                        <td {...cell.getCellProps()}
-                                            style={(cell.column.style instanceof Function ? cell.column.style(row) : null)}>{cell.render('Cell')}</td>
+                                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                                     )
                                 })}
                             </tr>
                         </React.Fragment>
                     )
                 })}
-                {(pagination && LOWEST_PAGE_SIZE < tableData.length ? <tr>
-                    <td colSpan={visibleColumns.length}>
-                        <div className={'d-flex justify-content-between'}>
-                            <button disabled={pageIndex === 0} className={'btn btn-primary'}
-                                    onClick={previousPage}>⇦
-                            </button>
-                            <select className="form-select" aria-label="Default select example"
-                                    onChange={(page) => {
-                                        setPageSize(page.target.value)
-                                    }}>
-                                <option selected value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="30">30</option>
-                                <option value="50">50</option>
-                            </select>
-                            <button disabled={pageIndex * pageSize + pageSize > tableData.length}
-                                    className={'btn btn-primary '}
-                                    onClick={nextPage}>⇨
-                            </button>
-                        </div>
-                    </td>
-                </tr> : null)}
                 </tbody>
             </BTable>
             <br/>

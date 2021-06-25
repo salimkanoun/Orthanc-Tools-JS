@@ -1,16 +1,21 @@
-import React, { Component, Fragment } from "react"
-import { connect } from "react-redux"
-import cellEditFactory from 'react-bootstrap-table2-editor'
+import React, {Component, Fragment} from "react"
+import {connect} from "react-redux"
 
-import TablePatient from '../CommonComponents/RessourcesDisplay/TablePatients'
-import TableStudy from "../CommonComponents/RessourcesDisplay/TableStudy"
+import TablePatient from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatients'
+import TableStudy from "../CommonComponents/RessourcesDisplay/ReactTable/TableStudy"
 import apis from "../../services/apis"
 import AnonProfile from './AnonProfile'
 
-import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList, saveNewValues, autoFill } from '../../actions/AnonList'
-import { studyArrayToPatientArray } from '../../tools/processResponse'
+import {
+    autoFill,
+    emptyAnonymizeList,
+    removePatientFromAnonList,
+    removeStudyFromAnonList,
+    saveNewValues
+} from '../../actions/AnonList'
+import {studyArrayToPatientArray} from '../../tools/processResponse'
 
-import { toast } from "react-toastify"
+import {toast} from "react-toastify"
 
 class AnonymizePanel extends Component {
 
@@ -94,7 +99,7 @@ class AnonymizePanel extends Component {
 
     rowEvents = {
         onClick: (e, row) => {
-            this.setState({ currentPatient: row.PatientOrthancID })
+            this.setState({currentPatient: row.PatientOrthancID})
         }
     }
 
@@ -106,39 +111,29 @@ class AnonymizePanel extends Component {
                     <div className="col-sm mb-3">
                         <TablePatient
                             data={this.getPatients()}
+                            patients={this.getPatients()}
                             rowEvents={this.rowEvents}
                             hiddenActionBouton={true}
                             hiddenRemoveRow={false}
                             textNameColumn={'Original Name'}
                             textIDColumn={'Original ID'}
-                            hiddenNewName={false}
-                            hiddenNewID={false}
-                            cellEdit={cellEditFactory({
-                                blurToSave: true,
-                                autoSelectText: true,
-                                mode: 'click',
-                                afterSaveCell: (oldValue, newValue, row, column) => {
-                                    this.props.saveNewValues(row.PatientOrthancID, column.dataField, newValue)
-                                }
-                            })}
+                            showEditable={true}
+                            onDataChange={(oldValue, newValue, row, column) => {
+                                this.props.saveNewValues(row.PatientOrthancID, column, newValue)
+                            }}
                             rowStyle={this.rowStyle}
-                            onDelete={this.props.removePatientFromAnonList} />
+                            onDelete={this.props.removePatientFromAnonList}/>
                     </div>
                     <div className="col-sm">
                         <TableStudy
-                            data={this.getStudy()}
+                            studies={this.getStudy()}
                             hiddenActionBouton={true}
                             hiddenRemoveRow={false}
                             onDelete={this.props.removeStudyFromAnonList}
-                            editable={true}
-                            cellEdit={cellEditFactory({
-                                blurToSave: true,
-                                autoSelectText: true,
-                                mode: 'click',
-                                afterSaveCell: (oldValue, newValue, row, column) => {
-                                    this.props.saveNewValues(row.StudyOrthancID, column.dataField, newValue)
-                                }
-                            })}
+                            showEditable={true}
+                            onDataChange={(oldValue, newValue, row, column) => {
+                                this.props.saveNewValues(row.StudyOrthancID, column.dataField, newValue)
+                            }}
                             pagination={true}
                         />
                     </div>
@@ -146,11 +141,16 @@ class AnonymizePanel extends Component {
 
                 <div className="row mb-3">
                     <div className='col-sm'>
-                        <input type='text' name='prefix' id='prefix' className='form-control' placeholder='prefix' onChange={(e) => this.setState({ prefix: e.target.value })} />
+                        <input type='text' name='prefix' id='prefix' className='form-control' placeholder='prefix'
+                               onChange={(e) => this.setState({prefix: e.target.value})}/>
                     </div>
                     <div className='col-sm'>
-                        <button type='button' className='btn btn-warning mr-3' onClick={() => this.props.autoFill(this.state.prefix)}>AutoFill</button>
-                        <button type='button' className="btn btn-warning" onClick={this.props.emptyAnonymizeList}>Empty List</button>
+                        <button type='button' className='btn btn-warning mr-3'
+                                onClick={() => this.props.autoFill(this.state.prefix)}>AutoFill
+                        </button>
+                        <button type='button' className="btn btn-warning" onClick={this.props.emptyAnonymizeList}>Empty
+                            List
+                        </button>
 
                     </div>
                     <div className='col-sm'>
@@ -158,10 +158,10 @@ class AnonymizePanel extends Component {
                 </div>
                 <div className="row">
                     <div className='col-lg'>
-                        <AnonProfile />
+                        <AnonProfile/>
                     </div>
                     <div className="col-sm">
-                        <button className='btn btn-primary' type='button' onClick={this.anonymize} >Anonymize</button>
+                        <button className='btn btn-primary' type='button' onClick={this.anonymize}>Anonymize</button>
                     </div>
                 </div>
             </Fragment>

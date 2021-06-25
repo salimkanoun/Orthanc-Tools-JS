@@ -9,6 +9,8 @@ actions.toggleAllRowsSelected = 'toggleAllRowsSelected'
 actions.toggleRowSelected = 'toggleRowSelected'
 actions.toggleAllPageRowsSelected = 'toggleAllPageRowsSelected'
 
+const LOWEST_PAGE_SIZE = 10;
+
 function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowStyle}) {
     const {
         getTableProps,
@@ -132,7 +134,7 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
                     </React.Fragment>
                 )
             })}
-            {(10 < data.length ? <tr>
+            {(LOWEST_PAGE_SIZE < data.length ? <tr>
                 <td colSpan={visibleColumns.length}>
                     <div className={'d-flex justify-content-between'}>
                         <button disabled={pageIndex === 0} className={'btn btn-primary'}
