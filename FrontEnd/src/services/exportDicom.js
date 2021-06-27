@@ -10,13 +10,13 @@ const exportDicom = {
     let body = { }
     if (TS !== 'None') {
       body = {
-        Synchronous: false,
+        Synchronous: true,
         Resources: OrthancIDsArray,
         Transcode: TS
       }
     } else {
       body = {
-        Synchronous: false,
+        Synchronous: true,
         Resources: OrthancIDsArray
       }
     }
@@ -39,13 +39,13 @@ const exportDicom = {
     let body = {}
     if (TS !== 'None') {
       body = {
-        Synchronous: false,
+        Synchronous: true,
         Resources: OrthancIDsArray,
         Transcode: TS
       }
     } else {
       body = {
-        Synchronous: false,
+        Synchronous: true,
         Resources: OrthancIDsArray
       }
     }
