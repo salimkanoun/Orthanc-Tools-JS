@@ -13,7 +13,8 @@ import {addStudiesToDeleteList} from '../../actions/DeleteList'
 import {addStudiesToExportList} from '../../actions/ExportList'
 import {addStudiesToAnonList} from '../../actions/AnonList'
 import {toast} from 'react-toastify'
-import LabelDropdown from "./LabelDropdown";
+import LabelDropdown from "./labels/LabelDropdown";
+import LabelModal from "./labels/LabelModal";
 
 
 class ContentRootPanel extends Component {
@@ -21,8 +22,10 @@ class ContentRootPanel extends Component {
     state = {
         currentSelectedStudyId: '',
         dataForm: {},
-        orthancContent : []
+        orthancContent: []
     }
+
+    modalRef = {open: null};
 
     constructor(props) {
         super(props)
@@ -47,7 +50,7 @@ class ContentRootPanel extends Component {
         try {
             let studies = await apis.content.getOrthancFind(dataForm)
             this.setState({
-                orthancContent : studies
+                orthancContent: studies
             })
         } catch (error) {
             toast.error(error.statusText)
@@ -98,17 +101,17 @@ class ContentRootPanel extends Component {
         let studiesOfSelectedPatients = []
         //Add all studies of selected patient
         selectedIds.selectedPatients.forEach(orthancPatientId => {
-          //loop the redux and add all studies that had one of the selected patient ID
-          let studyArray = this.state.orthancContent.filter(study => {
-              if (study.ParentPatient === orthancPatientId) return true
-              else return false
-          })
-          //Add to the global list of selected studies
-          studiesOfSelectedPatients.push(...studyArray)
+            //loop the redux and add all studies that had one of the selected patient ID
+            let studyArray = this.state.orthancContent.filter(study => {
+                if (study.ParentPatient === orthancPatientId) return true
+                else return false
+            })
+            //Add to the global list of selected studies
+            studiesOfSelectedPatients.push(...studyArray)
         })
-  
-          //add selected level studies
-          selectedIds.selectedStudies.forEach(element => {
+
+        //add selected level studies
+        selectedIds.selectedStudies.forEach(element => {
             this.props.orthancContent.forEach(study => {
                 if (element === study.ID)
                     studiesOfSelectedPatients.push(study)
@@ -117,7 +120,7 @@ class ContentRootPanel extends Component {
         //Get only unique study ids
         let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
         return uniqueSelectedOrthancStudyId
-      }
+    }
 
 
     render = () => {
@@ -127,13 +130,13 @@ class ContentRootPanel extends Component {
                 <div className='row'>
                     <div className='col-sm'>
                         <div className={'d-flex flex-row justify-content-between'}>
-                            <LabelDropdown selectedStudiesGetter={this.getStudySelectedDetails}/>                            
-                            <SendTo 
-                                studies={this.child.current===null ? [] : this.child.current.getSelectedRessources().selectedStudies} 
-                                patients={this.child.current===null ? [] : this.child.current.getSelectedRessources().selectedPatients}
+                            <LabelDropdown selectedStudiesGetter={this.getStudySelectedDetails}/>
+                            <SendTo
+                                studies={this.child.current === null ? [] : this.child.current.getSelectedRessources().selectedStudies}
+                                patients={this.child.current === null ? [] : this.child.current.getSelectedRessources().selectedPatients}
                             />
                         </div>
-
+                        <LabelModal fwRef={this.modalRef} test={'test'}/>
                         <TablePatientsWithNestedStudies
                             patients={studyArrayToPatientArray(this.state.orthancContent)}
                             rowEventsStudies={this.rowEventsStudies}
@@ -143,6 +146,7 @@ class ContentRootPanel extends Component {
                             setSelection={true}
                             ref={this.child}
                             refresh={this.sendSearch}
+                            openLabelModal={this.modalRef.open}
                         />
                     </div>
                     <div className='col-sm'>

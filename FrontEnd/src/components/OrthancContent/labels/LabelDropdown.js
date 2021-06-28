@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import apis from "../../services/apis";
+import apis from "../../../services/apis";
 import {Dropdown, FormControl, InputGroup} from "react-bootstrap";
 
 export default class LabelDropdown extends Component {
@@ -102,7 +102,7 @@ export default class LabelDropdown extends Component {
     render() {
         let filteredLabels = this.state.labels.filter(label => label.includes(this.state.search))
         return (
-            <DropdownButton title="Labels" onClick={this.handleOpenClick} className={''}>
+            <DropdownButton className={this.props.className} title="Labels" onClick={this.handleOpenClick}>
                 <Dropdown.ItemText className={'label-dropdown-item'}>
                     <InputGroup>
                         <InputGroup.Prepend>
