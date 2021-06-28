@@ -22,31 +22,31 @@ function BurnerJobsTables({jobs}) {
         },
         {
             accessor: 'patientName',
-            text: 'Patient Name'
+            Header: 'Patient Name'
         },
         {
             accessor: 'patientID',
-            text: 'Patient ID'
+            Header: 'Patient ID'
         },
         {
             accessor: 'patientDOB',
-            text: 'Patient Birth Date'
+            Header: 'Patient Birth Date'
         },
         {
             accessor: 'studyDate',
-            text: 'Study Date'
+            Header: 'Study Date'
         },
         {
             accessor: 'studyDescription',
-            text: 'Study Description'
+            Header: 'Study Description'
         },
         {
             accessor: 'status',
-            text: 'CD Status'
+            Header: 'CD Status'
         },
         {
             id: 'cancelButton',
-            text: 'Cancel',
+            Header: 'Cancel',
             Cell: ({row}) => {
                 let disable = (row.values.status === CDBurner.JOB_STATUS_BURNING_DONE || row.values.status === CDBurner.JOB_STATUS_BURNING_ERROR)
                 return (
