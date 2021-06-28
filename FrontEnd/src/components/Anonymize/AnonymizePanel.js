@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from "react"
+import React, {Component, Fragment, useMemo} from "react"
 import {connect} from "react-redux"
 
 import TablePatient from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatients'
@@ -16,6 +16,27 @@ import {
 import {studyArrayToPatientArray} from '../../tools/processResponse'
 
 import {toast} from "react-toastify"
+
+/**
+ * This componnent wrapper allows to optimise the table by memoizing data
+ * because getStudies return a different object everytime the component state updates
+ * @param studies list of the studies
+ * @param selectedPatient patient currently selected to show their studies
+ * @param props props required by the table
+ * @returns {JSX.Element} The table
+ */
+function StudyTableWrapper({studies, selectedPatient, ...props}) {
+    const data = useMemo(() => studies
+        .filter(study => study.ParentPatient === selectedPatient)
+        .map(study => ({
+            StudyOrthancID: study.ID,
+            ...study.MainDicomTags,
+            newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : study.MainDicomTags.StudyDescription,
+            newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
+        })), [studies, selectedPatient])
+    return <TableStudy studies={data} {...props}/>
+}
+
 
 class AnonymizePanel extends Component {
 
@@ -35,21 +56,6 @@ class AnonymizePanel extends Component {
             }
         }
         return patients
-    }
-
-    getStudy = () => {
-        let studies = []
-        this.props.anonList.forEach(study => {
-            if (study.ParentPatient === this.state.currentPatient) {
-                studies.push({
-                    StudyOrthancID: study.ID,
-                    ...study.MainDicomTags,
-                    newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : study.MainDicomTags.StudyDescription,
-                    newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
-                })
-            }
-        })
-        return studies
     }
 
     testAllId = () => {
@@ -110,7 +116,6 @@ class AnonymizePanel extends Component {
                 <div className="row">
                     <div className="col-sm mb-3">
                         <TablePatient
-                            data={this.getPatients()}
                             patients={this.getPatients()}
                             rowEvents={this.rowEvents}
                             hiddenActionBouton={true}
@@ -125,8 +130,9 @@ class AnonymizePanel extends Component {
                             onDelete={this.props.removePatientFromAnonList}/>
                     </div>
                     <div className="col-sm">
-                        <TableStudy
-                            studies={this.getStudy()}
+                        <StudyTableWrapper
+                            studies={this.props.anonList}
+                            selectedPatient={this.state.currentPatient}
                             hiddenActionBouton={true}
                             hiddenRemoveRow={false}
                             onDelete={this.props.removeStudyFromAnonList}

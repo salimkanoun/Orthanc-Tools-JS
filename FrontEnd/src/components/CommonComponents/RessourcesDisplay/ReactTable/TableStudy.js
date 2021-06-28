@@ -17,7 +17,9 @@ function TableStudy({
                     }) {
     const columns = useMemo(() => columnStudyFactory(hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, hiddenName, hiddenID, onDelete, refresh, showEditable, hiddenAnonymized), [
         hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, hiddenName, hiddenID, onDelete, refresh, showEditable, hiddenAnonymized]);
-    const data = useMemo(() => studies, [studies]);
+    const data = useMemo(() => {
+        return studies
+    }, [studies]);
     return <CommonTable columns={columns} tableData={data} onDataChange={onDataChange} rowEvents={rowEvents}
                         rowStyle={rowStyle} pagination={pagination}/>
 }

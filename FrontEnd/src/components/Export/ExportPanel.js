@@ -1,4 +1,4 @@
-import React, {Component} from "react"
+import React, {Component, useMemo} from "react"
 import {connect} from "react-redux"
 
 import papa from 'papaparse'
@@ -16,8 +16,20 @@ import {emptyExportList, removeSeriesFromExportList, removeStudyFromExportList} 
 import SendExternalDropdown from "./SendExternalDropdown"
 import {toast} from "react-toastify"
 
-class ExportPanel extends Component {
+/**
+ * This componnent wrapper allows to optimise the table by memoizing data
+ * because getStudies return a different object everytime the component state updates
+ * @param series list of series contained by the studies
+ * @param studies list of the studies
+ * @param props props required by the table
+ * @returns {JSX.Element} The table
+ */
+function TableStudyWrapper({series, studies, ...props}) {
+    const data = useMemo(() => seriesArrayToStudyArray(series, studies), [series, studies]);
+    return <TableStudy studies={data} {...props}/>
+}
 
+class ExportPanel extends Component {
     state = {
         currentStudy: '',
         currentTS: null,
@@ -93,12 +105,6 @@ class ExportPanel extends Component {
 
     emptyList = () => {
         this.props.emptyExportList()
-    }
-
-
-    getStudies = () => {
-        let list = seriesArrayToStudyArray(this.props.exportList.seriesArray, this.props.exportList.studyArray)
-        return list
     }
 
     getSeries = () => {
@@ -183,8 +189,9 @@ class ExportPanel extends Component {
                 <h2 className="card-title mb-3">Export</h2>
                 <div className="row">
                     <div className="col-sm">
-                        <TableStudy
-                            studies={this.getStudies()}
+                        <TableStudyWrapper
+                            studies={this.props.exportList.studyArray}
+                            series={this.props.exportList.seriesArray}
                             rowEvents={this.rowEvents}
                             rowStyle={this.rowStyle}
                             hiddenActionBouton={true}
