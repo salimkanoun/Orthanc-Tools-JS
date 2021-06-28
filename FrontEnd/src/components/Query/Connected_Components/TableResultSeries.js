@@ -50,7 +50,7 @@ class TableResultSeries extends Component {
     }, {
         dataField: 'Retrieve',
         text: 'Retrieve',
-        formatter: (cell, row, rowIndex) => {
+        Cell:({row}, ) => {
             return (<RetrieveButton queryAet={row.OriginAET} seriesInstanceUID={row.SeriesInstanceUID} studyInstanceUID={row.StudyInstanceUID} level={RetrieveButton.Series} />)
         }
     }];

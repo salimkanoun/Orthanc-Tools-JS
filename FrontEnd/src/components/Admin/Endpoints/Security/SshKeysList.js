@@ -1,47 +1,46 @@
-import BootstrapTable from "react-bootstrap-table-next";
-
-import React, { Component, Fragment } from "react";
+import React, {Fragment, useMemo} from "react";
 import apis from '../../../../services/apis';
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
+import CommonTable from "../../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-export default class SshKeys extends Component {
+export default function SshKeys({refreshSshKeysData, sshKeysData}) {
 
-    columns = [{
-        dataField: 'label',
-        text: 'Label'
+    const columns = useMemo(() => [{
+        accessor: 'label',
+        Header: 'Label'
     },
-    {
-        dataField: 'pass',
-        text: 'Has a passphrase',
-        formatter: (cell, row, rowIndex, parentComponent) => <p>{(row.pass ? '✓' : '✖')}</p>
-    },
-    {
-        dataField: 'delete',
-        text: 'Delete Key',
-        formatter: (cell, row, rowIndex, parentComponent) => {
-            return (
-                <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={async () => {
-                        try {
-                            await apis.sshKeys.deleteKey(row.id);
-                            parentComponent.props.refreshSshKeysData()
-                        } catch (error) {
-                            toast.error(error.statusText)
-                        }
-
-                    }} value="Remove" />
-                </div>
-            )
+        {
+            accessor: 'pass',
+            Header: 'Has a passphrase',
+            Cell: ({row}) => <p>{(row.values.pass ? '✓' : '✖')}</p>
         },
-        formatExtraData: this
-    }];
+        {
+            accessor: 'delete',
+            Header: 'Delete Key',
+            Cell: ({row}) => {
+                return (
+                    <div className="text-center">
+                        <input type="button" className='btn btn-danger' onClick={async () => {
+                            try {
+                                await apis.sshKeys.deleteKey(row.values.id);
+                                refreshSshKeysData()
+                            } catch (error) {
+                                toast.error(error.statusText)
+                            }
 
-    render = () => {
-        return (
-            <Fragment>
-                <BootstrapTable keyField="name" striped={true} data={this.props.sshKeysData} columns={this.columns} wrapperClasses='table-responsive' />
-            </Fragment>
-        )
-    }
+                        }} value="Remove"/>
+                    </div>
+                )
+            },
+            formatExtraData: this
+        }], [refreshSshKeysData]);
+
+    const data = useMemo(() => sshKeysData, [sshKeysData])
+
+    return (
+        <Fragment>
+            <CommonTable tableData={data} columns={columns}/>
+        </Fragment>
+    )
 }
 

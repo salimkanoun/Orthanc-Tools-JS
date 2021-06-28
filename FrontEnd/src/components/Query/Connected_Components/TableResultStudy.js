@@ -71,7 +71,7 @@ class TableResult extends Component {
     }, {
         dataField: 'Retrieve',
         text: 'Retrieve',
-        formatter: (cell, row, rowIndex) => {
+        Cell:({row}, ) => {
             return (<RetrieveButton queryAet={row.OriginAET} studyInstanceUID={row.StudyInstanceUID} level={RetrieveButton.Study} />)
         }
     }];
