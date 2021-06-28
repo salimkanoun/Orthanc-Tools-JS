@@ -37,25 +37,21 @@ function StudyTableWrapper({studies, selectedPatient, ...props}) {
     return <TableStudy studies={data} {...props}/>
 }
 
+function PatientTableWrapper({studies, ...props}) {
+    const patients = useMemo(() => studyArrayToPatientArray(studies).map(patient => ({
+        ...patient,
+        newPatientName: patient.newPatientName ? patient.newPatientName : '',
+        newPatientID: patient.newPatientID ? patient.newPatientID : ''
+    })), [studies]);
+    return <TablePatient patients={patients} {...props}/>
+}
+
 
 class AnonymizePanel extends Component {
 
     state = {
         currentPatient: '',
         prefix: ''
-    }
-
-    getPatients = () => {
-        let patients = []
-        patients = studyArrayToPatientArray(this.props.anonList)
-        for (let i in patients) {
-            patients[i] = {
-                ...patients[i],
-                newPatientName: patients[i].newPatientName ? patients[i].newPatientName : '',
-                newPatientID: patients[i].newPatientID ? patients[i].newPatientID : ''
-            }
-        }
-        return patients
     }
 
     testAllId = () => {
@@ -115,8 +111,8 @@ class AnonymizePanel extends Component {
                 <h2 className='card-title mb-3'>Anonymize</h2>
                 <div className="row">
                     <div className="col-sm mb-3">
-                        <TablePatient
-                            patients={this.getPatients()}
+                        <PatientTableWrapper
+                            studies={this.props.anonList}
                             rowEvents={this.rowEvents}
                             hiddenActionBouton={true}
                             hiddenRemoveRow={false}
