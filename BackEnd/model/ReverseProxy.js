@@ -1,4 +1,4 @@
-const {OTJSInternalServerError} = require('../Exceptions/OTJSErrors')
+const { OTJSInternalServerError } = require('../Exceptions/OTJSErrors')
 const Options = require('./Options')
 const got = require('got')
 
@@ -35,17 +35,17 @@ const ReverseProxy = {
                 username: this.username,
                 password: this.password,
                 headers: {
-                    'Content-Type': 'application/json; charset=utf-8',
-                    'Content-Length': JSON.stringify(data).length
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(data)
             }
         }
 
+        console.log(options.body)
         return options
     },
 
-    makeOptionsUpload(method, api, data, plain ) {
+    makeOptionsUpload(method, api, data, plain) {
         const serverString = this.getOrthancAddress() + api
 
         const options = {
@@ -83,6 +83,7 @@ const ReverseProxy = {
     },
 
     streamToRes(api, method, data, res) {
+        console.log(data)
         return got(this.makeOptions(method, api, data))
             .on('response', function (response) {
                 if (response.statusCode === 200) {
@@ -113,9 +114,9 @@ const ReverseProxy = {
     },
 
     streamToResUploadDicom(api, method, data, res) {
-        return got(this.makeOptionsUpload(method, api, data, false ))
+        return got(this.makeOptionsUpload(method, api, data, false))
             .on('response', function (response) {
-                if(response.statusCode === 200){
+                if (response.statusCode === 200) {
                     response.pipe(res)
                 } else if (response.statusCode === 401) {
                     res.status(403).send("Bad orthanc credentials")

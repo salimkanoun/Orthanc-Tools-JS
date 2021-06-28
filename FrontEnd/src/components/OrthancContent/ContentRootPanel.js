@@ -6,13 +6,13 @@ import apis from '../../services/apis'
 import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
 import TablePatientsWithNestedStudies
     from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies'
-//import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 import {connect} from 'react-redux'
 import {addStudiesToDeleteList} from '../../actions/DeleteList'
 import {addStudiesToExportList} from '../../actions/ExportList'
 import {addStudiesToAnonList} from '../../actions/AnonList'
 import {toast} from 'react-toastify'
-import LabelDropdown from "./LabelDropdown";
+import LabelDropdown from "./labels/LabelDropdown";
+import LabelModal from "./labels/LabelModal";
 
 
 class ContentRootPanel extends Component {
@@ -23,6 +23,8 @@ class ContentRootPanel extends Component {
         orthancContent: [],
         selectedStudies: []
     }
+
+    modalRef = {open: null};
 
     constructor(props) {
         super(props)
@@ -134,6 +136,7 @@ class ContentRootPanel extends Component {
                                 studiesFull={this.state.selectedStudies}
                             />
                         </div>
+                        <LabelModal fwRef={this.modalRef}/>
                         <TablePatientsWithNestedStudies
                             studies={this.state.orthancContent}
                             rowEventsStudies={this.rowEventsStudies}
@@ -144,6 +147,7 @@ class ContentRootPanel extends Component {
                             ref={this.child}
                             refresh={this.sendSearch}
                             hiddenRemoveRow={true}
+                            openLabelModal={this.modalRef.open}
                         />
                     </div>
                     <div className='col-sm'>

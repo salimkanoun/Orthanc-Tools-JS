@@ -36,7 +36,12 @@ class Queue extends event.EventEmitter {
                 .then(() => this._queue.process("__default__bulk", Queue._batch_processor(fn)));
         }
         this._queue.on('completed', (job, result) => {
-            this.emit('completed', job, result);
+            if (job.data.jobs === undefined) {
+                this.emit('completed', new Job(job), result);
+            } else {
+                job.data.jobs.forEach((it, index) => this.emit('completed', new BatchedJob(job, index), result));
+            }
+            
         });
         this._queue.on('error', (err) => {
             if (err.code === "ECONNREFUSED") {
@@ -231,6 +236,10 @@ class Job {
 
     remove() {
         return this._bullJob.remove()
+    }
+
+    moveToFailed(error) {
+        return this._bullJob.moveToFailed(error, true);
     }
 }
 
