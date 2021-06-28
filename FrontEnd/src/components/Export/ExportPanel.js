@@ -29,6 +29,17 @@ function TableStudyWrapper({series, studies, ...props}) {
     return <TableStudy studies={data} {...props}/>
 }
 
+function TableSeriesWrapper({series, selectedStudy, ...props}) {
+    const data = useMemo(() => series
+        .filter(serie => serie.ParentStudy === selectedStudy)
+        .map(serie => ({
+            ...serie.MainDicomTags,
+            SeriesOrthancID: serie.ID,
+            Instances: serie.Instances.length
+        })), [series, selectedStudy]);
+    return <TableSeries series={data} {...props}/>
+}
+
 class ExportPanel extends Component {
     state = {
         currentStudy: '',
@@ -108,9 +119,7 @@ class ExportPanel extends Component {
     }
 
     getSeries = () => {
-
         let studies = []
-
         this.props.exportList.seriesArray.forEach(serie => {
             if (serie.ParentStudy === this.state.currentStudy) {
                 studies.push({
@@ -206,9 +215,10 @@ class ExportPanel extends Component {
                     </div>
 
                     <div className="col-sm">
-                        <TableSeries series={this.getSeries()}
-                                     hiddenActionBouton={true}
-                                     hiddenRemoveRow={false} onDelete={this.removeSeries}/>
+                        <TableSeriesWrapper series={this.props.exportList.seriesArray}
+                                            selectedStudy={this.state.currentStudy}
+                                            hiddenActionBouton={true}
+                                            hiddenRemoveRow={false} onDelete={this.removeSeries}/>
                         <button type='button' className="btn btn-danger float-right" onClick={this.removeStudy}>Remove
                             Study
                         </button>
