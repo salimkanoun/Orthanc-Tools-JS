@@ -38,7 +38,8 @@ function TablePatientsWithNestedStudies({
                                             hiddenActionBouton,
                                             hiddenRemoveRow,
                                             setSelected,
-                                            hiddenSelect
+                                            hiddenSelect,
+                                            openLabelModal
                                         }) {
     const data = useMemo(() => studyArrayToPatientArray(studies).map(patient => {
         patient.studies = Object.entries(patient.studies).map(([key, val]) => ({StudyOrthancID: key, ...val}))
@@ -51,7 +52,9 @@ function TablePatientsWithNestedStudies({
             onDelete,
             onModify,
             refresh);
-        let studiesColumns = columnStudyFactory(hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, true, true, onDelete, refresh);
+        let studiesColumns = columnStudyFactory(hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, true, true, onDelete, refresh, false, true, openLabelModal
+            )
+        ;
         patientsColumns.push({
             accessor: "studies",
             table: studiesColumns

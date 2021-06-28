@@ -1,6 +1,4 @@
 import ActionBouton from "../ActionBouton";
-import LabelDropdown from "../../../OrthancContent/LabelDropdown";
-import apis from "../../../../services/apis";
 import React from "react";
 
 const EditableCell = ({
@@ -71,7 +69,7 @@ const columnSeriesFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, refr
     }
 ]
 
-const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, hiddenName, hiddenID, onDelete, refresh, showEditable = false, hiddenAnonymized = true) => [
+const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, hiddenName, hiddenID, onDelete, refresh, showEditable = false, hiddenAnonymized = true, openLabelModal = undefined) => [
     {
         accessor: 'StudyOrthancID',
         Header: 'Study Orthanc ID',
@@ -134,20 +132,7 @@ const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccession
                 (<>
                     <ActionBouton level='studies' orthancID={row.values.StudyOrthancID}
                                   StudyInstanceUID={row.values.StudyInstanceUID} onDelete={onDelete} row={row.values}
-                                  refresh={refresh}/>
-                    <LabelDropdown selectedStudiesGetter={async () => {
-                        let study = await apis.content.getStudiesDetails(row.values.StudyOrthancID)
-                        return ([{
-                            ID: row.values.StudyOrthancID,
-                            MainDicomTags: {
-                                StudyInstanceUID: row.values.StudyInstanceUID,
-                            },
-                            PatientMainDicomTags: {
-                                PatientID: row.values.PatientID
-                            },
-                            ParentPatient: study.ParentPatient
-                        }])
-                    }}/>
+                                  refresh={refresh} openLabelModal={openLabelModal}/>
                 </>)
         ),
         editable: false,

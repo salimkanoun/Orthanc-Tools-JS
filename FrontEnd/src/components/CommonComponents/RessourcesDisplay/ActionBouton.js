@@ -98,7 +98,11 @@ export default class ActionBouton extends Component {
                         </button>
                         {(this.props.level === "studies" && !!this.props.openLabelModal ?
                             <button className='dropdown-item bg-primary' type='button' hidden={this.props.hiddenDelete}
-                                    onClick={this.props.openLabelModal}>Labels
+                                    onClick={() => {
+                                        apis.content.getStudiesDetails(this.props.orthancID).then((study) => {
+                                            this.props.openLabelModal(study)
+                                        })
+                                    }}>Labels
                             </button> : null)}
 
                     </Dropdown.Menu>
