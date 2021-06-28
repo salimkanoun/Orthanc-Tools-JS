@@ -4,7 +4,6 @@ import DropdownButton from "react-bootstrap/DropdownButton"
 import { toast } from "react-toastify"
 
 import apis from '../../services/apis'
-import MonitorJob from '../../tools/MonitorJob'
 
 export default class DownloadDropdown extends Component {
 
@@ -40,44 +39,16 @@ export default class DownloadDropdown extends Component {
 
     handleClickDownload = async (e) => {
         e.stopPropagation()
-        
-        let jobAnswer
 
         try{
             if (e.currentTarget.id === 'hirarchical') {
-                jobAnswer = await apis.exportDicom.exportHirachicalDicoms(this.props.exportIds, this.props.TS)
+                apis.exportDicom.downloadZipSync(this.props.exportIds, this.props.TS, false)
             } else {
-                jobAnswer = await apis.exportDicom.exportDicomDirDicoms(this.props.exportIds, this.props.TS)
+                apis.exportDicom.downloadZipSync(this.props.exportIds, this.props.TS, true)
             }
         } catch (error){
             toast.error(error.statusText)
         }
-
-
-        let jobMonitoring = new MonitorJob(jobAnswer.ID)
-        let self = this
-        jobMonitoring.onUpdate(function (progress) {
-            self.updateProgress(progress)
-        })
-
-        jobMonitoring.onFinish(async function (state) {
-            if (state === MonitorJob.Success) {
-                self.setStatusDownloading()
-                await apis.exportDicom.downloadZip(jobAnswer.ID)
-                self.resetProgress()
-            } else if (state === MonitorJob.Failure) {
-                console.log('failure')
-                self.resetProgress()
-            }
-            self.job = undefined
-        })
-
-        jobMonitoring.startMonitoringJob()
-        this.job = jobMonitoring
-    }
-
-    componentWillUnmount = () => {
-        if (this.job !== undefined) this.job.stopMonitoringJob()
     }
 
     render = () => {

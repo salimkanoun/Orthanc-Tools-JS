@@ -49,14 +49,22 @@ export default class LabelDropdown extends Component {
         return async () => {
             let count = this._containCount(label);
             let v = Object.entries(this.state.studies).length;
+            let studies = this.state.studies;
             if (count !== v) {
                 await Promise.all(Object.entries(this.state.studies)
-                    .map(([study, labels]) => apis.studylabel.createStudyLabel(study.split(':')[0], label, study.split(':')[1], study.split(':')[2], study.split(':')[3]).catch(err => {
-                        if (err.status !== 409) throw err;
-                    })));
+                    .map(([study, labels]) => apis.studylabel.createStudyLabel(study.split(':')[0], label, study.split(':')[1], study.split(':')[2], study.split(':')[3])
+                        .then(() => {
+                            studies[study].push(label);
+                            this.setState({studies});
+                        }).catch(err => {
+                            if (err.status !== 409) throw err;
+                        })));
             } else {
                 await Promise.all(Object.entries(this.state.studies)
-                    .map(([study, labels]) => apis.studylabel.deleteStudyLabel(study.split(':')[0], label)));
+                    .map(([study, labels]) => apis.studylabel.deleteStudyLabel(study.split(':')[0], label).then(() => {
+                        studies[study] = studies[study].filter(l => label !== l);
+                        this.setState({studies});
+                    })));
             }
         }
     }

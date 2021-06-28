@@ -9,7 +9,7 @@ export default class MonitorTask extends MonitorJob {
     cancel() {
         console.warn("export job supression not implemented")
     }
-    
+
     async jobMonitoring(jobUuid) {
 
         let task
@@ -24,7 +24,7 @@ export default class MonitorTask extends MonitorJob {
 
         this.updateCallBack(task)
 
-        if (task.state === 'completed'||task.state === 'failed') {
+        if (task.state === 'completed' || task.state === 'failed') {
             this.stopMonitoringJob()
             this.finishCallback(task)
         }
