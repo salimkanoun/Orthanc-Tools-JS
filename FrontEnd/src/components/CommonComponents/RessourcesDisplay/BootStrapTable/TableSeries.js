@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
-import ActionBouton from './ActionBouton'
+import ActionBouton from '../ActionBouton'
 
 
 export default class TableSeries extends Component {
@@ -19,7 +19,7 @@ export default class TableSeries extends Component {
         dataField: 'SeriesDescription',
         text: 'Series Description',
         sort: true,
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }, {
         dataField: 'Modality',
         text: 'Modality',
@@ -36,13 +36,19 @@ export default class TableSeries extends Component {
         dataField: 'Action',
         text: 'Action',
         hidden: this.props.hiddenActionBouton,
-        formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.SeriesOrthancID} parentID={row.StudyID} onDelete={this.props.onDelete} row={row} refresh={this.props.refreshSerie} hiddenMetadata={false} hiddenCreateDicom={true} />)
+        formatter: ((value, row, index) => <ActionBouton level='series' orthancID={row.SeriesOrthancID}
+                                                         parentID={row.StudyID} onDelete={this.props.onDelete} row={row}
+                                                         refresh={this.props.refreshSerie} hiddenMetadata={false}
+                                                         hiddenCreateDicom={true}/>)
     }, {
         dataField: 'Remove',
         text: 'Remove',
         hidden: this.props.hiddenRemoveRow,
         formatter: (cell, row, index) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => { e.stopPropagation(); this.props.onDelete(row.SeriesOrthancID) }}>Remove</button>
+            return <button type="button" className="btn btn-danger" onClick={(e) => {
+                e.stopPropagation();
+                this.props.onDelete(row.SeriesOrthancID)
+            }}>Remove</button>
         }
 
     }]

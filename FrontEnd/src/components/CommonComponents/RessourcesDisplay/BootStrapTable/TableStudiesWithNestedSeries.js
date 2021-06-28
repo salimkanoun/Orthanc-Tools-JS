@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import TableSeries from '../TableSeries'
-import TableStudy from '../TableStudy'
+import TableSeries from './TableSeries'
+import TableStudy from './TableStudy'
 
 export default class TableStudiesWithNestedSeries extends Component {
 

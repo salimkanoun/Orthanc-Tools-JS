@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import apis from '../../../../services/apis'
-import TableStudy from '../TableStudy'
+import TableStudy from './TableStudy'
 
 export default class TableStudyFillFromParent extends Component {
 

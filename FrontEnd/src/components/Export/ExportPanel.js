@@ -5,7 +5,7 @@ import papa from 'papaparse'
 
 import apis from '../../services/apis'
 import TableStudy from '../CommonComponents/RessourcesDisplay/ReactTable/TableStudy'
-import TableSeries from '../CommonComponents/RessourcesDisplay/TableSeries'
+import TableSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableSeries'
 import DownloadDropdown from "./DownloadDropdown"
 import SendAetDropdown from "./SendAetDropdown"
 import SendPeerDropdown from "./SendPeerDropdown"
@@ -199,7 +199,8 @@ class ExportPanel extends Component {
                     </div>
 
                     <div className="col-sm">
-                        <TableSeries data={this.getSeries()} wrapperClasses="table-responsive" hiddenActionBouton={true}
+                        <TableSeries series={this.getSeries()}
+                                     hiddenActionBouton={true}
                                      hiddenRemoveRow={false} onDelete={this.removeSeries}/>
                         <button type='button' className="btn btn-danger float-right" onClick={this.removeStudy}>Remove
                             Study

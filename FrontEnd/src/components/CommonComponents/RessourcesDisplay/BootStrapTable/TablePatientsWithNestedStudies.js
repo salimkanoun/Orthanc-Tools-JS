@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import TableStudy from '../TableStudy'
+import TableStudy from './TableStudy'
 import TablePatients from './TablePatients'
 
 export default class TablePatientsWithNestedStudies extends Component {

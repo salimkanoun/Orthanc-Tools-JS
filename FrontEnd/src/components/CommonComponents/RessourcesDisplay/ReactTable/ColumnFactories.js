@@ -133,7 +133,7 @@ const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccession
         Cell: (({row}) =>
                 (<>
                     <ActionBouton level='studies' orthancID={row.values.StudyOrthancID}
-                                  StudyInstanceUID={row.values.StudyInstanceUID} onDelete={onDelete} row={row}
+                                  StudyInstanceUID={row.values.StudyInstanceUID} onDelete={onDelete} row={row.values}
                                   refresh={refresh}/>
                     <LabelDropdown selectedStudiesGetter={async () => {
                         let study = await apis.content.getStudiesDetails(row.values.StudyOrthancID)
@@ -211,7 +211,7 @@ const columnPatientsFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, on
         show: !hiddenActionBouton,
         Cell: ({row}) => {
             return <ActionBouton level='patients' orthancID={row.values.PatientOrthancID} onDelete={onDelete}
-                                 onModify={onModify} row={row} refresh={refresh}/>
+                                 onModify={onModify} row={row.values} refresh={refresh}/>
         }
     }, {
         accessor: 'Remove',
