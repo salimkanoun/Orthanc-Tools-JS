@@ -7,8 +7,6 @@ import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/
 import apis from '../../services/apis'
 import SendAetDropdown from "../Export/SendAetDropdown"
 import DownloadDropdown from "../Export/DownloadDropdown"
-
-import {seriesArrayToStudyArray} from '../../tools/processResponse'
 import {emptyExportList, removeSeriesFromExportList, removeStudyFromExportList} from '../../actions/ExportList'
 import {toast} from 'react-toastify'
 
@@ -69,7 +67,6 @@ class ExportTool extends Component {
                             </div>
                         </div>
                         <TableStudiesWithNestedSeries
-                            data={seriesArrayToStudyArray(this.props.seriesArray, this.props.studyArray)}
                             series={this.props.seriesArray}
                             studies={this.props.studyArray}
                             hiddenRemoveRow={false}
