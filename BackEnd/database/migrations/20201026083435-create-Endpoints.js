@@ -35,7 +35,7 @@ module.exports = {
         type:Sequelize.BOOLEAN
       },
       sshKey: {
-        type: Sequelize.UUID,
+        type: Sequelize.INTEGER,
         references:{
           model: 'SshKeys',
           references:'id'
@@ -52,7 +52,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable('Endpoints');

@@ -104,6 +104,11 @@ const Options = {
     option.export_transcoding = transcoding
 
     await option.save()
+  },
+
+  getExportOption : async () => {
+    const option = await Options.getOptions()
+    return option.export_transcoding
   }
 
 }

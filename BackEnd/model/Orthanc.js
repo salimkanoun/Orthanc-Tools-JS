@@ -513,6 +513,20 @@ class Orthanc {
             }, updateInterval)
         })
     }
+
+    /**
+     * send ressources to an AET
+     * @param {String} aet name of the target AET
+     * @param {Array.<String>} orthancIds array of orthanc IDS
+     */
+    async sendToAET(aet,orthancIds){
+        const payload = {
+            "Asynchronous":true,
+            "Ressources":orthancIds
+        }
+        const answer = await ReverseProxy.getAnswer('/modalities/' + aet + '/store', 'POST', payload)
+        return answer
+    }
 }
 
 module.exports = Orthanc

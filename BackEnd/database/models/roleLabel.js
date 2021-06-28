@@ -1,23 +1,23 @@
 'use strict'
 module.exports = (sequelize, DataTypes) => {
-  const UserLabel = sequelize.define('UserLabel', {
+  const RoleLabel = sequelize.define('RoleLabel', {
     id:{
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true
     },
-    user_id: DataTypes.STRING,
+    role_name: DataTypes.STRING,
     label_name: DataTypes.STRING
     
   }, {})
-  UserLabel.associate = function (models) {
-    UserLabel.hasOne(models.UserLabel, {
+  RoleLabel.associate = function (models) {
+    RoleLabel.hasOne(models.RoleLabel, {
       foreignKey: 'label_name',
       onUpdate: 'CASCADE'
     }),
-    UserLabel.hasOne(models.UserLabel, {
-      foreignKey: 'user_id'
+    RoleLabel.hasOne(models.RoleLabel, {
+      foreignKey: 'role_name'
     })
   }
-  return UserLabel
+  return RoleLabel
 }

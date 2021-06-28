@@ -14,7 +14,8 @@ export default class RoleForm extends Component {
         delete: false,
         admin: false,
         modify: false,
-        cd_burner: false
+        cd_burner: false,
+        autorouting:false,
     }
 
     componentDidMount = () => {
@@ -33,7 +34,8 @@ export default class RoleForm extends Component {
                     delete: this.props.data.delete,
                     admin: this.props.data.admin,
                     modify: this.props.data.modify,
-                    cd_burner: this.props.data.cd_burner
+                    cd_burner: this.props.data.cd_burner,
+                    autorouting:this.props.data.autorouting,
                 }
             )
 
@@ -130,6 +132,15 @@ export default class RoleForm extends Component {
                     </div>
                     <div className='col-auto'>
                         <Toggle checked={this.state.cd_burner} onChange={() => this.setState(prevState => ({ cd_burner: !prevState.cd_burner }))} />
+                    </div>
+                </div>
+
+                <div className="row mb-2">
+                    <div className='col-5'>
+                        <h5>Dicom Router</h5>
+                    </div>
+                    <div className='col-auto'>
+                        <Toggle checked={this.state.autorouting} onChange={() => this.setState(prevState => ({ autorouting: !prevState.autorouting }))} />
                     </div>
                 </div>
 

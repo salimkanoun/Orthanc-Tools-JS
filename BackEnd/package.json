@@ -16,10 +16,11 @@
   "scripts": {
     "prestart": "cross-env NODE_ENV=production npm run migrate",
     "migrate": "./node_modules/.bin/sequelize db:migrate",
+    "dropdb": "./node_modules/.bin/sequelize db:drop",
     "start": "cross-env NODE_ENV=production node OrthancToolsJS.js",
     "start-dev": "cross-env NODE_ENV=development node OrthancToolsJS.js",
     "pretest": "cross-env NODE_ENV=test npm run migrate",
-    "test": "cross-env NODE_ENV=test ./node_modules/jest/bin/jest.js",
+    "test": "cross-env NODE_ENV=test ./node_modules/.bin/jasmine",
     "build": "webpack OrthancToolsJS.js"
   },
   "dependencies": {
@@ -42,13 +43,14 @@
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
     "node-schedule": "^2.0.0",
+    "pg": "^8.6.0",
+    "pg-hstore": "^2.3.3",
     "promise-queue": "^2.2.5",
     "recursive-readdir": "^2.2.2",
     "redis": "^3.1.2",
     "redis-parser": "^3.0.0",
     "sequelize": "^6.6.2",
     "sequelize-cli": "^6.2.0",
-    "sqlite3": "^5.0.2",
     "ssh2-sftp-client": "^6.0.1",
     "tmp-promise": "^3.0.2",
     "uuid": "^8.3.2",

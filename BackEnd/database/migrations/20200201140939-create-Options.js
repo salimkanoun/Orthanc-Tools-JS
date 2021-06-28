@@ -66,7 +66,7 @@ module.exports = {
       },
       burner_support_type : {
         allowNull: false,
-        type: Sequelize.BOOLEAN, 
+        type: Sequelize.STRING, 
         defaultValue: "Auto",
       },
       burner_viewer_path: {
@@ -88,6 +88,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
         defaultValue: 'None' 
+      },
+      autorouter_started : {
+        type:Sequelize.BOOLEAN,
+        defaultValue:false,
       }
 
     }).then(() => {

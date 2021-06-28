@@ -35,7 +35,7 @@ const peers = {
             method: 'PUT',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
             body: JSON.stringify(putData)
         }
@@ -75,7 +75,7 @@ const peers = {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
             body: JSON.stringify({
                 Synchronous: false,

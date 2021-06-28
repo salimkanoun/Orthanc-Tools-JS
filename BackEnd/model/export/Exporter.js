@@ -20,7 +20,8 @@ class Exporter {
         this.sendQueue = new Queue('send', {
             'send-over-ftp': Exporter._sendOverFtp,
             'send-over-sftp': Exporter._sendOverSftp,
-            'send-over-webdav': Exporter._sendOverWebdav
+            'send-over-webdav': Exporter._sendOverWebdav,
+            'save-locally' : Exporter._saveLocally
         });
 
         Certificate.getAllCertificates().then((certificates) => {
@@ -61,6 +62,22 @@ class Exporter {
         Webdav.sendOverWebdav(job,done)
     }
 
+    static async _saveLocally(job,done){
+        let file = job.data.file
+        let uploadFolder = './data/export_dicom/local/'
+        //job.data.endpoint.targetFolder
+        let fileName = file.name
+
+        fs.rename(file.path,uploadFolder+fileName,function(err){
+            if(err){
+                console.error(err)
+                return;
+            }
+        })
+
+        done()
+    }
+
     async uploadFile(taskId, endpoint, filePath) {
         let formatedEndpoint
         switch (endpoint.protocol) {
@@ -86,7 +103,8 @@ class Exporter {
             {
                 'ftp': 'send-over-ftp',
                 'sftp': 'send-over-sftp',
-                'webdav': 'send-over-webdav'
+                'webdav': 'send-over-webdav',
+                'local':'save-locally'
             }[endpoint.protocol])
         return taskId;
     }

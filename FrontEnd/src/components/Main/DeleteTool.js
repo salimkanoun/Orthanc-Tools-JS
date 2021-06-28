@@ -7,7 +7,6 @@ import { toast } from 'react-toastify';
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
 
 import { removePatientFromDeleteList, removeStudyFromDeleteList, emptyDeleteList } from '../../actions/DeleteList'
-import { removeOrthancContentStudy } from '../../actions/OrthancContent'
 import { studyArrayToPatientArray } from '../../tools/processResponse'
 import apis from '../../services/apis'
 import ModalDelete from './ModalDelete';
@@ -64,7 +63,6 @@ class DeleteTool extends Component {
 
                 this.props.deleteList.forEach(async (study) => {
                     this.props.removeStudyFromDeleteList(study.ID)
-                    this.props.removeOrthancContentStudy(study.ID)
                 });
             })
         }
@@ -123,8 +121,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     removePatientFromDeleteList,
     removeStudyFromDeleteList,
-    emptyDeleteList,
-    removeOrthancContentStudy
+    emptyDeleteList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteTool)

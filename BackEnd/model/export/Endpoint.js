@@ -7,7 +7,9 @@ const crypto = require('../../adapter/cryptoAdapter');
 
 class Endpoint {
     constructor(params) {
-        Endpoint._checkParams(params)
+        if (params.id != -1) {
+            Endpoint._checkParams(params)
+        }
 
         //Setting the variables that are commune between a manual call and a call with DB entity
         this.id = params.id || null
@@ -51,7 +53,7 @@ class Endpoint {
         this.host = params.host || this.host
         this.targetFolder = params.targetFolder || this.targetFolder
         this.protocol = params.protocol || this.protocol
-        this.port = params.port || this.protocol
+        this.port = params.port || this.port
         this.digest = params.digest || this.digest
         this.sshKey = params.sshKey || this.sshKey
         this.ssl = params.ssl || this.ssl
@@ -123,6 +125,7 @@ class Endpoint {
 
         if (this.sshKey) {
             let keyObject = await this.getSshKey();
+            if (keyObject.path === null) throw "The endpoint has no key file yet is tag with a sshKey"
             return {
                 host: this.host,
                 username: this.username,
@@ -143,8 +146,11 @@ class Endpoint {
     }
 
     webdavOptionFormat() {
-        const url = new URL(this.host)
-        url.port = this.port
+        let host = this.host;
+        if (!(this.host.startsWith("https://") || this.host.startsWith("http://")))
+            host = (this.port === 43 ? "https://" : "http://") + this.host;
+        const url = new URL(host);
+        url.port = this.port;
         return {
             url,
             username: this.username,

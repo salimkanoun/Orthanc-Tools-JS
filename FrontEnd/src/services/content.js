@@ -8,7 +8,7 @@ const orthancContent = {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
             body: JSON.stringify(contentSerch)
         }
@@ -21,13 +21,30 @@ const orthancContent = {
         })
     },
 
+    getPatientDetails(ID){
+        const getPatientsDetailsOption = {
+            method: 'GET', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        }
+
+        return fetch('/api/patients/' + ID+ '?expand', getPatientsDetailsOption ).then((response) => {
+            if (!response.ok) {throw response}
+            return response.json()
+        }).catch((error) => {
+            toast.error(error)
+        })
+    },
+
     getStudiesDetails(ID){
 
         const getStudiesDetailsOption = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -49,7 +66,7 @@ const orthancContent = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -67,7 +84,7 @@ const orthancContent = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -85,7 +102,7 @@ const orthancContent = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -103,7 +120,7 @@ const orthancContent = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -121,7 +138,7 @@ const orthancContent = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -139,7 +156,7 @@ const orthancContent = {
             method: 'GET', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             }
         }
 
@@ -200,7 +217,7 @@ const orthancContent = {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
             body: JSON.stringify({Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }
@@ -219,7 +236,7 @@ const orthancContent = {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
             body: JSON.stringify({Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }
@@ -238,7 +255,7 @@ const orthancContent = {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json; charset=utf-8'
             },
             body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
         }
