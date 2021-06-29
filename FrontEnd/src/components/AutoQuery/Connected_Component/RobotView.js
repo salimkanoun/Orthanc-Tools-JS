@@ -19,7 +19,12 @@ import {addStudiesToAnonList} from '../../../actions/AnonList'
 import MonitorTask from '../../../tools/MonitorTask'
 import {toast} from 'react-toastify';
 import Dropdown from 'react-bootstrap/esm/Dropdown'
-import {InputFilter, SelectFilter} from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFilters";
+import {
+    dateFilter,
+    DateFilter,
+    InputFilter,
+    SelectFilter
+} from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFilters";
 import CommonSelectingAndFilteringTable
     from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonSelectingAndFilteringTable";
 
@@ -48,7 +53,8 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelec
     }, {
         accessor: 'StudyDate',
         Header: 'Study Date',
-        disableFilters: true
+        Filter: DateFilter('Study Date'),
+        filter: dateFilter
     }, {
         accessor: 'Modality',
         Header: 'Modality',
@@ -56,12 +62,19 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelec
     }, {
         accessor: 'StudyDescription',
         Header: 'Study Description',
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
+        style: {
+            whiteSpace: 'normal', wordWrap:
+                'break-word'
+        },
         Filter: InputFilter('Study Description')
     }, {
         accessor: 'SeriesDescription',
         Header: 'Series Description',
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
+        style: {
+            whiteSpace: 'normal', wordWrap:
+                'break-word'
+        }
+        ,
         Filter: InputFilter('Study Description')
     }, {
         accessor: 'AccessionNumber',
@@ -104,39 +117,45 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelec
     }, {
         id: 'Remove',
         Header: 'Remove Query',
-        Cell: ({row: {index}}) => {
-            return approved === false ?
-                (<div className="text-center">
-                    <input type="button" className='btn btn-danger'
-                           onClick={() => deleteQueryHandler(index, refreshHandler)}
-                           value="Remove"/>
-                </div>)
-                : null
-        },
-        disableFilters: true,
+        Cell:
+            ({row: {index}}) => {
+                return approved === false ?
+                    (<div className="text-center">
+                        <input type="button" className='btn btn-danger'
+                               onClick={() => deleteQueryHandler(index, refreshHandler)}
+                               value="Remove"/>
+                    </div>)
+                    : null
+            },
+        disableFilters:
+            true,
     }, {
         id: 'Viewers',
         Header: 'Viewers',
-        Cell: ({row: {values}}) => {
-            return values.Status === RobotView.ITEM_SUCCESS ?
-                <Fragment>
-                    <Dropdown drop='left'>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            Viewers
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <OhifLink className='dropdown-item bg-info' StudyInstanceUID={values.StudyInstanceUID}/>
-                            <StoneLink className='dropdown-item bg-info' StudyInstanceUID={values.StudyInstanceUID}/>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </Fragment>
-                : null
-        },
+        Cell:
+            ({row: {values}}) => {
+                return values.Status === RobotView.ITEM_SUCCESS ?
+                    <Fragment>
+                        <Dropdown drop='left'>
+                            <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                Viewers
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <OhifLink className='dropdown-item bg-info'
+                                          StudyInstanceUID={values.StudyInstanceUID}/>
+                                <StoneLink className='dropdown-item bg-info'
+                                           StudyInstanceUID={values.StudyInstanceUID}/>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Fragment>
+                    : null
+            },
         disableFilters: true,
     }, {
         accessor: 'RetrievedOrthancId',
         show: false
-    }]
+    }
+    ]
     const data = useMemo(() => rows, [rows]);
     return <CommonSelectingAndFilteringTable tableData={data} columns={columns}
                                              onSelect={value => onSelect(value.map(v => v.values))}/>
@@ -165,16 +184,11 @@ class RobotView extends Component {
     componentWillUnmount = () => {
         this.stopProgressMonitoring()
     }
-    
+
     getSelectedItemsStudiesDetails = async () => {
 
-        //get selected row keys
-        let selectedIdRow = this.state.selected
         //get array of selected rows
-        let seletectedRows = this.state.rows.filter(row => {
-            if (selectedIdRow.includes(row.id)) return true
-            else return false
-        })
+        let seletectedRows = this.state.selected
 
         let studyDataRetrieved = []
         //Loop each item to retrieve study level

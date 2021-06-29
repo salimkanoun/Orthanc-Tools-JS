@@ -32,3 +32,53 @@ export function SelectFilter(label = 'Select...', options = []) {
     }
 }
 
+const OPTIONS_DATE_FILTER = [
+    {value: '~', label: 'Ignore'},
+    {value: '<=', label: 'Before'},
+    {value: '=', label: 'Match'},
+    {value: '>=', label: 'After'},
+]
+
+export function DateFilter(label = 'Select...') {
+    return ({
+                column: {filterValue, setFilter},
+            }) => {
+        filterValue = filterValue || {
+            comp: {value: '~', label: 'Ignore'},
+            date: null
+        }
+        return (
+            <div>
+                <Select single options={OPTIONS_DATE_FILTER} value={filterValue.comp}
+                        onChange={(value) => {
+                            filterValue.comp = value;
+                            setFilter(filterValue);
+                        }}/>
+                <FormControl
+                    type={'date'}
+                    placeholder={label}
+                    value={filterValue.date}
+                    className='form-control'
+                    onChange={e => {
+                        filterValue.date = e.target.value;
+                        setFilter(filterValue);
+                    }}
+                />
+            </div>
+        )
+    }
+}
+
+
+const dateFilterComp = {
+    '<=': (row, col, date) => Date.parse(row.values[col]) <= Date.parse(date),
+    '=': (row, col, date) => Date.parse(row.values[col]) === Date.parse(date),
+    '>=': (row, col, date) => Date.parse(row.values[col]) >= Date.parse(date),
+}
+
+export function dateFilter(rows, col, val) {
+    console.log(val);
+    console.log(rows)
+    if (!val.date || val.comp.value === '~') return rows;
+    return rows.filter(row => dateFilterComp[val.comp.value](row, col[0], val.date));
+}
