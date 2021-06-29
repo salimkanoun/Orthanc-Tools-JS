@@ -1,9 +1,9 @@
-const { OTJSForbiddenException, OTJSNotFoundException, OTJSBadRequestException } = require("../../Exceptions/OTJSErrors");
+const {OTJSForbiddenException, OTJSNotFoundException, OTJSBadRequestException} = require("../../Exceptions/OTJSErrors");
 const Orthanc = require("../Orthanc");
 const TaskType = require("../TaskType");
 const Queue = require("../../adapter/bullAdapter");
 const OrthancQueryAnswer = require("../OrthancData/queries-answer/OrthancQueryAnswer");
-const { v4: uuid } = require('uuid');
+const {v4: uuid} = require('uuid');
 const schedule = require('node-schedule');
 const Options = require('../Options');
 const time = require('../../utils/time');
@@ -32,7 +32,7 @@ class RetrieveTask {
             let jobProgress = await job.progress()
             if (jobProgress != null) retrieve += jobProgress
         }
-        
+
         retrieve /= (retrieveJobs.length === 0 ? 1 : retrieveJobs.length);
         return {
             validation,
@@ -114,7 +114,7 @@ class RetrieveTask {
         let task = await RetrieveTask.getTask(id);
 
         if (task === null) throw new OTJSNotFoundException("No task of this kind");
-        if (task.progress.validation != 100 ) throw OTJSBadRequestException("Items validation still in progress")
+        if (task.progress.validation != 100) throw OTJSBadRequestException("Items validation still in progress")
         let jobs = await validationQueue.getJobs()
 
         let jobsData = [];
@@ -142,7 +142,7 @@ class RetrieveTask {
 
         //Making state
         let state = null
-        
+
         if (progress.validation < 100) {
             state = 'validating robot';
         } else if (progress.validation === 100 && progress.retrieve === 0 && retrieveJobs.length === 0) {
@@ -351,6 +351,7 @@ class RetrieveTask {
             //Monitor the orthanc job
             await orthanc.monitorJob(retrieveAnswer.Path, (response) => {
                 job.progress(response.Progress)
+                if (response.State === 'Failure') throw "Orthanc Error : " + response.ErrorDescription;
             }, 2000).then(async (response) => {
                 const orthancResults = await orthanc.findInOrthancByUid(response.Content['Query'][0]['0020,000d'])
                 done(null, orthancResults[0].ID)
