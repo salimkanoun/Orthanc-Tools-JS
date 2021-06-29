@@ -60,7 +60,7 @@ function Table({
                                 {row.cells.map(cell => {
                                     return (
                                         <td {...cell.getCellProps()}
-                                            style={(cell.column.style instanceof Function ? cell.column.style(row) : null)}>{cell.render('Cell')}</td>
+                                            style={(cell.column.style instanceof Function ? cell.column.style(row) : cell.column.style)}>{cell.render('Cell')}</td>
                                     )
                                 })}
                             </tr>
