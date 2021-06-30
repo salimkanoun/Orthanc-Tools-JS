@@ -16,7 +16,11 @@ function TableStudiesWithNestedSeries({
     if (hiddenActionBouton === undefined) hiddenActionBouton = true;
     if (hiddenRemoveRow === undefined) hiddenRemoveRow = true;
     const data = useMemo(() => seriesArrayToStudyArray(series, studies).map(study => {
-        study.series = Object.entries(study.series).map(([ID, values]) => ({SeriesOrthancID: ID, ...values}))
+        study.series = Object.entries(study.series).map(([ID, values]) => ({
+            SeriesOrthancID: ID, ...values,
+            raw: {SeriesOrthancID: ID, ...values}
+        }))
+        study.raw = {...study};
         return study;
     }), [studies, series]);
     const columns = useMemo(() => {

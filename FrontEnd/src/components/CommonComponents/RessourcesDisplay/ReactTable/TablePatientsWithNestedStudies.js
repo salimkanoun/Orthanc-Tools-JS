@@ -31,7 +31,8 @@ function TablePatientsWithNestedStudies({
                                             rowEventsStudies,
                                             rowEventsPatients,
                                             studies,
-                                            onDelete,
+                                            onDeletePatient,
+                                            onDeleteStudy,
                                             onModify,
                                             refresh,
                                             hiddenAccessionNumber,
@@ -42,17 +43,21 @@ function TablePatientsWithNestedStudies({
                                             openLabelModal
                                         }) {
     const data = useMemo(() => studyArrayToPatientArray(studies).map(patient => {
-        patient.studies = Object.entries(patient.studies).map(([key, val]) => ({StudyOrthancID: key, ...val}))
+        patient.studies = Object.entries(patient.studies).map(([key, val]) => ({
+            StudyOrthancID: key, ...val,
+            raw: {StudyOrthancID: key, ...val}
+        }))
+        patient.raw = {...patient};
         return patient;
     }), [studies]);
     const columns = useMemo(() => {
         let patientsColumns = columnPatientsFactory(
             hiddenActionBouton,
             hiddenRemoveRow,
-            onDelete,
+            onDeletePatient,
             onModify,
             refresh);
-        let studiesColumns = columnStudyFactory(hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, true, true, onDelete, refresh, false, true, openLabelModal
+        let studiesColumns = columnStudyFactory(hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, true, true, onDeleteStudy, refresh, false, true, openLabelModal
             )
         ;
         patientsColumns.push({
@@ -61,7 +66,8 @@ function TablePatientsWithNestedStudies({
         });
         return patientsColumns;
     }, [
-        onDelete,
+        onDeletePatient,
+        onDeleteStudy,
         onModify,
         refresh,
         hiddenAccessionNumber,

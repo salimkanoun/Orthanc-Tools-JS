@@ -19,8 +19,13 @@ function TablePatientsWithNestedStudiesAndSeries({
             .map(([key, val]) => ({StudyOrthancID: key, ...val}))
         patient.studies.forEach(study => {
             study.series = Object.entries(study.series)
-                .map(([key, val]) => ({SeriesOrthancID: key, ...val}))
+                .map(([key, val]) => ({
+                    SeriesOrthancID: key, ...val,
+                    raw: {SeriesOrthancID: key, ...val}
+                }))
+            study.raw = {...study};
         })
+        patient.raw = {...patient};
         return patient;
     }), [patients]);
     const columns = useMemo(() => {

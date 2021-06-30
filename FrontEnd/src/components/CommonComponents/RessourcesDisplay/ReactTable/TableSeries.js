@@ -14,7 +14,10 @@ function TableSeries({
                      }) {
     const columns = useMemo(() => columnSeriesFactory(hiddenActionBouton, hiddenRemoveRow, onDelete, refresh), [
         hiddenActionBouton, hiddenRemoveRow, onDelete, refresh]);
-    const data = useMemo(() => series, [series]);
+    const data = useMemo(() => series.map(x => ({
+        raw: {...x},
+        ...x
+    })), [series]);
     return <CommonTable columns={columns} tableData={data} rowEvents={rowEvents}
                         rowStyle={rowStyle} pagination={pagination}/>
 }

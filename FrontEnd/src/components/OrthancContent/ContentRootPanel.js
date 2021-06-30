@@ -144,7 +144,7 @@ class ContentRootPanel extends Component {
                             onDeletePatient={this.onDeletePatient}
                             onDeleteStudy={this.onDeleteStudy}
                             setSelectedStudies={this.setSelectedStudies}
-                            ref={this.child}
+                            onModify={this.sendSearch}
                             refresh={this.sendSearch}
                             hiddenRemoveRow={true}
                             openLabelModal={this.modalRef.open}

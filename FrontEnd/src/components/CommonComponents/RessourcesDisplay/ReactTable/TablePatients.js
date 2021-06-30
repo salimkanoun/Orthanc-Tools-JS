@@ -34,7 +34,10 @@ function TablePatients({
         showEditable,
         textNameColumn,
         textIDColumn]);
-    const data = useMemo(() => patients, [patients]);
+    const data = useMemo(() => patients.map(x => ({
+        raw: {...x},
+        ...x
+    })), [patients]);
     return <CommonTable columns={columns} tableData={data} onDataChange={onDataChange} rowEvents={rowEvents}
                         rowStyle={rowStyle} pagination={pagination}/>
 }

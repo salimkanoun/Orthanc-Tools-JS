@@ -4,11 +4,13 @@ import React from "react";
 const EditableCell = ({
                           value: initialValue,
                           row: {values},
-                          column: {id, accessor},
+                          column: {id, accessor, inputType},
                           onDataChange, // This is a custom function that we supplied to our table instance
                       }) => {
     // We need to keep and update the state of the cell normally
     const [value, setValue] = React.useState(initialValue)
+
+    inputType = inputType || 'text';
 
     const onChange = e => {
         setValue(e.target.value)
@@ -24,13 +26,16 @@ const EditableCell = ({
         setValue(initialValue)
     }, [initialValue])
 
-    return <input value={value} onChange={onChange} onBlur={onBlur}/>
+    return <input type={inputType} value={value} onChange={onChange} onBlur={onBlur}/>
 }
 
 const columnSeriesFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, refresh) => [
     {
         accessor: 'SeriesOrthancID',
         show: false,
+    }, {
+        accessor: 'raw',
+        show: false
     }, {
         accessor: 'SeriesDescription',
         Header: 'Series Description',
@@ -49,15 +54,15 @@ const columnSeriesFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, refr
         Header: 'Series Number',
         sort: true
     }, {
-        accessor: 'Action',
+        id: 'Action',
         Header: 'Action',
         show: !hiddenActionBouton,
         Cell: ({row}) => <ActionBouton level='series' orthancID={row.values.SeriesOrthancID}
                                        parentID={row.values.StudyID} onDelete={onDelete}
-                                       row={row} refresh={refresh}
+                                       row={row.values.raw} refresh={refresh}
                                        hiddenMetadata={false} hiddenCreateDicom={true}/>
     }, {
-        accessor: 'Remove',
+        id: 'Remove',
         Header: 'Remove',
         show: !hiddenRemoveRow,
         Cell: ({row}) => {
@@ -73,6 +78,9 @@ const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccession
     {
         accessor: 'StudyOrthancID',
         Header: 'Study Orthanc ID',
+        show: false
+    }, {
+        accessor: 'raw',
         show: false
     }, {
         accessor: 'StudyInstanceUID',
@@ -125,20 +133,21 @@ const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccession
         Cell: EditableCell,
         style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }, {
-        accessor: 'Action',
+        id: 'Action',
         Header: 'Action',
         show: !hiddenActionBouton,
         Cell: (({row}) =>
                 (<>
                     <ActionBouton level='studies' orthancID={row.values.StudyOrthancID}
-                                  StudyInstanceUID={row.values.StudyInstanceUID} onDelete={onDelete} row={row.values}
+                                  StudyInstanceUID={row.values.StudyInstanceUID} onDelete={onDelete}
+                                  row={row.values.raw}
                                   refresh={refresh} openLabelModal={openLabelModal}/>
                 </>)
         ),
         editable: false,
         csvExport: false
     }, {
-        accessor: 'Remove',
+        id: 'Remove',
         Header: 'Remove',
         show: !hiddenRemoveRow,
         Cell: ({row}) => {
@@ -169,6 +178,9 @@ const columnPatientsFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, on
         accessor: 'PatientOrthancID',
         show: false
     }, {
+        accessor: 'raw',
+        show: false
+    }, {
         accessor: 'PatientName',
         Header: textNameColumn,
         sort: true,
@@ -191,15 +203,15 @@ const columnPatientsFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, on
         style: {whiteSpace: 'normal', wordWrap: 'break-word'},
         Cell: EditableCell
     }, {
-        accessor: 'Action',
+        id: 'Action',
         Header: 'Action',
         show: !hiddenActionBouton,
         Cell: ({row}) => {
             return <ActionBouton level='patients' orthancID={row.values.PatientOrthancID} onDelete={onDelete}
-                                 onModify={onModify} row={row.values} refresh={refresh}/>
+                                 onModify={onModify} row={row.values.raw} refresh={refresh}/>
         }
     }, {
-        accessor: 'Remove',
+        id: 'Remove',
         Header: 'Remove',
         show: !hiddenRemoveRow,
         Cell: ({row}) => {
@@ -212,4 +224,4 @@ const columnPatientsFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, on
     }]
 
 
-export {columnStudyFactory, columnPatientsFactory, columnSeriesFactory}
+export {columnStudyFactory, columnPatientsFactory, columnSeriesFactory, EditableCell}
