@@ -1,33 +1,6 @@
 import ActionBouton from "../ActionBouton";
 import React from "react";
-
-const EditableCell = ({
-                          value: initialValue,
-                          row: {values},
-                          column: {id, accessor, inputType},
-                          onDataChange, // This is a custom function that we supplied to our table instance
-                      }) => {
-    // We need to keep and update the state of the cell normally
-    const [value, setValue] = React.useState(initialValue)
-
-    inputType = inputType || 'text';
-
-    const onChange = e => {
-        setValue(e.target.value)
-    }
-
-    // We'll only update the external data when the input is blurred
-    const onBlur = () => {
-        if (onDataChange) onDataChange(initialValue, value, values, id || accessor)
-    }
-
-    // If the initialValue is changed external, sync it up with our state
-    React.useEffect(() => {
-        setValue(initialValue)
-    }, [initialValue])
-
-    return <input type={inputType} value={value} onChange={onChange} onBlur={onBlur}/>
-}
+import {InputCell as EditableCell} from "./EditableCells";
 
 const columnSeriesFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, refresh) => [
     {

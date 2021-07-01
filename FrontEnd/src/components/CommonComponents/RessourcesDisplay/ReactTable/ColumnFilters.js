@@ -48,8 +48,8 @@ export function DateFilter(label = 'Select...') {
             date: null
         }
         return (
-            <div>
-                <Select single options={OPTIONS_DATE_FILTER} value={filterValue.comp}
+            <div style={{display: "flex"}}>
+                <Select className={'react-select'} single options={OPTIONS_DATE_FILTER} value={filterValue.comp}
                         onChange={(value) => {
                             filterValue.comp = value;
                             setFilter(filterValue);

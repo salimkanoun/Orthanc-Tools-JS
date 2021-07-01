@@ -6,10 +6,18 @@ import {InputFilter} from "./ColumnFilters";
 const LOWEST_PAGE_SIZE = 10;
 
 function Table({
-                   columns, tableData, hiddenSelection, onRowClick = () => {
-    }, onSelect, rowStyle = () => {
-    }
-               }, pagination = false) {
+                   columns,
+                   tableData,
+                   hiddenSelection,
+                   onRowClick = () => {
+                   },
+                   onSelect,
+                   rowStyle = () => {
+                   },
+                   pagination = false,
+                   onDataChange = () => {
+                   }
+               }) {
 
     const Checkbox = React.forwardRef(
         ({indeterminate, ...rest}, ref) => {
@@ -54,6 +62,7 @@ function Table({
             columns,
             data: tableData,
             defaultColumn,
+            onDataChange,
             initialState: {
                 hiddenColumns: columns.map(column => {
                     if (column.hidden === true || (column.show !== undefined && !column.show)) return column.accessor || column.id;
