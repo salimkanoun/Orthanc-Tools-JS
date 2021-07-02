@@ -1,112 +1,99 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux'
-
-import BootstrapTable from 'react-bootstrap-table-next';
-import filterFactory, { textFilter, dateFilter } from 'react-bootstrap-table2-filter';
-import paginationFactory from 'react-bootstrap-table2-paginator';
-import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-
-import TableResultSeries from './TableResultSeries'
+import React, {useMemo} from 'react';
+import {connect} from 'react-redux'
 import RetrieveButton from '../Components/RetrieveButton';
+import {
+    columnSeriesFactory,
+    columnStudyFactory
+} from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
+import NestedTable from "../../CommonComponents/RessourcesDisplay/ReactTable/NestedTable";
+import apis from "../../../services/apis";
+import {toast} from "react-toastify";
+import {addManualQuerySeriesDetails} from "../../../actions/ManualQuery";
 
-class TableResult extends Component {
 
-    columns = [{
-        dataField: 'key',
-        hidden: true
-    }, {
-        dataField: 'AnswerId',
-        hidden: true
-    }, {
-        dataField: 'AnswerNumber',
-        hidden: true
-    }, {
-        dataField: 'PatientName',
-        text: 'Patient Name',
-        sort: true,
-        filter: textFilter(),
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
-    }, {
-        dataField: 'PatientID',
-        text: 'Patient ID',
-        sort: true,
-        filter: textFilter(),
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
-    }, {
-        dataField: 'AccessionNumber',
-        text: 'Accession Number',
-        sort: true,
-        filter: textFilter()
-    }, {
-        dataField: 'StudyDate',
-        text: 'Acquisition Date',
-        sort: true,
-        filter: dateFilter()
-    }, {
-        dataField: 'StudyDescription',
-        text: 'Study Description',
-        sort: true,
-        filter: textFilter(),
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
-    }, {
-        dataField: 'ModalitiesInStudy',
-        text: 'Modalities',
-        sort: true,
-        filter: textFilter()
-    }, {
-        dataField: 'OriginAET',
-        hidden: true
-    }, {
-        dataField: 'StudyInstanceUID',
-        hidden: true
-    }, {
-        dataField: 'NumberOfStudyRelatedSeries',
-        text: 'Series'
-    }, {
-        dataField: 'NumberOfSeriesRelatedInstances',
-        text: 'Instances'
-    }, {
-        dataField: 'StudyOrthancID',
-        hidden: true
-    }, {
-        dataField: 'Retrieve',
-        text: 'Retrieve',
-        Cell:({row}, ) => {
-            return (<RetrieveButton queryAet={row.OriginAET} studyInstanceUID={row.StudyInstanceUID} level={RetrieveButton.Study} />)
-        }
-    }];
-
-    expandRow = {
-        showExpandColumn: true,
-        renderer: (row) => {
-            return (
-                <TableResultSeries rowData={row}></TableResultSeries>
-            )
-        }
-    }
-
-    render = () => {
-        return (
-            <ToolkitProvider
-                keyField="key"
-                data={this.props.results}
-                columns={this.columns}
-            >{
-                    props => (
-                        <React.Fragment>
-                            <div className="jumbotron" style={this.props.style}>
-                                <div className="mt-5">
-                                    <BootstrapTable wrapperClasses="table-responsive" ref={n => this.node = n} {...props.baseProps} filter={filterFactory()} striped={true} selectRow={this.selectRow} pagination={paginationFactory()} expandRow={this.expandRow} >
-                                    </BootstrapTable>
-                                </div>
-                            </div>
-                        </React.Fragment>
-                    )
+function TableResult({results, style, addManualQuerySeriesDetails}) {
+    style = style || {};
+    const columns = useMemo(() => [
+        ...columnStudyFactory(true, true, true, false, false, null, null, false, true, undefined, true),
+        {
+            accessor: 'NumberOfStudyRelatedSeries',
+            Header: 'Series'
+        }, {
+            accessor: 'NumberOfSeriesRelatedInstances',
+            Header: 'Instances'
+        }, {
+            accessor: 'OriginAET',
+            show: false
+        }, {
+            id: 'Retrieve',
+            Header: 'Retrieve',
+            Cell: ({row}) => {
+                return (<RetrieveButton queryAet={row.values.OriginAET} studyInstanceUID={row.values.StudyInstanceUID}
+                                        level={RetrieveButton.Study}/>)
+            }
+        }, {
+            accessor: 'seriesDetails',
+            table: [
+                ...columnSeriesFactory(true, true, null, null),
+                {
+                    accessor: 'NumberOfSeriesRelatedInstances',
+                    Header: 'Instances'
+                }, {
+                    accessor: 'OriginAET',
+                    show: false
+                }, {
+                    id: 'Retrieve',
+                    Header: 'Retrieve',
+                    Cell: ({row}) => {
+                        return (<RetrieveButton queryAet={row.values.raw.OriginAET}
+                                                studyInstanceUID={row.values.raw.StudyInstanceUID}
+                                                seriesInstanceUID={row.values.raw.SeriesInstanceUID}
+                                                level={RetrieveButton.Series}/>)
+                    }
                 }
-            </ToolkitProvider>
-        )
-    }
+            ]
+        }
+    ], [])
+    const data = useMemo(() => results.map(result => {
+        result.raw = result;
 
+        let queryData = {
+            Level: 'Series',
+            Query: {
+                Modality: '',
+                ProtocolName: '',
+                SeriesDescription: '',
+                SeriesInstanceUID: '',
+                StudyInstanceUID: result.StudyInstanceUID,
+                SeriesNumber: '',
+                NumberOfSeriesRelatedInstances: ''
+            }
+        }
+
+        if (result.seriesDetails.length === 0) {
+            apis.query.dicomQuery(result.OriginAET, queryData)
+                .then(queryAnswers => apis.query.retrieveAnswer(queryAnswers.ID))
+                .then(seriesAnswers => addManualQuerySeriesDetails(seriesAnswers, result.StudyInstanceUID))
+                .catch(() => {
+                    toast.error('Dicom Failure');
+                });
+        } else {
+            result.seriesDetails = result.seriesDetails.map(series => ({
+                ...series,
+                raw: series
+            }))
+        }
+        return result;
+    }), [results]);
+
+    return (
+        <React.Fragment>
+            <div className="jumbotron" style={style}>
+                <div className="mt-5">
+                    <NestedTable columns={columns} data={data} filtered sorted hiddenSelect/>
+                </div>
+            </div>
+        </React.Fragment>)
 }
 
 const mapStateToProps = (state) => {
@@ -115,4 +102,8 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, null)(TableResult);
+const mapDispatchToProps = {
+    addManualQuerySeriesDetails
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TableResult);

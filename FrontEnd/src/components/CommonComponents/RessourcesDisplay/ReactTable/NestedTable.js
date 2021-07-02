@@ -1,5 +1,5 @@
 import React from 'react'
-import {useExpanded, usePagination, useRowSelect, useTable} from 'react-table'
+import {useExpanded, useFilters, usePagination, useRowSelect, useSortBy, useTable} from 'react-table'
 import Table from 'react-bootstrap/Table'
 import {FormCheck} from "react-bootstrap"
 
@@ -11,7 +11,7 @@ actions.toggleAllPageRowsSelected = 'toggleAllPageRowsSelected'
 
 const LOWEST_PAGE_SIZE = 10;
 
-function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowStyle}) {
+function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowStyle, filtered = false, sorted = false}) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -22,6 +22,7 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
         setPageSize,
         prepareRow,
         visibleColumns,
+        selectedFlatRows,
         state: {expanded, pageIndex, pageSize, selectedRowIds}
     } = useTable(
         {
@@ -35,6 +36,10 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
                 pageSize: 10
             },
         },
+        (filtered ? useFilters : () => {
+        }),
+        (sorted ? useSortBy : () => {
+        }),
         useExpanded,
         usePagination,
         useRowSelect,
@@ -66,27 +71,24 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
                 },
                 ...columns,
             ])
-            hooks.stateReducers.push((state, action, previousState, instance) => {
-                    if (action.type === actions.resetSelectedRows ||
-                        action.type === actions.toggleAllRowsSelected ||
-                        action.type === actions.toggleRowSelected) {
-                        instance.selectChange = true;
-                    }
-                    return state;
-                }
-            )
-            hooks.useInstance.push((instance) => {
-                if (instance.selectChange) setSelected({root: instance.selectedFlatRows.map(x => x.values)});
-                instance.selectChange = false;
-            })
         })
+
+    React.useEffect(() => {
+        if (!!setSelected) setSelected({root: selectedFlatRows.map(x => x.values)});
+        // eslint-disable-next-line
+    }, [selectedFlatRows.length]);
+
+
     return (
         <Table striped bordered responsive {...getTableProps()}>
             <thead>
             {headerGroups.map(headerGroup => (
                 <tr {...headerGroup.getHeaderGroupProps()} >
                     {headerGroup.headers.map(column => (
-                        <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                        <th {...column.getHeaderProps(sorted ? column.getSortByToggleProps() : undefined)}>
+                            {column.render('Header')}
+                            {!!column.Filter && filtered ? column.render('Filter') : null}
+                        </th>
                     ))}
                 </tr>
             ))}
@@ -115,11 +117,11 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
                                                     <NestedTable
                                                         columns={matchingColumn.table}
                                                         data={value || []}
-                                                        setSelected={(selected) => {
+                                                        setSelected={!!setSelected ? (selected) => {
                                                             let t = [];
                                                             t[index] = selected;
                                                             setSelected({sub: t})
-                                                        }}
+                                                        } : undefined}
                                                         hiddenSelect={hiddenSelect}
                                                         rowEvent={rowEvent}
                                                         rowStyle={rowStyle}

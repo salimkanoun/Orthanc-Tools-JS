@@ -50,7 +50,7 @@ const columnSeriesFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, refr
     }
 ]
 
-const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, hiddenName, hiddenID, onDelete, refresh, showEditable = false, hiddenAnonymized = true, openLabelModal = undefined, showModalities = false, hideCounts = true) => [
+const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, hiddenName, hiddenID, onDelete, refresh, showEditable = false, hiddenAnonymized = true, openLabelModal = undefined, showModalities = false) => [
     {
         accessor: 'StudyOrthancID',
         Header: 'Study Orthanc ID',
