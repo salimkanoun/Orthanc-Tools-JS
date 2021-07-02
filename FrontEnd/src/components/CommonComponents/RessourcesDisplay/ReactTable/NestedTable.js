@@ -23,7 +23,7 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
         prepareRow,
         visibleColumns,
         selectedFlatRows,
-        state: {expanded, pageIndex, pageSize, selectedRowIds}
+        state: {pageIndex, pageSize}
     } = useTable(
         {
             columns,
@@ -94,13 +94,12 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
             ))}
             </thead>
             <tbody {...getTableBodyProps()}>
-            {page.map((row, i) => {
-                //debugger;
+            {page.map((row) => {
                 prepareRow(row)
                 return (
                     // Use a React.Fragment here so the table markup is still valid
                     <React.Fragment>
-                        <tr {...row.getRowProps()} onClick={((event) => {
+                        <tr {...row.getRowProps()} onClick={(() => {
                             if (rowEvent) rowEvent(row.values);
                         })} style={(rowStyle ? rowStyle(row.values) : null)}>
                             {row.cells.map(cell => {
