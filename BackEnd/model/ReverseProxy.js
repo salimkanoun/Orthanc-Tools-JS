@@ -40,8 +40,6 @@ const ReverseProxy = {
                 body: JSON.stringify(data)
             }
         }
-
-        console.log(options.body)
         return options
     },
 
@@ -83,7 +81,7 @@ const ReverseProxy = {
     },
 
     streamToRes(api, method, data, res) {
-        console.log(data)
+        
         return got(this.makeOptions(method, api, data))
             .on('response', function (response) {
                 if (response.statusCode === 200) {
