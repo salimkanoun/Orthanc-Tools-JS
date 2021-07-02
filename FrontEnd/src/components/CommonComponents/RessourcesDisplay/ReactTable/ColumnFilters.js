@@ -1,10 +1,10 @@
 //Common filter for searching by a text on a Column (just removing spaces in our case)
 import Select from "react-select";
-import {FormControl} from "react-bootstrap";
+import {Button, FormControl} from "react-bootstrap";
 
 export function InputFilter(label = '', type = 'text') {
     return ({
-                column: {filterValue, setFilter, ...props},
+                column: {filterValue, setFilter},
 
             }) => {
         return (
@@ -30,6 +30,38 @@ export function SelectFilter(label = 'Select...', options = []) {
                     onChange={(value => setFilter(value.value))}/>
         )
     }
+}
+
+export function InvertableDataFilter(label = '') {
+    return ({
+                column: {id, filterValue, setFilter},
+                data
+            }) => {
+
+        filterValue = filterValue || {
+            inverted: false,
+            value: ''
+        }
+        const options = [...new Set(data.map(row => row[id]))].map(x => ({
+            value: x,
+            label: x
+        }))
+        return (
+            <div className={'d-flex'}>
+                <Button variant={filterValue.inverted ? 'primary' : "outline-primary"}
+                        onClick={() => setFilter({value: filterValue.value, inverted: !filterValue.inverted})}>
+                    {filterValue.inverted ? <strong>{'inverted'}</strong> : 'invert'}
+                </Button>
+                <Select className={'react-select'} single options={options} placeholder={<label for=""></label>}
+                        value={options.find(x => x.value === filterValue.value)}
+                        onChange={(value => setFilter({value: value.value, inverted: filterValue.inverted}))}/>
+            </div>
+        )
+    }
+}
+
+export function invertableDataFilter(rows, col, {inverted, value}) {
+    return rows.filter(row => (!inverted === (row.values[col[0]] === value)) || value === '')
 }
 
 const OPTIONS_DATE_FILTER = [
@@ -70,15 +102,14 @@ export function DateFilter(label = 'Select...') {
 }
 
 
-const dateFilterComp = {
-    '<=': (row, col, date) => Date.parse(row.values[col]) <= Date.parse(date),
-    '=': (row, col, date) => Date.parse(row.values[col]) === Date.parse(date),
-    '>=': (row, col, date) => Date.parse(row.values[col]) >= Date.parse(date),
-}
+const dateFilterComp =
+    {
+        '<=': (row, col, date) => Date.parse(row.values[col]) <= Date.parse(date),
+        '=': (row, col, date) => Date.parse(row.values[col]) === Date.parse(date),
+        '>=': (row, col, date) => Date.parse(row.values[col]) >= Date.parse(date),
+    }
 
 export function dateFilter(rows, col, val) {
-    console.log(val);
-    console.log(rows)
     if (!val.date || val.comp.value === '~') return rows;
     return rows.filter(row => dateFilterComp[val.comp.value](row, col[0], val.date));
 }

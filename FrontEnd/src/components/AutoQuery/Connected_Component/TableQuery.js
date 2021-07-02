@@ -1,15 +1,9 @@
 import React, {Component, useMemo} from 'react';
 import {connect} from 'react-redux'
 import {toast} from 'react-toastify'
-import moment from 'moment'
-import {dateFilter, textFilter} from 'react-bootstrap-table2-filter';
-import cellEditFactory, {Type} from 'react-bootstrap-table2-editor'
-
-import ColumnEditor from './ColumnEditor'
 import {addRow, editCellQuery, emptyQueryTable, removeQuery} from '../../../actions/TableQuery'
 import {addStudyResult} from '../../../actions/TableResult'
 import {loadAvailableAETS} from '../../../actions/OrthancTools'
-import SelectModalities from '../../CommonComponents/SearchForm/SelectModalities';
 
 import apis from '../../../services/apis';
 import {FormControl} from "react-bootstrap";
@@ -23,6 +17,7 @@ import CommonSelectingAndFilteringTable
     from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonSelectingAndFilteringTable";
 
 import ExportCSVButton from "../../CommonComponents/RessourcesDisplay/ExportCSVButton";
+import CsvLoader from "./CsvLoader";
 
 function CustomHeader(setOverride) {
     return ({column}) => {
@@ -138,161 +133,6 @@ class TableQuery extends Component {
         this.props.emptyQueryTable()
     }
 
-    customHeader = (column, colIndex, {sortElement, filterElement}) => {
-        return (
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-                {column.text}
-                {filterElement}
-                <ColumnEditor columnName={column.accessor}/>
-            </div>
-        );
-    }
-
-    selectRow = {
-        mode: 'checkbox'
-    };
-
-    cellEdit = cellEditFactory({
-        mode: 'click',
-        blurToSave: true,
-        autoSelectText: true,
-        afterSaveCell: (oldValue, newValue, row, column) => {
-            //Force rerender to get style update
-            this.node.forceUpdate()
-        }
-    });
-
-    columns = [{
-        dataField: 'key',
-        hidden: true,
-        csvExport: false
-    }, {
-        dataField: 'PatientName',
-        text: 'Patient Name',
-        sort: true,
-        editor: {
-            placeholder: 'Set value'
-        },
-        filter: textFilter(),
-        headerFormatter: this.customHeader
-    }, {
-        dataField: 'PatientID',
-        text: 'Patient ID',
-        sort: true,
-        filter: textFilter(),
-        editor: {
-            placeholder: 'Set value'
-        },
-        headerFormatter: this.customHeader
-    }, {
-        dataField: 'AccessionNumber',
-        text: 'Accession Number',
-        sort: true,
-        editor: {
-            placeholder: 'Set value'
-        },
-        filter: textFilter(),
-        headerFormatter: this.customHeader
-    }, {
-        dataField: 'DateFrom',
-        text: 'Date From',
-        sort: true,
-        filter: dateFilter(),
-        formatter: (cell) => {
-            let dateObj
-            if (cell !== '') {
-                dateObj = moment(cell, "YYYYMMDD")
-            } else {
-                return ''
-            }
-            return moment(dateObj).format("YYYYMMDD")
-        },
-        editor: {
-            type: Type.DATE
-        },
-        headerFormatter: this.customHeader
-    }, {
-        dataField: 'DateTo',
-        text: 'Date To',
-        sort: true,
-        filter: dateFilter(),
-        formatter: (cell) => {
-            let dateObj
-            if (cell !== '') {
-                dateObj = moment(cell, "YYYYMMDD")
-            } else {
-                return ''
-            }
-            return moment(dateObj).format("YYYYMMDD")
-        },
-        editor: {
-            type: Type.DATE
-        },
-        headerFormatter: this.customHeader
-    }, {
-        dataField: 'StudyDescription',
-        text: 'Study Description',
-        sort: true,
-        editor: {
-            placeholder: 'Set value'
-        },
-        filter: textFilter(),
-        headerFormatter: this.customHeader
-    }, {
-        dataField: 'ModalitiesInStudy',
-        text: 'Modalities',
-        sort: true,
-        editCellStyle: {minWidth: '250px'},
-        filter: textFilter(),
-        headerFormatter: this.customHeader,
-        editorRenderer: (editorProps, value, row, column, rowIndex, columnIndex) => (
-            <SelectModalities {...editorProps} previousModalities={value}/>
-        )
-    }, {
-        dataField: 'Aet',
-        text: 'AET',
-        sort: true,
-        formatter: (cell, row, rowIndex, colIndex) => {
-            if (cell === '') {
-                return 'Click To Choose'
-            } else {
-                return cell
-            }
-        },
-        style: (cell, row, rowIndex, colIndex) => {
-            if (cell === '') {
-                return {backgroundColor: '#dc3545'}
-            }
-        },
-        editor: {
-            type: Type.SELECT,
-            getOptions: (setOptions, {row, column}) => {
-                let availablesAets = this.props.aets.map(function (aet) {
-                    return {value: aet, label: aet}
-                })
-
-                return availablesAets
-            }
-        },
-        filter: textFilter(),
-        headerFormatter: this.customHeader
-    }];
-
-    rowStyle = (row, rowIndex) => {
-
-        let nonEmptyColumns = Object.values(row).filter((rowValues) => {
-            if (rowValues !== '') return true
-            else return false
-        })
-
-        if (nonEmptyColumns.length <= 1) {
-            return {background: 'LightBlue'};
-        } else {
-            return {background: rowIndex % 2 === 0 ? 'transparent' : 'rgba(0,0,0,.05)'}
-        }
-
-    }
-
     state = {
         overrides: {},
         selected: []
@@ -304,13 +144,24 @@ class TableQuery extends Component {
                 <div>
                     <div className="row">
                         <div className="col-sm">
+                            <CsvLoader/>
                             <input type="button" className="btn btn-success m-2" value="Add"
                                    onClick={this.props.addRow}/>
                             <input type="button" className="btn btn-warning m-2" value="Delete Selected"
                                    onClick={this.removeRow}/>
                             <input type="button" className="btn btn-danger m-2" value="Empty Table"
                                    onClick={this.emptyTable}/>
-                            <ExportCSVButton data={this.props.queries}/>
+                            <ExportCSVButton data={this.props.queries.map(row => ({
+                                    'Patient Name': row.PatientName,
+                                    'Patient ID': row.PatientID,
+                                    'Accession Number': row.AccessionNumber,
+                                    'Date From': row.DateFrom,
+                                    'Date To': row.DateTo,
+                                    'Study Description': row.StudyDescription,
+                                    'Modality': row.ModalitiesInStudy,
+                                    'AET': row.Aet
+                                }
+                            ))}/>
                         </div>
                     </div>
                     <div className="mt-5">

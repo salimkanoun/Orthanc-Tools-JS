@@ -1,5 +1,5 @@
 function getCSVCell(cell) {
-    return '"' + cell.toString() + '"';
+    return (cell !== undefined && cell !== null ? cell.toString() : '');
 }
 
 function getAllKeys(data) {
@@ -22,22 +22,23 @@ export function getCSVString(data) {
     const keys = getAllKeys(data);
     if (keys.length === 0) return result;
 
-    result += '"' + keys[0].toString() + '"';
+    result += keys[0].toString();
     for (let i = 1; i < keys.length; i++) {
-        result += ", "
-        result += '"' + keys[i].toString() + '"';
+        result += ","
+        result += keys[i].toString();
     }
     result += '\n';
-    result += data.map(row => {
+    let body = data.map(row => {
         let line = '';
         line += getCSVCell(row[keys[0]]);
         for (let i = 1; i < keys.length; i++) {
-            line += ", "
+            line += ","
             line += getCSVCell(row[keys[i]]);
         }
-        line += '\n';
         return line;
-    })
+    }).join('\n');
+
+    result += body;
     return result;
 
 }

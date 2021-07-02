@@ -1,6 +1,7 @@
 import ActionBouton from "../ActionBouton";
 import React from "react";
 import {InputCell as EditableCell} from "./EditableCells";
+import {dateFilter, DateFilter, invertableDataFilter, InvertableDataFilter} from "./ColumnFilters";
 
 const columnSeriesFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, refresh) => [
     {
@@ -12,19 +13,21 @@ const columnSeriesFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, refr
     }, {
         accessor: 'SeriesDescription',
         Header: 'Series Description',
+        Filter: InvertableDataFilter('Series Description'),
+        filter: invertableDataFilter,
         sort: true,
         style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }, {
         accessor: 'Modality',
         Header: 'Modality',
-        sort: true
-    }, {
-        accessor: 'Instances',
-        Header: 'Instances',
+        Filter: InvertableDataFilter('Modality'),
+        filter: invertableDataFilter,
         sort: true
     }, {
         accessor: 'SeriesNumber',
         Header: 'Series Number',
+        Filter: InvertableDataFilter('Series Number'),
+        filter: invertableDataFilter,
         sort: true
     }, {
         id: 'Action',
@@ -47,7 +50,7 @@ const columnSeriesFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, refr
     }
 ]
 
-const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, hiddenName, hiddenID, onDelete, refresh, showEditable = false, hiddenAnonymized = true, openLabelModal = undefined) => [
+const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, hiddenName, hiddenID, onDelete, refresh, showEditable = false, hiddenAnonymized = true, openLabelModal = undefined, showModalities = false, hideCounts = true) => [
     {
         accessor: 'StudyOrthancID',
         Header: 'Study Orthanc ID',
@@ -67,25 +70,28 @@ const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccession
         accessor: 'PatientName',
         Header: 'Patient Name',
         sort: true,
+        Filter: InvertableDataFilter('Patient Name'),
+        filter: invertableDataFilter,
         show: !hiddenName,
-        editable: false,
     }, {
         accessor: 'PatientID',
         Header: 'Patient ID',
+        Filter: InvertableDataFilter('Patient Name'),
+        filter: invertableDataFilter,
         sort: true,
         show: !hiddenID,
-        editable: false,
     }, {
         accessor: 'StudyDate',
-        Header: 'Study Date',
+        Header: 'Acquisition Date',
+        Filter: DateFilter('Acquisition Date'),
+        filter: dateFilter,
         sort: true,
-        editable: false
     }, {
         accessor: 'StudyDescription',
         Header: 'Description',
+        Filter: InvertableDataFilter('Description'),
+        filter: invertableDataFilter,
         sort: true,
-        title: (cell, row, rowIndex, colIndex) => row.values.StudyDescription,
-        editable: false,
         style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }, {
         accessor: 'newStudyDescription',
@@ -94,8 +100,16 @@ const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccession
         Cell: EditableCell,
         style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }, {
+        accessor: 'RequestedProcedureDescription',
+        Header: 'Requested Procedure Description',
+        Filter: InvertableDataFilter('Procedure Description'),
+        filter: invertableDataFilter,
+        sort: true
+    }, {
         accessor: 'AccessionNumber',
         Header: 'Accession Number',
+        Filter: InvertableDataFilter('Procedure Description'),
+        filter: invertableDataFilter,
         sort: true,
         show: !hiddenAccessionNumber,
         editable: false
@@ -104,6 +118,13 @@ const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccession
         Header: 'New Accession Number',
         show: showEditable,
         Cell: EditableCell,
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+    }, {
+        accessor: 'ModalitiesInStudy',
+        Header: 'Modalities',
+        Filter: InvertableDataFilter('Modalities'),
+        filter: invertableDataFilter,
+        show: showModalities,
         style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }, {
         id: 'Action',
@@ -117,8 +138,6 @@ const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccession
                                   refresh={refresh} openLabelModal={openLabelModal}/>
                 </>)
         ),
-        editable: false,
-        csvExport: false
     }, {
         id: 'Remove',
         Header: 'Remove',
@@ -129,8 +148,6 @@ const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccession
                 onDelete(row.values.StudyOrthancID)
             }}>Remove</button>
         },
-        editable: false,
-        csvExport: false
     }, {
         accessor: 'Anonymized',
         Header: 'Anonymized ?',
@@ -142,7 +159,6 @@ const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccession
             return row.values.AnonymizedFrom ? 'Yes' : 'No'
         },
         show: !hiddenAnonymized,
-        csvExport: false
     }]
 
 const columnPatientsFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, onModify, refresh, showEditable = false,
