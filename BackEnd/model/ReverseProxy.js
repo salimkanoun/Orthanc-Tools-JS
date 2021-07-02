@@ -40,8 +40,6 @@ const ReverseProxy = {
                 body: JSON.stringify(data)
             }
         }
-
-        console.log(options.body)
         return options
     },
 
