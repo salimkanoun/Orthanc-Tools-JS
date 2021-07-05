@@ -64,9 +64,10 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
                     id: 'expanded',
                     Header: '',
                     Cell: ({row}) => (
-                        <span {...row.getToggleRowExpandedProps()}>
-                            {row.isExpanded ? '⬇' : '➡'}
-                        </span>
+                        <div
+                            className={'d-flex justify-content-center expand-cell align-content-center'} {...row.getToggleRowExpandedProps()}>
+                            <span>{row.isExpanded ? '⬇' : '➡'}</span>
+                        </div>
                     ),
                 },
                 ...columns,
