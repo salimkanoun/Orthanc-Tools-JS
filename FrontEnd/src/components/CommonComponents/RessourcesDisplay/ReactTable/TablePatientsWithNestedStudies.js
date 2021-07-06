@@ -90,7 +90,6 @@ class TablePatientsWithNestedStudiesWrapper extends Component {
     }
 
     getSelectedRessources() {
-        let studies = [];
         return {
             selectedPatients: this.selected.root.map(x => x.PatientOrthancID),
             selectedStudies: this.selected.sub.map(x => x.root).flat().map(x => x.StudyOrthancID)

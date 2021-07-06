@@ -228,7 +228,6 @@ class TableQuery extends Component {
     makeDicomQuery = async (queryParams) => {
         //Prepare Date string for post data
         let DateString = '';
-        let overrides = this.state.overrides;
         queryParams.DateFrom = queryParams.DateFrom.split('-').join('')
         queryParams.DateTo = queryParams.DateTo.split('-').join('')
 

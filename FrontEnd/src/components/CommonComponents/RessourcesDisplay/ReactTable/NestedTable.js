@@ -111,7 +111,7 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
                         </tr>
                         {row.isExpanded ? (Object.entries(row.values).map(([key, value], index) => {
                                     let matchingColumn = columns.filter(column => !!column.table && column.accessor === key)[0];
-                                    return (!!matchingColumn > 0 ?
+                                    return (!!matchingColumn ?
                                             <tr>
                                                 <td className={"subtable-row"} colSpan={visibleColumns.length}>
                                                     <NestedTable

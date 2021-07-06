@@ -1,8 +1,7 @@
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 import React, {useMemo} from "react";
-import apis from "../../../services/apis";
-import role from "../../../services/role";
 import {InputCell, SelectCell} from "../../CommonComponents/RessourcesDisplay/ReactTable/EditableCells";
+import apis from "../../../services/apis";
 
 
 export default function UserTable({

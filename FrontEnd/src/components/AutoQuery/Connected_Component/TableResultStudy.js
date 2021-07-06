@@ -14,7 +14,7 @@ import ExportCSVButton from '../../CommonComponents/RessourcesDisplay/ExportCSVB
 function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesFiltered}) {
     const columns = useMemo(() => {
         return [
-            ...columnStudyFactory(true, true, false, false, false, null, null, false, true, null, true, false), {
+            ...columnStudyFactory(true, true, false, false, false, null, null, false, true, null, true), {
                 accessor: 'NumberOfStudyRelatedSeries',
                 Header: 'Series'
             }, {

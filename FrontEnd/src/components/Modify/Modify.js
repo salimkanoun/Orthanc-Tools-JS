@@ -74,21 +74,24 @@ export default class Modify extends Component {
     }
 
     handleDataChange = (oldValue, newValue, row, column) => {
+        let modification = this.state.modification;
+        let deletes = this.state.deletes;
         if (column === 'Value') {
-            this.state.modification[row.TagName] = newValue;
+            modification[row.TagName] = newValue;
         } else {
             if (newValue) {
-                this.state.deletes.push(row.TagName);
+                deletes.push(row.TagName);
             } else {
-                this.state.deletes = this.state.deletes.filter(x => x !== row.TagName);
+                deletes = deletes.filter(x => x !== row.TagName);
             }
         }
-        this.state.data.find(x => x.TagName === row.TagName)[column] = newValue;
+        const data = this.state.data;
+        data.find(x => x.TagName === row.TagName)[column] = newValue;
 
         this.setState({
-            modification: this.state.modification,
-            data: [...this.state.data],
-            deletes: this.state.deletes
+            modification,
+            data: [...data],
+            deletes
         })
     }
 
