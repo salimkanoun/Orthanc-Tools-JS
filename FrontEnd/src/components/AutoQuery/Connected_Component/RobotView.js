@@ -33,7 +33,7 @@ import Dropdown from 'react-bootstrap/esm/Dropdown'
 class RobotView extends Component {
 
     state = {
-        id : null,
+        id: null,
         valid: null,
         approved: null,
         rows: [],
@@ -164,11 +164,11 @@ class RobotView extends Component {
             }
         },
         onSelectAll: (isSelect, rows, e) => {
-            if( ! isSelect) return []
+            if (!isSelect) return []
             let rowsToSelect = rows.map(row => {
                 if (row.Status === RobotView.ITEM_SUCCESS) {
                     return row.id
-                }else{
+                } else {
                     return false
                 }
             })
@@ -190,14 +190,9 @@ class RobotView extends Component {
         let studyDataRetrieved = []
         //Loop each item to retrieve study level
         for (let row of seletectedRows) {
-            let studyDetails
-            if (row.Level === 'study') {
-                studyDetails = await apis.content.getStudiesDetails(row.RetrievedOrthancId)
-            } else {
-                let seriesData = await apis.content.getSeriesDetailsByID(row.RetrievedOrthancId)
-                studyDetails = await apis.content.getStudiesDetails(seriesData.ParentStudy)
-            }
-            studyDataRetrieved.push(studyDetails)
+            await apis.content.getStudiesDetails(row.RetrievedOrthancId).then((studyDetails) => {
+                studyDataRetrieved.push(studyDetails)
+            }).catch((error) => { console.error(error) })
         }
 
         return studyDataRetrieved
@@ -222,8 +217,8 @@ class RobotView extends Component {
     startProgressMonitoring = async () => {
         let response = await apis.task.getTask(this.props.id);
         this.setState({
-            id:response.id,
-            creator:response.creator
+            id: response.id,
+            creator: response.creator
         });
         this.task = new MonitorTask(this.props.id);
         this.task.onUpdate(this.refreshHandler.bind(this));
@@ -272,7 +267,7 @@ class RobotView extends Component {
         newPercentageFailure = (newPercentageFailure / response.details.items.length) * 100
 
         let newTotalPercentageProgress = Math.round((response.progress.retrieve + Number.EPSILON) * 10) / 10
-        
+
         this.setState({
             valid: response.details.valid,
             approved: response.details.approved,
@@ -293,7 +288,7 @@ class RobotView extends Component {
                 this.setState({
                     ...this.state,
                     rows: [],
-                    id:null
+                    id: null
                 })
                 this.task.stopMonitoringJob();
             } else {
@@ -309,7 +304,7 @@ class RobotView extends Component {
         await apis.retrieveRobot.deleteRobot(this.state.id);
         await this.refreshHandler(null);
         await this.setState({
-            id:null
+            id: null
         })
     }
 
