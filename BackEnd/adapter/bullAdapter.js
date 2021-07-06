@@ -90,7 +90,7 @@ class Queue extends event.EventEmitter {
     }
 
     /**
-     * Add jobs to the que
+     * Add jobs to the queue
      * @param jobsData data for the process
      * @param {String } name of the processor
      * @param {number} poolSize? number by which the jobs will be grouped
@@ -195,9 +195,11 @@ class Queue extends event.EventEmitter {
                 }
             });
 
+            let isRetry = job.data.errors.filter(x => x === null || x === undefined).length !== subJobs.length;
+            let failed = false;
             let i = 0
             for (let j of subJobs) {
-                await new Promise((resolve, reject) => {
+                if (!isRetry || !job.data.errors[i]) await new Promise((resolve, reject) => {
                     try {
                         processor(j, (err, res) => {
                             job.data.errors[i] = err;
@@ -205,6 +207,7 @@ class Queue extends event.EventEmitter {
                             job.update(job.data).then(() => resolve());
                         });
                     } catch (e) {
+                        failed = true;
                         job.data.errors[i] = e;
                         job.update(job.data).then(() => resolve());
                     }
@@ -212,7 +215,7 @@ class Queue extends event.EventEmitter {
                 i++;
             }
 
-            done(null, true);
+            done(failed ? job.data.errors : null, true);
         }
     }
 
@@ -277,16 +280,12 @@ class BatchedJob extends Job {
 
     getState() {
         return super.getState().then(state => {
-            if (state === Queue.JOB_STATES.ACTIVE) {
-                if (this._bullJob.data.results[this._i] !== null && this._bullJob.data.results[this._i] !== undefined) return Queue.JOB_STATES.COMPLETED;
-                if (this._bullJob.data.errors[this._i] !== null && this._bullJob.data.errors[this._i] !== undefined) return Queue.JOB_STATES.FAILED;
-                if (this._i === 0 ||
-                    this._bullJob.data.results[this._i - 1] !== null && this._bullJob.data.results[this._i - 1] !== undefined ||
-                    this._bullJob.data.errors[this._i - 1] !== null && this._bullJob.data.errors[this._i - 1] !== undefined) return Queue.JOB_STATES.ACTIVE;
-                return Queue.JOB_STATES.WAITING;
-            } else {
-                return state;
-            }
+            if (this._bullJob.data.results[this._i] !== null && this._bullJob.data.results[this._i] !== undefined) return Queue.JOB_STATES.COMPLETED;
+            if (this._bullJob.data.errors[this._i] !== null && this._bullJob.data.errors[this._i] !== undefined) return Queue.JOB_STATES.FAILED;
+            if (this._i === 0 ||
+                this._bullJob.data.results[this._i - 1] !== null && this._bullJob.data.results[this._i - 1] !== undefined ||
+                this._bullJob.data.errors[this._i - 1] !== null && this._bullJob.data.errors[this._i - 1] !== undefined) return Queue.JOB_STATES.ACTIVE;
+            return Queue.JOB_STATES.WAITING;
         });
     }
 

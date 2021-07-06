@@ -134,10 +134,25 @@ class RetrieveTask {
      * @returns {Task} the task info
      */
     static async getTask(id) {
+        const sorter = (a, b) => {
+            if (a.data.AnswerId === b.data.AnswerId) {
+                if (a.data.AnswerNumber === b.data.AnswerNumber) {
+                    return 0;
+                } else if (a.data.AnswerNumber > b.data.AnswerNumber) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } else if (a.data.AnswerId > b.data.AnswerId) {
+                return 1;
+            } else {
+                return -1;
+            }
+        };
         //Gathering the jobs of the corresponding task
-        let validationJobs = await RetrieveTask._getValidationJobs(id);
+        let validationJobs = (await RetrieveTask._getValidationJobs(id)).sort(sorter);
         if (validationJobs.length === 0) return null; //If no jobs of this task exist then the task doesn't exist
-        let retrieveJobs = await RetrieveTask._getRetrieveJobs(id);
+        let retrieveJobs = (await RetrieveTask._getRetrieveJobs(id)).sort(sorter);
         let progress = await RetrieveTask.getProgress(validationJobs, retrieveJobs);
 
         //Making state
