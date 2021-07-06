@@ -260,8 +260,8 @@ class RetrieveTask {
         if (retrieveJobs.length !== 0 && !stateComplete) throw new OTJSForbiddenException("Can't delete a robot already in progress");
         let validateJobs = await RetrieveTask._getValidationJobs(taskId);
 
-        validateJobs.forEach(job => job.remove());
-        retrieveJobs.forEach(job => job.remove());
+        await Promise.all(validateJobs.map(job => job.remove()));
+        await Promise.all(retrieveJobs.map(job => job.remove()));
     }
 
     /**

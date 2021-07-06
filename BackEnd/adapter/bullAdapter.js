@@ -62,6 +62,9 @@ class Queue extends event.EventEmitter {
             this._invalidated = true;
             this.emit('failed', job, err);
         });
+        this._queue.on('removed', (job) => {
+            this._invalidated = true;
+        });
         queues.push(this);
     }
 
