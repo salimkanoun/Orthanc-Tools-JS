@@ -1,23 +1,46 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
+import React, {Component, useMemo} from "react"
+import {connect} from "react-redux"
 
 import papa from 'papaparse'
 
 import apis from '../../services/apis'
-import TableStudy from '../CommonComponents/RessourcesDisplay/TableStudy'
-import TableSeries from '../CommonComponents/RessourcesDisplay/TableSeries'
+import TableStudy from '../CommonComponents/RessourcesDisplay/ReactTable/TableStudy'
+import TableSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableSeries'
 import DownloadDropdown from "./DownloadDropdown"
 import SendAetDropdown from "./SendAetDropdown"
 import SendPeerDropdown from "./SendPeerDropdown"
 import ModalWarning from './ModalWarning'
 
-import { seriesArrayToStudyArray } from '../../tools/processResponse'
-import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
+import {seriesArrayToStudyArray} from '../../tools/processResponse'
+import {emptyExportList, removeSeriesFromExportList, removeStudyFromExportList} from '../../actions/ExportList'
 import SendExternalDropdown from "./SendExternalDropdown"
-import { toast } from "react-toastify"
+import {toast} from "react-toastify"
+
+/**
+ * This componnent wrapper allows to optimise the table by memoizing data
+ * because getStudies return a different object everytime the component state updates
+ * @param series list of series contained by the studies
+ * @param studies list of the studies
+ * @param props props required by the table
+ * @returns {JSX.Element} The table
+ */
+function TableStudyWrapper({series, studies, ...props}) {
+    const data = useMemo(() => seriesArrayToStudyArray(series, studies), [series, studies]);
+    return <TableStudy studies={data} {...props}/>
+}
+
+function TableSeriesWrapper({series, selectedStudy, ...props}) {
+    const data = useMemo(() => series
+        .filter(serie => serie.ParentStudy === selectedStudy)
+        .map(serie => ({
+            ...serie.MainDicomTags,
+            SeriesOrthancID: serie.ID,
+            Instances: serie.Instances.length
+        })), [series, selectedStudy]);
+    return <TableSeries series={data} {...props}/>
+}
 
 class ExportPanel extends Component {
-
     state = {
         currentStudy: '',
         currentTS: null,
@@ -30,7 +53,7 @@ class ExportPanel extends Component {
 
     rowEvents = {
         onClick: (e, row, rowIndex) => {
-            this.setState({ currentStudy: row.StudyOrthancID })
+            this.setState({currentStudy: row.StudyOrthancID})
         }
     }
 
@@ -51,18 +74,18 @@ class ExportPanel extends Component {
             let peers = await apis.peers.getPeers()
             let endpoints = await apis.endpoints.getEndpoints()
             let TS = await apis.options.getExportOption()
-            
-            endpoints.push({        
+
+            endpoints.push({
                 id: -1,
                 label: 'On Server Hard Disk',
                 protocol: 'local',
             })
-          
+
             this.setState({
                 aets: aets,
                 peers: peers,
                 endpoints: endpoints,
-                currentTS : TS
+                currentTS: TS
             })
 
 
@@ -95,16 +118,8 @@ class ExportPanel extends Component {
         this.props.emptyExportList()
     }
 
-
-    getStudies = () => {
-        let list = seriesArrayToStudyArray(this.props.exportList.seriesArray, this.props.exportList.studyArray)
-        return list
-    }
-
     getSeries = () => {
-
         let studies = []
-
         this.props.exportList.seriesArray.forEach(serie => {
             if (serie.ParentStudy === this.state.currentStudy) {
                 studies.push({
@@ -167,7 +182,7 @@ class ExportPanel extends Component {
 
         const element = document.createElement("a");
         const file = new Blob([csvString],
-            { type: 'text/csv;charset=utf-8' });
+            {type: 'text/csv;charset=utf-8'});
         element.href = URL.createObjectURL(file);
         element.download = "ExportDicomDetails.csv";
         document.body.appendChild(element);
@@ -183,10 +198,9 @@ class ExportPanel extends Component {
                 <h2 className="card-title mb-3">Export</h2>
                 <div className="row">
                     <div className="col-sm">
-                        <TableStudy
-                            ref={this.child}
-                            wrapperClasses="table-responsive"
-                            data={this.getStudies()}
+                        <TableStudyWrapper
+                            studies={this.props.exportList.studyArray}
+                            series={this.props.exportList.seriesArray}
                             rowEvents={this.rowEvents}
                             rowStyle={this.rowStyle}
                             hiddenActionBouton={true}
@@ -194,33 +208,44 @@ class ExportPanel extends Component {
                             hiddenName={false}
                             hiddenID={false}
                             pagination={true}
-                            hiddenAnonymized={false} />
-                        <button type='button' className="btn btn-warning float-right" onClick={this.emptyList}>Empty List</button>
+                            hiddenAnonymized={false}/>
+                        <button type='button' className="btn btn-warning float-right" onClick={this.emptyList}>Empty
+                            List
+                        </button>
                     </div>
 
                     <div className="col-sm">
-                        <TableSeries data={this.getSeries()} wrapperClasses="table-responsive" hiddenActionBouton={true} hiddenRemoveRow={false} onDelete={this.removeSeries} />
-                        <button type='button' className="btn btn-danger float-right" onClick={this.removeStudy}>Remove Study</button>
+                        <TableSeriesWrapper series={this.props.exportList.seriesArray}
+                                            selectedStudy={this.state.currentStudy}
+                                            hiddenActionBouton={true}
+                                            hiddenRemoveRow={false} onDelete={this.removeSeries}/>
+                        <button type='button' className="btn btn-danger float-right" onClick={this.removeStudy}>Remove
+                            Study
+                        </button>
                     </div>
                 </div>
                 <div className="row text-center mt-5">
                     <div className='col-sm'>
-                        <DownloadDropdown exportIds={idArray} TS = {this.state.currentTS} />
+                        <DownloadDropdown exportIds={idArray} TS={this.state.currentTS}/>
                     </div>
                     <div className='col-sm'>
-                        <SendAetDropdown aets={this.state.aets} exportIds={idArray} />
+                        <SendAetDropdown aets={this.state.aets} exportIds={idArray}/>
                     </div>
                     <div className='col-sm'>
-                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm} setModal={() => this.setState({ show: true })} setButton={this.setButton} />
+                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm}
+                                          setModal={() => this.setState({show: true})} setButton={this.setButton}/>
                     </div>
                     <div className='col-sm'>
-                        <SendExternalDropdown endpoints={this.state.endpoints} exportIds={idArray} username={this.props.username} />
+                        <SendExternalDropdown endpoints={this.state.endpoints} exportIds={idArray}
+                                              username={this.props.username}/>
                     </div>
                     <div className='col-sm'>
-                        <button type='button' className='btn btn-info' onClick={this.getCSV} > Download CSV Details </button>
+                        <button type='button' className='btn btn-info' onClick={this.getCSV}> Download CSV Details
+                        </button>
                     </div>
                 </div>
-                <ModalWarning show={this.state.show} onHide={() => this.setState({ show: false })} button={this.state.button} />
+                <ModalWarning show={this.state.show} onHide={() => this.setState({show: false})}
+                              button={this.state.button}/>
             </div>
         )
     }

@@ -1,10 +1,6 @@
-import React, { Component } from 'react'
-import { connect } from "react-redux"
-
-import BootstrapTable from 'react-bootstrap-table-next'
-import filterFactory, { textFilter, dateFilter, selectFilter } from 'react-bootstrap-table2-filter'
-import paginationFactory from 'react-bootstrap-table2-paginator';
-import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import React, {Component, Fragment, useMemo} from 'react'
+import {connect} from "react-redux"
+import {buildStyles, CircularProgressbar, CircularProgressbarWithChildren} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 import AnonExportDeleteSendButton from '../../Import/AnonExportDeleteSendButton'
@@ -12,19 +8,158 @@ import OhifLink from '../../Viewers/OhifLink'
 import StoneLink from '../../Viewers/StoneLink'
 import apis from '../../../services/apis'
 
-import { ReactComponent as CheckedSVG } from '../../../assets/images/check-circle.svg'
-import { ReactComponent as XSVG } from '../../../assets/images/x-circle.svg'
-import { ReactComponent as PendingSVG } from '../../../assets/images/pending.svg'
+import {ReactComponent as CheckedSVG} from '../../../assets/images/check-circle.svg'
+import {ReactComponent as XSVG} from '../../../assets/images/x-circle.svg'
+import {ReactComponent as PendingSVG} from '../../../assets/images/pending.svg'
 
-import { addStudiesToExportList } from '../../../actions/ExportList'
-import { addStudiesToDeleteList } from '../../../actions/DeleteList'
-import { addStudiesToAnonList } from '../../../actions/AnonList'
+import {addStudiesToExportList} from '../../../actions/ExportList'
+import {addStudiesToDeleteList} from '../../../actions/DeleteList'
+import {addStudiesToAnonList} from '../../../actions/AnonList'
 
 import MonitorTask from '../../../tools/MonitorTask'
-import { toast } from 'react-toastify';
-import { Fragment } from 'react';
+import {toast} from 'react-toastify';
 import Dropdown from 'react-bootstrap/esm/Dropdown'
+import {
+    dateFilter,
+    DateFilter,
+    InputFilter,
+    SelectFilter
+} from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFilters";
+import CommonSelectingAndFilteringTable
+    from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonSelectingAndFilteringTable";
 
+
+function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelect}) {
+    const columns = [{
+        accessor: 'id',
+        show: false
+    }, {
+        accessor: 'Level',
+        Header: 'Level',
+        Filter: SelectFilter('Level', [{value: 'study', label: 'Study'}, {value: 'series', label: 'Series'}])
+    }, {
+        accessor: 'StudyInstanceUID',
+        show: false
+    }, {
+        accessor: 'PatientName',
+        Header: 'Patient Name',
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
+        Filter: InputFilter('Patient Name')
+    }, {
+        accessor: 'PatientID',
+        Header: 'Patient ID',
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
+        Filter: InputFilter('Patient ID')
+    }, {
+        accessor: 'StudyDate',
+        Header: 'Study Date',
+        Filter: DateFilter('Study Date'),
+        filter: dateFilter
+    }, {
+        accessor: 'Modality',
+        Header: 'Modality',
+        Filter: InputFilter('Modality')
+    }, {
+        accessor: 'StudyDescription',
+        Header: 'Study Description',
+        style: {
+            whiteSpace: 'normal', wordWrap:
+                'break-word'
+        },
+        Filter: InputFilter('Study Description')
+    }, {
+        accessor: 'SeriesDescription',
+        Header: 'Series Description',
+        style: {
+            whiteSpace: 'normal', wordWrap:
+                'break-word'
+        }
+        ,
+        Filter: InputFilter('Study Description')
+    }, {
+        accessor: 'AccessionNumber',
+        Header: 'Accession Number',
+        Filter: InputFilter('Accession Number')
+    }, {
+        accessor: 'OriginAET',
+        Header: 'AET',
+        Filter: InputFilter('AET')
+    }, {
+        accessor: 'Validated',
+        Header: 'Validated',
+        Cell: ({value, row}) => {
+            if (value == null) return <div className="text-center"><PendingSVG/></div>
+            return value === true ? <div className="text-center"><CheckedSVG/></div> :
+                <div className="text-center"><XSVG/></div>
+        },
+        Filter: SelectFilter('Validated', [
+            {value: true, label: 'Validated'},
+            {value: false, label: 'Invalid'},
+            {value: null, label: 'Unvalidated'}
+        ])
+    }, {
+        accessor: 'Status',
+        Header: 'Status',
+        style: function callback({row}) {
+            if (row.values.Status === 'Success') {
+                return ({backgroundColor: 'green'})
+            } else if (row.values.Status === 'Failure') {
+                return ({backgroundColor: 'red'})
+            }
+        },
+        Filter: SelectFilter('Status', [
+            {value: 'completed', label: 'Completed'},
+            {value: 'paused', label: 'Paused'},
+            {value: 'failed', label: 'Failed'},
+            {value: 'waiting', label: 'Waiting'},
+            {value: 'validating', label: 'Validating'}
+        ])
+    }, {
+        id: 'Remove',
+        Header: 'Remove Query',
+        Cell:
+            ({row: {index}}) => {
+                return approved === false ?
+                    (<div className="text-center">
+                        <input type="button" className='btn btn-danger'
+                               onClick={() => deleteQueryHandler(index, refreshHandler)}
+                               value="Remove"/>
+                    </div>)
+                    : null
+            },
+        disableFilters:
+            true,
+    }, {
+        id: 'Viewers',
+        Header: 'Viewers',
+        Cell:
+            ({row: {values}}) => {
+                return values.Status === RobotView.ITEM_SUCCESS ?
+                    <Fragment>
+                        <Dropdown drop='left'>
+                            <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                Viewers
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <OhifLink className='dropdown-item bg-info'
+                                          StudyInstanceUID={values.StudyInstanceUID}/>
+                                <StoneLink className='dropdown-item bg-info'
+                                           StudyInstanceUID={values.StudyInstanceUID}/>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Fragment>
+                    : null
+            },
+        disableFilters: true,
+    }, {
+        accessor: 'RetrievedOrthancId',
+        show: false
+    }
+    ]
+    const data = useMemo(() => rows, [rows]);
+    return <CommonSelectingAndFilteringTable tableData={data} columns={columns}
+                                             onSelect={value => onSelect(value.map(v => v.values))}/>
+}
 
 /**
  * View page of a sigle Retrieve Robot content
@@ -33,10 +168,11 @@ import Dropdown from 'react-bootstrap/esm/Dropdown'
 class RobotView extends Component {
 
     state = {
-        id : null,
+        id: null,
         valid: null,
         approved: null,
         rows: [],
+        selected: [],
         totalPercentageProgress: 0,
         percentageFailure: 0
     }
@@ -49,143 +185,10 @@ class RobotView extends Component {
         this.stopProgressMonitoring()
     }
 
-    columns = [{
-        dataField: 'id',
-        hidden: true
-    }, {
-        dataField: 'Level',
-        text: 'level',
-        filter: selectFilter({
-            options: { study: 'study', series: 'series' }
-        })
-    }, {
-        dataField: 'StudyInstanceUID',
-        hidden: true
-    }, {
-        dataField: 'PatientName',
-        text: 'Patient Name',
-        filter: textFilter(),
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
-    }, {
-        dataField: 'PatientID',
-        text: 'Patient ID',
-        filter: textFilter(),
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
-    }, {
-        dataField: 'StudyDate',
-        text: 'Study Date',
-        filter: dateFilter()
-    }, {
-        dataField: 'Modality',
-        text: 'Modality',
-        filter: textFilter()
-    }, {
-        dataField: 'StudyDescription',
-        text: 'Study Description',
-        filter: textFilter(),
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
-    }, {
-        dataField: 'SeriesDescription',
-        text: 'Series Description',
-        filter: textFilter(),
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
-    }, {
-        dataField: 'AccessionNumber',
-        text: 'Accession Number',
-        filter: textFilter()
-    }, {
-        dataField: 'OriginAET',
-        text: 'AET',
-        filter: textFilter()
-    }, {
-        dataField: 'Validated',
-        text: 'Validated',
-        filter: textFilter(),
-        formatter: (cell, row, rowIndex, formatExtraData) => {
-            if (cell == null) return <div className="text-center"><PendingSVG /></div>
-            return cell === true ? <div className="text-center"><CheckedSVG /></div> : <div className="text-center"><XSVG /></div>
-        }
-    }, {
-        dataField: 'Status',
-        text: 'Status',
-        filter: textFilter(),
-        style: function callback(cell, row, rowIndex, colIndex) {
-            if (cell === 'Success') {
-                return ({ backgroundColor: 'green' })
-            } else if (cell === 'Failure') {
-                return ({ backgroundColor: 'red' })
-            }
-        }
-    }, {
-        dataField: 'Remove',
-        text: 'Remove Query',
-        formatter: (cell, row, rowIndex, formatExtraData) => {
-            return this.state.approved === false ?
-                (<div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={() => formatExtraData.deleteQueryHandler(rowIndex, formatExtraData.refreshHandler)} value="Remove" />
-                </div>)
-                : null
-        },
-        formatExtraData: this
-    }, {
-        dataField: 'Viewers',
-        text: 'Viewers',
-        formatter: function (cell, row, rowIndex, formatExtraData) {
-            return row.Status === RobotView.ITEM_SUCCESS ?
-                <Fragment>
-                    <Dropdown onClick={this.handleClick} drop='left'>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic"  >
-                            Viewers
-                        </Dropdown.Toggle>
-
-                        <Dropdown.Menu>
-                            <OhifLink className='dropdown-item bg-info' StudyInstanceUID={row.StudyInstanceUID} />
-                            <StoneLink className='dropdown-item bg-info' StudyInstanceUID={row.StudyInstanceUID} />
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </Fragment>
-                : null
-        }
-    }, {
-        dataField: 'RetrievedOrthancId',
-        hidden: true
-    }]
-
-
-
-    selectRow = {
-        mode: 'checkbox',
-        clickToSelect: true,
-        onSelect: (row, isSelect, rowIndex, e) => {
-            if (row.Status !== RobotView.ITEM_SUCCESS) {
-                return false
-            } else {
-                return true
-            }
-        },
-        onSelectAll: (isSelect, rows, e) => {
-            if( ! isSelect) return []
-            let rowsToSelect = rows.map(row => {
-                if (row.Status === RobotView.ITEM_SUCCESS) {
-                    return row.id
-                }else{
-                    return false
-                }
-            })
-            return rowsToSelect;
-        }
-
-    }
-
     getSelectedItemsStudiesDetails = async () => {
 
-        //get selected row keys
-        let selectedIdRow = this.node.selectionContext.selected
         //get array of selected rows
-        let seletectedRows = this.state.rows.filter(row => {
-            if (selectedIdRow.includes(row.id)) return true
-            else return false
-        })
+        let seletectedRows = this.state.selected
 
         let studyDataRetrieved = []
         //Loop each item to retrieve study level
@@ -202,6 +205,10 @@ class RobotView extends Component {
 
         return studyDataRetrieved
 
+    }
+
+    setSelect = (selected) => {
+        this.setState({selected});
     }
 
     sendToAnon = async () => {
@@ -222,8 +229,8 @@ class RobotView extends Component {
     startProgressMonitoring = async () => {
         let response = await apis.task.getTask(this.props.id);
         this.setState({
-            id:response.id,
-            creator:response.creator
+            id: response.id,
+            creator: response.creator
         });
         this.task = new MonitorTask(this.props.id);
         this.task.onUpdate(this.refreshHandler.bind(this));
@@ -272,7 +279,7 @@ class RobotView extends Component {
         newPercentageFailure = (newPercentageFailure / response.details.items.length) * 100
 
         let newTotalPercentageProgress = Math.round((response.progress.retrieve + Number.EPSILON) * 10) / 10
-        
+
         this.setState({
             valid: response.details.valid,
             approved: response.details.approved,
@@ -293,7 +300,7 @@ class RobotView extends Component {
                 this.setState({
                     ...this.state,
                     rows: [],
-                    id:null
+                    id: null
                 })
                 this.task.stopMonitoringJob();
             } else {
@@ -309,7 +316,7 @@ class RobotView extends Component {
         await apis.retrieveRobot.deleteRobot(this.state.id);
         await this.refreshHandler(null);
         await this.setState({
-            id:null
+            id: null
         })
     }
 
@@ -318,9 +325,10 @@ class RobotView extends Component {
             <div className="jumbotron">
                 <div className="row mb-5">
                     <h1 className="col"> Robot for user {this.state.creator}, project : {this.state.projectName} </h1>
-                    <div className="col-md-2 text-right" >
+                    <div className="col-md-2 text-right">
                         <CircularProgressbarWithChildren
-                            value={this.state.totalPercentageProgress} text={`Progress : ${this.state.totalPercentageProgress}%`}
+                            value={this.state.totalPercentageProgress}
+                            text={`Progress : ${this.state.totalPercentageProgress}%`}
                             styles={buildStyles({
                                 textSize: '10px'
                             })}
@@ -336,9 +344,12 @@ class RobotView extends Component {
                         </CircularProgressbarWithChildren>
                     </div>
                 </div>
-                <input type='button' className="btn btn-danger" onClick={this.handleClickDeleteRobot} value="Delete Robot" />
-                <BootstrapTable ref={n => this.node = n} wrapperClasses="table-responsive" keyField="id" striped={true} rowClasses={this.rowClasses} selectRow={this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
-                <AnonExportDeleteSendButton onAnonClick={this.sendToAnon} onExportClick={this.sendToExport} onDeleteClick={this.sendToDelete} />
+                <input type='button' className="btn btn-danger" onClick={this.handleClickDeleteRobot}
+                       value="Delete Robot"/>
+                <RobotTable rows={this.state.rows} approved={this.state.approved} refreshHandler={this.refreshHandler}
+                            deleteQueryHandler={this.deleteQueryHandler} onSelect={this.setSelect}/>
+                <AnonExportDeleteSendButton onAnonClick={this.sendToAnon} onExportClick={this.sendToExport}
+                                            onDeleteClick={this.sendToDelete}/>
             </div>
         )
     }

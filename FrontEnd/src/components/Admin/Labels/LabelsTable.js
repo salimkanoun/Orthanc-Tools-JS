@@ -1,34 +1,34 @@
-import React, {Component} from "react";
-import BootstrapTable from "react-bootstrap-table-next";
+import React, {useMemo} from "react";
 import {Button} from "react-bootstrap";
+import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
 
-export default class LabelsTable extends Component {
-    columns = [
+export default function LabelsTable({labels, handlerManageRole, handlerDelete}) {
+    const columns = useMemo(() => [
         {
-            dataField: 'label_name',
-            text: 'Label',
+            accessor: 'label_name',
+            Header: 'Label',
             hidden: false
         },
         {
-            dataField: '_r',
-            text: 'Roles',
-            formatter: (cell, row, index) => <Button variant={"primary"}
-                                                     onClick={() => this.props.handlerManageRole(row.label_name)}>Manage
+            id: '_r',
+            Header: 'Roles',
+            Cell: ({row}) => <Button variant={"primary"}
+                                     onClick={() => handlerManageRole(row.values.label_name)}>Manage
                 Roles</Button>
         },
         {
-            dataField: '_d',
-            text: 'Delete',
-            formatter: (cell, row, index) => <Button variant={"danger"}
-                                                     onClick={() => this.props.handlerDelete(row.label_name)}>Delete
+            id: '_d',
+            Header: 'Delete',
+            Cell: ({row}) => <Button variant={"danger"}
+                                     onClick={() => handlerDelete(row.values.label_name)}>Delete
                 Label</Button>
         }
-    ]
+    ], [handlerManageRole, handlerDelete]);
 
-    render() {
-        return (
-            <BootstrapTable keyField={'label_name'} columns={this.columns} data={this.props.labels}/>
-        );
-    }
+
+    return (
+        <CommonTable columns={columns} tableData={labels}/>
+    );
+
 }

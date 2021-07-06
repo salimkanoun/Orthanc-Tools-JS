@@ -1,7 +1,6 @@
 import React from 'react'
-import {useFilters, usePagination, useRowSelect, useTable} from 'react-table'
+import {useFilters, usePagination, useRowSelect, useSortBy, useTable} from 'react-table'
 import BTable from 'react-bootstrap/Table'
-import {InputFilter} from "./ColumnFilters";
 
 const LOWEST_PAGE_SIZE = 10;
 
@@ -11,7 +10,10 @@ function Table({
                    hiddenSelection,
                    onRowClick = () => {
                    },
-                   onSelect,
+                   onSelect = () => {
+                   },
+                   onFilter = () => {
+                   },
                    rowStyle = () => {
                    },
                    pagination = false,
@@ -36,14 +38,6 @@ function Table({
         }
     )
 
-    const defaultColumn = React.useMemo(
-        () => ({
-            Filter: InputFilter(),
-        }),
-        []
-    )
-
-
     const {
         getTableProps,
         getTableBodyProps,
@@ -61,7 +55,6 @@ function Table({
         {
             columns,
             data: tableData,
-            defaultColumn,
             onDataChange,
             initialState: {
                 hiddenColumns: columns.map(column => {
@@ -71,6 +64,7 @@ function Table({
             },
         },
         useFilters,
+        useSortBy,
         usePagination,
         useRowSelect,
         hooks => {
@@ -104,6 +98,10 @@ function Table({
         // eslint-disable-next-line
     }, [selectedFlatRows.length]);
 
+    React.useEffect(() => {
+        onFilter(rows);
+    }, [rows.length]);
+
     return (
         <>
             <BTable striped bordered responsive {...getTableProps()}>
@@ -111,8 +109,16 @@ function Table({
                 {headerGroups.map(headerGroup => (
                     <tr {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map(column => (
-                            <th {...column.getHeaderProps()}>{column.render('Header')}
-                                <div>{column.canFilter ? column.render('Filter') : null}</div>
+                            <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                                <span>
+                                    {column.render('Header')}
+                                    {column.isSorted
+                                        ? column.isSortedDesc
+                                            ? ' ▼'
+                                            : ' ▲'
+                                        : ''}
+                                </span>
+                                <div>{column.canFilter && !!column.Filter ? column.render('Filter') : null}</div>
                             </th>
                         ))}
                     </tr>

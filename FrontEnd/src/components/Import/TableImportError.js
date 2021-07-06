@@ -1,30 +1,28 @@
-import React, { Component, Fragment } from 'react'
-import BootstrapTable from 'react-bootstrap-table-next'
-import paginationFactory from 'react-bootstrap-table2-paginator';
+import React, {useMemo} from 'react'
+import CommonTable from "../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-export default class TableImportError extends Component {
+export default function TableImportError({data, ...props}) {
 
-    columns = [{
-        dataField: 'fileID',
+    const columns = [{
+        accessor: 'fileID',
         hidden: true
     }, {
-        dataField: 'filename',
-        text: 'FileName',
+        accessor: 'filename',
+        Header: 'FileName',
         sort: true,
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }, {
-        dataField: 'error',
-        text: 'Error Message',
+        accessor: 'error',
+        Header: 'Error Message',
         sort: true,
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }]
 
-    render = () => {
-        return (
-            <Fragment>
-                <BootstrapTable keyField={'fileID'} striped={true} columns={this.columns} pagination={paginationFactory()}  wrapperClasses="table-responsive" {...this.props} />
-            </Fragment>
-        )
-    }
+    const rows = useMemo(() => data, [data]);
+
+    return (
+        <CommonTable columns={columns} tableData={rows} {...this.props}/>
+    )
+
 
 }
