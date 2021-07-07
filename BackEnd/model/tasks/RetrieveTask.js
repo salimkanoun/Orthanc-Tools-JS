@@ -269,7 +269,7 @@ class RetrieveTask {
         let retrieveJobs = await RetrieveTask._getRetrieveJobs(taskId);
 
         //Checking if all the jobs are finished
-        let stateComplete = (await Promise.all(retrieveJobs.map(job => job.getState()))).reduce((acc, x) => acc && x === 'completed', true);
+        let stateComplete = (await Promise.all(retrieveJobs.map(job => job.getState()))).reduce((acc, x) => acc && (x === 'completed' || x === 'failed'), true);
 
         if (retrieveJobs.length !== 0 && !stateComplete) throw new OTJSForbiddenException("Can't delete a robot already in progress");
         let validateJobs = await RetrieveTask._getValidationJobs(taskId);
