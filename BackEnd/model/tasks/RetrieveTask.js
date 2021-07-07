@@ -420,8 +420,8 @@ Options.optionEventEmiter.on('schedule_change', () => {
 
 setupRetrieveSchedule();
 
-let validationQueue = new Queue("validation", RetrieveTask._validateItem);
-let retrieveQueue = new Queue("retrieve", RetrieveTask._retrieveItem);
+let validationQueue = new Queue("validation", RetrieveTask._validateItem, Number(process.env.RETRIEVE_ATTEMPTS) || 3, Number(process.env.RETRIEVE_BACKOFF) || 2000);
+let retrieveQueue = new Queue("retrieve", RetrieveTask._retrieveItem, Number(process.env.RETRIEVE_ATTEMPTS) || 3, Number(process.env.RETRIEVE_BACKOFF) || 2000);
 
 
 module.exports = RetrieveTask

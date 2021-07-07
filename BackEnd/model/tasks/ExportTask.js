@@ -98,8 +98,8 @@ class ExportTask {
      * Remove all jobs for export
      */
     static async flush() {
-         archiveQueue.clean()
-         exporter.sendQueue.clean()
+        archiveQueue.clean()
+        exporter.sendQueue.clean()
     }
 
     /**
@@ -148,7 +148,7 @@ class ExportTask {
     }
 }
 
-let archiveQueue = new Queue('archive', ExportTask._getArchiveDicom);
+let archiveQueue = new Queue('archive', ExportTask._getArchiveDicom, Number(process.env.EXPORT_ATTEMPTS) || 3, Number(process.env.EXPORT_BACKOFF) || 2000);
 archiveQueue.on("completed", async (job, result) => {
     let endpoint = await Endpoint.getFromId(job.data.endpoint);
     await exporter.uploadFile(job.data.taskId, endpoint, result.path);

@@ -13,13 +13,21 @@ const DEFAULT_POOL_SIZE = 10;
 
 class Queue extends event.EventEmitter {
     /**
-     * Constructor that create the job
+     * Constructor that create the queue
      * @param queueName name of the queue
-     * @param fn function.s that process the job
+     * @param fn function.s that process the jobs
+     * @param attempts number of time a job should be retried [optional]
+     * @param backoffType type of backoff for the jobs retry ('fixed'|'exponential') [optional]
+     * @param backoff base backoff duration [optional]
      */
-    constructor(queueName, fn) {
+    constructor(queueName, fn, attempts = 1, backoff = 2000, backoffType = 'fixed') {
         super();
-        this._queue = new BullQueue(queueName, {redis: REDIS_OPTIONS});
+        this._queue = new BullQueue(queueName, {
+            redis: REDIS_OPTIONS, defaultJobOptions: {
+                attempts,
+                backoff
+            }
+        });
         this._invalidated = true;
         this._cachedJobs = [];
         if (typeof fn === "object") {
@@ -180,7 +188,11 @@ class Queue extends event.EventEmitter {
 
     static _batch_processor(processor) {
         return async (job, done) => {
-            job.progress(new Array(job.data.jobs.length).fill(null));
+            let isRetry = job.data.errors.filter(x => !(x === undefined || x === null)).length !== 0;
+            let retries = job.data.errors.map(x => !(x === undefined || x === null));
+            job.data.errors = new Array(job.data.jobs.length).fill(null);
+            if (!isRetry) job.progress(new Array(job.data.jobs.length).fill(null));
+            await job.update(job.data);
             let subJobs = job.data.jobs.map((j, i) => {
                 return {
                     data: j,
@@ -195,16 +207,16 @@ class Queue extends event.EventEmitter {
                 }
             });
 
-            let isRetry = job.data.errors.filter(x => x === null || x === undefined).length !== subJobs.length;
             let failed = false;
             let i = 0
             for (let j of subJobs) {
-                if (!isRetry || !job.data.errors[i]) await new Promise((resolve, reject) => {
+                if (!isRetry || retries[i]) await new Promise((resolve, reject) => {
                     try {
                         processor(j, (err, res) => {
                             job.data.errors[i] = err;
                             job.data.results[i] = res;
                             job.update(job.data).then(() => resolve());
+                            if (!!err) failed = true;
                         });
                     } catch (e) {
                         failed = true;
@@ -281,7 +293,7 @@ class BatchedJob extends Job {
     getState() {
         return super.getState().then(state => {
             if (this._bullJob.data.results[this._i] !== null && this._bullJob.data.results[this._i] !== undefined) return Queue.JOB_STATES.COMPLETED;
-            if (this._bullJob.data.errors[this._i] !== null && this._bullJob.data.errors[this._i] !== undefined) return Queue.JOB_STATES.FAILED;
+            if (this._bullJob.data.errors[this._i] !== null && this._bullJob.data.errors[this._i] !== undefined) return (state === Queue.JOB_STATES.DELAYED ? Queue.JOB_STATES.DELAYED : Queue.JOB_STATES.FAILED);
             if (this._i === 0 ||
                 this._bullJob.data.results[this._i - 1] !== null && this._bullJob.data.results[this._i - 1] !== undefined ||
                 this._bullJob.data.errors[this._i - 1] !== null && this._bullJob.data.errors[this._i - 1] !== undefined) return Queue.JOB_STATES.ACTIVE;
