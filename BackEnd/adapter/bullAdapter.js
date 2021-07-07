@@ -293,7 +293,7 @@ class BatchedJob extends Job {
     getState() {
         return super.getState().then(state => {
             if (this._bullJob.data.results[this._i] !== null && this._bullJob.data.results[this._i] !== undefined) return Queue.JOB_STATES.COMPLETED;
-            if (this._bullJob.data.errors[this._i] !== null && this._bullJob.data.errors[this._i] !== undefined) return (state === Queue.JOB_STATES.DELAYED ? Queue.JOB_STATES.DELAYED : Queue.JOB_STATES.FAILED);
+            if (this._bullJob.data.errors[this._i] !== null && this._bullJob.data.errors[this._i] !== undefined) return (state === Queue.JOB_STATES.DELAYED || state === Queue.JOB_STATES.ACTIVE ? Queue.JOB_STATES.DELAYED : Queue.JOB_STATES.FAILED);
             if (this._i === 0 ||
                 this._bullJob.data.results[this._i - 1] !== null && this._bullJob.data.results[this._i - 1] !== undefined ||
                 this._bullJob.data.errors[this._i - 1] !== null && this._bullJob.data.errors[this._i - 1] !== undefined) return Queue.JOB_STATES.ACTIVE;
