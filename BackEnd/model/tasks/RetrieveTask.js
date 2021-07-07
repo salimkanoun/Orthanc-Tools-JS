@@ -166,16 +166,15 @@ class RetrieveTask {
             state = 'retrieving';
         } else if (progress.validation === 100 && progress.retrieve === 100 && retrieveJobs.length !== 0) {
             state = 'completed';
-            for (const job of validationJobs) {
-                if (await job.getState() === 'failed') state = 'failed';
-            }
-            for (const job of retrieveJobs) {
-                if (await job.getState() === 'failed') state = 'failed';
-            }
         } else {
             state = 'failed';
         }
-
+        for (const job of validationJobs) {
+            if ((await job.getState()) === Queue.JOB_STATES.FAILED) state = 'failed';
+        }
+        for (const job of retrieveJobs) {
+            if ((await job.getState()) === Queue.JOB_STATES.FAILED) state = 'failed';
+        }
 
         //Check for the validation of the task and gather the items
         let valid = true;

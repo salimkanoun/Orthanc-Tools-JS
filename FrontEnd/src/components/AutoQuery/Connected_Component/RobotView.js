@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
-import { connect } from "react-redux"
+import React, {Component, Fragment} from 'react'
+import {connect} from "react-redux"
 
 import BootstrapTable from 'react-bootstrap-table-next'
-import filterFactory, { textFilter, dateFilter, selectFilter } from 'react-bootstrap-table2-filter'
+import filterFactory, {dateFilter, selectFilter, textFilter} from 'react-bootstrap-table2-filter'
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import { CircularProgressbar, buildStyles, CircularProgressbarWithChildren } from 'react-circular-progressbar';
+import {buildStyles, CircularProgressbar, CircularProgressbarWithChildren} from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 import AnonExportDeleteSendButton from '../../Import/AnonExportDeleteSendButton'
@@ -12,17 +12,16 @@ import OhifLink from '../../Viewers/OhifLink'
 import StoneLink from '../../Viewers/StoneLink'
 import apis from '../../../services/apis'
 
-import { ReactComponent as CheckedSVG } from '../../../assets/images/check-circle.svg'
-import { ReactComponent as XSVG } from '../../../assets/images/x-circle.svg'
-import { ReactComponent as PendingSVG } from '../../../assets/images/pending.svg'
+import {ReactComponent as CheckedSVG} from '../../../assets/images/check-circle.svg'
+import {ReactComponent as XSVG} from '../../../assets/images/x-circle.svg'
+import {ReactComponent as PendingSVG} from '../../../assets/images/pending.svg'
 
-import { addStudiesToExportList } from '../../../actions/ExportList'
-import { addStudiesToDeleteList } from '../../../actions/DeleteList'
-import { addStudiesToAnonList } from '../../../actions/AnonList'
+import {addStudiesToExportList} from '../../../actions/ExportList'
+import {addStudiesToDeleteList} from '../../../actions/DeleteList'
+import {addStudiesToAnonList} from '../../../actions/AnonList'
 
 import MonitorTask from '../../../tools/MonitorTask'
-import { toast } from 'react-toastify';
-import { Fragment } from 'react';
+import {toast} from 'react-toastify';
 import Dropdown from 'react-bootstrap/esm/Dropdown'
 
 
@@ -56,7 +55,7 @@ class RobotView extends Component {
         dataField: 'Level',
         text: 'level',
         filter: selectFilter({
-            options: { study: 'study', series: 'series' }
+            options: {study: 'study', series: 'series'}
         })
     }, {
         dataField: 'StudyInstanceUID',
@@ -65,12 +64,12 @@ class RobotView extends Component {
         dataField: 'PatientName',
         text: 'Patient Name',
         filter: textFilter(),
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }, {
         dataField: 'PatientID',
         text: 'Patient ID',
         filter: textFilter(),
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }, {
         dataField: 'StudyDate',
         text: 'Study Date',
@@ -83,12 +82,12 @@ class RobotView extends Component {
         dataField: 'StudyDescription',
         text: 'Study Description',
         filter: textFilter(),
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }, {
         dataField: 'SeriesDescription',
         text: 'Series Description',
         filter: textFilter(),
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }, {
         dataField: 'AccessionNumber',
         text: 'Accession Number',
@@ -102,8 +101,9 @@ class RobotView extends Component {
         text: 'Validated',
         filter: textFilter(),
         formatter: (cell, row, rowIndex, formatExtraData) => {
-            if (cell == null) return <div className="text-center"><PendingSVG /></div>
-            return cell === true ? <div className="text-center"><CheckedSVG /></div> : <div className="text-center"><XSVG /></div>
+            if (cell == null) return <div className="text-center"><PendingSVG/></div>
+            return cell === true ? <div className="text-center"><CheckedSVG/></div> :
+                <div className="text-center"><XSVG/></div>
         }
     }, {
         dataField: 'Status',
@@ -111,9 +111,9 @@ class RobotView extends Component {
         filter: textFilter(),
         style: function callback(cell, row, rowIndex, colIndex) {
             if (cell === 'Success') {
-                return ({ backgroundColor: 'green' })
+                return ({backgroundColor: 'green'})
             } else if (cell === 'Failure') {
-                return ({ backgroundColor: 'red' })
+                return ({backgroundColor: 'red'})
             }
         }
     }, {
@@ -122,7 +122,9 @@ class RobotView extends Component {
         formatter: (cell, row, rowIndex, formatExtraData) => {
             return this.state.approved === false ?
                 (<div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={() => formatExtraData.deleteQueryHandler(rowIndex, formatExtraData.refreshHandler)} value="Remove" />
+                    <input type="button" className='btn btn-danger'
+                           onClick={() => formatExtraData.deleteQueryHandler(rowIndex, formatExtraData.refreshHandler)}
+                           value="Remove"/>
                 </div>)
                 : null
         },
@@ -134,13 +136,13 @@ class RobotView extends Component {
             return row.Status === RobotView.ITEM_SUCCESS ?
                 <Fragment>
                     <Dropdown onClick={this.handleClick} drop='left'>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic"  >
+                        <Dropdown.Toggle variant="success" id="dropdown-basic">
                             Viewers
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                            <OhifLink className='dropdown-item bg-info' StudyInstanceUID={row.StudyInstanceUID} />
-                            <StoneLink className='dropdown-item bg-info' StudyInstanceUID={row.StudyInstanceUID} />
+                            <OhifLink className='dropdown-item bg-info' StudyInstanceUID={row.StudyInstanceUID}/>
+                            <StoneLink className='dropdown-item bg-info' StudyInstanceUID={row.StudyInstanceUID}/>
                         </Dropdown.Menu>
                     </Dropdown>
                 </Fragment>
@@ -150,7 +152,6 @@ class RobotView extends Component {
         dataField: 'RetrievedOrthancId',
         hidden: true
     }]
-
 
 
     selectRow = {
@@ -192,7 +193,9 @@ class RobotView extends Component {
         for (let row of seletectedRows) {
             await apis.content.getStudiesDetails(row.RetrievedOrthancId).then((studyDetails) => {
                 studyDataRetrieved.push(studyDetails)
-            }).catch((error) => { console.error(error) })
+            }).catch((error) => {
+                console.error(error)
+            })
         }
 
         return studyDataRetrieved
@@ -266,7 +269,7 @@ class RobotView extends Component {
         //SK CALCULER EN INSTANCE ET PAS EN STUDY (1 si pas d'info)
         newPercentageFailure = (newPercentageFailure / response.details.items.length) * 100
 
-        let newTotalPercentageProgress = Math.round((response.progress.retrieve + Number.EPSILON) * 10) / 10
+        let newTotalPercentageProgress = Math.round((newPercentageFailure + response.progress.retrieve + Number.EPSILON) * 10) / 10
 
         this.setState({
             valid: response.details.valid,
@@ -313,9 +316,10 @@ class RobotView extends Component {
             <div className="jumbotron">
                 <div className="row mb-5">
                     <h1 className="col"> Robot for user {this.state.creator}, project : {this.state.projectName} </h1>
-                    <div className="col-md-2 text-right" >
+                    <div className="col-md-2 text-right">
                         <CircularProgressbarWithChildren
-                            value={this.state.totalPercentageProgress} text={`Progress : ${this.state.totalPercentageProgress}%`}
+                            value={this.state.totalPercentageProgress}
+                            text={`Progress : ${this.state.totalPercentageProgress}%`}
                             styles={buildStyles({
                                 textSize: '10px'
                             })}
@@ -331,9 +335,13 @@ class RobotView extends Component {
                         </CircularProgressbarWithChildren>
                     </div>
                 </div>
-                <input type='button' className="btn btn-danger" onClick={this.handleClickDeleteRobot} value="Delete Robot" />
-                <BootstrapTable ref={n => this.node = n} wrapperClasses="table-responsive" keyField="id" striped={true} rowClasses={this.rowClasses} selectRow={this.selectRow} filter={filterFactory()} pagination={paginationFactory()} data={this.state.rows} columns={this.columns} />
-                <AnonExportDeleteSendButton onAnonClick={this.sendToAnon} onExportClick={this.sendToExport} onDeleteClick={this.sendToDelete} />
+                <input type='button' className="btn btn-danger" onClick={this.handleClickDeleteRobot}
+                       value="Delete Robot"/>
+                <BootstrapTable ref={n => this.node = n} wrapperClasses="table-responsive" keyField="id" striped={true}
+                                rowClasses={this.rowClasses} selectRow={this.selectRow} filter={filterFactory()}
+                                pagination={paginationFactory()} data={this.state.rows} columns={this.columns}/>
+                <AnonExportDeleteSendButton onAnonClick={this.sendToAnon} onExportClick={this.sendToExport}
+                                            onDeleteClick={this.sendToDelete}/>
             </div>
         )
     }
