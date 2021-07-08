@@ -13,7 +13,7 @@ class Role{
     return db.Role.findAll().catch((error)=> {throw error})
   }
 
-  static async create(name,importR,content,anon,exportLocal,exportExtern,query,autoQuery,deleteR,modify,cd_burner,admin){
+  static async create(name,importR,content,anon,exportLocal,exportExtern,query,autoQuery,deleteR,modify,cd_burner,autorouting,admin){
     return db.Role.create({
       name: name,
       import: importR,
@@ -26,6 +26,7 @@ class Role{
       delete: deleteR,
       modify: modify,
       cd_burner: cd_burner,
+      autorouting:autorouting,
       admin: admin
     })
   }
@@ -43,7 +44,7 @@ class Role{
   }
 
   //voir pour faire avec un getEntity, modification de l'entity puis .save()
-  static async update(name,importR,content,anon,exportLocal,exportExtern,query,autoQuery,deleteR,modify,cd_burner,admin){
+  static async update(name,importR,content,anon,exportLocal,exportExtern,query,autoQuery,deleteR,modify,cd_burner,autorouting,admin){
     
     const role = await Role.getRole(name)
     if(role==null){
@@ -60,6 +61,7 @@ class Role{
     role.delete = deleteR
     role.modify = modify
     role.cd_burner = cd_burner
+    role.autorouting = autorouting
     role.admin = admin
 
     return role.save()

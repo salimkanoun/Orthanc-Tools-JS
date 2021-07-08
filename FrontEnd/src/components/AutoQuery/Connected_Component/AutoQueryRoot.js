@@ -66,7 +66,7 @@ const AutoQueryRoot = () => {
             <button className={currentMainTab === MY_ROBOT ? 'col nav-link active link-button' : 'col nav-link link-button'+(!lastTaskId?" disabled":"")} onClick={() => {if(lastTaskId) setCurrentMainTab(MY_ROBOT)}}>My Retrieve Robot</button>
           </li>
           <li className='nav-item'>
-            <button className={currentMainTab === HISTORIC ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab(HISTORIC)}>Historic</button>
+            <button className={currentMainTab === HISTORIC ? 'col nav-link active link-button' : 'col nav-link link-button'} onClick={() => setCurrentMainTab(HISTORIC)}>History</button>
           </li>
         </ul>
       </div>

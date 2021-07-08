@@ -35,7 +35,7 @@ const aets = {
       method: 'PUT',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify(postData)
     }
@@ -70,7 +70,7 @@ const aets = {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify({})
     }
@@ -88,7 +88,7 @@ const aets = {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify({
         Synchronous: false,

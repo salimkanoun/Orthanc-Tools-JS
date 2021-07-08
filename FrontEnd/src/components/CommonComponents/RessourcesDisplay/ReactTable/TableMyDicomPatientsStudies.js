@@ -31,12 +31,10 @@ export default class TableMyDicomPatientsStudies extends Component{
       {
         Header: 'Description',
         accessor: 'StudyDescription',
-        disableFilters:true
       },
       {
         Header: 'Accession number',
         accessor: 'AccessionNumber',
-        disableFilters:true
       },
       {
         Header: 'Action',

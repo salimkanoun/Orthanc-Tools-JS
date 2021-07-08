@@ -9,14 +9,12 @@ export default function deleteListReducer (state = initialState, action ) {
 
         case ADD_STUDY_DELETE_LIST:
           let deleteArray = action.payload
-
           //remove duplicate object
           deleteArray = [...new Map(deleteArray.map(item => [item['ID'], item])).values()]
           //Known studies ID in the current list 
           let knownStudyID = state.deleteList.map((study)=> study.ID)
           //Add only id that are not already in the anon list
           let newStudies = deleteArray.filter( (study) =>  !knownStudyID.includes(study.ID) )
-
           let newIncresedList = [...state.deleteList, ...newStudies]
           return {
             deleteList : newIncresedList

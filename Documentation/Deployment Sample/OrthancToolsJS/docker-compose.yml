@@ -30,6 +30,11 @@ services:
             RETRIEVE_BACKOFF : "5000"
             EXPORT_ATTEMPTS : "3"
             EXPORT_BACKOFF : "5000"
+            DB_USERNAME: "root"
+            DB_PASSWORD: "admin"
+            DB_HOST: "postgres"
+            DB_PORT: 5432
+            DB_NAME: orthanctoolsjs
         networks:
           - internal
           - web
@@ -44,6 +49,17 @@ services:
         image: redis:alpine
         networks:
           - internal
+
+
+    postgres:
+        container_name: postgres
+        image: postgres:13.1
+        environment:
+            POSTGRES_DB : "orthanctoolsjs"
+            POSTGRES_HOST_AUTH_METHOD: "trust"
+        volumes:
+            - postgres:/var/lib/postgresql/data
+        restart: unless-stopped
 
     orthanc:
         image: osimis/orthanc:21.1.7
@@ -93,3 +109,4 @@ volumes:
         orthanc:
         orthancpacs:
         orthanctoolsjs:
+        postgres:

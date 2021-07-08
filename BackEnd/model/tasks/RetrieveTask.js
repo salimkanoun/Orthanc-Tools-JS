@@ -116,7 +116,6 @@ class RetrieveTask {
         if (task === null) throw new OTJSNotFoundException("No task of this kind");
         if (task.progress.validation != 100) throw OTJSBadRequestException("Items validation still in progress")
         let jobs = await RetrieveTask._getValidationJobs(id)
-
         let jobsData = [];
         for (const job of jobs) {
             jobsData.push(

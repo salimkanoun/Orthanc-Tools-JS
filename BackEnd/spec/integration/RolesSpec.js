@@ -6,7 +6,7 @@ describe('Test Role Table', function () {
     beforeEach(async function () {
         const role = await Role.getRole('test')
         if (role == null) {
-            await Role.create('test', false, false, false, false, false, false, false, false, false, false, false)
+            await Role.create('test', false, false, false, false, false, false, false, false, false, false,false, false)
         }
     })
 
@@ -37,7 +37,7 @@ describe('Test Role Table', function () {
         })
 
         it('should update one roles', async () => {
-            await Role.update('test', true, false, false, false, false, false, false, false, false, false, false)
+            await Role.update('test', true, false, false, false, false, false, false, false, false, false,false,false)
             let schedule = await Role.getRole('test')
             expect(schedule).not.toBe()
             expect(schedule.import).toBeTruthy()

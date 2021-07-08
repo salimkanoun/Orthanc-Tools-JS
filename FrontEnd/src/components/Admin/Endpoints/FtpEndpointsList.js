@@ -1,49 +1,48 @@
-import BootstrapTable from "react-bootstrap-table-next";
+import React, {Fragment, useMemo} from "react";
+import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-import React, { Component, Fragment } from "react";
-export default class FtpEndpoints extends Component {
+export default function FtpEndpoints({endpointsData, onDeleteEndpoint}) {
 
-    columns = [{
-        dataField: 'label',
-        text: 'Label'
+    const columns = useMemo(() => [{
+        accessor: 'label',
+        Header: 'Label'
     },
-    {
-        dataField: 'host',
-        text: 'Host'
-    },
-    {
-        dataField: 'username',
-        text: 'Username'
-    },
-    {
-        dataField: 'targetFolder',
-        text: 'Target Folder'
-    },
-    {
-        dataField: 'ssl',
-        text: 'Use ssl?',
-        formatter: (cell, row, rowIndex, parentComponent) => <p>{(row.ssl ? '✓' : '✖')}</p>
-    },
-    {
-        dataField: 'delete',
-        text: 'Delete endpoint',
-        formatter: (cell, row, rowIndex, parentComponent) => {
-            return (
-                <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={async () => { await parentComponent.props.onDeleteEndpoint(row.id) }} value="Remove" />
-                </div>)
+        {
+            accessor: 'host',
+            Header: 'Host'
         },
-        formatExtraData: this
-    }];
+        {
+            accessor: 'username',
+            Header: 'Username'
+        },
+        {
+            accessor: 'targetFolder',
+            Header: 'Target Folder'
+        },
+        {
+            accessor: 'ssl',
+            Header: 'Use ssl?',
+            Cell: ({row}) => <p>{(row.values.ssl ? '✓' : '✖')}</p>
+        },
+        {
+            dataField: 'delete',
+            Header: 'Delete endpoint',
+            Cell: ({row}) => {
+                return (
+                    <div className="text-center">
+                        <input type="button" className='btn btn-danger' onClick={async () => {
+                            await onDeleteEndpoint(row.values.id)
+                        }} value="Remove"/>
+                    </div>)
+            },
+            formatExtraData: this
+        }], [onDeleteEndpoint]);
 
-    render = () => {
-        return (
-            <Fragment>
-                <h2>FTP/FTPS Export Endpoints</h2>
-                <BootstrapTable keyField="name" striped={true} data={this.props.endpointsData} columns={this.columns} wrapperClasses='table-responsive' />
-            </Fragment>
-        )
-    }
-
+    return (
+        <Fragment>
+            <h2>FTP/FTPS Export Endpoints</h2>
+            <CommonTable tableData={endpointsData} columns={columns}/>
+        </Fragment>
+    )
 }
 

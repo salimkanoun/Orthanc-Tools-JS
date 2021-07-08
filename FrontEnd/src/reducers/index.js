@@ -6,7 +6,6 @@ import AutoRetrieveResultList from './AutoRetrieveResultList'
 import DeleteList from './DeleteList'
 import ExportList from './ExportList'
 import AnonList from './AnonList'
-import OrthancContent from './OrthancContent'
 
 const appReducer = combineReducers({
   OrthancTools,
@@ -15,8 +14,7 @@ const appReducer = combineReducers({
   AutoRetrieveResultList,
   DeleteList, 
   ExportList, 
-  AnonList, 
-  OrthancContent
+  AnonList
 })
 
 const rootReducer = (state, action) => {

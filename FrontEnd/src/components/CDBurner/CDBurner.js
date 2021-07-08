@@ -1,15 +1,72 @@
-
-import React, { Component } from 'react'
+import React, {Component, useMemo} from 'react'
 
 import Badge from 'react-bootstrap/Badge'
-import BootstrapTable from 'react-bootstrap-table-next';
-import paginationFactory from 'react-bootstrap-table2-paginator'
 
 import Toggle from 'react-toggle'
 
 import apis from '../../services/apis'
-import { ReactComponent as SpeakerSVG } from '../../assets/images/sounds.svg'
-import { toast } from 'react-toastify';
+import {ReactComponent as SpeakerSVG} from '../../assets/images/sounds.svg'
+import {toast} from 'react-toastify';
+import CommonTable from "../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+
+function BurnerJobsTables({jobs}) {
+    const columns = useMemo(() => [
+        {
+            accessor: 'cdJobID',
+            hidden: true
+        },
+        {
+            accessor: 'timeStamp',
+            sort: true,
+            hidden: true
+        },
+        {
+            accessor: 'patientName',
+            Header: 'Patient Name'
+        },
+        {
+            accessor: 'patientID',
+            Header: 'Patient ID'
+        },
+        {
+            accessor: 'patientDOB',
+            Header: 'Patient Birth Date'
+        },
+        {
+            accessor: 'studyDate',
+            Header: 'Study Date'
+        },
+        {
+            accessor: 'studyDescription',
+            Header: 'Study Description'
+        },
+        {
+            accessor: 'status',
+            Header: 'CD Status'
+        },
+        {
+            id: 'cancelButton',
+            Header: 'Cancel',
+            Cell: ({row}) => {
+                let disable = (row.values.status === CDBurner.JOB_STATUS_BURNING_DONE || row.values.status === CDBurner.JOB_STATUS_BURNING_ERROR)
+                return (
+                    <div className="text-center">
+                        <input type="button" className='btn btn-danger' onClick={async () => {
+                            try {
+                                await apis.cdBurner.cancelCdBurner(row.cdJobID)
+                            } catch (error) {
+                                toast.error(error.statusText)
+                            }
+
+                        }} value="Cancel" disabled={disable}/>
+                    </div>
+                )
+            }
+        }
+    ], []);
+
+    return <CommonTable columns={columns} tableData={jobs}/>
+}
 
 export default class CDBurner extends Component {
 
@@ -23,67 +80,6 @@ export default class CDBurner extends Component {
         playSound: false,
         queuededJobs: 0
     }
-
-    defaultSorted = {
-        dataField: 'timeStamp', // if dataField is not match to any column you defined, it will be ignored.
-        order: 'desc' // desc or asc
-    };
-
-    columns = [
-        {
-            dataField: 'cdJobID',
-            hidden: true
-        },
-        {
-            dataField: 'timeStamp',
-            sort: true,
-            hidden: true
-        },
-        {
-            dataField: 'patientName',
-            text: 'Patient Name'
-        },
-        {
-            dataField: 'patientID',
-            text: 'Patient ID'
-        },
-        {
-            dataField: 'patientDOB',
-            text: 'Patient Birth Date'
-        },
-        {
-            dataField: 'studyDate',
-            text: 'Study Date'
-        },
-        {
-            dataField: 'studyDescription',
-            text: 'Study Description'
-        },
-        {
-            dataField: 'status',
-            text: 'CD Status'
-        },
-        {
-            dataField: 'cancelButton',
-            text: 'Cancel',
-            formatter: (cell, row, rowIndex) => {
-                let disable = (row.status === CDBurner.JOB_STATUS_BURNING_DONE || row.status === CDBurner.JOB_STATUS_BURNING_ERROR)
-                return (
-                    <div className="text-center">
-                        <input type="button" className='btn btn-danger' onClick={async () => {
-                            try {
-                                await apis.cdBurner.cancelCdBurner(row.cdJobID)
-                            } catch (error) {
-                                toast.error(error.statusText)
-                            }
-
-                        }} value="Cancel" disabled={disable} />
-                    </div>
-                )
-            }
-        }
-    ]
-
     refreshTableData = async () => {
 
         let cdBurnerData
@@ -159,7 +155,6 @@ export default class CDBurner extends Component {
         }
 
 
-
     }
 
     soundHandler = (e) => {
@@ -193,28 +188,21 @@ export default class CDBurner extends Component {
                                 <h2>CD Burner Service</h2>
                             </div>
                             <div className="col">
-                                <Toggle checked={this.state.robotStarted} onChange={this.toogleHandler} disabled={!this.state.firstRefresh} />
+                                <Toggle checked={this.state.robotStarted} onChange={this.toogleHandler}
+                                        disabled={!this.state.firstRefresh}/>
                             </div>
                         </div>
                     </div>
                     <div className="col-2">
-                        <SpeakerSVG className="mr-3" style={{ height: '30px', width: '30px' }} />
-                        <Toggle checked={this.state.playSound} onChange={this.soundHandler} />
+                        <SpeakerSVG className="mr-3" style={{height: '30px', width: '30px'}}/>
+                        <Toggle checked={this.state.playSound} onChange={this.soundHandler}/>
 
                     </div>
                 </div>
                 <div className="mb-3 float-right">
                     <Badge variant="info"> Queuded Jobs : {this.state.queuededJobs} </Badge>
                 </div>
-                <BootstrapTable
-                    keyField='cdJobID'
-                    data={this.state.burnerJobs}
-                    columns={this.columns}
-                    striped
-                    sort={this.defaultSorted}
-                    pagination={paginationFactory()}
-                    wrapperClasses="table-responsive"
-                />
+                <BurnerJobsTables jobs={this.state.burnerJobs}/>
             </div>
         )
     }

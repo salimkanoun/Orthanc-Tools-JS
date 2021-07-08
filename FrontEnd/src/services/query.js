@@ -6,7 +6,7 @@ const query = {
       method: "POST",
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify(queryDetails)
     };
@@ -23,7 +23,7 @@ const query = {
       method: "GET",
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       }
     }
 

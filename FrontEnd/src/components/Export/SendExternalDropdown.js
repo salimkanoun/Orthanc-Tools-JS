@@ -6,8 +6,17 @@ import {toast} from "react-toastify"
 import apis from "../../services/apis"
 import MonitorTask from "../../tools/MonitorTask"
 
-export default class SendExternalDropdown extends Component {
+const EXPORT_FAILED_TOAST = {
+    position: "top-right",
+    autoClose: 4000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+};
 
+export default class SendExternalDropdown extends Component {
     state = {
         disabled: false,
         title: "Send To Endpoint"
@@ -32,6 +41,7 @@ export default class SendExternalDropdown extends Component {
 
         jobMonitoring.onFinish(async function (info) {
             self.resetProgress()
+            if (info.state === "failed") toast.error("Export to endpoint failed", EXPORT_FAILED_TOAST);
         })
 
         jobMonitoring.startMonitoringJob()

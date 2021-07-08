@@ -66,4 +66,9 @@ const setExportOption = async function(req, res){
   Options.setExportOption(body.export_transcoding);
   res.sendStatus(200);
 }
-module.exports = { changeSchedule, getOptions, getOrthancServer, setOrthancServer, getMode, changeMode, updateRobotOptions, getRedisServer, setRedisServer, setExportOption }
+
+const getExportTranscoding = async function(req, res){
+  let transcodeTS = await Options.getExportOption()
+  res.send(transcodeTS)
+}
+module.exports = { changeSchedule, getOptions, getOrthancServer, setOrthancServer, getMode, changeMode, updateRobotOptions, getRedisServer, setRedisServer, setExportOption, getExportTranscoding }

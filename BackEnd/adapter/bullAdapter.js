@@ -9,7 +9,6 @@ const REDIS_OPTIONS = {
 
 const queues = [];
 const CLEAN_GRACE = 0;
-const DEFAULT_POOL_SIZE = 10;
 
 class Queue extends event.EventEmitter {
     /**
@@ -35,19 +34,14 @@ class Queue extends event.EventEmitter {
                 .then(() => Promise.all(
                     Object.entries(fn).map(entry => this._queue.process(entry[0], entry[1]))
                 ));
-            this._queue.isReady()
-                .then(() => Promise.all(
-                    Object.entries(fn).map(entry => this._queue.process(entry[0] + '__bulk', Queue._batch_processor(entry[1])))
-                ));
         } else {
             this._queue.isReady()
-                .then(() => this._queue.process("__default__", fn));
-            this._queue.isReady()
-                .then(() => this._queue.process("__default__bulk", Queue._batch_processor(fn)));
+                .then(() => this._queue.process(fn));
         }
         this._queue.on('completed', (job, result) => {
             this._invalidated = true;
             this.emit('completed', job, result);
+
         });
         this._queue.on('progress', (job, progress) => {
             this._invalidated = true;
@@ -93,7 +87,7 @@ class Queue extends event.EventEmitter {
         if (name) {
             return this.isReady().then(() => this._queue.add(name, jobData)).then(job => new Job(job));
         } else {
-            return this.isReady().then(() => this._queue.add("__default__", jobData)).then(job => new Job(job));
+            return this.isReady().then(() => this._queue.add(jobData)).then(job => new Job(job));
         }
     }
 
@@ -101,7 +95,6 @@ class Queue extends event.EventEmitter {
      * Add jobs to the queue
      * @param jobsData data for the process
      * @param {String } name of the processor
-     * @param {number} poolSize? number by which the jobs will be grouped
      * @returns {Promise<Object[]>} Promise returning the jobs
      */
     addJobs = (jobsData, name = null, poolSize = DEFAULT_POOL_SIZE) => {
@@ -135,6 +128,7 @@ class Queue extends event.EventEmitter {
             }
             return this.isReady().then(() => this._queue.addBulk(jobData)).then(jobs => jobs.map(job => job.data.jobs.map((j, i) => new BatchedJob(job, i))).flat());
         }
+      
     }
 
     /**
@@ -151,6 +145,7 @@ class Queue extends event.EventEmitter {
             }
         )
     });
+
 
     /**
      * Remove all jobs of the queue
@@ -273,17 +268,9 @@ class Job {
     remove() {
         return this._bullJob.remove()
     }
-}
 
-Queue.Job = Job;
-
-
-class BatchedJob extends Job {
-
-    constructor(bullJob, i) {
-        super(bullJob);
-        this._i = i;
-        this.data = bullJob.data.jobs[i];
+    moveToFailed(error) {
+        return this._bullJob.moveToFailed(error, true);
     }
 
     async progress() {
@@ -311,6 +298,8 @@ class BatchedJob extends Job {
     }
 
 }
+
+Queue.Job = Job;
 
 Queue.JOB_STATES = {
     COMPLETED: 'completed',

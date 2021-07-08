@@ -24,7 +24,7 @@ export default class MonitorTask extends MonitorJob {
         }
 
         this.updateCallBack(task)
-
+      
         if (this.continue) {
             setTimeout(() => {
                 this.jobMonitoring(this.jobID)
