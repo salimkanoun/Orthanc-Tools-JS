@@ -193,14 +193,11 @@ class RobotView extends Component {
         let studyDataRetrieved = []
         //Loop each item to retrieve study level
         for (let row of seletectedRows) {
-            let studyDetails
-            if (row.Level === 'study') {
-                studyDetails = await apis.content.getStudiesDetails(row.RetrievedOrthancId)
-            } else {
-                let seriesData = await apis.content.getSeriesDetailsByID(row.RetrievedOrthancId)
-                studyDetails = await apis.content.getStudiesDetails(seriesData.ParentStudy)
-            }
-            studyDataRetrieved.push(studyDetails)
+            await apis.content.getStudiesDetails(row.RetrievedOrthancId).then((studyDetails) => {
+                studyDataRetrieved.push(studyDetails)
+            }).catch((error) => {
+                console.error(error)
+            })
         }
 
         return studyDataRetrieved
@@ -278,7 +275,7 @@ class RobotView extends Component {
         //SK CALCULER EN INSTANCE ET PAS EN STUDY (1 si pas d'info)
         newPercentageFailure = (newPercentageFailure / response.details.items.length) * 100
 
-        let newTotalPercentageProgress = Math.round((response.progress.retrieve + Number.EPSILON) * 10) / 10
+        let newTotalPercentageProgress = Math.round((newPercentageFailure + response.progress.retrieve + Number.EPSILON) * 10) / 10
 
         this.setState({
             valid: response.details.valid,

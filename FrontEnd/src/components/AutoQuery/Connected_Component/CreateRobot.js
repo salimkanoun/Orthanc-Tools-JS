@@ -24,7 +24,8 @@ class CreateRobot extends Component {
             this.props.switchTab('MyRobot')
             toast.success('sent to robot')
         } catch (error) {
-            toast.error(error.statusText + ':' + error.message)
+            console.log(error)
+            toast.error(error.statusText + ':' + error.errorMessage)
         }
 
     }

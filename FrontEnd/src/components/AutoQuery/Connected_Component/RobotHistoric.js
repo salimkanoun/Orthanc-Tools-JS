@@ -43,10 +43,10 @@ export default class RobotJistoric extends Component {
         let rows = []
 
         apis.task.getTaskOfUser(this.props.username, 'retrieve')
-            .then(async taksIds => await Promise.all(taksIds.map(id => task.getTask(id))))
+            .then(async taksIds => await Promise.all(taksIds.map(id => (!!id ? task.getTask(id) : null))))
             .then((answerData) => {
                 answerData.forEach(robotJob => {
-                    rows.push({
+                    if (!!robotJob) rows.push({
                         id: robotJob.id,
                         name: robotJob.details.projectName,
                         username: robotJob.creator,

@@ -148,7 +148,7 @@ class ExportTask {
     }
 }
 
-let archiveQueue = new Queue('archive', ExportTask._getArchiveDicom);
+let archiveQueue = new Queue('archive', ExportTask._getArchiveDicom, Number(process.env.EXPORT_ATTEMPTS) || 3, Number(process.env.EXPORT_BACKOFF) || 2000);
 archiveQueue.on("completed", async (job, result) => {
     let endpoint
     if (job.data.endpoint == -1) {
