@@ -10,11 +10,14 @@ const initialState = {
  */
 export default function anonListReducer (state = initialState, action) {
     switch (action.type) {
-      
+
         case ADD_ANON_LIST:
             let anonArray = action.payload
-            //Add only id that are not already in the anon list
-            let newStudies = anonArray.filter(id =>  ! state.anonList.includes(id) )
+            //remove duplicate object
+            anonArray = [...new Map(anonArray.map(item => [item['ID'], item])).values()]
+            //Known studies ID in the current list 
+            let knownStudyID = state.anonList.map((study)=> study.ID)
+            let newStudies = anonArray.filter( (study) =>  !knownStudyID.includes(study.ID) )
             let newIncresedList = [...state.anonList, ...newStudies]
             return {
               anonList : newIncresedList, 

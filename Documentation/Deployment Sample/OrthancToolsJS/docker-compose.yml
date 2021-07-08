@@ -26,6 +26,10 @@ services:
             REDIS_HOST: "redis"
             REDIS_PORT: "6379"
             REDIS_PASSWORD: ""
+            RETRIEVE_ATTEMPTS: "3"
+            RETRIEVE_BACKOFF : "5000"
+            EXPORT_ATTEMPTS : "3"
+            EXPORT_BACKOFF : "5000"
         networks:
           - internal
           - web
