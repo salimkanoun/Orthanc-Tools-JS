@@ -10,6 +10,7 @@ const initialState = {
  */
 export default function anonListReducer (state = initialState, action) {
     switch (action.type) {
+      
         case ADD_ANON_LIST:
             let anonArray = action.payload
             //Add only id that are not already in the anon list
