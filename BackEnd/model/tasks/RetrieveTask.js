@@ -366,12 +366,7 @@ class RetrieveTask {
             //Monitor the orthanc job
             await orthanc.monitorJob(retrieveAnswer.Path, (response) => {
                 job.progress(response.Progress)
-                if (response.State === 'Failure') {
-                    throw "Orthanc Error : " + response.ErrorDescription;
-                }
-                if (response.State !== 'Running') {
-                    console.log(response.State)
-                }
+                if (response.State === 'Failure') throw "Orthanc Error : " + response.ErrorDescription;
             }, 2000).then(async (response) => {
                 const orthancResults = await orthanc.findInOrthancByUid(response.Content['Query'][0]['0020,000d'])
                 done(null, orthancResults[0].ID)

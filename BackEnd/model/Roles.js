@@ -11,7 +11,7 @@ class Roles {
       throw new OTJSConflictException('This roles already exist');
     }
 
-    return Role.create(payload.name,payload.import,payload.content,payload.anon,payload.exportLocal,payload.exportExtern,payload.query,payload.autoQuery,payload.deleteR,payload.modify,payload.cd_burner,payload.admin)
+    return Role.create(payload.name,payload.import,payload.content,payload.anon,payload.exportLocal,payload.exportExtern,payload.query,payload.autoQuery,payload.deleteR,payload.modify,payload.cd_burner,payload.autorouting,payload.admin)
   }
 
   static async getAllRoles() {
@@ -29,7 +29,7 @@ class Roles {
 
   static modifyRoles(name, payload) {
     if (name === 'admin') throw new OTJSBadRequestException('Can\'t modify Admin Role')
-    return Role.update(name,payload.import,payload.content,payload.anon,payload.exportLocal,payload.exportExtern,payload.query,payload.autoQuery,payload.deleteR,payload.modify,payload.cd_burner,payload.admin)
+    return Role.update(name,payload.import,payload.content,payload.anon,payload.exportLocal,payload.exportExtern,payload.query,payload.autoQuery,payload.deleteR,payload.modify,payload.cd_burner,payload.autorouting,payload.admin)
   } 
 
 }

@@ -1,12 +1,11 @@
-import React, { Component, Fragment } from 'react'
-import { connect } from 'react-redux'
-import { toast } from 'react-toastify';
+import React, {Component, Fragment} from 'react'
+import {connect} from 'react-redux'
+import {toast} from 'react-toastify';
 
-import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
+import TablePatientsWithNestedStudies
+    from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies'
 
-import { removePatientFromDeleteList, removeStudyFromDeleteList, emptyDeleteList } from '../../actions/DeleteList'
-import { removeOrthancContentStudy } from '../../actions/OrthancContent'
-import {studyArrayToPatientArray} from '../../tools/processResponse'
+import {emptyDeleteList, removePatientFromDeleteList, removeStudyFromDeleteList} from '../../actions/DeleteList'
 import apis from '../../services/apis'
 import ModalDelete from '../Main/ModalDelete'
 import MonitorTask from '../../tools/MonitorTask'
@@ -22,9 +21,9 @@ class Delete extends Component {
             show: !prevState.show
         }))
     }
-    
+
     openToast = () => {
-        this.toast = toast.info("Delete progress : 0%", { autoClose: false})
+        this.toast = toast.info("Delete progress : 0%", {autoClose: false})
     }
 
     updateToast = (progress) => {
@@ -32,10 +31,15 @@ class Delete extends Component {
     }
 
     successToast = () => {
-        toast.update(this.toast, {type: toast.TYPE.INFO, render: 'Delete done', className: 'bg-success', autoClose: 2000})
+        toast.update(this.toast, {
+            type: toast.TYPE.INFO,
+            render: 'Delete done',
+            className: 'bg-success',
+            autoClose: 2000
+        })
     }
 
-    handleClickDelete = async() => {
+    handleClickDelete = async () => {
         //close Modal
         this.handleConfirm()
 
@@ -43,12 +47,12 @@ class Delete extends Component {
         this.props.deleteList.forEach((item) => {
             deletedSeriesIdArray = [...deletedSeriesIdArray, ...item.Series]
         })
-        
+
         let answer
 
         try {
-            answer  = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
-        } catch( error ){
+            answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, this.props.username)
+        } catch (error) {
             toast.error(error.statusText)
             return
         }
@@ -58,19 +62,18 @@ class Delete extends Component {
 
         this.openToast()
 
-        this.task.onUpdate( (info) => {
+        this.task.onUpdate((info) => {
             this.updateToast(info.progress)
         })
 
-        this.task.onFinish( (info) => {
+        this.task.onFinish((info) => {
             this.successToast()
-            
+
             this.props.deleteList.forEach(async (study) => {
                 this.props.removeStudyFromDeleteList(study.ID)
-                this.props.removeOrthancContentStudy(study.ID)
             })
         })
-        
+
 
     }
 
@@ -85,45 +88,47 @@ class Delete extends Component {
     onDeleteStudy = (studyOrthancID) => {
         this.props.removeStudyFromDeleteList(studyOrthancID)
     }
-    
+
     render = () => {
         return (
             <Fragment>
                 <div className='jumbotron'>
                     <h2 className="card-title mb-3">Delete</h2>
                     <div className="float-right mb-3">
-                        <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
+                        <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty}>Empty List
+                        </button>
                     </div>
-                    <TablePatientsWithNestedStudies 
-                        patients={studyArrayToPatientArray(this.props.deleteList)} 
-                        hiddenActionBouton={true} 
-                        hiddenRemoveRow={false} 
-                        onDeletePatient={this.onDeletePatient} 
+                    <TablePatientsWithNestedStudies
+                        studies={this.props.deleteList}
+                        hiddenActionBouton={true}
+                        hiddenSelect={true}
+                        hiddenRemoveRow={false}
+                        onDeletePatient={this.onDeletePatient}
                         onDeleteStudy={this.onDeleteStudy}
-                        wrapperClasses="table-responsive" />
+                        wrapperClasses="table-responsive"/>
                     <div className="text-center">
-                        <button type="button" className="btn btn-danger" onClick={this.handleConfirm} >Delete List</button>
+                        <button type="button" className="btn btn-danger" onClick={this.handleConfirm}>Delete List
+                        </button>
                     </div>
                 </div>
-                <ModalDelete show={this.state.show} onHide={this.handleConfirm} onClick={this.handleClickDelete} />
+                <ModalDelete show={this.state.show} onHide={this.handleConfirm} onClick={this.handleClickDelete}/>
             </Fragment>
-            
+
         )
     }
 }
 
 const mapStateToProps = state => {
     return {
-        deleteList: state.DeleteList.deleteList, 
+        deleteList: state.DeleteList.deleteList,
         username: state.OrthancTools.username
     }
 }
 
 const mapDispatchToProps = {
-    removePatientFromDeleteList, 
+    removePatientFromDeleteList,
     removeStudyFromDeleteList,
-    emptyDeleteList, 
-    removeOrthancContentStudy
+    emptyDeleteList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Delete)

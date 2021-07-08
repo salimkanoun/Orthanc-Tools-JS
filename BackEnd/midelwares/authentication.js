@@ -59,8 +59,7 @@ const importMidelware = async function (req, res, next) {
 const contentMidelware = async function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
-  }
-  else if (req.roles.content) {
+  } else if (req.roles.content) {
     next()
   } else {
     res.sendStatus(403);
@@ -157,6 +156,17 @@ const cdBurnerMidelware = async function (req, res, next) {
   }
 }
 
+const autoroutingMidelware = async function (req, res, next) {
+  if(process.env.NODE_ENV=='test'){
+    next()
+  }
+  else if (req.roles.autorouting) {
+    next()
+  } else {
+    res.sendStatus(403);
+  }
+}
+
 const ownTaskOrIsAdminMidelware = async function (req,res,next){
   if(process.env.NODE_ENV=='test'){
     next()
@@ -168,9 +178,33 @@ const ownTaskOrIsAdminMidelware = async function (req,res,next){
   }
 }
 
+const roleAccessLabelMidelware = async function(req,res,next){
+  if(process.env.NODE_ENV==='test'){
+    next()
+  }
+  else{
+    const RoleLabel = require('../model/RoleLabel')
+    const role_label = await RoleLabel.getLabelsFromRoleName(req.roles.name)
+    let access = false
+
+    for(var i = 0;i<role_label.length;i++){
+      if(req.params.name===role_label[i].label_name){
+        access=true
+        break
+      } 
+    }
+
+    if(access){
+      next()
+    }else{
+      userAdminMidelware(req,res,next)
+    }
+  }
+}
+
 
 module.exports = {
   userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
   exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, cdBurnerMidelware, isCurrentUserOrAdminMidelWare,
-  ownTaskOrIsAdminMidelware
+  ownTaskOrIsAdminMidelware, roleAccessLabelMidelware, autoroutingMidelware
 }    

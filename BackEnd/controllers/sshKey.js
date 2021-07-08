@@ -20,7 +20,7 @@ const updateKey = async function(req, res){
 const uploadKey = async function(req, res){
     let key = await SshKey.getFromId(req.params.id)
     await key.setKeyContent(req.body)
-    res.sendStatus(200)
+    res.sendStatus(201)
 }
 
 const removeKey = async function(req,res){

@@ -17,6 +17,7 @@ const login = async function (req, res) {
     let infosUser = await userObject.getUserRight()
     let payload = {
       username: body.username,
+      name:infosUser.name,
       admin: infosUser.admin,
       import: infosUser.import,
       content: infosUser.content,
@@ -27,7 +28,8 @@ const login = async function (req, res) {
       auto_query: infosUser.auto_query,
       delete: infosUser.delete,
       modify: infosUser.modify,
-      cd_burner: infosUser.cd_burner
+      cd_burner: infosUser.cd_burner,
+      autorouting: infosUser.autorouting
     }
     if(process.env.NODE_ENV != 'test'){
       var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });

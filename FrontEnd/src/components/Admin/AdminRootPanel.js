@@ -2,13 +2,12 @@ import React, {useState} from 'react'
 import AetRootPanel from './AET/AetRootPanel'
 import PeerRootPanel from './Peers/PeerRootPanel'
 import JobsRootPanel from './Jobs/JobsRootPanel'
-import Plugins from './Plugins/Plugins'
 import UserManagement from './UserManagement/UserManagement'
 import BurnerOptions from './CDBurner/BurnerOptions'
 import EndpointsRootPanel from './Endpoints/EndpointsRootPanel'
 import GeneralRoot from './General/GeneralRoot'
 import TaskRootPanel from './Robots/TaskRootPanel'
-import LabelRootPanel from "./Labels/LabelRootPanel";
+import LabelRootPanel from "./Labels/LabelRootPanel"
 
 /**
  * Root Panel of Admin route
@@ -39,8 +38,6 @@ const AdminRootPanel = () => {
                 return (<JobsRootPanel/>)
             case 'CD Burner':
                 return (<BurnerOptions/>)
-            case 'Orthanc Plugins':
-                return (<Plugins/>)
             case 'Users':
                 return (<UserManagement/>)
             case 'Labels':
@@ -66,8 +63,6 @@ const AdminRootPanel = () => {
                         <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Jobs'/>
                         <input className='btn btn-link text-left' type='button' onClick={clickHandler}
                                value='CD Burner'/>
-                        <input className='btn btn-link text-left' type='button' onClick={clickHandler}
-                               value='Orthanc Plugins'/>
                         <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Labels'/>
 
                     </div>

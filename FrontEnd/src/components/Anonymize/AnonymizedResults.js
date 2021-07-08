@@ -1,11 +1,10 @@
-import React, { Component } from "react"
+import React, {Component, Fragment} from "react"
 import {connect} from 'react-redux'
 
-import TableStudy from "../CommonComponents/RessourcesDisplay/TableStudy"
+import TableStudy from "../CommonComponents/RessourcesDisplay/ReactTable/TableStudy"
 import apis from "../../services/apis"
 import task from "../../services/task"
 import MonitorTask from "../../tools/MonitorTask"
-import { Fragment } from "react"
 
 import {addStudiesToDeleteList} from "../../actions/DeleteList"
 import {addStudiesToExportList} from "../../actions/ExportList"
@@ -50,16 +49,17 @@ class AnonymizedResults extends Component {
                         ...study.PatientMainDicomTags,
                         StudyOrthancID: study.ID,
                         AnonymizedFrom: study.AnonymizedFrom,
-                        OriginalPatientName : originalStudy.PatientMainDicomTags.PatientName,
-                        OriginalPatientID : originalStudy.PatientMainDicomTags.PatientID,
-                        OriginalAccessionNumber : originalStudy.MainDicomTags.AccessionNumber,
-                        OriginalStudyDate : originalStudy.MainDicomTags.StudyDate,
-                        OriginalStudyInstanceUID : originalStudy.MainDicomTags.StudyInstanceUID,
-                        OriginalStudyDescription : originalStudy.MainDicomTags.StudyDescription,
+                        OriginalPatientName: originalStudy.PatientMainDicomTags.PatientName,
+                        OriginalPatientID: originalStudy.PatientMainDicomTags.PatientID,
+                        OriginalAccessionNumber: originalStudy.MainDicomTags.AccessionNumber,
+                        OriginalStudyDate: originalStudy.MainDicomTags.StudyDate,
+                        OriginalStudyInstanceUID: originalStudy.MainDicomTags.StudyInstanceUID,
+                        OriginalStudyDescription: originalStudy.MainDicomTags.StudyDescription,
                         newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
                         newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
                     })
-                } catch (err) { }
+                } catch (err) {
+                }
 
             }
         }
@@ -90,7 +90,7 @@ class AnonymizedResults extends Component {
             <Fragment>
                 <div>
                     <TableStudy
-                        data={this.state.studies}
+                        studies={this.state.studies}
                         hiddenActionBouton={true}
                         hiddenRemoveRow={false}
                         onDelete={this.removeStudyAnonymized}
@@ -103,10 +103,10 @@ class AnonymizedResults extends Component {
                 <div className="text-center">
                     <button type='button' className='btn btn-primary mr-3' onClick={this.exportList}>
                         To Export List
-                            </button>
+                    </button>
                     <button type='button' className='btn btn-danger' onClick={this.deleteList}>
                         To Delete List
-                            </button>
+                    </button>
                 </div>
             </Fragment>
         )

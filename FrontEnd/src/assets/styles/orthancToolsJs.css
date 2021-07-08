@@ -334,6 +334,9 @@ code {
     display: grid;
 }
 
+.react-bootstrap-table.table-responsive {
+    overflow-y: visible;
+}
 
 @media (min-width: 400px) {
     .grid-form-group {
@@ -437,4 +440,28 @@ button > p {
 
 .table-responsive {
     overflow-x: auto;
+    overflow-y: visible;
+}
+
+.table-responsive td {
+    min-height: 1px;
+    height: 1px;
+}
+
+.table-responsive .expand-cell {
+    width: 100%;
+    height: 100%;
+    font-size: 1.4em;
+}
+
+.subtable-row {
+    padding: 0 !important;
+}
+
+.react-select {
+    min-width: 120px;
+}
+
+.subtable-row > .table-responsive > table {
+    margin: 0 !important;
 }

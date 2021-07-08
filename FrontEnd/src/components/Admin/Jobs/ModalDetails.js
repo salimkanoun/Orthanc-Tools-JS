@@ -1,65 +1,63 @@
-import React, { Component } from 'react'
+import React, {useMemo} from 'react'
 import Modal from "react-bootstrap/Modal";
-import BootstrapTable from "react-bootstrap-table-next";
+import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-export default class ModalDetails extends Component {
+export default function ModalDetails({show, onHide, data}) {
 
-    columnDetails = [
+    const columnDetails = useMemo(() => [
         {
-            dataField: 'ID',
-            hidden: true
+            accessor: 'ID',
+            show: false
         }, {
-            dataField: 'ErrorCode',
-            text: 'Error Code'
+            accessor: 'ErrorCode',
+            Header: 'Error Code'
         },
         {
-            dataField: 'ErrorDescription',
-            text: 'Error Description'
+            accessor: 'ErrorDescription',
+            Header: 'Error Description'
         }, {
-            dataField: 'Priority',
-            text: 'Priority'
+            accessor: 'Priority',
+            Header: 'Priority'
         }, {
-            dataField: 'Type',
-            text: 'Type'
+            accessor: 'Type',
+            Header: 'Type'
         }, {
-            dataField: 'EffectiveRuntime',
-            text: 'Effective Runtime'
+            accessor: 'EffectiveRuntime',
+            Header: 'Effective Runtime'
         }, {
-            dataField: 'Content',
-            text: 'Details',
-            formatter: (cell, row, index) => {
+            accessor: 'Content',
+            Header: 'Details',
+            Cell: ({row}) => {
                 return (
                     <pre>
-                        {JSON.stringify(row.Content, null, 2)}
+                        {JSON.stringify(row.values.Content, null, 2)}
                     </pre>
                 )
             }
         }
-    ]
+    ], [])
 
-    render = () => {
-        return (
-            <Modal show={this.props.show} onHide={this.props.onHide} size='xl'>
-                <Modal.Header closeButton>
-                    <Modal.Title>Job Details</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <BootstrapTable
-                        keyField='ID'
-                        data={this.props.data}
-                        columns={this.columnDetails}
-                        striped={true}
-                        wrapperClasses="table-responsive"
-                    />
-                </Modal.Body>
-                <Modal.Footer>
-                    <button type='button'
+    const row = useMemo(() => data, [data])
+
+    return (
+        <Modal show={show} onHide={onHide} size='xl'>
+            <Modal.Header closeButton>
+                <Modal.Title>Job Details</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <CommonTable
+                    tableData={row}
+                    columns={columnDetails}
+                />
+            </Modal.Body>
+            <Modal.Footer>
+                <button type='button'
                         className='btn btn-primary'
-                        onClick={this.props.onHide}>
-                        Close
-                        </button>
-                </Modal.Footer>
-            </Modal>
-        );
-    }
+                        onClick={onHide}>
+                    Close
+                </button>
+            </Modal.Footer>
+        </Modal>
+    );
+
 }

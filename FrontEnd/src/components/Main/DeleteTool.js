@@ -1,14 +1,13 @@
-import React, { Component, Fragment } from 'react'
-import { connect } from 'react-redux'
+import React, {Component, Fragment} from 'react'
+import {connect} from 'react-redux'
 import Popover from 'react-bootstrap/Popover'
 import Overlay from 'react-bootstrap/Overlay'
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 
-import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
+import TablePatientsWithNestedStudies
+    from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies'
 
-import { removePatientFromDeleteList, removeStudyFromDeleteList, emptyDeleteList } from '../../actions/DeleteList'
-import { removeOrthancContentStudy } from '../../actions/OrthancContent'
-import { studyArrayToPatientArray } from '../../tools/processResponse'
+import {emptyDeleteList, removePatientFromDeleteList, removeStudyFromDeleteList} from '../../actions/DeleteList'
 import apis from '../../services/apis'
 import ModalDelete from './ModalDelete';
 import MonitorTask from '../../tools/MonitorTask';
@@ -22,15 +21,20 @@ class DeleteTool extends Component {
     }
 
     openToast = () => {
-        this.toast = toast.info("Delete progress : 0%", { autoClose: false })
+        this.toast = toast.info("Delete progress : 0%", {autoClose: false})
     }
 
     updateToast = (progress) => {
-        toast.update(this.toast, { type: toast.TYPE.INFO, render: 'Delete progress : ' + Math.round(progress) + '%' })
+        toast.update(this.toast, {type: toast.TYPE.INFO, render: 'Delete progress : ' + Math.round(progress) + '%'})
     }
 
     successToast = () => {
-        toast.update(this.toast, { type: toast.TYPE.INFO, render: 'Delete done', className: 'bg-success', autoClose: 2000 })
+        toast.update(this.toast, {
+            type: toast.TYPE.INFO,
+            render: 'Delete done',
+            className: 'bg-success',
+            autoClose: 2000
+        })
     }
 
     handleClickDelete = async () => {
@@ -64,7 +68,6 @@ class DeleteTool extends Component {
 
                 this.props.deleteList.forEach(async (study) => {
                     this.props.removeStudyFromDeleteList(study.ID)
-                    this.props.removeOrthancContentStudy(study.ID)
                 });
             })
         }
@@ -86,27 +89,34 @@ class DeleteTool extends Component {
     render = () => {
         return (
             <Fragment>
-                <Overlay target={this.props.target} show={this.props.show} placement="left" onHide={this.props.onHide} rootClose >
-                    <Popover id="popover-basic" style={{ maxWidth: '100%' }} >
+                <Overlay target={this.props.target} show={this.props.show} placement="left" onHide={this.props.onHide}
+                         rootClose>
+                    <Popover id="popover-basic" style={{maxWidth: '100%'}}>
                         <Popover.Title as="h3">Delete List</Popover.Title>
                         <Popover.Content>
                             <div className="float-right mb-3">
-                                <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty} >Empty List</button>
+                                <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty}>Empty
+                                    List
+                                </button>
                             </div>
                             <TablePatientsWithNestedStudies
-                                patients={studyArrayToPatientArray(this.props.deleteList)}
+                                studies={this.props.deleteList}
                                 hiddenActionBouton={true}
                                 hiddenRemoveRow={false}
+                                hiddenSelect={true}
                                 onDeletePatient={this.onDeletePatient}
                                 onDeleteStudy={this.onDeleteStudy}
-                                wrapperClasses="table-responsive" />
+                                wrapperClasses="table-responsive"/>
                             <div className="text-center">
-                                <button type="button" className="btn btn-danger" onClick={this.handleConfirm} >Delete List</button>
+                                <button type="button" className="btn btn-danger" onClick={this.handleConfirm}>Delete
+                                    List
+                                </button>
                             </div>
                         </Popover.Content>
                     </Popover>
                 </Overlay>
-                <ModalDelete show={this.props.confirmDelete} onHide={this.handleConfirm} onClick={this.handleClickDelete} />
+                <ModalDelete show={this.props.confirmDelete} onHide={this.handleConfirm}
+                             onClick={this.handleClickDelete}/>
             </Fragment>
 
         )
@@ -123,8 +133,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     removePatientFromDeleteList,
     removeStudyFromDeleteList,
-    emptyDeleteList,
-    removeOrthancContentStudy
+    emptyDeleteList
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteTool)

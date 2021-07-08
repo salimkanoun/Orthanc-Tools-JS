@@ -9,16 +9,12 @@ const REDIS_OPTIONS = {
 
 const queues = [];
 const CLEAN_GRACE = 0;
-const DEFAULT_POOL_SIZE = 10;
 
 class Queue extends event.EventEmitter {
     /**
      * Constructor that create the queue
      * @param queueName name of the queue
-     * @param fn function.s that process the jobs
-     * @param attempts number of time a job should be retried [optional]
-     * @param backoffType type of backoff for the jobs retry ('fixed'|'exponential') [optional]
-     * @param backoff base backoff duration [optional]
+     * @param fn function.s that process the job
      */
     constructor(queueName, fn, attempts = 1, backoff = 2000, backoffType = 'fixed') {
         super();
@@ -35,19 +31,13 @@ class Queue extends event.EventEmitter {
                 .then(() => Promise.all(
                     Object.entries(fn).map(entry => this._queue.process(entry[0], entry[1]))
                 ));
-            this._queue.isReady()
-                .then(() => Promise.all(
-                    Object.entries(fn).map(entry => this._queue.process(entry[0] + '__bulk', Queue._batch_processor(entry[1])))
-                ));
         } else {
             this._queue.isReady()
-                .then(() => this._queue.process("__default__", fn));
-            this._queue.isReady()
-                .then(() => this._queue.process("__default__bulk", Queue._batch_processor(fn)));
+                .then(() => this._queue.process(fn));
         }
         this._queue.on('completed', (job, result) => {
             this._invalidated = true;
-            this.emit('completed', job, result);
+            this.emit('completed', new Job(job), result);
         });
         this._queue.on('progress', (job, progress) => {
             this._invalidated = true;
@@ -93,7 +83,7 @@ class Queue extends event.EventEmitter {
         if (name) {
             return this.isReady().then(() => this._queue.add(name, jobData)).then(job => new Job(job));
         } else {
-            return this.isReady().then(() => this._queue.add("__default__", jobData)).then(job => new Job(job));
+            return this.isReady().then(() => this._queue.add(jobData)).then(job => new Job(job));
         }
     }
 
@@ -101,55 +91,25 @@ class Queue extends event.EventEmitter {
      * Add jobs to the queue
      * @param jobsData data for the process
      * @param {String } name of the processor
-     * @param {number} poolSize? number by which the jobs will be grouped
      * @returns {Promise<Object[]>} Promise returning the jobs
      */
-    addJobs = (jobsData, name = null, poolSize = DEFAULT_POOL_SIZE) => {
+    addJobs = (jobsData, name = null) => {
         this._invalidated = true;
-        let jobData = []
-        if (poolSize < 2) {
-            return this.isReady().then(() => this._queue.addBulk(jobsData)).then(jobs => jobs.map(j => new Job(j)));
-        } else {
-            if (name) {
-                for (let i = 0; i < jobsData.length; i += poolSize) {
-                    jobData.push({
-                        name: name + "__bulk",
-                        data: {
-                            jobs: jobsData.slice(i, i + poolSize).map(j => j.data),
-                            results: [],
-                            errors: []
-                        }
-                    })
-                }
-            } else {
-                for (let i = 0; i < jobsData.length; i += poolSize) {
-                    jobData.push({
-                        name: "__default__bulk",
-                        data: {
-                            jobs: jobsData.slice(i, i + poolSize).map(j => j.data),
-                            results: [],
-                            errors: []
-                        }
-                    })
-                }
-            }
-            return this.isReady().then(() => this._queue.addBulk(jobData)).then(jobs => jobs.map(job => job.data.jobs.map((j, i) => new BatchedJob(job, i))).flat());
-        }
+        return this.isReady().then(() => this._queue.addBulk(jobsData)).then(jobs => jobs.map(j => new Job(j)));
     }
 
     /**
      * Returns a list of jobs contained in the queue
      * @returns {Promise<Object[]>} Promise returning the jobs of the queue
      */
-    getJobs = () => this.isReady().then(() => {
+    getJobs = () => this.isReady().then(() =>{
         if (!this._invalidated) return this._cachedJobs;
         return this._queue.getJobs(Object.values(Queue.JOB_STATES)).then(
             jobs => {
-                this._cachedJobs = jobs.map((job) => (job.data.jobs === undefined ? new Job(job) : job.data.jobs.map((j, i) => new BatchedJob(job, i)))).flat()
+                this._cachedJobs = jobs.map((job) => new Job(job));
                 this._invalidated = false;
                 return this._cachedJobs;
-            }
-        )
+            });
     });
 
     /**
@@ -185,52 +145,6 @@ class Queue extends event.EventEmitter {
      * @returns {Promise} promise that resolve once the queue is resumed
      */
     resume = () => this._queue.isReady().then(() => this._queue.resume());
-
-    static _batch_processor(processor) {
-        return async (job, done) => {
-            let isRetry = job.data.errors.filter(x => !(x === undefined || x === null)).length !== 0;
-            let retries = job.data.errors.map(x => !(x === undefined || x === null));
-            job.data.errors = new Array(job.data.jobs.length).fill(null);
-            if (!isRetry) job.progress(new Array(job.data.jobs.length).fill(null));
-            await job.update(job.data);
-            let subJobs = job.data.jobs.map((j, i) => {
-                return {
-                    data: j,
-                    progress: async (progress = null) => {
-                        let prog = await job.progress();
-                        if (progress) {
-                            prog[i] = progress;
-                            await job.progress(prog);
-                        }
-                        return prog[i];
-                    }
-                }
-            });
-
-            let failed = false;
-            let i = 0
-            for (let j of subJobs) {
-                if (!isRetry || retries[i]) await new Promise((resolve, reject) => {
-                    try {
-                        processor(j, (err, res) => {
-                            job.data.errors[i] = err;
-                            job.data.results[i] = res;
-                            job.update(job.data).then(() => resolve());
-                            if (!!err) failed = true;
-                        });
-                    } catch (e) {
-                        failed = true;
-                        job.data.errors[i] = e;
-                        job.update(job.data).then(() => resolve());
-                    }
-                })
-                i++;
-            }
-
-            done(failed ? job.data.errors : null, true);
-        }
-    }
-
 }
 
 class Job {
@@ -273,44 +187,13 @@ class Job {
     remove() {
         return this._bullJob.remove()
     }
+
+    moveToFailed(error) {
+        return this._bullJob.moveToFailed(error, true);
+    }
 }
 
 Queue.Job = Job;
-
-
-class BatchedJob extends Job {
-
-    constructor(bullJob, i) {
-        super(bullJob);
-        this._i = i;
-        this.data = bullJob.data.jobs[i];
-    }
-
-    async progress() {
-        return (await super.progress())[this._i];
-    }
-
-    getState() {
-        return super.getState().then(state => {
-            if (this._bullJob.data.results[this._i] !== null && this._bullJob.data.results[this._i] !== undefined) return Queue.JOB_STATES.COMPLETED;
-            if (this._bullJob.data.errors[this._i] !== null && this._bullJob.data.errors[this._i] !== undefined) return (state === Queue.JOB_STATES.DELAYED || state === Queue.JOB_STATES.ACTIVE ? Queue.JOB_STATES.DELAYED : Queue.JOB_STATES.FAILED);
-            if (this._i === 0 ||
-                this._bullJob.data.results[this._i - 1] !== null && this._bullJob.data.results[this._i - 1] !== undefined ||
-                this._bullJob.data.errors[this._i - 1] !== null && this._bullJob.data.errors[this._i - 1] !== undefined) return Queue.JOB_STATES.ACTIVE;
-            return Queue.JOB_STATES.WAITING;
-        });
-    }
-
-    async finished() {
-        return this._bullJob.data.results[this._i];
-    }
-
-    update(data) {
-        this._bullJob.data.jobs[this._i] = data;
-        return this._bullJob.update(this._bullJob.data);
-    }
-
-}
 
 Queue.JOB_STATES = {
     COMPLETED: 'completed',

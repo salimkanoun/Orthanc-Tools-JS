@@ -5,7 +5,7 @@ const initialState = {
     studyArray: []
 }
 
-export default function orthancContentReducer (state = initialState, action) {
+export default function orthancExportReducer (state = initialState, action) {
     switch (action.type) {
         case ADD_EXPORT_CONTENT:
             let seriesToAdd = action.payload.series

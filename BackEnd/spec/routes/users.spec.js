@@ -4,6 +4,7 @@ const app = express()
 const route = require('../../routes/users')
 const bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
+const User = require('../../model/Users')
 
 
 app.use(bodyParser.json({ limit: '10mb' }));
@@ -34,9 +35,11 @@ describe('Test Users routes',()=>{
     .then((response)=>{
       expect(response.statusCode).toBe(201)
     })
+    await User.deleteUser('test')
   })
 
   it('/PUT',async()=>{
+    await User.createUser('test','test','test','test','test','admin',false)
     const user={
       password : 'testnew',
       role : 'admin'
@@ -48,9 +51,11 @@ describe('Test Users routes',()=>{
     .then((response)=>{
       expect(response.statusCode).toBe(200)
     })
+    await User.deleteUser('test')
   })
 
   it('/DELETE',async()=>{
+    await User.createUser('test','test','test','test','test','admin',false)
     const res = await request(app)
     .delete('/api/users/test')
     .set('Accept','applicaton/json')
