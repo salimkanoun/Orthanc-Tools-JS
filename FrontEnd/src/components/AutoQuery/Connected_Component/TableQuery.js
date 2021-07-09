@@ -120,12 +120,8 @@ class TableQuery extends Component {
         }
     }
 
-    deselectAll = () => {
-        this.node.selectionContext.selected = []
-    }
-
     removeRow = () => {
-        let selectedKeyRow = this.node.selectionContext.selected
+        let selectedKeyRow = this.state.selected
         this.props.removeQuery(selectedKeyRow)
     }
 
