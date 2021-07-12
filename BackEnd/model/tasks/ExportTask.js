@@ -139,6 +139,8 @@ class ExportTask {
             const streamWriter = fs.createWriteStream(destination);
             ReverseProxy.streamToFileWithCallBack(jobPath + '/archive', 'GET', {}, streamWriter, () => {
                 done(null, {path: destination});
+            }).catch((error) => {
+                console.err(error)
             });
         }).catch((error) => {
             console.error('error in a task :');
