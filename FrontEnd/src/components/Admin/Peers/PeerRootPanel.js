@@ -23,7 +23,7 @@ const PeerRootPanel = () => {
      * Get Peer Data from backend
      */
   const refreshPeersData = async () => {
-
+    
     try{
       const peersAnswer = await apis.peers.getPeersExpand()
       setPeers(peersAnswer)

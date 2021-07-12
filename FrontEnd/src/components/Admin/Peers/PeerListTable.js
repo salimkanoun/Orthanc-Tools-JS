@@ -34,20 +34,19 @@ export default class Peer extends Component {
     }, {
         dataField: 'Remove',
         text: 'Remove Peer',
-        formatter: (cell, row, rowIndex, parentComponent) => {
+        formatter: (cell, row, rowIndex) => {
             return (
                 <div className="text-center">
                     <input type="button" className='btn btn-danger' onClick={async () => {
                         try {
                             await apis.peers.deletePeer(row.name);
-                            parentComponent.props.refreshPeerData()
+                            this.props.refreshPeerData()
                         } catch (error) {
                             toast.error(error.statusText)
                         }
                     }} value="Remove" />
                 </div>)
         },
-        formatExtraData: this
     }]
 
     /**

@@ -78,8 +78,6 @@ const exportDicom = {
 
       const fileStream = streamSaver.createWriteStream('Dicom_' + Date.now() + '.zip')
 
-      console.log("ici reponse recue")
-
       if (!answer.ok) throw answer
 
       const readableStream = answer.body

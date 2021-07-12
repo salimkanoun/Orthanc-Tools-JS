@@ -369,9 +369,6 @@ class RetrieveTask {
                 if (response.State === 'Failure') {
                     throw "Orthanc Error : " + response.ErrorDescription;
                 }
-                if (response.State !== 'Running') {
-                    console.log(response.State)
-                }
             }, 2000).then(async (response) => {
                 const orthancResults = await orthanc.findInOrthancByUid(response.Content['Query'][0]['0020,000d'])
                 done(null, orthancResults[0].ID)

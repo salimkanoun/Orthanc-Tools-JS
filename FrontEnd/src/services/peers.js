@@ -42,7 +42,6 @@ const peers = {
 
         return fetch('/api/peers/' + name, updatePeerOption).then((answer) => {
             if (!answer.ok) { throw answer }
-            return (answer.json())
         }).catch((error) => {
             throw error
         })
@@ -56,7 +55,6 @@ const peers = {
 
         return fetch('/api/peers/' + name, deletePeerOption).then((answer) => {
             if (!answer.ok) { throw answer }
-            return (answer.json())
         }).catch((error) => {
             throw error
         })

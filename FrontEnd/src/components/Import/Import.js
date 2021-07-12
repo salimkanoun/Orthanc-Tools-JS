@@ -98,7 +98,6 @@ class Import extends Component {
     }
 
     addUploadedFileToState = async (orthancAnswer) => {
-        console.log(orthancAnswer)
         let isExistingSerie = this.isKnownSeries(orthancAnswer.ParentSeries)
 
         if (isExistingSerie) {
