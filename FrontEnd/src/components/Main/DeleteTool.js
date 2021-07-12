@@ -92,8 +92,8 @@ class DeleteTool extends Component {
                 <Overlay target={this.props.target} show={this.props.show} placement="left" onHide={this.props.onHide}
                          rootClose>
                     <Popover id="popover-basic" style={{maxWidth: '100%'}}>
-                        <Popover.Title as="h3">Delete List</Popover.Title>
-                        <Popover.Content>
+                        <Popover.Header as="h3">Delete List</Popover.Header>
+                        <Popover.Body>
                             <div className="float-right mb-3">
                                 <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty}>Empty
                                     List
@@ -112,7 +112,7 @@ class DeleteTool extends Component {
                                     List
                                 </button>
                             </div>
-                        </Popover.Content>
+                        </Popover.Body>
                     </Popover>
                 </Overlay>
                 <ModalDelete show={this.props.confirmDelete} onHide={this.handleConfirm}

@@ -41,7 +41,7 @@ export default class CreateDicom extends Component {
 
     render = () => {
         return (
-            <div className="jumbotron">
+            <div>
                 <Dropzone onDragEnter={() => this.dragListener(true)} onDragLeave={() => this.dragListener(false)} onDrop={this.createDicom} >
                     {({ getRootProps, getInputProps }) => (
                         <section>

@@ -1,0 +1,90 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\kanoun_s\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js install
+
+PATH: 
+  C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Quadrat\DLL\;C:\Program Files (x86)\Quadrat\Programs\;C:\Program Files (x86)\Quadrat\Cent15\;C:\Program Files (x86)\SpeechMagic\BackEnd\6.1.0\bin;C:\Program Files (x86)\SPMAGIC\BIN;;Common Files\Philips Speech Shared\DictationCore;C:\Oracle\product\11.2.0\client_1\bin;C:\app\tis\product\11.2.0\client_1;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;c:\Program Files (x86)\HP\HP Performance Advisor;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\Git LFS;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Program Files\RedHat\java-1.8.0-openjdk-1.8.0.242-3\bin;C:\Program Files\RedHat\java-1.8.0-openjdk-1.8.0.242-3\jre\bin;C:\Program Files\Redis\;C:\Program Files\PuTTY\;C:\Users\kanoun_s\AppData\Local\Programs\Python\Python36\Scripts\;C:\Users\kanoun_s\AppData\Local\Programs\Python\Python36\;C:\Users\kanoun_s\AppData\Local\GitHubDesktop\bin;C:\Users\kanoun_s\AppData\Local\atom\bin;C:\Users\kanoun_s\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\kanoun_s\AppData\Roaming\npm;C:\Users\kanoun_s\Downloads\apache-maven-3.6.3-bin.zip\apache-maven-3.6.3\bin;C:\Users\kanoun_s\AppData\Roaming\Python\Python36\Scripts;
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  12.13.1
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/@material-ui/icons/-/icons-4.11.2.tgz: ESOCKETTIMEDOUT
+      at ClientRequest.<anonymous> (C:\Users\kanoun_s\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:141289:19)
+      at Object.onceWrapper (events.js:299:28)
+      at ClientRequest.emit (events.js:210:5)
+      at TLSSocket.emitRequestTimeout (_http_client.js:690:9)
+      at Object.onceWrapper (events.js:299:28)
+      at TLSSocket.emit (events.js:210:5)
+      at TLSSocket.Socket._onTimeout (net.js:469:8)
+      at listOnTimeout (internal/timers.js:531:17)
+      at processTimers (internal/timers.js:475:7)
+
+npm manifest: 
+  {
+    "name": "orthanctoolsjsfront",
+    "version": "0.6.7",
+    "private": true,
+    "dependencies": {
+      "@material-ui/core": "^4.12.1",
+      "@material-ui/icons": "^4.11.2",
+      "@material-ui/lab": "^4.0.0-alpha.60",
+      "bootstrap": "^5.0.2",
+      "crypto-js": "^4.0.0",
+      "fetch-intercept": "^2.4.0",
+      "http-proxy-middleware": "^2.0.1",
+      "moment": "^2.29.1",
+      "papaparse": "^5.3.1",
+      "react": "^17.0.2",
+      "react-alert": "^7.0.3",
+      "react-bootstrap": "^2.0.0-beta.2",
+      "react-circular-progressbar": "^2.0.4",
+      "react-dom": "^17.0.2",
+      "react-dropzone": "^11.3.4",
+      "react-numeric-input": "^2.2.3",
+      "react-redux": "^7.2.4",
+      "react-router-dom": "^5.2.0",
+      "react-scripts": "^4.0.3",
+      "react-select": "^4.3.1",
+      "react-table": "^7.7.0",
+      "react-toastify": "^7.0.4",
+      "react-toggle": "^4.1.2",
+      "react-tooltip": "^4.2.21",
+      "redux": "^4.1.0",
+      "redux-thunk": "^2.3.0",
+      "streamsaver": "^2.0.5",
+      "web-streams-polyfill": "^3.0.3"
+    },
+    "scripts": {
+      "start": "react-scripts start",
+      "build": "react-scripts build",
+      "test": "react-scripts test",
+      "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+      "extends": "react-app"
+    },
+    "browserslist": {
+      "production": [
+        ">0.2%",
+        "not dead",
+        "not op_mini all"
+      ],
+      "development": [
+        "last 1 chrome version",
+        "last 1 firefox version",
+        "last 1 safari version"
+      ]
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

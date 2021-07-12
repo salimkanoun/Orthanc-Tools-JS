@@ -104,7 +104,7 @@ class DicomRouterPanel extends Component {
 
   render (){
     return(
-      <div className='jumbotron'>
+      <div>
         <div><Alert show={this.state.message} variant='info'>To apply changes on the router (re)start it !</Alert></div>
 
         <div>

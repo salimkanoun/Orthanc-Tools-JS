@@ -70,7 +70,7 @@ const AutoQueryRoot = () => {
           </li>
         </ul>
       </div>
-      <div className="jumbotron">
+      <div>
         {getComponentToDisplay()}
       </div>
     </div>

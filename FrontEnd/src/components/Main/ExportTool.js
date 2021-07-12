@@ -57,8 +57,8 @@ class ExportTool extends Component {
             <Overlay target={this.props.target} show={this.props.show} placement='left' onHide={this.props.onHide}
                      rootClose>
                 <Popover id='popover-export' style={{maxWidth: '100%'}}>
-                    <Popover.Title as='h3'>Export List</Popover.Title>
-                    <Popover.Content>
+                    <Popover.Header as='h3'>Export List</Popover.Header>
+                    <Popover.Body>
                         <div className="row mb-3">
                             <div className="col float-right">
                                 <button type="button" className="btn btn-warning float-right"
@@ -86,7 +86,7 @@ class ExportTool extends Component {
                                 <SendAetDropdown aets={this.state.aets} exportIds={idArray}/>
                             </div>
                         </div>
-                    </Popover.Content>
+                    </Popover.Body>
                 </Popover>
             </Overlay>
         )

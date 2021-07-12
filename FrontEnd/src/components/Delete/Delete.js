@@ -92,7 +92,7 @@ class Delete extends Component {
     render = () => {
         return (
             <Fragment>
-                <div className='jumbotron'>
+                <div>
                     <h2 className="card-title mb-3">Delete</h2>
                     <div className="float-right mb-3">
                         <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty}>Empty List

@@ -126,7 +126,7 @@ class ContentRootPanel extends Component {
 
     render = () => {
         return (
-            <div className='jumbotron'>
+            <div>
                 <SearchForm onSubmit={this.sendSearch}/>
                 <div className='row'>
                     <div className='col-sm'>

@@ -319,7 +319,7 @@ class RobotView extends Component {
 
     render = () => {
         return (
-            <div className="jumbotron">
+            <div>
                 <div className="row mb-5">
                     <h1 className="col"> Robot for user {this.state.creator}, project : {this.state.projectName} </h1>
                     <div className="col-md-2 text-right">
