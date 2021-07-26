@@ -101,12 +101,17 @@ export function DateFilter(label = 'Select...') {
     }
 }
 
+function DicomDateToMs(date) {
+    return Date.parse(date.substring(0, 4) + '-' +
+        date.substring(4, 6) + '-' +
+        date.substring(6, 8));
+}
 
 const dateFilterComp =
     {
-        '<=': (row, col, date) => Date.parse(row.values[col]) <= Date.parse(date),
-        '=': (row, col, date) => Date.parse(row.values[col]) === Date.parse(date),
-        '>=': (row, col, date) => Date.parse(row.values[col]) >= Date.parse(date),
+        '<=': (row, col, date) => DicomDateToMs(row.values[col]) <= Date.parse(date),
+        '=': (row, col, date) => DicomDateToMs(row.values[col]) === Date.parse(date),
+        '>=': (row, col, date) => DicomDateToMs(row.values[col]) >= Date.parse(date),
     }
 
 export function dateFilter(rows, col, val) {
