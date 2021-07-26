@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {useExpanded, useFilters, usePagination, useRowSelect, useSortBy, useTable} from 'react-table'
 import Table from 'react-bootstrap/Table'
 import {FormCheck} from "react-bootstrap"
@@ -10,6 +10,50 @@ actions.toggleRowSelected = 'toggleRowSelected'
 actions.toggleAllPageRowsSelected = 'toggleAllPageRowsSelected'
 
 const LOWEST_PAGE_SIZE = 10;
+
+
+function SubRow({span, columns, data, setSelected, index, hiddenSelect, rowEvent, rowStyle}) {
+    return <tr>
+        <td className={"subtable-row"} colSpan={span}>
+            <NestedTable
+                columns={columns}
+                data={data || []}
+                setSelected={!!setSelected ? (selected) => {
+                    let t = [];
+                    t[index] = selected;
+                    setSelected({sub: t})
+                } : undefined}
+                hiddenSelect={hiddenSelect}
+                rowEvent={rowEvent}
+                rowStyle={rowStyle}
+            />
+        </td>
+    </tr>;
+}
+
+function LazySubRow({span, columns, getter, setSelected, index, hiddenSelect, rowEvent, rowStyle}) {
+    const [data, setData] = useState(null);
+    useEffect(async () => {
+        setData(await getter())
+    }, []);
+    return (data != null ? <tr>
+        <td className={"subtable-row"} colSpan={span}>
+            <NestedTable
+                columns={columns}
+                data={data}
+                setSelected={!!setSelected ? (selected) => {
+                    let t = [];
+                    t[index] = selected;
+                    setSelected({sub: t})
+                } : undefined}
+                hiddenSelect={hiddenSelect}
+                rowEvent={rowEvent}
+                rowStyle={rowStyle}
+            />
+        </td>
+    </tr> : null);
+}
+
 
 function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowStyle, filtered = false, sorted = false}) {
     const {
@@ -28,6 +72,7 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
         {
             columns,
             data,
+            autoResetExpanded: false,
             initialState: {
                 hiddenColumns: columns.map(column => {
                     if (column.show === false || column.table instanceof Array) return column.accessor || column.id;
@@ -112,22 +157,22 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
                         {row.isExpanded ? (Object.entries(row.values).map(([key, value], index) => {
                                     let matchingColumn = columns.filter(column => !!column.table && column.accessor === key)[0];
                                     return (!!matchingColumn ?
-                                            <tr>
-                                                <td className={"subtable-row"} colSpan={visibleColumns.length}>
-                                                    <NestedTable
-                                                        columns={matchingColumn.table}
-                                                        data={value || []}
-                                                        setSelected={!!setSelected ? (selected) => {
-                                                            let t = [];
-                                                            t[index] = selected;
-                                                            setSelected({sub: t})
-                                                        } : undefined}
-                                                        hiddenSelect={hiddenSelect}
-                                                        rowEvent={rowEvent}
-                                                        rowStyle={rowStyle}
-                                                    />
-                                                </td>
-                                            </tr> :
+                                            (!matchingColumn.lazy ?
+                                                <SubRow span={visibleColumns.length}
+                                                        columns={matchingColumn.table} data={value} index={index}
+                                                        setSelected={setSelected}
+                                                        hiddenSelect={hiddenSelect} rowEvent={rowEvent}
+                                                        rowStyle={rowStyle
+                                                        }/> :
+                                                <LazySubRow span={visibleColumns.length}
+                                                            columns={matchingColumn.table}
+                                                            getter={value}
+                                                            index={index}
+                                                            setSelected={setSelected}
+                                                            hiddenSelect={hiddenSelect}
+                                                            rowEvent={rowEvent}
+                                                            rowStyle={rowStyle
+                                                            }/>) :
                                             null
                                     )
                                 }

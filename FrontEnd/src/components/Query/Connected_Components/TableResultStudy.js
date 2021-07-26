@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { connect } from 'react-redux'
+import React, {useMemo} from 'react';
+import {connect} from 'react-redux'
 import RetrieveButton from '../Components/RetrieveButton';
 import {
     columnSeriesFactory,
@@ -7,11 +7,10 @@ import {
 } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
 import NestedTable from "../../CommonComponents/RessourcesDisplay/ReactTable/NestedTable";
 import apis from "../../../services/apis";
-import { toast } from "react-toastify";
-import { addManualQuerySeriesDetails } from "../../../actions/ManualQuery";
+import {addManualQuerySeriesDetails} from "../../../actions/ManualQuery";
 
 
-function TableResult({ results, style, addManualQuerySeriesDetails }) {
+function TableResult({results, style, addManualQuerySeriesDetails}) {
     style = style || {};
     const columns = useMemo(() => [
         ...columnStudyFactory(true, true, true, false, false, null, null, false, true, undefined, true),
@@ -27,12 +26,13 @@ function TableResult({ results, style, addManualQuerySeriesDetails }) {
         }, {
             id: 'Retrieve',
             Header: 'Retrieve',
-            Cell: ({ row }) => {
+            Cell: ({row}) => {
                 return (<RetrieveButton queryAet={row.values.OriginAET} studyInstanceUID={row.values.StudyInstanceUID}
-                    level={RetrieveButton.Study} />)
+                                        level={RetrieveButton.Study}/>)
             }
         }, {
             accessor: 'seriesDetails',
+            lazy: true,
             table: [
                 ...columnSeriesFactory(true, true, null, null),
                 {
@@ -44,18 +44,18 @@ function TableResult({ results, style, addManualQuerySeriesDetails }) {
                 }, {
                     id: 'Retrieve',
                     Header: 'Retrieve',
-                    Cell: ({ row }) => {
+                    Cell: ({row}) => {
                         return (<RetrieveButton queryAet={row.values.raw.OriginAET}
-                            studyInstanceUID={row.values.raw.StudyInstanceUID}
-                            seriesInstanceUID={row.values.raw.SeriesInstanceUID}
-                            level={RetrieveButton.Series} />)
+                                                studyInstanceUID={row.values.raw.StudyInstanceUID}
+                                                seriesInstanceUID={row.values.raw.SeriesInstanceUID}
+                                                level={RetrieveButton.Series}/>)
                     }
                 }
             ]
         }
     ], [])
     const data = useMemo(() => results.map(result => {
-        result.raw = result;
+        let res = {...result, raw: result}
 
         let queryData = {
             Level: 'Series',
@@ -70,31 +70,41 @@ function TableResult({ results, style, addManualQuerySeriesDetails }) {
             }
         }
 
-        if (result.seriesDetails.length === 0) {
-            apis.query.dicomQuery(result.OriginAET, queryData)
-                .then(queryAnswers => apis.query.retrieveAnswer(queryAnswers.ID))
-                .then(seriesAnswers => addManualQuerySeriesDetails(seriesAnswers, result.StudyInstanceUID))
-                .catch(() => {
-                    toast.error('Dicom Failure');
-                });
+
+        const seriesDetails = [...result.seriesDetails];
+        if (seriesDetails.length !== 0) {
+            res.seriesDetails = () => {
+                return seriesDetails.map(serie => ({
+                    ...serie,
+                    raw: serie
+                }))
+            }
         } else {
-            result.seriesDetails = result.seriesDetails.map(series => ({
-                ...series,
-                raw: series
-            }))
+            res.seriesDetails = () => {
+                return apis.query.dicomQuery(result.OriginAET, queryData)
+                    .then(queryAnswers => apis.query.retrieveAnswer(queryAnswers.ID))
+                    .then(seriesAnswers => {
+                        addManualQuerySeriesDetails(seriesAnswers, result.StudyInstanceUID);
+                        return seriesAnswers;
+                    })
+                    .then(series => series.map(serie => ({
+                        ...serie,
+                        raw: serie
+                    })))
+            }
         }
-        return result;
+        return res;
     }), [results]);
 
     return (
         <React.Fragment>
             <div style={style}>
                 <div className="mt-5">
-                    <NestedTable columns={columns} data={data} filtered sorted hiddenSelect />
+                    <NestedTable columns={columns} data={data} filtered sorted hiddenSelect/>
                 </div>
             </div>
         </React.Fragment>
-        )
+    )
 }
 
 const mapStateToProps = (state) => {

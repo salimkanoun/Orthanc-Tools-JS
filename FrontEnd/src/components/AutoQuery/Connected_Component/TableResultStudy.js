@@ -36,7 +36,7 @@ function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesF
     return (
         <div>
             <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={() => {
-                removeResult(selected.map(x => x.key))
+                removeResult(selected.map(x => x.values.StudyInstanceUID))
             }}/>
             <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={emptyResultsTable}/>
             <ExportCSVButton className='m-2' data={selected.map(({values: {raw, ...values}}) => raw)}/>

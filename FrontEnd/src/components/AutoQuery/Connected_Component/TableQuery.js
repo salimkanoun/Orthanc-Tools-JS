@@ -19,18 +19,18 @@ import CommonSelectingAndFilteringTable
 import ExportCSVButton from "../../CommonComponents/RessourcesDisplay/ExportCSVButton";
 import CsvLoader from "./CsvLoader";
 
-function CustomHeader(setOverride) {
+function CustomHeader(setOverride, type = 'text') {
     return ({column}) => {
         return (<>
             <p>{column.text}</p>
-            <FormControl placeholder={'Override'} value={column.overrideValue || ''} onChange={event => {
+            <FormControl placeholder={'Override'} type={type} value={column.overrideValue || ''} onChange={event => {
                 setOverride(column.id, event.target.value);
             }}/>
         </>)
     }
 }
 
-function Table({queries, aets, setOverride, overridesValues, onDataChange, onSelect}) {
+function Table({queries, aets, setOverride, overridesValues, onDataChange, onSelect, onFilter}) {
     const columns = useMemo(() => {
         const Header = CustomHeader(setOverride);
         const columns = [{
@@ -62,7 +62,7 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
             text: 'Date From',
             Filter: DateFilter(),
             filter: dFilter,
-            Header,
+            Header: CustomHeader(setOverride, 'date'),
             overrideValue: overridesValues['DateFrom'],
             Cell: EditableCell
         }, {
@@ -70,7 +70,7 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
             text: 'Date To',
             Filter: DateFilter(),
             filter: dFilter,
-            Header,
+            Header: CustomHeader(setOverride, 'date'),
             overrideValue: overridesValues['DateTo'],
             Cell: EditableCell
         }, {
@@ -105,7 +105,7 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
     }, [overridesValues, setOverride, aets]);
     const data = useMemo(() => queries, [queries]);
 
-    return <CommonSelectingAndFilteringTable tableData={data} columns={columns} onSelect={onSelect}
+    return <CommonSelectingAndFilteringTable tableData={data} columns={columns} onSelect={onSelect} onFilter={onFilter}
                                              onDataChange={onDataChange}/>
 }
 
@@ -120,13 +120,9 @@ class TableQuery extends Component {
         }
     }
 
-    deselectAll = () => {
-        this.node.selectionContext.selected = []
-    }
-
     removeRow = () => {
-        let selectedKeyRow = this.node.selectionContext.selected
-        this.props.removeQuery(selectedKeyRow)
+        let selectedKeyRow = this.state.selected.map(x => x.key);
+        this.props.removeQuery(selectedKeyRow);
     }
 
     emptyTable = () => {
@@ -135,7 +131,8 @@ class TableQuery extends Component {
 
     state = {
         overrides: {},
-        selected: []
+        selected: [],
+        filtered: []
     }
 
     render = () => {
@@ -167,7 +164,7 @@ class TableQuery extends Component {
                     <div className="mt-5">
                         <Table queries={this.props.queries} onDataChange={this.changeHandler} aets={this.props.aets}
                                setOverride={this.handleOverride} overridesValues={this.state.overrides}
-                               onSelect={this.handleSelect}/>
+                               onSelect={this.handleSelect} onFilter={this.handleFilter}/>
                     </div>
                 </div>
                 <div className="text-center">
@@ -191,9 +188,12 @@ class TableQuery extends Component {
     handleSelect = (selected) => {
         this.setState({selected: selected.map(x => x.values)});
     }
+    handleFilter = (filtered) => {
+        this.setState({filtered: filtered.map(x => x.values)});
+    }
 
     query = async () => {
-        const data = this.state.selected;
+        const data = this.state.filtered;
         const toastId = toast.info('Starting Studies Queries', {autoClose: false});
         let i = 0
 

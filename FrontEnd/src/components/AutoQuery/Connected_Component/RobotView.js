@@ -315,6 +315,7 @@ class RobotView extends Component {
         await this.setState({
             id: null
         })
+        if (this.props.onDelete instanceof Function) this.props.onDelete()
     }
 
     render = () => {

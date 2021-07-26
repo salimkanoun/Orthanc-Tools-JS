@@ -117,7 +117,7 @@ function TableResultsStudiesSeries({
     return (
         <Fragment>
             <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={() => {
-                removeSeriesResult(selected)
+                removeSeriesResult(selected.map(x => x.values.raw.SeriesInstanceUID));
             }}/>
             <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={emptyResultsTable}/>
             <div className="mt-5">

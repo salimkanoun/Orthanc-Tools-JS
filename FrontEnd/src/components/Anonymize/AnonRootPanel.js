@@ -47,11 +47,11 @@ class AnonRootPanel extends Component {
                 return (<AnonymizePanel setTask={this.setAnonTaskId}/>);
             case PORG_TAB:
                 return (
-                    <div>
-                        <div className = "row">
+                    <div className={"row"}>
+                        <div className="col-4" style={{"max-width": '400px'}}>
                             <AnonymizePanelProgress anonTaskID={this.state.anonTaskId}/>
                         </div>
-                        <div>
+                        <div className="col-12 col-xl-9">
                             <AnonymizedResults anonTaskID={this.state.anonTaskId}/>
                         </div>
                     </div>)
