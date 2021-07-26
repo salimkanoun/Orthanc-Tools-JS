@@ -121,8 +121,8 @@ class TableQuery extends Component {
     }
 
     removeRow = () => {
-        let selectedKeyRow = this.state.selected
-        this.props.removeQuery(selectedKeyRow)
+        let selectedKeyRow = this.state.selected.map(x => x.key);
+        this.props.removeQuery(selectedKeyRow);
     }
 
     emptyTable = () => {
