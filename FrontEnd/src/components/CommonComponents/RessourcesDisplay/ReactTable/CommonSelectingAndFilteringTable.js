@@ -12,6 +12,7 @@ function Table({
                    onRowClick = () => {
                    },
                    onSelect,
+                   onFilter,
                    rowStyle = () => {
                    },
                    pagination = false,
@@ -56,7 +57,7 @@ function Table({
         visibleColumns,
         prepareRow,
         selectedFlatRows,
-        state: {pageIndex, pageSize}
+        state: {pageIndex, pageSize, filters}
     } = useTable(
         {
             columns,
@@ -103,6 +104,13 @@ function Table({
         onSelect(selectedFlatRows);
         // eslint-disable-next-line
     }, [selectedFlatRows.length]);
+    /**
+     * When when a filter is changed use the on filterCallback
+     */
+    React.useEffect(() => {
+        if (onFilter instanceof Function) onFilter(rows);
+        // eslint-disable-next-line
+    }, [filters]);
 
     return (
         <>

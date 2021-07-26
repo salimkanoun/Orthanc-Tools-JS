@@ -30,7 +30,7 @@ function CustomHeader(setOverride) {
     }
 }
 
-function Table({queries, aets, setOverride, overridesValues, onDataChange, onSelect}) {
+function Table({queries, aets, setOverride, overridesValues, onDataChange, onSelect, onFilter}) {
     const columns = useMemo(() => {
         const Header = CustomHeader(setOverride);
         const columns = [{
@@ -105,7 +105,7 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
     }, [overridesValues, setOverride, aets]);
     const data = useMemo(() => queries, [queries]);
 
-    return <CommonSelectingAndFilteringTable tableData={data} columns={columns} onSelect={onSelect}
+    return <CommonSelectingAndFilteringTable tableData={data} columns={columns} onSelect={onSelect} onFilter={onFilter}
                                              onDataChange={onDataChange}/>
 }
 
@@ -131,7 +131,8 @@ class TableQuery extends Component {
 
     state = {
         overrides: {},
-        selected: []
+        selected: [],
+        filtered: []
     }
 
     render = () => {
@@ -163,7 +164,7 @@ class TableQuery extends Component {
                     <div className="mt-5">
                         <Table queries={this.props.queries} onDataChange={this.changeHandler} aets={this.props.aets}
                                setOverride={this.handleOverride} overridesValues={this.state.overrides}
-                               onSelect={this.handleSelect}/>
+                               onSelect={this.handleSelect} onFilter={this.handleFilter}/>
                     </div>
                 </div>
                 <div className="text-center">
@@ -187,9 +188,12 @@ class TableQuery extends Component {
     handleSelect = (selected) => {
         this.setState({selected: selected.map(x => x.values)});
     }
+    handleFilter = (filtered) => {
+        this.setState({filtered: filtered.map(x => x.values)});
+    }
 
     query = async () => {
-        const data = this.state.selected;
+        const data = this.state.filtered;
         const toastId = toast.info('Starting Studies Queries', {autoClose: false});
         let i = 0
 

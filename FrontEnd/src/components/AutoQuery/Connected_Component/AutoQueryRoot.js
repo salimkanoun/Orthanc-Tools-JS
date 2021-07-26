@@ -39,7 +39,10 @@ const AutoQueryRoot = () => {
                 component = <Results switchTab={switchTab} setTaskId={setLastTaskId}/>
                 break
             case MY_ROBOT:
-                component = <RobotView id={lastTaskId}/>
+                component = <RobotView id={lastTaskId} onDelete={() => {
+                    switchTab(QUERRY)
+                    setLastTaskId(null);
+                }}/>
                 break
             case HISTORIC:
                 component = <RobotHistoric username={username}/>
