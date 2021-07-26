@@ -32,7 +32,7 @@ body {
 }
 
 .content-panel {
-    margin-top: 100px !important; 
+    margin-top: 100px !important;
 }
 
 .authentification {
@@ -97,6 +97,7 @@ code {
 
 .link-button {
     background-color: transparent;
+    color: #1a1a1a;
     border: none;
     cursor: pointer;
     text-decoration: none;
@@ -161,7 +162,7 @@ code {
     transition: opacity 1000ms;
 }
 
-.nav-link {
+.navbar .nav-link {
     color: rgba(255, 255, 255, 0.92) ! important;
 }
 
