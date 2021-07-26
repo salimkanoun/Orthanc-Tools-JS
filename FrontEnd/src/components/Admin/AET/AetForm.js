@@ -9,11 +9,11 @@ import apis from '../../../services/aets'
 export default class AetForm extends Component {
 
     state = {
-        name : '', 
-        aetName : '',
-        ip : '',
-        port : '',
-        manufacturer : { value: 'Generic', label: 'Generic' }
+        name: '',
+        aetName: '',
+        ip: '',
+        port: '',
+        manufacturer: { value: 'Generic', label: 'Generic' }
     }
 
     manufacturers = [
@@ -53,26 +53,26 @@ export default class AetForm extends Component {
      * Listener on form submission
      */
     handleClick = async () => {
-        try{
-            await apis.updateAet(this.state.name, this.state.aetName,this.state.ip, this.state.port, this.state.manufacturer.value )
+        try {
+            await apis.updateAet(this.state.name, this.state.aetName, this.state.ip, this.state.port, this.state.manufacturer.value)
             this.setState({
-                name : '', 
-                aetName : '',
-                ip : '',
-                port : '',
-                manufacturer :  { value: 'Generic', label: 'Generic' }
+                name: '',
+                aetName: '',
+                ip: '',
+                port: '',
+                manufacturer: { value: 'Generic', label: 'Generic' }
             })
             this.props.refreshAetData()
-        } catch(error){
+        } catch (error) {
             toast.error(error.statusText)
         }
-        
+
     }
 
     render = () => {
         return (
             <Fragment>
-                <h2 className="card-title">Add Aet</h2>
+                <h2 className="text-center">New Aet</h2>
                 <div className="form-group">
                     <label htmlFor="name">Name : </label>
                     <input type='text' name="name" value={this.state.name} className="form-control" onChange={this.handleChange} />
@@ -84,10 +84,11 @@ export default class AetForm extends Component {
                     <input type='number' min="0" max="999999" value={this.state.port} name="port" className="form-control" onChange={this.handleChange} />
                     <label htmlFor="manufacturer">Manufacturer : </label>
                     <Select className="col-sm" options={this.manufacturers} value={this.state.manufacturer} name="manufacturer" onChange={this.manufacturerChangeListener} />
+                    <div className="text-center mt-3">
+                        <input type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
+                    </div>
                 </div>
-                <div className="text-right mb-5">
-                    <input type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
-                </div>
+
             </Fragment>
         )
     }

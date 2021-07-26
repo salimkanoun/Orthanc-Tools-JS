@@ -24,7 +24,7 @@ class Orthanc {
      * @param {string} filename without extension
      */
     exportArchiveDicom(orthancIds, filename) {
-        const destination = './data/export_dicom/' + filename + '.zip'
+        const destination = this.getArchiveDicomPath(filename)
         const streamWriter = fs.createWriteStream(destination)
         ReverseProxy.streamToFile('/tools/create-archive', 'POST', orthancIds, streamWriter)
     }
@@ -48,7 +48,7 @@ class Orthanc {
 
             try {
 
-                const destination = './data/export_dicom/' + Math.random().toString(36).substr(2, 5) + '.zip'
+                const destination = this.getArchiveDicomPath(Math.random().toString(36).substr(2, 5))
                 const streamWriter = fs.createWriteStream(destination)
                 ReverseProxy.streamToFileWithCallBack('/tools/create-archive', 'POST', payload, streamWriter, () => {
                     resolve(destination)
@@ -80,7 +80,7 @@ class Orthanc {
 
         return new Promise((resolve, reject) => {
             try {
-                const destination = './data/export_dicom/' + Math.random().toString(36).substr(2, 5) + '.zip'
+                const destination = this.getArchiveDicomPath(Math.random().toString(36).substr(2, 5))
                 const streamWriter = fs.createWriteStream(destination)
                 ReverseProxy.streamToFileWithCallBack('/tools/create-media-extended', 'POST', payload, streamWriter, () => {
                     resolve(destination)

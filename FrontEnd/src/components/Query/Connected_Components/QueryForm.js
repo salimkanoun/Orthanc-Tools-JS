@@ -89,7 +89,7 @@ class QueryForm extends Component {
 
   render = () => {
     return (
-      <div className="jumbotron">
+      <div>
         <Form onFormValidate={this.doQueryTo} title='Query'>
           <div>
             {this.props.aets !== undefined ? this.buildAetButtons() : null}

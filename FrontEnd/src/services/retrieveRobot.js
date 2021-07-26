@@ -19,8 +19,12 @@ const retrieveRobot = {
                 throw answer
             }
             return answer.text();
-        }).catch((error) => {
-            throw error
+        }).catch(async (error) => {
+            throw await error.json().then(e => ({
+                ...e,
+                statusText: error.statusText,
+                status: error.status
+            }))
         })
 
     },

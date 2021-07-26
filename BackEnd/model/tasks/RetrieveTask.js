@@ -115,7 +115,7 @@ class RetrieveTask {
 
         if (task === null) throw new OTJSNotFoundException("No task of this kind");
         if (task.progress.validation != 100) throw OTJSBadRequestException("Items validation still in progress")
-        let jobs = await validationQueue.getJobs()
+        let jobs = await RetrieveTask._getValidationJobs(id)
 
         let jobsData = [];
         for (const job of jobs) {
@@ -134,10 +134,25 @@ class RetrieveTask {
      * @returns {Task} the task info
      */
     static async getTask(id) {
+        const sorter = (a, b) => {
+            if (a.data.AnswerId === b.data.AnswerId) {
+                if (a.data.AnswerNumber === b.data.AnswerNumber) {
+                    return 0;
+                } else if (a.data.AnswerNumber > b.data.AnswerNumber) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } else if (a.data.AnswerId > b.data.AnswerId) {
+                return 1;
+            } else {
+                return -1;
+            }
+        };
         //Gathering the jobs of the corresponding task
-        let validationJobs = await RetrieveTask._getValidationJobs(id);
+        let validationJobs = (await RetrieveTask._getValidationJobs(id)).sort(sorter);
         if (validationJobs.length === 0) return null; //If no jobs of this task exist then the task doesn't exist
-        let retrieveJobs = await RetrieveTask._getRetrieveJobs(id);
+        let retrieveJobs = (await RetrieveTask._getRetrieveJobs(id)).sort(sorter);
         let progress = await RetrieveTask.getProgress(validationJobs, retrieveJobs);
 
         //Making state
@@ -151,16 +166,16 @@ class RetrieveTask {
             state = 'retrieving';
         } else if (progress.validation === 100 && progress.retrieve === 100 && retrieveJobs.length !== 0) {
             state = 'completed';
-            for (const job of validationJobs) {
-                if (job.getState() === 'failed') state = 'failed';
-            }
-            for (const job of retrieveJobs) {
-                if (job.getState() === 'failed') state = 'failed';
-            }
-
         } else {
             state = 'failed';
         }
+        for (const job of validationJobs) {
+            if ((await job.getState()) === Queue.JOB_STATES.FAILED) state = 'failed';
+        }
+        for (const job of retrieveJobs) {
+            if ((await job.getState()) === Queue.JOB_STATES.FAILED) state = 'failed';
+        }
+
         //Check for the validation of the task and gather the items
         let valid = true;
         let items = []
@@ -254,13 +269,13 @@ class RetrieveTask {
         let retrieveJobs = await RetrieveTask._getRetrieveJobs(taskId);
 
         //Checking if all the jobs are finished
-        let stateComplete = (await Promise.all(retrieveJobs.map(job => job.getState()))).reduce((acc, x) => acc && x === 'completed', true);
+        let stateComplete = (await Promise.all(retrieveJobs.map(job => job.getState()))).reduce((acc, x) => acc && (x === 'completed' || x === 'failed'), true);
 
         if (retrieveJobs.length !== 0 && !stateComplete) throw new OTJSForbiddenException("Can't delete a robot already in progress");
         let validateJobs = await RetrieveTask._getValidationJobs(taskId);
 
-        validateJobs.forEach(job => job.remove());
-        retrieveJobs.forEach(job => job.remove());
+        await Promise.all(validateJobs.map(job => job.remove()));
+        await Promise.all(retrieveJobs.map(job => job.remove()));
     }
 
     /**
@@ -400,8 +415,8 @@ Options.optionEventEmiter.on('schedule_change', () => {
 
 setupRetrieveSchedule();
 
-let validationQueue = new Queue("validation", RetrieveTask._validateItem);
-let retrieveQueue = new Queue("retrieve", RetrieveTask._retrieveItem);
+let validationQueue = new Queue("validation", RetrieveTask._validateItem, Number(process.env.RETRIEVE_ATTEMPTS) || 3, Number(process.env.RETRIEVE_BACKOFF) || 2000);
+let retrieveQueue = new Queue("retrieve", RetrieveTask._retrieveItem, Number(process.env.RETRIEVE_ATTEMPTS) || 3, Number(process.env.RETRIEVE_BACKOFF) || 2000);
 
 
 module.exports = RetrieveTask

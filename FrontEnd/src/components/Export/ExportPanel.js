@@ -194,7 +194,7 @@ class ExportPanel extends Component {
         let idArray = this.getExportIDArray()
         let confirm = this.confirm()
         return (
-            <div className="jumbotron">
+            <div>
                 <h2 className="card-title mb-3">Export</h2>
                 <div className="row">
                     <div className="col-sm">

@@ -12,13 +12,20 @@ const CLEAN_GRACE = 0;
 
 class Queue extends event.EventEmitter {
     /**
-     * Constructor that create the job
+     * Constructor that create the queue
      * @param queueName name of the queue
      * @param fn function.s that process the job
      */
-    constructor(queueName, fn) {
+    constructor(queueName, fn, attempts = 1, backoff = 2000, backoffType = 'fixed') {
         super();
-        this._queue = new BullQueue(queueName, {redis: REDIS_OPTIONS});
+        this._queue = new BullQueue(queueName, {
+            redis: REDIS_OPTIONS, defaultJobOptions: {
+                attempts,
+                backoff
+            }
+        });
+        this._invalidated = true;
+        this._cachedJobs = [];
         if (typeof fn === "object") {
             this._queue.isReady()
                 .then(() => Promise.all(
@@ -29,7 +36,12 @@ class Queue extends event.EventEmitter {
                 .then(() => this._queue.process(fn));
         }
         this._queue.on('completed', (job, result) => {
+            this._invalidated = true;
             this.emit('completed', new Job(job), result);
+        });
+        this._queue.on('progress', (job, progress) => {
+            this._invalidated = true;
+            this.emit('progress', job, progress);
         });
         this._queue.on('error', (err) => {
             if (err.code === "ECONNREFUSED") {
@@ -40,11 +52,16 @@ class Queue extends event.EventEmitter {
                 console.error(`${err.message}. The feature requiring bull will respond 500`);
                 return;
             }
+            this._invalidated = true;
             this.emit('error', err);
         });
         this._queue.on('failed', (job, err) => {
             console.log(err);
+            this._invalidated = true;
             this.emit('failed', job, err);
+        });
+        this._queue.on('removed', (job) => {
+            this._invalidated = true;
         });
         queues.push(this);
     }
@@ -62,6 +79,7 @@ class Queue extends event.EventEmitter {
      * @returns {Promise<Object>} Promise returning the job;
      */
     addJob = (jobData, name = null) => {
+        this._invalidated = true;
         if (name) {
             return this.isReady().then(() => this._queue.add(name, jobData)).then(job => new Job(job));
         } else {
@@ -70,12 +88,13 @@ class Queue extends event.EventEmitter {
     }
 
     /**
-     * Add jobs to the que
+     * Add jobs to the queue
      * @param jobsData data for the process
      * @param {String } name of the processor
      * @returns {Promise<Object[]>} Promise returning the jobs
      */
     addJobs = (jobsData, name = null) => {
+        this._invalidated = true;
         return this.isReady().then(() => this._queue.addBulk(jobsData)).then(jobs => jobs.map(j => new Job(j)));
     }
 
@@ -83,14 +102,22 @@ class Queue extends event.EventEmitter {
      * Returns a list of jobs contained in the queue
      * @returns {Promise<Object[]>} Promise returning the jobs of the queue
      */
-    getJobs = () => this.isReady().then(() => this._queue.getJobs(Object.values(Queue.JOB_STATES))).then(
-        jobs => jobs.map((job) => new Job(job)));
+    getJobs = () => this.isReady().then(() =>{
+        if (!this._invalidated) return this._cachedJobs;
+        return this._queue.getJobs(Object.values(Queue.JOB_STATES)).then(
+            jobs => {
+                this._cachedJobs = jobs.map((job) => new Job(job));
+                this._invalidated = false;
+                return this._cachedJobs;
+            });
+    });
 
     /**
      * Remove all jobs of the queue
      * @returns {Promise<>} Promise resolved when the clean is done
      */
     clean = async () => {
+        this._invalidated = true;
         await Promise.all(Object.values(Queue._JOB_STATES_CLEAN).map(x => this._queue.clean(CLEAN_GRACE, x)))
 
         await this._queue.getActive().then(
@@ -123,30 +150,32 @@ class Queue extends event.EventEmitter {
 class Job {
     constructor(bullJob) {
         this._bullJob = bullJob;
-        this._state = null;
+        this._bullJob._cachedState = null
         this.data = bullJob.data;
-        this._res = null;
-        this._progress = null;
+        this._bullJob._cacheRes = null;
+        this._bullJob._cachedProgress = null;
     }
 
     async progress() {
-        if (this._progress !== null) return this._progress;
-        this._progress = await this._bullJob.progress();
-        return this._progress;
+        if (this._bullJob._cachedProgress !== null) return this._bullJob._cachedProgress;
+        this._bullJob._cachedProgress = await this._bullJob.progress();
+        return this._bullJob._cachedProgress;
     }
 
     async getState() {
-        if (this._state !== null) return this._state;
+        if (this._bullJob._cachedState !== null) {
+            return this._bullJob._cachedState;
+        }
         return await this._bullJob.getState().then(state => {
-            this._state = state;
+            this._bullJob._cachedState = state;
             return state;
         });
     }
 
     async finished() {
-        if (this._res !== null) return this._res;
+        if (this._bullJob._cacheRes !== null) return this._bullJob._cacheRes;
         return await this._bullJob.finished().then(res => {
-            this._res = res;
+            this._bullJob._cacheRes = res;
             return res;
         });
     }

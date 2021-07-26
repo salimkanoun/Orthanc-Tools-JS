@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import AetRootPanel from './AET/AetRootPanel'
 import PeerRootPanel from './Peers/PeerRootPanel'
 import JobsRootPanel from './Jobs/JobsRootPanel'
@@ -25,51 +25,49 @@ const AdminRootPanel = () => {
     function getComponentToDisplay() {
         switch (selectedOptionMenu) {
             case 'General':
-                return (<GeneralRoot/>)
+                return (<GeneralRoot />)
             case 'Aets':
-                return (<AetRootPanel/>)
+                return (<AetRootPanel />)
             case 'Peers':
-                return (<PeerRootPanel/>)
+                return (<PeerRootPanel />)
             case 'External Endpoints':
-                return (<EndpointsRootPanel/>)
+                return (<EndpointsRootPanel />)
             case 'Robots & Tasks':
-                return (<TaskRootPanel/>)
+                return (<TaskRootPanel />)
             case 'Jobs':
-                return (<JobsRootPanel/>)
+                return (<JobsRootPanel />)
             case 'CD Burner':
-                return (<BurnerOptions/>)
+                return (<BurnerOptions />)
             case 'Users':
-                return (<UserManagement/>)
+                return (<UserManagement />)
             case 'Labels':
-                return (<LabelRootPanel/>)
+                return (<LabelRootPanel />)
             default:
                 return ([])
         }
     }
 
     return (
-        <div className='jumbotron'>
-            <div className="row">
-                <div className='col-3'>
-                    <div className='nav flex-column nav-pills' role='tablist' aria-orientation='vertical'>
-                        <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='General'/>
-                        <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Users'/>
-                        <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Aets'/>
-                        <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers'/>
-                        <input className='btn btn-link text-left' type='button' onClick={clickHandler}
-                               value='External Endpoints'/>
-                        <input className='btn btn-link text-left' type='button' onClick={clickHandler}
-                               value='Robots & Tasks'/>
-                        <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Jobs'/>
-                        <input className='btn btn-link text-left' type='button' onClick={clickHandler}
-                               value='CD Burner'/>
-                        <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Labels'/>
+        <div className="row">
+            <div className='col-2'>
+                <div className='nav flex-column nav-pills' role='tablist' aria-orientation='vertical'>
+                    <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='General' />
+                    <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Users' />
+                    <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Aets' />
+                    <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Peers' />
+                    <input className='btn btn-link text-left' type='button' onClick={clickHandler}
+                        value='External Endpoints' />
+                    <input className='btn btn-link text-left' type='button' onClick={clickHandler}
+                        value='Robots & Tasks' />
+                    <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Jobs' />
+                    <input className='btn btn-link text-left' type='button' onClick={clickHandler}
+                        value='CD Burner' />
+                    <input className='btn btn-link text-left' type='button' onClick={clickHandler} value='Labels' />
 
-                    </div>
                 </div>
-                <div className='col-sm'>
-                    {getComponentToDisplay()}
-                </div>
+            </div>
+            <div className='col-sm'>
+                {getComponentToDisplay()}
             </div>
         </div>
     )

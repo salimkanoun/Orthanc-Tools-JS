@@ -223,7 +223,7 @@ class Import extends Component {
 
     render = () => {
         return (
-            <div className="jumbotron">
+            <div>
                 <h2 className="col card-title">Import Dicom Files</h2>
                 <div className="col mb-5">
                     <Dropzone onDragEnter={() => this.dragListener(true)} onDragLeave={() => this.dragListener(false)}

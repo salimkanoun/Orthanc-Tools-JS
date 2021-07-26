@@ -180,7 +180,7 @@ export default class CDBurner extends Component {
 
     render = () => {
         return (
-            <div className='jumbotron'>
+            <div>
                 <div className="row mb-3">
                     <div className="col-10">
                         <div className="row">

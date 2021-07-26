@@ -7,7 +7,7 @@ import {
   Route,
   withRouter,
 } from 'react-router-dom'
-import { Navbar, Nav } from 'react-bootstrap'
+import { Navbar, Nav, Row } from 'react-bootstrap'
 
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 
@@ -34,7 +34,7 @@ export default class NavBar extends Component {
   }
 
 
-  componentDidMount = async () => { 
+  componentDidMount = async () => {
     this.setState({
       navbar: document.documentElement.clientWidth < 992 ? 'responsive' : 'classique',
       currentTabSelect: 'content'
@@ -69,11 +69,10 @@ export default class NavBar extends Component {
   render = () => {
     return (
       <div className='app'>
-       <Navbar fixed='top' collapseOnSelect expand='lg' bg={this.state.navbar === 'responsive' ? 'primary' : this.state.navBackground} variant='dark' >
-          <Navbar.Toggle aria-controls='responsive_navbar' />
-          <Navbar.Collapse id='responsive_navbvar'>
-            {this.state.navbar === 'responsive' ? <div className='float-right'><ToolsPanel roles={this.props.roles} apercu={false} /></div> : null}
-            <Nav className='mr-auto'>
+        <Navbar fixed='top' collapseOnSelect expand='lg' bg={this.state.navbar === 'responsive' ? 'primary' : this.state.navBackground} variant='dark' >
+          <Navbar.Toggle />
+          <Navbar.Collapse >
+            <Nav className="me-auto">
               <Link className={this.getLinkClass('content')} onClick={this.selectTabHandler} name='content' to='/orthanc-content' hidden={!this.props.roles.content}>Orthanc Content</Link>
               <Link className={this.getLinkClass('import')} onClick={this.selectTabHandler} name='import' to='/import' hidden={!this.props.roles.import}>Import</Link>
               <Link className={this.getLinkClass('query')} onClick={this.selectTabHandler} name='query' to='/query' hidden={!this.props.roles.query}>Query</Link>
@@ -83,11 +82,11 @@ export default class NavBar extends Component {
               <Link className={this.getLinkClass('dicom-router')} onClick={this.selectTabHandler} name='dicom-router' to='/dicom-router' hidden={!this.props.roles.autorouting}>Dicom-Router </Link>
               <Link className={this.getLinkClass('administration')} onClick={this.selectTabHandler} name='administration' to='/administration' hidden={!this.props.roles.admin}>Administration</Link>
               <Link className={this.getLinkClass('log-out')} name='log-out' onClick={this.props.onLogout} to='/'>Log out</Link>
-            </Nav>
-            {this.state.navbar === 'classique' ? <ToolsPanel roles={this.props.roles} apercu={true} /> : null}
+              </Nav>
+              <ToolsPanel className="ms-auto" roles={this.props.roles} apercu={true} />
           </Navbar.Collapse>
         </Navbar>
-        <div className='content-panel'>
+        <div className='content-panel container-fluid p-5 mb-4 bg-body rounded-3'>
           {this.state.currentTabSelect === null ? <Redirect to='/orthanc-content' /> : null}
           <AnimatedSwitch />
         </div>
@@ -109,12 +108,12 @@ const AnimatedSwitch = withRouter(({ location }) => (
         <Route exact path='/administration' component={AdminRootPanel} />
         <Route exact path='/orthanc-content' component={ContentRootPanel} />
         <Route exact path='/robot/:id' render={(props) => <RobotView id={props.match.params.id} />} />
-        <Route exact path='/export' component={ExportPanel}  />
+        <Route exact path='/export' component={ExportPanel} />
         <Route exact path='/anonymize' component={AnonRootPanel} />
         <Route exact path='/cd-burner' component={CDBurner} />
-        <Route exact path='/mydicom' component={MyDicom}/>
+        <Route exact path='/mydicom' component={MyDicom} />
         <Route exact path='/delete' component={Delete} />
-        <Route exact path='/dicom-router' component={DicomRouterPanel}/>
+        <Route exact path='/dicom-router' component={DicomRouterPanel} />
       </Switch>
     </CSSTransition>
   </TransitionGroup>

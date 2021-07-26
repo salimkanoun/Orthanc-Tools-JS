@@ -139,7 +139,7 @@ export default class OrthancSettings extends Component {
                     <label htmlFor="password">Password : </label>
                     <input type='password' name="orthancPassword" className="form-control" value={this.state.orthancPassword} onChange={this.handleChange} />
                 </div>
-                <div className="form-group text-right">
+                <div className="mb-3 mt-3 text-end">
                     <input type='button' className='btn btn-primary mr-1' onClick={this.submitOrthancSettings} value='Update' />
                     <input type='button' className='btn btn-info mr-1' onClick={this.testConnexion} value='Check Connexion' />
 
