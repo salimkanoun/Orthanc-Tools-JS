@@ -116,12 +116,27 @@ class ContentRootPanel extends Component {
         return uniqueSelectedOrthancStudyId
     }
 
-    setSelectedStudies = (studies) => {
-        let selectedStudies = studies
-            .map(study => this.state.orthancContent
-                .filter(content => content.ID === study.StudyOrthancID))
-            .flat();
-        this.setState({selectedStudies})
+    setSelectedStudies = (resources) => {
+        let selectedIds = resources
+        let studiesOfSelectedPatients = []
+        //Add all studies of selected patient
+        selectedIds.selectedPatients.forEach(orthancPatientId => {
+            //loop the redux and add all studies that had one of the selected patient ID
+            let studyArray = this.state.orthancContent.filter(study => study.ParentPatient === orthancPatientId);
+            //Add to the global list of selected studies
+            studiesOfSelectedPatients.push(...studyArray)
+        })
+
+        //add selected level studies
+        selectedIds.selectedStudies.forEach(element => {
+            this.state.orthancContent.forEach(study => {
+                if (element === study.ID)
+                    studiesOfSelectedPatients.push(study)
+            });
+        });
+        //Get only unique study ids
+        let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
+        this.setState({selectedStudies: uniqueSelectedOrthancStudyId});
     }
 
     render = () => {

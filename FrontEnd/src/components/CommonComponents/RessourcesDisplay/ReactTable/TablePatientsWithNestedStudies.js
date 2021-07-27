@@ -95,16 +95,11 @@ class TablePatientsWithNestedStudiesWrapper extends Component {
         };
     }
 
+
     render() {
         return <TablePatientsWithNestedStudies {...this.props} setSelected={(s) => {
             this.selected = mergeDeep(this.selected, s);
-            if (this.props.setSelectedStudies) this.props.setSelectedStudies(this.selected.root
-                .map(patient => patient.studies)
-                .flat().concat(
-                    this.selected.sub
-                        .map(x => x.root)
-                        .flat()
-                        .map(x => x.StudyOrthancID)));
+            if (this.props.setSelectedStudies) this.props.setSelectedStudies(this.getSelectedRessources())
         }}/>
     }
 }
