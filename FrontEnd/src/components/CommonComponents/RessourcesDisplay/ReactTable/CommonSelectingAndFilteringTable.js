@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {useFilters, usePagination, useRowSelect, useTable} from 'react-table'
 import BTable from 'react-bootstrap/Table'
 import {InputFilter} from "./ColumnFilters";
@@ -17,7 +17,8 @@ function Table({
                    },
                    pagination = false,
                    onDataChange = () => {
-                   }
+                   },
+                   skipAutoRefresh = false,
                }) {
 
     const Checkbox = React.forwardRef(
@@ -44,6 +45,7 @@ function Table({
         []
     )
 
+    const [skipRefresh, setSkipRefreh] = useState(false);
 
     const {
         getTableProps,
@@ -63,7 +65,12 @@ function Table({
             columns,
             data: tableData,
             defaultColumn,
-            onDataChange,
+            onDataChange: (initialValue, value, row, column) => {
+                setSkipRefreh(true);
+                onDataChange(initialValue, value, row, column)
+            },
+            autoResetFilters: !(skipRefresh || skipAutoRefresh),
+            autoResetSelectedRows: !(skipRefresh || skipAutoRefresh),
             initialState: {
                 hiddenColumns: columns.map(column => {
                     if (column.hidden === true || (column.show !== undefined && !column.show)) return column.accessor || column.id;
@@ -111,6 +118,10 @@ function Table({
         if (onFilter instanceof Function) onFilter(rows);
         // eslint-disable-next-line
     }, [filters]);
+
+    React.useEffect(() => {
+        setSkipRefreh(false)
+    }, [tableData]);
 
     return (
         <>

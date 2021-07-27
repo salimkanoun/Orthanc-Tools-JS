@@ -30,7 +30,7 @@ import CommonSelectingAndFilteringTable
 
 
 function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelect}) {
-    const columns = [{
+    const columns = useMemo(() => [{
         accessor: 'id',
         show: false
     }, {
@@ -155,11 +155,13 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelec
         accessor: 'RetrievedOrthancId',
         show: false
     }
-    ]
+    ], [approved, refreshHandler, deleteQueryHandler, onSelect]);
     const data = useMemo(() => rows, [rows]);
     return <CommonSelectingAndFilteringTable tableData={data} columns={columns}
-                                             onSelect={value => onSelect(value.map(v => v.values))}/>
+                                             onSelect={value => onSelect(value.map(v => v.values))}
+                                             skipAutoRefresh={true}/>
 }
+
 
 /**
  * View page of a sigle Retrieve Robot content
@@ -178,7 +180,8 @@ class RobotView extends Component {
     }
 
     componentDidMount = () => {
-        this.startProgressMonitoring()
+        //this.startProgressMonitoring()
+        apis.task.getTask(this.props.id).then(this.refreshHandler)
     }
 
     componentWillUnmount = () => {

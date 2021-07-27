@@ -118,7 +118,8 @@ function Table({
                                             : ' ▲'
                                         : ''}
                                 </span>
-                                <div>{column.canFilter && !!column.Filter ? column.render('Filter') : null}</div>
+                                <div
+                                    onClick={(event) => event.stopPropagation()}>{column.canFilter && !!column.Filter ? column.render('Filter') : null}</div>
                             </th>
                         ))}
                     </tr>

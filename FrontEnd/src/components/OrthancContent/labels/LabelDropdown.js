@@ -105,20 +105,17 @@ export default class LabelDropdown extends Component {
             <DropdownButton className={this.props.className} title="Labels" onClick={this.handleOpenClick}>
                 <Dropdown.ItemText className={'label-dropdown-item'}>
                     <InputGroup>
-                        <InputGroup.Prepend>
-                            <InputGroup.Text>{'Search'}</InputGroup.Text>
-                        </InputGroup.Prepend>
+                        <InputGroup.Text>{'Search'}</InputGroup.Text>
                         <FormControl
                             placeholder="filter"
                             aria-label="search"
                             onChange={this.handleSearchInput}
                         />
-                        <InputGroup.Append>
-                            <InputGroup.Text>{filteredLabels.length}</InputGroup.Text>
-                        </InputGroup.Append>
+                        <InputGroup.Text>{filteredLabels.length}</InputGroup.Text>
                     </InputGroup>
                 </Dropdown.ItemText>
                 {filteredLabels.map(this.getLabelComponent)}
-            </DropdownButton>)
+            </DropdownButton>
+        )
     }
 }

@@ -1,11 +1,10 @@
-
-import React, { Component, Fragment } from 'react'
+import React, {Component, Fragment} from 'react'
 import Modal from 'react-bootstrap/Modal';
 
 import SelectRoles from './SelectRoles'
 
 import apis from '../../../services/apis';
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 
 export default class CreateUser extends Component {
 
@@ -17,7 +16,7 @@ export default class CreateUser extends Component {
         email: '',
         role: '',
         password: '',
-        superAdmin : false,
+        superAdmin: false,
         show: false
 
     }
@@ -64,11 +63,11 @@ export default class CreateUser extends Component {
             this.state.password === '') {
             toast.error('Please fill all required input')
         } else {
-            
-            try{
+
+            try {
                 await apis.User.createUser(this.state.username, this.state.firstname, this.state.lastname, this.state.password, this.state.email, this.state.role, this.state.superAdmin)
                 this.resetState()
-            }catch(error){
+            } catch (error) {
                 toast.error(error.statusText)
             }
 
@@ -78,7 +77,9 @@ export default class CreateUser extends Component {
     render() {
         return (
             <Fragment>
-                <button type='button' name='create' className='btn btn-primary float-right mb-3' onClick={() => this.setState({ show: true })}>New User</button>
+                <button type='button' name='create' className='btn btn-primary float-right mb-3'
+                        onClick={() => this.setState({show: true})}>New User
+                </button>
                 <Modal id='create' show={this.state.show} onHide={this.resetState} size='md'>
                     <Modal.Header closeButton>
                         <h2 className='card-title'>Create User</h2>
@@ -87,38 +88,44 @@ export default class CreateUser extends Component {
                         <div>
                             <fieldset>
                                 <label>Username*</label>
-                                <input className='form-control' type='text' placeholder='username' name='username' value={this.state.username} onChange={this.handleChange} required />
+                                <input className='form-control' type='text' placeholder='username' name='username'
+                                       value={this.state.username} onChange={this.handleChange} required/>
                             </fieldset>
 
                             <fieldset>
                                 <label>First Name</label>
-                                <input className='form-control' type='text' placeholder='First Name' name='firstname' value={this.state.firstname} onChange={this.handleChange} />
+                                <input className='form-control' type='text' placeholder='First Name' name='firstname'
+                                       value={this.state.firstname} onChange={this.handleChange}/>
                             </fieldset>
 
                             <fieldset>
                                 <label>Last Name</label>
-                                <input className='form-control' type='text' placeholder='Last Name' name='lastname' value={this.state.lastname} onChange={this.handleChange} />
+                                <input className='form-control' type='text' placeholder='Last Name' name='lastname'
+                                       value={this.state.lastname} onChange={this.handleChange}/>
                             </fieldset>
 
                             <fieldset>
                                 <label>Password*</label>
-                                <input className='form-control' type='password' placeholder='password' name='password' value={this.state.password} onChange={this.handleChange} required />
+                                <input className='form-control' type='password' placeholder='password' name='password'
+                                       value={this.state.password} onChange={this.handleChange} required/>
                             </fieldset>
 
                             <fieldset>
                                 <label>Mail</label>
-                                <input className='form-control' type='text' placeholder='example@example.com' name='email' value={this.state.email} onChange={this.handleChange} />
+                                <input className='form-control' type='text' placeholder='example@example.com'
+                                       name='email' value={this.state.email} onChange={this.handleChange}/>
                             </fieldset>
 
-                            
+
                             <fieldset>
                                 <label>Super Admin</label>
-                                <input className='form-control' type='checkbox' name='superAdmin' value={this.state.superAdmin} onChange={this.handleChange}/>
+                                <input className='form-check-input' type='checkbox' name='superAdmin'
+                                       value={this.state.superAdmin} onChange={this.handleChange}/>
                             </fieldset>
 
                             <fieldset>
                                 <label>Roles*</label>
-                                <SelectRoles onChange={this.onRolesChange} />
+                                <SelectRoles onChange={this.onRolesChange}/>
                             </fieldset>
                         </div>
                     </Modal.Body>

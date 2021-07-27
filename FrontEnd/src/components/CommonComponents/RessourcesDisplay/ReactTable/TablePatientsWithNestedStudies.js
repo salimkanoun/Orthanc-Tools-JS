@@ -56,7 +56,6 @@ function TablePatientsWithNestedStudies({
             hiddenRemoveRow,
             onDeletePatient,
             onModify,
-            openLabelModal,
             refresh);
         let studiesColumns = columnStudyFactory(hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, true, true, onDeleteStudy, refresh, false, true, openLabelModal
             )
