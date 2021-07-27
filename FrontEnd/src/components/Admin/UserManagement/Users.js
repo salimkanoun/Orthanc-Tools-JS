@@ -86,7 +86,7 @@ export default class Users extends Component {
     }
 
     changeHandler = (initialValue, value, row, column) => {
-        let users = this.state.users;
+        let users = [...this.state.users];
         users.find(user => user.username === row.username)[column] = value;
         this.setState({users});
     }

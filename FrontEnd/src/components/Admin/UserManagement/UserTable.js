@@ -69,5 +69,5 @@ export default function UserTable({
     ], [modify, setDelete]);
 
     const data = useMemo(() => users, [users]);
-    return <CommonTable tableData={data} columns={columns} onDataChange={onUserUpdate}/>
+    return <CommonTable tableData={data} columns={columns} onDataChange={onUserUpdate} pagination={true}/>
 }

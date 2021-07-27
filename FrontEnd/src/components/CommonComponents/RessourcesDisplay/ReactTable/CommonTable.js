@@ -1,13 +1,17 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {usePagination, useTable} from 'react-table'
 import BTable from 'react-bootstrap/Table'
 
 const LOWEST_PAGE_SIZE = 10;
 
+let prev = null;
+
 function Table({
                    columns, tableData, onDataChange, pagination, rowStyle = () => {
     }, rowEvents = {}
                }) {
+    const [skipPageReset, setSkipPageReset] = useState(false);
+
     const {
         getTableProps,
         getTableBodyProps,
@@ -23,7 +27,11 @@ function Table({
     } = useTable({
             columns,
             data: tableData,
-            onDataChange,
+            onDataChange: (oldValue, newValue, row, column) => {
+                setSkipPageReset(true);
+                onDataChange(oldValue, newValue, row, column)
+            },
+            autoResetPage: !skipPageReset,
             initialState: {
                 hiddenColumns: columns.map(column => {
                     if (column.hidden || (column.show !== undefined && !column.show)) return column.accessor || column.id;
@@ -35,6 +43,11 @@ function Table({
         usePagination
     )
 
+
+    React.useEffect(() => {
+        setSkipPageReset(false)
+    }, [tableData])
+    prev = tableData
     // Render the UI for your table
     return (
         <>

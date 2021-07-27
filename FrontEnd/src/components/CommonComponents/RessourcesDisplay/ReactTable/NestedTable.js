@@ -33,8 +33,8 @@ function SubRow({span, columns, data, setSelected, index, hiddenSelect, rowEvent
 
 function LazySubRow({span, columns, getter, setSelected, index, hiddenSelect, rowEvent, rowStyle}) {
     const [data, setData] = useState(null);
-    useEffect(async () => {
-        setData(await getter())
+    useEffect(() => {
+        getter().then(setData);
     }, []);
     return (data != null ? <tr>
         <td className={"subtable-row"} colSpan={span}>

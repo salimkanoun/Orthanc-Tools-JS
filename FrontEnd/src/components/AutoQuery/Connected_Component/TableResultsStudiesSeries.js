@@ -42,7 +42,7 @@ function TableResultsStudiesSeries({
         addSeriesDetails(seriesAnswers, studyUID)
     }
 
-    useEffect(async () => {
+    useEffect(() => {
         //List studies for each series details are missing
         let emptyResultArray = []
         let studyUIDToQuery = Object.keys(results)
@@ -59,15 +59,11 @@ function TableResultsStudiesSeries({
             //Load All series details of studies answers
             for (let studyResults of emptyResultArray) {
                 i++
-                try {
-                    await getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET)
+                getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET).then(() => {
                     toast.update(id, {
                         render: 'Queried series ' + i + '/' + (emptyResultArray.length)
                     });
-                } catch (error) {
-                    console.error(error)
-                }
-
+                }).catch(console.error);
             }
         }
     }, [])

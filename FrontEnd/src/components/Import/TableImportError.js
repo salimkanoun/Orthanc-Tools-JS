@@ -21,7 +21,7 @@ export default function TableImportError({data, ...props}) {
     const rows = useMemo(() => data, [data]);
 
     return (
-        <CommonTable columns={columns} tableData={rows} {...this.props}/>
+        <CommonTable columns={columns} tableData={rows} {...props}/>
     )
 
 
