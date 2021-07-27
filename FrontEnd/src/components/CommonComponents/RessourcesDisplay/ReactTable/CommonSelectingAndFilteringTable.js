@@ -17,7 +17,8 @@ function Table({
                    },
                    pagination = false,
                    onDataChange = () => {
-                   }
+                   },
+                   skipAutoRefresh = false,
                }) {
 
     const Checkbox = React.forwardRef(
@@ -68,8 +69,8 @@ function Table({
                 setSkipRefreh(true);
                 onDataChange(initialValue, value, row, column)
             },
-            autoResetFilters: !skipRefresh,
-            autoResetSelectedRows: !skipRefresh,
+            autoResetFilters: !(skipRefresh || skipAutoRefresh),
+            autoResetSelectedRows: !(skipRefresh || skipAutoRefresh),
             initialState: {
                 hiddenColumns: columns.map(column => {
                     if (column.hidden === true || (column.show !== undefined && !column.show)) return column.accessor || column.id;
