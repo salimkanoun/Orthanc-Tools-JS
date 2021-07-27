@@ -10,7 +10,7 @@ class LabelRootPanel extends Component {
         roleManagement: null,
         labels: [],
         search: '',
-        createLabel:''
+        createLabel: ''
     }
 
     componentDidMount() {
@@ -60,27 +60,19 @@ class LabelRootPanel extends Component {
         return (<>
             <h2>Labels</h2>
             <InputGroup>
-                <InputGroup.Prepend>
-                    <InputGroup.Text>Search</InputGroup.Text>
-                </InputGroup.Prepend>
+                <InputGroup.Text>Search</InputGroup.Text>
                 <FormControl placeholder={"label"} type={'text'} onChange={this.handleSearch}
                              value={this.state.search}/>
-                <InputGroup.Append>
-                    <InputGroup.Text>{filteredLabel.length}</InputGroup.Text>
-                </InputGroup.Append>
+                <InputGroup.Text>{filteredLabel.length}</InputGroup.Text>
             </InputGroup>
             <LabelsTable labels={filteredLabel} handlerManageRole={this.handleManageRole}
                          handlerDelete={this.handlerDelete}/>
             <Form onSubmitCapture={this.handleCreateSubmit}>
                 <InputGroup>
-                    <InputGroup.Prepend>
-                        <InputGroup.Text>New</InputGroup.Text>
-                    </InputGroup.Prepend>
+                    <InputGroup.Text>New</InputGroup.Text>
                     <FormControl placeholder={"label"} type={'text'} onChange={this.handleCreateInput}
                                  value={this.state.createLabel}/>
-                    <InputGroup.Append>
-                        <Button variant={"outline-primary"} type={"submit"}> + </Button>
-                    </InputGroup.Append>
+                    <Button variant={"outline-primary"} type={"submit"}> + </Button>
                 </InputGroup>
             </Form>
             <RoleManagementModal label={this.state.roleManagement} handlerManageRole={this.handleManageRole}/>
