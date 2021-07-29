@@ -1,6 +1,6 @@
 import CommonTable from "./CommonTable";
 import {useMemo} from "react";
-import {columnSeriesFactory} from "./ColumnFactories";
+import {commonColumns, seriesColumns} from "./ColumnFactories";
 
 function TableSeries({
                          series,
@@ -12,7 +12,15 @@ function TableSeries({
                          rowStyle,
                          pagination
                      }) {
-    const columns = useMemo(() => columnSeriesFactory(hiddenActionBouton, hiddenRemoveRow, onDelete, refresh), [
+    const columns = useMemo(() => [
+        commonColumns.RAW,
+        seriesColumns.ORTHANC_ID,
+        seriesColumns.DESCRIPTION,
+        seriesColumns.MODALITY,
+        seriesColumns.SERIES_NUMBER,
+        ...(!hiddenActionBouton ? [seriesColumns.ACTION(onDelete, refresh)] : []),
+        ...(!hiddenRemoveRow ? [seriesColumns.REMOVE(onDelete)] : [])
+    ], [
         hiddenActionBouton, hiddenRemoveRow, onDelete, refresh]);
     const data = useMemo(() => series.map(x => ({
         raw: {...x},

@@ -35,7 +35,7 @@ function LazySubRow({span, columns, getter, setSelected, index, hiddenSelect, ro
     const [data, setData] = useState(null);
     useEffect(() => {
         getter().then(setData);
-    }, []);
+    }, [getter]);
     return (data != null ? <tr>
         <td className={"subtable-row"} colSpan={span}>
             <NestedTable
@@ -75,8 +75,10 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
             autoResetExpanded: false,
             initialState: {
                 hiddenColumns: columns.map(column => {
-                    if (column.show === false || column.table instanceof Array) return column.accessor || column.id;
-                }),
+                    if (column.show === false || column.table instanceof Array)
+                        return column.accessor || column.id;
+                    return null;
+                }).filter(x => x != null),
                 pageIndex: 0,
                 pageSize: 10
             },

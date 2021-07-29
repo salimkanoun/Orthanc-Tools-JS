@@ -1,6 +1,6 @@
 import CommonTable from "./CommonTable";
 import {useMemo} from "react";
-import {columnPatientsFactory} from "./ColumnFactories";
+import {commonColumns, patientColumns} from "./ColumnFactories";
 
 function TablePatients({
                            patients,
@@ -17,15 +17,18 @@ function TablePatients({
                            rowStyle,
                            pagination
                        }) {
-    const columns = useMemo(() => columnPatientsFactory(
-        hiddenActionBouton,
-        hiddenRemoveRow,
-        onDelete,
-        onModify,
-        refresh,
-        showEditable,
-        textNameColumn,
-        textIDColumn), [
+    const columns = useMemo(() => [
+        commonColumns.RAW,
+        patientColumns.ORTHANC_ID,
+        patientColumns.NAME(textNameColumn),
+        patientColumns.ID(textIDColumn),
+        ...(showEditable ? [
+            patientColumns.NEW_NAME,
+            patientColumns.NEW_ID
+        ] : []),
+        ...(!hiddenActionBouton ? [patientColumns.ACTION(onDelete, onModify, refresh)] : []),
+        ...(!hiddenRemoveRow ? [patientColumns.REMOVE(onDelete)] : [])
+    ], [
         hiddenActionBouton,
         hiddenRemoveRow,
         onDelete,

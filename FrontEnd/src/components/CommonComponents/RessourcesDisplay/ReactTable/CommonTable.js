@@ -4,8 +4,6 @@ import BTable from 'react-bootstrap/Table'
 
 const LOWEST_PAGE_SIZE = 10;
 
-let prev = null;
-
 function Table({
                    columns, tableData, onDataChange, pagination, rowStyle = () => {
     }, rowEvents = {}
@@ -47,7 +45,6 @@ function Table({
     React.useEffect(() => {
         setSkipPageReset(false)
     }, [tableData])
-    prev = tableData
     // Render the UI for your table
     return (
         <>

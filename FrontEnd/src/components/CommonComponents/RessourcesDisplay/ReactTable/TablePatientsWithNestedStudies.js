@@ -1,7 +1,7 @@
 import React, {Component, useMemo} from "react";
 import NestedTable from "./NestedTable";
 import {studyArrayToPatientArray} from "../../../../tools/processResponse";
-import {columnPatientsFactory, columnStudyFactory} from "./ColumnFactories";
+import {commonColumns, patientColumns, studyColumns} from "./ColumnFactories";
 
 
 function isObject(item) {
@@ -50,29 +50,36 @@ function TablePatientsWithNestedStudies({
         patient.raw = {...patient};
         return patient;
     }), [studies]);
-    const columns = useMemo(() => {
-        let patientsColumns = columnPatientsFactory(
-            hiddenActionBouton,
-            hiddenRemoveRow,
-            onDeletePatient,
-            onModify,
-            refresh);
-        let studiesColumns = columnStudyFactory(hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, true, true, onDeleteStudy, refresh, false, true, openLabelModal
-            )
-        ;
-        patientsColumns.push({
+    const columns = useMemo(() => [
+        commonColumns.RAW,
+        patientColumns.ORTHANC_ID,
+        patientColumns.ID(),
+        patientColumns.NAME(),
+        ...(!hiddenActionBouton ? [patientColumns.ACTION(onDeletePatient, onModify, refresh)] : []),
+        ...(!hiddenRemoveRow ? [patientColumns.REMOVE(onDeletePatient)] : []),
+        {
             accessor: "studies",
-            table: studiesColumns
-        });
-        return patientsColumns;
-    }, [
+            table: [
+                commonColumns.RAW,
+                studyColumns.ORTHANC_ID,
+                studyColumns.INSTANCE_UID,
+                studyColumns.ANONYMIZED_FROM,
+                studyColumns.DATE,
+                studyColumns.DESCRIPTION,
+                ...(!hiddenAccessionNumber ? [studyColumns.ACCESSION_NUMBER] : []),
+                ...(!hiddenActionBouton ? [studyColumns.ACTION(onDeleteStudy, refresh, openLabelModal)] : []),
+                ...(!hiddenRemoveRow ? [studyColumns.REMOVE(onDeleteStudy)] : []),
+            ]
+        }
+    ], [
         onDeletePatient,
         onDeleteStudy,
         onModify,
         refresh,
         hiddenAccessionNumber,
         hiddenActionBouton,
-        hiddenRemoveRow]);
+        hiddenRemoveRow,
+        openLabelModal]);
 
     return <NestedTable columns={columns} data={data} setSelected={setSelected} hiddenSelect={hiddenSelect}
                         rowStyle={rowStyle}
@@ -95,16 +102,11 @@ class TablePatientsWithNestedStudiesWrapper extends Component {
         };
     }
 
+
     render() {
         return <TablePatientsWithNestedStudies {...this.props} setSelected={(s) => {
             this.selected = mergeDeep(this.selected, s);
-            if (this.props.setSelectedStudies) this.props.setSelectedStudies(this.selected.root
-                .map(patient => patient.studies)
-                .flat().concat(
-                    this.selected.sub
-                        .map(x => x.root)
-                        .flat()
-                        .map(x => x.StudyOrthancID)));
+            if (this.props.setSelectedStudies) this.props.setSelectedStudies(this.getSelectedRessources())
         }}/>
     }
 }

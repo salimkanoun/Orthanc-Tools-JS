@@ -2,7 +2,12 @@ import React, {useMemo, useState} from 'react';
 import {connect} from 'react-redux'
 
 import {addStudiesFiltered, emptyResultsTable, removeResult} from '../../../actions/TableResult'
-import {columnStudyFactory} from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
+import {
+    commonColumns,
+    patientColumns,
+    seriesColumns,
+    studyColumns
+} from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
 import CommonSelectingSortingFilteringTable
     from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonSelectingSortingFilteringTable";
 import ExportCSVButton from '../../CommonComponents/RessourcesDisplay/ExportCSVButton'
@@ -14,17 +19,18 @@ import ExportCSVButton from '../../CommonComponents/RessourcesDisplay/ExportCSVB
 function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesFiltered}) {
     const columns = useMemo(() => {
         return [
-            ...columnStudyFactory(true, true, false, false, false, null, null, false, true, null, true), {
-                accessor: 'NumberOfStudyRelatedSeries',
-                Header: 'Series'
-            }, {
-                accessor: 'NumberOfSeriesRelatedInstances',
-                Header: 'Instances'
-            },
-            {
-                accessor: 'OriginAET',
-                Header: 'AET'
-            }
+            commonColumns.RAW,
+            studyColumns.ORTHANC_ID,
+            studyColumns.INSTANCE_UID,
+            studyColumns.ANONYMIZED_FROM,
+            patientColumns.NAME(),
+            patientColumns.ID(),
+            studyColumns.DATE,
+            studyColumns.DESCRIPTION,
+            studyColumns.REQUESTED_PROCEDURE,
+            studyColumns.NB_STUDY_SERIES,
+            seriesColumns.NB_SERIES_INSTANCES,
+            commonColumns.AET,
         ]
     }, []);
     const data = useMemo(() => Object.values(results).map(result => ({
@@ -39,7 +45,7 @@ function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesF
                 removeResult(selected.map(x => x.values.StudyInstanceUID))
             }}/>
             <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={emptyResultsTable}/>
-            <ExportCSVButton className='m-2' data={selected.map(({values: {raw, ...values}}) => raw)}/>
+            <ExportCSVButton className='m-2' data={selected.map(({values: {raw}}) => raw)}/>
             <div className="mt-5">
                 <CommonSelectingSortingFilteringTable tableData={data} columns={columns} onSelect={setSelected}
                                                       onFilter={filtered => {

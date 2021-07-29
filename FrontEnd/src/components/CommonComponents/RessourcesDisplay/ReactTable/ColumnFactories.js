@@ -2,153 +2,160 @@ import ActionBouton from "../ActionBouton";
 import React from "react";
 import {InputCell as EditableCell} from "./EditableCells";
 import {dateFilter, DateFilter, invertableDataFilter, InvertableDataFilter} from "./ColumnFilters";
+import RetrieveButton from "../../../Query/Components/RetrieveButton";
+import apis from "../../../../services/apis";
+import {toast} from "react-toastify";
 
-const columnSeriesFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, refresh) => [
-    {
-        accessor: 'SeriesOrthancID',
-        show: false,
-    }, {
+const commonColumns = {
+    RAW: {
         accessor: 'raw',
-        show: false
-    }, {
+        Header: 'RAW',
+        show: false,
+    },
+    AET: {
+        accessor: 'OriginAET',
+        Header: 'AET'
+    },
+}
+
+const seriesColumns = {
+    ORTHANC_ID: {
+        accessor: 'SeriesOrthancID',
+        Header: 'SeriesOrthancID',
+        show: false,
+    },
+    DESCRIPTION: {
         accessor: 'SeriesDescription',
         Header: 'Series Description',
         Filter: InvertableDataFilter('Series Description'),
         filter: invertableDataFilter,
         sort: true,
         style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    }, {
+    },
+    MODALITY: {
         accessor: 'Modality',
         Header: 'Modality',
         Filter: InvertableDataFilter('Modality'),
         filter: invertableDataFilter,
         sort: true
-    }, {
+    },
+    SERIES_NUMBER: {
         accessor: 'SeriesNumber',
         Header: 'Series Number',
         Filter: InvertableDataFilter('Series Number'),
         filter: invertableDataFilter,
         sort: true
-    }, {
+    },
+    ACTION: (onDelete, refresh) => ({
         id: 'Action',
         Header: 'Action',
-        show: !hiddenActionBouton,
         Cell: ({row}) => <ActionBouton level='series' orthancID={row.values.SeriesOrthancID}
                                        parentID={row.values.StudyID} onDelete={onDelete}
                                        row={row.values.raw} refresh={refresh}
                                        hiddenMetadata={false} hiddenCreateDicom={true}/>
-    }, {
+    }),
+    REMOVE: (onDelete) => ({
         id: 'Remove',
         Header: 'Remove',
-        show: !hiddenRemoveRow,
         Cell: ({row}) => {
             return <button type="button" className="btn btn-danger" onClick={(e) => {
+                apis.content.deleteSeries(row.values.SeriesOrthancID)
+                    .then(() => {
+                        toast.success("Series " + row.values.SeriesOrthancID + " has been deleted");
+                        onDelete(row.values.SeriesOrthancID);
+                    })
+                    .catch(err => {
+                        toast.error("Deletion error")
+                    })
                 e.stopPropagation();
-                onDelete(row.values.SeriesOrthancID)
             }}>Remove</button>
         }
+    }),
+    NB_SERIES_INSTANCES: {
+        accessor: 'NumberOfSeriesRelatedInstances',
+        Header: 'Instances'
+    },
+    RETRIEVE: {
+        id: 'Retrieve',
+        Header: 'Retrieve',
+        Cell: ({row}) => {
+            return (<RetrieveButton queryAet={row.values.raw.OriginAET}
+                                    studyInstanceUID={row.values.raw.StudyInstanceUID}
+                                    seriesInstanceUID={row.values.raw.SeriesInstanceUID}
+                                    level={RetrieveButton.Series}/>)
+        }
     }
-]
+}
 
-const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, hiddenName, hiddenID, onDelete, refresh, showEditable = false, hiddenAnonymized = true, openLabelModal = undefined, showModalities = false) => [
-    {
+const studyColumns = {
+    ORTHANC_ID: {
         accessor: 'StudyOrthancID',
         Header: 'Study Orthanc ID',
         show: false
-    }, {
-        accessor: 'raw',
-        show: false
-    }, {
+    },
+    INSTANCE_UID: {
         accessor: 'StudyInstanceUID',
         Header: 'StudyInstanceUID',
         show: false
-    }, {
+    },
+    ANONYMIZED_FROM: {
         accessor: 'AnonymizedFrom',
         Header: 'AnonymizedFrom',
         show: false
-    }, {
-        accessor: 'PatientName',
-        Header: 'Patient Name',
-        sort: true,
-        Filter: InvertableDataFilter('Patient Name'),
-        filter: invertableDataFilter,
-        show: !hiddenName,
-    }, {
-        accessor: 'PatientID',
-        Header: 'Patient ID',
-        Filter: InvertableDataFilter('Patient Name'),
-        filter: invertableDataFilter,
-        sort: true,
-        show: !hiddenID,
-    }, {
+    },
+    DATE: {
         accessor: 'StudyDate',
         Header: 'Acquisition Date',
         Filter: DateFilter('Acquisition Date'),
         filter: dateFilter,
         sort: true,
-    }, {
+    },
+    DESCRIPTION: {
         accessor: 'StudyDescription',
         Header: 'Description',
         Filter: InvertableDataFilter('Description'),
         filter: invertableDataFilter,
         sort: true,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    }, {
-        accessor: 'newStudyDescription',
-        Header: 'New Description',
-        show: showEditable,
-        Cell: EditableCell,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    }, {
+        style: {
+            whiteSpace: 'normal',
+            wordWrap: 'break-word'
+        }
+    },
+    REQUESTED_PROCEDURE: {
         accessor: 'RequestedProcedureDescription',
         Header: 'Requested Procedure Description',
         Filter: InvertableDataFilter('Procedure Description'),
         filter: invertableDataFilter,
         sort: true
-    }, {
+    },
+    ACCESSION_NUMBER: {
         accessor: 'AccessionNumber',
         Header: 'Accession Number',
         Filter: InvertableDataFilter('Procedure Description'),
         filter: invertableDataFilter,
         sort: true,
-        show: !hiddenAccessionNumber,
         editable: false
-    }, {
-        accessor: 'newAccessionNumber',
-        Header: 'New Accession Number',
-        show: showEditable,
-        Cell: EditableCell,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    }, {
+    },
+    MODALITIES: {
         accessor: 'ModalitiesInStudy',
         Header: 'Modalities',
         Filter: InvertableDataFilter('Modalities'),
         filter: invertableDataFilter,
-        show: showModalities,
         style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    }, {
-        id: 'Action',
-        Header: 'Action',
-        show: !hiddenActionBouton,
-        Cell: (({row}) =>
-                (<>
-                    <ActionBouton level='studies' orthancID={row.values.StudyOrthancID}
-                                  StudyInstanceUID={row.values.StudyInstanceUID} onDelete={onDelete}
-                                  row={row.values.raw}
-                                  refresh={refresh} openLabelModal={openLabelModal}/>
-                </>)
-        ),
-    }, {
-        id: 'Remove',
-        Header: 'Remove',
-        show: !hiddenRemoveRow,
-        Cell: ({row}) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {
-                e.stopPropagation();
-                onDelete(row.values.StudyOrthancID)
-            }}>Remove</button>
-        },
-    }, {
+    },
+    NEW_DESCRIPTION: {
+        accessor: 'newStudyDescription',
+        Header: 'New Description',
+        Cell: EditableCell,
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+    },
+    NEW_ACCESSION_NUMBER: {
+        accessor: 'newAccessionNumber',
+        Header: 'New Accession Number',
+        Cell: EditableCell,
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+    },
+    ANONYMIZED: {
         accessor: 'Anonymized',
         Header: 'Anonymized ?',
         style: (row) => {
@@ -158,59 +165,117 @@ const columnStudyFactory = (hiddenActionBouton, hiddenRemoveRow, hiddenAccession
         Cell: ({row}) => {
             return row.values.AnonymizedFrom ? 'Yes' : 'No'
         },
-        show: !hiddenAnonymized,
-    }]
-
-const columnPatientsFactory = (hiddenActionBouton, hiddenRemoveRow, onDelete, onModify, refresh, showEditable = false,
-                               textNameColumn = 'Patient Name', textIDColumn = 'Patient ID') => [
-    {
-        accessor: 'PatientOrthancID',
-        show: false
-    }, {
-        accessor: 'raw',
-        show: false
-    }, {
-        accessor: 'PatientName',
-        Header: textNameColumn,
-        sort: true,
-        editable: false,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    }, {
-        accessor: 'PatientID',
-        Header: textIDColumn,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    }, {
-        accessor: 'newPatientName',
-        Header: 'New Name',
-        show: showEditable,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
-        Cell: EditableCell
-    }, {
-        accessor: 'newPatientID',
-        Header: 'New ID',
-        show: showEditable,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
-        Cell: EditableCell
-    }, {
+    },
+    ACTION: (onDelete, refresh, openLabelModal) => ({
         id: 'Action',
         Header: 'Action',
-        show: !hiddenActionBouton,
+        Cell: (({row}) =>
+                (<>
+                    <ActionBouton level='studies' orthancID={row.values.StudyOrthancID}
+                                  StudyInstanceUID={row.values.StudyInstanceUID} onDelete={onDelete}
+                                  row={row.values.raw}
+                                  refresh={refresh} openLabelModal={openLabelModal}/>
+                </>)
+        ),
+    }),
+    REMOVE: (onDelete) => ({
+        id: 'Remove',
+        Header: 'Remove',
+        Cell: ({row}) => {
+            return <button type="button" className="btn btn-danger" onClick={(e) => {
+                apis.content.deleteStudies(row.values.StudyOrthancID)
+                    .then(() => {
+                        toast.success("Study " + row.values.StudyOrthancID + " has been deleted");
+                        onDelete(row.values.StudyOrthancID);
+                    })
+                    .catch(err => {
+                        toast.error("Deletion error")
+                    })
+                e.stopPropagation();
+            }}>Remove</button>
+        },
+    }),
+    NB_STUDY_SERIES: {
+        accessor: 'NumberOfStudyRelatedSeries',
+        Header: 'Series'
+    },
+    RETRIEVE: {
+        id: 'Retrieve',
+        Header: 'Retrieve',
+        Cell: ({row}) => {
+            return (<RetrieveButton queryAet={row.values.OriginAET} studyInstanceUID={row.values.StudyInstanceUID}
+                                    level={RetrieveButton.Study}/>)
+        }
+    },
+}
+
+const patientColumns = {
+    ORTHANC_ID: {
+        accessor: 'PatientOrthancID',
+        Header: 'PatientOrthancID',
+        show: false
+    },
+    NAME: (textNameColumn = 'Patient Name') => ({
+        accessor: 'PatientName',
+        Header: textNameColumn,
+        Filter: InvertableDataFilter('Patient Name'),
+        filter: invertableDataFilter,
+        sort: true,
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+
+    }),
+    ID: (textIDColumn = 'Patient ID') => ({
+        accessor: 'PatientID',
+        Header: textIDColumn,
+        Filter: InvertableDataFilter('Patient ID'),
+        filter: invertableDataFilter,
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+    }),
+    NEW_NAME: {
+        accessor: 'newPatientName',
+        Header: 'New Name',
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
+        Cell: EditableCell
+    },
+    NEW_ID: {
+        accessor: 'newPatientID',
+        Header: 'New ID',
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
+        Cell: EditableCell
+    },
+    ACTION: (onDelete, onModify, refresh) => ({
+        id: 'Action',
+        Header: 'Action',
         Cell: ({row}) => {
             return <ActionBouton level='patients' orthancID={row.values.PatientOrthancID} onDelete={onDelete}
                                  onModify={onModify} row={row.values.raw} refresh={refresh}/>
         }
-    }, {
+    }),
+    REMOVE: (onDelete) => ({
         id: 'Remove',
         Header: 'Remove',
-        show: !hiddenRemoveRow,
         Cell: ({row}) => {
             return <button type="button" className="btn btn-danger" onClick={(e) => {
+                apis.content.deletePatient(row.values.PatientOrthancID)
+                    .then(() => {
+                        toast.success("Patient " + row.values.PatientOrthancID + " has been deleted");
+                        onDelete(row.values.PatientOrthancID);
+                    })
+                    .catch(err => {
+                        toast.error("Deletion error")
+                    })
                 e.stopPropagation();
-                onDelete(row.values.PatientOrthancID)
             }}>Remove</button>
         },
         editable: false
-    }]
+    })
+}
 
 
-export {columnStudyFactory, columnPatientsFactory, columnSeriesFactory, EditableCell}
+export {
+    EditableCell,
+    patientColumns,
+    studyColumns,
+    seriesColumns,
+    commonColumns
+}

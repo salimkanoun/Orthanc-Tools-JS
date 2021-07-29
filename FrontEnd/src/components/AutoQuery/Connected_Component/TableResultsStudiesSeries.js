@@ -5,8 +5,10 @@ import {toast} from 'react-toastify'
 import {addSeriesDetails, addSeriesFiltered, emptyResultsTable, removeSeriesResult} from '../../../actions/TableResult'
 import apis from '../../../services/apis';
 import {
-    columnSeriesFactory,
-    columnStudyFactory
+    commonColumns,
+    patientColumns,
+    seriesColumns,
+    studyColumns
 } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
 import CommonSelectingSortingFilteringTable
     from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonSelectingSortingFilteringTable";
@@ -42,6 +44,7 @@ function TableResultsStudiesSeries({
         addSeriesDetails(seriesAnswers, studyUID)
     }
 
+
     useEffect(() => {
         //List studies for each series details are missing
         let emptyResultArray = []
@@ -55,45 +58,31 @@ function TableResultsStudiesSeries({
         })
         if (emptyResultArray.length > 0) {
             const id = toast.info('Starting Series Fetching');
-            let i = 0
-            //Load All series details of studies answers
-            for (let studyResults of emptyResultArray) {
-                i++
+            emptyResultArray.forEach((studyResults, i) => {
                 getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET).then(() => {
                     toast.update(id, {
-                        render: 'Queried series ' + i + '/' + (emptyResultArray.length)
+                        render: 'Queried series ' + i + '/' + emptyResultArray.length
                     });
                 }).catch(console.error);
-            }
+            })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const columns = useMemo(() => {
-        let c = [
-            ...columnStudyFactory(true, true, false, false, false, null, null),
-            ...columnSeriesFactory(true, true, null, null),
-            {
-                accessor: 'NumberOfSeriesRelatedInstances',
-                Header: 'Instances'
-            },
-            {
-                accessor: 'OriginalAET',
-                Header: 'AET'
-            }
-        ];
-
-        let accessors = [];
-        let withoutDuplicate = [];
-
-        c.forEach(column => {
-            if (!!column.accessor && !accessors.includes(column.accessor)) {
-                withoutDuplicate.push(column);
-                accessors.push(column.accessor);
-            }
-        })
-
-        return withoutDuplicate;
-    });
+    const columns = useMemo(() => [
+        commonColumns.RAW,
+        studyColumns.ORTHANC_ID,
+        studyColumns.INSTANCE_UID,
+        patientColumns.NAME(),
+        patientColumns.ID(),
+        studyColumns.DATE,
+        studyColumns.DESCRIPTION,
+        studyColumns.ACCESSION_NUMBER,
+        seriesColumns.SERIES_NUMBER,
+        seriesColumns.MODALITY,
+        seriesColumns.NB_SERIES_INSTANCES,
+        commonColumns.AET,
+    ], []);
 
     const data = useMemo(() => {
         let seriesLines = []
