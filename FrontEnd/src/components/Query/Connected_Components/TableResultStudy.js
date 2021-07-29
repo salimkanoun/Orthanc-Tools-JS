@@ -1,9 +1,10 @@
 import React, {useMemo} from 'react';
 import {connect} from 'react-redux'
-import RetrieveButton from '../Components/RetrieveButton';
 import {
-    columnSeriesFactory,
-    columnStudyFactory
+    commonColumns,
+    patientColumns,
+    seriesColumns,
+    studyColumns
 } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
 import NestedTable from "../../CommonComponents/RessourcesDisplay/ReactTable/NestedTable";
 import apis from "../../../services/apis";
@@ -13,44 +14,30 @@ import {addManualQuerySeriesDetails} from "../../../actions/ManualQuery";
 function TableResult({results, style, addManualQuerySeriesDetails}) {
     style = style || {};
     const columns = useMemo(() => [
-        ...columnStudyFactory(true, true, true, false, false, null, null, false, true, undefined, true),
-        {
-            accessor: 'NumberOfStudyRelatedSeries',
-            Header: 'Series'
-        }, {
-            accessor: 'NumberOfSeriesRelatedInstances',
-            Header: 'Instances'
-        }, {
-            accessor: 'OriginAET',
-            show: false
-        }, {
-            id: 'Retrieve',
-            Header: 'Retrieve',
-            Cell: ({row}) => {
-                return (<RetrieveButton queryAet={row.values.OriginAET} studyInstanceUID={row.values.StudyInstanceUID}
-                                        level={RetrieveButton.Study}/>)
-            }
-        }, {
+        commonColumns.RAW,
+        studyColumns.ORTHANC_ID,
+        studyColumns.INSTANCE_UID,
+        patientColumns.NAME(),
+        patientColumns.ID(),
+        studyColumns.DATE,
+        studyColumns.DESCRIPTION,
+        studyColumns.REQUESTED_PROCEDURE,
+        studyColumns.NB_STUDY_SERIES,
+        seriesColumns.NB_SERIES_INSTANCES,
+        commonColumns.AET,
+        studyColumns.RETRIEVE
+        , {
             accessor: 'seriesDetails',
             lazy: true,
             table: [
-                ...columnSeriesFactory(true, true, null, null),
-                {
-                    accessor: 'NumberOfSeriesRelatedInstances',
-                    Header: 'Instances'
-                }, {
-                    accessor: 'OriginAET',
-                    show: false
-                }, {
-                    id: 'Retrieve',
-                    Header: 'Retrieve',
-                    Cell: ({row}) => {
-                        return (<RetrieveButton queryAet={row.values.raw.OriginAET}
-                                                studyInstanceUID={row.values.raw.StudyInstanceUID}
-                                                seriesInstanceUID={row.values.raw.SeriesInstanceUID}
-                                                level={RetrieveButton.Series}/>)
-                    }
-                }
+                commonColumns.RAW,
+                seriesColumns.ORTHANC_ID,
+                seriesColumns.DESCRIPTION,
+                seriesColumns.MODALITY,
+                seriesColumns.SERIES_NUMBER,
+                seriesColumns.NB_SERIES_INSTANCES,
+                commonColumns.AET,
+                seriesColumns.RETRIEVE
             ]
         }
     ], [])
@@ -73,7 +60,7 @@ function TableResult({results, style, addManualQuerySeriesDetails}) {
 
         const seriesDetails = [...result.seriesDetails];
         if (seriesDetails.length !== 0) {
-            res.seriesDetails = () => {
+            res.seriesDetails = async () => {
                 return seriesDetails.map(serie => ({
                     ...serie,
                     raw: serie

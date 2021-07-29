@@ -74,7 +74,7 @@ export default function RobotTable({
                     </div>
                 )
             }
-        }], [validationRobotHandler, deleteJobHandler, refreshHandler])
+        }], [validationRobotHandler, deleteJobHandler, refreshHandler, hideValidationButton])
 
     const data = useMemo(() => robots, [robots]);
 

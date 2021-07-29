@@ -1,7 +1,7 @@
 import React, {useMemo} from "react";
 import NestedTable from "./NestedTable";
 import {seriesArrayToStudyArray} from "../../../../tools/processResponse";
-import {columnSeriesFactory, columnStudyFactory} from "./ColumnFactories";
+import {commonColumns, seriesColumns, studyColumns} from "./ColumnFactories";
 
 function TableStudiesWithNestedSeries({
                                           studies,
@@ -23,15 +23,29 @@ function TableStudiesWithNestedSeries({
         study.raw = {...study};
         return study;
     }), [studies, series]);
-    const columns = useMemo(() => {
-        let studiesColumns = columnStudyFactory(hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, false, false, onDelete, refresh);
-        let seriesColumns = columnSeriesFactory(hiddenActionBouton, hiddenRemoveRow, onDelete, refresh);
-        studiesColumns.push({
+    const columns = useMemo(() => [
+        commonColumns.RAW,
+        studyColumns.ORTHANC_ID,
+        studyColumns.INSTANCE_UID,
+        studyColumns.ANONYMIZED_FROM,
+        studyColumns.DATE,
+        studyColumns.DESCRIPTION,
+        ...(!hiddenAccessionNumber ? [studyColumns.ACCESSION_NUMBER] : []),
+        ...(!hiddenActionBouton ? [studyColumns.ACTION(onDelete, refresh)] : []),
+        ...(!hiddenRemoveRow ? [studyColumns.REMOVE(onDelete)] : []),
+        {
             accessor: "series",
-            table: seriesColumns
-        });
-        return studiesColumns;
-    }, [
+            table: [
+                commonColumns.RAW,
+                seriesColumns.ORTHANC_ID,
+                seriesColumns.DESCRIPTION,
+                seriesColumns.MODALITY,
+                seriesColumns.SERIES_NUMBER,
+                ...(!hiddenActionBouton ? [studyColumns.ACTION(onDelete, refresh)] : []),
+                ...(!hiddenRemoveRow ? [studyColumns.REMOVE(onDelete)] : [])
+            ]
+        }
+    ], [
         onDelete,
         onModify,
         refresh,

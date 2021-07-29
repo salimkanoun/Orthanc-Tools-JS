@@ -189,11 +189,11 @@ class TableQuery extends Component {
         this.setState({selected: selected.map(x => x.values)});
     }
     handleFilter = (filtered) => {
-        this.setState({filtered: filtered.map(x => x.values)});
+        this.setState({filtered: filtered.map(x => x.values.key)});
     }
 
     query = async () => {
-        const data = this.state.filtered;
+        const data = this.props.queries.filter(x => this.state.filtered.includes(x.key));
         const toastId = toast.info('Starting Studies Queries', {autoClose: false});
         let i = 0
 

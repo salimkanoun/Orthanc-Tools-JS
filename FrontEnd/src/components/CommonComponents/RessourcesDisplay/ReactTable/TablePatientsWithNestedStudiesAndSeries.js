@@ -1,6 +1,6 @@
 import React, {useMemo} from "react";
 import NestedTable from "./NestedTable";
-import {columnPatientsFactory, columnSeriesFactory, columnStudyFactory} from "./ColumnFactories"
+import {commonColumns, patientColumns, seriesColumns, studyColumns} from "./ColumnFactories"
 
 
 function TablePatientsWithNestedStudiesAndSeries({
@@ -28,32 +28,46 @@ function TablePatientsWithNestedStudiesAndSeries({
         patient.raw = {...patient};
         return patient;
     }), [patients]);
-    const columns = useMemo(() => {
-        let patientsColumns = columnPatientsFactory(
-            hiddenActionBouton,
-            hiddenRemoveRow,
-            onDelete,
-            onModify,
-            refresh);
-        let studiesColumns = columnStudyFactory(hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, true, true, onDelete, refresh);
-        let seriesColumns = columnSeriesFactory(hiddenActionBouton, hiddenRemoveRow, onDelete, refresh);
-        patientsColumns.push({
+    const columns = useMemo(() => [
+        commonColumns.RAW,
+        patientColumns.ORTHANC_ID,
+        patientColumns.ID(),
+        patientColumns.NAME(),
+        ...(!hiddenActionBouton ? [patientColumns.ACTION(onDelete, onModify, refresh)] : []),
+        ...(!hiddenRemoveRow ? [patientColumns.REMOVE(onDelete)] : []),
+        {
             accessor: "studies",
-            table: studiesColumns
-        });
-        studiesColumns.push({
-            accessor: "series",
-            table: seriesColumns
-        });
-        return patientsColumns;
-    }, [
+            table: [
+                commonColumns.RAW,
+                studyColumns.ORTHANC_ID,
+                studyColumns.INSTANCE_UID,
+                studyColumns.ANONYMIZED_FROM,
+                studyColumns.DATE,
+                studyColumns.DESCRIPTION,
+                ...(!hiddenAccessionNumber ? [studyColumns.ACCESSION_NUMBER] : []),
+                ...(!hiddenActionBouton ? [studyColumns.ACTION(onDelete, refresh)] : []),
+                ...(!hiddenRemoveRow ? [studyColumns.REMOVE(onDelete)] : []),
+                {
+                    accessor: "series",
+                    table: [
+                        commonColumns.RAW,
+                        seriesColumns.ORTHANC_ID,
+                        seriesColumns.DESCRIPTION,
+                        seriesColumns.MODALITY,
+                        seriesColumns.SERIES_NUMBER,
+                        ...(!hiddenActionBouton ? [studyColumns.ACTION(onDelete, refresh)] : []),
+                        ...(!hiddenRemoveRow ? [studyColumns.REMOVE(onDelete)] : [])
+                    ]
+                }
+            ]
+        }
+    ], [
         onDelete,
         onModify,
         refresh,
         hiddenAccessionNumber,
         hiddenActionBouton,
         hiddenRemoveRow]);
-
     return <NestedTable columns={columns} data={data} setSelected={() => {
     }} hiddenSelect={true}/>
 }

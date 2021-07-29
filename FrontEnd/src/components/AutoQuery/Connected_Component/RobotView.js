@@ -155,7 +155,7 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelec
         accessor: 'RetrievedOrthancId',
         show: false
     }
-    ], [approved, refreshHandler, deleteQueryHandler, onSelect]);
+    ], [approved, refreshHandler, deleteQueryHandler]);
     const data = useMemo(() => rows, [rows]);
     return <CommonSelectingAndFilteringTable tableData={data} columns={columns}
                                              onSelect={value => onSelect(value.map(v => v.values))}

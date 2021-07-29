@@ -96,11 +96,11 @@ function Table({
     React.useEffect(() => {
         onSelect(selectedFlatRows);
         // eslint-disable-next-line
-    }, [selectedFlatRows.length]);
+    }, [selectedFlatRows.length, onSelect]);
 
     React.useEffect(() => {
         onFilter(rows);
-    }, [rows.length]);
+    }, [rows.length, onFilter]);
 
     return (
         <>

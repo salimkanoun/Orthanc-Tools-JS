@@ -27,7 +27,7 @@ const AutoQueryRoot = () => {
             setLastTaskId(id[0])
         }).catch(() => {
         })
-    }, [])
+    })
 
     function getComponentToDisplay() {
         let component = null
