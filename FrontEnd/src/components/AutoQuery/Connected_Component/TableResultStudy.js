@@ -45,7 +45,7 @@ function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesF
                 removeResult(selected.map(x => x.values.StudyInstanceUID))
             }}/>
             <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={emptyResultsTable}/>
-            <ExportCSVButton className='m-2' data={selected.map(({values: {raw, ...values}}) => raw)}/>
+            <ExportCSVButton className='m-2' data={selected.map(({values: {raw}}) => raw)}/>
             <div className="mt-5">
                 <CommonSelectingSortingFilteringTable tableData={data} columns={columns} onSelect={setSelected}
                                                       onFilter={filtered => {

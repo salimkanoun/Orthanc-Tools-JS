@@ -30,7 +30,8 @@ function TableStudy({
             studyColumns.NEW_ACCESSION_NUMBER
         ] : []),
         ...(!hiddenActionBouton ? [studyColumns.ACTION(onDelete, refresh)] : []),
-        ...(!hiddenRemoveRow ? [studyColumns.REMOVE(onDelete)] : [])
+        ...(!hiddenRemoveRow ? [studyColumns.REMOVE(onDelete)] : []),
+        ...(!hiddenAnonymized ? [studyColumns.ANONYMIZED] : [])
     ], [
         hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, hiddenName, hiddenID, onDelete, refresh, showEditable, hiddenAnonymized]);
     const data = useMemo(() => studies.map(x => ({

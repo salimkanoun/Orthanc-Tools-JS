@@ -1,6 +1,6 @@
 import CommonTable from "./CommonTable";
 import {useMemo} from "react";
-import {commonColumns, seriesColumns, studyColumns} from "./ColumnFactories";
+import {commonColumns, seriesColumns} from "./ColumnFactories";
 
 function TableSeries({
                          series,
@@ -18,8 +18,8 @@ function TableSeries({
         seriesColumns.DESCRIPTION,
         seriesColumns.MODALITY,
         seriesColumns.SERIES_NUMBER,
-        ...(!hiddenActionBouton ? [studyColumns.ACTION(onDelete, refresh)] : []),
-        ...(!hiddenRemoveRow ? [studyColumns.REMOVE(onDelete)] : [])
+        ...(!hiddenActionBouton ? [seriesColumns.ACTION(onDelete, refresh)] : []),
+        ...(!hiddenRemoveRow ? [seriesColumns.REMOVE(onDelete)] : [])
     ], [
         hiddenActionBouton, hiddenRemoveRow, onDelete, refresh]);
     const data = useMemo(() => series.map(x => ({

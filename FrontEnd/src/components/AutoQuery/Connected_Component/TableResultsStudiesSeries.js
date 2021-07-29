@@ -44,6 +44,7 @@ function TableResultsStudiesSeries({
         addSeriesDetails(seriesAnswers, studyUID)
     }
 
+
     useEffect(() => {
         //List studies for each series details are missing
         let emptyResultArray = []
@@ -57,17 +58,15 @@ function TableResultsStudiesSeries({
         })
         if (emptyResultArray.length > 0) {
             const id = toast.info('Starting Series Fetching');
-            let i = 0
-            //Load All series details of studies answers
-            for (let studyResults of emptyResultArray) {
-                i++
+            emptyResultArray.forEach((studyResults, i) => {
                 getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET).then(() => {
                     toast.update(id, {
-                        render: 'Queried series ' + i + '/' + (emptyResultArray.length)
+                        render: 'Queried series ' + i + '/' + emptyResultArray.length
                     });
                 }).catch(console.error);
-            }
+            })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const columns = useMemo(() => [

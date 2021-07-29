@@ -55,8 +55,8 @@ function TablePatientsWithNestedStudiesAndSeries({
                         seriesColumns.DESCRIPTION,
                         seriesColumns.MODALITY,
                         seriesColumns.SERIES_NUMBER,
-                        ...(!hiddenActionBouton ? [studyColumns.ACTION(onDelete, refresh)] : []),
-                        ...(!hiddenRemoveRow ? [studyColumns.REMOVE(onDelete)] : [])
+                        ...(!hiddenActionBouton ? [seriesColumns.ACTION(onDelete, refresh)] : []),
+                        ...(!hiddenRemoveRow ? [seriesColumns.REMOVE(onDelete)] : [])
                     ]
                 }
             ]

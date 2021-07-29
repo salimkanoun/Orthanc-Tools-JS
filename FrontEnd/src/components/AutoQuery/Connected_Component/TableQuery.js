@@ -76,14 +76,14 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
         }, {
             accessor: 'StudyDescription',
             text: 'Study Description',
-            Filter: InputFilter(),
+            Filter: InputFilter('Study Description'),
             Header,
             overrideValue: overridesValues['StudyDescription'],
             Cell: EditableCell
         }, {
             accessor: 'ModalitiesInStudy',
             text: 'Modalities',
-            Filter: InputFilter(),
+            Filter: InputFilter('Modalities'),
             Header,
             overrideValue: overridesValues['ModalitiesInStudy'],
             Cell: EditableCell

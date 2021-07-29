@@ -3,6 +3,8 @@ import React from "react";
 import {InputCell as EditableCell} from "./EditableCells";
 import {dateFilter, DateFilter, invertableDataFilter, InvertableDataFilter} from "./ColumnFilters";
 import RetrieveButton from "../../../Query/Components/RetrieveButton";
+import apis from "../../../../services/apis";
+import {toast} from "react-toastify";
 
 const commonColumns = {
     RAW: {
@@ -57,8 +59,15 @@ const seriesColumns = {
         Header: 'Remove',
         Cell: ({row}) => {
             return <button type="button" className="btn btn-danger" onClick={(e) => {
+                apis.content.deleteSeries(row.values.SeriesOrthancID)
+                    .then(() => {
+                        toast.success("Series " + row.values.SeriesOrthancID + " has been deleted");
+                        onDelete(row.values.SeriesOrthancID);
+                    })
+                    .catch(err => {
+                        toast.error("Deletion error")
+                    })
                 e.stopPropagation();
-                onDelete(row.values.SeriesOrthancID)
             }}>Remove</button>
         }
     }),
@@ -174,8 +183,15 @@ const studyColumns = {
         Header: 'Remove',
         Cell: ({row}) => {
             return <button type="button" className="btn btn-danger" onClick={(e) => {
+                apis.content.deleteStudies(row.values.StudyOrthancID)
+                    .then(() => {
+                        toast.success("Study " + row.values.StudyOrthancID + " has been deleted");
+                        onDelete(row.values.StudyOrthancID);
+                    })
+                    .catch(err => {
+                        toast.error("Deletion error")
+                    })
                 e.stopPropagation();
-                onDelete(row.values.StudyOrthancID)
             }}>Remove</button>
         },
     }),
@@ -240,8 +256,15 @@ const patientColumns = {
         Header: 'Remove',
         Cell: ({row}) => {
             return <button type="button" className="btn btn-danger" onClick={(e) => {
+                apis.content.deletePatient(row.values.PatientOrthancID)
+                    .then(() => {
+                        toast.success("Patient " + row.values.PatientOrthancID + " has been deleted");
+                        onDelete(row.values.PatientOrthancID);
+                    })
+                    .catch(err => {
+                        toast.error("Deletion error")
+                    })
                 e.stopPropagation();
-                onDelete(row.values.PatientOrthancID)
             }}>Remove</button>
         },
         editable: false

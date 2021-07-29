@@ -52,7 +52,7 @@ export function InvertableDataFilter(label = '') {
                         onClick={() => setFilter({value: filterValue.value, inverted: !filterValue.inverted})}>
                     {filterValue.inverted ? <strong>{'inverted'}</strong> : 'invert'}
                 </Button>
-                <Select className={'react-select'} single options={options} placeholder={<label for=""></label>}
+                <Select className={'react-select'} single options={options} placeholder={label}
                         value={options.find(x => x.value === filterValue.value)}
                         onChange={(value => setFilter({value: value.value, inverted: filterValue.inverted}))}/>
             </div>

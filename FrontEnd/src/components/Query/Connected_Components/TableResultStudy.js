@@ -81,7 +81,7 @@ function TableResult({results, style, addManualQuerySeriesDetails}) {
             }
         }
         return res;
-    }), [results]);
+    }), [results, addManualQuerySeriesDetails]);
 
     return (
         <React.Fragment>
