@@ -4,7 +4,6 @@ import apis from '../../services/apis'
 import {TagTable} from "../CommonComponents/RessourcesDisplay/ReactTable/TagTable";
 import {InputGroup} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import Select from "react-select";
 import pdfjsLib from "pdfjs-dist/webpack"
 import {ModalPicEditor} from "../CreateDicom/ModalPicEditor";
 
@@ -41,21 +40,23 @@ export default class CreateDicom extends Component {
 
     createDicom = async () => {
         if (this.state.files.length < 1) return
-        await this.__pFileReader(this.state.files[0]).then(async (content) => {
-            try {
-                this.setState({
-                    uploadState: "Uploading"
-                })
-                let response = await apis.importDicom.createDicom(content.result, this.props.OrthancID, this._getTags())
-                await Promise.all(this.state.files.slice(1)
-                    .map(file => this.__pFileReader(file).then(content => apis.importDicom.createDicom(content.result, response.ParentSeries, {}))))
-                this.setState({
-                    uploadState: 'Uploaded'
-                })
-            } catch (error) {
-                console.log(error)
-            }
-        })
+        const images = await this._getUniformImages();
+        try {
+            this.setState({
+                uploadState: "Uploading"
+            })
+            let response = await apis.importDicom.createDicom(images[0], this.props.OrthancID, this._getTags())
+            await Promise.all(images.slice(1)
+                .map(image => apis.importDicom.createDicom(image, response.ParentSeries, {})))
+            this.setState({
+                uploadState: 'Uploaded'
+            })
+        } catch (error) {
+            this.setState({
+                uploadState: 'Failed To Upload'
+            })
+            console.log(error)
+        }
     }
 
     async componentDidMount() {
@@ -176,6 +177,29 @@ export default class CreateDicom extends Component {
         })
     }
 
+    _getUniformImages = async () => {
+        const images = await Promise.all(this.state.files.map(file => createImageBitmap(file)));
+        let targetWidth = Math.max(...images.map(img => img.width))
+        let targetHeight = Math.max(...images.map(img => img.height))
+        return images.map(img => this._resizeImage(img, targetWidth, targetHeight))
+    }
+
+    _resizeImage = (image, targetWidth, targetHeight) => {
+        const canvas = document.createElement('canvas');
+        const canvasContext = canvas.getContext('2d');
+        canvas.height = targetHeight;
+        canvas.width = targetWidth;
+        const imageRatio = image.width / image.height;
+        const canvasRatio = targetWidth / targetHeight;
+        const resizedWidth = (imageRatio < canvasRatio ? targetHeight * imageRatio : targetWidth)
+        const resizedHeight = (imageRatio < canvasRatio ? targetWidth : targetWidth / imageRatio)
+
+        canvasContext.fillStyle = 'black';
+        canvasContext.fillRect(0, 0, targetWidth, targetHeight)
+        canvasContext.drawImage(image, (targetWidth - resizedWidth) / 2, (targetHeight - resizedHeight) / 2, resizedWidth, resizedHeight)
+        return canvas.toDataURL()
+    }
+
     handleDrop = async (files) => {
         console.log((await Promise.all(files.map(async file => (file.type === "application/pdf" ? await this._toImages(file) : file)))).flat())
         this.setState({
@@ -256,15 +280,8 @@ export default class CreateDicom extends Component {
                     <input onChange={this.handleNewTagChange} value={this.state.newTag}/>
                     <Button type={"submit"} onClick={this.handleNewTag}>{'+'}</Button>
                 </InputGroup>
-                <InputGroup>
-                    <InputGroup.Text>{"Resize"}</InputGroup.Text>
-                    <Select options={[
-                        {value: 'crop', label: 'Crop'},
-                        {value: 'black_bars', label: 'Black Bars'}
-                    ]}/>
-                    <InputGroup.Checkbox/>
-                </InputGroup>
-                <Button type={"submit"} onClick={this.createDicom}>{'Send'}</Button>
+                <Button type={"submit"} onClick={this.createDicom}
+                        disabled={this.state.files.length < 1}>{'Send'}</Button>
             </div>
         )
     }
