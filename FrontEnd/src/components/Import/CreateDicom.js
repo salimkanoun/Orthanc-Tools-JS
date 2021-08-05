@@ -170,7 +170,7 @@ export default class CreateDicom extends Component {
                 for (let i = 0; i < pdf.numPages; i++) {
                     let img = await this._getPageBlob(pdf, i);
                     img.name = `${file.name}(${i})`
-                    pageImage.push(img)
+                    pageImage.push(img);
                 }
                 return pageImage;
             })
@@ -179,9 +179,11 @@ export default class CreateDicom extends Component {
 
     _getUniformImages = async () => {
         const images = await Promise.all(this.state.files.map(file => createImageBitmap(file)));
-        let targetWidth = Math.max(...images.map(img => img.width))
-        let targetHeight = Math.max(...images.map(img => img.height))
-        return images.map(img => this._resizeImage(img, targetWidth, targetHeight))
+        let targetWidth = Math.max(...images.map(img => img.width));
+        let targetHeight = Math.max(...images.map(img => img.height));
+        console.log(images.map(img => img.width));
+        console.log(`resizing to (${targetWidth},${targetHeight})`);
+        return images.map(img => this._resizeImage(img, targetWidth, targetHeight));
     }
 
     _resizeImage = (image, targetWidth, targetHeight) => {
@@ -189,14 +191,10 @@ export default class CreateDicom extends Component {
         const canvasContext = canvas.getContext('2d');
         canvas.height = targetHeight;
         canvas.width = targetWidth;
-        const imageRatio = image.width / image.height;
-        const canvasRatio = targetWidth / targetHeight;
-        const resizedWidth = (imageRatio < canvasRatio ? targetHeight * imageRatio : targetWidth)
-        const resizedHeight = (imageRatio < canvasRatio ? targetWidth : targetWidth / imageRatio)
 
         canvasContext.fillStyle = 'black';
         canvasContext.fillRect(0, 0, targetWidth, targetHeight)
-        canvasContext.drawImage(image, (targetWidth - resizedWidth) / 2, (targetHeight - resizedHeight) / 2, resizedWidth, resizedHeight)
+        canvasContext.drawImage(image, (targetWidth - image.width) / 2, (targetHeight - image.height) / 2, image.width, image.height)
         return canvas.toDataURL()
     }
 
