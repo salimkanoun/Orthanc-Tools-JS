@@ -261,7 +261,7 @@ export default class CreateDicom extends Component {
                                 className={(this.state.isDragging || !!this.state.files.length) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
                                 <input {...getInputProps()} />
                                 <div className={"d-flex flex-column justify-content-center align-items-center h-100"}>
-                                    <p>{this.state.files.length ? `${this.state.uploadState} ${this.state.files.length > 1 ? this.state.files.length + ' files' : 'one file'} ` : "Drop png, jpeg or pdf"}</p>
+                                    <p style={{"line-height": "normal"}}>{this.state.files.length ? `${this.state.uploadState} ${this.state.files.length > 1 ? this.state.files.length + ' files' : 'one file'} ` : "Drop png, jpeg or pdf"}</p>
 
                                     {this.state.files.length ? <Button onClick={(e) => {
                                         this.setState({
@@ -282,8 +282,10 @@ export default class CreateDicom extends Component {
                     <input onChange={this.handleNewTagChange} value={this.state.newTag}/>
                     <Button type={"submit"} onClick={this.handleNewTag}>{'+'}</Button>
                 </InputGroup>
-                <Button type={"submit"} onClick={this.createDicom}
-                        disabled={this.state.files.length < 1}>{'Send'}</Button>
+                <div className={"d-flex justify-content-end"}>
+                    <Button type={"submit"} onClick={this.createDicom}
+                            disabled={this.state.files.length < 1}>{'Send'}</Button>
+                </div>
             </div>
         )
     }

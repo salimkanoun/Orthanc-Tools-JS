@@ -460,3 +460,9 @@ button > p {
 .subtable-row > .table-responsive > table {
     margin: 0 !important;
 }
+
+.modal-xxl {
+    max-width: none;
+    margin-left: 25px;
+    margin-right: 25px;
+}

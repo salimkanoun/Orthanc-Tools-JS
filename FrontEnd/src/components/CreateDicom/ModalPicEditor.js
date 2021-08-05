@@ -50,25 +50,29 @@ export class ModalPicEditor extends Component {
             <Modal fullscreen={'xl'}
                    show={!!this.props.files && this.props.files.length}
                    onHide={this.props.onHide}
-                   onClick={(e) => e.stopPropagation()} size={'xl'}>
+                   onClick={(e) => e.stopPropagation()} size={'xxl'} contentClassName={"w-100"}>
                 <Modal.Header closeButton>
                     <Modal.Title>Create Dicom</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {(!!this.props.files && this.props.files.length ?
-                        <div className={"d-flex justify-content-between"}>
-                            <ul className="list-group">
-                                {this.props.files.map((file, fileIdx) => (
-                                    <Button className={"list-group-item"} variant={"outline-primary"} onClick={() => {
-                                        this.editor.current.getInstance().loadImageFromURL(URL.createObjectURL(file), file.name)
-                                        this.setState({
-                                            fileIdx
-                                        })
-                                    }
-                                    }>{file.name}</Button>
-                                ))}
-                            </ul>
-                            <div>
+                        <div className={"row"}>
+                            <div className={"col-2"}>
+                                <ul className="list-group">
+                                    {this.props.files.map((file, fileIdx) => (
+                                        <Button className={"list-group-item"} variant={"outline-primary"}
+                                                onClick={() => {
+                                                    this.editor.current.getInstance().loadImageFromURL(URL.createObjectURL(file), file.name)
+                                                    this.setState({
+                                                        fileIdx
+                                                    })
+                                                }
+                                                }>{file.name}</Button>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <div className={"col-10"}>
                                 <h2>{this.props.files[this.state.fileIdx].name}</h2>
                                 <ImageEditor
                                     ref={this.editor}
@@ -94,12 +98,14 @@ export class ModalPicEditor extends Component {
                                     }}
                                     usageStatistics={true}
                                 />
-                                <Button variant={"info"} onClick={() => {
-                                    if (!(this.props.onSave instanceof Function)) return;
-                                    let blob = dataURItoBlob(this.editor.current.getInstance().toDataURL());
-                                    blob.name = this.props.files[this.state.fileIdx].name
-                                    this.props.onSave(blob, this.state.fileIdx)
-                                }}>Save</Button>
+                                <div className={'d-flex justify-content-end w-100'}>
+                                    <Button variant={"info"} onClick={() => {
+                                        if (!(this.props.onSave instanceof Function)) return;
+                                        let blob = dataURItoBlob(this.editor.current.getInstance().toDataURL());
+                                        blob.name = this.props.files[this.state.fileIdx].name
+                                        this.props.onSave(blob, this.state.fileIdx)
+                                    }}>Save</Button>
+                                </div>
                             </div>
                         </div> : null)}
                 </Modal.Body>
