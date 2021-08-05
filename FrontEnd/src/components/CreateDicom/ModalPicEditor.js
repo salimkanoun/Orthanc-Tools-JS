@@ -47,60 +47,61 @@ export class ModalPicEditor extends Component {
     render() {
 
         return (
-            <Modal fullscreen={"xl-down"}
+            <Modal fullscreen={'xl'}
                    show={!!this.props.files && this.props.files.length}
                    onHide={this.props.onHide}
-                   onClick={(e) => e.stopPropagation()} size='xl'>
+                   onClick={(e) => e.stopPropagation()} size={'xl'}>
                 <Modal.Header closeButton>
                     <Modal.Title>Create Dicom</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {(!!this.props.files && this.props.files.length ? <div className={"d-flex justify-content-center"}>
-                        <div>
-                            {this.props.files.map((file, fileIdx) => (
-                                <Button variant={"outline-primary"} onClick={() => {
-                                    this.editor.current.getInstance().loadImageFromURL(URL.createObjectURL(file), file.name)
-                                    this.setState({
-                                        fileIdx
-                                    })
-                                }
-                                }>{file.name}</Button>
-                            ))}
-                        </div>
-                        <div>
-                            <h2>{this.props.files[this.state.fileIdx].name}</h2>
-                            <ImageEditor
-                                ref={this.editor}
-                                includeUI={{
-                                    loadImage: {
-                                        path: URL.createObjectURL(this.props.files[this.state.fileIdx]),
-                                        name: this.props.files[this.state.fileIdx].name,
-                                    },
-                                    theme: myTheme,
-                                    menu: ['crop', 'resize', 'shape', 'filter'],
-                                    initMenu: 'filter',
-                                    uiSize: {
-                                        width: '1000px',
-                                        height: '700px',
-                                    },
-                                    menuBarPosition: 'bottom',
-                                }}
-                                cssMaxHeight={500}
-                                cssMaxWidth={700}
-                                selectionStyle={{
-                                    cornerSize: 20,
-                                    rotatingPointOffset: 70,
-                                }}
-                                usageStatistics={true}
-                            />
-                            <Button variant={"info"} onClick={() => {
-                                if (!(this.props.onSave instanceof Function)) return;
-                                let blob = dataURItoBlob(this.editor.current.getInstance().toDataURL());
-                                blob.name = this.props.files[this.state.fileIdx].name
-                                this.props.onSave(blob, this.state.fileIdx)
-                            }}>Save</Button>
-                        </div>
-                    </div> : null)}
+                    {(!!this.props.files && this.props.files.length ?
+                        <div className={"d-flex justify-content-between"}>
+                            <ul className="list-group">
+                                {this.props.files.map((file, fileIdx) => (
+                                    <Button className={"list-group-item"} variant={"outline-primary"} onClick={() => {
+                                        this.editor.current.getInstance().loadImageFromURL(URL.createObjectURL(file), file.name)
+                                        this.setState({
+                                            fileIdx
+                                        })
+                                    }
+                                    }>{file.name}</Button>
+                                ))}
+                            </ul>
+                            <div>
+                                <h2>{this.props.files[this.state.fileIdx].name}</h2>
+                                <ImageEditor
+                                    ref={this.editor}
+                                    includeUI={{
+                                        loadImage: {
+                                            path: URL.createObjectURL(this.props.files[this.state.fileIdx]),
+                                            name: this.props.files[this.state.fileIdx].name,
+                                        },
+                                        theme: myTheme,
+                                        menu: ['crop', 'resize', 'shape', 'filter'],
+                                        initMenu: 'filter',
+                                        uiSize: {
+                                            width: '1300px',
+                                            height: '800px',
+                                        },
+                                        menuBarPosition: 'bottom',
+                                    }}
+                                    cssMaxHeight={800}
+                                    cssMaxWidth={1300}
+                                    selectionStyle={{
+                                        cornerSize: 20,
+                                        rotatingPointOffset: 70,
+                                    }}
+                                    usageStatistics={true}
+                                />
+                                <Button variant={"info"} onClick={() => {
+                                    if (!(this.props.onSave instanceof Function)) return;
+                                    let blob = dataURItoBlob(this.editor.current.getInstance().toDataURL());
+                                    blob.name = this.props.files[this.state.fileIdx].name
+                                    this.props.onSave(blob, this.state.fileIdx)
+                                }}>Save</Button>
+                            </div>
+                        </div> : null)}
                 </Modal.Body>
             </Modal>)
     }

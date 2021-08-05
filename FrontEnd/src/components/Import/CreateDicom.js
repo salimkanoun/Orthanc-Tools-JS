@@ -260,16 +260,20 @@ export default class CreateDicom extends Component {
                             <div
                                 className={(this.state.isDragging || !!this.state.files.length) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
                                 <input {...getInputProps()} />
-                                <p>{this.state.files.length ? `${this.state.uploadState} ${this.state.files.length > 1 ? this.state.files.length + ' files' : 'one file'} ` : "Drop png, jpeg or pdf"}</p>
+                                <div className={"d-flex flex-column justify-content-center align-items-center h-100"}>
+                                    <p>{this.state.files.length ? `${this.state.uploadState} ${this.state.files.length > 1 ? this.state.files.length + ' files' : 'one file'} ` : "Drop png, jpeg or pdf"}</p>
+
+                                    {this.state.files.length ? <Button onClick={(e) => {
+                                        this.setState({
+                                            showEditor: true
+                                        })
+                                        e.stopPropagation()
+                                    }}>{"Open Editor"}</Button> : null}
+                                </div>
                             </div>
                         </section>
                     )}
                 </Dropzone>
-                <Button onClick={() => {
-                    this.setState({
-                        showEditor: true
-                    })
-                }}>{"Open Editor"}</Button>
                 <ModalPicEditor files={this.state.showEditor ? this.state.files : null} onHide={this.handleHide}
                                 onSave={this.handleEditorSave}/>
                 <TagTable data={this.state.tags} onDataUpdate={this.handleDataChange}/>
