@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import Modal from 'react-bootstrap/Modal'
 import CreateDicom from '../Import/CreateDicom'
 
@@ -11,7 +11,10 @@ export default class ModalCreateDicom extends Component {
                     <Modal.Title>Create Dicom</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <CreateDicom />
+                    <CreateDicom
+                        OrthancID={this.props.OrthancID}
+                        level={this.props.level}
+                    />
                 </Modal.Body>
             </Modal>
         )

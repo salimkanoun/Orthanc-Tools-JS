@@ -1,37 +1,130 @@
-import React, { Component } from 'react'
+import React, {Component, createRef} from 'react'
 import Dropzone from 'react-dropzone'
 import apis from '../../services/apis'
+import {TagTable} from "../CommonComponents/RessourcesDisplay/ReactTable/TagTable";
+import {InputGroup} from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Select from "react-select";
+import pdfjsLib from "pdfjs-dist/webpack"
+import {ModalPicEditor} from "../CreateDicom/ModalPicEditor";
+
 
 export default class CreateDicom extends Component {
 
+    constructor(props) {
+        super(props);
+        this.pdfCanvas = createRef();
+    }
+
     state = {
-        isDragging: false
+        isDragging: false,
+        tags: [],
+        newTag: '',
+        files: [],
+        uploadState: "Selected",
+        showEditor: false
     }
 
     dragListener = (dragStarted) => {
-        this.setState({ isDragging: dragStarted })
+        this.setState({isDragging: dragStarted})
     }
 
-    createDicom = async (file) => {
+    _getTags = () => {
+        let tags = {};
+        this.state.tags.forEach(tag => {
+            if (tag.Value !== '[auto]' && !tag.Value.startsWith("[inherited]")) {
+                tags[tag.TagName] = tag.Value;
+            }
+        })
+        return tags;
+    }
 
-        if(file.length > 1) return
-
-        await this.__pFileReader(file[0]).then(async (content) => {
+    createDicom = async () => {
+        if (this.state.files.length < 1) return
+        await this.__pFileReader(this.state.files[0]).then(async (content) => {
             try {
-                let response = await apis.importDicom.createDicom( content.result, 'studyOrthancID', {})
-                console.log(response)
-
+                this.setState({
+                    uploadState: "Uploading"
+                })
+                let response = await apis.importDicom.createDicom(content.result, this.props.OrthancID, this._getTags())
+                await Promise.all(this.state.files.slice(1)
+                    .map(file => this.__pFileReader(file).then(content => apis.importDicom.createDicom(content.result, response.ParentSeries, {}))))
+                this.setState({
+                    uploadState: 'Uploaded'
+                })
             } catch (error) {
                 console.log(error)
             }
-
         })
-        
+    }
+
+    async componentDidMount() {
+        console.log(this.props)
+        let tags = [
+            ...(this.props.level === "studies" ?
+                    await apis.content.getStudiesDetails(this.props.OrthancID).then(response => [
+                        ...(Object.entries(response.MainDicomTags).map(([TagName, Value]) =>
+                            ({
+                                TagName,
+                                Value: '[inherited] ' + Value,
+                                deletable: false,
+                                editable: false
+                            })
+                        )),
+                        ...(Object.entries(response.PatientMainDicomTags).map(([TagName, Value]) =>
+                            ({
+                                TagName,
+                                Value: '[inherited] ' + Value,
+                                deletable: false,
+                                editable: false
+                            })
+                        )),
+                    ]) :
+                    [
+                        {
+                            TagName: 'StudyInstanceUID',
+                            Value: '[auto]',
+                            deletable: false,
+                            editable: false
+                        },
+                        ...(this.props.level === "patients" ?
+                            await apis.content.getPatientDetails(this.props.OrthancID).then(response => (Object.entries(response.MainDicomTags).map(([TagName, Value]) =>
+                                ({
+                                    TagName,
+                                    Value: (TagName !== 'PatientID' ? '[inherited] ' : '') + Value,
+                                    deletable: false,
+                                    editable: false
+                                })
+                            ))) :
+                            [
+                                {
+                                    TagName: 'PatientId',
+                                    Value: '[auto]',
+                                    deletable: false,
+                                    editable: false
+                                }
+                            ]),
+                    ]
+            ),
+            {
+                TagName: 'SeriesInstanceUID',
+                Value: '[auto]',
+                deletable: false,
+                editable: false
+            }, {
+                TagName: 'SOPInstanceUID',
+                Value: '[auto]',
+                deletable: false,
+                editable: false
+            }]
+        this.setState({
+            tags
+        })
     }
 
     __pFileReader = (file) => {
         return new Promise((resolve, reject) => {
-            var fr = new FileReader()
+            let fr = new FileReader()
             fr.readAsDataURL(file)
             fr.onload = () => {
                 resolve(fr)
@@ -39,19 +132,139 @@ export default class CreateDicom extends Component {
         })
     }
 
+    _getPageBlob = (pdf, pageNum) => {
+        return new Promise((resolve, reject) => {
+            pdf.getPage(pageNum + 1).then(page => {
+                const scale = "1.5";
+                const viewport = page.getViewport({
+                    scale: scale
+                });
+                const canvas = document.createElement('canvas');
+                const canvasContext = canvas.getContext('2d');
+                canvas.height = viewport.height || viewport.viewBox[3]; /* viewport.height is NaN */
+                canvas.width = viewport.width || viewport.viewBox[2];  /* viewport.width is also NaN */
+                page.render({
+                    canvasContext, viewport
+                }).promise.then((res) => {
+                    canvas.toBlob((result) => {
+                        resolve(result)
+                    });
+                })
+            })
+        })
+    }
+
+    _toImages = file => {
+        return new Promise((resolve, reject) => {
+            let fr = new FileReader()
+            fr.readAsBinaryString(file)
+            fr.onload = () => {
+                console.log(fr)
+                resolve(fr)
+            }
+        }).then(({result}) => {
+            return pdfjsLib.getDocument({data: result}).promise.then(async (pdf) => {
+                console.log(pdf)
+                let pageImage = []
+                for (let i = 0; i < pdf.numPages; i++) {
+                    let img = await this._getPageBlob(pdf, i);
+                    img.name = `${file.name}(${i})`
+                    pageImage.push(img)
+                }
+                return pageImage;
+            })
+        })
+    }
+
+    handleDrop = async (files) => {
+        console.log((await Promise.all(files.map(async file => (file.type === "application/pdf" ? await this._toImages(file) : file)))).flat())
+        this.setState({
+            files: (await Promise.all(files.map(async file => (file.type === "application/pdf" ? await this._toImages(file) : file)))).flat(),
+            uploadState: 'Selected'
+        })
+    }
+
+    handleDataChange = (oldValue, newValue, row, column) => {
+        let tags = [...this.state.tags];
+        if (column === 'Value') {
+            tags.find(x => x.TagName === row.TagName)[column] = newValue;
+        } else {
+            tags = tags.filter(x => x.TagName !== row.TagName);
+        }
+        this.setState({
+            tags
+        })
+    }
+
+    handleNewTagChange = (e) => {
+        this.setState({newTag: e.target.value})
+    }
+
+    handleNewTag = (e) => {
+        let tags = [...this.state.tags];
+        tags.push({
+            'TagName': this.state.newTag,
+            Value: '',
+        })
+        this.setState({
+            tags,
+            newTag: ''
+        })
+    }
+
+    handleHide = () => {
+        this.setState({
+            showEditor: false
+        })
+    }
+
+    handleEditorSave = (blob, idx) => {
+        let files = this.state.files;
+        files[idx] = blob
+        this.setState({
+            files
+        })
+    }
+
     render = () => {
         return (
             <div>
-                <Dropzone onDragEnter={() => this.dragListener(true)} onDragLeave={() => this.dragListener(false)} onDrop={this.createDicom} >
-                    {({ getRootProps, getInputProps }) => (
+                <Dropzone accept={"application/pdf, image/jpeg, image/png"}
+                          onDragEnter={() => this.dragListener(true)}
+                          onDragLeave={() => this.dragListener(false)}
+                          onDrop={this.handleDrop} multiple>
+                    {({getRootProps, getInputProps}) => (
                         <section>
-                            <div className={(this.state.isDragging || this.state.inProgress) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
-                                <input directory="" webkitdirectory="" {...getInputProps()} />
-                                <p>{this.state.inProgress ? "Uploading" : "Drop Dicom Folder"}</p>
+                            <div
+                                className={(this.state.isDragging || !!this.state.files.length) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
+                                <input {...getInputProps()} />
+                                <p>{this.state.files.length ? `${this.state.uploadState} ${this.state.files.length > 1 ? this.state.files.length + ' files' : 'one file'} ` : "Drop png, jpeg or pdf"}</p>
                             </div>
                         </section>
                     )}
                 </Dropzone>
+                <Button onClick={() => {
+                    this.setState({
+                        showEditor: true
+                    })
+                }}>{"Open Editor"}</Button>
+                <ModalPicEditor files={this.state.showEditor ? this.state.files : null} onHide={this.handleHide}
+                                onSave={this.handleEditorSave}/>
+                <TagTable data={this.state.tags} onDataUpdate={this.handleDataChange}/>
+                <InputGroup>
+                    <InputGroup.Text>{"Add Label"}</InputGroup.Text>
+                    <input onChange={this.handleNewTagChange} value={this.state.newTag}/>
+                    <Button type={"submit"} onClick={this.handleNewTag}>{'+'}</Button>
+                </InputGroup>
+                <InputGroup>
+                    <InputGroup.Text>{"Resize"}</InputGroup.Text>
+                    <Select options={[
+                        {value: 'crop', label: 'Crop'},
+                        {value: 'black_bars', label: 'Black Bars'}
+                    ]}/>
+                    <InputGroup.Checkbox/>
+                </InputGroup>
+                <Button type={"submit"} onClick={this.createDicom}>{'Send'}</Button>
             </div>
         )
     }

@@ -91,7 +91,8 @@ export default class ActionBouton extends Component {
                         <button className='dropdown-item bg-info' type='button' onClick={this.setMetadata}
                                 hidden={this.props.hiddenMetadata}>View Metadata
                         </button>
-                        <CreateDicom {...this.props} hidden={this.props.hiddenCreateDicom}/>
+                        {(["patients", "studies"].includes(this.props.level) ? <CreateDicom {...this.props}/> :
+                            null)}
                         <Modify hidden={this.props.hiddenModify} {...this.props} />
                         <button className='dropdown-item bg-danger' type='button' hidden={this.props.hiddenDelete}
                                 onClick={this.delete}>Delete
