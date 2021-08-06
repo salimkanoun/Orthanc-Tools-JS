@@ -77,8 +77,17 @@ const validateRetrieve = async (req, res) => {
  * @param {*} res request result
  */
 const deleteRetrieveItem = async (req, res) => {
-
     await RetrieveTask.deleteItem(req.params.taskId, req.params.itemId);
+    res.sendStatus(200);
+}
+
+/**
+ * Retries a failed item from the retrieve task
+ * @param {*} req express request
+ * @param {*} res request result
+ */
+const retryRetrieveItem = async (req, res) => {
+    await RetrieveTask.retryItem(req.params.taskId, req.params.itemId);
     res.sendStatus(200);
 }
 
@@ -175,5 +184,6 @@ module.exports = {
     addRetrieveTask,
     addExportTask,
     validateRetrieve,
-    deleteRetrieveItem
+    deleteRetrieveItem,
+    retryRetrieveItem
 }
