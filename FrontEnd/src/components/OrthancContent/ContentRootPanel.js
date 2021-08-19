@@ -141,8 +141,6 @@ class ContentRootPanel extends Component {
         //Get only unique study ids
         let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
         this.setState({selectedStudies: uniqueSelectedOrthancStudyId});
-<<<<<<< Updated upstream
-=======
     }
 
 
@@ -152,7 +150,6 @@ class ContentRootPanel extends Component {
         result.style.opacity = "1";
         result.style.height = "auto";
 
->>>>>>> Stashed changes
     }
 
     render = () => {

@@ -21,11 +21,7 @@ function TableSeries({
         ...(!hiddenActionBouton ? [seriesColumns.ACTION(onDelete, refresh)] : []),
         ...(!hiddenRemoveRow ? [seriesColumns.REMOVE(onDelete)] : [])
     ], [
-<<<<<<< Updated upstream
-        hiddenActionBouton, hiddenRemoveRow, onDelete, refresh]);
-=======
         hiddenActionBouton, hiddenRemoveRow, onDelete, refresh]); 
->>>>>>> Stashed changes
     const data = useMemo(() => series.map(x => ({
         raw: {...x},
         ...x
