@@ -16,12 +16,12 @@ class Queue extends event.EventEmitter {
      * @param queueName name of the queue
      * @param fn function.s that process the job
      */
-    constructor(queueName, fn, attempts = 1, backoff = 2000, backoffType = 'fixed') {
+    constructor(queueName, fn, attempts = 1, backoff = 2000, workerCount = 1) {
         super();
         this._queue = new BullQueue(queueName, {
             redis: REDIS_OPTIONS, defaultJobOptions: {
                 attempts,
-                backoff
+                backoff,
             }
         });
         this._invalidated = true;
@@ -29,11 +29,11 @@ class Queue extends event.EventEmitter {
         if (typeof fn === "object") {
             this._queue.isReady()
                 .then(() => Promise.all(
-                    Object.entries(fn).map(entry => this._queue.process(entry[0], entry[1]))
+                    Object.entries(fn).map(entry => this._queue.process(entry[0], Number(workerCount), entry[1]))
                 ));
         } else {
             this._queue.isReady()
-                .then(() => this._queue.process(fn));
+                .then(() => this._queue.process(Number(workerCount), fn));
         }
         this._queue.on('completed', (job, result) => {
             this._invalidated = true;
@@ -102,7 +102,7 @@ class Queue extends event.EventEmitter {
      * Returns a list of jobs contained in the queue
      * @returns {Promise<Object[]>} Promise returning the jobs of the queue
      */
-    getJobs = () => this.isReady().then(() =>{
+    getJobs = () => this.isReady().then(() => {
         if (!this._invalidated) return this._cachedJobs;
         return this._queue.getJobs(Object.values(Queue.JOB_STATES)).then(
             jobs => {
@@ -190,6 +190,10 @@ class Job {
 
     moveToFailed(error) {
         return this._bullJob.moveToFailed(error, true);
+    }
+
+    retry() {
+        return this._bullJob.retry();
     }
 }
 
