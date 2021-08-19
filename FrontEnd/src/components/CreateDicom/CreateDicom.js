@@ -1,5 +1,5 @@
-import React, { Component, Fragment } from 'react'
-import ModalModify from './ModalCreateDicom';
+import React, {Component, Fragment} from 'react'
+import ModalCreateDicom from "./ModalCreateDicom";
 
 
 export default class CreateDicom extends Component {
@@ -9,19 +9,21 @@ export default class CreateDicom extends Component {
     }
 
     openModify = () => {
-        this.setState({ show: true })
+        this.setState({show: true})
     }
 
     render = () => {
         return (
             <Fragment>
-                <button className='dropdown-item bg-primary' type='button' hidden={this.props.hidden} onClick={this.openModify} >Create Dicom </button>
-                <ModalModify
+                <button className='dropdown-item bg-primary' type='button'
+                        onClick={this.openModify}>Create Dicom
+                </button>
+                <ModalCreateDicom
                     show={this.state.show}
-                    onHide={() => this.setState({ show: false })}
-                    data={this.state.data}
-                    level={this.props.level}
+                    onHide={() => this.setState({show: false})}
                     modify={() => this.modify()}
+                    OrthancID={this.props.orthancID}
+                    level={this.props.level}
                 />
             </Fragment>
         )
