@@ -121,7 +121,7 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelec
             ({row: {index}}) => {
                 return approved === false ?
                     (<div className="text-center">
-                        <input type="button" className='btn btn-danger'
+                        <input type="button" className='otjs-button otjs-button-red'
                                onClick={() => deleteQueryHandler(index, refreshHandler)}
                                value="Remove"/>
                     </div>)
@@ -137,13 +137,13 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelec
                 return values.Status === RobotView.ITEM_SUCCESS ?
                     <Fragment>
                         <Dropdown drop='left'>
-                            <Dropdown.Toggle variant="success" id="dropdown-basic">
+                            <Dropdown.Toggle variant="button-dropdown-green" id="dropdown-basic" className="button-dropdown button-dropdown-green">
                                 Viewers
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <OhifLink className='dropdown-item bg-info'
+                                <OhifLink className='dropdown-item bg-green'
                                           StudyInstanceUID={values.StudyInstanceUID}/>
-                                <StoneLink className='dropdown-item bg-info'
+                                <StoneLink className='dropdown-item bg-green'
                                            StudyInstanceUID={values.StudyInstanceUID}/>
                             </Dropdown.Menu>
                         </Dropdown>

@@ -30,7 +30,7 @@ export default function SftpEndpoints({endpointsData, onDeleteEndpoint}) {
             Cell: ({row}) => {
                 return (
                     <div className="text-center">
-                        <input type="button" className='btn btn-danger' onClick={async () => {
+                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                             await onDeleteEndpoint(row.id)
                         }} value="Remove"/>
                     </div>)
@@ -42,7 +42,7 @@ export default function SftpEndpoints({endpointsData, onDeleteEndpoint}) {
 
     return (
         <Fragment>
-            <h2>SFTP Export Endpoints</h2>
+            <h2 className="card-title mt-5">SFTP Export Endpoints</h2>
             <CommonTable tableData={data} columns={columns}/>
         </Fragment>
     )

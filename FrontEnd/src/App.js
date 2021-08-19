@@ -15,7 +15,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 //CSS Toastify
 import 'react-toastify/dist/ReactToastify.css'
 //Custom CSS
-import './assets/styles/orthancToolsJs.css'
+import './assets/styles/orthancToolsJs.scss'
 import {BrowserRouter} from 'react-router-dom'
 
 // Configuring Toastify params that will be used all over the app

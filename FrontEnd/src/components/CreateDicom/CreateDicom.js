@@ -15,7 +15,7 @@ export default class CreateDicom extends Component {
     render = () => {
         return (
             <Fragment>
-                <button className='dropdown-item bg-primary' type='button' hidden={this.props.hidden} onClick={this.openModify} >Create Dicom </button>
+                <button className='dropdown-item bg-green' type='button' hidden={this.props.hidden} onClick={this.openModify} >Create Dicom </button>
                 <ModalModify
                     show={this.state.show}
                     onHide={() => this.setState({ show: false })}

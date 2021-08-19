@@ -77,7 +77,7 @@ export default class CreateUser extends Component {
     render() {
         return (
             <Fragment>
-                <button type='button' name='create' className='btn btn-primary float-right mb-3'
+                <button type='button' name='create' className='otjs-button otjs-button-blue'
                         onClick={() => this.setState({show: true})}>New User
                 </button>
                 <Modal id='create' show={this.state.show} onHide={this.resetState} size='md'>
@@ -86,51 +86,44 @@ export default class CreateUser extends Component {
                     </Modal.Header>
                     <Modal.Body>
                         <div>
-                            <fieldset>
+                            <fieldset className="mt-3">
                                 <label>Username*</label>
                                 <input className='form-control' type='text' placeholder='username' name='username'
                                        value={this.state.username} onChange={this.handleChange} required/>
                             </fieldset>
-
-                            <fieldset>
+                            <fieldset className="mt-3">
                                 <label>First Name</label>
                                 <input className='form-control' type='text' placeholder='First Name' name='firstname'
                                        value={this.state.firstname} onChange={this.handleChange}/>
                             </fieldset>
-
-                            <fieldset>
+                            <fieldset className="mt-3">
                                 <label>Last Name</label>
                                 <input className='form-control' type='text' placeholder='Last Name' name='lastname'
                                        value={this.state.lastname} onChange={this.handleChange}/>
                             </fieldset>
-
-                            <fieldset>
+                            <fieldset className="mt-3">
                                 <label>Password*</label>
                                 <input className='form-control' type='password' placeholder='password' name='password'
                                        value={this.state.password} onChange={this.handleChange} required/>
                             </fieldset>
-
-                            <fieldset>
+                            <fieldset className="mt-3">
                                 <label>Mail</label>
                                 <input className='form-control' type='text' placeholder='example@example.com'
                                        name='email' value={this.state.email} onChange={this.handleChange}/>
                             </fieldset>
-
-
-                            <fieldset>
+                            <fieldset className="mt-3">
                                 <label>Super Admin</label>
                                 <input className='form-check-input' type='checkbox' name='superAdmin'
                                        value={this.state.superAdmin} onChange={this.handleChange}/>
                             </fieldset>
-
-                            <fieldset>
+                            <fieldset className="mt-3">
                                 <label>Roles*</label>
                                 <SelectRoles onChange={this.onRolesChange}/>
                             </fieldset>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <button type='button' className='btn btn-primary' onClick={this.createUser}>Create</button>
+                        <button type='button' className='otjs-button otjs-button-blue' onClick={this.createUser}>Create</button>
                     </Modal.Footer>
                 </Modal>
             </Fragment>

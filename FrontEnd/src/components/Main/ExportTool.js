@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import Overlay from 'react-bootstrap/Overlay'
-import Popover from 'react-bootstrap/Popover'
+import { Popover, Col, Row, Overlay} from 'react-bootstrap'
 
 import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableStudiesWithNestedSeries'
 import apis from '../../services/apis'
@@ -54,14 +53,14 @@ class ExportTool extends Component {
     render = () => {
         let idArray = this.getExportIDArray()
         return (
-            <Overlay target={this.props.target} show={this.props.show} placement='left' onHide={this.props.onHide}
-                     rootClose>
+            <Overlay target={this.props.target} show={this.props.show} placement='bottom' onHide={this.props.onHide}
+                     rootClose style={{width: '33%'}}>
                 <Popover id='popover-export' style={{maxWidth: '100%'}}>
                     <Popover.Header as='h3'>Export List</Popover.Header>
                     <Popover.Body>
                         <div className="row mb-3">
                             <div className="col float-right">
-                                <button type="button" className="btn btn-warning float-right"
+                                <button type="button" className="btn otjs-button otjs-button-orange p-2"
                                         onClick={this.handleClickEmpty}>Empty List
                                 </button>
                             </div>
@@ -78,14 +77,14 @@ class ExportTool extends Component {
                             onDeleteSeries={this.onDeleteSeries}
                             pagination={true}
                             wrapperClasses="table-responsive"/>
-                        <div className="row text-center mt-5">
-                            <div className='col-sm'>
+                        <Row className="text-center mt-5">
+                            <Col sm={6}>
                                 <DownloadDropdown exportIds={idArray}/>
-                            </div>
-                            <div className='col-sm'>
+                            </Col>
+                            <Col sm={6}>
                                 <SendAetDropdown aets={this.state.aets} exportIds={idArray}/>
-                            </div>
-                        </div>
+                            </Col>
+                        </Row>
                     </Popover.Body>
                 </Popover>
             </Overlay>

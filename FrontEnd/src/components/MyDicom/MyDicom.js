@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
 import TableMyDicomSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeriesFillFromParent'
 import SendTo from '../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown'
+import {Row, Col} from 'react-bootstrap'
 
 class MyDicom extends Component{
   state = {
@@ -112,32 +113,38 @@ class MyDicom extends Component{
     return (
 
         <div>
-        <h1>Labels</h1> 
-          {this.state.labels.map(label => (
-            <button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} type='button' className={label.label_name===this.state.currentLabel ? 'btn btn-success':'btn btn-primary'} onClick={this.handleLabelClick}> {label.label_name} </button>
-          ))}
-
-          <div className='row'>
-            
-            <div className='col-sm'>
-              <div className='float-right mb-3'>
-                <SendTo studies={this.state.selectedRows} />
-              </div>
+          <Row className="border-bottom border-2 pb-3">
+              <Col className="d-flex justify-content-start align-items-center">
+                  <i className="far fa-images ico me-3"></i><h2 className="card-title">My Dicom</h2>
+              </Col>
+          </Row>
+          <Row className="mt-5">
+            <Col>
+              {this.state.labels.map(label => (
+                <button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} type='button' className={label.label_name===this.state.currentLabel ? 'otjs-button otjs-button-green':'otjs-button otjs-button-blue'} onClick={this.handleLabelClick}> {label.label_name} </button>
+              ))}
+            </Col>
+          </Row>
+          <Row className="mt-5">
+            <Col sm>
               <TableMyDicomPatientsStudies 
-                data={this.state.studies}
-                onRowClick={this.onStudyRowClick}
-                onSelect={this.onStudyCheckboxClick}
-                rowStyle={this.rowStyleStudies}
-              />
-            </div>
-
-            <div className='col-sm'>
+                  data={this.state.studies}
+                  onRowClick={this.onStudyRowClick}
+                  onSelect={this.onStudyCheckboxClick}
+                  rowStyle={this.rowStyleStudies}
+                />
+            </Col>
+            <Col sm>
               <TableMyDicomSeriesFillFromParent 
-                studyID={this.state.currentStudyID}   
-              />
-            </div>
-
-          </div>
+                  studyID={this.state.currentStudyID}   
+                />
+            </Col>
+          </Row>
+          <Row className="mt-5">
+            <Col>
+              <SendTo studies={this.state.selectedRows} />
+            </Col>
+          </Row>
         </div>
     )
   }

@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect, useMemo, useState} from 'react';
 import {connect} from 'react-redux'
 import {toast} from 'react-toastify'
-
+import {Col, Row} from 'react-bootstrap'
 import {addSeriesDetails, addSeriesFiltered, emptyResultsTable, removeSeriesResult} from '../../../actions/TableResult'
 import apis from '../../../services/apis';
 import {
@@ -101,17 +101,21 @@ function TableResultsStudiesSeries({
 
     return (
         <Fragment>
-            <input type="button" className="btn btn-warning m-2" value="Delete Selected" onClick={() => {
-                removeSeriesResult(selected.map(x => x.values.raw.SeriesInstanceUID));
-            }}/>
-            <input type="button" className="btn btn-danger m-2" value="Empty Table" onClick={emptyResultsTable}/>
-            <div className="mt-5">
+            <Row className="text-center">
+                <Col>
+                    <input type="button" className="otjs-button otjs-button-orange w-10 me-4" value="Delete Selected" onClick={() => {
+                        removeSeriesResult(selected.map(x => x.values.raw.SeriesInstanceUID));
+                    }}/>
+                    <input type="button" className="otjs-button otjs-button-red w-10 ms-4" value="Empty Table" onClick={emptyResultsTable}/>
+                </Col>
+            </Row>
+            <Row className="mt-5 text-center">
                 <CommonSelectingSortingFilteringTable tableData={data} columns={columns} onSelect={setSelected}
                                                       onFilter={(filtered => {
                                                           let filteredSeriesUID = filtered.map(row => row.values.SeriesInstanceUID)
                                                           addSeriesFiltered(filteredSeriesUID)
-                                                      })}/>
-            </div>
+                })}/>
+            </Row>
         </Fragment>
     )
 }

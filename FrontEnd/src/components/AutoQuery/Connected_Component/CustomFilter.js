@@ -63,7 +63,7 @@ class CustomFilter extends Component {
         return (
             <Fragment>
                 <Select isMulti options={this.props.options} defaultValue={this.getDefaultValues()} onChange={(values) => this.filter(this.state.reverse, values ? values : [])} styles={this.customStyles} />
-                <input type="button" className="btn btn-info m-2" value={this.state.reverse ? 'Normal Filter' : 'Reverse Filter'} onClick={this.handleClick} />
+                <input type="button" className="otjs-button otjs-button-blue w-10 m-2" value={this.state.reverse ? 'Normal Filter' : 'Reverse Filter'} onClick={this.handleClick} />
             </Fragment>
 
         );

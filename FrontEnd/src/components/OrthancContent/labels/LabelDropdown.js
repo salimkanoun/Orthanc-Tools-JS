@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import DropdownButton from "react-bootstrap/DropdownButton";
+import {ButtonGroup} from "react-bootstrap";
 import apis from "../../../services/apis";
 import {Dropdown, FormControl, InputGroup} from "react-bootstrap";
 
@@ -102,20 +102,27 @@ export default class LabelDropdown extends Component {
     render() {
         let filteredLabels = this.state.labels.filter(label => label.includes(this.state.search))
         return (
-            <DropdownButton className={this.props.className} title="Labels" onClick={this.handleOpenClick}>
-                <Dropdown.ItemText className={'label-dropdown-item'}>
-                    <InputGroup>
-                        <InputGroup.Text>{'Search'}</InputGroup.Text>
-                        <FormControl
-                            placeholder="filter"
-                            aria-label="search"
-                            onChange={this.handleSearchInput}
-                        />
-                        <InputGroup.Text>{filteredLabels.length}</InputGroup.Text>
-                    </InputGroup>
-                </Dropdown.ItemText>
+            <>
+            <Dropdown as={ButtonGroup}>
+                <Dropdown.Toggle variant="button-dropdown-blue" className="mb-4 button-dropdown button-dropdown-blue" id="dropdown-custom-1">Label</Dropdown.Toggle>
+                <Dropdown.Menu className="mt-2 border border-dark border-2">
+                    <Dropdown.ItemText className='label-dropdown-item'>
+                        <InputGroup>
+                            <InputGroup.Text>{'Search'}</InputGroup.Text>
+                            <FormControl
+                                placeholder="filter"
+                                aria-label="search"
+                                onChange={this.handleSearchInput}
+                            />
+                            <InputGroup.Text>{filteredLabels.length}</InputGroup.Text>
+                        </InputGroup>
+                    </Dropdown.ItemText>
+                    
+                </Dropdown.Menu>
                 {filteredLabels.map(this.getLabelComponent)}
-            </DropdownButton>
+            </Dropdown>
+            
+            </>
         )
     }
 }

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {useSelector} from 'react-redux'
-
+import { Row, Col } from 'react-bootstrap'
 import TableQuery from './TableQuery'
 import Results from './Results'
 import RobotView from './RobotView'
@@ -61,36 +61,44 @@ const AutoQueryRoot = () => {
     return (
         <div>
             <div className='mb-5'>
-                <ul className='nav nav-pills nav-fill'>
-                    <li className='nav-item'>
-                        <button
-                            className={currentMainTab === QUERRY ? 'col link-button nav-link active' : ' col link-button nav-link'}
-                            onClick={() => setCurrentMainTab(QUERRY)}>Query List
-                        </button>
-                    </li>
-                    <li className='nav-item'>
-                        <button
-                            className={currentMainTab === RESULT ? 'col link-button nav-link active' : 'col link-button nav-link'}
-                            onClick={() => setCurrentMainTab(RESULT)}>Results
-                        </button>
-                    </li>
-                    <li className='nav-item'>
-                        <button
-                            className={currentMainTab === MY_ROBOT ? 'col link-button nav-link active' : 'col link-button nav-link' + (!lastTaskId ? " disabled" : "")}
-                            onClick={() => {
-                                if (lastTaskId) setCurrentMainTab(MY_ROBOT)
-                            }}>My Retrieve Robot
-                        </button>
-                    </li>
-                    <li className='nav-item'>
-                        <button
-                            className={currentMainTab === HISTORIC ? 'col link-button nav-link active' : 'col link-button nav-link'}
-                            onClick={() => setCurrentMainTab(HISTORIC)}>History
-                        </button>
-                    </li>
-                </ul>
+                <Row className="pb-3">
+                    <Col className="d-flex justify-content-start align-items-center">
+                        <i className="fas fa-recycle ico me-3"></i><h2 className="card-title">Auto-Retrieve</h2>
+                    </Col>
+                </Row>
+                <nav className='otjs-navmenu container-fluid'>
+                    <div className="otjs-navmenu-nav">
+                        <li className='col-3 text-center'>
+                            <button
+                                className={currentMainTab === QUERRY ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'}
+                                onClick={() => setCurrentMainTab(QUERRY)}>Query List
+                            </button>
+                        </li>
+                        <li className='col-3 text-center'>
+                            <button
+                                className={currentMainTab === RESULT ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'}
+                                onClick={() => setCurrentMainTab(RESULT)}>Results
+                            </button>
+                        </li>
+                        <li className='col-3 text-center'>
+                            <button
+                                className={currentMainTab === MY_ROBOT ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button' + (!lastTaskId ? " disabled" : "")}
+                                onClick={() => {
+                                    if (lastTaskId) setCurrentMainTab(MY_ROBOT)
+                                }}>My Retrieve Robot
+                            </button>
+                        </li>
+                        <li className='col-3 text-center'>
+                            <button
+                                className={currentMainTab === HISTORIC ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'}
+                                onClick={() => setCurrentMainTab(HISTORIC)}>History
+                            </button>
+                        </li>
+                    </div>
+                </nav>
             </div>
             <div>
+                
                 {getComponentToDisplay()}
             </div>
         </div>

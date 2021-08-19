@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from 'react'
 import {connect} from 'react-redux'
 import {toast} from 'react-toastify';
+import { Row, Col } from 'react-bootstrap';
 
 import TablePatientsWithNestedStudies
     from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies'
@@ -92,25 +93,39 @@ class Delete extends Component {
     render = () => {
         return (
             <Fragment>
-                <div>
-                    <h2 className="card-title mb-3">Delete</h2>
-                    <div className="float-right mb-3">
-                        <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty}>Empty List
-                        </button>
-                    </div>
-                    <TablePatientsWithNestedStudies
-                        studies={this.props.deleteList}
-                        hiddenActionBouton={true}
-                        hiddenSelect={true}
-                        hiddenRemoveRow={false}
-                        onDeletePatient={this.onDeletePatient}
-                        onDeleteStudy={this.onDeleteStudy}
-                        wrapperClasses="table-responsive"/>
-                    <div className="text-center">
-                        <button type="button" className="btn btn-danger" onClick={this.handleConfirm}>Delete List
-                        </button>
-                    </div>
-                </div>
+                <Row>
+                    <Row className="border-bottom border-2 pb-3">
+                        <Col className="d-flex justify-content-start align-items-center">
+                            <i className="fas fa-trash-alt ico me-3"></i><h2 className="card-title">Delete</h2>
+                        </Col>
+                    </Row>
+                    <Row className="text-start mt-5">
+                        <Col>
+                            <button type="button" className="otjs-button otjs-button-orange w-7" onClick={this.handleClickEmpty}>Empty List
+                            </button>
+                        </Col>
+                    </Row>
+                    <Row className="mt-5">
+                        <Col>
+                            <TablePatientsWithNestedStudies
+                                studies={this.props.deleteList}
+                                hiddenActionBouton={true}
+                                hiddenSelect={true}
+                                hiddenRemoveRow={false}
+                                onDeletePatient={this.onDeletePatient}
+                                onDeleteStudy={this.onDeleteStudy}
+                                wrapperClasses="table-responsive"/>
+                        </Col>
+                    </Row>
+                    <Row className="mt-5">
+                        <Col>
+                            <button type="button" className="otjs-button otjs-button-red w-7" onClick={this.handleConfirm}>
+                                Delete List
+                            </button>
+                        </Col>
+                    </Row>
+                </Row>
+                   
                 <ModalDelete show={this.state.show} onHide={this.handleConfirm} onClick={this.handleClickDelete}/>
             </Fragment>
 

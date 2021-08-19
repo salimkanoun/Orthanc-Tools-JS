@@ -6,9 +6,9 @@ import {addStudyResult} from '../../../actions/TableResult'
 import {loadAvailableAETS} from '../../../actions/OrthancTools'
 
 import apis from '../../../services/apis';
-import {FormControl} from "react-bootstrap";
+import {FormControl, Row, Col} from "react-bootstrap";
 import {
-    DateFilter,
+    DateFilter, 
     dateFilter as dFilter,
     InputFilter
 } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFilters";
@@ -138,17 +138,18 @@ class TableQuery extends Component {
     render = () => {
         return (
             <React.Fragment>
-                <div>
-                    <div className="row">
-                        <div className="col-sm">
-                            <CsvLoader/>
-                            <input type="button" className="btn btn-success m-2" value="Add"
-                                   onClick={this.props.addRow}/>
-                            <input type="button" className="btn btn-warning m-2" value="Delete Selected"
-                                   onClick={this.removeRow}/>
-                            <input type="button" className="btn btn-danger m-2" value="Empty Table"
-                                   onClick={this.emptyTable}/>
-                            <ExportCSVButton data={this.props.queries.map(row => ({
+                <Row>
+                    <Col>
+                        <CsvLoader/>
+                    </Col>
+                </Row>
+                <Row className="text-center mt-5">
+                    <Col sm={3}>
+                        <input type="button" className="otjs-button otjs-button-blue w-7" value="Add"
+                                onClick={this.props.addRow}/>
+                    </Col>
+                    <Col sm={3}>
+                        <ExportCSVButton data={this.props.queries.map(row => ({
                                     'Patient Name': row.PatientName,
                                     'Patient ID': row.PatientID,
                                     'Accession Number': row.AccessionNumber,
@@ -159,17 +160,28 @@ class TableQuery extends Component {
                                     'AET': row.Aet
                                 }
                             ))}/>
-                        </div>
-                    </div>
-                    <div className="mt-5">
+                    </Col>
+                    <Col sm={6}>
+                        <input type="button" className="otjs-button otjs-button-orange m-2 w-10" value="Delete Selected"
+                                onClick={this.removeRow}/>
+                       
+                        
+                        <input type="button" className="otjs-button otjs-button-red m-2 w-10" value="Empty Table"
+                                onClick={this.emptyTable}/>
+                    </Col>
+                </Row>
+                <Row className="text-center mt-5">
+                    <Col>
                         <Table queries={this.props.queries} onDataChange={this.changeHandler} aets={this.props.aets}
                                setOverride={this.handleOverride} overridesValues={this.state.overrides}
                                onSelect={this.handleSelect} onFilter={this.handleFilter}/>
-                    </div>
-                </div>
-                <div className="text-center">
-                    <input type="button" className="btn btn-primary" value="Query" onClick={this.query}/>
-                </div>
+                    </Col>
+                </Row>
+                <Row className="text-center mt-5">
+                    <Col>
+                        <input type="button" className="otjs-button otjs-button-blue" value="Query" onClick={this.query}/>
+                    </Col>
+                </Row>
 
             </React.Fragment>
         )

@@ -23,7 +23,7 @@ export default function Peer({peersData, refreshPeerData}) {
         Header: 'Echo Peer',
         Cell: ({row}) => {
             return (<div className="text-center">
-                <input type="button" className='btn btn-info' onClick={() => {
+                <input type="button" className='otjs-button otjs-button-blue' onClick={() => {
                     apis.peers.echoPeer(row.values.name).then((response) => {
                         toast.success('Version ' + row.values.name + ' = ' + response.Version)
                     }).catch((error) => toast.error(error.statusText))
@@ -37,7 +37,7 @@ export default function Peer({peersData, refreshPeerData}) {
         Cell: ({row}) => {
             return (
                 <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={async () => {
+                    <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                         try {
                             await apis.peers.deletePeer(row.values.name);
                             refreshPeerData()

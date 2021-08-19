@@ -30,7 +30,7 @@ export default function WebdavEndpoints({onDeleteEndpoint, endpointsData}) {
             Cell: ({row}) => {
                 return (
                     <div className="text-center">
-                        <input type="button" className='btn btn-danger' onClick={async () => {
+                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                             await onDeleteEndpoint(row.values.id)
                         }} value="Remove"/>
                     </div>)
@@ -41,7 +41,7 @@ export default function WebdavEndpoints({onDeleteEndpoint, endpointsData}) {
 
     return (
         <Fragment>
-            <h2>Webdav Export Endpoints</h2>
+            <h2 className="mt-5 card-title">Webdav Export Endpoints</h2>
             <CommonTable columns={columns} tableData={data}/>
         </Fragment>
     )

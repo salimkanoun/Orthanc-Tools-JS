@@ -30,7 +30,7 @@ export default function FtpEndpoints({endpointsData, onDeleteEndpoint}) {
             Cell: ({row}) => {
                 return (
                     <div className="text-center">
-                        <input type="button" className='btn btn-danger' onClick={async () => {
+                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                             await onDeleteEndpoint(row.values.id)
                         }} value="Remove"/>
                     </div>)
@@ -40,7 +40,7 @@ export default function FtpEndpoints({endpointsData, onDeleteEndpoint}) {
 
     return (
         <Fragment>
-            <h2>FTP/FTPS Export Endpoints</h2>
+            <h2 className="card-title mt-5">FTP/FTPS Export Endpoints</h2>
             <CommonTable tableData={endpointsData} columns={columns}/>
         </Fragment>
     )

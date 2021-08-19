@@ -1,11 +1,10 @@
 import React, {Component, useMemo} from 'react'
 
-import Badge from 'react-bootstrap/Badge'
+import {Row, Col, Badge} from 'react-bootstrap'
 
 import Toggle from 'react-toggle'
 
 import apis from '../../services/apis'
-import {ReactComponent as SpeakerSVG} from '../../assets/images/sounds.svg'
 import {toast} from 'react-toastify';
 import CommonTable from "../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
@@ -51,7 +50,7 @@ function BurnerJobsTables({jobs}) {
                 let disable = (row.values.status === CDBurner.JOB_STATUS_BURNING_DONE || row.values.status === CDBurner.JOB_STATUS_BURNING_ERROR)
                 return (
                     <div className="text-center">
-                        <input type="button" className='btn btn-danger' onClick={async () => {
+                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                             try {
                                 await apis.cdBurner.cancelCdBurner(row.cdJobID)
                             } catch (error) {
@@ -162,7 +161,7 @@ export default class CDBurner extends Component {
         this.setState({
             playSound: (e.target.checked)
         })
-
+        
     }
 
     componentDidMount = async () => {
@@ -181,28 +180,30 @@ export default class CDBurner extends Component {
     render = () => {
         return (
             <div>
-                <div className="row mb-3">
-                    <div className="col-10">
-                        <div className="row">
-                            <div className="col">
-                                <h2>CD Burner Service</h2>
-                            </div>
-                            <div className="col">
-                                <Toggle checked={this.state.robotStarted} onChange={this.toogleHandler}
+                <Row className="border-bottom border-2 pb-3 align-items-center">
+                    <Col sm={8} className="d-flex justify-content-start align-items-center">
+                        <i className="fas fa-compact-disc ico me-3"></i><h2 className="card-title">CD Burner Service</h2>
+                    </Col>
+                    <Col sm={2}>
+                        <Toggle checked={this.state.robotStarted} onChange={this.toogleHandler}
                                         disabled={!this.state.firstRefresh}/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-2">
-                        <SpeakerSVG className="mr-3" style={{height: '30px', width: '30px'}}/>
+                    </Col>
+                    <Col sm={2} className="d-flex justify-content-start align-items-center">
+                        <h4>
+                            <i id="soundIcone" className={this.state.playSound === true ? "fas fa-volume-up me-2" : "fas fa-volume-mute me-2"}></i>
+                        </h4>
                         <Toggle checked={this.state.playSound} onChange={this.soundHandler}/>
+                    </Col>
+                </Row>
 
-                    </div>
-                </div>
                 <div className="mb-3 float-right">
                     <Badge variant="info"> Queuded Jobs : {this.state.queuededJobs} </Badge>
                 </div>
-                <BurnerJobsTables jobs={this.state.burnerJobs}/>
+                <Row className="mt-5">
+                    <Col>
+                        <BurnerJobsTables jobs={this.state.burnerJobs}/>
+                    </Col>
+                </Row>
             </div>
         )
     }

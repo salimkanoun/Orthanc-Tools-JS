@@ -1,6 +1,5 @@
 import React, { Component } from "react"
-import Dropdown from "react-bootstrap/Dropdown"
-import DropdownButton from "react-bootstrap/DropdownButton"
+import { Dropdown, ButtonGroup } from "react-bootstrap"
 import { toast } from "react-toastify"
 
 import apis from '../../services/apis'
@@ -54,14 +53,21 @@ export default class DownloadDropdown extends Component {
     render = () => {
 
         return (
-            <DropdownButton onClick={this.handleRootClick} variant="success" disabled={this.state.disabled} title={this.state.buttonText}>
-                <Dropdown.Item id='hirarchical' onClick={this.handleClickDownload}>
-                    Hirarchical
-                </Dropdown.Item>
-                <Dropdown.Item id='dicomdir' onClick={this.handleClickDownload}>
-                    Dicomdir
-                </Dropdown.Item>
-            </DropdownButton>
+            <Dropdown as={ButtonGroup} onClick={this.handleRootClick}>
+                <Dropdown.Toggle variant="button-dropdown-blue" className="button-dropdown button-dropdown-blue w-7" id="dropdown-basic" disabled={this.state.disabled}>
+                    {this.state.buttonText}
+                </Dropdown.Toggle>
+                
+                <Dropdown.Menu className="mt-2 border border-dark border-2">
+                    <Dropdown.Item id='hirarchical' onClick={this.handleClickDownload}>
+                        Hirarchical
+                    </Dropdown.Item>
+                    <Dropdown.Item id='dicomdir' onClick={this.handleClickDownload}>
+                        Dicomdir
+                    </Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
+
         )
     }
 

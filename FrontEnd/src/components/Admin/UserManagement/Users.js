@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react'
-import Modal from 'react-bootstrap/Modal';
+import {Modal, Row, Col} from 'react-bootstrap';
 
 import apis from '../../../services/apis';
 
@@ -94,30 +94,45 @@ export default class Users extends Component {
     render = () => {
         return (
             <Fragment>
-                <div>
+                <Row>
                     <h2 className='card-title'>Local Users</h2>
-                    <CreateUser getUsers={this.getUsers}/>
-                    <UserTable users={this.state.users} roles={this.state.roles} modify={this.modify}
+                </Row>
+                <Row className="mt-5">
+                    <Col>
+                        <CreateUser getUsers={this.getUsers}/>
+                    </Col>
+                </Row>
+                <Row className="mt-3">
+                    <Col>
+                        <UserTable users={this.state.users} roles={this.state.roles} modify={this.modify}
                                setDelete={(username, userId) => {
                                    this.setState({
                                        username,
                                        userId,
                                        showDelete: true
                                    })
-                               }} onUserUpdate={this.changeHandler}/>
-                </div>
+                        }} onUserUpdate={this.changeHandler}/>
+                    </Col>
+                </Row>
                 <Modal id='delete' show={this.state.showDelete} onHide={this.resetState} size='sm'>
                     <Modal.Header closeButton>
                         <h2 className='card-title'>Delete User</h2>
                     </Modal.Header>
-                    <Modal.Body>
+                    <Modal.Body className="text-center">
                         Are You sure to delete {this.state.username} ?
                     </Modal.Body>
                     <Modal.Footer>
-                        <button type='button' className='btn btn-danger' onClick={this.delete}>Delete</button>
-                        <button type='button' className='btn btn-info'
-                                onClick={() => this.setState({showDelete: false})}>Close
-                        </button>
+                        <Row className="text-center mt-2">
+                            <Col>
+                                <button type='button' className='otjs-button otjs-button-blue'
+                                    onClick={() => this.setState({showDelete: false})}>Close
+                                </button>
+                            </Col>
+                            <Col>
+                                <button type='button' className='otjs-button otjs-button-red' onClick={this.delete}>Delete</button>
+                            </Col>
+                        </Row>
+                        
                     </Modal.Footer>
                 </Modal>
 

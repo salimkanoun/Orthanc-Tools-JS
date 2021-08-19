@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react'
 import Select from 'react-select'
 import {toast} from 'react-toastify'
 import apis from '../../../services/apis'
-
+import {Row, Col} from 'react-bootstrap'
 /**
  * Form to declare or modify an Ssh Keys
  */
@@ -99,56 +99,118 @@ export default class EndpointForm extends Component {
         return (
             <Fragment>
                 <h2 className="card-title">Add Export Endpoint</h2>
-                <div className="form-group grid-form-group">
-                    <label htmlFor="protocol">Protocol </label>
-                    <Select classNamePrefix="select" name="protocol" single options={this.protocols}
-                            onChange={this.handleSelectChange('protocol')} value={this.protocols[this.state.protocol]}/>
-                    <label htmlFor="label">Label : </label>
-                    <input type='text' name="label" className="form-control" onChange={this.handleChange}/>
-                    <label htmlFor="host">Host : </label>
-                    <input type='text' name="host" className="form-control" onChange={this.handleChange}/>
-                    <label htmlFor="port">Port : </label>
-                    <input type='number' name="port" className="form-control" onChange={this.handleChange}/>
-                    <label htmlFor="username">Username : </label>
-                    <input type='text' name="username" className="form-control" onChange={this.handleChange}/>
-                    {
-                        this.state.protocol === 'sftp' ?
-                            <><label htmlFor="ssh">Use a private key?</label>
-                                <input type='checkbox' name="ssh" className="form-check-input"
-                                       onChange={this.handleChange}/></> :
+                <div className="form-group mt-4">
+                    <Row className="align-items-center">
+                        <Col sm={2}>
+                            <label htmlFor="protocol">Protocol </label>
+                        </Col>
+                        <Col sm={4}>
+                            <Select classNamePrefix="select" name="protocol" single options={this.protocols}
+                                onChange={this.handleSelectChange('protocol')} value={this.protocols[this.state.protocol]}/>
+                        </Col>
+                        <Col sm={2}>
+                            <label htmlFor="label">Label : </label>
+                        </Col>
+                        <Col sm={4}>
+                            <input type='text' name="label" className="form-control" onChange={this.handleChange}/>
+                        </Col>
+                    </Row>
+                    <Row className="align-items-center mt-4">
+                        <Col sm={2}>
+                            <label htmlFor="host">Host : </label>
+                        </Col>
+                        <Col sm={4}>
+                            <input type='text' name="host" className="form-control" onChange={this.handleChange}/>
+                        </Col>
+                        <Col sm={2}>
+                            <label htmlFor="port">Port : </label>
+                        </Col>
+                        <Col sm={4}>
+                            <input type='number' name="port" className="form-control" onChange={this.handleChange}/>
+                        </Col>
+                    </Row>
+                    <Row className="align-items-center mt-4">
+                        {
+                            this.state.protocol === 'sftp' ?
+                            <>
+                                <Col sm={2}>
+                                    <label htmlFor="ssh">Use a private key?</label>
+                                </Col>
+                                <Col sm={2}>
+                                    <input type='checkbox' name="ssh" className="form-check-input"
+                                    onChange={this.handleChange}/>
+                                </Col></> :
                             <></>
-                    }
-                    {
-                        this.state.ssh && this.state.protocol === 'sftp' ?
-                            <><label htmlFor="sshKey">Ssh Key : </label>
-                                <Select classNamePrefix="select" name="sshKey" single options={this.state.keys}
-                                        onChange={this.handleSelectChange('sshKey')}
-                                        value={this.state.keys[this.state.sshKey]}/></> :
-                            <><label htmlFor="password">Password : </label>
-                                <input type='password' name="password" className="form-control"
-                                       onChange={this.handleChange}/></>
-                    }
-                    <label htmlFor="targetFolder">Destination Folder : </label>
-                    <input type='text' name="targetFolder" className="form-control" onChange={this.handleChange}/>
-                    {
-                        this.state.protocol === 'ftp' ?
-                            <><label htmlFor="ssl">Use ssl?</label>
-                                <input type='checkbox' name="ssl" className="form-check-input"
-                                       onChange={this.handleChange}/></> :
-                            <></>
-                    }
-                    {
-                        this.state.protocol === 'webdav' ?
-                            <><label htmlFor="digest">Use digest?</label>
-                                <input type='checkbox' name="digest" className="form-control"
-                                       onChange={this.handleChange}/></> :
-                            <></>
-                    }
+                        }
+                        {
+                            this.state.protocol === 'ftp' ?
+                                <>
+                                <Col sm={2}>
+                                    <label htmlFor="ssl">Use ssl?</label>
+                                </Col>
+                                <Col sm={2}>
+                                    <input type='checkbox' name="ssl" className="form-check-input"
+                                        onChange={this.handleChange}/>
+                                </Col></> :
+                                   <> </>
+                        }
+                        {
+                            this.state.protocol === 'webdav' ?
+                                <>
+                                <Col sm={2}>
+                                    <label htmlFor="digest">Use digest?</label>
+                                </Col>
+                                <Col sm={2}>
+                                    <input type='checkbox' name="digest" className="form-check-input"
+                                        onChange={this.handleChange}/>
+                                </Col></> :
+                                <></>
+                        }
+                    </Row>
+                    <Row className="align-items-center mt-4">
+                        <Col sm={2}>
+                            <label htmlFor="username">Username : </label>
+                        </Col>
+                        <Col sm={4}>
+                            <input type='text' name="username" className="form-control" onChange={this.handleChange}/>
+                        </Col>
+                            {
+                                this.state.ssh && this.state.protocol === 'sftp' ?
+                                <>
+                                    <Col sm={2}>
+                                        <label htmlFor="sshKey">Ssh Key : </label>
+                                    </Col>
+                                    <Col sm={4}>
+                                        <Select classNamePrefix="select" name="sshKey" single options={this.state.keys}
+                                            onChange={this.handleSelectChange('sshKey')}
+                                            value={this.state.keys[this.state.sshKey]}/>
+                                    </Col></> : <>
+                                    <Col sm={2}>
+                                        <label htmlFor="password">Password : </label>
+                                    </Col>
+                                    <Col sm={4}>
+                                        <input type='password' name="password" className="form-control"
+                                            onChange={this.handleChange}/>
+                                    </Col>
+                                   </>
+                            } 
+                    </Row>
+                   
+                    <Row className="align-items-center mt-4">
+                        <Col sm={2}>
+                            <label htmlFor="targetFolder">Destination Folder : </label>
+                        </Col>
+                        <Col>
+                            <input type='text' name="targetFolder" className="form-control" onChange={this.handleChange}/>
+                        </Col>
+                    </Row>
                 </div>
-                <div className="text-right mb-5">
-                    <input disabled={!this.readyToSubmit()} type='button' className='row btn btn-primary'
-                           onClick={this.handleClick} value='send'/>
-                </div>
+                <Row className="text-center mt-4">
+                    <Col>
+                        <input disabled={!this.readyToSubmit()} type='button' className='otjs-button otjs-button-blue'
+                           onClick={this.handleClick} value='Send'/>
+                    </Col>
+                </Row>
             </Fragment>
         )
     }

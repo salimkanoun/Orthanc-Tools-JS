@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Alert} from "react-bootstrap/";
+import {Alert, Col, Row} from "react-bootstrap/";
 import Toggle from 'react-toggle'
 import apis from "../../services/apis";
 import DicomRouterTable from './DicomRouterTable'
@@ -106,15 +106,24 @@ class DicomRouterPanel extends Component {
     return(
       <div>
         <div><Alert show={this.state.message} variant='info'>To apply changes on the router (re)start it !</Alert></div>
-
-        <div>
-          <h2>Dicom Router</h2>
-          <Toggle checked={this.state.service_running} onChange={(e) => this.handleAutorouterService(e)} />
-        </div>
-      
-        <Button className='btn btn-warning float-right' onClick={() => this.handleOpenModal()}>Create Router</Button>
-        <DicomRouterTable data={this.state.routers} refresh={() => this.refreshData()} modify={this.handleOpenModal} showMessage={this.showMessage} />
-        <DicomRouterModal data={this.state.modify} showModal={this.state.showModal} close={()=> this.handleCloseModal()} refresh={() => this.refreshData()} showMessage={this.showMessage}/>
+        <Row className="border-bottom border-2 pb-3">
+            <Col className="d-flex justify-content-start align-items-center">
+                <i className="fas fa-broadcast-tower ico me-3"></i><h2 className="card-title">Dicom Router</h2>
+            </Col>
+            <Col className="text-center">
+              <Toggle checked={this.state.service_running} onChange={(e) => this.handleAutorouterService(e)} />
+            </Col>
+        </Row>
+        <Row className="mt-5">
+          <button type="button" className="otjs-button otjs-button-blue w-10" onClick={() => this.handleOpenModal()}>Create Router</button>
+        </Row>
+        <Row className="mt-5 text-center">
+          <Col>
+            <DicomRouterTable data={this.state.routers} refresh={() => this.refreshData()} modify={this.handleOpenModal} showMessage={this.showMessage} />
+            <DicomRouterModal data={this.state.modify} showModal={this.state.showModal} close={()=> this.handleCloseModal()} refresh={() => this.refreshData()} showMessage={this.showMessage}/>
+          </Col>
+        </Row>
+        
       </div>
     )
   }

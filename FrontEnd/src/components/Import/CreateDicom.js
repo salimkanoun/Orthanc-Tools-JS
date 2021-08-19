@@ -17,7 +17,7 @@ export default class CreateDicom extends Component {
         if(file.length > 1) return
 
         await this.__pFileReader(file[0]).then(async (content) => {
-            try {
+            try { 
                 let response = await apis.importDicom.createDicom( content.result, 'studyOrthancID', {})
                 console.log(response)
 

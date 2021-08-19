@@ -24,7 +24,7 @@ function HistoricTable({tasks, deleteJobHandler, setSelectedTask}) {
         Header: 'Show Details',
         Cell: ({row}) => {
             return (<div className="text-center">
-                <input type="button" className='btn btn-primary' onClick={setSelectedTask(row.values.id)}
+                <input type="button" className='otjs-button otjs-button-green w-10' onClick={setSelectedTask(row.values.id)}
                        value="Show Result"/>
             </div>)
         }
@@ -34,7 +34,7 @@ function HistoricTable({tasks, deleteJobHandler, setSelectedTask}) {
         Cell: ({row}) => {
             return (
                 <div className="text-center">
-                    <input type="button" className='btn btn-danger'
+                    <input type="button" className='otjs-button otjs-button-red w-10'
                            onClick={() => deleteJobHandler(row.id)}
                            value="Remove Job"/>
                 </div>

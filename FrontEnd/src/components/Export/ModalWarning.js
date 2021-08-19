@@ -13,7 +13,7 @@ export default class ModalWarning extends Component {
                     Some studies are not anonymized !
                 </Modal.Body>
                 <Modal.Footer>
-                    <button type='button' className='btn btn-info' onClick={this.props.onHide}>Cancel</button>
+                    <button type='button' className='otjs-button otjs-button-red' onClick={this.props.onHide}>Cancel</button>
                     {this.props.button}
                 </Modal.Footer>
             </Modal>

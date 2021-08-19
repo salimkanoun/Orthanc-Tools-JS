@@ -89,7 +89,7 @@ class DeleteTool extends Component {
     render = () => {
         return (
             <Fragment>
-                <Overlay target={this.props.target} show={this.props.show} placement="left" onHide={this.props.onHide}
+                <Overlay target={this.props.target} show={this.props.show} placement="bottom" onHide={this.props.onHide}
                          rootClose>
                     <Popover id="popover-basic" style={{maxWidth: '100%'}}>
                         <Popover.Header as="h3">Delete List</Popover.Header>

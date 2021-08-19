@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import Modal from 'react-bootstrap/Modal'
+import {Row, Col, Modal} from 'react-bootstrap'
 
 import RoleForm from './RoleForm'
 import apis from '../../../services/apis'
@@ -31,18 +31,24 @@ export default class CreateRole extends Component {
     render = () => {
         return (
             <Fragment>
-                <button type='button' className='btn btn-primary mb-3 float-right' onClick={() => this.setState({ show: true })} >New Role</button>
+                <button type='button' className='otjs-button otjs-button-blue' onClick={() => this.setState({ show: true })} >New Role</button>
                 <Modal id='create' show={this.state.show} onHide={() => this.setState({ show: false })}>
                     <Modal.Header closeButton>
                         <h2 className='card-title'>Create new role</h2>
                     </Modal.Header>
                     <Modal.Body>
-                        <label>Name*</label>
-                        <input className='form-control mb-4' type='text' placeholder='name' name='name' value={this.state.name} onChange={(e) => this.setState({ name: e.target.value })} required />
+                        <Row className="align-items-center">
+                            <Col sm={2}>
+                                <label>Name*</label>
+                            </Col>
+                            <Col sm={10}>
+                                <input className='form-control' type='text' placeholder='name' name='name' value={this.state.name} onChange={(e) => this.setState({ name: e.target.value })} required />
+                            </Col>
+                        </Row>
                         <RoleForm onSubmitRole={this.create} />
                     </Modal.Body>
                 </Modal>
-            </Fragment>
+            </Fragment> 
         );
     }
 }

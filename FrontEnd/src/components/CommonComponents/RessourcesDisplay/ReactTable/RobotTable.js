@@ -36,7 +36,7 @@ export default function RobotTable({
             id: 'details',
             Header: 'Show Details',
             Cell: ({row}) => {
-                return <Link className='nav-link btn btn-info' to={'/robot/' + row.values.id}> Details </Link>
+                return <Link className='nav-link otjs-button otjs-button-blue' to={'/robot/' + row.values.id}> Details </Link>
             }
         }, {
             accessor: "approved",
@@ -44,13 +44,13 @@ export default function RobotTable({
         }, {
             accessor: 'valid',
             Header: 'Validation Status',
-            show: !hideValidationButton,
+            show: !hideValidationButton, 
             Cell: ({row}) => {
                 if (row.values.valid) {
                     if (!row.values.approved) {
                         return (
                             <div className="text-center">
-                                <input type="button" className='btn btn-success'
+                                <input type="button" className='otjs-button otjs-button-green w-7'
                                        onClick={() => validationRobotHandler(row.values.id, refreshHandler)}
                                        value="Validate"/>
                             </div>
@@ -68,7 +68,7 @@ export default function RobotTable({
             Cell: ({row}) => {
                 return (
                     <div className="text-center">
-                        <input type="button" className='btn btn-danger'
+                        <input type="button" className='otjs-button otjs-button-red w-10'
                                onClick={() => deleteJobHandler(row.values.id, refreshHandler)}
                                value="Remove Job"/>
                     </div>

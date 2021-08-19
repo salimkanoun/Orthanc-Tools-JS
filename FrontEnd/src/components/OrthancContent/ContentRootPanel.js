@@ -3,6 +3,8 @@ import SearchForm from './SearchForm'
 import SendTo from '../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown'
 import apis from '../../services/apis'
 
+import {Col, Row} from 'react-bootstrap';
+
 import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
 import TablePatientsWithNestedStudies
     from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies'
@@ -12,7 +14,7 @@ import {addStudiesToExportList} from '../../actions/ExportList'
 import {addStudiesToAnonList} from '../../actions/AnonList'
 import {toast} from 'react-toastify'
 import LabelDropdown from "./labels/LabelDropdown";
-import LabelModal from "./labels/LabelModal";
+import LabelModal from "./labels/LabelModal"; 
 
 
 class ContentRootPanel extends Component {
@@ -32,6 +34,8 @@ class ContentRootPanel extends Component {
     }
 
     sendSearch = async (dataForm) => {
+        //Show result
+        this.showResult();
         if (dataForm) {
             //Store new form find value and send request to back
             this.setState({
@@ -137,42 +141,61 @@ class ContentRootPanel extends Component {
         //Get only unique study ids
         let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
         this.setState({selectedStudies: uniqueSelectedOrthancStudyId});
+<<<<<<< Updated upstream
+=======
+    }
+
+
+    showResult = () => {
+        var result = document.getElementById('showResult');
+        result.style.visibility = "visible";
+        result.style.opacity = "1";
+        result.style.height = "auto";
+
+>>>>>>> Stashed changes
     }
 
     render = () => {
         return (
             <div>
                 <SearchForm onSubmit={this.sendSearch}/>
-                <div className='row'>
-                    <div className='col-sm'>
-                        <div className={'d-flex flex-row justify-content-between'}>
-                            <LabelDropdown studies={this.state.selectedStudies}/>
-                            <SendTo
-                                studiesFull={this.state.selectedStudies}
+                <Row id="showResult" className='mt-5'>
+                    <Row >
+                        <Col sm={6}>
+                            <div className='d-flex flex-row justify-content-between mt-4'>
+                                <LabelDropdown studies={this.state.selectedStudies}/>
+                                <SendTo
+                                    studiesFull={this.state.selectedStudies}
+                                />
+                            </div>
+                        </Col> 
+                    </Row>
+                    <Row> 
+                        <Col sm>
+                            <LabelModal fwRef={this.modalRef}/>
+                            <TablePatientsWithNestedStudies
+                                studies={this.state.orthancContent}
+                                rowEventsStudies={this.rowEventsStudies}
+                                rowStyle={this.rowStyleStudies}
+                                onDeletePatient={this.onDeletePatient}
+                                onDeleteStudy={this.onDeleteStudy}
+                                setSelectedStudies={this.setSelectedStudies}
+                                onModify={this.sendSearch}
+                                refresh={this.sendSearch}
+                                hiddenRemoveRow={true}
+                                openLabelModal={this.modalRef.open}
                             />
-                        </div>
-                        <LabelModal fwRef={this.modalRef}/>
-                        <TablePatientsWithNestedStudies
-                            studies={this.state.orthancContent}
-                            rowEventsStudies={this.rowEventsStudies}
-                            rowStyle={this.rowStyleStudies}
-                            onDeletePatient={this.onDeletePatient}
-                            onDeleteStudy={this.onDeleteStudy}
-                            setSelectedStudies={this.setSelectedStudies}
-                            onModify={this.sendSearch}
-                            refresh={this.sendSearch}
-                            hiddenRemoveRow={true}
-                            openLabelModal={this.modalRef.open}
-                        />
-                    </div>
-                    <div className='col-sm'>
-                        <TableSeriesFillFromParent
-                            studyID={this.state.currentSelectedStudyId}
-                            onDeleteStudy={this.onDeleteStudy}
-                            onEmptySeries={() => console.log('No Series')}
-                            refreshSerie={this.refreshSerie}/>
-                    </div>
-                </div>
+                        </Col>
+                        <Col sm>
+                            <TableSeriesFillFromParent
+                                studyID={this.state.currentSelectedStudyId}
+                                onDeleteStudy={this.onDeleteStudy}
+                                onEmptySeries={() => console.log('No Series')}
+                                refreshSerie={this.refreshSerie}/>
+                        </Col>
+                    </Row>
+                        
+                </Row>
             </div>
         )
     }

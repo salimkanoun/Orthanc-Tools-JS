@@ -51,14 +51,14 @@ function Table({
             <BTable striped bordered responsive {...getTableProps()}>
                 <thead>
                 {headerGroups.map(headerGroup => (
-                    <tr {...headerGroup.getHeaderGroupProps()}>
+                    <tr className="text-center" {...headerGroup.getHeaderGroupProps()}>
                         {headerGroup.headers.map(column => (
                             <th {...column.getHeaderProps()}>{column.render('Header')}</th>
                         ))}
                     </tr>
                 ))}
                 </thead>
-                <tbody {...getTableBodyProps()}>
+                <tbody {...getTableBodyProps()}> 
                 {(pagination ? page : rows).map((row, i) => {
                     prepareRow(row)
                     return (

@@ -3,7 +3,7 @@ import {toast} from 'react-toastify';
 import apis from '../../../services/apis';
 import task from '../../../services/task';
 import RobotTable from "../../CommonComponents/RessourcesDisplay/ReactTable/RobotTable";
-
+import {Row, Col} from 'react-bootstrap'
 
 export default class RobotJistoric extends Component {
 
@@ -66,13 +66,23 @@ export default class RobotJistoric extends Component {
         })
     }
 
-    render = () => {
+    render = () => { 
         return (
             <>
-                <h2 className="card-title">Retrieve Robots : </h2>
-                <RobotTable robots={this.state.rows} deleteJobHandler={this.deleteJobHandler}
+                <Row className="mt-5">
+                    <Col>
+                        <h2 className="card-title">Retrieve Robots : </h2>
+                    </Col>
+                </Row>
+                <Row className="mt-5">
+                    <Col>
+                        <RobotTable robots={this.state.rows} deleteJobHandler={this.deleteJobHandler}
                             refreshHandler={this.refreshHandler} validationRobotHandler={this.validationRobotHandler}
                             hideValidation={true}/>
+                    </Col>
+                </Row>
+                
+               
             </>
         )
     }

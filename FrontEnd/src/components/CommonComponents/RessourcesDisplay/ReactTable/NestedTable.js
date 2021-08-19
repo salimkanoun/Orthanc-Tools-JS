@@ -135,6 +135,7 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
                     {headerGroup.headers.map(column => (
                         <th {...column.getHeaderProps(sorted ? column.getSortByToggleProps() : undefined)}>
                             {column.render('Header')}
+                            
                             {!!column.Filter && filtered ? column.render('Filter') : null}
                         </th>
                     ))}

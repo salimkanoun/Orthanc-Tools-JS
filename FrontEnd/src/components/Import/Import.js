@@ -3,7 +3,7 @@ import {connect} from "react-redux"
 
 import Dropzone from 'react-dropzone'
 import ProgressBar from 'react-bootstrap/ProgressBar'
-import Modal from 'react-bootstrap/Modal'
+import {Modal, Row, Col} from 'react-bootstrap'
 
 import TablePatientsWithNestedStudiesAndSeries
     from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudiesAndSeries'
@@ -224,46 +224,54 @@ class Import extends Component {
     render = () => {
         return (
             <div>
-                <h2 className="col card-title">Import Dicom Files</h2>
-                <div className="col mb-5">
-                    <Dropzone onDragEnter={() => this.dragListener(true)} onDragLeave={() => this.dragListener(false)}
-                              disabled={this.state.inProgress} onDrop={acceptedFiles => this.addFile(acceptedFiles)}>
-                        {({getRootProps, getInputProps}) => (
-                            <section>
-                                <div
-                                    className={(this.state.isDragging || this.state.inProgress) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
-                                    <input directory="" webkitdirectory="" {...getInputProps()} />
-                                    <p>{this.state.inProgress ? "Uploading" : "Drop Dicom Folder"}</p>
-                                </div>
-                            </section>
-                        )}
-                    </Dropzone>
-                    <ProgressBar variant='info' now={this.state.processedFiles} min={0} max={this.state.numberOfFiles}
-                                 label={this.state.processedFiles > 0 ? 'Uploading ' + this.state.processedFiles + '/' + this.state.numberOfFiles : null}/>
-                    <div className="float-right mt-3">
-                        <input type="button" className="btn btn-warning"
-                               value={"See Errors (" + this.state.errors.length + ")"}
-                               onClick={this.handleShowErrorClick}/>
-                    </div>
+                
+                <Row className="mt-5">
+                    <Col>
+                        <Dropzone onDragEnter={() => this.dragListener(true)} onDragLeave={() => this.dragListener(false)}
+                                disabled={this.state.inProgress} onDrop={acceptedFiles => this.addFile(acceptedFiles)}>
+                            {({getRootProps, getInputProps}) => (
+                                <section>
+                                    <div
+                                        className={(this.state.isDragging || this.state.inProgress) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
+                                        <input directory="" webkitdirectory="" {...getInputProps()} />
+                                        <p>{this.state.inProgress ? "Uploading" : "Drop Dicom Folder"}</p>
+                                    </div>
+                                </section>
+                            )}
+                        </Dropzone>
+                        <ProgressBar variant='info' now={this.state.processedFiles} min={0} max={this.state.numberOfFiles}
+                                    label={this.state.processedFiles > 0 ? 'Uploading ' + this.state.processedFiles + '/' + this.state.numberOfFiles : null}/>
+                    </Col>
+                </Row>
+                <Row className="mt-5">
+                    <Col>
+                        <input type="button" className="otjs-button otjs-button-red w-10"
+                            value={"See Errors (" + this.state.errors.length + ")"}
+                            onClick={this.handleShowErrorClick}/>
+                    </Col>
+                </Row>
 
-                    <Modal show={this.state.showErrors} onHide={this.handleShowErrorClick} size='xl'>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Errors</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <TableImportError data={this.state.errors}/>
-                        </Modal.Body>
-                    </Modal>
-
-                </div>
-                <div className="col">
-                    <TablePatientsWithNestedStudiesAndSeries
-                        patients={this.buildImportTree()}
-                    />
-                </div>
+                <Modal show={this.state.showErrors} onHide={this.handleShowErrorClick} size='xl'>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Errors</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <TableImportError data={this.state.errors}/>
+                    </Modal.Body>
+                </Modal>
+                <Row className="mt-5">
+                    <Col>
+                        <TablePatientsWithNestedStudiesAndSeries
+                            patients={this.buildImportTree()}
+                        />
+                    </Col>
+                </Row>
+            
                 <AnonExportDeleteSendButton onAnonClick={this.sendImportedToAnon}
                                             onExportClick={this.sendImportedToExport}
                                             onDeleteClick={this.sendImportedToDelete}/>
+                
+                
                 <Prompt when={this.state.inProgress} message='Import in progress. Quit this page will stop the import'/>
             </div>
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
-
+import { Row, Col } from 'react-bootstrap';
 export default class AutoRetrieveSchedule extends Component {
 
   /**Init state */
@@ -72,28 +72,42 @@ export default class AutoRetrieveSchedule extends Component {
     return (
       <div>
         <h2 className="card-title">Retrieve Schedule Time : </h2>
-        <div className="form-row">
-          <div className="col">
+        <Row className="align-items-center mt-4">
+          <Col sm={3}>
             <label htmlFor='hour_start'>Start Hour : </label>
+          </Col>
+          <Col sm={3}>
             <input type='number' name='hourStart' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStart} />
-          </div>
-          <div className="col">
+          </Col>
+          <Col sm={3}>
             <label htmlFor='min_start'>Start Minutes : </label>
+          </Col>
+          <Col sm={3}>
             <input type='number_start' name='minStart' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStart} />
-          </div>
-          <div className="col">
-            <label htmlFor='hour_stop'>Stop Hour : </label>
+          </Col>
+        </Row>
+        <Row className="align-items-center mt-4">
+          <Col sm={3}>
+          <label htmlFor='hour_stop'>Stop Hour : </label>
+          </Col>
+          <Col sm={3}>
             <input type='number' name='hourStop' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStop} />
-          </div>
-          <div className="col">
+          </Col>
+          <Col sm={3}>
             <label htmlFor='min_stop'>Stop Minutes : </label>
+          </Col>
+          <Col sm={3}>
             <input type='number' name='minStop' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStop} />
-          </div>
-        </div>
-        <div className="d-flex justify-content-between">
-          <p>Server time : {this.state.serverTime}</p>
-          <input type='button' className='btn btn-primary' onClick={this.handleClick} value='send' />
-        </div>
+          </Col>
+        </Row>
+        <Row className="mt-4">
+          <Col>
+            <p>Server time : {this.state.serverTime}</p>
+          </Col>
+          <Col>
+            <input type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Send' />
+          </Col>
+        </Row>
       </div>
 
     )

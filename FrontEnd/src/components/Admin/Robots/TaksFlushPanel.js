@@ -1,6 +1,6 @@
 import { Component, Fragment } from "react"
 import apis from '../../../services/apis'
-import Modal from 'react-bootstrap/Modal'
+import {Modal, Row, Col} from 'react-bootstrap'
 
 export default class RobotStatus extends Component {
     state = {
@@ -37,16 +37,34 @@ export default class RobotStatus extends Component {
         return (
             <Fragment>
                 <h2 className="card-title">Flush task</h2>
-                <div className="grid-button-group">
-                    <p>Flush anonymisation task : </p> 
-                    <input type='button' className='row btn btn-danger' onClick={()=>this.handleClick('anonymize')} value='flush' />
-                    <p>Flush delete task : </p>
-                    <input type='button' className='row btn btn-danger' onClick={()=>this.handleClick('delete')} value='flush' />
-                    <p>Flush export task : </p>
-                    <input type='button' className='row btn btn-danger' onClick={()=>this.handleClick('export')} value='flush' />
-                    <p>Flush retrieve task : </p>
-                    <input type='button' className='row btn btn-danger' onClick={()=>this.handleClick('retrieve')} value='flush' />
-                </div>
+                <Row className="mt-4 align-items-center text-start">
+                    <Col sm={3}>
+                        <p>Flush anonymisation task : </p> 
+                    </Col>
+                    <Col sm={3}>
+                        <input type='button' className='otjs-button otjs-button-red' onClick={()=>this.handleClick('anonymize')} value='Flush' />
+                    </Col>
+                    <Col sm={3}>
+                        <p>Flush delete task : </p>
+                    </Col>
+                    <Col sm={3}>
+                        <input type='button' className='otjs-button otjs-button-red' onClick={()=>this.handleClick('delete')} value='Flush' />
+                    </Col>
+                </Row>
+                <Row className="mt-4 align-items-center text-start">
+                    <Col sm={3}>
+                        <p>Flush export task : </p>
+                    </Col>
+                    <Col sm={3}>
+                        <input type='button' className='otjs-button otjs-button-red' onClick={()=>this.handleClick('export')} value='Flush' />
+                    </Col>
+                    <Col sm={3}>
+                        <p>Flush retrieve task : </p>
+                    </Col>
+                    <Col sm={3}>
+                        <input type='button' className='otjs-button otjs-button-red' onClick={()=>this.handleClick('retrieve')} value='Flush' />
+                    </Col>
+                </Row>
                 <Modal show={!!this.state.flushType} onHide={()=>this.setState({flushType:null})} >
                     <Modal.Header closeButton>
                         <Modal.Title>Confirm flush</Modal.Title>

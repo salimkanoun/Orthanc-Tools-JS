@@ -5,6 +5,7 @@ import TableStudy from "../CommonComponents/RessourcesDisplay/ReactTable/TableSt
 import apis from "../../services/apis"
 import task from "../../services/task"
 import MonitorTask from "../../tools/MonitorTask"
+import { Row, Col } from "react-bootstrap"
 
 import {addStudiesToDeleteList} from "../../actions/DeleteList"
 import {addStudiesToExportList} from "../../actions/ExportList"
@@ -88,26 +89,30 @@ class AnonymizedResults extends Component {
     render = () => {
         return (
             <Fragment>
-                <div>
-                    <TableStudy
-                        studies={this.state.studies}
-                        hiddenActionBouton={true}
-                        hiddenRemoveRow={false}
-                        onDelete={this.removeStudyAnonymized}
-                        hiddenName={false}
-                        hiddenID={false}
-                        pagination={true}
-                        hiddenCSV={false}
-                    />
-                </div>
-                <div className="text-center">
-                    <button type='button' className='btn btn-primary mr-3' onClick={this.exportList}>
-                        To Export List
-                    </button>
-                    <button type='button' className='btn btn-danger' onClick={this.deleteList}>
-                        To Delete List
-                    </button>
-                </div>
+                <Row>
+                    <Col>
+                        <TableStudy
+                            studies={this.state.studies}
+                            hiddenActionBouton={true}
+                            hiddenRemoveRow={false}
+                            onDelete={this.removeStudyAnonymized}
+                            hiddenName={false}
+                            hiddenID={false}
+                            pagination={true}
+                            hiddenCSV={false}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col className="text-center">
+                        <button type='button' className='otjs-button otjs-button-blue w-10 me-4' onClick={this.exportList}>
+                            To Export List
+                        </button>
+                        <button type='button' className='otjs-button otjs-button-red w-10 ms-4' onClick={this.deleteList}>
+                            To Delete List
+                        </button>
+                    </Col>
+                </Row>
             </Fragment>
         )
     }
