@@ -10,5 +10,5 @@ export default class StoneLink extends Component {
     return (
       this.props.StudyInstanceUID === undefined ? null : <Link className={this.props.className} to={'/viewer-stone/index.html?study=' + this.props.StudyInstanceUID} target='_blank'>View in Stone</Link>
     )
-  }
+  } 
 }

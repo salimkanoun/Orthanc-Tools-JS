@@ -6,6 +6,7 @@ import ReactTooltip from "react-tooltip";
 import HelpIcon from '@material-ui/icons/HelpSharp';
 import CreateMatch from "./CreateMatch";
 import { toast } from "react-toastify";
+import {Col, Row} from 'react-bootstrap'
 
 export default class Ldap extends Component {
 
@@ -119,118 +120,143 @@ export default class Ldap extends Component {
     render = () => {
         return (
             <Fragment>
-                <h2 className='card-title'>Distant Users</h2>
-                <div>
-                    <div className="row mt-5 mb-3">
-                        <div className='col-auto'>
-                            <h5>LDAP/AD connexion</h5>
-                        </div>
-                        <div className='col-auto'>
-                            <Toggle checked={this.state.activated} onChange={this.changeMode} />
-                        </div>
-                    </div>
-                    <div className="form-group mr-3">
-                        <div className="row">
-                            <div className="col-sm">
-                                <label htmlFor="typeGroup">Connexion type : </label>
-                                <HelpIcon className="ml-1" data-tip data-for='info1' fontSize="small" color="action" />
-                                <ReactTooltip place="right" effect="solid" id='info1' type='dark'>
-                                    <span>Choix du type de connexion (en fonction de la nature de votre annuaire): </span>
-                                    <br></br>
-                                    <span>1. Active Directory (Microsft's software)</span>
-                                    <br></br>
-                                    <span>2. Ldap (Open Souce Softaware)</span>
-                                </ReactTooltip>
-                                <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.optionsTypeGroup} onChange={this.changeListener} value={this.state.changeType} />
-                            </div>
-                            <div className="col-sm"></div>
-                        </div>
-                        <div className="row mt-2">
-                            <div className='col-sm'>
-                                <label htmlFor="protocol">Protocol : </label>
-                                <HelpIcon className="ml-1" data-tip data-for='info2' fontSize="small" color="action" />
-                                <ReactTooltip place="right" effect="solid" id='info2' type='dark'>
-                                    <span><i>ldap//:</i> no secure connexion </span>
-                                    <br></br>
-                                    <span><i>ldaps//:</i> secure connexion </span>
-                                </ReactTooltip>
-                                <input type='text' name="protocol" className="form-control" onChange={this.handleChange} value={this.state.protocol} placeholder="ldap(s)://" />
-                            </div>
-                            <div className='col-sm'>
-                                <label htmlFor="address">Address : </label>
-                                <HelpIcon className="ml-1" data-tip data-for='info3' fontSize="small" color="action" />
-                                <ReactTooltip place="right" effect="solid" id='info3' type='dark'>
+                <Row>
+                    <Col>
+                        <h2 className='card-title'>Distant Users</h2>
+                    </Col>
+                </Row>
+                <Row className="mt-5">
+                    <Col sm={4}>
+                        <h5>LDAP/AD connexion</h5>
+                    </Col>
+                    <Col>
+                        <Toggle checked={this.state.activated} onChange={this.changeMode} />
+                    </Col>
+                </Row>
+                <div className="form-group mr-3">
+                    <Row className="mt-3 align-items-center">
+                        <Col sm={3}>
+                            <label className="pe-2" htmlFor="typeGroup">Connexion type : </label>
+                            <HelpIcon data-tip data-for='info1' fontSize="small" color="action" />
+                        </Col>
+                        <Col sm={3}>
+                            <ReactTooltip place="right" effect="solid" id='info1' type='dark'>
+                                <span>Choix du type de connexion (en fonction de la nature de votre annuaire): </span>
+                                <br></br>
+                                <span>1. Active Directory (Microsft's software)</span>
+                                <br></br>
+                                <span>2. Ldap (Open Souce Softaware)</span>
+                            </ReactTooltip>
+                            <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={this.optionsTypeGroup} onChange={this.changeListener} value={this.state.changeType} />
+                        </Col>
+                        <Col sm={3}>
+                            <label className="pe-2" htmlFor="protocol">Protocol : </label>
+                            <HelpIcon data-tip data-for='info2' fontSize="small" color="action" />
+                        </Col>
+                        <Col sm={3}>
+                            <ReactTooltip place="right" effect="solid" id='info2' type='dark'>
+                                <span><i>ldap//:</i> no secure connexion </span>
+                                <br></br>
+                                <span><i>ldaps//:</i> secure connexion </span>
+                            </ReactTooltip>
+                            <input type='text' name="protocol" className="form-control" onChange={this.handleChange} value={this.state.protocol} placeholder="ldap(s)://" />
+                        </Col>
+                    </Row>
+                    <Row className="mt-3 align-items-center">
+                        <Col sm={3}>
+                            <label className="pe-2" htmlFor="address">Address : </label>
+                            <HelpIcon data-tip data-for='info3' fontSize="small" color="action" />
+                        </Col>
+                        <Col sm={3}>
+                            <ReactTooltip place="right" effect="solid" id='info3' type='dark'>
                                     <span>Domain name or IP of the online directory</span>
                                     <br></br>
                                     <span>example : <i>127.0.0.1</i> or <i>chu.exemple.fr</i></span>
-                                </ReactTooltip>
-                                <input type='text' name="address" className="form-control" onChange={this.handleChange} value={this.state.address} />
-                            </div>
-                            <div className='col-sm'>
-                                <label htmlFor="port">Port : </label>
-                                <HelpIcon className="ml-1" data-tip data-for='info4' fontSize="small" color="action" />
-                                <ReactTooltip place="right" effect="solid" id='info4' type='dark'>
+                            </ReactTooltip>
+                            <input type='text' name="address" className="form-control" onChange={this.handleChange} value={this.state.address} />
+                        </Col>
+                        <Col sm={3}>
+                            <label className="pe-2" htmlFor="port">Port : </label>
+                            <HelpIcon data-tip data-for='info4' fontSize="small" color="action" />
+                        </Col>
+                        <Col sm={3}>
+                            <ReactTooltip place="right" effect="solid" id='info4' type='dark'>
                                     <span><i>389</i> no secure connexion </span>
                                     <br></br>
                                     <span><i>636</i> secure connexion </span>
-                                </ReactTooltip>
-                                <input type='number' min='0' max='1000' name='port' className='form-control' onChange={this.handleChange} value={this.state.port} />
-                            </div>
-                        </div>
-                        <div className="row mt-2">
-                            <div className='col-sm'>
-                                <label htmlFor="base" >Base DN : </label>
-                                <HelpIcon className="ml-1" data-tip data-for='info9' fontSize="small" color="action" />
-                                <ReactTooltip place="right" effect="solid" id='info9' type='dark'>
-                                    <span>Base DN of the directoy from witch connexion will be established</span>
-                                    <br></br>
-                                    <span>example : <i>dc=chu,dc=exemple,dc=fr</i></span>
-                                </ReactTooltip>
-                                <input type='text' name="base" className="form-control" value={this.state.base} onChange={this.handleChange} />
-                            </div>
-                        </div>
-                        <div className="row mt-5">
-                            <div className='col-sm'>
-                                <label htmlFor="DN" >Bind DN :</label>
-                                <HelpIcon className="ml-1" data-tip data-for='info5' fontSize="small" color="action" />
-                                <ReactTooltip place="right" effect="solid" id='info5' type='dark'>
+                            </ReactTooltip>
+                            <input type='number' min='0' max='1000' name='port' className='form-control' onChange={this.handleChange} value={this.state.port} />
+                        </Col>
+                    </Row>
+                    <Row className="mt-3 align-items-center">
+                        <Col sm={3}>
+                            <label className="pe-2" htmlFor="base" >Base DN : </label>
+                            <HelpIcon data-tip data-for='info9' fontSize="small" color="action" />
+                        </Col>
+                        <Col sm={9}>
+                            <ReactTooltip place="right" effect="solid" id='info9' type='dark'>
+                                <span>Base DN of the directoy from witch connexion will be established</span>
+                                <br></br>
+                                <span>example : <i>dc=chu,dc=exemple,dc=fr</i></span>
+                            </ReactTooltip>
+                            <input type='text' name="base" className="form-control" value={this.state.base} onChange={this.handleChange} />
+                        </Col>
+                    </Row>
+                    <Row className="mt-3 align-items-center">
+                        <Col sm={3}>
+                            <label className="pe-2" htmlFor="DN" >Bind DN :</label>
+                            <HelpIcon data-tip data-for='info5' fontSize="small" color="action" />
+                        </Col>
+                        <Col sm={3}>
+                            <ReactTooltip place="right" effect="solid" id='info5' type='dark'>
                                     <span>DN from witch user researchs will be made</span>
-                                </ReactTooltip>
-                                <input type='text' name="DN" className="form-control" value={this.state.DN} onChange={this.handleChange} />
-                            </div>
-                            <div className='col-sm'>
-                                <label htmlFor="password">Bind DN password : </label>
-                                <HelpIcon className="ml-1" data-tip data-for='info6' fontSize="small" color="action" />
-                                <ReactTooltip place="right" effect="solid" id='info6' type='dark'>
-                                    <span>Password of the user from witch researchs will be made</span>
-                                </ReactTooltip>
-                                <input type='password' name="password" className="form-control" value={this.state.password} onChange={this.handleChange} />
-                            </div>
-                        </div>
-                        <div className="row mt-5">
-                            <div className='col-sm'>
-                                <label htmlFor="group">Group Filter : </label>
-                                <HelpIcon className="ml-1" data-tip data-for='info7' fontSize="small" color="action" />
-                                <ReactTooltip place="right" effect="solid" id='info7' type='dark'>
-                                    <span>DN for groups researchs</span>
-                                </ReactTooltip>
-                                <input type='text' name="group" className="form-control" onChange={this.handleChange} value={this.state.group} />
-                            </div>
-                            <div className='col-sm'>
-                                <label htmlFor="user">User filter </label>
-                                <HelpIcon className="ml-1" data-tip data-for='info8' fontSize="small" color="action" />
-                                <ReactTooltip place="right" effect="solid" id='info8' type='dark'>
-                                    <span>DN for users researchs</span>
-                                </ReactTooltip>
-                                <input type='text' name="user" className="form-control" onChange={this.handleChange} value={this.state.user} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="form-group text-right mr-2">
-                        <input type='button' className='btn btn-primary mr-1' onClick={this.setLdapSetting} value='Update' />
-                        <input type='button' className='btn btn-info mr-1' onClick={this.testLdapSettings} value='Check Connexion' />
-                    </div>
+                            </ReactTooltip>
+                            <input type='text' name="DN" className="form-control" value={this.state.DN} onChange={this.handleChange} />
+                        </Col>
+                        <Col sm={3}>
+                            <label className="pe-2" htmlFor="password">Bind DN password : </label>
+                            <HelpIcon data-tip data-for='info6' fontSize="small" color="action" />
+                        </Col>
+                        <Col sm={3}>
+                            <ReactTooltip place="right" effect="solid" id='info6' type='dark'>
+                                <span>Password of the user from witch researchs will be made</span>
+                            </ReactTooltip>
+                            <input type='password' name="password" className="form-control" value={this.state.password} onChange={this.handleChange} />
+                        </Col>
+                    </Row>
+                    <Row className="mt-3 align-items-center">
+                        <Col sm={3}>
+                            <label  className="pe-2" htmlFor="group">Group Filter : </label>
+                            <HelpIcon data-tip data-for='info7' fontSize="small" color="action" />
+                        </Col>
+                        <Col sm={3}>
+                            <ReactTooltip place="right" effect="solid" id='info7' type='dark'>
+                                <span>DN for groups researchs</span>
+                            </ReactTooltip>
+                            <input type='text' name="group" className="form-control" onChange={this.handleChange} value={this.state.group} />
+                        </Col>
+                        <Col sm={3}>
+                            <label className="pe-2" htmlFor="user">User filter </label>
+                            <HelpIcon data-tip data-for='info8' fontSize="small" color="action" />
+                        </Col>
+                        <Col sm={3}>
+                            <ReactTooltip place="right" effect="solid" id='info8' type='dark'>
+                                <span>DN for users researchs</span>
+                            </ReactTooltip>
+                            <input type='text' name="user" className="form-control" onChange={this.handleChange} value={this.state.user} />
+                        </Col>
+                    </Row>
+                    <Row className="text-center align-items-center mt-3">
+                        <Col className="">
+                            <input type='button' className='otjs-button otjs-button-blue w-10' onClick={this.setLdapSetting} value='Update' />
+                        </Col>
+                        <Col className="">
+                            <input type='button' className='otjs-button otjs-button-blue w-10' onClick={this.testLdapSettings} value='Check Connexion' />
+                        </Col>
+                    </Row>
+
                 </div>
+                
 
                 {this.state.activated ? 
                         <CreateMatch/>

@@ -30,14 +30,22 @@ const TaskRootPanel = () => {
         <>
             <div>
                 <div className='mb-5'>
-                    <ul className='nav nav-pills nav-fill'>
-                        <li className='nav-item'>
-                            <button className={currentComponent === 'retrieve' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => switchTab('retrieve')}> Auto Retrieve Robots </button>
-                        </li>
-                        <li className='nav-item'>
-                            <button className={currentComponent === 'flush' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => switchTab('flush')}> Flush Tasks </button>
-                        </li>
-                    </ul>
+                    <nav className="otjs-navmenu container-fluid">
+                        <div className="otjs-navmenu-nav">
+                            <li className='col-6 text-center'>
+                                <button
+                                    className={currentComponent === 'retrieve' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => switchTab('retrieve')}>Auto Retrieve Robots
+                                </button>
+                            </li>
+                            <li className='col-6 text-center'>
+                                <button
+                                    className={currentComponent === 'flush' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => switchTab('flush')}>Flush Tasks
+                                </button> 
+                            </li>
+                        </div>
+                    </nav>
                 </div>
                 <div>
                     {getComponentToDisplay()}

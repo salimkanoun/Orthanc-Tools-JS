@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Select from 'react-select'
 import { toast } from 'react-toastify'
 import apis from '../../../services/apis'
-
+import { Row, Col } from 'react-bootstrap'
 export default class BurnerOptions extends Component {
 
     state = {
@@ -131,29 +131,79 @@ export default class BurnerOptions extends Component {
         return (
             <div>
                 <h2 className="card-title">CD/DVD Burner Options</h2>
-                <label htmlFor="burner_monitored_path">Monitored Folder : </label>
-                <input type='text' className="form-control" name='burner_monitored_path' value={this.state.burner_monitored_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Epson" />
-                <label htmlFor="burner_viewer_path">Viewer Folder : </label>
-                <input type='text' className="form-control" name='burner_viewer_path' value={this.state.burner_viewer_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Viewer" />
-                <label htmlFor="burner_label_path">Label Path : </label>
-                <input type='text' className="form-control" name='burner_label_path' value={this.state.burner_label_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Label" />
-                <label htmlFor="burner_transfer_syntax">Transfer Syntax : </label>
-                <Select single options={this.transferSyntaxOptions} name='burner_transfer_syntax' value={this.getSelectedObject(this.transferSyntaxOptions, this.state.burner_transfer_syntax)} onChange={this.handleChangeSelect} />
-                <label htmlFor="burner_manifacturer">Manufacturer : </label>
-                <Select single options={this.manufacturerOptions} value={this.getSelectedObject(this.manufacturerOptions, this.state.burner_manifacturer)} onChange={this.handleChangeSelect} name="burner_manifacturer" />
-                <label htmlFor="burner_monitoring_level">Monitoring Level : </label>
-                <Select options={this.levelOptions} value={this.getSelectedObject(this.levelOptions, this.state.burner_monitoring_level)} onChange={this.handleChangeSelect} name="burner_monitoring_level" />
-                <label htmlFor="burner_date_format">Date Format : </label>
-                <Select options={this.dateFormatOptions} value={this.getSelectedObject(this.dateFormatOptions, this.state.burner_date_format)} onChange={this.handleChangeSelect} name="burner_date_format" />
-                <label htmlFor="burner_support_type">Support Type : </label>
-                <Select single options={this.supportType} value={this.getSelectedObject(this.supportType, this.state.burner_support_type)} onChange={this.handleChangeSelect} name="burner_support_type" />
-                <div className="mt-3" >
-                    <label htmlFor="burner_delete_study_after_sent">Delete Original Images From Orthanc : </label>
-                    <input type="checkbox" checked={this.state.burner_delete_study_after_sent} name="burner_delete_study_after_sent" value="Delete Original Study/Patient" onChange={this.handleChange} />
-                </div>
-                <div className="float-right">
-                    <input type="button" className="btn btn-primary mt-3" value="Send" onClick={this.sendForm} />
-                </div>
+                <Row className="mt-4 align-items-center">
+                    <Col sm={2}>
+                        <label htmlFor="burner_monitored_path">Monitored Folder :</label>
+                    </Col>
+                    <Col sm={4}>
+                        <input type='text' className="form-control" name='burner_monitored_path' value={this.state.burner_monitored_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Epson" />
+                    </Col>
+                    <Col sm={2}>
+                        <label htmlFor="burner_viewer_path">Viewer Folder : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <input type='text' className="form-control" name='burner_viewer_path' value={this.state.burner_viewer_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Viewer" />
+                    </Col>
+
+                </Row>
+                <Row className="mt-4 align-items-center">
+                    <Col sm={2}>
+                        <label htmlFor="burner_label_path">Label Path : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <input type='text' className="form-control" name='burner_label_path' value={this.state.burner_label_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Label" />
+                    </Col>
+                    <Col sm={2}>
+                        <label htmlFor="burner_transfer_syntax">Transfer Syntax : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <Select single options={this.transferSyntaxOptions} name='burner_transfer_syntax' value={this.getSelectedObject(this.transferSyntaxOptions, this.state.burner_transfer_syntax)} onChange={this.handleChangeSelect} />
+                    </Col>
+                </Row>
+                <Row className="mt-4 align-items-center">
+                    <Col sm={2}>
+                        <label htmlFor="burner_manifacturer">Manufacturer : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <Select single options={this.manufacturerOptions} value={this.getSelectedObject(this.manufacturerOptions, this.state.burner_manifacturer)} onChange={this.handleChangeSelect} name="burner_manifacturer" />
+                    </Col>
+                    <Col sm={2}>
+                        <label htmlFor="burner_monitoring_level">Monitoring Level : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <Select options={this.levelOptions} value={this.getSelectedObject(this.levelOptions, this.state.burner_monitoring_level)} onChange={this.handleChangeSelect} name="burner_monitoring_level" />
+                    </Col>
+
+                </Row>
+                <Row className="mt-4 align-items-center">
+                    <Col sm={2}>
+                        <label htmlFor="burner_date_format">Date Format : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <Select options={this.dateFormatOptions} value={this.getSelectedObject(this.dateFormatOptions, this.state.burner_date_format)} onChange={this.handleChangeSelect} name="burner_date_format" />
+                    </Col>
+                    <Col sm={2}>
+                        <label htmlFor="burner_support_type">Support Type : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <Select single options={this.supportType} value={this.getSelectedObject(this.supportType, this.state.burner_support_type)} onChange={this.handleChangeSelect} name="burner_support_type" />
+                    </Col>
+
+                </Row>
+                <Row className="mt-4 align-items-center">
+                    <Col sm={5}>
+                        <label htmlFor="burner_delete_study_after_sent">Delete Original Images From Orthanc : </label>
+                    </Col>
+                    <Col sm={2}>
+                        <input type="checkbox" checked={this.state.burner_delete_study_after_sent} name="burner_delete_study_after_sent" value="Delete Original Study/Patient" onChange={this.handleChange} />
+                    </Col>
+
+                </Row>
+                <Row className="text-center mt-4">
+                    <Col>
+                        <input type="button" className="otjs-button otjs-button-blue" value="Send" onClick={this.sendForm} />
+                    </Col>
+                </Row>
             </div>
         )
     }

@@ -9,7 +9,7 @@ import {
 import NestedTable from "../../CommonComponents/RessourcesDisplay/ReactTable/NestedTable";
 import apis from "../../../services/apis";
 import {addManualQuerySeriesDetails} from "../../../actions/ManualQuery";
-
+ 
 
 function TableResult({results, style, addManualQuerySeriesDetails}) {
     style = style || {};
@@ -86,7 +86,7 @@ function TableResult({results, style, addManualQuerySeriesDetails}) {
     return (
         <React.Fragment>
             <div style={style}>
-                <div className="mt-5">
+                <div className="mt-5 h-5">
                     <NestedTable columns={columns} data={data} filtered sorted hiddenSelect/>
                 </div>
             </div>

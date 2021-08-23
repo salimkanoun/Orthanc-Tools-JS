@@ -20,7 +20,7 @@ export default function SshKeys({refreshSshKeysData, sshKeysData}) {
             Cell: ({row}) => {
                 return (
                     <div className="text-center">
-                        <input type="button" className='btn btn-danger' onClick={async () => {
+                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                             try {
                                 await apis.sshKeys.deleteKey(row.values.id);
                                 refreshSshKeysData()

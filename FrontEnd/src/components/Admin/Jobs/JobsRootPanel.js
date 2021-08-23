@@ -8,27 +8,31 @@ import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/Com
 
 const dropDown = (id) => {
     return (
-        <Dropdown>
-            <Dropdown.Toggle variant='success'>
+        <Dropdown className="text-center">
+            <Dropdown.Toggle variant="button-dropdown-blue" id="dropdown-basic" className="button-dropdown button-dropdown-green">
                 Actions
             </Dropdown.Toggle>
             <Dropdown.Menu>
-                <Dropdown.Item className='bg-danger' onClick={async () => {
-                    await apis.jobs.cancelJob(id).catch(error => toast.error(error.statusText));
-                    this.getJobs()
-                }}>Cancel</Dropdown.Item>
-                <Dropdown.Item className='bg-warning' onClick={async () => {
-                    await apis.jobs.pauseJob(id).catch(error => toast.error(error.statusText));
-                    this.getJobs()
-                }}>Pause</Dropdown.Item>
-                <Dropdown.Item className='bg-primary' onClick={async () => {
+
+                <Dropdown.Item className='bg-green' onClick={async () => {
                     await apis.jobs.resumbitJob(id).catch(error => toast.error(error.statusText));
                     this.getJobs()
                 }}>Resumbit</Dropdown.Item>
-                <Dropdown.Item className='bg-info' onClick={async () => {
+
+                <Dropdown.Item className='bg-blue' onClick={async () => {
                     await apis.jobs.resumeJob(id).catch(error => toast.error(error.statusText));
                     this.getJobs()
                 }}>Resume</Dropdown.Item>
+                
+                <Dropdown.Item className='bg-orange' onClick={async () => {
+                    await apis.jobs.pauseJob(id).catch(error => toast.error(error.statusText));
+                    this.getJobs()
+                }}>Pause</Dropdown.Item>
+                
+                <Dropdown.Item className='bg-red' onClick={async () => {
+                    await apis.jobs.cancelJob(id).catch(error => toast.error(error.statusText));
+                    this.getJobs()
+                }}>Cancel</Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>
     )
@@ -52,8 +56,8 @@ function JobsTable({handleDetails, rows}) {
             accessor: 'Details',
             Header: 'Details',
             Cell: (({row}) => {
-                return <button className='btn btn-info' type='button'
-                               onClick={() => handleDetails(row.index)}>Details</button>
+                return (<div className="text-center"><button className='otjs-button otjs-button-blue' type='button'
+                               onClick={() => handleDetails(row.index)}>Details</button></div>)
             })
         }, {
             accessor: 'Actions',
@@ -128,7 +132,7 @@ export default class JobsRootPanel extends Component {
     render = () => {
         return (
             <Fragment>
-                <h2 className="card-title">Jobs</h2>
+                <h2 className="card-title mb-4">Jobs</h2>
                 <ModalDetails show={this.state.showDetail} onHide={() => this.setState({showDetail: false})}
                               data={[this.state.rows[this.state.currentRowIndex]]}/>
                 <JobsTable handleDetails={this.handleDetails} rows={this.state.rows}/>

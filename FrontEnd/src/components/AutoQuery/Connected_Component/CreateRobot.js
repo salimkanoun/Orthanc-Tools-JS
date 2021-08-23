@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react'
 import {connect} from 'react-redux'
 import {toast} from 'react-toastify'
-
+import {Row,Col,Form} from 'react-bootstrap'
 import apis from '../../../services/apis'
 
 /**
@@ -48,17 +48,21 @@ class CreateRobot extends Component {
     render = () => {
         return (
             <Fragment>
-                <div className="form-group row">
-                    <label>Project Name :</label>
-                    <div className="col">
-                        <input type='text' className="form-control" name='projectName' value={this.state.value}
-                               onChange={this.handleChange}/>
-                    </div>
-                    <div className="col">
-                        <input type='button' className='btn btn-success' onClick={this.createRobot}
-                               value='Add To Robot'/>
-                    </div>
-                </div>
+                <Form>
+                    <Form.Group as={Row} className="mb-3" controlId="formHorizontal">
+                        <Form.Label column="sm" sm={2}>Project Name :</Form.Label>
+                        <Col sm={8}>
+                            <Form.Control type='text' placeholder="Project name..." className="form-control" name='projectName' value={this.state.value}
+                                onChange={this.handleChange}/>
+                        </Col>
+                        <Col sm={2}>
+                            <input type='button' className='otjs-button otjs-button-blue w-10' onClick={this.createRobot}
+                                value='Add To Robot'/>
+                        </Col>
+                        
+                    </Form.Group>
+                </Form>
+               
             </Fragment>
         )
     }

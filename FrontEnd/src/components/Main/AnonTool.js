@@ -25,13 +25,13 @@ class AnonTool extends Component {
 
     render = () => {
         return (
-            <Overlay target={this.props.target} show={this.props.show} placement="left" onHide={this.props.onHide}
+            <Overlay target={this.props.target} show={this.props.show} placement="bottom" onHide={this.props.onHide}
                      rootClose>
                 <Popover id="popover-basic" style={{maxWidth: '100%'}}>
                     <Popover.Header as="h3">Anon List</Popover.Header>
                     <Popover.Body>
                         <div className="float-right mb-3">
-                            <button type="button" className="btn btn-warning" onClick={this.handleClickEmpty}>Empty
+                            <button type="button" className="btn otjs-button otjs-button-orange p-2" onClick={this.handleClickEmpty}>Empty
                                 List
                             </button>
                         </div>

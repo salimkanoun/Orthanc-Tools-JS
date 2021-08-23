@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button,Modal} from 'react-bootstrap'
+import {Modal} from 'react-bootstrap'
 import apis from "../../services/apis";
 import Table from '../CommonComponents/RessourcesDisplay/ReactTable/CommonTable'
 import Toggle from 'react-toggle'
@@ -66,8 +66,8 @@ class DicomRouterTable extends Component {
       Cell:(row)=>{
         return(
         <span>
-          <Button className='btn btn-primary mr-1' onClick={()=>{this.props.modify(row.row.values)}}>Modify</Button>
-          <Button className='btn btn-danger' onClick={()=>{this.showDeleteConfirmation(row.row.values.id)}}>Delete</Button>
+          <button className='otjs-button otjs-button-orange me-1' onClick={()=>{this.props.modify(row.row.values)}}>Modify</button>
+          <button className='otjs-button otjs-button-red' onClick={()=>{this.showDeleteConfirmation(row.row.values.id)}}>Delete</button>
         </span>
         )
       }
@@ -130,8 +130,8 @@ class DicomRouterTable extends Component {
         <Modal.Header closeButton><h5>Delete Router</h5></Modal.Header>
         <Modal.Body>Are you sure you want to delete this router ?</Modal.Body>
         <Modal.Footer>
-          <Button className='btn btn-secondary' onClick={()=>{this.onHide()}}>Cancel</Button>
-          <Button className='btn btn-danger' onClick={()=>{this.removeRouter()}}>Delete</Button>
+          <button className='otjs-button otjs-button-orange me-1' onClick={()=>{this.onHide()}}>Cancel</button>
+          <button className='otjs-button otjs-button-red' onClick={()=>{this.removeRouter()}}>Delete</button>
         </Modal.Footer>
       </Modal>
       <Table columns={this.columns} tableData={this.props.data}/>

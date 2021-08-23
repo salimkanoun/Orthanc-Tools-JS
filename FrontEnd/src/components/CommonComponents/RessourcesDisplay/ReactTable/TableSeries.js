@@ -21,7 +21,7 @@ function TableSeries({
         ...(!hiddenActionBouton ? [seriesColumns.ACTION(onDelete, refresh)] : []),
         ...(!hiddenRemoveRow ? [seriesColumns.REMOVE(onDelete)] : [])
     ], [
-        hiddenActionBouton, hiddenRemoveRow, onDelete, refresh]);
+        hiddenActionBouton, hiddenRemoveRow, onDelete, refresh]); 
     const data = useMemo(() => series.map(x => ({
         raw: {...x},
         ...x

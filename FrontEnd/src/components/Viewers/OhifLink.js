@@ -10,5 +10,5 @@ export default class OhifLink extends Component {
     return (
       this.props.StudyInstanceUID === undefined ? null : <Link className={this.props.className} to={'/viewer-ohif/viewer/' + this.props.StudyInstanceUID} target='_blank'>View in OHIF</Link>
     )
-  }
+  } 
 }

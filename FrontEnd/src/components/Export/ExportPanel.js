@@ -1,4 +1,4 @@
-import React, {Component, useMemo} from "react"
+import React, {Component, useMemo, Fragment} from "react"
 import {connect} from "react-redux"
 
 import papa from 'papaparse'
@@ -15,6 +15,7 @@ import {seriesArrayToStudyArray} from '../../tools/processResponse'
 import {emptyExportList, removeSeriesFromExportList, removeStudyFromExportList} from '../../actions/ExportList'
 import SendExternalDropdown from "./SendExternalDropdown"
 import {toast} from "react-toastify"
+import { Row, Col, Dropdown, ButtonGroup } from "react-bootstrap"
 
 /**
  * This componnent wrapper allows to optimise the table by memoizing data
@@ -194,10 +195,38 @@ class ExportPanel extends Component {
         let idArray = this.getExportIDArray()
         let confirm = this.confirm()
         return (
-            <div>
-                <h2 className="card-title mb-3">Export</h2>
-                <div className="row">
-                    <div className="col-sm">
+            <Fragment>
+                <Row className="border-bottom border-2 pb-3">
+                    <Col className="d-flex justify-content-start align-items-center">
+                        <i className="fas fa-file-export ico me-3"></i><h2 className="card-title">Export</h2>
+                    </Col>
+                </Row>
+                <Row className="text-end">
+                    <Col>
+                        <Dropdown as={ButtonGroup} autoClose="outside" className="mt-2">
+                            <Dropdown.Toggle variant="button-dropdown-orange" className="button-dropdown button-dropdown-orange w-10" id="dropdown-autoclose-outside">
+                                Send
+                            </Dropdown.Toggle>
+                            
+                            <Dropdown.Menu className="mt-2 border border-dark border-2">
+                                <Dropdown.Item >
+                                    <SendAetDropdown aets={this.state.aets} exportIds={idArray}/>
+                                </Dropdown.Item>
+                                <Dropdown.Item className="mt-2">
+                                    <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm}
+                                                    setModal={() => this.setState({show: true})} setButton={this.setButton}/>
+                                </Dropdown.Item >
+                                <Dropdown.Item className="mt-2" >
+                                    <SendExternalDropdown endpoints={this.state.endpoints} exportIds={idArray}
+                                                        username={this.props.username}/>
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Col>
+                    
+                </Row>
+                <Row className="mt-5">
+                    <Col sm>
                         <TableStudyWrapper
                             studies={this.props.exportList.studyArray}
                             series={this.props.exportList.seriesArray}
@@ -209,44 +238,43 @@ class ExportPanel extends Component {
                             hiddenID={false}
                             pagination={true}
                             hiddenAnonymized={false}/>
-                        <button type='button' className="btn btn-warning float-right" onClick={this.emptyList}>Empty
-                            List
-                        </button>
-                    </div>
+                        
+                    </Col>
 
-                    <div className="col-sm">
+                    <Col sm>
                         <TableSeriesWrapper series={this.props.exportList.seriesArray}
                                             selectedStudy={this.state.currentStudy}
                                             hiddenActionBouton={true}
                                             hiddenRemoveRow={false} onDelete={this.removeSeries}/>
-                        <button type='button' className="btn btn-danger float-right" onClick={this.removeStudy}>Remove
-                            Study
+                        
+                    </Col>
+                </Row>
+                <Row className="text-start mt-5">
+                    <Col sm>
+                        <button type='button' className='otjs-button otjs-button-red mt-2 w-7' onClick={this.emptyList}>
+                            Empty List
                         </button>
-                    </div>
-                </div>
-                <div className="row text-center mt-5">
-                    <div className='col-sm'>
+                    </Col>
+                    <Col sm>
+                        <button type='button' className='otjs-button otjs-button-red mt-2 w-10' onClick={this.removeStudy}>
+                            Remove Study
+                        </button>
+                    </Col>
+                    
+                </Row>
+                <Row className="text-center mt-5 pt-5 border-top border-2">
+                    <Col sm>
                         <DownloadDropdown exportIds={idArray} TS={this.state.currentTS}/>
-                    </div>
-                    <div className='col-sm'>
-                        <SendAetDropdown aets={this.state.aets} exportIds={idArray}/>
-                    </div>
-                    <div className='col-sm'>
-                        <SendPeerDropdown peers={this.state.peers} exportIds={idArray} needConfirm={confirm}
-                                          setModal={() => this.setState({show: true})} setButton={this.setButton}/>
-                    </div>
-                    <div className='col-sm'>
-                        <SendExternalDropdown endpoints={this.state.endpoints} exportIds={idArray}
-                                              username={this.props.username}/>
-                    </div>
-                    <div className='col-sm'>
-                        <button type='button' className='btn btn-info' onClick={this.getCSV}> Download CSV Details
+                    </Col>
+                    <Col>
+                        <button type='button' className="otjs-button otjs-button-blue w-12" onClick={this.getCSV}> 
+                            Download CSV Details
                         </button>
-                    </div>
-                </div>
+                    </Col>
+                </Row>
                 <ModalWarning show={this.state.show} onHide={() => this.setState({show: false})}
                               button={this.state.button}/>
-            </div>
+            </Fragment>
         )
     }
 }

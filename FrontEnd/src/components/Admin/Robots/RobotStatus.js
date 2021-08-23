@@ -68,7 +68,7 @@ export default class RobotStatus extends Component {
     render = () => {
         return (
             <>
-                <h2 className="card-title">Retrieve Robots : </h2>
+                <h2 className="card-title mt-4">Retrieve Robots : </h2>
                 <RobotTable robots={this.state.rows} deleteJobHandler={this.deleteJobHandler}
                             refreshHandler={this.refreshHandler} validationRobotHandler={this.validationRobotHandler}/>
             </>

@@ -14,24 +14,32 @@ const GeneralRoot = () => {
     switch (selectedOptionMenu) {
       case 'orthancSettings':
         return (<OrthancSettings />)
-      case 'redisSettings':
+      case 'redisSettings': 
         return (<RedisSettings />)
       default:
         return (null)
     }
   }
 
-  return (
+  return ( 
     <div>
       <div className='mb-5'>
-        <ul className='nav nav-pills nav-fill'>
-          <li className='nav-item'>
-            <button className={selectedOptionMenu === 'orthancSettings' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => switchTab('orthancSettings')}>Orthanc Settings</button>
-          </li>
-          <li className='nav-item'>
-            <button className={selectedOptionMenu === 'redisSettings' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => switchTab('redisSettings')}>Redis Settings</button>
-          </li>
-        </ul>
+        <nav className="otjs-navmenu container-fluid">
+          <div className="otjs-navmenu-nav">
+            <li className='col-6 text-center'>
+              <button
+                className={selectedOptionMenu === 'orthancSettings' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                onClick={() => switchTab('orthancSettings')}>Orthanc Settings
+              </button> 
+            </li>
+            <li className='col-6 text-center'>
+              <button
+                className={selectedOptionMenu === 'redisSettings' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                onClick={() => switchTab('redisSettings')}>Redis Settings
+              </button> 
+            </li>
+          </div>
+        </nav>
       </div>
       <div>
         {getComponentToDisplay()}

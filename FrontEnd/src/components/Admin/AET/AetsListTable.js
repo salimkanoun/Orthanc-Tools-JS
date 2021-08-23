@@ -28,7 +28,7 @@ export default function Aet({aetsData, refreshAetData}) {
         Header: 'Echo AET',
         Cell: ({row}) => {
             return (<div className="text-center">
-                <input type="button" className='btn btn-info' onClick={async () => {
+                <input type="button" className='otjs-button otjs-button-blue' onClick={async () => {
                     try {
                         await apis.aets.echoAet(row.values.name)
                         toast.success(row.values.name + ' Success')
@@ -45,7 +45,7 @@ export default function Aet({aetsData, refreshAetData}) {
         Cell: ({row}) => {
             return (
                 <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={async () => {
+                    <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                         try {
                             await apis.aets.deleteAet(row.values.name);
                             refreshAetData()

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 
-import Dropdown from 'react-bootstrap/Dropdown'
+import {ButtonGroup, Dropdown} from 'react-bootstrap'
 import {treeToStudyArray} from '../../../tools/processResponse'
 
 import {connect} from 'react-redux'
@@ -92,15 +92,17 @@ class SendToAnonExportDeleteDropwdown extends Component {
 
     render = () => {
         return (
-            <Dropdown onClick={this.handleClick}>
-                <Dropdown.Toggle variant="warning" id="dropdown-basic">
+            <Dropdown as={ButtonGroup} onClick={this.handleClick}>
+                <Dropdown.Toggle variant="button-dropdown-orange" className="mb-4 button-dropdown button-dropdown-orange" id="dropdown-basic">
                     Send To
                 </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                    <Dropdown.Item className='bg-primary' onClick={this.sendToExportList}>Export List</Dropdown.Item>
-                    <Dropdown.Item className='bg-info' onClick={this.sendToAnonList}>Anonymize List</Dropdown.Item>
-                    <Dropdown.Item className='bg-danger' onClick={this.sendToDeleteList}>Delete List</Dropdown.Item>
+                
+                <Dropdown.Menu className="mt-2 border border-dark border-2">
+                    <Dropdown.Item className='bg-blue' onClick={this.sendToExportList}>Export List</Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item className='bg-orange' onClick={this.sendToAnonList}>Anonymize List</Dropdown.Item>
+                    <Dropdown.Divider />
+                    <Dropdown.Item className='bg-red' onClick={this.sendToDeleteList}>Delete List</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         )

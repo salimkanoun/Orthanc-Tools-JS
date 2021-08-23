@@ -53,7 +53,7 @@ export default function UserTable({
             Header: 'Edit',
             editable: false,
             Cell: ({row}) => {
-                return <button type='button' name='edit' className='btn btn-warning' onClick={() => {
+                return <button type='button' name='edit' className='otjs-button otjs-button-green' onClick={() => {
                     modify(row.values)
                 }}>Save</button>
             }
@@ -62,7 +62,7 @@ export default function UserTable({
             Header: 'Delete',
             editable: false,
             Cell: ({row}) => {
-                return <button type='button' name='delete' className='btn btn-danger'
+                return <button type='button' name='delete' className='otjs-button otjs-button-red'
                                onClick={() => setDelete(row.values.username, row.values.userId)}>Delete</button>
             }
         }

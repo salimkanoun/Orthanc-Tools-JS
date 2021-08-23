@@ -52,7 +52,7 @@ export default function ModalDetails({show, onHide, data}) {
             </Modal.Body>
             <Modal.Footer>
                 <button type='button'
-                        className='btn btn-primary'
+                        className='otjs-button otjs-button-blue'
                         onClick={onHide}>
                     Close
                 </button>

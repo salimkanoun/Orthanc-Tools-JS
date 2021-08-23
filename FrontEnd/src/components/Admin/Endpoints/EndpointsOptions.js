@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import { Row, Col } from "react-bootstrap"
 import Select from "react-select"
 import { toast } from 'react-toastify'
 import apis from "../../../services/apis"
@@ -75,14 +76,23 @@ export default class EndpointsOptions extends Component{
     render = () => {
         return (
             <div>
-                <h2>Export Transcoding </h2>
-                <div className='grid-form-group'>
-                    <label htmlFor="export_transcoding">Transfer Syntax : </label>
-                    <Select single options={TRANSCODING_OPTIONS} name='export_transcoding' value={this.getSelectedObject(TRANSCODING_OPTIONS, this.state.export_transcoding)} onChange={this.handleChangeSelect} />
-                    <div className="float-right">
-                        <input type="button" className="btn btn-primary mt-3" value="Send" onClick={this.sendForm} />
-                    </div>
-                </div>
+                <h2 className="card-title mt-5">Export Transcoding </h2>
+                
+                    <Row>
+                        <Col sm={3}>
+                            <label htmlFor="export_transcoding">Transfer Syntax : </label>
+                        </Col>
+                        <Col>
+                            <Select single options={TRANSCODING_OPTIONS} name='export_transcoding' value={this.getSelectedObject(TRANSCODING_OPTIONS, this.state.export_transcoding)} onChange={this.handleChangeSelect} />
+                        </Col>
+                    </Row>
+                    <Row className="text-center mt-3">
+                        <Col>
+                            <input type="button" className="otjs-button otjs-button-blue mt-3" value="Send" onClick={this.sendForm} />
+
+                        </Col>
+                    </Row>
+               
             </div>
         )
     }

@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import Select from 'react-select'
 import { toast } from 'react-toastify'
 import apis from '../../../services/aets'
-
+import { Row, Col } from 'react-bootstrap'
 /**
  * Form to declare or modify an AET
  */
@@ -72,23 +72,54 @@ export default class AetForm extends Component {
     render = () => {
         return (
             <Fragment>
-                <h2 className="text-center">New Aet</h2>
-                <div className="form-group">
-                    <label htmlFor="name">Name : </label>
-                    <input type='text' name="name" value={this.state.name} className="form-control" onChange={this.handleChange} />
-                    <label htmlFor="aetName">Aet Name : </label>
-                    <input type='text' name="aetName" value={this.state.aetName} className="form-control" onChange={this.handleChange} />
-                    <label htmlFor="ip">IP : </label>
-                    <input type='text' name="ip" value={this.state.ip} className="form-control" onChange={this.handleChange} />
-                    <label htmlFor="port">Port : </label>
-                    <input type='number' min="0" max="999999" value={this.state.port} name="port" className="form-control" onChange={this.handleChange} />
-                    <label htmlFor="manufacturer">Manufacturer : </label>
-                    <Select className="col-sm" options={this.manufacturers} value={this.state.manufacturer} name="manufacturer" onChange={this.manufacturerChangeListener} />
-                    <div className="text-center mt-3">
-                        <input type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
-                    </div>
-                </div>
+                <Row className="mt-3">
+                    <Col>
+                        <h2 className="card-title">New Aet</h2>
+                    </Col>
+                </Row>
+                <Row className="form-group mt-4 align-items-center">
+                    <Col sm={2}>
+                        <label htmlFor="name">Name : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <input type='text' name="name" value={this.state.name} className="form-control" onChange={this.handleChange} />
+                    </Col>
+                    <Col sm={2}>
+                        <label htmlFor="aetName">Aet Name : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <input type='text' name="aetName" value={this.state.aetName} className="form-control" onChange={this.handleChange} />
+                    </Col>
+                    
+                </Row>
+                <Row className="form-group mt-4 align-items-center">
+                    <Col sm={2}>
+                        <label htmlFor="ip">IP adress : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <input type='text' name="ip" value={this.state.ip} className="form-control" onChange={this.handleChange} />
+                    </Col>
+                    <Col sm={2}>
+                        <label htmlFor="port">Port : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <input type='number' min="0" max="999999" value={this.state.port} name="port" className="form-control" onChange={this.handleChange} />
+                    </Col>
+                </Row>
+                <Row className="form-group mt-4 align-items-center">
+                    <Col sm={2}>
+                        <label htmlFor="manufacturer">Manufacturer : </label>
+                    </Col>
+                    <Col>
+                        <Select className="col-sm" options={this.manufacturers} value={this.state.manufacturer} name="manufacturer" onChange={this.manufacturerChangeListener} />
+                    </Col>
+                </Row>
+                <Row className="mt-4 align-items-center text-center">
+                    <Col>
+                        <input type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Send' />
 
+                    </Col>
+                </Row>
             </Fragment>
         )
     }

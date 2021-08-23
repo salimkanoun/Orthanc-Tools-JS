@@ -58,7 +58,7 @@ const seriesColumns = {
         id: 'Remove',
         Header: 'Remove',
         Cell: ({row}) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {
+            return <button type="button" className="otjs-button otjs-button-red" onClick={(e) => {
                 apis.content.deleteSeries(row.values.SeriesOrthancID)
                     .then(() => {
                         toast.success("Series " + row.values.SeriesOrthancID + " has been deleted");

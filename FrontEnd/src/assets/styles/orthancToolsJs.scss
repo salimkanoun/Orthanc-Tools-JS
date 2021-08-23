@@ -1,5 +1,23 @@
+$color-navbar: #363E47;
+$breakpoints: (
+  mobile: 599px
+);
+$color-shadow: #C5CACC;
+$color-text: #5F6A7D;
+
+$color-green: #4CBC29;
+$color-green-active: #317a1b;
+$color-blue: #4CBCD2;
+$color-blue-active: #327C89;
+$color-orange: #F1A630;
+$color-orange-active: #BA7E25;
+$color-red: #E1325B;
+$color-red-active: #A02443;
+
+
 body {
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-color: white;
     background-image: url(./../images/wallpaper.jpg);
     background-position: center center;
     background-repeat: no-repeat;
@@ -10,7 +28,440 @@ body {
     sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: #636A6E;
 }
+
+.alert-enter {
+    opacity: 0;
+    transform: scale(0.9);
+}
+.alert-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 300ms, transform 300ms;
+}
+.alert-exit {
+    opacity: 1;
+}
+.alert-exit-active {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.bg-green{
+    background-color: $color-green;
+}
+.bg-blue{
+    background-color: $color-blue;
+}
+.bg-orange{
+    background-color: $color-orange;
+}
+.bg-red{
+    background-color: $color-red;
+}
+  
+.bg-navbar{
+    position: fixed; 
+    background-color: $color-navbar;
+    height: 100%;
+    width: 15%;
+    top: 0;
+    box-shadow: 2px 2px 3px $color-shadow;
+    z-index: 1039;
+    transition: 1s;
+    &-close{
+        width: 7%;
+    }
+}
+
+.otjs-navbar {
+    position: fixed; 
+    height: 100%;
+    width: 15%;
+    color: $color-text;
+    z-index: 1040;
+    .navbar-nav{
+        display: block;
+        .nav-link{
+            padding-left: 2.5rem;
+            padding-top: 1rem;
+            i{
+                padding-right: 1rem;
+            }
+        }
+    }
+    &-close{
+        transition-delay: 1s;
+        width: 10%;
+        .navbar-nav{
+            .nav-link{
+                font-size: 1px;
+                visibility: hidden;
+            }
+        }
+    }
+    &-border{
+        display: flex;
+        margin-left: 15%;
+        margin-top: 10%;
+        margin-bottom: 10%;
+        width: 80%;
+        border-top: solid 2px $color-text;
+    }
+    
+    @media screen and (max-width: map-get($breakpoints, mobile)) {
+        width: 100%;
+        text-align: center;
+        height: auto;
+    }
+
+}
+
+
+.navbar-image{
+    position: fixed;
+    left: 4.5rem;
+    top: 1rem;
+    z-index: 1041;
+    width: 5%;
+    transition: 1s;
+    &-close{
+        left: 1rem;
+    }
+
+}
+
+
+.toolsPanel{
+    position: absolute;
+    top: 0.5rem;
+    right: 0;
+    @media screen and (max-width: map-get($breakpoints, mobile)) {
+        position: absolute;
+        top: 5rem;
+        right: 1rem;
+        
+    }
+    
+}
+
+.otjs-btn-tools{
+    display: inline-block;
+    font-weight: 400;
+    color: white;
+    width: 6.5rem;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid white;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    &-blue{
+        background-color: $color-blue;
+        &:hover{
+            background-color: $color-blue-active;
+            color: white;
+        }
+    }
+    &-orange{
+        background-color: $color-orange;
+        &:hover{
+            background-color: $color-orange-active;
+            color: white;
+
+        }
+    }
+    &-red{
+        background-color: $color-red;
+        &:hover{
+            background-color: $color-red-active;
+            color: white;
+
+        }
+    }
+}
+
+.otjs-card{
+    background-color: white;
+    position: absolute;
+    left: 18%;
+    width: 79%;
+    padding: 2rem;
+    border-radius: 5px;
+    box-shadow: 2px 2px 3px $color-shadow;
+
+    @media screen and (max-width: map-get($breakpoints, mobile)) {
+        left: 10%;
+        width: 80%;
+        
+    }
+    
+}
+
+.main {
+    margin-top: 7%;
+    margin-left: 20%;
+    border: 2px solid white;
+    background-color: white;
+    padding: 3rem;
+    width: 75%;
+    border-radius: 8px;
+    box-shadow: 4px 4px 4px $color-shadow;
+    transition: 1s;
+    .content{
+        h2 {
+            padding-bottom: 2rem;
+        }
+    }
+
+    &-nav-close{
+        margin-left: 15%;
+        width: 80%;
+    }
+    
+}
+
+.otjs-button{
+    display: inline-block;
+    font-weight: 400;
+    color: white;
+    width: 6rem;
+    height: 3rem;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid white;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 1.5rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    &-blue{
+        background-color: $color-blue;
+        &:hover{
+            background-color: $color-blue-active;
+            color: white;
+        }
+        &:focus{
+            box-shadow: 0 0 0 .25rem rgba(76, 188, 210, 0.5);
+        }
+    }
+    &-orange{
+        background-color: $color-orange;
+        &:hover{
+            background-color: $color-orange-active;
+            color: white;
+
+        }
+        &:focus{
+            box-shadow: 0 0 0 .25rem rgba(241, 166, 48, 0.5);
+        }
+    }
+    &-red{
+        background-color: $color-red;
+        &:hover{
+            background-color: $color-red-active;
+            color: white;
+
+        }
+        &:focus{
+            box-shadow: 0 0 0 .25rem rgba(225, 50, 91, 0.5);
+        } 
+    }
+    &-green{
+        background-color: $color-green;
+        &:hover{
+            background-color: $color-green-active;
+            color: white;
+
+        }
+        &:focus{
+            box-shadow: 0 0 0 .25rem rgba(76, 188, 41, 0.5);
+        } 
+    }
+
+}
+
+
+.button-dropdown {
+    color: white;
+    border: 1px solid white;
+    width: 6rem;
+    height: 3rem;
+    border-radius: 1.5rem;
+    &-blue{
+        background-color: $color-blue;
+        &:hover{
+            background-color: $color-blue-active;
+            color: white;
+        }
+        &:focus{
+            box-shadow: 0 0 0 .25rem rgba(76, 188, 210, 0.5);
+        }
+    }
+    &-orange{
+        background-color: $color-orange;
+        &:hover{
+            background-color: $color-orange-active;
+            color: white;
+        }
+        &:focus{
+            box-shadow: 0 0 0 .25rem rgba(241, 166, 48, 0.5);
+        }
+    }
+    &-red{
+        background-color: $color-red;
+        &:hover{
+            background-color: $color-red-active;
+            color: white;
+        }
+        &:focus{
+            box-shadow: 0 0 0 .25rem rgba(225, 50, 91, 0.5);
+        } 
+    }
+    &-green{
+        background-color: $color-green;
+        &:hover{
+            background-color: $color-green-active;
+            color: white;
+        }
+        &:focus{
+            box-shadow: 0 0 0 .25rem rgba(76, 188, 41, 0.5);
+        } 
+    }
+}
+
+#showResult {
+    visibility: hidden;
+    transition: 0.5s;
+    opacity: 0;
+    height: 0;
+}
+
+.popover {
+    width: 33%;
+}
+
+.w{
+    &-7{
+        width: 7rem;
+    }
+    &-10{
+        width: 10rem;
+    }
+    &-12{
+        width: 12rem;
+    }
+}
+
+.otjs-navmenu{
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    &-nav{
+        border-bottom: solid 2px #a7adb6;
+        display: flex;
+        align-content: center;
+        justify-content: space-around;
+        width: 100%;
+        list-style:none;
+        &-link{
+            padding-left: 1rem;
+            padding-bottom: 0.5rem;
+            padding-top: 0.5rem;
+            padding-right: 1rem;
+            font-size: 16px;
+            .disabled{
+                font-style: 16.5px;
+            }
+            &:hover{
+                font-size: 16.5px;
+            }
+        }
+    }
+    
+}
+
+.link-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline;
+    margin: 0;
+    color: #2871c4;
+    &-active{
+        font-weight: bold;
+        border-left: solid 2px #a7adb6;
+        border-right: solid 2px #a7adb6;
+        border-top: solid 2px #a7adb6;
+        border-radius: 5px 5px 0 0;
+    }
+}
+
+.link-button:hover,
+.link-button:focus {
+    text-decoration: none;
+}
+
+.footer {
+    position: relative;
+    margin-top: 4rem;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    &-text{
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+    }
+}
+
+.ico{
+    background-image: url(./../images/wallpaper.jpg);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 1rem;
+    font-size: 20px;
+    border-radius: 50%;
+    color: white;
+
+}
+
+.sub-btn-admin{
+    background: none;
+	border: none;
+	outline: inherit;
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    color: $color-blue;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    padding: .375rem .75rem;
+    font-size: 18px;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    &:hover{
+        color: $color-blue-active
+    }
+    &-active{
+        font-weight: bold;
+        color: $color-blue-active;
+    }
+}
+
+
 
 .dropzone {
     margin: 16px 0;
@@ -31,9 +482,7 @@ body {
     border: 5px solid rgba(175, 54, 82, 0.8);
 }
 
-.content-panel {
-    margin-top: 100px !important;
-}
+
 
 .authentification {
     background-image: url(./../images/wallpaperAuth.jpg);
@@ -95,21 +544,6 @@ code {
     font-family: SourceSansProBold;
 }
 
-.link-button {
-    background-color: transparent;
-    color: #1a1a1a;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline;
-    margin: 0;
-    padding: 0;
-}
-
-.link-button:hover,
-.link-button:focus {
-    text-decoration: none;
-}
 
 .main-content {
     padding: 12px 64px;
@@ -162,9 +596,7 @@ code {
     transition: opacity 1000ms;
 }
 
-.navbar .nav-link {
-    color: rgba(255, 255, 255, 0.92) ! important;
-}
+
 
 .nav-link.active {
     font-weight: bold !important;
@@ -402,7 +834,7 @@ code {
     width: calc(100% + 2px);
     height: calc(100% + 2px);
     outline: none;
-    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
+    box-shadow: 0 0 0 0.2rem rgb(0, 123, 255 / 25%);
 }
 
 .form-control.form-control-search-select > div {

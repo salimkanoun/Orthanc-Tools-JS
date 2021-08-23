@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import apis from '../../../../services/apis'
 import Dropzone from 'react-dropzone'
 import { toast } from 'react-toastify'
+import { Row, Col } from 'react-bootstrap'
 
 /**
  * Form to declare or modify an AET
@@ -63,12 +64,22 @@ export default class CertificateForm extends Component {
                             </section>
                         )}
                     </Dropzone>
-                    <label htmlFor="label">Label : </label>
-                    <input type='text' name="label" className="form-control" onChange={this.handleChange} />
+                    <Row>
+                        <Col sm={2}>
+                            <label htmlFor="label">Label : </label>
+
+                        </Col>
+                        <Col sm={10}>
+                            <input type='text' name="label" className="form-control" onChange={this.handleChange} />
+                        </Col>
+                    </Row>
+                    
                 </div>
-                <div className="text-right mb-5">
-                    <input disabled={!this.state.file || !this.state.label} type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
-                </div>
+                <Row className="text-center mt-4">
+                    <Col>
+                        <input disabled={!this.state.file || !this.state.label} type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Send' />
+                    </Col>
+                </Row>
             </Fragment>
         )
     }

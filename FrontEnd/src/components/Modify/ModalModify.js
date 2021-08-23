@@ -35,8 +35,8 @@ export default class ModalModify extends Component {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button type='button' className='btn btn-info' onClick={this.props.onHide}>Cancel</button>
-                    <button type='button' className='btn btn-warning' onClick={this.props.modify}>Modify</button>
+                    <button type='button' className='otjs-button otjs-button-orange me-5' onClick={this.props.modify}>Modify</button>
+                    <button type='button' className='otjs-button otjs-button-red' onClick={this.props.onHide}>Cancel</button>
                 </Modal.Footer>
             </Modal>
         )

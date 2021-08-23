@@ -1,5 +1,4 @@
 import React, {useMemo} from "react";
-import {Button} from "react-bootstrap";
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
 
@@ -13,16 +12,18 @@ export default function LabelsTable({labels, handlerManageRole, handlerDelete}) 
         {
             id: '_r',
             Header: 'Roles',
-            Cell: ({row}) => <Button variant={"primary"}
-                                     onClick={() => handlerManageRole(row.values.label_name)}>Manage
-                Roles</Button>
+            Cell: ({row}) => (<div className="text-center">
+                                <button className="otjs-button otjs-button-orange w-10"
+                                    onClick={() => handlerManageRole(row.values.label_name)}>Manage Roles</button>
+                            </div>)
         },
         {
             id: '_d',
             Header: 'Delete',
-            Cell: ({row}) => <Button variant={"danger"}
-                                     onClick={() => handlerDelete(row.values.label_name)}>Delete
-                Label</Button>
+            Cell: ({row}) => (<div className="text-center">
+                                <button className="otjs-button otjs-button-red w-10"
+                                     onClick={() => handlerDelete(row.values.label_name)}>Delete Label</button>
+                            </div>)
         }
     ], [handlerManageRole, handlerDelete]);
 

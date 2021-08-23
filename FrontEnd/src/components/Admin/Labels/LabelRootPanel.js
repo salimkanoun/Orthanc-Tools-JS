@@ -57,17 +57,11 @@ class LabelRootPanel extends Component {
     render() {
         let filteredLabel = this.state.labels.filter(label => label.label_name.includes(this.state.search));
 
-        return (<>
-            <h2>Labels</h2>
-            <InputGroup>
-                <InputGroup.Text>Search</InputGroup.Text>
-                <FormControl placeholder={"label"} type={'text'} onChange={this.handleSearch}
-                             value={this.state.search}/>
-                <InputGroup.Text>{filteredLabel.length}</InputGroup.Text>
-            </InputGroup>
-            <LabelsTable labels={filteredLabel} handlerManageRole={this.handleManageRole}
-                         handlerDelete={this.handlerDelete}/>
-            <Form onSubmitCapture={this.handleCreateSubmit}>
+        return (
+        <>
+            <h2 className="card-title">Labels</h2>
+
+            <Form onSubmitCapture={this.handleCreateSubmit} className="mt-4">
                 <InputGroup>
                     <InputGroup.Text>New</InputGroup.Text>
                     <FormControl placeholder={"label"} type={'text'} onChange={this.handleCreateInput}
@@ -76,6 +70,18 @@ class LabelRootPanel extends Component {
                 </InputGroup>
             </Form>
             <RoleManagementModal label={this.state.roleManagement} handlerManageRole={this.handleManageRole}/>
+
+            
+            <InputGroup className="mt-4">
+                <InputGroup.Text>Search</InputGroup.Text>
+                <FormControl placeholder={"label"} type={'text'} onChange={this.handleSearch}
+                             value={this.state.search}/>
+                <InputGroup.Text>{filteredLabel.length}</InputGroup.Text>
+            </InputGroup>
+            <LabelsTable labels={filteredLabel} handlerManageRole={this.handleManageRole}
+                         handlerDelete={this.handlerDelete}/>
+                         
+            
         </>)
     }
 }
