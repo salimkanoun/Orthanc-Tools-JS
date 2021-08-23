@@ -58,7 +58,14 @@ export default class Modify extends Component {
         let forbidden = ['studies', 'OtherPatientIDs', 'Instances', 'StudyOrthancID', 'PatientOrthancID', 'SeriesOrthancID', 'StudyID', 'SeriesInstanceUID', 'StudyInstanceUID']
         for (let tag in this.props.row) {
             if (!forbidden.includes(tag))
-                rows.push({'TagName': tag, 'Value': this.props.row[tag] ? this.props.row[tag] : '', Delete: false})
+                rows.push(
+                    {
+                        'TagName': tag,
+                        'Value':
+                            this.props.row[tag] ?
+                                this.props.row[tag] : '',
+                        deletable: false
+                    })
         }
         this.setState({data: rows})
     }

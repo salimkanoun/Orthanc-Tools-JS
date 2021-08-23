@@ -108,6 +108,28 @@ const retrieveRobot = {
 
     },
 
+    retryRobotItem(id, item) {
+
+        const retryRobotItemOption = {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        }
+
+        return fetch(`/api/tasks/retrieve/${id}/${item}/retry`, retryRobotItemOption).then((answer) => {
+            if (!answer.ok) {
+                throw answer
+            }
+            return;
+        }).catch((error) => {
+            throw error
+        })
+
+    },
+
+
     flush() {
         const flushRetrRobotsOption = {
             method: 'DELETE'

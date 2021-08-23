@@ -262,6 +262,21 @@ class RetrieveTask {
     }
 
     /**
+     * retry a failed item of the retrieve task
+     * @param {string} taskId uuid of the task
+     * @param {string} itemId id of the item to be retried
+     */
+    static async retryItem(taskId, itemId) {
+        let validateJobs = await RetrieveTask._getValidationJobs(taskId);
+        let answerId = itemId.split(':')[1];
+        let answerNumber = itemId.split(':')[0];
+        let job = validateJobs.filter(job => job.data.item.AnswerNumber == answerNumber && job.data.item.AnswerId == answerId)[0];
+        if (!job) throw new OTJSNotFoundException("Item not found");
+        if (await job.getState() !== "failed") throw new OTJSBadRequestException("Can't retry a job that isn't failed");
+        await job.retry();
+    }
+
+    /**
      * delete the task of a given id
      * @param {string} taskId uuid of the task to be deleted
      */
@@ -415,8 +430,8 @@ Options.optionEventEmiter.on('schedule_change', () => {
 
 setupRetrieveSchedule();
 
-let validationQueue = new Queue("validation", RetrieveTask._validateItem, Number(process.env.RETRIEVE_ATTEMPTS) || 3, Number(process.env.RETRIEVE_BACKOFF) || 2000);
-let retrieveQueue = new Queue("retrieve", RetrieveTask._retrieveItem, Number(process.env.RETRIEVE_ATTEMPTS) || 3, Number(process.env.RETRIEVE_BACKOFF) || 2000);
+let validationQueue = new Queue("validation", RetrieveTask._validateItem, Number(process.env.RETRIEVE_ATTEMPTS) || 3, Number(process.env.RETRIEVE_BACKOFF) || 2000, Number(process.env.RETRIEVE_WORKERS) || 3);
+let retrieveQueue = new Queue("retrieve", RetrieveTask._retrieveItem, Number(process.env.RETRIEVE_ATTEMPTS) || 3, Number(process.env.RETRIEVE_BACKOFF) || 2000, Number(process.env.RETRIEVE_WORKERS) || 3);
 
 
 module.exports = RetrieveTask

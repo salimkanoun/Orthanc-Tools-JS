@@ -11,6 +11,7 @@ import apis from '../../../services/apis'
 import {ReactComponent as CheckedSVG} from '../../../assets/images/check-circle.svg'
 import {ReactComponent as XSVG} from '../../../assets/images/x-circle.svg'
 import {ReactComponent as PendingSVG} from '../../../assets/images/pending.svg'
+import {ReactComponent as RepeatSVG} from '../../../assets/images/arrow-repeat.svg'
 
 import {addStudiesToExportList} from '../../../actions/ExportList'
 import {addStudiesToDeleteList} from '../../../actions/DeleteList'
@@ -27,9 +28,10 @@ import {
 } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFilters";
 import CommonSelectingAndFilteringTable
     from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonSelectingAndFilteringTable";
+import {Button} from "react-bootstrap";
 
 
-function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelect}) {
+function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, retryQueryHandler, onSelect}) {
     const columns = useMemo(() => [{
         accessor: 'id',
         show: false
@@ -101,9 +103,9 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelec
         accessor: 'Status',
         Header: 'Status',
         style: function callback({row}) {
-            if (row.values.Status === 'Success') {
+            if (row.values.Status === 'completed') {
                 return ({backgroundColor: 'green'})
-            } else if (row.values.Status === 'Failure') {
+            } else if (row.values.Status === 'failed') {
                 return ({backgroundColor: 'red'})
             }
         },
@@ -113,7 +115,12 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelec
             {value: 'failed', label: 'Failed'},
             {value: 'waiting', label: 'Waiting'},
             {value: 'validating', label: 'Validating'}
-        ])
+        ]),
+        Cell: ({row: {index}, value}) => <div className={'d-flex'}>
+            <p>{value}</p>
+            {value === 'failed' ?
+                <Button type={"button"} onClick={() => retryQueryHandler(index)}><RepeatSVG/></Button> : null}
+        </div>
     }, {
         id: 'Remove',
         Header: 'Remove Query',
@@ -122,7 +129,7 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, onSelec
                 return approved === false ?
                     (<div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red'
-                               onClick={() => deleteQueryHandler(index, refreshHandler)}
+                               onClick={() => deleteQueryHandler(index)}
                                value="Remove"/>
                     </div>)
                     : null
@@ -290,8 +297,7 @@ class RobotView extends Component {
         })
     }
 
-    deleteQueryHandler = async (rowIndex, refreshHandler) => {
-
+    deleteQueryHandler = async (rowIndex) => {
         try {
             let row = this.state.rows[rowIndex];
             await apis.retrieveRobot.deleteRobotItem(this.state.id, row.id)
@@ -309,7 +315,16 @@ class RobotView extends Component {
         } catch (error) {
             toast.error(error)
         }
+    }
 
+    retryQueryHandler = async (rowIndex) => {
+        try {
+            let row = this.state.rows[rowIndex];
+            await apis.retrieveRobot.retryRobotItem(this.props.id, row.id)
+            this.startProgressMonitoring();
+        } catch (error) {
+            toast.error(error)
+        }
     }
 
     handleClickDeleteRobot = async () => {
@@ -348,7 +363,8 @@ class RobotView extends Component {
                 <input type='button' className="btn btn-danger" onClick={this.handleClickDeleteRobot}
                        value="Delete Robot"/>
                 <RobotTable rows={this.state.rows} approved={this.state.approved} refreshHandler={this.refreshHandler}
-                            deleteQueryHandler={this.deleteQueryHandler} onSelect={this.setSelect}/>
+                            deleteQueryHandler={this.deleteQueryHandler} retryQueryHandler={this.retryQueryHandler}
+                            onSelect={this.setSelect}/>
                 <AnonExportDeleteSendButton onAnonClick={this.sendToAnon} onExportClick={this.sendToExport}
                                             onDeleteClick={this.sendToDelete}/>
             </div>
