@@ -7,9 +7,6 @@ BackEnd/data/log/*
 !BackEnd/data/log/README
 FrontEnd/build
 FrontEnd/node_modules
-FrontEnd/package-lock.json
-BackEnd/package-lock.json
-
 
 BackEnd/data/export_dicom/*
 !BackEnd/data/export_dicom/README
