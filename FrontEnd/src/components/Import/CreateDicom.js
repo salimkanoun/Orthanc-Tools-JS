@@ -277,14 +277,14 @@ export default class CreateDicom extends Component {
                 <ModalPicEditor files={this.state.showEditor ? this.state.files : null} onHide={this.handleHide}
                                 onSave={this.handleEditorSave}/>
                 <TagTable data={this.state.tags} onDataUpdate={this.handleDataChange}/>
-                <InputGroup>
-                    <InputGroup.Text>{"Add Label"}</InputGroup.Text>
-                    <input onChange={this.handleNewTagChange} value={this.state.newTag}/>
-                    <Button type={"submit"} onClick={this.handleNewTag}>{'+'}</Button>
-                </InputGroup>
-                <div className={"d-flex justify-content-end"}>
+                <div className={"w-100 d-flex justify-content-between otjs-button"}>
+                    <InputGroup>
+                        <InputGroup.Text>{"Add Tag"}</InputGroup.Text>
+                        <input onChange={this.handleNewTagChange} value={this.state.newTag}/>
+                        <Button type={"submit"} onClick={this.handleNewTag}>{'+'}</Button>
+                    </InputGroup>
                     <Button type={"submit"} onClick={this.createDicom}
-                            disabled={this.state.files.length < 1}>{'Send'}</Button>
+                            disabled={this.state.files.length < 1}>{'Create DICOM'}</Button>
                 </div>
             </div>
         )
