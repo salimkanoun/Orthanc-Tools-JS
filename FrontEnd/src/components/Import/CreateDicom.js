@@ -70,7 +70,7 @@ export default class CreateDicom extends Component {
             this.setState({
                 uploadState: 'Uploaded'
             });
-            toast(`Dicoms successfully created (Series : ${response.ParentSeries})`);
+            toast.success(`Dicoms successfully created (Series : ${response.ParentSeries})`);
         } catch (error) {
             this.setState({
                 uploadState: 'Failed To Upload'
