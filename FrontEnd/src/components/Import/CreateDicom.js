@@ -6,7 +6,9 @@ import {InputGroup} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import pdfjsLib from "pdfjs-dist/webpack"
 import {ModalPicEditor} from "../CreateDicom/ModalPicEditor";
+import {toast} from "react-toastify";
 
+const REQUIRED_TAGS = ['PatientID', 'PatientName', 'SeriesDescription', 'StudyDescription']
 
 export default class CreateDicom extends Component {
 
@@ -38,8 +40,25 @@ export default class CreateDicom extends Component {
         return tags;
     }
 
+    _checkDicomTags = () => {
+        let ok = true;
+        this.state.tags.forEach((tag) => {
+            if (REQUIRED_TAGS.includes(tag.TagName) && (!tag.Value || tag.Value.length < 1)) {
+                ok = false;
+                toast.error(tag.TagName + ' should be filled')
+            }
+        })
+        return ok;
+    }
+
     createDicom = async () => {
-        if (this.state.files.length < 1) return
+        if (!this._checkDicomTags()) {
+            return
+        }
+        if (this.state.files.length < 1) {
+            toast.error('No files selected');
+            return
+        }
         const images = await this._getUniformImages();
         try {
             this.setState({
@@ -51,6 +70,7 @@ export default class CreateDicom extends Component {
             this.setState({
                 uploadState: 'Uploaded'
             })
+            toast(`Dicoms successfully created (Series : ${response.ParentSeries})`)
         } catch (error) {
             this.setState({
                 uploadState: 'Failed To Upload'
@@ -88,6 +108,12 @@ export default class CreateDicom extends Component {
                             deletable: false,
                             editable: false
                         },
+                        {
+                            TagName: 'StudyDescription',
+                            Value: '',
+                            deletable: false,
+                            editable: true
+                        },
                         ...(this.props.level === "patients" ?
                             await apis.content.getPatientDetails(this.props.OrthancID).then(response => (Object.entries(response.MainDicomTags).map(([TagName, Value]) =>
                                 ({
@@ -99,10 +125,16 @@ export default class CreateDicom extends Component {
                             ))) :
                             [
                                 {
-                                    TagName: 'PatientId',
-                                    Value: '[auto]',
+                                    TagName: 'PatientID',
+                                    Value: '',
                                     deletable: false,
-                                    editable: false
+                                    editable: true
+                                },
+                                {
+                                    TagName: 'PatientName',
+                                    Value: '',
+                                    deletable: false,
+                                    editable: true
                                 }
                             ]),
                     ]
@@ -117,6 +149,12 @@ export default class CreateDicom extends Component {
                 Value: '[auto]',
                 deletable: false,
                 editable: false
+            },
+            {
+                TagName: 'SeriesDescription',
+                Value: '',
+                deletable: false,
+                editable: true
             }]
         this.setState({
             tags
