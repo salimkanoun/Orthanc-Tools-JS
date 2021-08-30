@@ -45,7 +45,7 @@ export default class CreateDicom extends Component {
         this.state.tags.forEach((tag) => {
             if (REQUIRED_TAGS.includes(tag.TagName) && (!tag.Value || tag.Value.length < 1)) {
                 ok = false;
-                toast.error(tag.TagName + ' should be filled')
+                toast.error(tag.TagName + ' should be filled');
             }
         })
         return ok;
@@ -53,29 +53,30 @@ export default class CreateDicom extends Component {
 
     createDicom = async () => {
         if (!this._checkDicomTags()) {
-            return
+            return;
         }
         if (this.state.files.length < 1) {
             toast.error('No files selected');
-            return
+            return;
         }
         const images = await this._getUniformImages();
         try {
             this.setState({
                 uploadState: "Uploading"
-            })
-            let response = await apis.importDicom.createDicom(images[0], this.props.OrthancID, this._getTags())
+            });
+            let response = await apis.importDicom.createDicom(images[0], this.props.OrthancID, this._getTags());
             await Promise.all(images.slice(1)
-                .map(image => apis.importDicom.createDicom(image, response.ParentSeries, {})))
+                .map(image => apis.importDicom.createDicom(image, response.ParentSeries, {})));
             this.setState({
                 uploadState: 'Uploaded'
-            })
-            toast(`Dicoms successfully created (Series : ${response.ParentSeries})`)
+            });
+            toast(`Dicoms successfully created (Series : ${response.ParentSeries})`);
         } catch (error) {
             this.setState({
                 uploadState: 'Failed To Upload'
-            })
-            console.log(error)
+            });
+            toast.error('Dicoms creation failed');
+            console.log(error);
         }
     }
 
