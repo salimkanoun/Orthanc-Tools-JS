@@ -19,6 +19,8 @@ import CommonSelectingAndFilteringTable
 import ExportCSVButton from "../../CommonComponents/RessourcesDisplay/ExportCSVButton";
 import CsvLoader from "./CsvLoader";
 
+const MODALITIES = ['CR', 'CT', 'MR', 'US', 'OT', 'BI', 'CD', 'DD', 'DG', 'ES', 'LS', 'PT', 'RG', 'ST', 'TG', 'XA', 'RF', 'RTIMAGE', 'RTDOSE', 'RTSTRUCT', 'RTPLAN', 'RTRECORD', 'HC', 'DX', 'NM', 'MG', 'IO', 'PX', 'GM', 'SM', 'XC', 'PR', 'AU', 'EPS', 'HD', 'SR', 'IVUS', 'OP', 'SMR']
+
 function CustomHeader(setOverride, type = 'text') {
     return ({column}) => {
         return (<>
@@ -88,7 +90,8 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
             Filter: InputFilter('Modalities'),
             Header,
             overrideValue: overridesValues['ModalitiesInStudy'],
-            Cell: EditableCell
+            options: async () => MODALITIES.map(modality => ({value: modality, label: modality})),
+            Cell: SelectCell
         }, {
             accessor: 'Aet',
             text: 'AET',
