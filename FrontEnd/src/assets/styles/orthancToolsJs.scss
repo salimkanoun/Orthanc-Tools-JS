@@ -61,9 +61,9 @@ body {
 .bg-red{
     background-color: $color-red;
 }
-  
+
 .bg-navbar{
-    position: fixed; 
+    position: fixed;
     background-color: $color-navbar;
     height: 100%;
     width: 15%;
@@ -77,7 +77,7 @@ body {
 }
 
 .otjs-navbar {
-    position: fixed; 
+    position: fixed;
     height: 100%;
     width: 15%;
     color: $color-text;
@@ -110,7 +110,7 @@ body {
         width: 80%;
         border-top: solid 2px $color-text;
     }
-    
+
     @media screen and (max-width: map-get($breakpoints, mobile)) {
         width: 100%;
         text-align: center;
@@ -142,9 +142,9 @@ body {
         position: absolute;
         top: 5rem;
         right: 1rem;
-        
+
     }
-    
+
 }
 
 .otjs-btn-tools{
@@ -198,9 +198,9 @@ body {
     @media screen and (max-width: map-get($breakpoints, mobile)) {
         left: 10%;
         width: 80%;
-        
+
     }
-    
+
 }
 
 .main {
@@ -223,7 +223,7 @@ body {
         margin-left: 15%;
         width: 80%;
     }
-    
+
 }
 
 .otjs-button{
@@ -271,7 +271,7 @@ body {
         }
         &:focus{
             box-shadow: 0 0 0 .25rem rgba(225, 50, 91, 0.5);
-        } 
+        }
     }
     &-green{
         background-color: $color-green;
@@ -282,7 +282,7 @@ body {
         }
         &:focus{
             box-shadow: 0 0 0 .25rem rgba(76, 188, 41, 0.5);
-        } 
+        }
     }
 
 }
@@ -322,7 +322,7 @@ body {
         }
         &:focus{
             box-shadow: 0 0 0 .25rem rgba(225, 50, 91, 0.5);
-        } 
+        }
     }
     &-green{
         background-color: $color-green;
@@ -332,7 +332,7 @@ body {
         }
         &:focus{
             box-shadow: 0 0 0 .25rem rgba(76, 188, 41, 0.5);
-        } 
+        }
     }
 }
 
@@ -385,7 +385,7 @@ body {
             }
         }
     }
-    
+
 }
 
 .link-button {
