@@ -108,9 +108,9 @@ class AnonymizePanel extends Component {
     render = () => {
         return (
             <Fragment>
-                
+
                 <Row className="mt-5">
-                    <Col sm={4}>
+                    <Col sm={6}>
                         <PatientTableWrapper
                             studies={this.props.anonList}
                             rowEvents={this.rowEvents}
@@ -123,12 +123,14 @@ class AnonymizePanel extends Component {
                                 this.props.saveNewValues(row.PatientOrthancID, column, newValue)
                             }}
                             rowStyle={this.rowStyle}
-                            onDelete={this.props.removePatientFromAnonList}/>
-                            <button type='button' className='otjs-button otjs-button-red mt-2 w-7' onClick={this.props.emptyAnonymizeList}>
-                                Empty List
-                            </button>
+                            onDelete={this.props.removePatientFromAnonList}
+                            pagination={true}/>
+                        <button type='button' className='otjs-button otjs-button-red mt-2 w-7'
+                                onClick={this.props.emptyAnonymizeList}>
+                            Empty List
+                        </button>
                     </Col>
-                    <Col sm={8}>
+                    <Col sm={6}>
                         <StudyTableWrapper
                             studies={this.props.anonList}
                             selectedPatient={this.state.currentPatient}
@@ -139,23 +141,28 @@ class AnonymizePanel extends Component {
                             onDataChange={(oldValue, newValue, row, column) => {
                                 this.props.saveNewValues(row.StudyOrthancID, column.dataField, newValue)
                             }}
+                            hiddenName={true}
+                            hiddenID={true}
+                            hiddenAnonymized={true}
                             pagination={true}
                         />
                     </Col>
                 </Row>
-                
+
                 <Row className="mt-5">
                     <Col sm={6}>
                         <Row className="align-items-center">
                             <Col sm={8}>
-                                <input type='text' name='prefix' id='prefix' className='form-control' placeholder='prefix'
-                                    onChange={(e) => this.setState({prefix: e.target.value})}/>
+                                <input type='text' name='prefix' id='prefix' className='form-control'
+                                       placeholder='prefix'
+                                       onChange={(e) => this.setState({prefix: e.target.value})}/>
                             </Col>
                             <Col sm>
-                                <button type='button' className='otjs-button otjs-button-orange' onClick={() => this.props.autoFill(this.state.prefix)}>
+                                <button type='button' className='otjs-button otjs-button-orange'
+                                        onClick={() => this.props.autoFill(this.state.prefix)}>
                                     AutoFill
                                 </button>
-                            </Col>    
+                            </Col>
                         </Row>
                     </Col>
                     <Col sm={6}>
@@ -164,10 +171,12 @@ class AnonymizePanel extends Component {
                 </Row>
                 <Row className="mt-4 border-top border-2 pt-4">
                     <Col className="text-center">
-                        <button className='otjs-button otjs-button-blue w-7' type='button' onClick={this.anonymize}>Anonymize</button>
+                        <button className='otjs-button otjs-button-blue w-7' type='button'
+                                onClick={this.anonymize}>Anonymize
+                        </button>
                     </Col>
                 </Row>
-               
+
             </Fragment>
         )
 
