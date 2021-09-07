@@ -110,7 +110,7 @@ class AnonymizePanel extends Component {
             <Fragment>
 
                 <Row className="mt-5">
-                    <Col sm={6}>
+                    <Col xxl={6}>
                         <PatientTableWrapper
                             studies={this.props.anonList}
                             rowEvents={this.rowEvents}
@@ -130,7 +130,7 @@ class AnonymizePanel extends Component {
                             Empty List
                         </button>
                     </Col>
-                    <Col sm={6}>
+                    <Col xxl={6}>
                         <StudyTableWrapper
                             studies={this.props.anonList}
                             selectedPatient={this.state.currentPatient}
