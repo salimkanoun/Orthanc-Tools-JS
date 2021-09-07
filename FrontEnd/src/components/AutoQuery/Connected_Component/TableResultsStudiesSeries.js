@@ -103,18 +103,20 @@ function TableResultsStudiesSeries({
         <Fragment>
             <Row className="text-center">
                 <Col>
-                    <input type="button" className="otjs-button otjs-button-orange w-10 me-4" value="Delete Selected" onClick={() => {
-                        removeSeriesResult(selected.map(x => x.values.raw.SeriesInstanceUID));
-                    }}/>
-                    <input type="button" className="otjs-button otjs-button-red w-10 ms-4" value="Empty Table" onClick={emptyResultsTable}/>
+                    <input type="button" className="otjs-button otjs-button-orange w-10 me-4" value="Delete Selected"
+                           onClick={() => {
+                               removeSeriesResult(selected.map(x => x.values.raw.SeriesInstanceUID));
+                           }}/>
+                    <input type="button" className="otjs-button otjs-button-red w-10 ms-4" value="Empty Table"
+                           onClick={emptyResultsTable}/>
                 </Col>
             </Row>
             <Row className="mt-5 text-center">
                 <CommonSelectingSortingFilteringTable tableData={data} columns={columns} onSelect={setSelected}
                                                       onFilter={(filtered => {
-                                                          let filteredSeriesUID = filtered.map(row => row.values.SeriesInstanceUID)
+                                                          let filteredSeriesUID = filtered.map(row => row.values.raw.SeriesInstanceUID)
                                                           addSeriesFiltered(filteredSeriesUID)
-                })}/>
+                                                      })} pagination/>
             </Row>
         </Fragment>
     )

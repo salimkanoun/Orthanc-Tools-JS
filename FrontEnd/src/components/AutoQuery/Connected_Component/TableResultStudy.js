@@ -1,6 +1,6 @@
 import React, {useMemo, useState} from 'react';
 import {connect} from 'react-redux'
-import {Row, Col} from 'react-bootstrap'
+import {Col, Row} from 'react-bootstrap'
 import {addStudiesFiltered, emptyResultsTable, removeResult} from '../../../actions/TableResult'
 import {
     commonColumns,
@@ -42,24 +42,26 @@ function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesF
     return (
         <div>
             <Row className="text-center">
-                
+
                 <Col sm={6}>
                     <ExportCSVButton className='m-2' data={selected.map(({values: {raw}}) => raw)}/>
                 </Col>
                 <Col sm={6}>
-                    <input type="button" className="otjs-button otjs-button-orange w-10 me-3" value="Delete Selected" onClick={() => {
-                        removeResult(selected.map(x => x.values.StudyInstanceUID))
-                        }}/>
-                    <input type="button" className="otjs-button otjs-button-red w-10 ms-3" value="Empty Table" onClick={emptyResultsTable}/>
+                    <input type="button" className="otjs-button otjs-button-orange w-10 me-3" value="Delete Selected"
+                           onClick={() => {
+                               removeResult(selected.map(x => x.values.StudyInstanceUID))
+                           }}/>
+                    <input type="button" className="otjs-button otjs-button-red w-10 ms-3" value="Empty Table"
+                           onClick={emptyResultsTable}/>
                 </Col>
-            </Row> 
-            
+            </Row>
+
             <div className="mt-5">
                 <CommonSelectingSortingFilteringTable tableData={data} columns={columns} onSelect={setSelected}
                                                       onFilter={filtered => {
-                                                          let filteredStudiesUID = filtered.map(row => row.values.StudyInstanceUID)
+                                                          let filteredStudiesUID = filtered.map(row => row.values.raw.StudyInstanceUID)
                                                           addStudiesFiltered(filteredStudiesUID)
-                                                      }}/>
+                                                      }} pagination/>
             </div>
         </div>)
 }
