@@ -42,11 +42,13 @@ export default function PaginitionButton({
                     </select>
                 </InputGroup>
             </ButtonGroup>
-
             <ButtonGroup>
-                <Button variant='light' onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</Button>
-                <Button variant='light' onClick={() => previousPage()} disabled={!canPreviousPage}>{'<'}</Button>
                 <InputGroup style={{paddingRight: '4px'}}>
+
+                    <Button variant='outline-primary' onClick={() => gotoPage(0)}
+                            disabled={!canPreviousPage}>{'<<'}</Button>
+                    <Button variant='outline-primary' onClick={() => previousPage()}
+                            disabled={!canPreviousPage}>{'<'}</Button>
                     <InputGroup.Text>Page:{' '}</InputGroup.Text>
                     <input
                         type='number'
@@ -59,9 +61,11 @@ export default function PaginitionButton({
                         style={{width: '100px'}}
                     />
                     <InputGroup.Text>of {pageOptions.length}</InputGroup.Text>
+
+                    <Button variant='outline-primary' onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</Button>
+                    <Button variant='outline-primary' onClick={() => gotoPage(pageCount - 1)}
+                            disabled={!canNextPage}>{'>>'}</Button>
                 </InputGroup>
-                <Button variant='light' onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</Button>
-                <Button variant='light' onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>{'>>'}</Button>
             </ButtonGroup>
         </div>
     )
