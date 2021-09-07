@@ -22,6 +22,7 @@ import DicomRouterPanel from '../Dicom Router/DicomRouterPanel'
 import image from '../../assets/images/logo.png';
 
 
+const RESPONSIVE_LIMIT = 992;
 export default class NavBar extends Component {
 
     state = {
@@ -32,13 +33,13 @@ export default class NavBar extends Component {
 
     componentDidMount = async () => {
         this.setState({
-            navbar: document.documentElement.clientWidth < 992 ? 'responsive' : 'classique',
+            navbar: document.documentElement.clientWidth < RESPONSIVE_LIMIT ? 'responsive' : 'classique',
             currentTabSelect: 'content'
         })
 
         window.addEventListener('resize', () => {
             const size = document.documentElement.clientWidth
-            size < 992 ? this.setState({navbar: 'responsive'}) : this.setState({navbar: 'classique'})
+            this.setState({navbar: size < RESPONSIVE_LIMIT ? 'responsive' : 'classique'})
         });
     }
 
@@ -54,7 +55,7 @@ export default class NavBar extends Component {
             currentTabSelect: target.name
         })
     }
-    
+
     render = () => {
         return (
             <div className='app'>
