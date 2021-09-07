@@ -54,7 +54,7 @@ const AdminRootPanel = () => {
                 <Navbar className="d-flex flex-row d-flex justify-content-start align-items-center" collapseOnSelect
                         expand='lg' variant='dark'>
                     <Navbar.Toggle/>
-                    <nav className="d-block text-center">
+                    <nav className="d-flex flex-column text-justify justify-content-start align-items-center">
                         <Nav className="me-auto mb-3 d-flex align-items-center">
                             <button id="icoGeneral" type="button" value="General"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "General" ? " sub-btn-admin-active" : "")}
