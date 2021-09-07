@@ -14,7 +14,7 @@ import {addStudiesToExportList} from '../../actions/ExportList'
 import {addStudiesToAnonList} from '../../actions/AnonList'
 import {toast} from 'react-toastify'
 import LabelDropdown from "./labels/LabelDropdown";
-import LabelModal from "./labels/LabelModal"; 
+import LabelModal from "./labels/LabelModal";
 
 
 class ContentRootPanel extends Component {
@@ -23,7 +23,8 @@ class ContentRootPanel extends Component {
         currentSelectedStudyId: '',
         dataForm: {},
         orthancContent: [],
-        selectedStudies: []
+        selectedStudies: [],
+        resultVisible: false
     }
 
     modalRef = {open: null};
@@ -35,7 +36,7 @@ class ContentRootPanel extends Component {
 
     sendSearch = async (dataForm) => {
         //Show result
-        this.showResult();
+        this.setState({resultVisible: true});
         if (dataForm) {
             //Store new form find value and send request to back
             this.setState({
@@ -144,20 +145,12 @@ class ContentRootPanel extends Component {
     }
 
 
-    showResult = () => {
-        var result = document.getElementById('showResult');
-        result.style.visibility = "visible";
-        result.style.opacity = "1";
-        result.style.height = "auto";
-
-    }
-
     render = () => {
         return (
             <div>
                 <SearchForm onSubmit={this.sendSearch}/>
-                <Row id="showResult" className='mt-5'>
-                    <Row >
+                <Row id="showResult" className={'mt-5' + (this.state.resultVisible ? ' show-result-opened' : '')}>
+                    <Row>
                         <Col sm={6}>
                             <div className='d-flex flex-row justify-content-between mt-4'>
                                 <LabelDropdown studies={this.state.selectedStudies}/>
@@ -165,9 +158,9 @@ class ContentRootPanel extends Component {
                                     studiesFull={this.state.selectedStudies}
                                 />
                             </div>
-                        </Col> 
+                        </Col>
                     </Row>
-                    <Row> 
+                    <Row>
                         <Col sm>
                             <LabelModal fwRef={this.modalRef}/>
                             <TablePatientsWithNestedStudies
@@ -191,7 +184,7 @@ class ContentRootPanel extends Component {
                                 refreshSerie={this.refreshSerie}/>
                         </Col>
                     </Row>
-                        
+
                 </Row>
             </div>
         )
