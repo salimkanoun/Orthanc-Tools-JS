@@ -25,7 +25,8 @@ import image from '../../assets/images/logo.png';
 export default class NavBar extends Component {
 
     state = {
-        currentTabSelect: null
+        currentTabSelect: null,
+        opened: false
     }
 
 
@@ -39,8 +40,6 @@ export default class NavBar extends Component {
             const size = document.documentElement.clientWidth
             size < 992 ? this.setState({navbar: 'responsive'}) : this.setState({navbar: 'classique'})
         });
-
-
     }
 
 
@@ -55,97 +54,69 @@ export default class NavBar extends Component {
             currentTabSelect: target.name
         })
     }
-
-    closeNavbar = (event) => {
-
-        let elementBgNavbar = document.getElementById('bg-navbar');
-        let elementNavbar = document.getElementById('navbar');
-        let elementMain = document.getElementById('main');
-        let elementIcone = document.getElementsByClassName('icone');
-        let elementLogo = document.getElementById('logo');
-        let elementBorderNavbar = document.getElementsByClassName('otjs-navbar-border');
-
-        if (event.type !== "mouseenter") {
-            if (elementBgNavbar) elementBgNavbar.classList.add("bg-navbar-close");
-            if (elementNavbar) elementNavbar.classList.add("otjs-navbar-close");
-            if (elementMain) elementMain.classList.add('main-nav-close');
-            if (elementLogo) elementLogo.classList.add("navbar-image-close");
-            for (let i = 0; i < elementIcone.length; i++) {
-                elementIcone[i].style.visibility = "visible";
-                elementIcone[i].style.fontSize = "14px";
-            }
-            for (let j = 0; j < elementBorderNavbar.length; j++) {
-                elementBorderNavbar[j].style.visibility = "hidden";
-            }
-
-        } else {
-            if (elementBgNavbar) elementBgNavbar.classList.remove("bg-navbar-close");
-            if (elementNavbar) elementNavbar.classList.remove("otjs-navbar-close");
-            if (elementMain) elementMain.classList.remove('main-nav-close');
-            if (elementLogo) elementLogo.classList.remove("navbar-image-close");
-            for (let k = 0; k < elementBorderNavbar.length; k++) {
-                elementBorderNavbar[k].style.visibility = "visible";
-            }
-
-        }
-    }
-
+    
     render = () => {
         return (
             <div className='app'>
 
 
-                {this.state.navbar === 'classique' ? <Image id="logo" className="navbar-image" src={image}/> : null}
+                {this.state.navbar === 'classique' ?
+                    <Image id="logo" className={"navbar-image" + (this.state.opened ? "" : " navbar-image-close")}
+                           src={image}/> : null}
 
-                <div id="bg-navbar" className="bg-navbar"></div>
-                <Navbar id="navbar" onMouseEnter={this.closeNavbar} onMouseLeave={this.closeNavbar}
-                        className="otjs-navbar d-flex flex-row" fixed='top' collapseOnSelect expand='lg' variant='dark'>
+                <div id="bg-navbar" className={this.state.opened ? "bg-navbar" : "bg-navbar bg-navbar-close"}></div>
+                <Navbar id="navbar" onMouseEnter={() => this.setState({opened: true})}
+                        onMouseLeave={() => this.setState({opened: false})}
+                        className={"otjs-navbar d-flex flex-row" + (this.state.opened ? '' : ' otjs-navbar-closed')}
+                        fixed='top'
+                        collapseOnSelect expand='lg'
+                        variant='dark'>
                     <Navbar.Toggle/>
                     <Navbar.Collapse>
                         <Nav className="me-auto">
 
-                            <div className="otjs-navbar-border"></div>
+                            <div className="otjs-navbar-border" hidden={!this.state.opened}></div>
                             <Link className={this.getLinkClass('content')} onClick={this.selectTabHandler}
                                   name='content' to='/orthanc-content' hidden={!this.props.roles.content}>
-                                <i className="fas fa-search icone"></i> Orthanc Content
+                                <i className="fas fa-search icone"></i> {this.state.opened ? 'Orthanc Content' : ''}
                             </Link>
                             <Link className={this.getLinkClass('import')} onClick={this.selectTabHandler} name='import'
                                   to='/import' hidden={!this.props.roles.import}>
-                                <i className="fas fa-file-import icone"></i> Import
+                                <i className="fas fa-file-import icone"></i> {this.state.opened ? ' Import' : ''}
                             </Link>
                             <Link className={this.getLinkClass('query')} onClick={this.selectTabHandler} name='query'
                                   to='/query' hidden={!this.props.roles.query}>
-                                <i className="fas fa-question icone"></i> Query
+                                <i className="fas fa-question icone"></i> {this.state.opened ? 'Query' : ''}
                             </Link>
                             <Link className={this.getLinkClass('auto-query')} onClick={this.selectTabHandler}
                                   name='auto-query' to='/auto-query'
                                   hidden={!this.props.roles.auto_query}>
-                                <i className="fas fa-recycle icone"></i> Auto-Retrieve
+                                <i className="fas fa-recycle icone"></i> {this.state.opened ? 'Auto-Retrieve' : ''}
                             </Link>
                             <Link className={this.getLinkClass('burner')} onClick={this.selectTabHandler} name='burner'
                                   to='/cd-burner' hidden={!this.props.roles.cd_burner}>
-                                <i className="fas fa-compact-disc icone"></i> CD-burner
+                                <i className="fas fa-compact-disc icone"></i> {this.state.opened ? 'CD-burner' : ''}
                             </Link>
                             <Link className={this.getLinkClass('mydicom')} onClick={this.selectTabHandler}
                                   name='mydicom' to='/mydicom'>
-                                <i className="far fa-images icone"></i> MyDicom
+                                <i className="far fa-images icone"></i> {this.state.opened ? 'MyDicom' : ''}
                             </Link>
                             <Link className={this.getLinkClass('dicom-router')} onClick={this.selectTabHandler}
                                   name='dicom-router' to='/dicom-router'
                                   hidden={!this.props.roles.autorouting}>
-                                <i className="fas fa-broadcast-tower icone"></i> Dicom-Router
+                                <i className="fas fa-broadcast-tower icone"></i> {this.state.opened ? 'Dicom-Router' : ''}
                             </Link>
                             <Link className={this.getLinkClass('administration')} onClick={this.selectTabHandler}
                                   name='administration' to='/administration'
                                   hidden={!this.props.roles.admin}>
-                                <i className="fas fa-cogs icone"></i> Administration
+                                <i className="fas fa-cogs icone"></i> {this.state.opened ? 'Administration' : ''}
                             </Link>
 
-                            <div className="otjs-navbar-border"></div>
+                            <div className="otjs-navbar-border" hidden={!this.state.opened}></div>
 
                             <Link className={this.getLinkClass('log-out')} name='log-out' onClick={this.props.onLogout}
                                   to='/'>
-                                <i className="fas fa-power-off icone"></i> Log out
+                                <i className="fas fa-power-off icone"></i>{this.state.opened ? ' Log out' : ''}
                             </Link>
 
 
@@ -161,7 +132,7 @@ export default class NavBar extends Component {
 
 
                 {this.state.currentTabSelect === null ? <Redirect to='/orthanc-content'/> : null}
-                <AnimatedSwitch/>
+                <AnimatedSwitch opened={this.state.opened}/>
 
 
                 <Footer/>
@@ -173,10 +144,10 @@ export default class NavBar extends Component {
 }
 
 
-const AnimatedSwitch = withRouter(({location}) => (
+const AnimatedSwitch = withRouter(({location, ...props}) => (
     <TransitionGroup>
         <CSSTransition key={location.key} timeout={500} unmountOnExit classNames={"alert"}>
-            <div id={"main"} className="main">
+            <div id={"main"} className={"main" + (props.opened ? '' : ' main-nav-close')}>
                 <Switch location={location}>
                     <Route exact path='/import' component={ImportRootPanel}/>
                     <Route exact path='/query' component={Query}/>
