@@ -1,6 +1,6 @@
-import React, {Component, Fragment, useMemo} from "react"
+import React, {Component, useMemo} from "react"
 import {connect} from "react-redux"
-import {Col, Row} from 'react-bootstrap'
+import {Col, Container, Row} from 'react-bootstrap'
 import TablePatient from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatients'
 import TableStudy from "../CommonComponents/RessourcesDisplay/ReactTable/TableStudy"
 import apis from "../../services/apis"
@@ -107,8 +107,7 @@ class AnonymizePanel extends Component {
 
     render = () => {
         return (
-            <Fragment>
-
+            <Container>
                 <Row className="mt-5">
                     <Col xxl={6}>
                         <PatientTableWrapper
@@ -177,7 +176,7 @@ class AnonymizePanel extends Component {
                     </Col>
                 </Row>
 
-            </Fragment>
+            </Container>
         )
 
     }
