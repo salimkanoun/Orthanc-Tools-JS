@@ -25,16 +25,15 @@ export default class MonitorTask extends MonitorJob {
 
         this.updateCallBack(task)
 
-        if (this.continue) {
-            setTimeout(() => {
-                this.jobMonitoring(this.jobID)
-            }, this.interval - (Date.now() - queryStartTime))
-        }
-
         if (task.state === 'completed' || task.state === 'failed') {
             this.stopMonitoringJob()
             this.finishCallback(task)
         }
 
+        if (this.continue) {
+            setTimeout(() => {
+                this.jobMonitoring(this.jobID)
+            }, this.interval - (Date.now() - queryStartTime))
+        }
     }
 }

@@ -6,9 +6,9 @@ import {addStudyResult} from '../../../actions/TableResult'
 import {loadAvailableAETS} from '../../../actions/OrthancTools'
 
 import apis from '../../../services/apis';
-import {FormControl, Row, Col} from "react-bootstrap";
+import {Col, FormControl, Row} from "react-bootstrap";
 import {
-    DateFilter, 
+    DateFilter,
     dateFilter as dFilter,
     InputFilter
 } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFilters";
@@ -18,6 +18,8 @@ import CommonSelectingAndFilteringTable
 
 import ExportCSVButton from "../../CommonComponents/RessourcesDisplay/ExportCSVButton";
 import CsvLoader from "./CsvLoader";
+
+const MODALITIES = ['CR', 'CT', 'MR', 'US', 'OT', 'BI', 'CD', 'DD', 'DG', 'ES', 'LS', 'PT', 'RG', 'ST', 'TG', 'XA', 'RF', 'RTIMAGE', 'RTDOSE', 'RTSTRUCT', 'RTPLAN', 'RTRECORD', 'HC', 'DX', 'NM', 'MG', 'IO', 'PX', 'GM', 'SM', 'XC', 'PR', 'AU', 'EPS', 'HD', 'SR', 'IVUS', 'OP', 'SMR']
 
 function CustomHeader(setOverride, type = 'text') {
     return ({column}) => {
@@ -64,12 +66,14 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
             filter: dFilter,
             Header: CustomHeader(setOverride, 'date'),
             overrideValue: overridesValues['DateFrom'],
+            type: 'date',
             Cell: EditableCell
         }, {
             accessor: 'DateTo',
             text: 'Date To',
             Filter: DateFilter(),
             filter: dFilter,
+            type: 'date',
             Header: CustomHeader(setOverride, 'date'),
             overrideValue: overridesValues['DateTo'],
             Cell: EditableCell
@@ -86,7 +90,8 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
             Filter: InputFilter('Modalities'),
             Header,
             overrideValue: overridesValues['ModalitiesInStudy'],
-            Cell: EditableCell
+            options: async () => MODALITIES.map(modality => ({value: modality, label: modality})),
+            Cell: SelectCell
         }, {
             accessor: 'Aet',
             text: 'AET',
@@ -146,28 +151,28 @@ class TableQuery extends Component {
                 <Row className="text-center mt-5">
                     <Col sm={3}>
                         <input type="button" className="otjs-button otjs-button-blue w-7" value="Add"
-                                onClick={this.props.addRow}/>
+                               onClick={this.props.addRow}/>
                     </Col>
                     <Col sm={3}>
                         <ExportCSVButton data={this.props.queries.map(row => ({
-                                    'Patient Name': row.PatientName,
-                                    'Patient ID': row.PatientID,
-                                    'Accession Number': row.AccessionNumber,
-                                    'Date From': row.DateFrom,
-                                    'Date To': row.DateTo,
-                                    'Study Description': row.StudyDescription,
-                                    'Modality': row.ModalitiesInStudy,
-                                    'AET': row.Aet
-                                }
-                            ))}/>
+                                'Patient Name': row.PatientName,
+                                'Patient ID': row.PatientID,
+                                'Accession Number': row.AccessionNumber,
+                                'Date From': row.DateFrom,
+                                'Date To': row.DateTo,
+                                'Study Description': row.StudyDescription,
+                                'Modality': row.ModalitiesInStudy,
+                                'AET': row.Aet
+                            }
+                        ))}/>
                     </Col>
                     <Col sm={6}>
                         <input type="button" className="otjs-button otjs-button-orange m-2 w-10" value="Delete Selected"
-                                onClick={this.removeRow}/>
-                       
-                        
+                               onClick={this.removeRow}/>
+
+
                         <input type="button" className="otjs-button otjs-button-red m-2 w-10" value="Empty Table"
-                                onClick={this.emptyTable}/>
+                               onClick={this.emptyTable}/>
                     </Col>
                 </Row>
                 <Row className="text-center mt-5">
@@ -179,7 +184,8 @@ class TableQuery extends Component {
                 </Row>
                 <Row className="text-center mt-5">
                     <Col>
-                        <input type="button" className="otjs-button otjs-button-blue" value="Query" onClick={this.query}/>
+                        <input type="button" className="otjs-button otjs-button-blue" value="Query"
+                               onClick={this.query}/>
                     </Col>
                 </Row>
 

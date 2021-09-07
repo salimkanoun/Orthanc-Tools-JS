@@ -55,11 +55,15 @@ export function SelectCell({
         if (onDataChange) onDataChange(initialValue, value.value, values, id || accessor)
     }
 
-    return <AsyncSelect className={'react-select'} single defaultOptions value={value}
-                        loadOptions={() => options().then(res => {
-                            setValue(res.find(x => x.value === initialValue))
-                            return res;
-                        })} onChange={onChange}
-                        style={{'min-width': '100px'}}/>
+    return <div>
+        <AsyncSelect className={'react-select'} single defaultOptions value={value}
+                     loadOptions={() => options().then(res => {
+                         setValue(res.find(x => x.value === initialValue))
+                         return res;
+                     })} onChange={onChange}
+                     style={{'min-width': '100px'}}
+                     menuPosition={'absolute'}
+        />
+    </div>
 
 }
