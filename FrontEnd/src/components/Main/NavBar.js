@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {Link, Redirect, Route, Switch, withRouter} from 'react-router-dom'
 import ToolsPanel from './ToolsPanel'
-import {Nav, Navbar, Image} from 'react-bootstrap'
-   
+import {Image, Nav, Navbar} from 'react-bootstrap'
+
 import {CSSTransition, TransitionGroup} from "react-transition-group";
 
 import Footer from './Footer'
@@ -28,7 +28,7 @@ export default class NavBar extends Component {
         currentTabSelect: null
     }
 
-    
+
     componentDidMount = async () => {
         this.setState({
             navbar: document.documentElement.clientWidth < 992 ? 'responsive' : 'classique',
@@ -40,7 +40,7 @@ export default class NavBar extends Component {
             size < 992 ? this.setState({navbar: 'responsive'}) : this.setState({navbar: 'classique'})
         });
 
-        
+
     }
 
 
@@ -58,52 +58,53 @@ export default class NavBar extends Component {
 
     closeNavbar = (event) => {
 
-        var elementBgNavbar = document.getElementById('bg-navbar');
-        var elementNavbar = document.getElementById('navbar');
-        var elementMain = document.getElementById('main');
-        var elementIcone = document.getElementsByClassName('icone');
-        var elementLogo = document.getElementById('logo');
-        var elementBorderNavbar = document.getElementsByClassName('otjs-navbar-border');
+        let elementBgNavbar = document.getElementById('bg-navbar');
+        let elementNavbar = document.getElementById('navbar');
+        let elementMain = document.getElementById('main');
+        let elementIcone = document.getElementsByClassName('icone');
+        let elementLogo = document.getElementById('logo');
+        let elementBorderNavbar = document.getElementsByClassName('otjs-navbar-border');
 
-        if (event.type !== "mouseenter"){
-            elementBgNavbar.classList.add("bg-navbar-close");
-            elementNavbar.classList.add("otjs-navbar-close");
-            elementMain.classList.add('main-nav-close');
-            elementLogo.classList.add("navbar-image-close");
-            for(var i = 0; i < elementIcone.length; i++){
+        if (event.type !== "mouseenter") {
+            if (elementBgNavbar) elementBgNavbar.classList.add("bg-navbar-close");
+            if (elementNavbar) elementNavbar.classList.add("otjs-navbar-close");
+            if (elementMain) elementMain.classList.add('main-nav-close');
+            if (elementLogo) elementLogo.classList.add("navbar-image-close");
+            for (let i = 0; i < elementIcone.length; i++) {
                 elementIcone[i].style.visibility = "visible";
                 elementIcone[i].style.fontSize = "14px";
             }
-            for(var j = 0; j < elementBorderNavbar.length; j++){
+            for (let j = 0; j < elementBorderNavbar.length; j++) {
                 elementBorderNavbar[j].style.visibility = "hidden";
             }
-           
-        }else{
-            elementBgNavbar.classList.remove("bg-navbar-close");
-            elementNavbar.classList.remove("otjs-navbar-close");
-            elementMain.classList.remove('main-nav-close');
-            elementLogo.classList.remove("navbar-image-close");
-            for(var k = 0; k < elementBorderNavbar.length; k++){
+
+        } else {
+            if (elementBgNavbar) elementBgNavbar.classList.remove("bg-navbar-close");
+            if (elementNavbar) elementNavbar.classList.remove("otjs-navbar-close");
+            if (elementMain) elementMain.classList.remove('main-nav-close');
+            if (elementLogo) elementLogo.classList.remove("navbar-image-close");
+            for (let k = 0; k < elementBorderNavbar.length; k++) {
                 elementBorderNavbar[k].style.visibility = "visible";
             }
-            
+
         }
     }
 
     render = () => {
         return (
             <div className='app'>
-                
-                
-                {this.state.navbar === 'classique' ? <Image id="logo" className="navbar-image" src={image} /> : null}
 
-                <div id="bg-navbar" className="bg-navbar"> </div>
-                <Navbar id="navbar" onMouseEnter={this.closeNavbar} onMouseLeave={this.closeNavbar} className="otjs-navbar d-flex flex-row" fixed='top' collapseOnSelect expand='lg' variant='dark'>
+
+                {this.state.navbar === 'classique' ? <Image id="logo" className="navbar-image" src={image}/> : null}
+
+                <div id="bg-navbar" className="bg-navbar"></div>
+                <Navbar id="navbar" onMouseEnter={this.closeNavbar} onMouseLeave={this.closeNavbar}
+                        className="otjs-navbar d-flex flex-row" fixed='top' collapseOnSelect expand='lg' variant='dark'>
                     <Navbar.Toggle/>
                     <Navbar.Collapse>
                         <Nav className="me-auto">
-                            
-                            <div className="otjs-navbar-border"> </div>
+
+                            <div className="otjs-navbar-border"></div>
                             <Link className={this.getLinkClass('content')} onClick={this.selectTabHandler}
                                   name='content' to='/orthanc-content' hidden={!this.props.roles.content}>
                                 <i className="fas fa-search icone"></i> Orthanc Content
@@ -140,28 +141,31 @@ export default class NavBar extends Component {
                                 <i className="fas fa-cogs icone"></i> Administration
                             </Link>
 
-                            <div className="otjs-navbar-border"> </div>
+                            <div className="otjs-navbar-border"></div>
 
-                            <Link className={this.getLinkClass('log-out')} name='log-out' onClick={this.props.onLogout} to='/'>
+                            <Link className={this.getLinkClass('log-out')} name='log-out' onClick={this.props.onLogout}
+                                  to='/'>
                                 <i className="fas fa-power-off icone"></i> Log out
                             </Link>
-                                            
+
 
                         </Nav>
-                      
+
                     </Navbar.Collapse>
                 </Navbar>
 
-                {this.state.navbar === 'responsive' ? <div className="toolsPanel"> <ToolsPanel roles={this.props.roles} apercu={true} /> </div> : null}
-                {this.state.navbar === 'classique' ? <div className="toolsPanel"> <ToolsPanel roles={this.props.roles} apercu={true} /> </div> : null}
-                
-                
+                {this.state.navbar === 'responsive' ?
+                    <div className="toolsPanel"><ToolsPanel roles={this.props.roles} apercu={true}/></div> : null}
+                {this.state.navbar === 'classique' ?
+                    <div className="toolsPanel"><ToolsPanel roles={this.props.roles} apercu={true}/></div> : null}
+
+
                 {this.state.currentTabSelect === null ? <Redirect to='/orthanc-content'/> : null}
                 <AnimatedSwitch/>
-                    
-                
+
+
                 <Footer/>
-                
+
             </div>
         )
     }

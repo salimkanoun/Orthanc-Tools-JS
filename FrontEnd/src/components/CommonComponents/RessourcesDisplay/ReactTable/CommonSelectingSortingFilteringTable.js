@@ -1,6 +1,7 @@
 import React from 'react'
 import {useFilters, usePagination, useRowSelect, useSortBy, useTable} from 'react-table'
 import BTable from 'react-bootstrap/Table'
+import PaginationButton from "./PaginitionButton";
 
 const LOWEST_PAGE_SIZE = 10;
 
@@ -44,6 +45,11 @@ function Table({
         headerGroups,
         rows,
         page,
+        canPreviousPage,
+        canNextPage,
+        pageOptions,
+        pageCount,
+        gotoPage,
         nextPage,
         previousPage,
         setPageSize,
@@ -140,28 +146,25 @@ function Table({
                         </React.Fragment>
                     )
                 })}
-                {(pagination && LOWEST_PAGE_SIZE < tableData.length ? <tr>
-                    <td colSpan={visibleColumns.length}>
-                        <div className={'d-flex justify-content-between'}>
-                            <button disabled={pageIndex === 0} className={'btn btn-primary'}
-                                    onClick={previousPage}>⇦
-                            </button>
-                            <select className="form-select" aria-label="Default select example"
-                                    onChange={(page) => {
-                                        setPageSize(page.target.value)
-                                    }}>
-                                <option selected value="10">10</option>
-                                <option value="25">25</option>
-                                <option value="30">30</option>
-                                <option value="50">50</option>
-                            </select>
-                            <button disabled={pageIndex * pageSize + pageSize > tableData.length}
-                                    className={'btn btn-primary '}
-                                    onClick={nextPage}>⇨
-                            </button>
-                        </div>
-                    </td>
-                </tr> : null)}
+                {(pagination && LOWEST_PAGE_SIZE < tableData.length ?
+                    <tr>
+                        <td colSpan={visibleColumns.length} aria-colspan={visibleColumns.length}>
+                            <div className={'d-flex justify-content-end'}>
+                                <PaginationButton
+                                    gotoPage={gotoPage}
+                                    previousPage={previousPage}
+                                    nextPage={nextPage}
+                                    canPreviousPage={canPreviousPage}
+                                    canNextPage={canNextPage}
+                                    pageIndex={pageIndex}
+                                    pageCount={pageCount}
+                                    pageOptions={pageOptions || []}
+                                    pageSize={pageSize}
+                                    setPageSize={setPageSize}
+                                    rowsCount={tableData.length}/>
+                            </div>
+                        </td>
+                    </tr> : null)}
                 </tbody>
             </BTable>
             <br/>

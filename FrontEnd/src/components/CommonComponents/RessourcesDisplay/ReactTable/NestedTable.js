@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {useExpanded, useFilters, usePagination, useRowSelect, useSortBy, useTable} from 'react-table'
 import Table from 'react-bootstrap/Table'
 import {FormCheck} from "react-bootstrap"
+import PaginationButton from "./PaginitionButton";
 
 const actions = {};
 actions.resetSelectedRows = 'resetSelectedRows'
@@ -61,6 +62,11 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
         getTableBodyProps,
         headerGroups,
         page,
+        canPreviousPage,
+        canNextPage,
+        pageOptions,
+        pageCount,
+        gotoPage,
         nextPage,
         previousPage,
         setPageSize,
@@ -135,7 +141,7 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
                     {headerGroup.headers.map(column => (
                         <th {...column.getHeaderProps(sorted ? column.getSortByToggleProps() : undefined)}>
                             {column.render('Header')}
-                            
+
                             {!!column.Filter && filtered ? column.render('Filter') : null}
                         </th>
                     ))}
@@ -184,28 +190,25 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
                     </React.Fragment>
                 )
             })}
-            {(LOWEST_PAGE_SIZE < data.length ? <tr>
-                <td colSpan={visibleColumns.length}>
-                    <div className={'d-flex justify-content-between'}>
-                        <button disabled={pageIndex === 0} className={'btn btn-primary'}
-                                onClick={previousPage}>⇦
-                        </button>
-                        <select className="form-select" aria-label="Default select example"
-                                onChange={(page) => {
-                                    setPageSize(page.target.value)
-                                }}>
-                            <option selected value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="30">30</option>
-                            <option value="50">50</option>
-                        </select>
-                        <button disabled={pageIndex * pageSize + pageSize > data.length}
-                                className={'btn btn-primary '}
-                                onClick={nextPage}>⇨
-                        </button>
-                    </div>
-                </td>
-            </tr> : null)}
+            {(LOWEST_PAGE_SIZE < data.length ?
+                <tr>
+                    <td colSpan={visibleColumns.length} aria-colspan={visibleColumns.length}>
+                        <div className={'d-flex justify-content-end'}>
+                            <PaginationButton
+                                gotoPage={gotoPage}
+                                previousPage={previousPage}
+                                nextPage={nextPage}
+                                canPreviousPage={canPreviousPage}
+                                canNextPage={canNextPage}
+                                pageIndex={pageIndex}
+                                pageCount={pageCount}
+                                pageOptions={pageOptions || []}
+                                pageSize={pageSize}
+                                setPageSize={setPageSize}
+                                rowsCount={data.length}/>
+                        </div>
+                    </td>
+                </tr> : null)}
             </tbody>
         </Table>
     )

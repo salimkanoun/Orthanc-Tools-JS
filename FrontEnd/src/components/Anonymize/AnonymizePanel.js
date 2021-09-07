@@ -1,6 +1,6 @@
-import React, {Component, Fragment, useMemo} from "react"
+import React, {Component, useMemo} from "react"
 import {connect} from "react-redux"
-import {Col, Row} from 'react-bootstrap'
+import {Col, Container, Row} from 'react-bootstrap'
 import TablePatient from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatients'
 import TableStudy from "../CommonComponents/RessourcesDisplay/ReactTable/TableStudy"
 import apis from "../../services/apis"
@@ -107,10 +107,9 @@ class AnonymizePanel extends Component {
 
     render = () => {
         return (
-            <Fragment>
-
+            <Container>
                 <Row className="mt-5">
-                    <Col xl={4}>
+                    <Col xxl={6}>
                         <PatientTableWrapper
                             studies={this.props.anonList}
                             rowEvents={this.rowEvents}
@@ -123,13 +122,14 @@ class AnonymizePanel extends Component {
                                 this.props.saveNewValues(row.PatientOrthancID, column, newValue)
                             }}
                             rowStyle={this.rowStyle}
-                            onDelete={this.props.removePatientFromAnonList}/>
+                            onDelete={this.props.removePatientFromAnonList}
+                            pagination={true}/>
                         <button type='button' className='otjs-button otjs-button-red mt-2 w-7'
                                 onClick={this.props.emptyAnonymizeList}>
                             Empty List
                         </button>
                     </Col>
-                    <Col xl={8}>
+                    <Col xxl={6}>
                         <StudyTableWrapper
                             studies={this.props.anonList}
                             selectedPatient={this.state.currentPatient}
@@ -140,6 +140,9 @@ class AnonymizePanel extends Component {
                             onDataChange={(oldValue, newValue, row, column) => {
                                 this.props.saveNewValues(row.StudyOrthancID, column.dataField, newValue)
                             }}
+                            hiddenName={true}
+                            hiddenID={true}
+                            hiddenAnonymized={true}
                             pagination={true}
                         />
                     </Col>
@@ -173,7 +176,7 @@ class AnonymizePanel extends Component {
                     </Col>
                 </Row>
 
-            </Fragment>
+            </Container>
         )
 
     }
