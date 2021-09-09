@@ -139,7 +139,8 @@ function Table({
                             <tr onClick={() => onRowClick(row.values)} style={{backgroundColor: rowStyle(row.values)}}>
                                 {row.cells.map(cell => {
                                     return (
-                                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                                        <td {...cell.getCellProps()}
+                                            style={(cell.column.style instanceof Function ? cell.column.style(row) : cell.column.style)}>{cell.render('Cell')}</td>
                                     )
                                 })}
                             </tr>
