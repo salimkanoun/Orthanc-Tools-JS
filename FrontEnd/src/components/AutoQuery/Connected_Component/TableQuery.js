@@ -18,8 +18,7 @@ import CommonSelectingAndFilteringTable
 
 import ExportCSVButton from "../../CommonComponents/RessourcesDisplay/ExportCSVButton";
 import CsvLoader from "./CsvLoader";
-
-const MODALITIES = ['CR', 'CT', 'MR', 'US', 'OT', 'BI', 'CD', 'DD', 'DG', 'ES', 'LS', 'PT', 'RG', 'ST', 'TG', 'XA', 'RF', 'RTIMAGE', 'RTDOSE', 'RTSTRUCT', 'RTPLAN', 'RTRECORD', 'HC', 'DX', 'NM', 'MG', 'IO', 'PX', 'GM', 'SM', 'XC', 'PR', 'AU', 'EPS', 'HD', 'SR', 'IVUS', 'OP', 'SMR']
+import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities";
 
 function CustomHeader(setOverride, type = 'text') {
     return ({column}) => {
@@ -90,8 +89,23 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
             Filter: InputFilter('Modalities'),
             Header,
             overrideValue: overridesValues['ModalitiesInStudy'],
-            options: async () => MODALITIES.map(modality => ({value: modality, label: modality})),
-            Cell: SelectCell
+            Cell: ({
+                       value: initialValue,
+                       row: {values},
+                       column: {id, accessor, options},
+                       onDataChange, // This is a custom function that we supplied to our table instance
+                   }) => {
+
+                const [value, setValue] = React.useState("");
+                const onChange = value => {
+                    setValue(value);
+                    if (onDataChange) onDataChange(initialValue, value.value, values, id || accessor)
+                }
+
+                return <div>
+                    <SelectModalities previousModalities={value} onUpdate={onChange}/>
+                </div>
+            }
         }, {
             accessor: 'Aet',
             text: 'AET',
