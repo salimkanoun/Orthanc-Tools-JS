@@ -47,7 +47,7 @@ export function InvertableDataFilter(label = '') {
             label: x
         }))
         return (
-            <div className={'d-flex'}>
+            <div className={'d-flex flex-column'}>
                 <Button variant={filterValue.inverted ? 'primary' : "outline-primary"}
                         onClick={() => setFilter({value: filterValue.value, inverted: !filterValue.inverted})}>
                     {filterValue.inverted ? <strong>{'inverted'}</strong> : 'invert'}
@@ -88,7 +88,7 @@ export function DateFilter(label = 'Select...') {
             date: null
         }
         return (
-            <div style={{display: "flex"}}>
+            <div className={'d-flex flex-column'}>
                 <Select className={'react-select'} single options={OPTIONS_DATE_FILTER} value={filterValue.comp}
                         onChange={(value) => {
                             filterValue.comp = value;
