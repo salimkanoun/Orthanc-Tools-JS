@@ -26,8 +26,8 @@ export function SelectFilter(label = 'Select...', options = []) {
                 column: {filterValue, setFilter},
             }) => {
         return (
-            <Select single options={options} value={options.find(x => x.value === filterValue)}
-                    onChange={(value => setFilter(value.value))}/>
+            <Select isMulti options={options} value={filterValue}
+                    onChange={(value => setFilter(value))}/>
         )
     }
 }
@@ -40,7 +40,7 @@ export function InvertableDataFilter(label = '') {
 
         filterValue = filterValue || {
             inverted: false,
-            value: ''
+            value: []
         }
         const options = [...new Set(data.map(row => row[id]))].map(x => ({
             value: x,
@@ -52,16 +52,24 @@ export function InvertableDataFilter(label = '') {
                         onClick={() => setFilter({value: filterValue.value, inverted: !filterValue.inverted})}>
                     {filterValue.inverted ? <strong>{'inverted'}</strong> : 'invert'}
                 </Button>
-                <Select className={'react-select'} single options={options} placeholder={label}
-                        value={options.find(x => x.value === filterValue.value)}
-                        onChange={(value => setFilter({value: value.value, inverted: filterValue.inverted}))}/>
+                <Select className={'react-select'} isMulti options={options} placeholder={label}
+                        value={filterValue.value}
+                        onChange={(value => setFilter({value: value, inverted: filterValue.inverted}))}/>
             </div>
         )
     }
 }
 
+function checkRow(row, col, selectors) {
+    return selectors.reduce((prev, selector) => prev || row.values[col[0]] === selector.value, false);
+}
+
 export function invertableDataFilter(rows, col, {inverted, value}) {
-    return rows.filter(row => (!inverted === (row.values[col[0]] === value)) || value === '')
+    return rows.filter(row => (!inverted === checkRow(row, col, value)) || !value.length);
+}
+
+export function selectFilter(rows, col, value) {
+    return rows.filter(row => checkRow(row, col, value) || !value.length);
 }
 
 const OPTIONS_DATE_FILTER = [
