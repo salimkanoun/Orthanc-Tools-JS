@@ -24,6 +24,7 @@ import {
     dateFilter,
     DateFilter,
     InputFilter,
+    selectFilter,
     SelectFilter
 } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFilters";
 import CommonSelectingAndFilteringTable
@@ -38,7 +39,8 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, retryQu
     }, {
         accessor: 'Level',
         Header: 'Level',
-        Filter: SelectFilter('Level', [{value: 'study', label: 'Study'}, {value: 'series', label: 'Series'}])
+        Filter: SelectFilter('Level', [{value: 'study', label: 'Study'}, {value: 'series', label: 'Series'}]),
+        filter: selectFilter
     }, {
         accessor: 'StudyInstanceUID',
         show: false
@@ -98,7 +100,8 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, retryQu
             {value: true, label: 'Validated'},
             {value: false, label: 'Invalid'},
             {value: null, label: 'Unvalidated'}
-        ])
+        ]),
+        filter: selectFilter
     }, {
         accessor: 'Status',
         Header: 'Status',
@@ -116,6 +119,7 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, retryQu
             {value: 'waiting', label: 'Waiting'},
             {value: 'validating', label: 'Validating'}
         ]),
+        filter: selectFilter,
         Cell: ({row: {index}, value}) => <div className={'d-flex'}>
             <p>{value}</p>
             {value === 'failed' ?
@@ -144,7 +148,8 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, retryQu
                 return values.Status === RobotView.ITEM_SUCCESS ?
                     <Fragment>
                         <Dropdown drop='left'>
-                            <Dropdown.Toggle variant="button-dropdown-green" id="dropdown-basic" className="button-dropdown button-dropdown-green">
+                            <Dropdown.Toggle variant="button-dropdown-green" id="dropdown-basic"
+                                             className="button-dropdown button-dropdown-green">
                                 Viewers
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
