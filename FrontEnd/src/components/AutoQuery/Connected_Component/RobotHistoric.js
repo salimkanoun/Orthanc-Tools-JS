@@ -50,7 +50,8 @@ export default class RobotJistoric extends Component {
                         id: robotJob.id,
                         name: robotJob.details.projectName,
                         username: robotJob.creator,
-                        progress: (robotJob.progress.retrieve + robotJob.progress.validation) / 2,
+                        validation: robotJob.progress.validation,
+                        retrieve: robotJob.progress.retrieve,
                         state: robotJob.state,
                         queriesNb: robotJob.details.items.length
                     })
