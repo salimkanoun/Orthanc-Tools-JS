@@ -36,7 +36,8 @@ export default function RobotTable({
             id: 'details',
             Header: 'Show Details',
             Cell: ({row}) => {
-                return <Link className='nav-link otjs-button otjs-button-blue' to={'/robot/' + row.values.id}> Details </Link>
+                return <Link className='nav-link otjs-button otjs-button-blue'
+                             to={'/robot/' + row.values.id}> Details </Link>
             }
         }, {
             accessor: "approved",
@@ -44,7 +45,7 @@ export default function RobotTable({
         }, {
             accessor: 'valid',
             Header: 'Validation Status',
-            show: !hideValidationButton, 
+            show: !hideValidationButton,
             Cell: ({row}) => {
                 if (row.values.valid) {
                     if (!row.values.approved) {
@@ -78,5 +79,5 @@ export default function RobotTable({
 
     const data = useMemo(() => robots, [robots]);
 
-    return <CommonTable columns={columns} tableData={data}/>
+    return <CommonTable columns={columns} tableData={data} pagination/>
 }
