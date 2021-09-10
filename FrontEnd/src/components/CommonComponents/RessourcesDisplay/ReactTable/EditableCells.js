@@ -62,7 +62,7 @@ export function SelectCell({
                          return res;
                      })} onChange={onChange}
                      style={{'min-width': '100px'}}
-                     menuPosition={'absolute'}
+                     menuPosition={'fixed'}
         />
     </div>
 
