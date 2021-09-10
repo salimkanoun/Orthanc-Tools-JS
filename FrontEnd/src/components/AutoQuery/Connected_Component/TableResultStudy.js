@@ -28,6 +28,7 @@ function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesF
             studyColumns.DATE,
             studyColumns.DESCRIPTION,
             studyColumns.REQUESTED_PROCEDURE,
+            studyColumns.MODALITIES,
             studyColumns.NB_STUDY_SERIES,
             seriesColumns.NB_SERIES_INSTANCES,
             commonColumns.AET,
