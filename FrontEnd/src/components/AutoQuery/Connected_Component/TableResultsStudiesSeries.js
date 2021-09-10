@@ -58,13 +58,15 @@ function TableResultsStudiesSeries({
         })
         if (emptyResultArray.length > 0) {
             const id = toast.info('Starting Series Fetching');
-            emptyResultArray.forEach((studyResults, i) => {
-                getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET).then(() => {
-                    toast.update(id, {
-                        render: 'Queried series ' + i + '/' + emptyResultArray.length
-                    });
-                }).catch(console.error);
-            })
+            emptyResultArray.reduce((prev, studyResults, i) => {
+                return prev.then(() => {
+                    return getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET).then(() => {
+                        toast.update(id, {
+                            render: 'Queried series ' + (i + 1) + '/' + emptyResultArray.length
+                        });
+                    })
+                })
+            }, Promise.resolve()).catch(console.error);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
