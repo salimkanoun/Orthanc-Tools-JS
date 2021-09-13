@@ -48,13 +48,13 @@ export function InvertableDataFilter(label = '') {
         }))
         return (
             <div className={'d-flex flex-column'}>
+                <Select className={'react-select'} isMulti options={options} placeholder={label}
+                        value={filterValue.value}
+                        onChange={(value => setFilter({value: value, inverted: filterValue.inverted}))}/>
                 <Button variant={filterValue.inverted ? 'primary' : "outline-primary"}
                         onClick={() => setFilter({value: filterValue.value, inverted: !filterValue.inverted})}>
                     {filterValue.inverted ? <strong>{'inverted'}</strong> : 'invert'}
                 </Button>
-                <Select className={'react-select'} isMulti options={options} placeholder={label}
-                        value={filterValue.value}
-                        onChange={(value => setFilter({value: value, inverted: filterValue.inverted}))}/>
             </div>
         )
     }

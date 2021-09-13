@@ -99,7 +99,7 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
                 const [value, setValue] = React.useState("");
                 const onChange = value => {
                     setValue(value);
-                    if (onDataChange) onDataChange(initialValue, value.value, values, id || accessor)
+                    if (onDataChange) onDataChange(initialValue, value, values, id || accessor)
                 }
 
                 return <div>
