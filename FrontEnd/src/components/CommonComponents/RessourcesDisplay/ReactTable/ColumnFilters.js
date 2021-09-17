@@ -27,7 +27,7 @@ export function SelectFilter(label = 'Select...', options = []) {
             }) => {
         return (
             <Select isMulti options={options} value={filterValue}
-                    onChange={(value => setFilter(value))}/>
+                    onChange={(value => setFilter(value))} menuPosition={'fixed'}/>
         )
     }
 }
@@ -49,7 +49,7 @@ export function InvertableDataFilter(label = '') {
         return (
             <div className={'d-flex flex-column'}>
                 <Select className={'react-select'} isMulti options={options} placeholder={label}
-                        value={filterValue.value}
+                        value={filterValue.value} menuPosition={'fixed'}
                         onChange={(value => setFilter({value: value, inverted: filterValue.inverted}))}/>
                 <Button variant={filterValue.inverted ? 'primary' : "outline-primary"}
                         onClick={() => setFilter({value: filterValue.value, inverted: !filterValue.inverted})}>
@@ -93,7 +93,7 @@ export function DateFilter(label = 'Select...') {
                         onChange={(value) => {
                             filterValue.comp = value;
                             setFilter(filterValue);
-                        }}/>
+                        }} menuPosition={'fixed'}/>
                 <FormControl
                     type={'date'}
                     placeholder={label}
