@@ -92,14 +92,14 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
             Cell: ({
                        value: initialValue,
                        row: {values},
-                       column: {id, accessor, options},
+                       column: {id, accessor},
                        onDataChange, // This is a custom function that we supplied to our table instance
                    }) => {
 
-                const [value, setValue] = React.useState("");
+                const [value, setValue] = React.useState(initialValue);
                 const onChange = value => {
                     setValue(value);
-                    if (onDataChange) onDataChange(initialValue, value, values, id || accessor)
+                    if (onDataChange) onDataChange(initialValue, value, values, id || accessor);
                 }
 
                 return <div>
@@ -289,9 +289,7 @@ class TableQuery extends Component {
         //Call Orthanc API to make Query
         let createQueryRessource = await apis.query.dicomQuery(queryParams.Aet, queryPost)
         //Call OrthancToolsJS API to get a parsed answer of the results
-        let queryAnswer = await apis.query.retrieveAnswer(createQueryRessource.ID)
-
-        return queryAnswer
+        return await apis.query.retrieveAnswer(createQueryRessource.ID)
     }
 
 }

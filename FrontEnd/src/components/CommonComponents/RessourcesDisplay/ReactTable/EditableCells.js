@@ -32,7 +32,7 @@ export function InputCell({
 
     return toggled ? <FormControl autoFocus={true} type={type} value={value} onChange={onChange} onBlur={onBlur}
         /> :
-        <div style={{'height': '100%', 'min-width': '50px', padding: 0, display: 'flex'}}
+        <div style={{'height': '100%', 'minWidth': '50px', padding: 0, display: 'flex'}}
              onClick={() => {
                  if (values.editable === undefined || values.editable) setToggled(true)
              }}>
