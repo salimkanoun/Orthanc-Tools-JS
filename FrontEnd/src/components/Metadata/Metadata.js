@@ -120,10 +120,10 @@ export default class Metadata extends Component {
 
     render = () => {
         return (
-            <div className='jumbotron'>
+            <div>
                 <div className='row mb-4'>
                     <div className='col'>
-                        <button type='button' className='btn btn-primary' onClick={() => this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared Tags: {this.state.text}</button>
+                        <button type='button' className='otjs-button otjs-button-blue w-12' onClick={() => this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared Tags: {this.state.text}</button>
                     </div>
                     <div className='col ml-3'>
                         <div className='row'>

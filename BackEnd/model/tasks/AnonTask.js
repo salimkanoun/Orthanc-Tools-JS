@@ -1,8 +1,8 @@
-const { OTJSForbiddenException } = require("../../Exceptions/OTJSErrors");
+const {OTJSForbiddenException} = require("../../Exceptions/OTJSErrors");
 const TaskType = require("../TaskType");
 const Queue = require('../../adapter/bullAdapter');
 const Orthanc = require('../Orthanc');
-const { v4: uuid } = require('uuid');
+const {v4: uuid} = require('uuid');
 
 let orthanc = new Orthanc();
 const JOBS_TTL = 5;
@@ -159,7 +159,9 @@ class AnonTask {
      */
     static async delete(taskId) {
         let anonJobs = await AnonTask._getJobs(taskId);
-        anonJobs.forEach(job => { job.remove() }); //Delete jobs of the task
+        anonJobs.forEach(job => {
+            job.remove()
+        }); //Delete jobs of the task
     }
 
     /**
@@ -217,9 +219,13 @@ class AnonTask {
                     for (let seriesOrthancID of anonymizedStudyDetails['Series']) {
                         let seriesDetails = await orthanc.getOrthancDetails('series', seriesOrthancID)
                         let firstInstanceID = seriesDetails['Instances'][0]
-                        let sopClassUID = await orthanc.getSopClassUID(firstInstanceID)
-                        if (AnonTask.isSecondaryCapture(sopClassUID)) {
-                            await orthanc.deleteFromOrthanc('series', seriesOrthancID)
+                        try {
+                            let sopClassUID = await orthanc.getSopClassUID(firstInstanceID)
+                            if (AnonTask.isSecondaryCapture(sopClassUID)) {
+                                await orthanc.deleteFromOrthanc('series', seriesOrthancID)
+                            }
+                        } catch (ignore) {
+
                         }
                     }
                 }

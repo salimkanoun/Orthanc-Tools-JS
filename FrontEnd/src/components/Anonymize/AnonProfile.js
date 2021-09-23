@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from "react-redux"
-
+import { Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
 
 import { saveProfile } from '../../actions/AnonList'
@@ -24,14 +24,14 @@ class AnonProfile extends Component {
 
     render = () => {
         return (
-            <div className='row'>
-                <div className="col-auto" >
+            <Row className="align-items-center text-center">
+                <Col sm={3}>
                     <label htmlFor='profile'>Anon Profile : </label>
-                </div>
-                <div className="col-md" >
+                </Col>
+                <Col sm={9}>
                     <Select name='profile' single options={this.option} onChange={(e) => this.props.saveProfile(e.value)} placeholder='Profile' value={this.getProfileSelected()} />
-                </div>
-            </div>
+                </Col>
+            </Row>
         );
     }
 }

@@ -1,6 +1,5 @@
-import React, { Component, Fragment } from "react"
-import Dropdown from "react-bootstrap/Dropdown"
-import DropdownButton from "react-bootstrap/DropdownButton"
+import React, { Component } from "react"
+import {Dropdown, ButtonGroup} from "react-bootstrap";
 import { toast } from "react-toastify"
 
 import apis from "../../services/apis"
@@ -77,11 +76,15 @@ export default class SendPeerDropdown extends Component {
         })
 
         return (
-            <Fragment>
-                <DropdownButton variant="success" disabled={this.state.disabled} title={this.state.title}>
+            <Dropdown as={ButtonGroup}>
+                <Dropdown.Toggle variant="button-dropdown-orange" className="button-dropdown button-dropdown-orange w-10" id="dropdown-basic" disabled={this.state.disabled}>
+                    {this.state.title}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu className="mt-2 border border-dark border-2">
                     {dropDownItems}
-                </DropdownButton>
-            </Fragment>
+                </Dropdown.Menu>
+            </Dropdown>
         )
     }
 

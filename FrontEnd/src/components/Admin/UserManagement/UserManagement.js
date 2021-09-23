@@ -39,18 +39,23 @@ export default class UserManagement extends Component {
         return (
             <div>
                 <div className='mb-5'>
-                    <ul className='nav nav-pills nav-fill'>
-                        <li className='nav-item'>
-                            <button className={this.state.currentComponent === 'Users' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => this.switchTab('Users')}>Local Users</button>
-                        </li>
-                        <li className='nav-item'>
-                            <button className={this.state.currentComponent === 'Roles' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => this.switchTab('Roles')}>Roles</button>
-                        </li>
+                    <nav className="otjs-navmenu container-fluid">
+                        <div className="otjs-navmenu-nav">
+                            <li className='col-3 text-center'>
+                                <button className={this.state.currentComponent === 'Users' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => this.switchTab('Users')}>Local Users</button>
+                            </li>
+                            <li className='col-4 text-center'>
+                                <button className={this.state.currentComponent === 'Roles' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => this.switchTab('Roles')}>Roles</button>
+                            </li>
+                            <li className='col-4 text-center'>
+                                <button className={this.state.currentComponent === 'Ldap' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => this.switchTab('Ldap')}>Distant Users</button>
+                            </li>
 
-                        <li className='nav-item'>
-                            <button className={this.state.currentComponent === 'Ldap' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => this.switchTab('Ldap')}>Distant Users</button>
-                        </li>
-                    </ul>
+                        </div>
+                    </nav>
                 </div>
                 <div>
                     {this.getComponentToDisplay()}

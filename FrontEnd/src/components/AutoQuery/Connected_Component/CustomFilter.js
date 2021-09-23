@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react'
+import React, {Component, Fragment} from 'react'
 import Select from 'react-select'
 
-import { saveFilters } from '../../../actions/TableResult'
-import { connect } from 'react-redux'
+import {saveFilters} from '../../../actions/TableResult'
+import {connect} from 'react-redux'
 
 class CustomFilter extends Component {
 
@@ -53,7 +53,7 @@ class CustomFilter extends Component {
     getDefaultValues = () => {
         let options = this.props.filters[this.props.ID]
         let defaultValue = []
-        options ? options.forEach(element => defaultValue.push({ value: element, label: element })) : defaultValue = []
+        options ? options.forEach(element => defaultValue.push({value: element, label: element})) : defaultValue = []
         return defaultValue
     }
 
@@ -62,8 +62,11 @@ class CustomFilter extends Component {
 
         return (
             <Fragment>
-                <Select isMulti options={this.props.options} defaultValue={this.getDefaultValues()} onChange={(values) => this.filter(this.state.reverse, values ? values : [])} styles={this.customStyles} />
-                <input type="button" className="btn btn-info m-2" value={this.state.reverse ? 'Normal Filter' : 'Reverse Filter'} onClick={this.handleClick} />
+                <Select isMulti options={this.props.options} defaultValue={this.getDefaultValues()}
+                        onChange={(values) => this.filter(this.state.reverse, values ? values : [])}
+                        styles={this.customStyles} menuPosition={'fixed'}/>
+                <input type="button" className="otjs-button otjs-button-blue w-10 m-2"
+                       value={this.state.reverse ? 'Normal Filter' : 'Reverse Filter'} onClick={this.handleClick}/>
             </Fragment>
 
         );

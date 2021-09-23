@@ -1,6 +1,6 @@
-import React, {Component} from "react"
+import React, {Component, createRef} from "react"
 import Dropdown from "react-bootstrap/Dropdown"
-import DropdownButton from "react-bootstrap/DropdownButton"
+import {ButtonGroup, InputGroup} from "react-bootstrap"
 import {toast} from "react-toastify"
 
 import apis from "../../services/apis"
@@ -16,11 +16,50 @@ const EXPORT_FAILED_TOAST = {
     progress: undefined,
 };
 
+const EXPORT_PROGRESS_TOAST = {
+    position: "top-right",
+    autoClose: false,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: false,
+    progress: undefined,
+};
+
+const EXPORT_SUCCESS_TOAST = {
+    position: "top-right",
+    autoClose: false,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: false,
+    progress: undefined,
+};
+
 export default class SendExternalDropdown extends Component {
     state = {
         disabled: false,
         title: "Send To Endpoint"
     }
+
+    toastRef = null;
+
+    constructor(props) {
+        super(props);
+        this.toastRef = createRef();
+    }
+
+    _toastContent = (fileName, finished = false) => <div>
+        <p>Your DICOMs {finished ? 'has been' : 'will be'} exported as : </p>
+        <InputGroup className={'bg-light'} style={{'border-radius': '4px'}}>
+            <input className={'form-control'} onClick={(e) => e.stopPropagation()} disabled value={fileName}/>
+            <button type={'button'}
+                    className={`btn btn-outline-${finished ? "success" : "primary"}  btn-otjs `}
+                    onClick={() => navigator.clipboard.writeText(fileName)}>copy
+            </button>
+        </InputGroup>
+
+    </div>
 
     handleClickDownload = async (event) => {
         let endpointId = event.currentTarget.id
@@ -34,16 +73,21 @@ export default class SendExternalDropdown extends Component {
 
         let jobMonitoring = new MonitorTask(taskAnswer)
 
-        let self = this
-        jobMonitoring.onUpdate(function (info) {
-            self.updateProgress(info)
+        jobMonitoring.onUpdate((info) => {
+            this.updateProgress(info)
+            toast.update(this.toastRef.current, {
+                render: this._toastContent(info.details.result),
+                progress: ((info.progress.archiving || 0) + (info.progress.sending || 0)) / 200
+            })
         })
 
-        jobMonitoring.onFinish(async function (info) {
-            self.resetProgress()
+        jobMonitoring.onFinish(async (info) => {
+            this.resetProgress()
             if (info.state === "failed") toast.error("Export to endpoint failed", EXPORT_FAILED_TOAST);
+            else toast.success(this._toastContent(info.details.result, true), EXPORT_SUCCESS_TOAST)
         })
 
+        this.toastRef.current = toast(this._toastContent(''), EXPORT_PROGRESS_TOAST);
         jobMonitoring.startMonitoringJob()
         this.job = jobMonitoring
     }
@@ -51,7 +95,8 @@ export default class SendExternalDropdown extends Component {
     updateProgress = (info) => {
         this.setState({
             disabled: true,
-            title: (['archiving', 'sending'].includes(info.state) ? info.state + ' ' + info.progress[info.state] + ' %' : info.state)
+            title: (['archiving', 'sending'].includes(info.state) ? info.state + ' ' + info.progress[info.state] + ' %' : info.state),
+            fileName: info.details.result
         })
     }
 
@@ -63,17 +108,28 @@ export default class SendExternalDropdown extends Component {
 
     }
 
+    componentWillUnmount() {
+        if (this.job) this.job.stopMonitoringJob();
+    }
+
     render = () => {
         let dropDownItems = []
         this.props.endpoints.forEach(endpoint => {
             dropDownItems.push(<Dropdown.Item key={endpoint.id} id={endpoint.id}
                                               onClick={this.handleClickDownload}>{endpoint.label}</Dropdown.Item>)
         })
-        return (
-            <DropdownButton variant="success" disabled={this.state.disabled} title={this.state.title}>
-                {dropDownItems}
-            </DropdownButton>
-        )
+        return (<div>
+            <Dropdown as={ButtonGroup}>
+                <Dropdown.Toggle variant="button-dropdown-orange"
+                                 className="button-dropdown button-dropdown-orange w-10" id="dropdown-basic"
+                                 disabled={this.state.disabled}>
+                    {this.state.title}
+                </Dropdown.Toggle>
+                <Dropdown.Menu className="mt-2 border border-dark border-2">
+                    {dropDownItems}
+                </Dropdown.Menu>
+            </Dropdown>
+        </div>)
     }
 
 }

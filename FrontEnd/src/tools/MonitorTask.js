@@ -11,6 +11,7 @@ export default class MonitorTask extends MonitorJob {
     }
 
     async jobMonitoring(jobUuid) {
+        let queryStartTime = Date.now();
 
         let task
         try {
@@ -29,5 +30,10 @@ export default class MonitorTask extends MonitorJob {
             this.finishCallback(task)
         }
 
+        if (this.continue) {
+            setTimeout(() => {
+                this.jobMonitoring(this.jobID)
+            }, this.interval - (Date.now() - queryStartTime))
+        }
     }
 }

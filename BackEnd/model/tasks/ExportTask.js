@@ -23,7 +23,15 @@ class ExportTask {
      */
     static createTask(creator, studies, endpoint, transcoding = null) {
         let taskId = 'e-' + uuid();
-        return archiveQueue.addJob({creator, taskId, orthancIds: studies, transcoding, endpoint}).then(() => taskId);
+        let fileName = String(Date.now()) + '.zip';
+        return archiveQueue.addJob({
+            creator,
+            taskId,
+            orthancIds: studies,
+            transcoding,
+            endpoint,
+            fileName
+        }).then(() => taskId);
     }
 
     /**
@@ -61,7 +69,9 @@ class ExportTask {
                 sending: (sendJob[0] ? await sendJob[0].progress() : 0)
             },
             state,
-            details: {}
+            details: {
+                result: archiveJob[0].data.fileName
+            }
         }
     }
 
@@ -98,8 +108,8 @@ class ExportTask {
      * Remove all jobs for export
      */
     static async flush() {
-        archiveQueue.clean()
-        exporter.sendQueue.clean()
+        await archiveQueue.clean();
+        await exporter.sendQueue.clean();
     }
 
     /**
@@ -139,6 +149,8 @@ class ExportTask {
             const streamWriter = fs.createWriteStream(destination);
             ReverseProxy.streamToFileWithCallBack(jobPath + '/archive', 'GET', {}, streamWriter, () => {
                 done(null, {path: destination});
+            }).catch((error) => {
+                console.err(error)
             });
         }).catch((error) => {
             console.error('error in a task :');
@@ -148,7 +160,7 @@ class ExportTask {
     }
 }
 
-let archiveQueue = new Queue('archive', ExportTask._getArchiveDicom);
+let archiveQueue = new Queue('archive', ExportTask._getArchiveDicom, Number(process.env.EXPORT_ATTEMPTS) || 3, Number(process.env.EXPORT_BACKOFF) || 2000);
 archiveQueue.on("completed", async (job, result) => {
     let endpoint
     if (job.data.endpoint == -1) {
@@ -160,7 +172,7 @@ archiveQueue.on("completed", async (job, result) => {
     } else {
         endpoint = await Endpoint.getFromId(job.data.endpoint);
     }
-    await exporter.uploadFile(job.data.taskId, endpoint, result.path).catch((err) => {
+    await exporter.uploadFile(job.data.taskId, endpoint, result.path, job.data.fileName).catch((err) => {
         job.moveToFailed(err)
     });
 });

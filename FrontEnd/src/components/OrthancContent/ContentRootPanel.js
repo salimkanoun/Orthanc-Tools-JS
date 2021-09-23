@@ -3,17 +3,18 @@ import SearchForm from './SearchForm'
 import SendTo from '../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown'
 import apis from '../../services/apis'
 
+import {Col, Row} from 'react-bootstrap';
+
 import TableSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/TableSeriesFillFromParent'
-import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/TablePatientsWithNestedStudies'
-
-import {studyArrayToPatientArray} from '../../tools/processResponse'
-
+import TablePatientsWithNestedStudies
+    from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies'
 import {connect} from 'react-redux'
 import {addStudiesToDeleteList} from '../../actions/DeleteList'
 import {addStudiesToExportList} from '../../actions/ExportList'
 import {addStudiesToAnonList} from '../../actions/AnonList'
 import {toast} from 'react-toastify'
-import LabelDropdown from "./LabelDropdown";
+import LabelDropdown from "./labels/LabelDropdown";
+import LabelModal from "./labels/LabelModal";
 
 
 class ContentRootPanel extends Component {
@@ -21,8 +22,12 @@ class ContentRootPanel extends Component {
     state = {
         currentSelectedStudyId: '',
         dataForm: {},
-        orthancContent : []
+        orthancContent: [],
+        selectedStudies: [],
+        resultVisible: false
     }
+
+    modalRef = {open: null};
 
     constructor(props) {
         super(props)
@@ -30,6 +35,8 @@ class ContentRootPanel extends Component {
     }
 
     sendSearch = async (dataForm) => {
+        //Show result
+        this.setState({resultVisible: true});
         if (dataForm) {
             //Store new form find value and send request to back
             this.setState({
@@ -47,7 +54,7 @@ class ContentRootPanel extends Component {
         try {
             let studies = await apis.content.getOrthancFind(dataForm)
             this.setState({
-                orthancContent : studies
+                orthancContent: studies
             })
         } catch (error) {
             toast.error(error.statusText)
@@ -77,10 +84,8 @@ class ContentRootPanel extends Component {
         this.setState({currentSelectedStudyId: ''})
     }
 
-    rowEventsStudies = {
-        onClick: (e, row) => {
-            this.setState({currentSelectedStudyId: row.StudyOrthancID})
-        }
+    rowEventsStudies = (row) => {
+        this.setState({currentSelectedStudyId: row.StudyOrthancID});
     }
 
     rowStyleStudies = (row) => {
@@ -98,18 +103,15 @@ class ContentRootPanel extends Component {
         let studiesOfSelectedPatients = []
         //Add all studies of selected patient
         selectedIds.selectedPatients.forEach(orthancPatientId => {
-          //loop the redux and add all studies that had one of the selected patient ID
-          let studyArray = this.state.orthancContent.filter(study => {
-              if (study.ParentPatient === orthancPatientId) return true
-              else return false
-          })
-          //Add to the global list of selected studies
-          studiesOfSelectedPatients.push(...studyArray)
+            //loop the redux and add all studies that had one of the selected patient ID
+            let studyArray = this.state.orthancContent.filter(study => study.ParentPatient === orthancPatientId);
+            //Add to the global list of selected studies
+            studiesOfSelectedPatients.push(...studyArray)
         })
-  
-          //add selected level studies
-          selectedIds.selectedStudies.forEach(element => {
-            this.props.orthancContent.forEach(study => {
+
+        //add selected level studies
+        selectedIds.selectedStudies.forEach(element => {
+            this.state.orthancContent.forEach(study => {
                 if (element === study.ID)
                     studiesOfSelectedPatients.push(study)
             });
@@ -117,42 +119,73 @@ class ContentRootPanel extends Component {
         //Get only unique study ids
         let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
         return uniqueSelectedOrthancStudyId
-      }
+    }
+
+    setSelectedStudies = (resources) => {
+        let selectedIds = resources
+        let studiesOfSelectedPatients = []
+        //Add all studies of selected patient
+        selectedIds.selectedPatients.forEach(orthancPatientId => {
+            //loop the redux and add all studies that had one of the selected patient ID
+            let studyArray = this.state.orthancContent.filter(study => study.ParentPatient === orthancPatientId);
+            //Add to the global list of selected studies
+            studiesOfSelectedPatients.push(...studyArray)
+        })
+
+        //add selected level studies
+        selectedIds.selectedStudies.forEach(element => {
+            this.state.orthancContent.forEach(study => {
+                if (element === study.ID)
+                    studiesOfSelectedPatients.push(study)
+            });
+        });
+        //Get only unique study ids
+        let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
+        this.setState({selectedStudies: uniqueSelectedOrthancStudyId});
+    }
 
 
     render = () => {
         return (
-            <div className='jumbotron'>
+            <div>
                 <SearchForm onSubmit={this.sendSearch}/>
-                <div className='row'>
-                    <div className='col-sm'>
-                        <div className={'d-flex flex-row justify-content-between'}>
-                            <LabelDropdown selectedStudiesGetter={this.getStudySelectedDetails}/>                            
-                            <SendTo 
-                                studies={this.child.current===null ? [] : this.child.current.getSelectedRessources().selectedStudies} 
-                                patients={this.child.current===null ? [] : this.child.current.getSelectedRessources().selectedPatients}
+                <Row id="showResult" className={'mt-5' + (this.state.resultVisible ? ' show-result-opened' : '')}>
+                    <Row>
+                        <Col sm={6}>
+                            <div className='d-flex flex-row justify-content-between mt-4'>
+                                <LabelDropdown studies={this.state.selectedStudies}/>
+                                <SendTo
+                                    studiesFull={this.state.selectedStudies}
+                                />
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col sm>
+                            <LabelModal fwRef={this.modalRef}/>
+                            <TablePatientsWithNestedStudies
+                                studies={this.state.orthancContent}
+                                rowEventsStudies={this.rowEventsStudies}
+                                rowStyle={this.rowStyleStudies}
+                                onDeletePatient={this.onDeletePatient}
+                                onDeleteStudy={this.onDeleteStudy}
+                                setSelectedStudies={this.setSelectedStudies}
+                                onModify={this.sendSearch}
+                                refresh={this.sendSearch}
+                                hiddenRemoveRow={true}
+                                openLabelModal={this.modalRef.open}
                             />
-                        </div>
+                        </Col>
+                        <Col sm>
+                            <TableSeriesFillFromParent
+                                studyID={this.state.currentSelectedStudyId}
+                                onDeleteStudy={this.onDeleteStudy}
+                                onEmptySeries={() => console.log('No Series')}
+                                refreshSerie={this.refreshSerie}/>
+                        </Col>
+                    </Row>
 
-                        <TablePatientsWithNestedStudies
-                            patients={studyArrayToPatientArray(this.state.orthancContent)}
-                            rowEventsStudies={this.rowEventsStudies}
-                            rowStyle={this.rowStyleStudies}
-                            onDeletePatient={this.onDeletePatient}
-                            onDeleteStudy={this.onDeleteStudy}
-                            setSelection={true}
-                            ref={this.child}
-                            refresh={this.sendSearch}
-                        />
-                    </div>
-                    <div className='col-sm'>
-                        <TableSeriesFillFromParent
-                            studyID={this.state.currentSelectedStudyId}
-                            onDeleteStudy={this.onDeleteStudy}
-                            onEmptySeries={() => console.log('No Series')}
-                            refreshSerie={this.refreshSerie}/>
-                    </div>
-                </div>
+                </Row>
             </div>
         )
     }

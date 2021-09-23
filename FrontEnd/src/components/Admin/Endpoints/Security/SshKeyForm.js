@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import apis from '../../../../services/apis'
 import Dropzone from 'react-dropzone'
 import { toast } from 'react-toastify'
-
+import { Row, Col } from 'react-bootstrap'
 /**
  * Form to declare or modify an Ssh Keys
  */
@@ -50,7 +50,7 @@ export default class SshKeyForm extends Component {
     render = () => {
         return (
             <Fragment>
-                <h3 className="card-title">Add Ssh Private Key</h3>
+                <h3 className="card-title mt-4">Add Ssh Private Key</h3>
                 <Dropzone onDrop={acceptedFile => this.setFile(acceptedFile)} >
                     {({ getRootProps, getInputProps }) => (
                         <section>
@@ -61,15 +61,26 @@ export default class SshKeyForm extends Component {
                         </section>
                     )}
                 </Dropzone>
-                <div className="form-group">
-                    <label htmlFor="label">Label : </label>
-                    <input type='text' name="label" className="form-control" onChange={this.handleChange} />
-                    <label htmlFor="pass">Passphrase : </label>
-                    <input type='text' name="pass" className="form-control" onChange={this.handleChange} />
-                </div>
-                <div className="text-right mb-5">
-                    <input disabled={!this.state.file || !this.state.label} type='button' className='row btn btn-primary' onClick={this.handleClick} value='send' />
-                </div>
+                <Row className="form-group mt-4 align-items-center">
+                    <Col sm={2}>
+                        <label htmlFor="label">Label : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <input type='text' name="label" className="form-control" onChange={this.handleChange} />   
+                    </Col>
+                    <Col sm={2}>
+                        <label htmlFor="pass">Passphrase : </label>
+                    </Col>
+                    <Col sm={4}>
+                        <input type='text' name="pass" className="form-control" onChange={this.handleChange} />
+                    </Col>
+                </Row>
+                <Row className="mt-4 text-center">
+                    <Col>
+                        <input disabled={!this.state.file || !this.state.label} type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Send' />
+
+                    </Col>
+                </Row>
             </Fragment>
         )
     }

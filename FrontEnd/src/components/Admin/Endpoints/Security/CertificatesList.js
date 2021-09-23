@@ -1,41 +1,40 @@
-import BootstrapTable from "react-bootstrap-table-next";
-
-import React, { Component, Fragment } from "react";
+import React, {Fragment, useMemo} from "react";
 import apis from '../../../../services/apis';
-import { toast } from "react-toastify";
+import {toast} from "react-toastify";
+import CommonTable from "../../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-export default class Certificates extends Component {
+export default function Certificates({refreshCertificatesData, certificatesData}) {
 
-    columns = [{
-        dataField: 'label',
-        text: 'Label'
+    const columns = useMemo(() => [{
+        accessor: 'label',
+        Header: 'Label'
     },
-    {
-        dataField: 'delete',
-        text: 'Delete certificate',
-        formatter: (cell, row, rowIndex, parentComponent) => {
-            return (
-                <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={ async () => { 
-                            try{
-                                await apis.certificates.deleteCertificate(row.id); 
-                                parentComponent.props.refreshCertificatesData() 
-                            } catch(error){
+        {
+            accessor: 'delete',
+            Header: 'Delete certificate',
+            Cell: ({row}) => {
+                return (
+                    <div className="text-center">
+                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
+                            try {
+                                await apis.certificates.deleteCertificate(row.id);
+                                refreshCertificatesData()
+                            } catch (error) {
                                 toast.error(error.statusText)
                             }
 
-                        }} value="Remove" />
-                </div>)
-        },
-        formatExtraData: this
-    }];
+                        }} value="Remove"/>
+                    </div>)
+            },
+            formatExtraData: this
+        }], [refreshCertificatesData]);
 
-    render() {
-        return (
-            <Fragment>
-                <BootstrapTable keyField="name" striped={true} data={this.props.certificatesData} columns={this.columns} wrapperClasses='table-responsive' />
-            </Fragment>
-        )
-    }
+
+    return (
+        <Fragment>
+            <CommonTable tableData={certificatesData} columns={columns}/>
+        </Fragment>
+    )
+
 }
 

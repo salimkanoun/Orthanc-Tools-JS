@@ -1,7 +1,6 @@
 import React, {Component} from "react";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import apis from "../../services/apis";
-import {Dropdown, FormControl, InputGroup} from "react-bootstrap";
+import {ButtonGroup, Dropdown, FormControl, InputGroup} from "react-bootstrap";
+import apis from "../../../services/apis";
 
 export default class LabelDropdown extends Component {
 
@@ -36,7 +35,7 @@ export default class LabelDropdown extends Component {
     }
 
     async _refreshStudyLabel() {
-        let studies_tab = await this.props.selectedStudiesGetter()
+        let studies_tab = await this.props.studies
         let studies = {}
         await Promise.all(studies_tab.map(study => apis.studylabel.getStudyLabels(study.MainDicomTags.StudyInstanceUID)
             .then(labels => {
@@ -102,23 +101,28 @@ export default class LabelDropdown extends Component {
     render() {
         let filteredLabels = this.state.labels.filter(label => label.includes(this.state.search))
         return (
-            <DropdownButton title="Labels" onClick={this.handleOpenClick} className={''}>
-                <Dropdown.ItemText className={'label-dropdown-item'}>
-                    <InputGroup>
-                        <InputGroup.Prepend>
-                            <InputGroup.Text>{'Search'}</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            placeholder="filter"
-                            aria-label="search"
-                            onChange={this.handleSearchInput}
-                        />
-                        <InputGroup.Append>
-                            <InputGroup.Text>{filteredLabels.length}</InputGroup.Text>
-                        </InputGroup.Append>
-                    </InputGroup>
-                </Dropdown.ItemText>
-                {filteredLabels.map(this.getLabelComponent)}
-            </DropdownButton>)
+            <>
+                <Dropdown as={ButtonGroup}>
+                    <Dropdown.Toggle variant="button-dropdown-blue"
+                                     className="mb-4 button-dropdown button-dropdown-blue"
+                                     id="dropdown-custom-1">Label</Dropdown.Toggle>
+                    <Dropdown.Menu className="mt-2 border border-dark border-2">
+                        <Dropdown.ItemText className='label-dropdown-item'>
+                            <InputGroup>
+                                <InputGroup.Text>{'Search'}</InputGroup.Text>
+                                <FormControl
+                                    placeholder="filter"
+                                    aria-label="search"
+                                    onChange={this.handleSearchInput}
+                                />
+                                <InputGroup.Text>{filteredLabels.length}</InputGroup.Text>
+                            </InputGroup>
+                        </Dropdown.ItemText>
+                        {filteredLabels.map(this.getLabelComponent)}
+                    </Dropdown.Menu>
+                </Dropdown>
+
+            </>
+        )
     }
 }

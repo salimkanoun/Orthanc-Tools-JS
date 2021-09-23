@@ -1,80 +1,61 @@
-import React, { Component, Fragment } from 'react'
-import BootstrapTable from 'react-bootstrap-table-next';
-import { toast } from 'react-toastify';
+import React, {Fragment, useMemo} from 'react'
+import {toast} from 'react-toastify';
 import apis from '../../../services/apis';
+import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
 /**
  * Table with known Peers details with Echo and Remove butto
  */
 
-export default class Peer extends Component {
+export default function Peer({peersData, refreshPeerData}) {
 
-    columns = [{
-        dataField: 'Username',
-        text: 'Username'
+    const columns = [{
+        accessor: 'Username',
+        Header: 'Username'
     }, {
-        dataField: 'name',
-        text: 'PeerName'
+        accessor: 'name',
+        Header: 'PeerName'
     }, {
-        dataField: 'Url',
-        text: 'Url'
+        accessor: 'Url',
+        Header: 'Url'
     }, {
-        dataField: 'Echo',
-        text: 'Echo Peer',
-        formatter: (cell, row, rowIndex) => {
+        id: 'Echo',
+        Header: 'Echo Peer',
+        Cell: ({row}) => {
             return (<div className="text-center">
-                <input type="button" className='btn btn-info' onClick={() => {
-                        apis.peers.echoPeer(row.name).then((response) => {
-                            toast.success('Version ' + row.name + ' = ' + response.Version)
-                        }).catch( (error) => toast.error(error.statusText))
-                    }
-                } value="Echo" />
+                <input type="button" className='otjs-button otjs-button-blue' onClick={() => {
+                    apis.peers.echoPeer(row.values.name).then((response) => {
+                        toast.success('Version ' + row.values.name + ' = ' + response.Version)
+                    }).catch((error) => toast.error(error.statusText))
+                }
+                } value="Echo"/>
             </div>)
         }
     }, {
-        dataField: 'Remove',
-        text: 'Remove Peer',
-        formatter: (cell, row, rowIndex, parentComponent) => {
+        id: 'Remove',
+        Header: 'Remove Peer',
+        Cell: ({row}) => {
             return (
                 <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={async () => {
+                    <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                         try {
-                            await apis.peers.deletePeer(row.name);
-                            parentComponent.props.refreshPeerData()
+                            await apis.peers.deletePeer(row.values.name);
+                            refreshPeerData()
                         } catch (error) {
                             toast.error(error.statusText)
                         }
-                    }} value="Remove" />
+                    }} value="Remove"/>
                 </div>)
-        },
-        formatExtraData: this
+        }
     }]
 
-    /**
-     * Translate Orthanc API in array of Rows to be consumed by BootstrapTable
-     */
-    orthancApisToRows = () => {
+    const data = useMemo(() => Object.entries(peersData).map(([name, peer]) => ({name, ...peer})), [peersData]);
 
-        let peersAnswer = this.props.peersData
-        let rows = []
+    return (
+        <Fragment>
+            <CommonTable tableData={data} columns={columns}/>
+        </Fragment>
+    )
 
-        for (const peerName in peersAnswer) {
-            rows.push({
-                name: peerName,
-                ...peersAnswer[peerName]
-            })
-
-        }
-
-        return rows
-    }
-
-    render = () => {
-        return (
-            <Fragment>
-                <BootstrapTable keyField="name" striped={true} data={this.orthancApisToRows()} columns={this.columns} wrapperClasses='table-responsive' />
-            </Fragment>
-        )
-    }
 
 }

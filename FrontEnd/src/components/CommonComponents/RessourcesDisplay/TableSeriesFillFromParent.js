@@ -1,15 +1,16 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import apis from '../../../services/apis'
-import TableSeries from './TableSeries'
+import TableSeries from './ReactTable/TableSeries'
 
 export default class TableSeriesFillFromParent extends Component {
 
     state = {
         series: []
     }
-    
+
     static defaultProps = {
-        onEmptySeries: function () { }
+        onEmptySeries: function () {
+        }
     }
 
     onDelete = (idDeleted, parentID) => {

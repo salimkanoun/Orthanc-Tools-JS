@@ -69,6 +69,7 @@ services:
             ORTHANC__NAME: "OrthancToolsJS"
             ORTHANC__DICOM_SERVER_ENABLED: "true"
             ORTHANC__DICOM_MODALITIES_IN_DATABASE: "true"
+            ORTHANC__DATABASE_SERVER_IDENTIFIER : "Orthanc1"
             ORTHANC__ORTHANC_PEERS_IN_DATABASE: "true"
             DICOM_WEB_PLUGIN_ENABLED: "true"
             OSIMIS_WEB_VIEWER1_PLUGIN_ENABLED: "true"

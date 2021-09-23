@@ -118,17 +118,28 @@ const EndpointRootPanel = () => {
         <>
             <div>
                 <div className='mb-5'>
-                    <ul className='nav nav-pills nav-fill'>
-                        <li className='nav-item'>
-                            <button className={currentComponent === 'endpoints' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => switchTab('endpoints')}>Endpoints</button>
-                        </li>
-                        <li className='nav-item'>
-                            <button className={currentComponent === 'add' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => switchTab('add')}> Add Endpoints </button>
-                        </li>
-                        <li className='nav-item'>
-                            <button className={currentComponent === 'security' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => switchTab('security')}> Security </button>
-                        </li>
-                    </ul>
+                    <nav className="otjs-navmenu container-fluid">
+                        <div className="otjs-navmenu-nav">
+                            <li className='col-4 text-center'>
+                                <button
+                                    className={currentComponent === 'endpoints' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => switchTab('endpoints')}>Endpoints
+                                </button> 
+                            </li>
+                            <li className='col-4 text-center'>
+                                <button
+                                    className={currentComponent === 'add' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => switchTab('add')}>Add Endpoints
+                                </button> 
+                            </li>
+                            <li className='col-4 text-center'>
+                                <button
+                                    className={currentComponent === 'security' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => switchTab('security')}>Security
+                                </button> 
+                            </li>
+                        </div>
+                    </nav>
                 </div>
                 <div>
                     {getComponentToDisplay()}

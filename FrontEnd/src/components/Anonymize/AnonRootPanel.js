@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import AnonymizePanelProgress from './AnonymizePanelProgress';
 import apis from '../../services/apis';
 import AnonHistoric from './AnonHistoric';
-
+import { Row,Col } from 'react-bootstrap';
 const ANON_TAB = "Anonymizassion"
 const PORG_TAB = "Progress"
 const HISTORIC_TAB = "Historic"
@@ -47,14 +47,16 @@ class AnonRootPanel extends Component {
                 return (<AnonymizePanel setTask={this.setAnonTaskId}/>);
             case PORG_TAB:
                 return (
-                    <div>
-                        <div className = "row">
-                            <AnonymizePanelProgress anonTaskID={this.state.anonTaskId}/>
-                        </div>
-                        <div>
-                            <AnonymizedResults anonTaskID={this.state.anonTaskId}/>
-                        </div>
-                    </div>)
+                    <>
+                        <Row className="align-items-center justify-content-center">
+                            <Col md={12} className="text-center mb-4" style={{"max-width": '20%'}}>
+                                <AnonymizePanelProgress anonTaskID={this.state.anonTaskId}/>
+                            </Col>
+                            <Col md={12}>
+                                <AnonymizedResults anonTaskID={this.state.anonTaskId}/>
+                            </Col>
+                        </Row>
+                    </>)
             case HISTORIC_TAB:
                 return (<AnonHistoric/>);
             default:
@@ -66,34 +68,42 @@ class AnonRootPanel extends Component {
         this.setState({currentMainTab})
     }
 
-    render = () => {
+    render = () => { 
         return (
             <div>
                 <div className='mb-5'>
-                    <ul className='nav nav-pills nav-fill'>
-                        <li className='nav-item'>
-                            <button
-                                className={this.state.currentMainTab === ANON_TAB ? 'col nav-link active link-button' : ' col nav-link link-button'}
-                                onClick={() => this.setCurrentMainTab(ANON_TAB)}>Anonimization List
-                            </button>
-                        </li>
-                        <li className='nav-item'>
-                            <button
-                                className={this.state.currentMainTab === PORG_TAB ? 'col nav-link active link-button' : 'col nav-link link-button' + (!this.state.anonTaskId ? ' disabled' : '')}
-                                onClick={() => {
-                                    if (this.state.anonTaskId) this.setCurrentMainTab(PORG_TAB)
-                                }}>Progress
-                            </button>
-                        </li>
-                        <li className='nav-item'>
-                            <button
-                                className={this.state.currentMainTab === HISTORIC_TAB ? 'col nav-link active link-button' : 'col nav-link link-button'}
-                                onClick={() => this.setCurrentMainTab(HISTORIC_TAB)}> History
-                            </button>
-                        </li>
-                    </ul>
+                    <Row className="pb-3">
+                        <Col className="d-flex justify-content-start align-items-center">
+                            <i className="fas fa-user-secret ico me-3"></i><h2 className="card-title">Anonymise</h2>
+                        </Col>
+                    </Row>
+                    <nav className="otjs-navmenu container-fluid">
+                        <div className="otjs-navmenu-nav">
+                            <li className='col-4 text-center'>
+                                <button
+                                    className={this.state.currentMainTab === ANON_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => this.setCurrentMainTab(ANON_TAB)}>Anonimization List
+                                </button>
+                            </li>
+                        
+                            <li className='col-4 text-center'>
+                                <button
+                                    className={this.state.currentMainTab === PORG_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button' + (!this.state.anonTaskId ? ' disabled' : '')}
+                                    onClick={() => {
+                                        if (this.state.anonTaskId) this.setCurrentMainTab(PORG_TAB)
+                                    }}>Progress
+                                </button>
+                            </li>
+                            <li className='col-4 text-center'>
+                                <button
+                                    className={this.state.currentMainTab === HISTORIC_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => this.setCurrentMainTab(HISTORIC_TAB)}> History
+                                </button>
+                            </li>
+                        </div>
+                    </nav>
                 </div>
-                <div className = "jumbotron">
+                <div>
                     {this.getComponentToDisplay()}
                 </div>
             </div>

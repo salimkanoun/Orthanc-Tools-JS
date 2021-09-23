@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux'
-
+import React, {Component, Fragment} from 'react';
+import {connect} from 'react-redux'
+import {Col, Row} from 'react-bootstrap';
 import TableResultsStudiesSeries from './TableResultsStudiesSeries'
 import TableResultStudy from './TableResultStudy'
 
@@ -14,7 +14,7 @@ class Results extends Component {
 
     filterSeriesListener = () => {
         this.setState(state => {
-            return { seriesView: !state.seriesView }
+            return {seriesView: !state.seriesView}
         })
     }
 
@@ -49,7 +49,7 @@ class Results extends Component {
             }
 
             for (let studyInstanceUID of studiesUIDArray) {
-                retrieveArray.push({ ...this.props.results[studyInstanceUID] })
+                retrieveArray.push({...this.props.results[studyInstanceUID]})
             }
         }
 
@@ -60,15 +60,20 @@ class Results extends Component {
     render = () => {
         return (
             <Fragment>
-                <div >
-                    <input type="button" className="btn btn-info float-right" value={this.state.seriesView === true ? "Filter Studies" : "Filter Series"} onClick={this.filterSeriesListener} />
-                </div>
-                <div >
-                    {this.state.seriesView === true ? <TableResultsStudiesSeries /> : <TableResultStudy />}
-                </div>
-                <div className="text-center">
-                    <CreateRobot getResultArray={this.buildArrayRetrieve} switchTab={this.props.switchTab} setTaskId={this.props.setTaskId} />
-                </div>
+                <Row className="mt-3 text-center border-bottom border-2 pb-3">
+                    <Col>
+                        <input type="button" className="otjs-button otjs-button-blue w-12"
+                               value={this.state.seriesView === true ? "Filter Studies" : "Filter Series"}
+                               onClick={this.filterSeriesListener}/>
+                    </Col>
+                </Row>
+                <Row className="mt-5">
+                    {this.state.seriesView === true ? <TableResultsStudiesSeries/> : <TableResultStudy/>}
+                </Row>
+                <Row className="mt-5">
+                    <CreateRobot getResultArray={this.buildArrayRetrieve} switchTab={this.props.switchTab}
+                                 setTaskId={this.props.setTaskId}/>
+                </Row>
             </Fragment>
         )
     }

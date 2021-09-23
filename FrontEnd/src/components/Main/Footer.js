@@ -9,16 +9,18 @@ export default class Footer extends Component {
   render = () => {
     return (
       <Fragment>
-        <div className="footer-copyright text-center mb-3">Orthanc Tools JS: {packageInfo.version}
-
-              <button type="button" className='link-button ml-3' onClick={() => this.setState(prevState => ({ show: !prevState.show }))}>About</button>
+        <div className="footer text-center mb-3">
+              
+              <button type="button" className='link-button ms-3 footer-text' onClick={() => this.setState(prevState => ({ show: !prevState.show }))}>
+                  <span className="me-3">Orthanc Tools JS: {packageInfo.version}</span>About
+              </button>
         </div>
 
         <Modal show={this.state.show} onHide={() => this.setState({ show: false })}>
           <Modal.Header closeButton >
             About
-                </Modal.Header>
-          <Modal.Body>
+          </Modal.Header>
+          <Modal.Body >
             <pre>
               Orthanc Tools JS{'\n\n'}
                     Maintainer : Salim Kanoun (salim.kanoun@gmail.com){'\n\n'}

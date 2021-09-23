@@ -29,11 +29,11 @@ COPY --from=react /app/build/viewer-ohif/app-config.js ./build/viewer-ohif/
 COPY --from=react /app/build/viewer-stone/configuration.json ./build/viewer-stone/
 
 COPY ./BackEnd .
-RUN npm install --only=prod
+RUN yarn install --only=prod
 
 EXPOSE 4000
 ENV OrthancAddress http://localhost
 ENV OrthancPort 8042
 ENV OrthancUsername orthanc
 ENV OrthancPassword orthanc
-CMD [ "npm", "start" ]
+CMD [ "yarn", "start" ]

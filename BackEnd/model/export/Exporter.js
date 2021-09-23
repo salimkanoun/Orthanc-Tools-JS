@@ -21,7 +21,7 @@ class Exporter {
             'send-over-ftp': Exporter._sendOverFtp,
             'send-over-sftp': Exporter._sendOverSftp,
             'send-over-webdav': Exporter._sendOverWebdav,
-            'save-locally' : Exporter._saveLocally
+            'save-locally': Exporter._saveLocally
         });
 
         Certificate.getAllCertificates().then((certificates) => {
@@ -51,25 +51,25 @@ class Exporter {
     }
 
     static async _sendOverFtp(job, done) {
-        Ftp.sendOverFtp(job,done)
+        await Ftp.sendOverFtp(job, done)
     }
 
     static async _sendOverSftp(job, done) {
-        Sftp.sendOverSftp(job,done)
+        await Sftp.sendOverSftp(job, done)
     }
 
     static async _sendOverWebdav(job, done) {
-        Webdav.sendOverWebdav(job,done)
+        await Webdav.sendOverWebdav(job, done)
     }
 
-    static async _saveLocally(job,done){
+    static async _saveLocally(job, done) {
         let file = job.data.file
         let uploadFolder = './data/export_dicom/local/'
         //job.data.endpoint.targetFolder
-        let fileName = file.name
+        let fileName = job.fileName
 
-        fs.rename(file.path,uploadFolder+fileName,function(err){
-            if(err){
+        fs.rename(file.path, uploadFolder + fileName, function (err) {
+            if (err) {
                 console.error(err)
                 return;
             }
@@ -78,7 +78,7 @@ class Exporter {
         done()
     }
 
-    async uploadFile(taskId, endpoint, filePath) {
+    async uploadFile(taskId, endpoint, filePath, fileName) {
         let formatedEndpoint
         switch (endpoint.protocol) {
             case 'ftp':
@@ -95,7 +95,7 @@ class Exporter {
         }
         let file = {
             path: filePath,
-            name: path.basename(filePath),
+            name: fileName,
             size: await fs.promises.stat(filePath).then(stats => stats.size)
         }
         await this.sendQueue.addJob(
@@ -104,7 +104,7 @@ class Exporter {
                 'ftp': 'send-over-ftp',
                 'sftp': 'send-over-sftp',
                 'webdav': 'send-over-webdav',
-                'local':'save-locally'
+                'local': 'save-locally'
             }[endpoint.protocol])
         return taskId;
     }

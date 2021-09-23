@@ -1,87 +1,74 @@
-import React, { Component, Fragment } from 'react'
-import BootstrapTable from 'react-bootstrap-table-next';
-import { toast } from 'react-toastify';
+import React, {Fragment, useMemo} from 'react'
+import {toast} from 'react-toastify';
 import apis from '../../../services/apis';
+import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
 /**
  * Table with known AETs details with Echo and Remove button
  */
-export default class Aets extends Component {
+export default function Aet({aetsData, refreshAetData}) {
 
-    columns = [{
-        dataField: 'name',
-        text: 'Name'
+    const columns = useMemo(() => [{
+        accessor: 'name',
+        Header: 'Name'
     }, {
-        dataField: 'AET',
-        text: 'AET'
+        accessor: 'AET',
+        Header: 'AET'
     }, {
-        dataField: 'Host',
-        text: 'Host'
+        accessor: 'Host',
+        Header: 'Host'
     }, {
-        dataField: 'Port',
-        text: 'Port'
+        accessor: 'Port',
+        Header: 'Port'
     }, {
-        dataField: 'Manufacturer',
-        text: 'Manufacturer'
+        accessor: 'Manufacturer',
+        Header: 'Manufacturer'
     }, {
-        dataField: 'echo',
-        text: 'Echo AET',
-        formatter: (cell, row, rowIndex) => {
+        accessor: 'echo',
+        Header: 'Echo AET',
+        Cell: ({row}) => {
             return (<div className="text-center">
-                <input type="button" className='btn btn-info' onClick={async () => {
-                    try{
-                        await apis.aets.echoAet(row.name)
-                        toast.success(row.name + ' Success')
-                    }catch(error){
-                        toast.error(row.name + ' Echo Failure')
+                <input type="button" className='otjs-button otjs-button-blue' onClick={async () => {
+                    try {
+                        await apis.aets.echoAet(row.values.name)
+                        toast.success(row.values.name + ' Success')
+                    } catch (error) {
+                        toast.error(row.values.name + ' Echo Failure')
                     }
-                    
-                    }} value="Echo" />
+
+                }} value="Echo"/>
             </div>)
         }
     }, {
-        dataField: 'remove',
-        text: 'Remove AET',
-        formatter: (cell, row, rowIndex, parentComponent) => {
+        accessor: 'remove',
+        Header: 'Remove AET',
+        Cell: ({row}) => {
             return (
                 <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={async () => { 
-                            try{
-                                await apis.aets.deleteAet(row.name); 
-                                parentComponent.props.refreshAetData() 
-                            }catch(error){
-                                toast.error(error.statusText)
-                            }
-                        }} value="Remove" />
+                    <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
+                        try {
+                            await apis.aets.deleteAet(row.values.name);
+                            refreshAetData()
+                        } catch (error) {
+                            toast.error(error.statusText)
+                        }
+                    }} value="Remove"/>
                 </div>)
         },
         formatExtraData: this
-    }];
+    }], [refreshAetData]);
 
     /**
      * Translate Orthanc API in array of Rows to be consumed by BootstrapTable
      */
-    orthancApisToRows = () => {
+    const data = useMemo(() => Object.entries(aetsData).map(([name, data]) => ({
+        name,
+        ...data
+    })), [aetsData]);
 
-        let aetsAnswer = this.props.aetsData
-        let rows = []
-
-        for (const aetName in aetsAnswer) {
-            rows.push({
-                name: aetName,
-                ...aetsAnswer[aetName]
-            })
-
-        }
-
-        return rows
-    }
-
-    render = () => {
-        return (
-            <Fragment>
-                <BootstrapTable keyField="name" striped={true} data={this.orthancApisToRows()} columns={this.columns} wrapperClasses='table-responsive' />
-            </Fragment>
-        )
-    }
+    return (
+        <Fragment>
+            <CommonTable tableData={data} columns={columns}/>
+        </Fragment>
+    )
 }

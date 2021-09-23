@@ -36,7 +36,10 @@ export default class ModifyRole extends Component {
     render = () => {
         return (
             <Fragment>
-                <button type='button' className='btn btn-warning' name='openModify' onClick={this.handleClick}>Edit</button>
+                <div className="text-center">
+                    <button type='button' className='otjs-button otjs-button-orange' name='openModify' onClick={this.handleClick}>Edit</button>
+                </div>
+                
                 <Modal id='modify' show={this.state.show} onHide={() => this.setState({ show: false })}>
                     <Modal.Header closeButton>
                         <h2 className='card-title'>Modify role {this.state.data.name}</h2>

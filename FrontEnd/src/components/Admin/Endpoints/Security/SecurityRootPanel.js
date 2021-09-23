@@ -47,7 +47,7 @@ const SecurityRootPanel = () => {
             case 'sshKeys':
                 component =
                     <Fragment>
-                        <h2>Ssh Private Keys : </h2>
+                        <h2 className="card-title">Ssh Private Keys : </h2>
                         <SshKeys sshKeysData={sshKeys} refreshSshKeysData={refreshSshKeys} />
                         <SshKeyForm refreshSshKeysData={refreshSshKeys} />
                     </Fragment>
@@ -55,7 +55,7 @@ const SecurityRootPanel = () => {
             case 'certificates':
                 component =
                     <Fragment>
-                        <h2>Certification Authorities : </h2>
+                        <h2 className="card-title">Certification Authorities : </h2>
                         <Certificates certificatesData={certificates} refreshCertificatesData={refreshCertificates} />
                         <CertificateForm refreshCertificatesData={refreshCertificates} />
                     </Fragment>
@@ -75,14 +75,22 @@ const SecurityRootPanel = () => {
         <>
             <div>
                 <div className='mb-5'>
-                    <ul className='nav nav-pills nav-fill'>
-                        <li className='nav-item'>
-                            <button className={currentComponent === 'sshKeys' ? 'col nav-link active link-button' : 'col link-button'} onClick={() => switchTab('sshKeys')}>Ssh Keys</button>
-                        </li>
-                        <li className='nav-item'>
-                            <button className={currentComponent === 'certificates' ? 'col nav-link active link-button' : ' col link-button'} onClick={() => switchTab('certificates')}>Certificates</button>
-                        </li>
-                    </ul>
+                    <nav className="otjs-navmenu container-fluid">
+                        <div className="otjs-navmenu-nav">
+                            <li className='col-6 text-center'>
+                                <button
+                                    className={currentComponent === 'sshKeys' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => switchTab('sshKeys')}>Ssh Keys
+                                </button> 
+                            </li>
+                            <li className='col-6 text-center'>
+                                <button
+                                    className={currentComponent === 'certificates' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => switchTab('certificates')}>Certificates
+                                </button> 
+                            </li>
+                        </div>
+                    </nav>
                 </div>
                 <div>
                     {getComponentToDisplay()}

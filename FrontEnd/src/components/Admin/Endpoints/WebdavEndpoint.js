@@ -1,49 +1,49 @@
-import BootstrapTable from "react-bootstrap-table-next";
+import React, {Fragment, useMemo} from "react";
+import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-import React, { Component, Fragment } from "react";
+export default function WebdavEndpoints({onDeleteEndpoint, endpointsData}) {
 
-export default class WebdavEndpoints extends Component {
-
-    columns = [{
-        dataField: 'label',
-        text: 'Label'
+    const columns = useMemo(() => [{
+        accessor: 'label',
+        Header: 'Label'
     },
-    {
-        dataField: 'host',
-        text: 'Host'
-    },
-    {
-        dataField: 'username',
-        text: 'Username'
-    },
-    {
-        dataField: 'targetFolder',
-        text: 'Target Folder'
-    },
-    {
-        dataField: 'digest',
-        text: 'Use Digest?',
-        formatter: (cell, row, rowIndex, parentComponent) => <p>{(row.digest ? '✓' : '✖')}</p>
-    },
-    {
-        dataField: 'delete',
-        text: 'Delete endpoint',
-        formatter: (cell, row, rowIndex, parentComponent) => {
-            return (
-                <div className="text-center">
-                    <input type="button" className='btn btn-danger' onClick={async () => { await parentComponent.props.onDeleteEndpoint(row.id) }} value="Remove" />
-                </div>)
+        {
+            accessor: 'host',
+            Header: 'Host'
         },
-        formatExtraData: this
-    }];
+        {
+            accessor: 'username',
+            Header: 'Username'
+        },
+        {
+            accessor: 'targetFolder',
+            Header: 'Target Folder'
+        },
+        {
+            accessor: 'digest',
+            Header: 'Use Digest?',
+            Cell: ({row}) => <p>{(row.values.digest ? '✓' : '✖')}</p>
+        },
+        {
+            accessor: 'delete',
+            Header: 'Delete endpoint',
+            Cell: ({row}) => {
+                return (
+                    <div className="text-center">
+                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
+                            await onDeleteEndpoint(row.values.id)
+                        }} value="Remove"/>
+                    </div>)
+            }
+        }], [onDeleteEndpoint]);
 
-    render = () => {
-        return (
-            <Fragment>
-                <h2>Webdav Export Endpoints</h2>
-                <BootstrapTable keyField="name" striped={true} data={this.props.endpointsData} columns={this.columns} wrapperClasses='table-responsive' />
-            </Fragment>
-        )
-    }
+    const data = useMemo(() => endpointsData, [endpointsData])
+
+    return (
+        <Fragment>
+            <h2 className="mt-5 card-title">Webdav Export Endpoints</h2>
+            <CommonTable columns={columns} tableData={data}/>
+        </Fragment>
+    )
 }
 
