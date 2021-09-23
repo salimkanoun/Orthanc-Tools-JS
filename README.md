@@ -18,6 +18,7 @@ Current Features :
   - Users identifications local and Active directory with definitions of roles (custom rigth access to orthanc Apis)
   - Search ressources in Orthanc
   - Import DICOM file into Orthanc using drag and drop
+  - Dicom creation (image or pdf)
   - Batch Anonymizaion
   - Batch Export Local (local, ZIP, AET)
   - Batch Export to Remote endpoints (Orthanc Peers, FTP, SFTP, Webdav)
@@ -26,6 +27,8 @@ Current Features :
   - Dicom Tag Edition
   - Automatic Retrieve : Define a list of studies /Series to retrieve and schedule a robot for automatic retrieval
   - CD Burner Management (Epson and Primera)
+  - Auto Routing
+  - Dicom ressource labelling
   - Administration panel : Declaration and echo of AETs, Orthanc Peers, Jobs management
   
 Documentation : https://github.com/salimkanoun/Orthanc-Tools-JS/blob/master/Documentation/Orthanc-Tools-JS-Documentation.pdf
@@ -33,8 +36,6 @@ Documentation : https://github.com/salimkanoun/Orthanc-Tools-JS/blob/master/Docu
 Demo Server : https://orthanctoolsjs.ddns.net/
 login : admin
 password : admin
-
-WIP : AutoRouting, Dicom ressource labelling, Dicom creation (image or pdf)
 
 Roadmap : 
 Monitoring  : Tag collection (in Elastic Search), Prefecthing, Remote AET Monitoring
