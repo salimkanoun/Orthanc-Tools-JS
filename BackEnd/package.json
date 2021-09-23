@@ -10,7 +10,7 @@
     "url": "https://github.com/salimkanoun/Orthanc-Tools-JS.git"
   },
   "license": "AGPL-3.0",
-  "version": "0.0.3",
+  "version": "0.7.0",
   "private": false,
   "main": "OrthancToolsJS.js",
   "scripts": {
