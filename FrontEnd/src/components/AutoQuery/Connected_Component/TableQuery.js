@@ -175,7 +175,7 @@ class TableQuery extends Component {
                                 'Date From': row.DateFrom,
                                 'Date To': row.DateTo,
                                 'Study Description': row.StudyDescription,
-                                'Modality': row.ModalitiesInStudy,
+                                'Modalities': row.ModalitiesInStudy,
                                 'AET': row.Aet
                             }
                         ))}/>
