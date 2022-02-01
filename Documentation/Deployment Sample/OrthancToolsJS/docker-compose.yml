@@ -50,6 +50,8 @@ services:
     postgres:
         container_name: postgres
         image: postgres:13.1
+        networks:
+          - internal
         environment:
             POSTGRES_DB : "orthanctoolsjs"
             POSTGRES_HOST_AUTH_METHOD: "trust"
