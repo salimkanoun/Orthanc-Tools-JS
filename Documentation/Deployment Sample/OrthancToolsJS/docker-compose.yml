@@ -26,14 +26,15 @@ services:
             REDIS_HOST: "redis"
             REDIS_PORT: "6379"
             REDIS_PASSWORD: ""
-            DB_USERNAME: "root"
-            DB_PASSWORD: "admin"
+            DB_USERNAME: "postgres"
+            DB_PASSWORD: "postgres"
             DB_HOST: "postgres"
             DB_PORT: 5432
             DB_NAME: orthanctoolsjs
         networks:
           - internal
           - web
+        ports: ["4000:4000"]
         labels:
         - "traefik.enable=true"
         - "traefik.port=4000"
