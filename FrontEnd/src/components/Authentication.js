@@ -5,7 +5,7 @@ import { CSSTransition } from "react-transition-group";
 
 import ReactTooltip from "react-tooltip";
 import HelpIcon from '@material-ui/icons/Info';
-import { toast } from 'react-toastify';
+import { toast } from 'react-toastify'
 
 export default class Authentication extends Component {
 

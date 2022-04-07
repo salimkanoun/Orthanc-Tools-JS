@@ -17,6 +17,7 @@ import 'react-toastify/dist/ReactToastify.css'
 //Custom CSS
 import './assets/styles/orthancToolsJs.scss'
 import {BrowserRouter} from 'react-router-dom'
+import MainRoot from './components/Main/MainRoot'
 
 // Configuring Toastify params that will be used all over the app
 toast.configure({
@@ -74,8 +75,9 @@ class App extends Component {
     render() {
         return (
             <BrowserRouter>
-                {this.props.username ?
-                    <NavBar onLogout={this.logout} username={this.props.username} roles={this.props.roles}/> :
+                {true ?
+                    <MainRoot onLogout={this.logout} username={this.props.username} roles={this.props.roles} /> 
+                    :
                     <Authentication onLogin={this.login}/>}
             </BrowserRouter>
         );

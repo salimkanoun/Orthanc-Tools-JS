@@ -106,7 +106,7 @@ export default class Search extends Component{
             <div>
                 <Row className="border-bottom border-2 pb-3">
                     <Col className="d-flex justify-content-start align-items-center">
-                        <i className={this.props.icone + " ico me-3"}></i><h2 className="card-title">{this.props.title}</h2>
+                        <i className={this.props.icon + " ico me-3"}></i><h2 className="card-title">{this.props.title}</h2>
                     </Col>
                 </Row>
                 <div className='row mt-5'>

@@ -190,7 +190,7 @@ export default class CDBurner extends Component {
                     </Col>
                     <Col sm={2} className="d-flex justify-content-start align-items-center">
                         <h4>
-                            <i id="soundIcone" className={this.state.playSound === true ? "fas fa-volume-up me-2" : "fas fa-volume-mute me-2"}></i>
+                            <i id="soundIcon" className={this.state.playSound === true ? "fas fa-volume-up me-2" : "fas fa-volume-mute me-2"}></i>
                         </h4>
                         <Toggle checked={this.state.playSound} onChange={this.soundHandler}/>
                     </Col>

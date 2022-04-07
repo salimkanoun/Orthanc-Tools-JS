@@ -40,7 +40,7 @@ export default class SearchForm extends Component{
     //form
     render(){
         return (
-            <Form title="Search" icone="fas fa-search" onFormValidate={this.dataSearch} >
+            <Form title="Search" icon="fas fa-search" onFormValidate={this.dataSearch} >
                     <input type='button' className='btn otjs-button otjs-button-blue' value='Search' />
             </Form>
         )
