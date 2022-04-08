@@ -1,13 +1,20 @@
 import React, { useState } from 'react'
 import { Link, useHistory, useLocation } from 'react-router-dom'
-import {  Image, Nav, Navbar } from 'react-bootstrap'
+import { Image, Nav, Navbar } from 'react-bootstrap'
 
 import image from '../../assets/images/logo.png';
 
-export default ({onLogout, roles }) => {
+export default ({ onLogout, roles }) => {
 
     const IMPORT = "import"
-    const CONTENT = "content"
+    const CONTENT = "orthanc-content"
+    const QUERY = "query"
+    const AUTO_QUERY = "auto-query"
+    const BURNER = "cd-burner"
+    const MYDICOM = "mydicom"
+    const DICOM_ROUTER = "dicom-router"
+    const ADMINISTRATION = "administration"
+    const LOG_OUT = ""
 
     const history = useHistory()
     const location = useLocation()
@@ -19,74 +26,73 @@ export default ({onLogout, roles }) => {
     }
 
     const selectTabHandler = (name) => {
-        history.push("/"+name)
+        history.push("/" + name)
     }
 
 
     return (
         <>
-            <Navbar MouseEnter={() =>{setOpened(true)}}
-                onMouseLeave={() => {setOpened(false)}}
+            <Navbar MouseEnter={() => { setOpened(true) }}
+                onMouseLeave={() => { setOpened(false) }}
                 className={"d-flex flex-row"}
                 fixed='top'
                 collapseOnSelect expand='lg'
                 variant='dark'>
-                <Navbar.Brand href="#home">
-                    <Image id="logo" className={"navbar-image" + (opened ? "" : " navbar-image-close")}
-                    src={image} />
-                </Navbar.Brand>
 
-                <Nav className="me-auto">
-                    <ul>
-                        <li>
-                            <Nav.Link className={getLinkClass('content')} onClick={() => selectTabHandler(CONTENT)} name='content' to='/orthanc-content'>Content</Nav.Link>
-                        </li>
-                        <li>
-                            <Nav.Link className={getLinkClass('import')} onClick={() => selectTabHandler(IMPORT)}>Import</Nav.Link>
-                        </li>
-                    </ul>
-                    <Link className={getLinkClass('query')} onClick={selectTabHandler} name='query'
-                        to='/query' hidden={!roles.query}>
-                        <i className="fas fa-question"></i> {opened ? 'Query' : ''}
-                    </Link>
-                    <Link className={getLinkClass('auto-query')} onClick={selectTabHandler}
-                        name='auto-query' to='/auto-query'
-                        hidden={!roles.auto_query}>
-                        <i className="fas fa-recycle"></i> {opened ? 'Auto-Retrieve' : ''}
-                    </Link>
-                    <Link className={getLinkClass('burner')} onClick={selectTabHandler} name='burner'
-                        to='/cd-burner' hidden={!roles.cd_burner}>
-                        <i className="fas fa-compact-disc"></i> {opened ? 'CD-burner' : ''}
-                    </Link>
-                    <Link className={getLinkClass('mydicom')} onClick={selectTabHandler}
-                        name='mydicom' to='/mydicom'>
-                        <i className="far fa-images"></i> {opened ? 'MyDicom' : ''}
-                    </Link>
-                    <Link className={getLinkClass('dicom-router')} onClick={selectTabHandler}
-                        name='dicom-router' to='/dicom-router'
-                        hidden={!roles.autorouting}>
-                        <i className="fas fa-broadcast-tower icon"></i> {opened ? 'Dicom-Router' : ''}
-                    </Link>
-                    <Link className={getLinkClass('administration')} onClick={selectTabHandler}
-                        name='administration' to='/administration'
-                        hidden={!roles.admin}>
-                        <i className="fas fa-cogs"></i> {opened ? 'Administration' : ''}
-                    </Link>
+                <div class="row">
+                    <div class="col mx-auto text-center" >
+                        <Navbar.Brand href="../#home">
+                            <Image id="logo" className={"logoMenu" +(opened ? "" : " navbar-image-close") } src={image} />
+                        </Navbar.Brand>
 
-                    <div className="otjs-navbar-border" hidden={!opened}></div>
+                        <Nav className="menu me-auto">
+                            <ul>
+                                <div className="otjs-navbar-border" /*hidden={!opened}*/></div>
 
-                    <Link className={getLinkClass('log-out')} name='log-out' onClick={onLogout}
-                        to='/'>
-                        <i className="fas fa-power-off"></i>{opened ? ' Log out' : ''}
-                    </Link>
-                </Nav>
+                                <li>
+                                    <Nav.Link className={getLinkClass('orthanc-content')} onClick={() => selectTabHandler(CONTENT)} name='content' to='/orthanc-content'><i className="fas fa-search icone"></i>  Orthanc Content</Nav.Link>
+                                </li>
+
+                                <li>
+                                    <Nav.Link className={getLinkClass('import')} onClick={() => selectTabHandler(IMPORT)} name='import'><i className="fas fa-file-import icone"></i>  Import</Nav.Link>
+                                </li>
+
+                                <li>
+                                    <Nav.Link className={getLinkClass('query')} onClick={() => selectTabHandler(QUERY)} name='query' hidden={!roles.query}><i className="fas fa-question icone"></i>  Query</Nav.Link>
+                                </li>
+
+                                <li>
+                                    <Nav.Link className={getLinkClass('auto-query')} onClick={() => selectTabHandler(AUTO_QUERY)} name='auto_query' /*hidden={!roles.auto_query}*/><i className="fas fa-recycle icone"></i>  Auto Retrieve</Nav.Link>
+                                </li>
+
+                                <li>
+                                    <Nav.Link className={getLinkClass('cd-burner')} onClick={() => selectTabHandler(BURNER)} name='burner' /*hidden={!roles.cd_burner}*/><i className="fas fa-compact-disc icone"></i>  CD-Burner</Nav.Link>
+                                </li>
+
+                                <li>
+                                    <Nav.Link className={getLinkClass('mydicom')} onClick={() => selectTabHandler(MYDICOM)} name='mydicom'><i className="far fa-images icone"></i>  MyDicom</Nav.Link>
+                                </li>
+
+                                <li>
+                                    <Nav.Link className={getLinkClass('dicom-router')} onClick={() => selectTabHandler(DICOM_ROUTER)} name='dicom-router' /*hidden={!roles.autorouting}*/><i className="fas fa-broadcast-tower icone"></i>  Dicom-Router</Nav.Link>
+                                </li>
+
+                                <li>
+                                    <Nav.Link className={getLinkClass('administration')} onClick={() => selectTabHandler(ADMINISTRATION)} name='administration' /*hidden={!roles.admin}*/><i className="fas fa-cogs icone"></i>  Administration</Nav.Link>
+                                </li>
+
+                                <div className="otjs-navbar-border" /*hidden={!opened}*/></div>
+
+                                <li>
+                                    <Nav.Link className={getLinkClass('log-out')} onClick={() => selectTabHandler(LOG_OUT)} name='log out' ><i className="fas fa-power-off"></i>{opened ? ' Log out' : ''}  Log-out</Nav.Link>
+                                </li>
+                            </ul>
+                        </Nav>
+                    </div>
+                </div>
             </Navbar>
-
-            
-
         </>
     )
-
 }
 
 
