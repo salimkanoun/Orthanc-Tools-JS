@@ -40,7 +40,7 @@
     "http-errors": "~1.8.0",
     "jsonwebtoken": "^8.5.1",
     "jszip": "^3.6.0",
-    "moment": "^2.29.1",
+    "moment": "^2.29.2",
     "morgan": "^1.10.0",
     "node-schedule": "^2.0.0",
     "pg": "^8.6.0",
