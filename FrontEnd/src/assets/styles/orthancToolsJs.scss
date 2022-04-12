@@ -74,8 +74,9 @@ body {
   height: 100%;
   width: 15%;
   top: 0;
+  margin-left: -12px;
   box-shadow: 2px 2px 3px $color-shadow;
-  z-index: 1039;
+  z-index: -1;
   transition: 1s;
 
   &-close {
@@ -225,7 +226,7 @@ body {
 
 .main {
   margin-top: 7%;
-  margin-left: 20%;
+  margin-left: auto;
   border: 2px solid white;
   background-color: white;
   padding: 3rem;
@@ -379,6 +380,12 @@ body {
       box-shadow: 0 0 0 .25rem rgba(76, 188, 41, 0.5);
     }
   }
+}
+
+ul {
+  list-style: none;
+  padding-left: 11px;
+  line-height : 185%
 }
 
 #showResult {
@@ -664,6 +671,14 @@ code {
 
 .nav-link.disabled {
   color: rgba(128, 128, 128, 1) !important;
+}
+
+.nav-link {
+  color :rgb(174, 174, 174)
+}
+
+.navbar-brand{
+  width: 0%;
 }
 
 .vertical-center {
