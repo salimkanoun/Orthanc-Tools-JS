@@ -1,3 +1,4 @@
+import axios from "axios"
 import { toast } from "react-toastify"
 
 const orthancContent = {
@@ -6,14 +7,10 @@ const orthancContent = {
 
         const getContentOption = {
             method: 'POST', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
             body: JSON.stringify(contentSerch)
         }
 
-        return fetch('/api/tools/find', getContentOption).then((response) => {
+        return axios.post('/api/tools/find', getContentOption).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -100,13 +97,9 @@ const orthancContent = {
 
         const getSeriesInstancesOption =  {
             method: 'GET', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
         }
 
-        return fetch('/api/series/' + serieID + '/instances', getSeriesInstancesOption ).then((response) => {
+        return axios.get('/api/series/' + serieID + '/instances', getSeriesInstancesOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -118,13 +111,9 @@ const orthancContent = {
 
         const getInstancesOption = {
             method: 'GET', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
         }
 
-        return fetch('/api/instances/' + instanceID + '/tags', getInstancesOption ).then((response) => {
+        return axios.get('/api/instances/' + instanceID + '/tags', getInstancesOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -160,7 +149,7 @@ const orthancContent = {
             }
         }
 
-        return fetch('/api/instances/' + serieID + '/header', getHeaderOption ).then((response) => {
+        return axios.get('/api/instances/' + serieID + '/header', getHeaderOption ).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {

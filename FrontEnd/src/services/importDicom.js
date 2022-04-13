@@ -1,17 +1,15 @@
+import axios from "axios"
+
 const importDicom = {
 
     importDicom(dicomFile) {
 
         let importDicomFile = {
             method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/dicom'
-            },
             body: dicomFile
         }
 
-        return fetch('/api/instances', importDicomFile)
+        return axios.post('/api/instances', importDicomFile)
             .then(async (answer) => {
                 if (!answer.ok) { throw answer }
                 return (answer.json())
@@ -28,16 +26,12 @@ const importDicom = {
 
         let createDicom = {
             method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
             body: JSON.stringify(payload)
         }
 
         console.log(createDicom)
 
-        return fetch('/api/tools/create-dicom', createDicom)
+        return axios.post('/api/tools/create-dicom', createDicom)
             .then(async (answer) => {
                 if (!answer.ok) { throw await answer.json() }
                 return (answer.json())
