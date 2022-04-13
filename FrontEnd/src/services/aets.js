@@ -39,7 +39,7 @@ const aets = {
       },
       body: JSON.stringify(postData)
     }
-    return fetch('/api/modalities/' + name, updateAetOption).then((answer) => {
+    return axios.put('/api/modalities/' + name, updateAetOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return true
     }).catch((error) => {
@@ -54,7 +54,7 @@ const aets = {
       method: 'DELETE'
     }
 
-    return fetch('/api/modalities/' + name, deleteAetOption).then((answer) => {
+    return axios.delete('/api/modalities/' + name, deleteAetOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return true
     }).catch((error) => {
@@ -74,7 +74,7 @@ const aets = {
       body: JSON.stringify({})
     }
 
-    return fetch('/api/modalities/' + aetName + '/echo', echoAetOption).then(response => {
+    return axios.post('/api/modalities/' + aetName + '/echo', echoAetOption).then(response => {
       if (response.ok) return true
       else throw response
     }).catch(error => { throw error });
@@ -95,7 +95,7 @@ const aets = {
       })
     }
 
-    return fetch('/api/modalities/' + name + '/store', storeAETOption).then((answer) => {
+    return axios.post('/api/modalities/' + name + '/store', storeAETOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).catch(error => {
