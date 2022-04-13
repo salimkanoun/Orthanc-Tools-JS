@@ -43,7 +43,7 @@ const options = {
       },
       body: JSON.stringify(postData)
     }
-    return axios.get('/api/options/orthanc',setOrthancServerOption).then((answser) => {
+    return fetch('/api/options/orthanc',setOrthancServerOption).then((answser) => {
       if (!answser.ok) throw answser
       return true })
   },

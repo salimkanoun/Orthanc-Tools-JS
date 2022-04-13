@@ -1,25 +1,25 @@
+import axios from "axios"
+
 const aets = {
 
   getAets() {
-    return fetch('/api/modalities')
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return (answer.json())
-      })
-      .catch((error) => {
-        throw error
-      })
+    return axios.get('/api/modalities').then((answer) => {
+      if (!answer.ok) { throw answer }
+      return (answer.json())
+    })
+    .catch((error) => {
+      throw error
+    })
   },
 
   getAetsExpand() {
-    return fetch('/api/modalities?expand')
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return (answer.json())
-      })
-      .catch((error) => {
-        throw error
-      })
+    return axios.get('/api/modalities?expand').then((answer) => {
+      if (!answer.ok) { throw answer }
+      return (answer.json())
+    })
+    .catch((error) => {
+      throw error
+    })
   },
 
   updateAet(name, aetName, host, port, manufacturer) {
@@ -39,7 +39,6 @@ const aets = {
       },
       body: JSON.stringify(postData)
     }
-
     return fetch('/api/modalities/' + name, updateAetOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return true
