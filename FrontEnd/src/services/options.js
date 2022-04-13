@@ -43,11 +43,9 @@ const options = {
       },
       body: JSON.stringify(postData)
     }
-
-    return fetch('/api/options/orthanc', setOrthancServerOption).then((answser) => {
+    return axios.get('/api/options/orthanc',setOrthancServerOption).then((answser) => {
       if (!answser.ok) throw answser
-      return true
-    })
+      return true })
   },
 
   getOrthancServer() {
@@ -59,10 +57,8 @@ const options = {
         'Content-Type': 'application/json; charset=utf-8'
       }
     }
-
-    return fetch('/api/options/orthanc', optionOrthancServer).then((answer) => {
-      return (answer.json())
-    }).catch(error => { throw error })
+    return axios.get('/api/options/orthanc',optionOrthancServer).then((answer) => answer.json()).catch((error)=> {throw error})
+    
   },
 
   getRedisServer() {
