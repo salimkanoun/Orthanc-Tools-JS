@@ -1,3 +1,5 @@
+import axios from "axios"
+
 const autorouting = {
     /**
      * Get all the autorouters
@@ -6,12 +8,8 @@ const autorouting = {
   getAutorouters() {
       const getAutoroutersOptions = {
           method: 'GET',
-          headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-          }
       }
-      return fetch('/api/autorouting', getAutoroutersOptions).then((answer) => {
+      return axios.get('/api/autorouting', getAutoroutersOptions).then((answer) => {
           if (!answer.ok) {
               throw answer
           }
@@ -28,12 +26,8 @@ const autorouting = {
   getAutorouterByID(id) {
     const getAutorouterByIDOptions = {
         method: 'GET',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        }
     }
-    return fetch('/api/autorouting/'+id, getAutorouterByIDOptions).then((answer) => {
+    return axios.get('/api/autorouting/'+id, getAutorouterByIDOptions).then((answer) => {
         if (!answer.ok) {
             throw answer
         }
@@ -59,14 +53,10 @@ const autorouting = {
     }
     const createAutorouterOptions = {
         method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
         body: JSON.stringify(autorouter)
     }
 
-    return fetch('/api/autorouting/' + name, createAutorouterOptions).then((answer) => {
+    return axios.post('/api/autorouting/' + name, createAutorouterOptions).then((answer) => {
         if (!answer.ok) {
             throw answer
         }
@@ -93,14 +83,10 @@ const autorouting = {
     }
     const modifyAutorouterOptions = {
         method: 'PUT',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
         body: JSON.stringify(autorouter)
     }
 
-    return fetch('/api/autorouting/'+id, modifyAutorouterOptions).then((answer) => {
+    return axios.put('/api/autorouting/'+id, modifyAutorouterOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return true
     })
@@ -118,14 +104,10 @@ const autorouting = {
     }
     const switchOnOffOptions = {
         method: 'PUT',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
         body: JSON.stringify(autorouter)
     }
 
-    return fetch('/api/autorouting/'+id+'/running', switchOnOffOptions).then((answer) => {
+    return axios.put('/api/autorouting/'+id+'/running', switchOnOffOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return true
     })
@@ -139,13 +121,9 @@ const autorouting = {
   deleteAutorouter(id) {
       const deleteAutorouterOptions = {
           method: 'DELETE',
-          headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-          },
       }
 
-      return fetch('/api/autorouting/' + id, deleteAutorouterOptions).then((answer) => {
+      return axios.delete('/api/autorouting/' + id, deleteAutorouterOptions).then((answer) => {
           if (!answer.ok) {
               throw answer
           }
