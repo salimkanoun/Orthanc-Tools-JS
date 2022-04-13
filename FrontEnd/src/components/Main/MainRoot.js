@@ -25,10 +25,10 @@ const MainRoot = ({onLogout, username, roles}) => {
         <>
             <Container>
                 <Row>
-                    <Col lg={"6"}>
-                        <NavBar onLogout={onLogout} username={username} roles={{import:true, content:true, query:true}}/>
+                    <Col xs={"auto"} sm={"auto"}>
+                        <NavBar onLogout={onLogout} username={username} roles={roles}/>
                     </Col>
-                    <Col lg="auto">
+                    <Col >
                         <AnimatedSwitch/> 
                     </Col>
                 </Row>

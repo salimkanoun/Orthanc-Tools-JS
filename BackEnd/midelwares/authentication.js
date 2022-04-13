@@ -9,11 +9,13 @@ const userAuthMidelware = function (req, res, next) {
   }
   else{
     try {
-      let token = req.cookies.tokenOrthancJs
+      let authorizationHeaders = req.headers['authorization']
+      const token = authorizationHeaders && authorizationHeaders.split(' ')[1]
       let payload = jwt.verify(token, process.env.TOKEN_SECRET)
-      req.roles = payload
+      req.roles = payload.roles
       next()
     } catch (err) {
+      console.log(err)
       res.sendStatus(401);
       return
     }

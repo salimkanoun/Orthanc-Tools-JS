@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import jwt_decode from "jwt-decode";
 
 import apis from '../services/apis'
 import { CSSTransition } from "react-transition-group";
@@ -25,19 +26,21 @@ export default class Authentication extends Component {
 
   handleClick = async () => {
 
-    let answer
+    let token
     try {
-      answer = await apis.authentication.logIn(this.state.username, this.state.password)
+      token= await apis.authentication.logIn(this.state.username, this.state.password)
+      var decoded = jwt_decode(token);
     } catch (error) {
       toast.error(error)
     }
 
-    if (answer.errorMessage != null) {
+    if (token?.errorMessage != null) {
       this.setState({
-        errorMessage: answer.errorMessage
+        errorMessage: token.errorMessage
       })
     } else {
-      this.props.onLogin(answer)
+      console.log(token)
+      this.props.onLogin(token, decoded)
     }
 
 

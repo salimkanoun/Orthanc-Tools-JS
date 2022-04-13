@@ -179,7 +179,7 @@ export default class CDBurner extends Component {
 
     render = () => {
         return (
-            <div>
+            <>
                 <Row className="border-bottom border-2 pb-3 align-items-center">
                     <Col sm={8} className="d-flex justify-content-start align-items-center">
                         <i className="fas fa-compact-disc ico me-3"></i><h2 className="card-title">CD Burner Service</h2>
@@ -195,16 +195,16 @@ export default class CDBurner extends Component {
                         <Toggle checked={this.state.playSound} onChange={this.soundHandler}/>
                     </Col>
                 </Row>
-
-                <div className="mb-3 float-right">
+                
+                <Row className="mb-3 float-right">
                     <Badge variant="info"> Queuded Jobs : {this.state.queuededJobs} </Badge>
-                </div>
+                </Row>
                 <Row className="mt-5">
                     <Col>
                         <BurnerJobsTables jobs={this.state.burnerJobs}/>
                     </Col>
                 </Row>
-            </div>
+            </>
         )
     }
 

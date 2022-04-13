@@ -46,12 +46,14 @@ class App extends Component {
             },
 
             response: async (response) => {
+                /*
                 if (response.status === 401 && !response.url.includes('authentication')) {
                     toast.error('Session exprired, please re-identify')
-                    await this.logout()
+                    //await this.logout()
 
                 }
-                return response;
+                */
+                return response
             },
 
             responseError: function (error) {
@@ -62,8 +64,8 @@ class App extends Component {
     }
 
 
-    login = (logInAnwser) => {
-        this.props.login(logInAnwser)
+    login = (token, backendData) => {
+        this.props.login(token, backendData)
     }
 
     logout = async () => {
@@ -75,7 +77,7 @@ class App extends Component {
     render() {
         return (
             <BrowserRouter>
-                {true ?
+                {this.props.username ?
                     <MainRoot onLogout={this.logout} username={this.props.username} roles={this.props.roles} /> 
                     :
                     <Authentication onLogin={this.login}/>}

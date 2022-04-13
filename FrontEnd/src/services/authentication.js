@@ -4,7 +4,6 @@ const authentication = {
     return fetch('/api/authentication/', {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
         'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify({
@@ -12,7 +11,7 @@ const authentication = {
         password: password
       })
     }).then( (answer) => {
-      return (answer.json())
+      return (answer.text())
     }).catch((error) => { throw error })
   },
 

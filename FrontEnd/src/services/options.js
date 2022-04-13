@@ -1,3 +1,5 @@
+import axios from "./axios"
+
 const options = {
 
   setRobotScheduleHour(hour_start, min_start, hour_stop, min_stop) {
@@ -121,19 +123,7 @@ const options = {
 
   //return current verbosity in Orthanc log
   getVerbosity() {
-
-    const getVerbosityOption = {
-      method: 'GET'
-    }
-
-    return fetch('/api/tools/log-level', getVerbosityOption).then(response => {
-      if (response.ok) {
-        return response.text()
-      }
-      else throw response
-    }).catch(error => {
-      throw error
-    })
+    return axios.get('/api/tools/log-level').then((response) => response.data ).catch((error) => { throw error })
   },
 
   //set verbosity in Orthanc
