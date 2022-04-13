@@ -37,13 +37,9 @@ const options = {
 
     const setOrthancServerOption = {
       method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
       body: JSON.stringify(postData)
     }
-    return fetch('/api/options/orthanc',setOrthancServerOption).then((answser) => {
+    return axios.put('/api/options/orthanc',setOrthancServerOption).then((answser) => {
       if (!answser.ok) throw answser
       return true })
   },
@@ -52,10 +48,6 @@ const options = {
 
     let optionOrthancServer = {
       method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
     }
     return axios.get('/api/options/orthanc',optionOrthancServer).then((answer) => answer.json()).catch((error)=> {throw error})
     
@@ -130,7 +122,7 @@ const options = {
       body: value
     }
 
-    return fetch('/api/tools/log-level', setVerbosityOption).then((answer) => {
+    return axios.put('/api/tools/log-level', setVerbosityOption).then((answer) => {
       if (!answer.ok) { throw answer }
       return true
     })

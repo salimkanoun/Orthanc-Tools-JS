@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { toast } from 'react-toastify'
 
 const label = {
@@ -13,7 +14,7 @@ const label = {
         'Content-Type': 'application/json; charset=utf-8'
       }
     }
-    return fetch('api/labels',getAllLabelsOptions).then((answer) => {
+    return axios.get('api/labels',getAllLabelsOptions).then((answer) => {
       if(!answer.ok) { throw answer }
       return answer.json()
     }).catch(error=>{
@@ -35,7 +36,7 @@ const label = {
       },
     }
 
-    return fetch('/api/labels/'+name, createLabelsOptions).then((answer) => {
+    return axios.post('/api/labels/'+name, createLabelsOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return true
     })
@@ -57,7 +58,7 @@ const label = {
       body: JSON.stringify(payload)
     }
 
-    return fetch('/api/labels/'+name, modifyLabelsOptions).then((answer) => {
+    return axios.put('/api/labels/'+name, modifyLabelsOptions).then((answer) => {
         if (!answer.ok) { throw answer }
         return true
     })
@@ -77,7 +78,7 @@ const label = {
       },
     }
 
-    return fetch('/api/labels/'+name, deleteLabelsOptions).then((answer) => {
+    return axios.delete('/api/labels/'+name, deleteLabelsOptions).then((answer) => {
         if (!answer.ok) { 
           toast.error('Remove all Studies/Roles - Labels association !')
           throw answer
