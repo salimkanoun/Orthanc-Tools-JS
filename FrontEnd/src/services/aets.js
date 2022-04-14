@@ -31,15 +31,7 @@ const aets = {
       Manufacturer: manufacturer
     }
 
-    const updateAetOption = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(postData)
-    }
-    return axios.put('/api/modalities/' + name, updateAetOption).then((answer) => {
+    return axios.put('/api/modalities/' + name, postData).then((answer) => {
       if (!answer.ok) { throw answer }
       return true
     }).catch((error) => {
@@ -50,11 +42,7 @@ const aets = {
 
   deleteAet(name) {
 
-    const deleteAetOption = {
-      method: 'DELETE'
-    }
-
-    return axios.delete('/api/modalities/' + name, deleteAetOption).then((answer) => {
+    return axios.delete('/api/modalities/' + name).then((answer) => {
       if (!answer.ok) { throw answer }
       return true
     }).catch((error) => {
@@ -65,16 +53,7 @@ const aets = {
 
   echoAet(aetName) {
 
-    const echoAetOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({})
-    }
-
-    return axios.post('/api/modalities/' + aetName + '/echo', echoAetOption).then(response => {
+    return axios.post('/api/modalities/' + aetName + '/echo', {}).then(response => {
       if (response.ok) return true
       else throw response
     }).catch(error => { throw error });
@@ -83,19 +62,10 @@ const aets = {
 
   storeAET(name, orthancIDsArray) {
 
-    const storeAETOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({
-        Synchronous: false,
-        Resources: orthancIDsArray
-      })
-    }
-
-    return axios.post('/api/modalities/' + name + '/store', storeAETOption).then((answer) => {
+    return axios.post('/api/modalities/' + name + '/store', {
+      Synchronous: false,
+      Resources: orthancIDsArray
+    }).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).catch(error => {

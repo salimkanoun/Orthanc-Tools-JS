@@ -1,20 +1,13 @@
+import axios from "axios"
+
 const anonymize =  {
 
     //SK ICI DOIT REJOINDRE TASK DU COUP ?
     createAnonRobot(anonymizeArray, username){
         
-        const createAnonRobotOption = {
-            method: 'POST', 
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-              },
-              body: JSON.stringify(anonymizeArray)
-        }
-        
-        return fetch('/api/tasks/' + username + '/anonymize', createAnonRobotOption ).then(answer => {
+        return axios.post('/api/tasks/' + username + '/anonymize', anonymizeArray).then(answer => {
             if (!answer.ok) {throw answer}
-            return answer.text()
+            return answer.data
         }).catch(error => {
             throw error
         })
@@ -22,11 +15,8 @@ const anonymize =  {
     },
 
     flush(){
-        const flushAnonRobotsOption = {
-            method: 'DELETE'
-        }
-
-        return fetch('/api/tasks/type/anonymize/flush', flushAnonRobotsOption ).then(answer => {
+        
+        return axios.delete('/api/tasks/type/anonymize/flush').then(answer => {
             if (!answer.ok) {throw answer}
             return true
         }).catch(error => {

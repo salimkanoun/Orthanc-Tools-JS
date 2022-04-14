@@ -6,18 +6,12 @@ const label = {
    * Get all labels
    * @returns {Array.<JSON>}
    */
-  getAllLabels(){
-    const getAllLabelsOptions={
-      methode:'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-    return axios.get('api/labels',getAllLabelsOptions).then((answer) => {
-      if(!answer.ok) { throw answer }
+  getAllLabels() {
+
+    return axios.get('api/labels').then((answer) => {
+      if (!answer.ok) { throw answer }
       return answer.json()
-    }).catch(error=>{
+    }).catch(error => {
       throw error
     })
   },
@@ -27,18 +21,11 @@ const label = {
    * @param {String} name label name
    * @returns 
    */
-  createLabels(name){
-    const createLabelsOptions = {
-      method:'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-    }
+  createLabels(name) {
 
-    return axios.post('/api/labels/'+name, createLabelsOptions).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return true
+    return axios.post('/api/labels/' + name).then((answer) => {
+      if (!answer.ok) { throw answer }
+      return true
     })
   },
 
@@ -48,19 +35,11 @@ const label = {
    * @param {JSON} payload contains the label to modify
    * @returns 
    */
-  modifyLabels(name,payload){
-    const modifyLabelsOptions = {
-      method:'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(payload)
-    }
+  modifyLabels(name, payload) {
 
-    return axios.put('/api/labels/'+name, modifyLabelsOptions).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return true
+    return axios.put('/api/labels/' + name, payload).then((answer) => {
+      if (!answer.ok) { throw answer }
+      return true
     })
   },
 
@@ -69,21 +48,14 @@ const label = {
    * @param {String} name label name to delete
    * @returns 
    */
-  deleteLabels(name){
-    const deleteLabelsOptions = {
-      method:'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-    }
+  deleteLabels(name) {
 
-    return axios.delete('/api/labels/'+name, deleteLabelsOptions).then((answer) => {
-        if (!answer.ok) { 
-          toast.error('Remove all Studies/Roles - Labels association !')
-          throw answer
-         }
-        return true
+    return axios.delete('/api/labels/' + name).then((answer) => {
+      if (!answer.ok) {
+        toast.error('Remove all Studies/Roles - Labels association !')
+        throw answer
+      }
+      return true
     })
   },
 }

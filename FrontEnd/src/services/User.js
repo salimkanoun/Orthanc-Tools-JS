@@ -1,15 +1,9 @@
+import axios from "axios"
+
 const user = {
   getUsers() {
 
-    const getUsersOption = {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-
-    return fetch('/api/users', getUsersOption).then((answer) => {
+    return axios.get('/api/users').then((answer) => {
       if (!answer.ok) { throw answer }
       return answer.json()
     }).catch(async error => {
@@ -20,24 +14,15 @@ const user = {
   modifyUser(username, firstname, lastname, email, role, password, isSuperAdmin) {
 
     let payload = {
-      firstname : firstname,
-      lastname : lastname,
-      email : email,
-      role : role,
-      password : password,
-      superAdmin : isSuperAdmin
+      firstname: firstname,
+      lastname: lastname,
+      email: email,
+      role: role,
+      password: password,
+      superAdmin: isSuperAdmin
     }
 
-    const modifyUserOption = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(payload)
-    }
-
-    return fetch('/api/users/'+username, modifyUserOption).then((answer) => {
+    return axios.put('/api/users/' + username, payload).then((answer) => {
       if (!answer.ok) { throw answer }
     }).catch(async error => {
       throw error
@@ -46,11 +31,7 @@ const user = {
 
   deleteUser(username) {
 
-    const deleteUserOption = {
-      method: 'DELETE'
-    }
-
-    return fetch('/api/users/'+username, deleteUserOption).then((answer) => {
+    return axios.delete('/api/users/' + username).then((answer) => {
       if (!answer.ok) { throw answer }
     })
   },
@@ -58,25 +39,16 @@ const user = {
   createUser(username, firstname, lastname, password, email, role, isSuperAdmin) {
 
     let payload = {
-      username : username,
-      firstname : firstname,
-      lastname : lastname,
-      password : password,
-      email : email,
-      role : role,
-      superAdmin : isSuperAdmin
+      username: username,
+      firstname: firstname,
+      lastname: lastname,
+      password: password,
+      email: email,
+      role: role,
+      superAdmin: isSuperAdmin
     }
 
-    const createUserOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(payload)
-    }
-
-    return fetch('/api/users', createUserOption).then((answer) => {
+    return axios.post('/api/users', payload).then((answer) => {
       if (!answer.ok) { throw answer }
     }).catch(error => {
       throw error

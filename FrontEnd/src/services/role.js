@@ -1,15 +1,10 @@
+import axios from "axios"
+
 const role = {
 
     getRoles() {
-        const getRolesOptions = {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
 
-        return fetch('/api/roles', getRolesOptions).then((answer) => {
+        return axios.get('/api/roles').then((answer) => {
             if (!answer.ok) { throw answer }
             return answer.json()
         }).catch(error => {
@@ -18,15 +13,8 @@ const role = {
     },
 
     getPermission(name) {
-        const getPermissionOptions = {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
 
-        return fetch('/api/roles/' + name, getPermissionOptions).then((answer) => {
+        return axios.get('/api/roles/' + name).then((answer) => {
             if (!answer.ok) { throw answer }
             return answer.json()
         })
@@ -34,48 +22,23 @@ const role = {
 
     createRole(payload) {
 
-        const createRoleOptions = {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify(payload)
-        }
-
-        return fetch('/api/roles', createRoleOptions).then((answer) => {
+        return axios.post('/api/roles', payload).then((answer) => {
             if (!answer.ok) { throw answer }
             return true
         })
     },
 
     modifyRole(payload) {
-        const modifyRoleOptions = {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify(payload)
-        }
 
-        return fetch('/api/roles', modifyRoleOptions).then((answer) => {
+        return axios.put('/api/roles', payload).then((answer) => {
             if (!answer.ok) { throw answer }
             return true
         })
     },
 
     deleteRole(name) {
-        const deleteRoleOptions = {
-            method: 'DELETE',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify([name])
-        }
 
-        return fetch('/api/roles', deleteRoleOptions).then((answer) => {
+        return axios.delete('/api/roles', [name]).then((answer) => {
             if (!answer.ok) { throw answer }
             return true
         })

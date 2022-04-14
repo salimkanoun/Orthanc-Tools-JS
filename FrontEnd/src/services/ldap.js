@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const ldap = {
 
   setLdapSettings(typeGroup, address, port, DN, password, protocol, base, group, user) {
@@ -14,16 +16,7 @@ const ldap = {
       user: user
     }
 
-    const setLdapSettingsOption = {
-      method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(options)
-    };
-
-    return fetch("/api/ldap/settings/", setLdapSettingsOption).then((answer) => {
+    return axios.put("/api/ldap/settings/", options).then((answer) => {
       if (!answer.ok) { throw answer }
       return true
     }).catch(error => { throw error })
@@ -31,15 +24,7 @@ const ldap = {
 
   getLdapSettings() {
 
-    const getLdapSettingsOption = {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-
-    return fetch("/api/ldap/settings/", getLdapSettingsOption).then((answer) => {
+    return axios.get("/api/ldap/settings/").then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).catch(error => { throw error })
@@ -47,15 +32,7 @@ const ldap = {
 
   testLdapSettings() {
 
-    const testLdapSettingsOption = {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-
-    return fetch("/api/ldap/test", testLdapSettingsOption).then(async (answer) => {
+    return axios.get("/api/ldap/test").then(async (answer) => {
       if (!answer.ok) { throw answer }
       return await answer.json()
     }).catch(error => { throw error })
@@ -63,21 +40,12 @@ const ldap = {
 
   createMatch(groupName, role) {
 
-    let payload = { 
+    let payload = {
       groupName: groupName,
-      associedRole: role 
+      associedRole: role
     }
 
-    const createMatchOption = {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(payload)
-    };
-
-    return fetch("/api/ldap/matches/", createMatchOption).then((answer) => {
+    return axios.post("/api/ldap/matches/", payload).then((answer) => {
       if (!answer.ok) { throw answer }
       return true
     })
@@ -85,17 +53,8 @@ const ldap = {
 
   deleteMatch(Match) {
 
-    const deleteMatchOption = {
-      method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({ correspodence: Match })
-    }
-
     //SK SYNTAXE FAUSSE FAUDRAIT PASSER LA CLE DANS URI ET FAIRE JUSTE UN DELETE DESSUS
-    return fetch("/api/ldap/matches/", deleteMatchOption).then((answer) => {
+    return axios.delete("/api/ldap/matches/", { correspodence: Match }).then((answer) => {
       if (!answer.ok) { throw answer }
       return true
     })
@@ -103,33 +62,18 @@ const ldap = {
 
   getAllCorrespodences() {
 
-    const getAllCorrespodencesOption = {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-
-    return fetch("/api/ldap/matches/", getAllCorrespodencesOption).then(async (answer) => {
+    return axios.get("/api/ldap/matches/").then(async (answer) => {
       if (!answer.ok) { throw answer }
       return await (answer.json())
     })
   },
 
   getAllGroupName() {
-    const getAllCorrespodencesOption = {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
 
-    return fetch("/api/ldap/groupname/", getAllCorrespodencesOption).then(async (answer) => {
+    return axios.get("/api/ldap/groupname/").then(async (answer) => {
       if (!answer.ok) { throw answer }
       return await (answer.json())
-    }).catch( error => {throw error} )
+    }).catch(error => { throw error })
   }
 
 }

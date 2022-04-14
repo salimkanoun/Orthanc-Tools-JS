@@ -1,3 +1,4 @@
+import axios from 'axios';
 import streamSaver from 'streamsaver'
 import { WritableStream } from "web-streams-polyfill/ponyfill";
 streamSaver.mitm = window.location.origin + '/streamSaver/mitm.html'
@@ -7,7 +8,7 @@ const exportDicom = {
 
   exportHirachicalDicoms(OrthancIDsArray, TS) {
 
-    let body = { }
+    let body = {}
     if (TS !== 'None') {
       body = {
         Synchronous: true,
@@ -21,16 +22,7 @@ const exportDicom = {
       }
     }
 
-    const exportHirachicalDicomsOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(body)
-    }
-
-    return fetch('/api/tools/create-archive/', exportHirachicalDicomsOption).catch((error) => {
+    return axios.post('/api/tools/create-archive/', body).catch((error) => {
       throw error
     })
   },
@@ -50,16 +42,7 @@ const exportDicom = {
       }
     }
 
-    const exportDicomDirDicomsOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(body)
-    }
-
-    return fetch('/api/tools/create-media-extended/', exportDicomDirDicomsOption).catch((error) => {
+    return axios.post('/api/tools/create-media-extended/', body).catch((error) => {
       throw error
     })
   },
@@ -68,13 +51,13 @@ const exportDicom = {
   downloadZipSync(orthancIDsArray, TS, dicomDir) {
 
     let fetchPromise = null
-    if(dicomDir){
+    if (dicomDir) {
       fetchPromise = this.exportDicomDirDicoms(orthancIDsArray, TS)
-    }else{
+    } else {
       fetchPromise = this.exportHirachicalDicoms(orthancIDsArray, TS)
     }
 
-    fetchPromise.then( (answer) => {
+    fetchPromise.then((answer) => {
 
       const fileStream = streamSaver.createWriteStream('Dicom_' + Date.now() + '.zip')
 
@@ -110,73 +93,57 @@ const exportDicom = {
 
     const fileStream = streamSaver.createWriteStream('Dicom_' + jobID + '.zip')
 
-    return fetch('/api/jobs/' + jobID + '/archive', {
-      method: 'GET',
-      headers: {
-        Accept: 'application/zip'
-      }
+    return axios.get('/api/jobs/' + jobID + '/archive')
+      .then((answer) => {
 
-    }).then((answer) => {
+        if (!answer.ok) throw answer
 
-      if (!answer.ok) throw answer
+        const readableStream = answer.body
 
-      const readableStream = answer.body
+        // more optimized
+        if (window.WritableStream && readableStream.pipeTo) {
+          return readableStream.pipeTo(fileStream)
+            .then(() => console.log('done writing'))
+        }
 
-      // more optimized
-      if (window.WritableStream && readableStream.pipeTo) {
-        return readableStream.pipeTo(fileStream)
-          .then(() => console.log('done writing'))
-      }
+        let writer = fileStream.getWriter()
 
-      let writer = fileStream.getWriter()
+        const reader = answer.body.getReader()
+        const pump = () => reader.read()
+          .then(res => res.done
+            ? writer.close()
+            : writer.write(res.value).then(pump))
 
-      const reader = answer.body.getReader()
-      const pump = () => reader.read()
-        .then(res => res.done
-          ? writer.close()
-          : writer.write(res.value).then(pump))
+        pump()
 
-      pump()
-
-    }).catch((error) => {
-      throw error
-    })
+      }).catch((error) => {
+        throw error
+      })
 
   },
 
   exportStudiesToExternal(username, orthancIDsArray, endpoint) {
-    const storeFtpOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({
-        Resources: orthancIDsArray,
-        endpoint: endpoint
-      })
-    }
 
-    return fetch('/api/tasks/' + username + '/export/', storeFtpOption).then((answer) => {
+    return axios.post('/api/tasks/' + username + '/export/', {
+      Resources: orthancIDsArray,
+      endpoint: endpoint
+    }).then((answer) => {
       if (!answer.ok) { throw answer }
-      return (answer.text())
+      return (answer.data)
     }).catch(error => {
-        throw error
+      throw error
     })
   },
 
-  flushExternalExport(){
-    const flushExpoRobotsOption = {
-        method: 'DELETE'
-    }
+  flushExternalExport() {
 
-    return fetch('/api/tasks/type/export/flush', flushExpoRobotsOption ).then(answer => {
-        if (!answer.ok) {throw answer}
-        return true
+    return axios.delete('/api/tasks/type/export/flush').then(answer => {
+      if (!answer.ok) { throw answer }
+      return true
     }).catch(error => {
-        throw error
+      throw error
     })
-}
+  }
 
 }
 

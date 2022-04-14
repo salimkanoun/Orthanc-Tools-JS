@@ -36,7 +36,7 @@ class ToolsPanel extends Component {
                         <span className="mr-1" hidden={!this.props.roles.anon}>
                             <Link id='anon' ref={refAnon} type="button" className="btn otjs-btn-tools otjs-btn-tools-blue w-12"
                                 onMouseOver={this.props.apercu ? () => this.setState({show: 'anon'}) : null} to='/anonymize'>
-                                <i class="fas fa-user-secret me-2"></i> Anonymize 
+                                <i className="fas fa-user-secret me-2"></i> Anonymize 
                                 <span className="ms-2 badge bg-light text-dark"
                                     onMouseOver={this.props.apercu ? () => this.setState({show: 'anon'}) : null}>{this.props.anonList.length}</span>
                             </Link>
@@ -60,7 +60,7 @@ class ToolsPanel extends Component {
                         <span className="mr-1" onMouseOver={this.props.apercu ? () => this.setState({show: ''}) : null}
                             hidden={!this.props.roles.delete || !this.props.apercu}>
                             <Link id='delete' ref={refDelete} type="button" className="btn otjs-btn-tools otjs-btn-tools-red w-12" to='/delete'>
-                                <i class="far fa-trash-alt me-2"></i> Delete 
+                                <i className="far fa-trash-alt me-2"></i> Delete 
                                 <span className="badge bg-light text-dark ms-2"
                                     onMouseOver={this.props.apercu ? () => this.setState({show: 'delete'}) : null}>{this.props.deleteList.length}</span>
                             </Link>

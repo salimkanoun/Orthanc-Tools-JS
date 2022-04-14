@@ -1,7 +1,10 @@
+import axios from "axios"
+
 const sshKeys = {
 
   getKeysExpend() {
-    return fetch('/api/keys')
+
+    return axios.get('/api/keys')
       .then((answer) => {
         if (!answer.ok) { throw answer }
         return (answer.json())
@@ -12,19 +15,13 @@ const sshKeys = {
   },
 
   deleteKey(id) {
-    return fetch('api/keys/', {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({ id: id })
-    }).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    }).catch((error) => {
-      throw error
-    })
+    return axios.delete('api/keys/', { id: id })
+      .then((answer) => {
+        if (!answer.ok) { throw answer }
+        return true
+      }).catch((error) => {
+        throw error
+      })
   },
 
   createKey(label, pass) {
@@ -34,35 +31,23 @@ const sshKeys = {
       pass: pass
     }
 
-    return fetch('api/keys/', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(postData)
-    }).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    }).catch((error) => {
-      throw error
-    })
+    return axios.post('api/keys/', postData)
+      .then((answer) => {
+        if (!answer.ok) { throw answer }
+        return (answer.json())
+      }).catch((error) => {
+        throw error
+      })
   },
 
   async uploadKey(id, file) {
     let fileText = await file.text()
-    return fetch('api/keys/upload/' + id, {
-      method: 'POST',
-      headers: {
-        Accept: 'text/plain',
-        'Content-Type': 'text/plain'
-      },
-      body: fileText
-    }).then((answer) => {
-      if (!answer.ok) { throw answer }
-    }).catch((error) => {
-      throw error
-    })
+    return axios.post('api/keys/upload/' + id, fileText)
+      .then((answer) => {
+        if (!answer.ok) { throw answer }
+      }).catch((error) => {
+        throw error
+      })
   }
 }
 

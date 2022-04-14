@@ -5,12 +5,7 @@ const orthancContent = {
 
     getOrthancFind(contentSerch){
 
-        const getContentOption = {
-            method: 'POST', 
-            body: JSON.stringify(contentSerch)
-        }
-
-        return axios.post('/api/tools/find', getContentOption).then((response) => {
+        return axios.post('/api/tools/find', contentSerch).then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -19,15 +14,8 @@ const orthancContent = {
     },
 
     getPatientDetails(ID){
-        const getPatientsDetailsOption = {
-            method: 'GET', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
 
-        return fetch('/api/patients/' + ID+ '?expand', getPatientsDetailsOption ).then((response) => {
+        return axios.get('/api/patients/' + ID+ '?expand').then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -37,15 +25,7 @@ const orthancContent = {
 
     getStudiesDetails(ID){
 
-        const getStudiesDetailsOption = {
-            method: 'GET', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
-
-        return fetch('/api/studies/' + ID+ '?expand', getStudiesDetailsOption ).then((response) => {
+        return axios.get('/api/studies/' + ID+ '?expand').then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -59,15 +39,7 @@ const orthancContent = {
      */
     getSeriesDetails(studyID){
 
-        const getSeriesDetailsOption = {
-            method: 'GET', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
-
-        return fetch('/api/studies/' + studyID + '/series?expand', getSeriesDetailsOption ).then((response) => {
+        return axios.get('/api/studies/' + studyID + '/series?expand').then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -77,15 +49,7 @@ const orthancContent = {
 
     getSeriesDetailsByID(serieID){
 
-        const getSeriesDetailsByIDOption = {
-            method: 'GET', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
-
-        return fetch('/api/series/' + serieID + '?expand', getSeriesDetailsByIDOption ).then((response) => {
+        return axios.get('/api/series/' + serieID + '?expand').then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -95,11 +59,7 @@ const orthancContent = {
 
     getSeriesInstances(serieID){
 
-        const getSeriesInstancesOption =  {
-            method: 'GET', 
-        }
-
-        return axios.get('/api/series/' + serieID + '/instances', getSeriesInstancesOption ).then((response) => {
+        return axios.get('/api/series/' + serieID + '/instances').then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -109,11 +69,7 @@ const orthancContent = {
 
     getInstances(instanceID){
 
-        const getInstancesOption = {
-            method: 'GET', 
-        }
-
-        return axios.get('/api/instances/' + instanceID + '/tags', getInstancesOption ).then((response) => {
+        return axios.get('/api/instances/' + instanceID + '/tags').then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -123,15 +79,7 @@ const orthancContent = {
 
     getSharedTags(serieID){
 
-        const getSharedTagsOption = {
-            method: 'GET', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
-
-        return fetch('/api/series/' + serieID + '/shared-tags', getSharedTagsOption ).then((response) => {
+        return axios.get('/api/series/' + serieID + '/shared-tags').then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -141,15 +89,7 @@ const orthancContent = {
 
     getHeader(serieID){
 
-        const getHeaderOption = {
-            method: 'GET', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
-
-        return axios.get('/api/instances/' + serieID + '/header', getHeaderOption ).then((response) => {
+        return axios.get('/api/instances/' + serieID + '/header').then((response) => {
             if (!response.ok) {throw response}
             return response.json()
         }).catch((error) => {
@@ -159,11 +99,7 @@ const orthancContent = {
 
     deletePatient(ID){
 
-        const deletePatientOption  =  {
-            method: 'DELETE'
-        }
-
-        return fetch('/api/patients/' + ID, deletePatientOption ).then((answer) => {
+        return axios.delete('/api/patients/' + ID).then((answer) => {
             if (!answer.ok) {throw answer}
         }).catch((error) => {
             throw error.statusText
@@ -173,11 +109,7 @@ const orthancContent = {
 
     deleteStudies(ID){
 
-        const deleteStudiesOption =  {
-            method: 'DELETE'
-        }
-
-        return fetch('/api/studies/' + ID, deleteStudiesOption ).then((answer) => {
+        return axios.delete('/api/studies/' + ID).then((answer) => {
             if (!answer.ok) {throw answer}
         }).catch((error) => {
             throw error.statusText
@@ -187,11 +119,7 @@ const orthancContent = {
 
     deleteSeries(ID){
 
-        const deleteSeriesOption = {
-            method: 'DELETE'
-        }
-
-        return fetch('/api/series/' + ID, deleteSeriesOption ).then((answer) => {
+        return axios.delete('/api/series/' + ID).then((answer) => {
             if (!answer.ok) {throw answer}
         }).catch((error) => {
             throw error.statusText
@@ -202,16 +130,7 @@ const orthancContent = {
     
     modifyPatients(ID, replace, remove, removePrivateTags, keepRessource){
 
-        const modifyPatientsOption = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify({Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
-        }
-
-        return fetch('/api/patients/' + ID + '/modify', modifyPatientsOption ).then((answer) => {
+        return axios.post('/api/patients/' + ID + '/modify', {Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource}).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -221,16 +140,7 @@ const orthancContent = {
 
     modifyStudy(ID, replace, remove, removePrivateTags, keepRessource){
 
-        const modifyStudyOption =  {
-            method: 'POST', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify({Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
-        }
-
-        return fetch('/api/studies/' + ID + '/modify', modifyStudyOption ).then((answer) => {
+        return axios.post('/api/studies/' + ID + '/modify', {Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource}).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {
@@ -240,16 +150,7 @@ const orthancContent = {
 
     modifySeries(ID, replace, remove, removePrivateTags, keepRessource){
 
-        const modifySeriesOption = {
-            method: 'POST', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify({Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource})
-        }
-
-        return fetch('/api/series/' + ID + '/modify', modifySeriesOption ).then((answer) => {
+        return axios.post('/api/series/' + ID + '/modify', {Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource}).then((answer) => {
             if (!answer.ok) {throw answer}
             return (answer.json())
         }).catch((error) => {

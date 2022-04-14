@@ -6,12 +6,8 @@ const autorouter = {
        * @returns 
        */
       startAutorouterService(){
-      const startAutorouterServiceOptions={
-            method:'POST',
-            body:JSON.stringify({})
-      }
 
-      return axios.post('/api/monitoring/autorouter', startAutorouterServiceOptions).then((answer) => {
+      return axios.post('/api/monitoring/autorouter', {}).then((answer) => {
             if (!answer.ok) { throw answer }
             return true
       }).catch(error => {
@@ -25,11 +21,8 @@ const autorouter = {
        * @returns 
        */
       stopAutorouterService(){
-      const stopAutorouterServiceOptions={
-            method:'DELETE',
-      }
-
-      return axios.delete('/api/monitoring/autorouter', stopAutorouterServiceOptions).then((answer) => {
+      
+      return axios.delete('/api/monitoring/autorouter').then((answer) => {
             if (!answer.ok) { throw answer }
             return true
       }).catch(error => {
@@ -42,10 +35,8 @@ const autorouter = {
        * @returns 
        */
   getAutorouter(){ 
-    const getAutorouterOptions={
-      method:'GET',
-    }
-    return axios.get('/api/monitoring/autorouter', getAutorouterOptions).then((answer) => {
+    
+    return axios.get('/api/monitoring/autorouter').then((answer) => {
         if (!answer.ok) { throw answer }
         return answer.json()
     }).catch(error => {

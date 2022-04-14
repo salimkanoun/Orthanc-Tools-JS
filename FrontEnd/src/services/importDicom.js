@@ -4,24 +4,19 @@ const importDicom = {
 
     importDicom(dicomFile) {
 
-        let importDicomFile = {
-            method: 'POST',
-            body: dicomFile
-        }
-
-        return axios.post('/api/instances', importDicomFile)
+        return axios.post('/api/instances', dicomFile)
             .then(async (answer) => {
                 if (!answer.ok) { throw answer }
                 return (answer.json())
             })
     },
 
-    createDicom( content, parentOrthancId, tags = {} ) {
-        
+    createDicom(content, parentOrthancId, tags = {}) {
+
         let payload = {
             "Content": content,
-            "Tags":  tags,
-            "Parent" : parentOrthancId
+            "Tags": tags,
+            "Parent": parentOrthancId
         }
 
         let createDicom = {
@@ -31,7 +26,7 @@ const importDicom = {
 
         console.log(createDicom)
 
-        return axios.post('/api/tools/create-dicom', createDicom)
+        return axios.post('/api/tools/create-dicom', payload)
             .then(async (answer) => {
                 if (!answer.ok) { throw await answer.json() }
                 return (answer.json())

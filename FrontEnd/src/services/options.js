@@ -4,23 +4,14 @@ const options = {
 
   setRobotScheduleHour(hour_start, min_start, hour_stop, min_stop) {
 
-    const setRobotScheduleHourOption = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({ hour_start, min_start, hour_stop, min_stop })
-    }
-
-    return fetch('/api/options', setRobotScheduleHourOption).then((answer) => {
+    return axios.put('/api/options', { hour_start, min_start, hour_stop, min_stop }).then((answer) => {
       if (!answer.ok) { throw answer }
       return true
     })
   },
 
   getOptions() {
-    return fetch('/api/options')
+    return axios.get('/api/options')
       .then((answer) => {
         if (!answer.ok) { throw answer }
         return answer.json()
@@ -35,35 +26,19 @@ const options = {
       orthancPassword: password
     }
 
-    const setOrthancServerOption = {
-      method: 'PUT',
-      body: JSON.stringify(postData)
-    }
-    return axios.put('/api/options/orthanc',setOrthancServerOption).then((answser) => {
+    return axios.put('/api/options/orthanc', postData).then((answser) => {
       if (!answser.ok) throw answser
-      return true })
+      return true
+    })
   },
 
   getOrthancServer() {
-
-    let optionOrthancServer = {
-      method: 'GET',
-    }
-    return axios.get('/api/options/orthanc',optionOrthancServer).then((answer) => answer.json()).catch((error)=> {throw error})
-    
+    return axios.get('/api/options/orthanc').then((answer) => answer.json()).catch((error) => { throw error })
   },
 
   getRedisServer() {
 
-    let optionRedisServer = {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-
-    return fetch('/api/options/redis', optionRedisServer).then((answer) => {
+    return axios.get('/api/options/redis').then((answer) => {
       return (answer.json())
     }).catch(error => { throw error })
 
@@ -71,15 +46,7 @@ const options = {
 
   getOrthancSystem() {
 
-    let optionOrthancSystem = {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-
-    return fetch('/api/system', optionOrthancSystem).then((answer) => {
+    return axios.get('/api/system').then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     })
@@ -87,11 +54,7 @@ const options = {
 
   resetOrthanc() {
 
-    const resetOrthancOption = {
-      method: 'POST'
-    }
-
-    return fetch('/api/tools/reset', resetOrthancOption).then((answer) => {
+    return axios.post('/api/tools/reset').then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     })
@@ -99,11 +62,7 @@ const options = {
 
   shutdownOrthanc() {
 
-    const shutdownOrthancOption = {
-      method: 'POST'
-    }
-
-    return fetch('/api/tools/shutdown', shutdownOrthancOption).then((answer) => {
+    return axios.post('/api/tools/shutdown').then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     })
@@ -111,25 +70,20 @@ const options = {
 
   //return current verbosity in Orthanc log
   getVerbosity() {
-    return axios.get('/api/tools/log-level').then((response) => response.data ).catch((error) => { throw error })
+    return axios.get('/api/tools/log-level').then((response) => response.data).catch((error) => { throw error })
   },
 
   //set verbosity in Orthanc
   setVerbosity(value) {
 
-    const setVerbosityOption = {
-      method: 'PUT',
-      body: value
-    }
-
-    return axios.put('/api/tools/log-level', setVerbosityOption).then((answer) => {
+    return axios.put('/api/tools/log-level', value).then((answer) => {
       if (!answer.ok) { throw answer }
       return true
     })
   },
 
   getPlugins() {
-    return fetch('/api/plugins').then(response => {
+    return axios.get('/api/plugins').then(response => {
       if (response.ok) {
         return response.json()
       }
@@ -138,7 +92,7 @@ const options = {
   },
 
   getMode() {
-    return fetch('/api/mode').then(response => {
+    return axios.get('/api/mode').then(response => {
       if (response.ok) {
         return response.json()
       }
@@ -154,16 +108,7 @@ const options = {
       mode: mode
     }
 
-    const changeModeOption = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(payload)
-    }
-
-    return fetch('/api/changeMode', changeModeOption).then(response => {
+    return axios.put('/api/changeMode', payload).then(response => {
       if (response.ok) {
         return response.json()
       }
@@ -188,16 +133,7 @@ const options = {
 
     }
 
-    const burnerOptions = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(payload)
-    }
-
-    return fetch('/api/monitoring/burning/options', burnerOptions).then(response => {
+    return axios.put('/api/monitoring/burning/options', payload).then(response => {
       if (response.ok) {
         return true
       } else throw response
@@ -213,16 +149,7 @@ const options = {
       export_transcoding
     }
 
-    const exportOptions = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(payload)
-    }
-
-    return fetch('/api/options/export', exportOptions).then(response => {
+    return axios.put('/api/options/export', payload).then(response => {
       if (response.ok) {
         return true
       } else throw response
@@ -233,7 +160,7 @@ const options = {
   },
 
   getExportOption() {
-    return fetch('/api/options/export-transcoding').then(response => {
+    return axios.get('/api/options/export-transcoding').then(response => {
       if (response.ok) {
         return response.text()
       }
@@ -245,7 +172,7 @@ const options = {
   },
 
   getServerTime() {
-    return fetch('/api/tools/time').then(response => {
+    return axios.get('/api/tools/time').then(response => {
       if (response.ok) {
         return response.text()
       }

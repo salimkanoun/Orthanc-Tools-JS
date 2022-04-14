@@ -13,19 +13,14 @@ const retrieve = {
       payload.SeriesInstanceUID = seriesInstanceUID
     }
 
-    var retrieveByUIDOption = {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    }
-
-    return axios.post('/api/retrieve', retrieveByUIDOption).then((answer) => {
+    return axios.post('/api/retrieve', payload).then((answer) => {
       if (!answer.ok) { throw answer }
       return (answer.json())
     }).catch(error => {
       throw error
     })
   }
-  
+
 }
 
 export default retrieve

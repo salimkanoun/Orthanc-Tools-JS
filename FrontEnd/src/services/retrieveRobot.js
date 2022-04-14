@@ -4,19 +4,14 @@ const retrieveRobot = {
 
     createRobot(username, projectName, retrieveArray) {
 
-        const createRobotOption = {
-            method: 'POST',
-            body: JSON.stringify({
-                projectName: projectName,
-                retrieveArray: retrieveArray
-            })
-        }
-
-        return axios.post('/api/tasks/' + username + '/retrieve', createRobotOption).then((answer) => {
+        return axios.post('/api/tasks/' + username + '/retrieve', {
+            projectName: projectName,
+            retrieveArray: retrieveArray
+        }).then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
-            return answer.text();
+            return answer.data;
         }).catch(async (error) => {
             throw await error.json().then(e => ({
                 ...e,
@@ -29,15 +24,7 @@ const retrieveRobot = {
 
     validateRobot(id) {
 
-        const validateRobotOption = {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
-
-        return axios.post("/api/tasks/retrieve/" + id + "/validate", validateRobotOption).then((answer) => {
+        return axios.post("/api/tasks/retrieve/" + id + "/validate").then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
@@ -47,33 +34,21 @@ const retrieveRobot = {
 
     deleteRobot(id) {
 
-        const deleteRobotOption = {
-            method: "DELETE",
-        }
-
-        return fetch("/api/tasks/" + id, deleteRobotOption).catch((error) => {
+        return axios.delete("/api/tasks/" + id).catch((error) => {
             throw error
         })
     },
 
     deleteRobotUser(username) {
 
-        const deleteRobotOption = {
-            method: "DELETE",
-        }
-
-        return axios.delete("/api/tasks/" + username + "/retrieve", deleteRobotOption).catch((error) => {
+        return axios.delete("/api/tasks/" + username + "/retrieve").catch((error) => {
             throw error
         })
     },
 
     getAllRobotsDetails() {
 
-        const getAllRobotsDetails = {
-            method: "GET",
-        }
-
-        return axios.get("/api/tasks/type/retrieve", getAllRobotsDetails).then((answer) => {
+        return axios.get("/api/tasks/type/retrieve").then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
@@ -83,11 +58,7 @@ const retrieveRobot = {
 
     deleteRobotItem(id, item) {
 
-        const deleteRobotItemOption = {
-            method: "DELETE",
-        }
-
-        return axios.delete("/api/tasks/retrieve/" + id + "/" + item, deleteRobotItemOption).then((answer) => {
+        return axios.delete("/api/tasks/retrieve/" + id + "/" + item).then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
@@ -100,15 +71,7 @@ const retrieveRobot = {
 
     retryRobotItem(id, item) {
 
-        const retryRobotItemOption = {
-            method: "PUT",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
-
-        return axios.put(`/api/tasks/retrieve/${id}/${item}/retry`, retryRobotItemOption).then((answer) => {
+        return axios.put(`/api/tasks/retrieve/${id}/${item}/retry`).then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
@@ -121,11 +84,8 @@ const retrieveRobot = {
 
 
     flush() {
-        const flushRetrRobotsOption = {
-            method: 'DELETE'
-        }
 
-        return axios.delete('/api/tasks/type/retrieve/flush', flushRetrRobotsOption).then(answer => {
+        return axios.delete('/api/tasks/type/retrieve/flush').then(answer => {
             if (!answer.ok) {
                 throw answer
             }

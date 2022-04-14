@@ -1,12 +1,10 @@
+import axios from "axios"
+
 const jobs = {
 
   getJobs() {
 
-    const getJobsOption = {
-      method: 'GET'
-    }
-
-    return fetch('/api/jobs?expand', getJobsOption).then((answer) => {
+    return axios.get('/api/jobs?expand').then((answer) => {
       if (!answer.ok) { throw answer }
       return answer.json()
     }).catch(error => {
@@ -16,15 +14,7 @@ const jobs = {
 
   getJobInfos(jobId) {
 
-    const getJobInfosOption = {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-
-    return fetch('/api/jobs/' + jobId, getJobInfosOption).then((answer) => {
+    return axios.get('/api/jobs/' + jobId).then((answer) => {
       if (!answer.ok) { throw answer }
       return answer.json()
     }).catch(error => {
@@ -35,16 +25,7 @@ const jobs = {
 
   cancelJob(jobId) {
 
-    const cancelJobOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({})
-    }
-
-    return fetch('/api/jobs/' + jobId + '/cancel', cancelJobOption).then((answer) => {
+    return axios.post('/api/jobs/' + jobId + '/cancel', {}).then((answer) => {
       if (!answer.ok) { throw answer }
     })
 
@@ -52,48 +33,21 @@ const jobs = {
 
   pauseJob(jobId) {
 
-    const pauseJobOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({})
-    }
-
-    return fetch('/api/jobs/' + jobId + '/pause', pauseJobOption).then((answer) => {
+    return axios.post('/api/jobs/' + jobId + '/pause', {}).then((answer) => {
       if (!answer.ok) { throw answer }
     })
   },
 
   resumbitJob(jobId) {
 
-    const resumbitJobOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({})
-    }
-
-    return fetch('/api/jobs/' + jobId + '/resubmit', resumbitJobOption).then((answer) => {
+    return axios.post('/api/jobs/' + jobId + '/resubmit', {}).then((answer) => {
       if (!answer.ok) { throw answer }
     })
   },
 
   resumeJob(jobId) {
 
-    const resumeJobOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({})
-    }
-
-    return fetch('/api/jobs/' + jobId + '/resume', resumeJobOption).then((answer) => {
+    return axios.post('/api/jobs/' + jobId + '/resume', {}).then((answer) => {
       if (!answer.ok) { throw answer }
     })
   },

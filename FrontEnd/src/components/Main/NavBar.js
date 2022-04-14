@@ -32,7 +32,7 @@ export default ({ onLogout, roles }) => {
 
     return (
         <>
-            <Navbar class="navbar"
+            <Navbar 
                 onMouseEnter={() => setOpened(true)}
                 onMouseLeave={() => setOpened(false)}
                 className={'otjs-navbar d-flex flex-row'}

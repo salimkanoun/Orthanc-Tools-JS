@@ -1,17 +1,13 @@
+import axios from "axios"
+
 const rolelabel = {
     /**
      * get all RoleLabels
      * @returns {Array.<JSON>}
      */
     getRolesLabels() {
-        const getRolesLabelsOptions = {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
-        return fetch('/api/users/labels', getRolesLabelsOptions).then((answer) => {
+
+        return axios.get('/api/users/labels').then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
@@ -27,15 +23,9 @@ const rolelabel = {
      * @param {String} role_name role to search for
      * @returns {Array.<JSON>}
      */
-    getRoleLabels(username,role_name) {
-        const getRoleLabelsOptions = {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-        }
-        return fetch('/api/users/' + username +'/roles/'+role_name+'/labels', getRoleLabelsOptions).then((answer) => {
+    getRoleLabels(username, role_name) {
+
+        return axios.get('/api/users/' + username + '/roles/' + role_name + '/labels').then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
@@ -51,14 +41,8 @@ const rolelabel = {
      * @returns {Array.<JSON>}
      */
     getLabelRoles(label_name) {
-        const getLabelRolesOptions = {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
-        return fetch('/api/users/labels/' + label_name + '/', getLabelRolesOptions).then((answer) => {
+
+        return axios.get('/api/users/labels/' + label_name + '/').then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
@@ -75,20 +59,12 @@ const rolelabel = {
      * @param {String} label_name name of the label to link
      * @returns 
      */
-    createRoleLabel(username,role_name, label_name) {
+    createRoleLabel(username, role_name, label_name) {
         const rolename = {
-            role_name : role_name
-        }
-        const createRoleLabelOptions = {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify(rolename)
+            role_name: role_name
         }
 
-        return fetch('/api/users/' + username + '/labels/' + label_name, createRoleLabelOptions).then((answer) => {
+        return axios.post('/api/users/' + username + '/labels/' + label_name, rolename).then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
@@ -104,20 +80,12 @@ const rolelabel = {
      * @param {*} label_name name of the label
      * @returns 
      */
-    deleteRoleLabel(username,role_name, label_name) {
+    deleteRoleLabel(username, role_name, label_name) {
         const rolename = {
-            role_name : role_name
-        }
-        const deleteRoleLabelOptions = {
-            method: 'DELETE',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify(rolename)
+            role_name: role_name
         }
 
-        return fetch('/api/users/' + username + '/labels/' + label_name, deleteRoleLabelOptions).then((answer) => {
+        return axios.delete('/api/users/' + username + '/labels/' + label_name, rolename).then((answer) => {
             if (!answer.ok) {
                 throw answer
             }
