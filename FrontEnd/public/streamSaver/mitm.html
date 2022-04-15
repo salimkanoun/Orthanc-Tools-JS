@@ -20,7 +20,7 @@ let keepAlive = () => {
     if (sw) {
       sw.postMessage('ping')
     } else {
-      fetch(ping).then(res => res.text(!res.ok && clearInterval(interval)))
+      axios.get(ping).then(res => res.text(!res.ok && clearInterval(interval)))
     }
   }, 10000)
 }
