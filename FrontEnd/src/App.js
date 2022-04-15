@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 
 import {toast} from 'react-toastify'
 import fetchIntercept from 'fetch-intercept'
+import axios from "axios"
 
 import NavBar from './components/Main/NavBar'
 import Authentication from './components/Authentication'
@@ -34,7 +35,34 @@ class App extends Component {
     constructor(props) {
         super(props)
 
-        fetchIntercept.register({
+        axios.interceptors.request.use({
+            request: function (url, config) {
+                // Modify the url or config here
+                return [url, config];
+            },
+
+            requestError: function (error) {
+                // Called when an error occured during another 'request' interceptor call
+                return Promise.reject(error);
+            },
+
+            response: async (response) => {
+                /*
+                if (response.status === 401 && !response.url.includes('authentication')) {
+                    toast.error('Session exprired, please re-identify')
+                    //await this.logout()
+
+                }*/
+                
+                return response
+            },
+
+            responseError: function (error) {
+                return Promise.reject(error);
+            }
+        })
+
+        /*fetchIntercept.register({
             request: function (url, config) {
                 // Modify the url or config here
                 return [url, config];
@@ -52,14 +80,14 @@ class App extends Component {
                     //await this.logout()
 
                 }
-                */
+                
                 return response
             },
 
             responseError: function (error) {
                 return Promise.reject(error);
             }
-        })
+        })*/
 
     }
 
