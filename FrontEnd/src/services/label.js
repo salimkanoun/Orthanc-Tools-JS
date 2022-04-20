@@ -47,7 +47,6 @@ const label = {
     return axios.delete('/api/labels/' + name).then((answer) => true
     ).catch(error => {
       toast.error('Remove all Studies/Roles - Labels association !')
-      throw answer
     })
   },
 }

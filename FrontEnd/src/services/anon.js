@@ -5,9 +5,9 @@ const anonymize =  {
     //SK ICI DOIT REJOINDRE TASK DU COUP ?
     createAnonRobot(anonymizeArray, username){
         
-        return axios.post('/api/tasks/' + username + '/anonymize', anonymizeArray).then(answer => {
+        return axios.post('/api/tasks/' + username + '/anonymize', anonymizeArray).then(answer => 
             answer.data
-        }).catch(error => {
+        ).catch(error => {
             throw error
         })
 
