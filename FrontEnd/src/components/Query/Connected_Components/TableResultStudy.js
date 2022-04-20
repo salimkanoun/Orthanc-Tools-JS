@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import {connect} from 'react-redux'
 import {
     commonColumns,
@@ -11,7 +11,11 @@ import apis from "../../../services/apis";
 import {addManualQuerySeriesDetails} from "../../../actions/ManualQuery";
  
 
-function TableResult({results, style, addManualQuerySeriesDetails}) {
+export default ({studiesData, style, addManualQuerySeriesDetails}) => {
+
+    const [series, setSeries] = useState([])
+
+
     style = style || {};
     const columns = useMemo(() => [
         commonColumns.RAW,
@@ -41,6 +45,8 @@ function TableResult({results, style, addManualQuerySeriesDetails}) {
             ]
         }
     ], [])
+
+    /*
     const data = useMemo(() => results.map(result => {
         let res = {...result, raw: result}
 
@@ -81,27 +87,20 @@ function TableResult({results, style, addManualQuerySeriesDetails}) {
             }
         }
         return res;
-    }), [results, addManualQuerySeriesDetails]);
+    }), [ addManualQuerySeriesDetails]);
+*/
 
+    const onExpendRow = (rowId, isExpanded)=> {
+        console.log(rowId)
+
+    }
     return (
         <React.Fragment>
             <div style={style}>
                 <div className="mt-5 h-5">
-                    <NestedTable columns={columns} data={data} filtered sorted hiddenSelect/>
+                    <NestedTable columns={columns} toggleRowExpanded = {onExpendRow} data={studiesData} filtered sorted hiddenSelect/>
                 </div>
             </div>
         </React.Fragment>
     )
 }
-
-const mapStateToProps = (state) => {
-    return {
-        results: state.ManualQuery.manualQueryResults
-    }
-}
-
-const mapDispatchToProps = {
-    addManualQuerySeriesDetails
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TableResult);

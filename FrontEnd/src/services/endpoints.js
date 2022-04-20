@@ -4,20 +4,16 @@ const endpoints = {
 
   getEndpoints() {
     return axios.get('/api/endpoints')
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return (answer.json())
-      }).catch((error) => {
+      .then((answer) => answer.data
+      ).catch((error) => {
         throw error
       })
   },
 
   deleteEndpoints(id) {
     return axios.delete('api/endpoints/', { id: id })
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return true
-      }).catch((error) => {
+      .then((answer) => true
+      ).catch((error) => {
         throw error
       })
   },
@@ -25,10 +21,8 @@ const endpoints = {
   createEndpoint(postData) {
 
     return axios.post('api/endpoints/', postData)
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return true
-      }).catch((error) => {
+      .then((answer) => true
+      ).catch((error) => {
         throw error
       })
   },

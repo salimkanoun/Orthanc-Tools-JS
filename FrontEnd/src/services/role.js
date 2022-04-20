@@ -4,43 +4,43 @@ const role = {
 
     getRoles() {
 
-        return axios.get('/api/roles').then((answer) => {
-            if (!answer.ok) { throw answer }
-            return answer.json()
-        }).catch(error => {
+        return axios.get('/api/roles').then((answer) => answer.data
+        ).catch(error => {
             throw error
         })
     },
 
     getPermission(name) {
 
-        return axios.get('/api/roles/' + name).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return answer.json()
+        return axios.get('/api/roles/' + name).then((answer) => answer.data
+        ).catch(error => {
+            throw error
         })
     },
 
     createRole(payload) {
 
-        return axios.post('/api/roles', payload).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return true
+        return axios.post('/api/roles', payload).then((answer) =>
+            true
+        ).catch(error => {
+            throw error
         })
     },
 
     modifyRole(payload) {
 
-        return axios.put('/api/roles', payload).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return true
+        return axios.put('/api/roles', payload).then((answer) => true
+        ).catch(error => {
+            throw error
         })
     },
 
     deleteRole(name) {
 
-        return axios.delete('/api/roles', [name]).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return true
+        return axios.delete('/api/roles', [name]).then((answer) =>
+            true
+        ).catch(error => {
+            throw error
         })
     }
 

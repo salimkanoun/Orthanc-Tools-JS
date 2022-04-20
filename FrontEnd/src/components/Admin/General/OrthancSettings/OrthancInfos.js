@@ -17,8 +17,10 @@ export default class OrthancInfos extends Component {
 
         try {
             orthancSystem = await apis.options.getOrthancSystem()
+            console.log(orthancSystem)
             plugins = await apis.options.getPlugins()
         } catch (error) {
+            console.log(error)
             toast.error(error.statusText)
         }
 

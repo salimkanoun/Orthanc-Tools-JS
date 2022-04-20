@@ -4,10 +4,9 @@ const peers = {
 
     getPeers() {
         return axios.get('/api/peers')
-            .then((answer) => {
-                if (!answer.ok) { throw answer }
-                return (answer.json())
-            })
+            .then((answer) =>
+                answer.data
+            )
             .catch((error) => {
                 throw error
             })
@@ -15,10 +14,8 @@ const peers = {
 
     getPeersExpand() {
         return axios.get('/api/peers?expand')
-            .then((answer) => {
-                if (!answer.ok) { throw answer }
-                return (answer.json())
-            })
+            .then((answer) => answer.data
+            )
             .catch((error) => {
                 throw error
             })
@@ -33,28 +30,24 @@ const peers = {
             Password: password
         }
 
-        return axios.put('/api/peers/' + name, putData).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return (answer.json())
-        }).catch((error) => {
+        return axios.put('/api/peers/' + name, putData).then((answer) => answer.data
+        ).catch((error) => {
             throw error
         })
     },
 
     deletePeer(name) {
 
-        return axios.delete('/api/peers/' + name).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return (answer.json())
-        }).catch((error) => {
+        return axios.delete('/api/peers/' + name).then((answer) => answer.jdata
+        ).catch((error) => {
             throw error
         })
     },
 
     echoPeer(peerName) {
-        return axios.get('/api/peers/' + peerName + '/system').then(response => {
-            if (response.ok) return response.json()
-            else throw response
+        return axios.get('/api/peers/' + peerName + '/system').then(response => response.data
+        ).catch(error => {
+            throw error
         })
     },
 
@@ -63,10 +56,8 @@ const peers = {
         return axios.post('/api/peers/' + name + '/store', {
             Synchronous: false,
             Resources: orthancIDsArray
-        }).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return (answer.json())
-        }).catch(error => {
+        }).then((answer) => answer.data
+        ).catch(error => {
             throw error
         })
     }

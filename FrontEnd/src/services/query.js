@@ -4,18 +4,12 @@ const query = {
 
   dicomQuery(aet, queryDetails) {
 
-    return axios.post("/api/modalities/" + aet + "/query", queryDetails).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    }).catch(error => { throw error })
+    return axios.post("/api/modalities/" + aet + "/query", queryDetails).then((answer) =>  answer.data ).catch(error => { throw error })
   },
 
   retrieveAnswer(orthancIdQuery) {
 
-    return axios.get("/api/queries/" + orthancIdQuery + "/parsedAnswers").then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    }).catch(error => { throw error })
+    return axios.get("/api/queries/" + orthancIdQuery + "/parsedAnswers").then((answer) => answer.data ).catch(error => { throw error })
   }
 
 }

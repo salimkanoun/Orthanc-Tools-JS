@@ -4,10 +4,8 @@ const certificates = {
 
   getCertificatesExpend() {
     return axios.get('/api/certificates')
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return (answer.json())
-      })
+      .then((answer) => answer.data
+      )
       .catch((error) => {
         throw error
       })
@@ -15,20 +13,16 @@ const certificates = {
 
   deleteCertificate(id) {
     return axios.delete('api/certificates/' + id)
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return true
-      }).catch((error) => {
+      .then((answer) => true
+      ).catch((error) => {
         throw error
       })
   },
 
   createCertificate(label) {
     return axios.post('api/certificates', { label: label })
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return (answer.data)
-      }).catch((error) => {
+      .then((answer) => answer.data
+      ).catch((error) => {
         throw error
       })
   },
@@ -36,9 +30,8 @@ const certificates = {
   async uploadCertificate(id, file) {
     let fileText = await file.text()
     return axios.post('api/certificates/upload/' + id, fileText)
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-      }).catch((error) => {
+      .then((answer) => answer
+      ).catch((error) => {
         throw error
       })
   }

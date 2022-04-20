@@ -3,10 +3,8 @@ import axios from "axios"
 const user = {
   getUsers() {
 
-    return axios.get('/api/users').then((answer) => {
-      if (!answer.ok) { throw answer }
-      return answer.json()
-    }).catch(async error => {
+    return axios.get('/api/users').then((answer) =>  answer.data
+    ).catch(async error => {
       throw error
     })
   },
@@ -23,7 +21,6 @@ const user = {
     }
 
     return axios.put('/api/users/' + username, payload).then((answer) => {
-      if (!answer.ok) { throw answer }
     }).catch(async error => {
       throw error
     })
@@ -32,7 +29,6 @@ const user = {
   deleteUser(username) {
 
     return axios.delete('/api/users/' + username).then((answer) => {
-      if (!answer.ok) { throw answer }
     })
   },
 
@@ -49,7 +45,6 @@ const user = {
     }
 
     return axios.post('/api/users', payload).then((answer) => {
-      if (!answer.ok) { throw answer }
     }).catch(error => {
       throw error
     })

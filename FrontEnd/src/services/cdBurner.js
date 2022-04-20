@@ -5,28 +5,23 @@ const cdBurner = {
 
       startCdBurnerService() {
 
-            return axios.post('/api/monitoring/burner/',{}).then((answer) => {
-                  if (!answer.ok) { throw answer }
-                  return (answer.json())
-            }).catch(error => {
+            return axios.post('/api/monitoring/burner/',{}).then((answer) => answer.data
+            ).catch(error => {
                   throw error
             })
       },
 
       stopCdBurnerService() {
 
-            return axios.delete('/api/monitoring/burner/').then((answer) => {
-                  if (!answer.ok) { throw answer }
-            }).catch((error) => { throw error })
+            return axios.delete('/api/monitoring/burner/').then((answer) => true 
+            ).catch((error) => { throw error })
 
       },
 
       getCdBuner() {
 
-            return axios.get('/api/monitoring/burner/').then((answer) => {
-                  if (!answer.ok) { throw answer }
-                  return (answer.json())
-            }).catch((error) => {
+            return axios.get('/api/monitoring/burner/').then((answer) => answer.data
+            ).catch((error) => {
                   throw error
             })
 
@@ -34,9 +29,8 @@ const cdBurner = {
 
       cancelCdBurner(jobBurnerID) {
 
-            return axios.post('/api/monitoring/burner/jobs/' + jobBurnerID + '/cancel', []).then((answer) => {
-                  if (!answer.ok) { throw answer }
-            }).catch((error) => {
+            return axios.post('/api/monitoring/burner/jobs/' + jobBurnerID + '/cancel', []).then((answer) => answer)
+            .catch((error) => {
                   throw error
             })
 

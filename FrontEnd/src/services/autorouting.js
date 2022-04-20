@@ -7,12 +7,8 @@ const autorouting = {
      */
   getAutorouters() {
       
-      return axios.get('/api/autorouting').then((answer) => {
-          if (!answer.ok) {
-              throw answer
-          }
-          return answer.json()
-      }).catch(error => {
+      return axios.get('/api/autorouting').then((answer) =>  answer.data
+      ).catch(error => {
           throw error
       })
   },
@@ -23,12 +19,8 @@ const autorouting = {
    */
   getAutorouterByID(id) {
     
-    return axios.get('/api/autorouting/'+id).then((answer) => {
-        if (!answer.ok) {
-            throw answer
-        }
-        return answer.json()
-    }).catch(error => {
+    return axios.get('/api/autorouting/'+id).then((answer) => answer.data
+    ).catch(error => {
         throw error
     })
   },
@@ -48,11 +40,9 @@ const autorouting = {
         destination:destination
     }
 
-    return axios.post('/api/autorouting/' + name, autorouter).then((answer) => {
-        if (!answer.ok) {
-            throw answer
-        }
-        return true
+    return axios.post('/api/autorouting/' + name, autorouter).then((answer) => true
+    ).catch(error => {
+        throw error
     })
 
   },
@@ -75,9 +65,9 @@ const autorouting = {
       destination:destination
     }
 
-    return axios.put('/api/autorouting/'+id, autorouter).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return true
+    return axios.put('/api/autorouting/'+id, autorouter).then((answer) => true
+    ) .catch(error => {
+        throw error
     })
   },
 
@@ -92,9 +82,9 @@ const autorouting = {
       running:running
     }
 
-    return axios.put('/api/autorouting/'+id+'/running', autorouter).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return true
+    return axios.put('/api/autorouting/'+id+'/running', autorouter).then((answer) => true
+    ).catch(error => {
+        throw error
     })
   },
 
@@ -105,12 +95,10 @@ const autorouting = {
    */
   deleteAutorouter(id) {
 
-      return axios.delete('/api/autorouting/' + id).then((answer) => {
-          if (!answer.ok) {
-              throw answer
-          }
-          return true
-      })
+      return axios.delete('/api/autorouting/' + id).then((answer) => true
+      ).catch(error => {
+        throw error
+    })
   }
 }
 export default autorouting

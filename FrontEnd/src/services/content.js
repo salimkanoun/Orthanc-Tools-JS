@@ -3,159 +3,135 @@ import { toast } from "react-toastify"
 
 const orthancContent = {
 
-    getOrthancFind(contentSerch){
+    getOrthancFind(contentSerch) {
 
-        return axios.post('/api/tools/find', contentSerch).then((response) => {
-            if (!response.ok) {throw response}
-            return response.json()
-        }).catch((error) => {
-            throw(error)
+        return axios.post('/api/tools/find', contentSerch).then((response) => response.data
+        ).catch((error) => {
+            throw (error)
         })
     },
 
-    getPatientDetails(ID){
+    getPatientDetails(ID) {
 
-        return axios.get('/api/patients/' + ID+ '?expand').then((response) => {
-            if (!response.ok) {throw response}
-            return response.json()
-        }).catch((error) => {
+        return axios.get('/api/patients/' + ID + '?expand').then((response) => response.data
+        ).catch((error) => {
             toast.error(error)
         })
     },
 
-    getStudiesDetails(ID){
+    getStudiesDetails(ID) {
 
-        return axios.get('/api/studies/' + ID+ '?expand').then((response) => {
-            if (!response.ok) {throw response}
-            return response.json()
-        }).catch((error) => {
+        return axios.get('/api/studies/' + ID + '?expand').then((response) => response.data
+        ).catch((error) => {
             toast.error(error)
         })
-    }, 
+    },
 
     /**
      * Retrieve series details of a study
      * @param {string} studyID 
      */
-    getSeriesDetails(studyID){
+    getSeriesDetails(studyID) {
 
-        return axios.get('/api/studies/' + studyID + '/series?expand').then((response) => {
-            if (!response.ok) {throw response}
-            return response.json()
-        }).catch((error) => {
+        return axios.get('/api/studies/' + studyID + '/series?expand').then((response) => response.data
+        ).catch((error) => {
             toast.error(error)
         })
     },
 
-    getSeriesDetailsByID(serieID){
+    getSeriesDetailsByID(serieID) {
 
-        return axios.get('/api/series/' + serieID + '?expand').then((response) => {
-            if (!response.ok) {throw response}
-            return response.json()
-        }).catch((error) => {
+        return axios.get('/api/series/' + serieID + '?expand').then((response) => response.data
+        ).catch((error) => {
             toast.error(error)
         })
     },
 
-    getSeriesInstances(serieID){
+    getSeriesInstances(serieID) {
 
-        return axios.get('/api/series/' + serieID + '/instances').then((response) => {
-            if (!response.ok) {throw response}
-            return response.json()
-        }).catch((error) => {
+        return axios.get('/api/series/' + serieID + '/instances').then((response) => response.data
+        ).catch((error) => {
             toast.error(error)
         })
     },
 
-    getInstances(instanceID){
+    getInstances(instanceID) {
 
-        return axios.get('/api/instances/' + instanceID + '/tags').then((response) => {
-            if (!response.ok) {throw response}
-            return response.json()
-        }).catch((error) => {
+        return axios.get('/api/instances/' + instanceID + '/tags').then((response) => response.data
+        ).catch((error) => {
             toast.error(error)
         })
     },
 
-    getSharedTags(serieID){
+    getSharedTags(serieID) {
 
-        return axios.get('/api/series/' + serieID + '/shared-tags').then((response) => {
-            if (!response.ok) {throw response}
-            return response.json()
-        }).catch((error) => {
+        return axios.get('/api/series/' + serieID + '/shared-tags').then((response) => response.data
+        ).catch((error) => {
             toast.error(error)
         })
     },
 
-    getHeader(serieID){
+    getHeader(serieID) {
 
-        return axios.get('/api/instances/' + serieID + '/header').then((response) => {
-            if (!response.ok) {throw response}
-            return response.json()
-        }).catch((error) => {
+        return axios.get('/api/instances/' + serieID + '/header').then((response) => response.data
+        ).catch((error) => {
             toast.error(error)
         })
     },
 
-    deletePatient(ID){
+    deletePatient(ID) {
 
-        return axios.delete('/api/patients/' + ID).then((answer) => {
-            if (!answer.ok) {throw answer}
-        }).catch((error) => {
+        return axios.delete('/api/patients/' + ID).then((answer) => true
+        ).catch((error) => {
             throw error.statusText
         })
 
     },
 
-    deleteStudies(ID){
+    deleteStudies(ID) {
 
-        return axios.delete('/api/studies/' + ID).then((answer) => {
-            if (!answer.ok) {throw answer}
-        }).catch((error) => {
+        return axios.delete('/api/studies/' + ID).then((answer) => true
+        ).catch((error) => {
             throw error.statusText
         })
 
     },
 
-    deleteSeries(ID){
+    deleteSeries(ID) {
 
-        return axios.delete('/api/series/' + ID).then((answer) => {
-            if (!answer.ok) {throw answer}
-        }).catch((error) => {
+        return axios.delete('/api/series/' + ID).then((answer) => true
+        ).catch((error) => {
             throw error.statusText
         })
 
     },
 
-    
-    modifyPatients(ID, replace, remove, removePrivateTags, keepRessource){
 
-        return axios.post('/api/patients/' + ID + '/modify', {Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource}).then((answer) => {
-            if (!answer.ok) {throw answer}
-            return (answer.json())
-        }).catch((error) => {
+    modifyPatients(ID, replace, remove, removePrivateTags, keepRessource) {
+
+        return axios.post('/api/patients/' + ID + '/modify', { Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource }).then((answer) =>
+            answer.data
+        ).catch((error) => {
             console.error(error)
         })
     },
 
-    modifyStudy(ID, replace, remove, removePrivateTags, keepRessource){
+    modifyStudy(ID, replace, remove, removePrivateTags, keepRessource) {
 
-        return axios.post('/api/studies/' + ID + '/modify', {Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource}).then((answer) => {
-            if (!answer.ok) {throw answer}
-            return (answer.json())
-        }).catch((error) => {
+        return axios.post('/api/studies/' + ID + '/modify', { Replace: replace, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource }).then((answer) =>
+            answer.data
+        ).catch((error) => {
             console.error(error)
         })
     },
 
-    modifySeries(ID, replace, remove, removePrivateTags, keepRessource){
+    modifySeries(ID, replace, remove, removePrivateTags, keepRessource) {
 
-        return axios.post('/api/series/' + ID + '/modify', {Replace: {...replace}, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource}).then((answer) => {
-            if (!answer.ok) {throw answer}
-            return (answer.json())
-        }).catch((error) => {
-            console.error(error)
-        })
+        return axios.post('/api/series/' + ID + '/modify', { Replace: { ...replace }, Remove: remove, RemovePrivateTags: removePrivateTags, Force: true, Synchronous: false, KeepSource: keepRessource }).then((answer) => 
+            answer.data
+        ).catch((error) => {
+                console.error(error)
+            })
     }
 }
 

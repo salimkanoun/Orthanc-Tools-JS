@@ -7,7 +7,7 @@ import { addManualQueryStudyResult } from '../../../actions/ManualQuery'
 import AetButton from '../Components/AetButton'
 import apis from '../../../services/apis'
 
-import Form from '../../CommonComponents/SearchForm/Form'
+import QueryForms from '../../CommonComponents/SearchForm/Form'
 import { toast } from 'react-toastify'
 
 class QueryForm extends Component {
@@ -23,63 +23,6 @@ class QueryForm extends Component {
 
   }
 
-  doQueryTo = async (formData, event) => {
-
-    let aet = event.target.value
-
-    let dateFrom = formData.dateFrom
-    let dateTo = formData.dateTo
-
-    //Prepare Date string for post data
-    let dateString = '';
-    dateFrom = dateFrom.split('-').join('')
-    dateTo = dateTo.split('-').join('')
-    if (dateFrom !== '' && dateTo !== '') {
-      dateString = dateFrom + '-' + dateTo
-    } else if (dateFrom === '' && dateTo !== '') {
-      dateString = '-' + dateTo
-    } else if (dateFrom !== '' && dateTo === '') {
-      dateString = dateFrom + '-'
-    }
-
-    let patientName = ''
-
-    let inputLastName = formData.lastName
-    let inputFirstName = formData.firstName
-
-    if (inputLastName === '' && inputFirstName !== '') {
-      patientName = '^' + inputFirstName
-    } else if (inputLastName !== '' && inputFirstName === '') {
-      patientName = inputLastName
-    } else if (inputLastName !== '' && inputFirstName !== '') {
-      patientName = inputLastName + '^' + inputFirstName
-    }
-
-    //Prepare POST payload for query (follow Orthanc APIs)
-    let queryPost = {
-      Level: 'Study',
-      Query: {
-        PatientName: patientName,
-        PatientID: formData.patientID,
-        StudyDate: dateString,
-        ModalitiesInStudy: formData.modalities,
-        StudyDescription: formData.studyDescription,
-        AccessionNumber: formData.accessionNumber,
-        NumberOfStudyRelatedInstances: '',
-        NumberOfStudyRelatedSeries: ''
-      }
-    }
-
-
-    try {
-      let queryAnswer = await apis.query.dicomQuery(aet, queryPost)
-      let answers = await apis.query.retrieveAnswer(queryAnswer['ID'])
-      this.props.addManualQueryStudyResult(answers)
-    } catch (error) {
-        toast.error('Dicom Failure')
-    }
-
-  }
 
   buildAetButtons = () => {
     return (this.props.aets.map((aet, key) =>
@@ -90,11 +33,11 @@ class QueryForm extends Component {
   render = () => {
     return (
       <div>
-        <Form icon="fas fa-question" onFormValidate={this.doQueryTo} title='Query'>
+        <QueryForms icon="fas fa-question" onFormValidate={(formData, event) => this.props.onQuery(formData, event.target.value)} title='Query'>
           <div>
             {this.props.aets !== undefined ? this.buildAetButtons() : null}
           </div>
-        </Form> 
+        </QueryForms> 
       </div>
     )
   }

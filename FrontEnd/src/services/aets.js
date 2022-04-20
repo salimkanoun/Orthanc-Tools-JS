@@ -3,20 +3,14 @@ import axios from "axios"
 const aets = {
 
   getAets() {
-    return axios.get('/api/modalities').then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    })
+    return axios.get('/api/modalities').then((answer) => answer.data)
     .catch((error) => {
       throw error
     })
   },
 
   getAetsExpand() {
-    return axios.get('/api/modalities?expand').then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    })
+    return axios.get('/api/modalities?expand').then((answer) => answer.data)
     .catch((error) => {
       throw error
     })
@@ -31,10 +25,8 @@ const aets = {
       Manufacturer: manufacturer
     }
 
-    return axios.put('/api/modalities/' + name, postData).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    }).catch((error) => {
+    return axios.put('/api/modalities/' + name, postData).then((answer) => true
+    ).catch((error) => {
       throw error
     })
 
@@ -42,10 +34,8 @@ const aets = {
 
   deleteAet(name) {
 
-    return axios.delete('/api/modalities/' + name).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    }).catch((error) => {
+    return axios.delete('/api/modalities/' + name).then((answer) => true
+    ).catch((error) => {
       throw error
     })
 
@@ -53,10 +43,7 @@ const aets = {
 
   echoAet(aetName) {
 
-    return axios.post('/api/modalities/' + aetName + '/echo', {}).then(response => {
-      if (response.ok) return true
-      else throw response
-    }).catch(error => { throw error });
+    return axios.post('/api/modalities/' + aetName + '/echo', {}).then( () => true).catch(error => { throw error });
 
   },
 
@@ -65,10 +52,7 @@ const aets = {
     return axios.post('/api/modalities/' + name + '/store', {
       Synchronous: false,
       Resources: orthancIDsArray
-    }).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    }).catch(error => {
+    }).then((answer) => answer.data).catch(error => {
       throw error
     })
   }

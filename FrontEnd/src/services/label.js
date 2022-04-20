@@ -8,10 +8,8 @@ const label = {
    */
   getAllLabels() {
 
-    return axios.get('api/labels').then((answer) => {
-      if (!answer.ok) { throw answer }
-      return answer.json()
-    }).catch(error => {
+    return axios.get('api/labels').then((answer) => answer.data
+    ).catch(error => {
       throw error
     })
   },
@@ -23,10 +21,8 @@ const label = {
    */
   createLabels(name) {
 
-    return axios.post('/api/labels/' + name).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    })
+    return axios.post('/api/labels/' + name).then((answer) => true
+    )
   },
 
   /**
@@ -37,10 +33,8 @@ const label = {
    */
   modifyLabels(name, payload) {
 
-    return axios.put('/api/labels/' + name, payload).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    })
+    return axios.put('/api/labels/' + name, payload).then((answer) => true
+    )
   },
 
   /**
@@ -50,12 +44,10 @@ const label = {
    */
   deleteLabels(name) {
 
-    return axios.delete('/api/labels/' + name).then((answer) => {
-      if (!answer.ok) {
-        toast.error('Remove all Studies/Roles - Labels association !')
-        throw answer
-      }
-      return true
+    return axios.delete('/api/labels/' + name).then((answer) => true
+    ).catch(error => {
+      toast.error('Remove all Studies/Roles - Labels association !')
+      throw answer
     })
   },
 }

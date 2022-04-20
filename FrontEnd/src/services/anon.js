@@ -6,8 +6,7 @@ const anonymize =  {
     createAnonRobot(anonymizeArray, username){
         
         return axios.post('/api/tasks/' + username + '/anonymize', anonymizeArray).then(answer => {
-            if (!answer.ok) {throw answer}
-            return answer.data
+            answer.data
         }).catch(error => {
             throw error
         })
@@ -16,10 +15,8 @@ const anonymize =  {
 
     flush(){
         
-        return axios.delete('/api/tasks/type/anonymize/flush').then(answer => {
-            if (!answer.ok) {throw answer}
-            return true
-        }).catch(error => {
+        return axios.delete('/api/tasks/type/anonymize/flush').then(answer =>  true
+        ).catch(error => {
             throw error
         })
     }

@@ -7,10 +7,8 @@ const autorouter = {
        */
       startAutorouterService(){
 
-      return axios.post('/api/monitoring/autorouter', {}).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return true
-      }).catch(error => {
+      return axios.post('/api/monitoring/autorouter', {}).then((answer) => true
+      ).catch(error => {
             throw error
             })
 
@@ -22,10 +20,8 @@ const autorouter = {
        */
       stopAutorouterService(){
       
-      return axios.delete('/api/monitoring/autorouter').then((answer) => {
-            if (!answer.ok) { throw answer }
-            return true
-      }).catch(error => {
+      return axios.delete('/api/monitoring/autorouter').then((answer) =>  true
+      ).catch(error => {
             throw error
             })
       },
@@ -35,11 +31,8 @@ const autorouter = {
        * @returns 
        */
   getAutorouter(){ 
-    
-    return axios.get('/api/monitoring/autorouter').then((answer) => {
-        if (!answer.ok) { throw answer }
-        return answer.json()
-    }).catch(error => {
+    return axios.get('/api/monitoring/autorouter').then((answer) => answer.data
+    ).catch((error) => {
         throw error
     })
   },

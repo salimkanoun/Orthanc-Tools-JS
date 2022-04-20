@@ -5,10 +5,10 @@ import PaginationButton from "./PaginitionButton"
 
 const LOWEST_PAGE_SIZE = 10;
 
-function Table({
+export default ({
                    columns, tableData, onDataChange, pagination, rowStyle = () => {
     }, rowEvents = {}
-               }) {
+               }) => {
     const [skipPageReset, setSkipPageReset] = useState(false);
 
     const {
@@ -107,5 +107,3 @@ function Table({
         </>
     )
 }
-
-export default Table

@@ -13,10 +13,8 @@ const retrieve = {
       payload.SeriesInstanceUID = seriesInstanceUID
     }
 
-    return axios.post('/api/retrieve', payload).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    }).catch(error => {
+    return axios.post('/api/retrieve', payload).then((answer) => answer.data
+    ).catch(error => {
       throw error
     })
   }

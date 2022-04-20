@@ -7,10 +7,9 @@ const studylabel = {
    */
   getStudiesLabels() { //get ALL
 
-    return axios.get('/api/studies/labels').then((answer) => {
-      if (!answer.ok) { throw answer }
-      return answer.json()
-    }).catch(error => {
+    return axios.get('/api/studies/labels').then((answer) => 
+      answer.data
+    ).catch(error => {
       throw error
     })
   },
@@ -22,10 +21,8 @@ const studylabel = {
    */
   getStudiesLabel(name) { //get Studies for one particular Label
 
-    return axios.get('/api/studies/labels/' + name).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return answer.json()
-    }).catch(error => {
+    return axios.get('/api/studies/labels/' + name).then((answer) => answer.data
+    ).catch(error => {
       throw error
     })
   },
@@ -37,10 +34,8 @@ const studylabel = {
    */
   getStudyLabels(study_instance_uid) { //get Labels for one particular study
 
-    return axios.get('/api/studies/' + study_instance_uid + '/labels').then((answer) => {
-      if (!answer.ok) { throw answer }
-      return answer.json()
-    }).catch(error => {
+    return axios.get('/api/studies/' + study_instance_uid + '/labels').then((answer) => answer.data
+    ).catch(error => {
       throw error
     })
   },
@@ -52,10 +47,8 @@ const studylabel = {
    */
   getStudyLabelsByStudyOrthancID(study_orthanc_id) {
 
-    return axios.get('/api/studies/orthanc/' + study_orthanc_id + '/labels').then((answer) => {
-      if (!answer.ok) { throw answer }
-      return answer.json()
-    }).catch(error => {
+    return axios.get('/api/studies/orthanc/' + study_orthanc_id + '/labels').then((answer) => answer.data
+    ).catch(error => {
       throw error
     })
   },
@@ -74,10 +67,10 @@ const studylabel = {
     return axios.post('/api/patient/' + patient_id + '/studies/' + study_instance_uid + '/labels/' + label_name, {
       study_orthanc_id: study_orthanc_id,
       patient_orthanc_id: patient_orthanc_id
-    }).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    })
+    }).then((answer) => true
+    ).catch(error => {
+      throw error
+  })
 
   },
 
@@ -89,10 +82,10 @@ const studylabel = {
    */
   deleteStudyLabel(study_instance_uid, name) {
 
-    return axios.delete('/api/studies/' + study_instance_uid + '/labels/' + name).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    })
+    return axios.delete('/api/studies/' + study_instance_uid + '/labels/' + name).then((answer) => true
+    ).catch(error => {
+      throw error
+  })
   }
 
 }

@@ -16,26 +16,20 @@ const ldap = {
       user: user
     }
 
-    return axios.put("/api/ldap/settings/", options).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    }).catch(error => { throw error })
+    return axios.put("/api/ldap/settings/", options).then((answer) => true
+    ).catch(error => { throw error })
   },
 
   getLdapSettings() {
 
-    return axios.get("/api/ldap/settings/").then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    }).catch(error => { throw error })
+    return axios.get("/api/ldap/settings/").then((answer) => answer.data
+    ).catch(error => { throw error })
   },
 
   testLdapSettings() {
 
-    return axios.get("/api/ldap/test").then(async (answer) => {
-      if (!answer.ok) { throw answer }
-      return await answer.json()
-    }).catch(error => { throw error })
+    return axios.get("/api/ldap/test").then(async (answer) => await answer.data
+    ).catch(error => { throw error })
   },
 
   createMatch(groupName, role) {
@@ -45,35 +39,33 @@ const ldap = {
       associedRole: role
     }
 
-    return axios.post("/api/ldap/matches/", payload).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    })
+    return axios.post("/api/ldap/matches/", payload).then((answer) => true
+    ).catch(error => {
+      throw error
+  })
   },
 
   deleteMatch(Match) {
 
     //SK SYNTAXE FAUSSE FAUDRAIT PASSER LA CLE DANS URI ET FAIRE JUSTE UN DELETE DESSUS
-    return axios.delete("/api/ldap/matches/", { correspodence: Match }).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    })
+    return axios.delete("/api/ldap/matches/", { correspodence: Match }).then((answer) => true
+    ).catch(error => {
+      throw error
+  })
   },
 
   getAllCorrespodences() {
 
-    return axios.get("/api/ldap/matches/").then(async (answer) => {
-      if (!answer.ok) { throw answer }
-      return await (answer.json())
-    })
+    return axios.get("/api/ldap/matches/").then(async (answer) => await (answer.data)
+    ).catch(error => {
+      throw error
+  })
   },
 
   getAllGroupName() {
 
-    return axios.get("/api/ldap/groupname/").then(async (answer) => {
-      if (!answer.ok) { throw answer }
-      return await (answer.json())
-    }).catch(error => { throw error })
+    return axios.get("/api/ldap/groupname/").then(async (answer) =>  await (answer.data)
+    ).catch(error => { throw error })
   }
 
 }

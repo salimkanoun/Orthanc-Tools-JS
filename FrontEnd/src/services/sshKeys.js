@@ -5,10 +5,8 @@ const sshKeys = {
   getKeysExpend() {
 
     return axios.get('/api/keys')
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return (answer.json())
-      })
+      .then((answer) => answer.data
+      )
       .catch((error) => {
         throw (error)
       })
@@ -16,10 +14,8 @@ const sshKeys = {
 
   deleteKey(id) {
     return axios.delete('api/keys/', { id: id })
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return true
-      }).catch((error) => {
+      .then((answer) =>  true
+      ).catch((error) => {
         throw error
       })
   },
@@ -32,10 +28,8 @@ const sshKeys = {
     }
 
     return axios.post('api/keys/', postData)
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return (answer.json())
-      }).catch((error) => {
+      .then((answer) => answer.data
+      ).catch((error) => {
         throw error
       })
   },
@@ -43,9 +37,8 @@ const sshKeys = {
   async uploadKey(id, file) {
     let fileText = await file.text()
     return axios.post('api/keys/upload/' + id, fileText)
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-      }).catch((error) => {
+      .then((answer) => true
+      ).catch((error) => {
         throw error
       })
   }

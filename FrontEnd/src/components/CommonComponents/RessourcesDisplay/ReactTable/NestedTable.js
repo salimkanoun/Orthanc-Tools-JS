@@ -168,9 +168,12 @@ function NestedTable({columns, data, setSelected, hiddenSelect, rowEvent, rowSty
                                     return (!!matchingColumn ?
                                             (!matchingColumn.lazy ?
                                                 <SubRow span={visibleColumns.length}
-                                                        columns={matchingColumn.table} data={value} index={index}
+                                                        columns={matchingColumn.table} 
+                                                        data={value} 
+                                                        index={index}
                                                         setSelected={setSelected}
-                                                        hiddenSelect={hiddenSelect} rowEvent={rowEvent}
+                                                        hiddenSelect={hiddenSelect} 
+                                                        rowEvent={rowEvent}
                                                         rowStyle={rowStyle
                                                         }/> :
                                                 <LazySubRow span={visibleColumns.length}

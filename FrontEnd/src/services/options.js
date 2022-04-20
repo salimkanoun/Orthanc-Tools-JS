@@ -4,17 +4,15 @@ const options = {
 
   setRobotScheduleHour(hour_start, min_start, hour_stop, min_stop) {
 
-    return axios.put('/api/options', { hour_start, min_start, hour_stop, min_stop }).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    })
+    return axios.put('/api/options', { hour_start, min_start, hour_stop, min_stop }).then((answer) => 
+      true
+    )
   },
 
   getOptions() {
     return axios.get('/api/options')
       .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return answer.json()
+        return answer.data
       }).catch(error => { throw error })
   },
 
@@ -26,78 +24,65 @@ const options = {
       orthancPassword: password
     }
 
-    return axios.put('/api/options/orthanc', postData).then((answser) => {
-      if (!answser.ok) throw answser
-      return true
-    })
+    return axios.put('/api/options/orthanc', postData).then((answser) => 
+      true
+    )
   },
 
   getOrthancServer() {
-    return axios.get('/api/options/orthanc').then((answer) => answer.json()).catch((error) => { throw error })
+    return axios.get('/api/options/orthanc').then((answer) => answer.data).catch((error) => { console.log(error) ; throw error })
   },
 
   getRedisServer() {
 
-    return axios.get('/api/options/redis').then((answer) => {
-      return (answer.json())
-    }).catch(error => { throw error })
+    return axios.get('/api/options/redis').then((answer) => answer.data
+    ).catch(error => { throw error })
 
   },
 
   getOrthancSystem() {
 
-    return axios.get('/api/system').then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    })
+    return axios.get('/api/system').then((answer) => answer.data
+    ).catch((error) => { throw error})
   },
 
   resetOrthanc() {
 
-    return axios.post('/api/tools/reset').then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    })
+    return axios.post('/api/tools/reset').then((answer) => answer.data
+    ).catch((error) => { throw error})
   },
 
   shutdownOrthanc() {
 
-    return axios.post('/api/tools/shutdown').then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    })
+    return axios.post('/api/tools/shutdown').then((answer) => answer.data
+    ).catch((error) => { throw error})
   },
 
   //return current verbosity in Orthanc log
   getVerbosity() {
-    return axios.get('/api/tools/log-level').then((response) => response.data).catch((error) => { throw error })
+    return axios.get('/api/tools/log-level').then((response) => response.data
+    ).catch((error) => { throw error })
   },
 
   //set verbosity in Orthanc
   setVerbosity(value) {
 
-    return axios.put('/api/tools/log-level', value).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    })
+    return axios.put('/api/tools/log-level', value).then((answer) => true
+    ).catch(error => {
+      throw error
+  })
   },
 
   getPlugins() {
-    return axios.get('/api/plugins').then(response => {
-      if (response.ok) {
-        return response.json()
-      }
-      else throw response
+    return axios.get('/api/plugins').then(response =>  response.data
+    ).catch(error => {
+      throw error
     })
   },
 
   getMode() {
-    return axios.get('/api/mode').then(response => {
-      if (response.ok) {
-        return response.json()
-      }
-      else throw response
-    }).catch(error => {
+    return axios.get('/api/mode').then(response => response.data
+    ).catch(error => {
       throw error
     })
   },
@@ -108,12 +93,8 @@ const options = {
       mode: mode
     }
 
-    return axios.put('/api/changeMode', payload).then(response => {
-      if (response.ok) {
-        return response.json()
-      }
-      else throw response
-    }).catch(error => {
+    return axios.put('/api/changeMode', payload).then(response =>  response.data
+    ).catch(error => {
       throw error
     })
   },
@@ -133,11 +114,8 @@ const options = {
 
     }
 
-    return axios.put('/api/monitoring/burning/options', payload).then(response => {
-      if (response.ok) {
-        return true
-      } else throw response
-    }).catch(error => {
+    return axios.put('/api/monitoring/burning/options', payload).then(response => true
+    ).catch(error => {
       throw error
     })
 
@@ -149,35 +127,24 @@ const options = {
       export_transcoding
     }
 
-    return axios.put('/api/options/export', payload).then(response => {
-      if (response.ok) {
-        return true
-      } else throw response
-    }).catch(error => {
+    return axios.put('/api/options/export', payload).then(response => true
+    ).catch(error => {
       throw error
     })
 
   },
 
   getExportOption() {
-    return axios.get('/api/options/export-transcoding').then(response => {
-      if (response.ok) {
-        return response.text()
-      }
-      else throw response
-    }).catch(error => {
+    return axios.get('/api/options/export-transcoding').then(response => response.data
+    ).catch(error => {
       throw error
     })
 
   },
 
   getServerTime() {
-    return axios.get('/api/tools/time').then(response => {
-      if (response.ok) {
-        return response.text()
-      }
-      else throw response
-    }).catch(error => {
+    return axios.get('/api/tools/time').then(response => response.data
+    ).catch(error => {
       throw error
     })
   },

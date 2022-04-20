@@ -7,13 +7,9 @@ const retrieveRobot = {
         return axios.post('/api/tasks/' + username + '/retrieve', {
             projectName: projectName,
             retrieveArray: retrieveArray
-        }).then((answer) => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return answer.data;
-        }).catch(async (error) => {
-            throw await error.json().then(e => ({
+        }).then((answer) => answer.data
+        ).catch(async (error) => {
+            throw await error.data.then(e => ({
                 ...e,
                 statusText: error.statusText,
                 status: error.status
@@ -24,11 +20,9 @@ const retrieveRobot = {
 
     validateRobot(id) {
 
-        return axios.post("/api/tasks/retrieve/" + id + "/validate").then((answer) => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return (answer.json())
+        return axios.post("/api/tasks/retrieve/" + id + "/validate").then((answer) => answer.data
+        ).catch(error => {
+            throw error
         })
     },
 
@@ -48,22 +42,15 @@ const retrieveRobot = {
 
     getAllRobotsDetails() {
 
-        return axios.get("/api/tasks/type/retrieve").then((answer) => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return (answer.json())
+        return axios.get("/api/tasks/type/retrieve").then((answer) => answer.data
+        ).catch(error => {
+            throw error
         })
     },
 
     deleteRobotItem(id, item) {
 
-        return axios.delete("/api/tasks/retrieve/" + id + "/" + item).then((answer) => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return;
-        }).catch((error) => {
+        return axios.delete("/api/tasks/retrieve/" + id + "/" + item).then((answer) => true).catch((error) => {
             throw error
         })
 
@@ -71,12 +58,8 @@ const retrieveRobot = {
 
     retryRobotItem(id, item) {
 
-        return axios.put(`/api/tasks/retrieve/${id}/${item}/retry`).then((answer) => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return;
-        }).catch((error) => {
+        return axios.put(`/api/tasks/retrieve/${id}/${item}/retry`).then((answer) => true
+        ).catch((error) => {
             throw error
         })
 
@@ -85,12 +68,8 @@ const retrieveRobot = {
 
     flush() {
 
-        return axios.delete('/api/tasks/type/retrieve/flush').then(answer => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return true
-        }).catch(error => {
+        return axios.delete('/api/tasks/type/retrieve/flush').then(answer => true
+        ).catch(error => {
             throw error
         })
     }

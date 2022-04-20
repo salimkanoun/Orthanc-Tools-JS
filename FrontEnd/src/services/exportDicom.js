@@ -63,8 +63,6 @@ const exportDicom = {
 
       console.log("ici reponse recue")
 
-      if (!answer.ok) throw answer
-
       const readableStream = answer.body
 
       // more optimized
@@ -96,8 +94,6 @@ const exportDicom = {
     return axios.get('/api/jobs/' + jobID + '/archive')
       .then((answer) => {
 
-        if (!answer.ok) throw answer
-
         const readableStream = answer.body
 
         // more optimized
@@ -128,7 +124,6 @@ const exportDicom = {
       Resources: orthancIDsArray,
       endpoint: endpoint
     }).then((answer) => {
-      if (!answer.ok) { throw answer }
       return (answer.data)
     }).catch(error => {
       throw error
@@ -138,7 +133,6 @@ const exportDicom = {
   flushExternalExport() {
 
     return axios.delete('/api/tasks/type/export/flush').then(answer => {
-      if (!answer.ok) { throw answer }
       return true
     }).catch(error => {
       throw error

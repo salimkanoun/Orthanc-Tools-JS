@@ -7,12 +7,8 @@ const rolelabel = {
      */
     getRolesLabels() {
 
-        return axios.get('/api/users/labels').then((answer) => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return answer.json()
-        }).catch(error => {
+        return axios.get('/api/users/labels').then((answer) => answer.data
+        ).catch(error => {
             throw error
         })
     },
@@ -25,12 +21,8 @@ const rolelabel = {
      */
     getRoleLabels(username, role_name) {
 
-        return axios.get('/api/users/' + username + '/roles/' + role_name + '/labels').then((answer) => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return answer.json()
-        }).catch(error => {
+        return axios.get('/api/users/' + username + '/roles/' + role_name + '/labels').then((answer) => answer.data
+        ).catch(error => {
             throw error
         })
     },
@@ -42,12 +34,8 @@ const rolelabel = {
      */
     getLabelRoles(label_name) {
 
-        return axios.get('/api/users/labels/' + label_name + '/').then((answer) => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return answer.json()
-        }).catch(error => {
+        return axios.get('/api/users/labels/' + label_name + '/').then((answer) => answer.data
+        ).catch(error => {
             throw error
         })
     },
@@ -64,11 +52,10 @@ const rolelabel = {
             role_name: role_name
         }
 
-        return axios.post('/api/users/' + username + '/labels/' + label_name, rolename).then((answer) => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return true
+        return axios.post('/api/users/' + username + '/labels/' + label_name, rolename).then((answer) =>
+             true
+        ).catch(error => {
+            throw error
         })
 
     },
@@ -85,11 +72,9 @@ const rolelabel = {
             role_name: role_name
         }
 
-        return axios.delete('/api/users/' + username + '/labels/' + label_name, rolename).then((answer) => {
-            if (!answer.ok) {
-                throw answer
-            }
-            return true
+        return axios.delete('/api/users/' + username + '/labels/' + label_name, rolename).then((answer) => true
+        ).catch(error => {
+            throw error
         })
     }
 }
