@@ -9,6 +9,7 @@ actions.resetSelectedRows = 'resetSelectedRows'
 actions.toggleAllRowsSelected = 'toggleAllRowsSelected'
 actions.toggleRowSelected = 'toggleRowSelected'
 actions.toggleAllPageRowsSelected = 'toggleAllPageRowsSelected'
+actions.autoResetExpanded = 'autoResetExpanded'
 
 const LOWEST_PAGE_SIZE = 10;
 
@@ -34,9 +35,9 @@ function SubRow({span, columns, data, setSelected, index, hiddenSelect, rowEvent
 
 function LazySubRow({span, columns, getter, setSelected, index, hiddenSelect, rowEvent, rowStyle}) {
     const [data, setData] = useState(null);
-    useEffect(() => {
+    /*useEffect(() => {
         getter().then(setData);
-    }, [getter]);
+    }, [getter]);*/
     return (data != null ? <tr>
         <td className={"subtable-row"} colSpan={span}>
             <NestedTable

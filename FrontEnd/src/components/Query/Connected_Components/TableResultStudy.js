@@ -1,5 +1,5 @@
-import React, {useMemo, useState} from 'react';
-import {connect} from 'react-redux'
+import React, { useMemo, useState } from 'react';
+import { connect } from 'react-redux'
 import {
     commonColumns,
     patientColumns,
@@ -8,12 +8,36 @@ import {
 } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
 import NestedTable from "../../CommonComponents/RessourcesDisplay/ReactTable/NestedTable";
 import apis from "../../../services/apis";
-import {addManualQuerySeriesDetails} from "../../../actions/ManualQuery";
- 
+import { addManualQuerySeriesDetails } from "../../../actions/ManualQuery";
 
-export default ({studiesData, style, addManualQuerySeriesDetails}) => {
 
-    const [series, setSeries] = useState([])
+export default ({ studiesData, style, addManualQuerySeriesDetails }) => {
+
+    const [series, setSeries] = useState([]);
+
+    const dataSeries = useMemo(() => studiesData.map(result => {
+        let res = { ...result, raw: result }
+
+        let queryData = {
+            Level: 'Series',
+            Query: {
+                Modality: '',
+                ProtocolName: '',
+                SeriesDescription: '',
+                SeriesInstanceUID: '',
+                StudyInstanceUID: result.StudyInstanceUID,
+                SeriesNumber: '',
+                NumberOfSeriesRelatedInstances: ''
+            }
+        }
+
+        let handle_open = () => {
+            let queryAnswers = apis.query.dicomQuery(result.OriginAET, queryData);
+            let answers = apis.query.retrieveAnswer(queryAnswers.ID);
+            console.log(answers)
+            setSeries(answers);
+        }
+    }))
 
 
     style = style || {};
@@ -90,15 +114,17 @@ export default ({studiesData, style, addManualQuerySeriesDetails}) => {
     }), [ addManualQuerySeriesDetails]);
 */
 
-    const onExpendRow = (rowId, isExpanded)=> {
+    const onExpendRow = (rowId, isExpanded) => {
         console.log(rowId)
-
     }
+
     return (
         <React.Fragment>
             <div style={style}>
                 <div className="mt-5 h-5">
-                    <NestedTable columns={columns} toggleRowExpanded = {onExpendRow} data={studiesData} filtered sorted hiddenSelect/>
+                    {console.log(studiesData)}
+                    {console.log()}
+                    <NestedTable columns={columns} toggleRowExpanded={onExpendRow} data={studiesData} filtered sorted hiddenSelect />
                 </div>
             </div>
         </React.Fragment>
