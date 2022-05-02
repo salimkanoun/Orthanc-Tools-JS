@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { connect } from 'react-redux'
 import {
     commonColumns,
@@ -9,42 +9,19 @@ import {
 import NestedTable from "../../CommonComponents/RessourcesDisplay/ReactTable/NestedTable";
 import apis from "../../../services/apis";
 import { addManualQuerySeriesDetails } from "../../../actions/ManualQuery";
+import TableSeries from '../../CommonComponents/RessourcesDisplay/ReactTable/TableSeries';
+import TableResultSeries from './TableResultSeries';
 
 
-export default ({ studiesData, style, addManualQuerySeriesDetails }) => {
+export default ({ studiesData, style = {} }) => {
 
     const [series, setSeries] = useState([]);
 
-    const dataSeries = useMemo(() => studiesData.map(result => {
-        let res = { ...result, raw: result }
 
-        let queryData = {
-            Level: 'Series',
-            Query: {
-                Modality: '',
-                ProtocolName: '',
-                SeriesDescription: '',
-                SeriesInstanceUID: '',
-                StudyInstanceUID: result.StudyInstanceUID,
-                SeriesNumber: '',
-                NumberOfSeriesRelatedInstances: ''
-            }
-        }
-
-        let handle_open = () => {
-            let queryAnswers = apis.query.dicomQuery(result.OriginAET, queryData);
-            let answers = apis.query.retrieveAnswer(queryAnswers.ID);
-            console.log(answers)
-            setSeries(answers);
-        }
-    }))
-
-
-    style = style || {};
     const columns = useMemo(() => [
         commonColumns.RAW,
         studyColumns.ORTHANC_ID,
-        studyColumns.INSTANCE_UID,
+        studyColumns.STUDY_INSTANCE_UID,
         patientColumns.NAME(),
         patientColumns.ID(),
         studyColumns.DATE,
@@ -54,25 +31,10 @@ export default ({ studiesData, style, addManualQuerySeriesDetails }) => {
         seriesColumns.NB_SERIES_INSTANCES,
         commonColumns.AET,
         studyColumns.RETRIEVE
-        , {
-            accessor: 'seriesDetails',
-            lazy: true,
-            table: [
-                commonColumns.RAW,
-                seriesColumns.ORTHANC_ID,
-                seriesColumns.DESCRIPTION,
-                seriesColumns.MODALITY,
-                seriesColumns.SERIES_NUMBER,
-                seriesColumns.NB_SERIES_INSTANCES,
-                commonColumns.AET,
-                seriesColumns.RETRIEVE
-            ]
-        }
     ], [])
 
-    /*
-    const data = useMemo(() => results.map(result => {
-        let res = {...result, raw: result}
+
+    const fetchSeriesDetails = async (StudyInstanceUID, AET) => {
 
         let queryData = {
             Level: 'Series',
@@ -81,50 +43,37 @@ export default ({ studiesData, style, addManualQuerySeriesDetails }) => {
                 ProtocolName: '',
                 SeriesDescription: '',
                 SeriesInstanceUID: '',
-                StudyInstanceUID: result.StudyInstanceUID,
+                StudyInstanceUID: StudyInstanceUID,
                 SeriesNumber: '',
                 NumberOfSeriesRelatedInstances: ''
             }
         }
 
-
-        const seriesDetails = [...result.seriesDetails];
-        if (seriesDetails.length !== 0) {
-            res.seriesDetails = async () => {
-                return seriesDetails.map(serie => ({
-                    ...serie,
-                    raw: serie
-                }))
-            }
-        } else {
-            res.seriesDetails = () => {
-                return apis.query.dicomQuery(result.OriginAET, queryData)
-                    .then(queryAnswers => apis.query.retrieveAnswer(queryAnswers.ID))
-                    .then(seriesAnswers => {
-                        addManualQuerySeriesDetails(seriesAnswers, result.StudyInstanceUID);
-                        return seriesAnswers;
-                    })
-                    .then(series => series.map(serie => ({
-                        ...serie,
-                        raw: serie
-                    })))
-            }
-        }
-        return res;
-    }), [ addManualQuerySeriesDetails]);
-*/
-
-    const onExpendRow = (rowId, isExpanded) => {
-        console.log(rowId)
+        let seriesAnswer = await apis.query.dicomQuery(AET, queryData)
+            .then(queryAnswers => apis.query.retrieveAnswer(queryAnswers.ID))
+        return seriesAnswer
     }
+
+    const onExpandedRow = (studyInstanceUID, row) => {
+        fetchSeriesDetails(studyInstanceUID, row.OriginAET).then(newSeries => {
+            setSeries(series => [...series, ...newSeries]
+            )
+        })
+    }
+    //SK UseCallback a voir
+    const getExpandedRow = useCallback((rowId) => {
+        let studyInstanceUID = rowId
+        console.log(series)
+        let filteredSeries = series.filter((series) => series.StudyInstanceUID === studyInstanceUID)
+        return < TableResultSeries series={filteredSeries} />
+
+    }, [series.length])
 
     return (
         <React.Fragment>
             <div style={style}>
                 <div className="mt-5 h-5">
-                    {console.log(studiesData)}
-                    {console.log()}
-                    <NestedTable columns={columns} toggleRowExpanded={onExpendRow} data={studiesData} filtered sorted hiddenSelect />
+                    <NestedTable getRowId={(originalRow) => originalRow.StudyInstanceUID} onExpandedRow={onExpandedRow} columns={columns} getExpandedRow={getExpandedRow} data={studiesData} filtered sorted hiddenSelect />
                 </div>
             </div>
         </React.Fragment>

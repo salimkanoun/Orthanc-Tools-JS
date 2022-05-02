@@ -89,6 +89,11 @@ const studyColumns = {
         Header: 'Study Orthanc ID',
         show: false
     },
+    STUDY_INSTANCE_UID: {
+        accessor: 'StudyInstanceUID',
+        Header: 'StudyInstanceUID',
+        show: false
+    },
     INSTANCE_UID: {
         accessor: 'StudyInstanceUID',
         Header: 'StudyInstanceUID',
