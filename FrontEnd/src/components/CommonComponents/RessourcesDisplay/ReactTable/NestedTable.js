@@ -130,7 +130,7 @@ function NestedTable({ columns, data, getExpandedRow, onExpandedRow, setSelected
                             </tr>
                             {row.isExpanded ?
                                 <tr>
-                                    <td colSpan={row.cells.length}>{getExpandedRow(row.id, row.values)} </td>
+                                    <td colSpan={row.cells.length}>{getExpandedRow(row.id)} </td>
                                 </tr>
                                 :
                                 null
