@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useExpanded, useFilters, usePagination, useRowSelect, useSortBy, useTable } from 'react-table'
 import Table from 'react-bootstrap/Table'
 import { FormCheck } from "react-bootstrap"

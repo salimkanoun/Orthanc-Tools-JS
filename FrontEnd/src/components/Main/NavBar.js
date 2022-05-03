@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { Link, useHistory, useLocation } from 'react-router-dom'
-import { Image, Nav, Navbar, Row } from 'react-bootstrap'
+import { useHistory, useLocation } from 'react-router-dom'
+import { Image, Nav, Navbar} from 'react-bootstrap'
 
 import image from '../../assets/images/logo.png';
 

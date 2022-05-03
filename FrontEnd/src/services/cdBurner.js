@@ -1,5 +1,4 @@
 import axios from "axios"
-import { bindActionCreators } from "redux"
 
 const cdBurner = {
 

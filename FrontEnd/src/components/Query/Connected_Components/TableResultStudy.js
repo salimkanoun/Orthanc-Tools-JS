@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { connect } from 'react-redux'
+import React, { useCallback, useMemo, useState } from 'react';
 import {
     commonColumns,
     patientColumns,
@@ -8,8 +7,6 @@ import {
 } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
 import NestedTable from "../../CommonComponents/RessourcesDisplay/ReactTable/NestedTable";
 import apis from "../../../services/apis";
-import { addManualQuerySeriesDetails } from "../../../actions/ManualQuery";
-import TableSeries from '../../CommonComponents/RessourcesDisplay/ReactTable/TableSeries';
 import TableResultSeries from './TableResultSeries';
 
 

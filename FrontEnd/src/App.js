@@ -1,10 +1,8 @@
 import React, {Component} from 'react'
 
 import {toast} from 'react-toastify'
-import fetchIntercept from 'fetch-intercept'
 import axios from "axios"
 
-import NavBar from './components/Main/NavBar'
 import Authentication from './components/Authentication'
 
 import {login, logout} from './actions/login'
@@ -47,13 +45,6 @@ class App extends Component {
             },
 
             response: async (response) => {
-                /*
-                if (response.status === 401 && !response.url.includes('authentication')) {
-                    toast.error('Session exprired, please re-identify')
-                    //await this.logout()
-
-                }*/
-                
                 return response
             },
 
@@ -61,33 +52,6 @@ class App extends Component {
                 return Promise.reject(error);
             }
         })
-
-        /*fetchIntercept.register({
-            request: function (url, config) {
-                // Modify the url or config here
-                return [url, config];
-            },
-
-            requestError: function (error) {
-                // Called when an error occured during another 'request' interceptor call
-                return Promise.reject(error);
-            },
-
-            response: async (response) => {
-                /*
-                if (response.status === 401 && !response.url.includes('authentication')) {
-                    toast.error('Session exprired, please re-identify')
-                    //await this.logout()
-
-                }
-                
-                return response
-            },
-
-            responseError: function (error) {
-                return Promise.reject(error);
-            }
-        })*/
 
     }
 
