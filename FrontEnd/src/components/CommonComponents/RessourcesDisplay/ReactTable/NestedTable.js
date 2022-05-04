@@ -13,7 +13,7 @@ actions.autoResetExpanded = 'autoResetExpanded'
 
 const LOWEST_PAGE_SIZE = 10;
 
-function NestedTable({ columns, data, getExpandedRow, onExpandedRow, setSelected, hiddenSelect, rowEvent, rowStyle, getRowId, filtered = false, sorted = false }) {
+function NestedTable({ columns, data, getExpandedRow, onExpandedRow = ()=>{} , setSelected, hiddenSelect, rowEvent, rowStyle, getRowId, filtered = false, sorted = false }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -36,7 +36,7 @@ function NestedTable({ columns, data, getExpandedRow, onExpandedRow, setSelected
             columns,
             data,
             getRowId,
-            autoResetExpanded: false, //probleme de fermeture qui ne se fait pas lors de nouvelles recherches vient de là
+            autoResetExpanded: false,
             initialState: {
                 hiddenColumns: columns.map(column => {
                     if (column.show === false || column.table instanceof Array)

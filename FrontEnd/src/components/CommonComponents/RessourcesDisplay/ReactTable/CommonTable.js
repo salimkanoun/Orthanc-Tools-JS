@@ -6,7 +6,7 @@ import PaginationButton from "./PaginitionButton"
 const LOWEST_PAGE_SIZE = 10;
 
 export default ({
-                   columns, tableData, onDataChange, pagination, rowStyle = () => {
+                   getRowId = undefined, columns, tableData, onDataChange, pagination, onRowClick = ()=> {}, rowStyle = () => {
     }, rowEvents = {}
                }) => {
     const [skipPageReset, setSkipPageReset] = useState(false);
@@ -29,6 +29,7 @@ export default ({
         visibleColumns,
         state: {pageIndex, pageSize}
     } = useTable({
+            getRowId,
             columns,
             data: tableData,
             onDataChange: (oldValue, newValue, row, column) => {
@@ -69,7 +70,7 @@ export default ({
                     return (
                         // Use a React.Fragment here so the table markup is still valid
                         <React.Fragment key={row.getRowProps().key}>
-                            <tr {...row.getRowProps()} {...Object.fromEntries(Object.entries(rowEvents).map(([key, value]) => [key, (e) => {
+                            <tr {...row.getRowProps()} onClick={()=>onRowClick(row.id)} {...Object.fromEntries(Object.entries(rowEvents).map(([key, value]) => [key, (e) => {
                                 value(e, row.values)
                             }]))} style={rowStyle(row.values)}>
                                 {row.cells.map(cell => {
