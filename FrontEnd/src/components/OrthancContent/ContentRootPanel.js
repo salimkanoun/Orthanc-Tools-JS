@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react'
+import React, { Component, createRef, useState } from 'react'
 import SearchForm from './SearchForm'
 import SendTo from '../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown'
 import apis from '../../services/apis'
@@ -17,9 +17,10 @@ import { studyArrayToNestedData } from '../../tools/processResponse';
 import TableSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableSeries';
 
 //a passer en fonctionnal component 
-class ContentRootPanel extends Component {
 
-    state = {
+export function ContentRootPanel(props) {
+
+    /*state = {
         currentSelectedStudyId: '',
         dataForm: {},
         orthancContent: [],
@@ -28,60 +29,62 @@ class ContentRootPanel extends Component {
         series: []
     }
 
-    modalRef = { open: null };
+    modalRef = { open: null }; */
 
-    sendSearch = async (dataForm) => {
+    const [currentSelectedStudyId, setCurrentSelectedStudyId] = useState('');
+    const [dataForm, setDataForm] = useState({});
+    const [orthancContent, setOrthancContent] = useState([]);
+    const [selectedStudies, setSelectedStudies] = useState([]);
+    const [resultVisible, setResultVisible] = useState(false);
+    const [series, setSeries] = useState([]);
+
+    const [modalRefOpen, setModalRefOpen] = useState(null);
+
+    const sendSearch = async (dataForm) => {
         //Show result
-        this.setState({ resultVisible: true });
+        setResultVisible(true);
         if (dataForm) {
             //Store new form find value and send request to back
-            this.setState({
-                dataForm: dataForm,
-                currentSelectedStudyId: ''
-            }, () => this.sendFindRequest(dataForm))
+            setDataForm(dataForm)
+            setCurrentSelectedStudyId('')
+            sendFindRequest(dataForm)
         } else {
             //refresh value using the same current form search value
-            this.sendFindRequest(this.state.dataForm)
+            sendFindRequest(dataForm)
         }
     }
 
 
-    sendFindRequest = async (dataForm) => {
+    const sendFindRequest = async (dataForm) => {
         try {
             let answer = await apis.content.getOrthancFind(dataForm)
             console.log(answer)
-            this.setState({
-                orthancContent: this.nestStudiesByPatient(answer)
-            })
+            setOrthancContent(nestStudiesByPatient(answer))
         } catch (error) {
             toast.error(error.statusText)
         }
 
     }
 
-    refreshSerie = () => {
-        let id = this.state.currentSelectedStudyId
-        this.setState({
-            currentSelectedStudyId: ''
-        })
-        this.setState({
-            currentSelectedStudyId: id
-        })
+    const refreshSerie = () => {
+        let id = currentSelectedStudyId
+        setCurrentSelectedStudyId('')
+        setCurrentSelectedStudyId(id)
     }
 
     //Rappelé par le dropdown lors du delete de Patietn sur Orthanc
-    onDeletePatient = (idDeleted) => {
-        this.sendSearch()
-        this.setState({ currentSelectedStudyId: '' })
+    const onDeletePatient = (idDeleted) => {
+        sendSearch()
+        setCurrentSelectedStudyId('')
     }
 
     //rappelé par le dropdow lors du delete de study sur Orthanc
-    onDeleteStudy = (idDeleted) => {
-        this.sendSearch()
-        this.setState({ currentSelectedStudyId: '' })
+    const onDeleteStudy = (idDeleted) => {
+        sendSearch()
+        setCurrentSelectedStudyId('')
     }
 
-    onClickStudy = (StudyOrthancID) => {
+    const onClickStudy = (StudyOrthancID) => {
         console.log(StudyOrthancID)
 
         apis.content.getSeriesDetails(StudyOrthancID).then(seriesAnswer => {
@@ -97,18 +100,16 @@ class ContentRootPanel extends Component {
 
             })
 
-            this.setState({
-                series: seriesData,
-                currentSelectedStudyId : StudyOrthancID
-            })
+            setSeries(seriesData)
+            setCurrentSelectedStudyId(StudyOrthancID)
         })
 
     }
 
-    rowStyleStudies = (row) => {
+    const rowStyleStudies = (row) => {
         console.log(row)
         const style = {};
-        if (row.StudyOrthancID === this.state.currentSelectedStudyId) {
+        if (row.StudyOrthancID === currentSelectedStudyId) {
             style.backgroundColor = 'rgba(255,153,51)'
         }
         style.borderTop = 'none';
@@ -116,84 +117,84 @@ class ContentRootPanel extends Component {
         return style;
     }
 
-    nestStudiesByPatient = (studies) => {
+    const nestStudiesByPatient = (studies) => {
         let nestedData = studyArrayToNestedData(studies)
         console.log(nestedData)
         return Object.values(nestedData)
     }
 
 
-    setSelectedStudies = (resources) => {
+    const setSelectedStudie = (resources) => {
         let selectedIds = resources
         let studiesOfSelectedPatients = []
         //Add all studies of selected patient
         selectedIds.selectedPatients.forEach(orthancPatientId => {
             //loop the redux and add all studies that had one of the selected patient ID
-            let studyArray = this.state.orthancContent.filter(study => study.ParentPatient === orthancPatientId);
+            let studyArray = orthancContent.filter(study => study.ParentPatient === orthancPatientId);
             //Add to the global list of selected studies
             studiesOfSelectedPatients.push(...studyArray)
         })
 
         //add selected level studies
         selectedIds.selectedStudies.forEach(element => {
-            this.state.orthancContent.forEach(study => {
+            orthancContent.forEach(study => {
                 if (element === study.ID)
                     studiesOfSelectedPatients.push(study)
             });
         });
         //Get only unique study ids
         let uniqueSelectedOrthancStudyId = [...new Set(studiesOfSelectedPatients)];
-        this.setState({ selectedStudies: uniqueSelectedOrthancStudyId });
+        setSelectedStudies(uniqueSelectedOrthancStudyId);
     }
 
 
-    render = () => {
-        return (
-            <div>
-                <SearchForm onSubmit={this.sendSearch} />
-                <Row id="showResult" className={'mt-5' + (this.state.resultVisible ? ' show-result-opened' : '')}>
-                    <Row>
-                        <Col sm={6}>
-                            <div className='d-flex flex-row justify-content-between mt-4'>
-                                <LabelDropdown studies={this.state.selectedStudies} />
-                                <SendTo
-                                    studiesFull={this.state.selectedStudies}
-                                />
-                            </div>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col sm>
-                            <LabelModal fwRef={this.modalRef} />
-                            <TablePatientsWithNestedStudies
-                                patients={this.state.orthancContent}
-                                onClickStudy={this.onClickStudy}
-                                rowStyle={this.rowStyleStudies}
-                                onDeletePatient={this.onDeletePatient}
-                                onDeleteStudy={this.onDeleteStudy}
-                                setSelectedStudies={this.setSelectedStudies}
-                                onModify={this.sendSearch}
-                                refresh={this.sendSearch}
-                                hiddenRemoveRow={true}
-                                openLabelModal={this.modalRef.open}
+    return (
+        <div>
+            <SearchForm onSubmit={sendSearch} />
+            <Row id="showResult" className={'mt-5' + (resultVisible ? ' show-result-opened' : '')}>
+                <Row>
+                    <Col sm={6}>
+                        <div className='d-flex flex-row justify-content-between mt-4'>
+                            <LabelDropdown studies={selectedStudies} />
+                            <SendTo
+                                studiesFull={selectedStudies}
                             />
-                        </Col>
-                        <Col sm>
-                            <TableSeries series={this.state.series} onDelete={this.onDelete} hiddenRemoveRow/>
-                        </Col>
-                    </Row>
-
+                        </div>
+                    </Col>
                 </Row>
-            </div>
-        )
-    }
+                <Row>
+                    <Col sm>
+                        <LabelModal fwRef={modalRefOpen} />
+                        <TablePatientsWithNestedStudies
+                            patients={orthancContent}
+                            onClickStudy={onClickStudy}
+                            rowStyle={rowStyleStudies}
+                            onDeletePatient={onDeletePatient}
+                            onDeleteStudy={onDeleteStudy}
+                            setSelectedStudies={setSelectedStudies}
+                            onModify={sendSearch}
+                            refresh={sendSearch}
+                            hiddenRemoveRow={true}
+                            openLabelModal={modalRefOpen}
+                        />
+                    </Col>
+                    <Col sm>
+                        <TableSeries series={series} /*onDelete={onDelete}*/ hiddenRemoveRow />
+                    </Col>
+                </Row>
+
+            </Row>
+        </div>
+    )
 
 }
+
 //connect redux fonctionnal componnent
 const mapDispatchToProps = {
     addStudiesToDeleteList,
     addStudiesToAnonList,
     addStudiesToExportList
 }
+
 
 export default connect(null, mapDispatchToProps)(ContentRootPanel)
