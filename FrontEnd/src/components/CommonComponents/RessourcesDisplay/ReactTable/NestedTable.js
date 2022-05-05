@@ -13,7 +13,7 @@ actions.autoResetExpanded = 'autoResetExpanded'
 
 const LOWEST_PAGE_SIZE = 10;
 
-function NestedTable({ columns, data, getExpandedRow, onExpandedRow = ()=>{} , setSelected, hiddenSelect, rowEvent, rowStyle, getRowId, filtered = false, sorted = false }) {
+function NestedTable({ columns, data, getExpandedRow, onExpandedRow = () => { }, setSelected, hiddenSelect, rowEvent, rowStyle, getRowId, filtered = false, sorted = false }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -51,9 +51,11 @@ function NestedTable({ columns, data, getExpandedRow, onExpandedRow = ()=>{} , s
         }),
         (sorted ? useSortBy : () => {
         }),
+        useSortBy,
         useExpanded,
         usePagination,
         useRowSelect,
+        
         hooks => {
             if (!hiddenSelect) hooks.visibleColumns.push(columns => [{
                 id: 'selection',
@@ -103,9 +105,15 @@ function NestedTable({ columns, data, getExpandedRow, onExpandedRow = ()=>{} , s
                 {headerGroups.map(headerGroup => (
                     <tr {...headerGroup.getHeaderGroupProps()} >
                         {headerGroup.headers.map(column => (
-                            <th {...column.getHeaderProps(sorted ? column.getSortByToggleProps() : undefined)}>
+                            <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                                 {column.render('Header')}
-
+                                <span>
+                                    {column.isSorted
+                                        ? column.isSortedDesc
+                                            ? ' 🔽'
+                                            : ' 🔼'
+                                        : ''}
+                                </span>
                                 {!!column.Filter && filtered ? column.render('Filter') : null}
                             </th>
                         ))}

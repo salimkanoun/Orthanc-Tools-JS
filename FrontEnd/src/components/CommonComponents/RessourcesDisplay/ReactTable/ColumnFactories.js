@@ -69,7 +69,7 @@ const seriesColumns = {
     }),
     NB_SERIES_INSTANCES: {
         accessor: 'NumberOfSeriesRelatedInstances',
-        Header: 'Instances'
+        Header: 'Number of instances'
     },
     RETRIEVE: {
         id: 'Retrieve',
