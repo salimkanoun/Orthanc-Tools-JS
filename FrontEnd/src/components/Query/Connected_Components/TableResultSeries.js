@@ -18,6 +18,7 @@ function TableResultSeries({
         seriesColumns.DESCRIPTION,
         seriesColumns.MODALITY,
         seriesColumns.SERIES_NUMBER,
+        seriesColumns.NB_SERIES_INSTANCES,
         seriesColumns.RETRIEVE,
     ], [
         hiddenActionBouton, hiddenRemoveRow, onDelete, refresh]); 
