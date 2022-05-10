@@ -12,9 +12,8 @@ import TableResultSeries from './TableResultSeries';
 
 export default ({ studiesData, style = {} }) => {
 
-    const [series, setSeries] = useState([]);
-
-
+    const [series, setSeries] = useState({})
+    
     const columns = useMemo(() => [
         commonColumns.RAW,
         studyColumns.ORTHANC_ID,
@@ -51,20 +50,20 @@ export default ({ studiesData, style = {} }) => {
         return seriesAnswer
     }
 
-    const onExpandedRow = (studyInstanceUID, row) => {
+    let onExpandedRow = (studyInstanceUID, row) => {
         fetchSeriesDetails(studyInstanceUID, row.OriginAET).then(newSeries => {
-            setSeries(series => [...series, ...newSeries]
+            setSeries(previousState => ({...previousState, 
+                                [studyInstanceUID] : newSeries})
             )
         })
     }
-    //SK UseCallback a voir
+
     const getExpandedRow = useCallback((rowId) => {
         let studyInstanceUID = rowId
-        console.log(series)
-        let filteredSeries = series.filter((series) => series.StudyInstanceUID === studyInstanceUID)
+        let filteredSeries = series[studyInstanceUID] ?? []
         return < TableResultSeries series={filteredSeries} />
 
-    }, [series.length])
+    }, [Object.keys(series).length])
 
     return (
         <React.Fragment>

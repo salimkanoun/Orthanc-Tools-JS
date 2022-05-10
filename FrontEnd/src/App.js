@@ -30,32 +30,6 @@ toast.configure({
 
 class App extends Component {
 
-    constructor(props) {
-        super(props)
-
-        axios.interceptors.request.use({
-            request: function (url, config) {
-                // Modify the url or config here
-                return [url, config];
-            },
-
-            requestError: function (error) {
-                // Called when an error occured during another 'request' interceptor call
-                return Promise.reject(error);
-            },
-
-            response: async (response) => {
-                return response
-            },
-
-            responseError: function (error) {
-                return Promise.reject(error);
-            }
-        })
-
-    }
-
-
     login = (token, backendData) => {
         this.props.login(token, backendData)
     }

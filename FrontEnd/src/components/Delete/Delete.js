@@ -91,6 +91,7 @@ class Delete extends Component {
     }
 
     render = () => {
+        console.log(this.props.deleteList)
         return (
             <Fragment>
                 <Row>
@@ -107,14 +108,7 @@ class Delete extends Component {
                     </Row>
                     <Row className="mt-5">
                         <Col>
-                            <TablePatientsWithNestedStudies
-                                studies={this.props.deleteList}
-                                hiddenActionBouton={true}
-                                hiddenSelect={true}
-                                hiddenRemoveRow={false}
-                                onDeletePatient={this.onDeletePatient}
-                                onDeleteStudy={this.onDeleteStudy}
-                                wrapperClasses="table-responsive"/>
+
                         </Col>
                     </Row>
                     <Row className="mt-5">

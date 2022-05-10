@@ -88,7 +88,7 @@ export default ({ onLogout, roles }) => {
                             <div className="otjs-navbar-border" hidden={!opened}></div>
 
                             <li>
-                                <Nav.Link className={getLinkClass('log-out')} onClick={() => selectTabHandler(LOG_OUT)} name='log out' ><i className="fas fa-power-off"></i>{opened ? '  Log out' : ''}</Nav.Link>
+                                <Nav.Link className={getLinkClass('log-out')} onClick={() => onLogout()} name='log out' ><i className="fas fa-power-off"></i>{opened ? '  Log out' : ''}</Nav.Link>
                             </li>
                         </ul>
                     </Nav>

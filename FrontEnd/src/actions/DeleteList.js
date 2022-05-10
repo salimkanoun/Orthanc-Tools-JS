@@ -1,6 +1,7 @@
 import { ADD_STUDY_DELETE_LIST, REMOVE_PATIENT_DELETE_LIST, REMOVE_STUDY_DELETE_LIST, EMPTY_DELETE_LIST} from './actions-types'
 
 export function addStudiesToDeleteList(studiesArray){
+    console.log(studiesArray)
     return {
         type: ADD_STUDY_DELETE_LIST, 
         payload: studiesArray

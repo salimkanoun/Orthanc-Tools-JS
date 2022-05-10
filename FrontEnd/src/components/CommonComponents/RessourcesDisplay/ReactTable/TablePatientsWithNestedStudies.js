@@ -1,32 +1,9 @@
-import React, { Component, useMemo } from "react";
+import React, { Component, useEffect, useMemo, useState } from "react";
 import NestedTable from "./NestedTable";
 import { commonColumns, patientColumns, studyColumns } from "./ColumnFactories";
 import CommonTable from "./CommonTable";
 
-
-function isObject(item) {
-    return (item && typeof item === 'object' && !Array.isArray(item));
-}
-
-function mergeDeep(target, ...sources) {
-    if (!sources.length) return target;
-    const source = sources.shift();
-
-    if (isObject(target) && isObject(source)) {
-        for (const key in source) {
-            if (isObject(source[key])) {
-                if (!target[key]) Object.assign(target, { [key]: {} });
-                mergeDeep(target[key], source[key]);
-            } else {
-                Object.assign(target, { [key]: source[key] });
-            }
-        }
-    }
-
-    return mergeDeep(target, ...sources);
-}
-
-function TablePatientsWithNestedStudies({
+export default ({
     rowStyle,
     onClickStudy,
     onClickPatient,
@@ -38,12 +15,17 @@ function TablePatientsWithNestedStudies({
     hiddenAccessionNumber,
     hiddenActionBouton,
     hiddenRemoveRow,
-    setSelected,
+    onSelectStudies,
     hiddenSelect,
     openLabelModal
-}) {
+}) => {
 
-    console.log(patients)
+
+    const [selectedStudies, setSelectedStudies] = useState([])
+
+    useEffect(()=> {
+        //onSelectStudies(selectedStudies)
+    }, selectedStudies)
 
     const columns = useMemo(() => [
         commonColumns.RAW,
@@ -68,7 +50,6 @@ function TablePatientsWithNestedStudies({
         const columns = [
             commonColumns.RAW,
             studyColumns.ORTHANC_ID,
-
             studyColumns.STUDY_INSTANCE_UID,
             studyColumns.DATE,
             studyColumns.DESCRIPTION,
@@ -82,30 +63,15 @@ function TablePatientsWithNestedStudies({
         />
     }
 
-    return <NestedTable getRowId={(originalRow) => originalRow.PatientOrthancID} columns={columns} data={patients} getExpandedRow={getExpandedRow} setSelected={setSelected} hiddenSelect={hiddenSelect}
+    const onSelectPatient = (selectedPatients) => {
+        console.log(selectedPatients)
+        let selectedStudiesOrthancId = []
+        selectedPatients.map((patient=> {
+            selectedStudiesOrthancId.push(patient.studies)
+        }))
+        setSelectedStudies(selectedStudiesOrthancId)
+    }
+
+    return <NestedTable getRowId={(originalRow) => originalRow.PatientOrthancID} columns={columns} data={patients} getExpandedRow={getExpandedRow} onSelectPatient={onSelectPatient} hiddenSelect={hiddenSelect}
         rowStyle={rowStyle} rowEvent={onClickPatient} />
 }
-
-class TablePatientsWithNestedStudiesWrapper extends Component {
-    selected = {
-        root: [],
-        sub: []
-    }
-
-    getSelectedRessources() {
-        return {
-            selectedPatients: this.selected.root.map(x => x.PatientOrthancID),
-            selectedStudies: this.selected.sub.map(x => x.root).flat().map(x => x.StudyOrthancID)
-        };
-    }
-
-
-    render() {
-        return <TablePatientsWithNestedStudies {...this.props} setSelected={(s) => {
-            this.selected = mergeDeep(this.selected, s);
-            if (this.props.setSelectedStudies) this.props.setSelectedStudies(this.getSelectedRessources())
-        }} />
-    }
-}
-
-export default TablePatientsWithNestedStudiesWrapper;
