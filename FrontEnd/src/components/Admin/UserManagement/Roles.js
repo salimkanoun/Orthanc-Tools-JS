@@ -33,7 +33,7 @@ function RoleTable({roles, onDelete}) {
 
     const data = useMemo(() => roles, [roles]);
 
-    return <CommonTable columns={columns} tableData={data}/>
+    return <CommonTable columns={columns} data={data}/>
 }
 
 export default class Roles extends Component {

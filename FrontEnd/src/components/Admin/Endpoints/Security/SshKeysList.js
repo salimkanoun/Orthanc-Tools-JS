@@ -39,7 +39,7 @@ export default function SshKeys({refreshSshKeysData, sshKeysData}) {
 
     return (
         <Fragment>
-            <CommonTable tableData={data} columns={columns}/>
+            <CommonTable data={data} columns={columns}/>
         </Fragment>
     )
 }

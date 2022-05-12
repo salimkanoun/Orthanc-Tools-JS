@@ -53,7 +53,7 @@ export default function Peer({peersData, refreshPeerData}) {
 
     return (
         <Fragment>
-            <CommonTable tableData={data} columns={columns}/>
+            <CommonTable data={data} columns={columns}/>
         </Fragment>
     )
 

@@ -41,7 +41,7 @@ export default function FtpEndpoints({endpointsData, onDeleteEndpoint}) {
     return (
         <Fragment>
             <h2 className="card-title mt-5">FTP/FTPS Export Endpoints</h2>
-            <CommonTable tableData={endpointsData} columns={columns}/>
+            <CommonTable data={endpointsData} columns={columns}/>
         </Fragment>
     )
 }

@@ -32,7 +32,7 @@ export default function Certificates({refreshCertificatesData, certificatesData}
 
     return (
         <Fragment>
-            <CommonTable tableData={certificatesData} columns={columns}/>
+            <CommonTable data={certificatesData} columns={columns}/>
         </Fragment>
     )
 

@@ -41,7 +41,7 @@ function TablePatients({
         raw: {...x},
         ...x
     })), [patients]);
-    return <CommonTable columns={columns} tableData={data} onDataChange={onDataChange} rowEvents={rowEvents}
+    return <CommonTable columns={columns} data={data} onDataChange={onDataChange} rowEvents={rowEvents}
                         rowStyle={rowStyle} pagination={pagination}/>
 }
 

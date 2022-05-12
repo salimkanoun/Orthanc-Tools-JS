@@ -85,7 +85,7 @@ export default class TableSeriesFillFromParent extends Component {
 
     render = () => {
         return (
-            <CommonTable tableData={this.state.series} columns={this.columns}/>
+            <CommonTable data={this.state.series} columns={this.columns}/>
         )
     }
 }

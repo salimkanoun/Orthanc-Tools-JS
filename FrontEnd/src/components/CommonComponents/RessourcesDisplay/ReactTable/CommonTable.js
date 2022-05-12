@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
-import { usePagination, useTable, useSortBy } from 'react-table'
+import { usePagination, useTable, useSortBy, useRowSelect } from 'react-table'
 import BTable from 'react-bootstrap/Table'
 import PaginationButton from "./PaginitionButton"
+import { FormCheck } from 'react-bootstrap';
 
 const LOWEST_PAGE_SIZE = 10;
 
 export default ({
-    getRowId = undefined, columns, tableData, onDataChange, pagination, onRowClick = () => { }, rowStyle = () => {
-    }, rowEvents = {}
+    getRowId = undefined, columns, data, pagination = false, selectable = false, onRowClick = () => { }, rowStyle = () => { }, onSelectRow = () => {}
 }) => {
-    const [skipPageReset, setSkipPageReset] = useState(false);
 
     const {
         getTableProps,
@@ -27,16 +26,12 @@ export default ({
         previousPage,
         setPageSize,
         visibleColumns,
+        selectedFlatRows,
         state: { pageIndex, pageSize }
     } = useTable({
         getRowId,
         columns,
-        data: tableData,
-        onDataChange: (oldValue, newValue, row, column) => {
-            setSkipPageReset(true);
-            onDataChange(oldValue, newValue, row, column)
-        },
-        autoResetPage: !skipPageReset,
+        data: data,
         initialState: {
             hiddenColumns: columns.map(column => {
                 if (column.hidden || (column.show !== undefined && !column.show)) return column.accessor || column.id;
@@ -46,12 +41,32 @@ export default ({
 
     },
         useSortBy,
-        usePagination
+        usePagination,
+        useRowSelect,
+        hooks => {
+            if (selectable) hooks.visibleColumns.push(columns => [{
+                id: 'selection',
+                Header: ({ getToggleAllRowsSelectedProps }) => (
+                    <div>
+                        <FormCheck {...getToggleAllRowsSelectedProps()} />
+                    </div>
+                ),
+                Cell: ({ row }) => (
+                    <div>
+                        <FormCheck {...row.getToggleRowSelectedProps()} />
+                    </div>
+                ),
+            },
+            ...columns,
+            ])
+        }
     )
 
     React.useEffect(() => {
-        setSkipPageReset(false)
-    }, [tableData])
+        if (!!onSelectRow) onSelectRow( selectedFlatRows.map(row => row.original) );
+        // eslint-disable-next-line
+    }, [selectedFlatRows.length]);
+
     // Render the UI for your table
     return (
         <>
@@ -80,9 +95,7 @@ export default ({
                         return (
                             // Use a React.Fragment here so the table markup is still valid
                             <React.Fragment key={row.getRowProps().key}>
-                                <tr {...row.getRowProps()} onClick={() => onRowClick(row.id)} {...Object.fromEntries(Object.entries(rowEvents).map(([key, value]) => [key, (e) => {
-                                    value(e, row.values)
-                                }]))} style={rowStyle(row.values)}>
+                                <tr {...row.getRowProps()} onClick={() => onRowClick(row.id)} style={rowStyle(row.values)}>
                                     {row.cells.map(cell => {
                                         return (
                                             <td {...cell.getCellProps()}
@@ -93,7 +106,7 @@ export default ({
                             </React.Fragment>
                         )
                     })}
-                    {(pagination && LOWEST_PAGE_SIZE < tableData.length ?
+                    {(pagination && LOWEST_PAGE_SIZE < data.length ?
                         <tr>
                             <td colSpan={visibleColumns.length} aria-colspan={visibleColumns.length}>
                                 <div className={'d-flex justify-content-end'}>
@@ -108,7 +121,7 @@ export default ({
                                         pageOptions={pageOptions || []}
                                         pageSize={pageSize}
                                         setPageSize={setPageSize}
-                                        rowsCount={tableData.length} />
+                                        rowsCount={data.length} />
                                 </div>
                             </td>
                         </tr> : null)}

@@ -27,7 +27,7 @@ function AssociationTable({associations, deleteAssociation}) {
         }
     ], [deleteAssociation]);
     const data = useMemo(() => associations, [associations]);
-    return <CommonTable tableData={data} columns={columns}/>
+    return <CommonTable data={data} columns={columns}/>
 }
 
 export default class CreateMatch extends Component {

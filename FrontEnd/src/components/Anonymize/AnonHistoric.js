@@ -45,7 +45,7 @@ function HistoricTable({tasks, deleteJobHandler, setSelectedTask}) {
 
     const data = useMemo(() => tasks, [tasks]);
 
-    return <CommonTable columns={columns} tableData={data}/>
+    return <CommonTable columns={columns} data={data}/>
 }
 
 class AnonHistoric extends Component {

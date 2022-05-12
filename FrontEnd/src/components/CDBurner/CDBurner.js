@@ -64,7 +64,7 @@ function BurnerJobsTables({jobs}) {
         }
     ], []);
 
-    return <CommonTable columns={columns} tableData={jobs}/>
+    return <CommonTable columns={columns} data={jobs}/>
 }
 
 export default class CDBurner extends Component {

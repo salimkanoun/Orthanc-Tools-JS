@@ -68,7 +68,7 @@ function TablePatientsWithNestedStudiesAndSeries({
         hiddenAccessionNumber,
         hiddenActionBouton,
         hiddenRemoveRow]);
-    return <NestedTable columns={columns} data={data} setSelected={() => { }} hiddenSelect={true} />
+    return <NestedTable columns={columns} data={data} />
 }
 
 

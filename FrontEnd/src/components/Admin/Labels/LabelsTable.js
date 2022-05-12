@@ -29,7 +29,7 @@ export default function LabelsTable({labels, handlerManageRole, handlerDelete}) 
 
 
     return (
-        <CommonTable columns={columns} tableData={labels}/>
+        <CommonTable columns={columns} data={labels}/>
     );
 
 }

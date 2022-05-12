@@ -44,5 +44,5 @@ export function TagTable({data, onDataUpdate}) {
             }
         }
     ]
-    return <CommonTable tableData={data} columns={columns} onDataChange={onDataUpdate}/>
+    return <CommonTable data={data} columns={columns} onDataChange={onDataUpdate}/>
 }

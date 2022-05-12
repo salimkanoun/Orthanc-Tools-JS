@@ -43,7 +43,7 @@ export default function SftpEndpoints({endpointsData, onDeleteEndpoint}) {
     return (
         <Fragment>
             <h2 className="card-title mt-5">SFTP Export Endpoints</h2>
-            <CommonTable tableData={data} columns={columns}/>
+            <CommonTable data={data} columns={columns}/>
         </Fragment>
     )
 }

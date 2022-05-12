@@ -69,7 +69,7 @@ export default ({ studiesData, style = {} }) => {
         <React.Fragment>
             <div style={style}>
                 <div className="mt-5 h-5">
-                    <NestedTable getRowId={(originalRow) => originalRow.StudyInstanceUID} onExpandedRow={onExpandedRow} columns={columns} getExpandedRow={getExpandedRow} data={studiesData} filtered sorted hiddenSelect />
+                    <NestedTable getRowId={(originalRow) => originalRow.StudyInstanceUID} onExpandedRow={onExpandedRow} columns={columns} getExpandedRow={getExpandedRow} data={studiesData} filtered sorted />
                 </div>
             </div>
         </React.Fragment>

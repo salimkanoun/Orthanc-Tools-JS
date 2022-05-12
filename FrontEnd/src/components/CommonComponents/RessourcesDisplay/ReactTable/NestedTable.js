@@ -13,7 +13,7 @@ actions.autoResetExpanded = 'autoResetExpanded'
 
 const LOWEST_PAGE_SIZE = 10;
 
-function NestedTable({ columns, data, getExpandedRow, onExpandedRow = () => { }, onSelectPatient, hiddenSelect, rowEvent, rowStyle, getRowId, filtered = false, sorted = false }) {
+function NestedTable({ columns, data, getExpandedRow, onExpandedRow = () => { }, onSelectRow, selectable = false, rowEvent, rowStyle, getRowId, filtered = false, sorted = false }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -57,7 +57,7 @@ function NestedTable({ columns, data, getExpandedRow, onExpandedRow = () => { },
         useRowSelect,
         
         hooks => {
-            if (!hiddenSelect) hooks.visibleColumns.push(columns => [{
+            if (selectable) hooks.visibleColumns.push(columns => [{
                 id: 'selection',
                 Header: ({ getToggleAllRowsSelectedProps }) => (
                     <div>
@@ -88,11 +88,14 @@ function NestedTable({ columns, data, getExpandedRow, onExpandedRow = () => { },
         })
 
     React.useEffect(() => {
-        if (!!onSelectPatient) onSelectPatient( selectedFlatRows.map(x => x.values) );
+        if (!!onSelectRow) onSelectRow( selectedFlatRows.map(row => row.original) );
         // eslint-disable-next-line
     }, [selectedFlatRows.length]);
 
     return (
+
+
+        
         <Table striped bordered responsive {...getTableProps()}>
             <thead>
                 {headerGroups.map(headerGroup => (

@@ -79,5 +79,5 @@ export default function RobotTable({
 
     const data = useMemo(() => robots, [robots]);
 
-    return <CommonTable columns={columns} tableData={data} pagination/>
+    return <CommonTable columns={columns} data={data} pagination/>
 }

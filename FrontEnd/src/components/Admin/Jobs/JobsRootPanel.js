@@ -68,7 +68,7 @@ function JobsTable({handleDetails, rows}) {
         }
     ], [handleDetails]);
     const data = useMemo(() => rows, [rows]);
-    return <CommonTable tableData={data} columns={columns}/>
+    return <CommonTable data={data} columns={columns}/>
 
 }
 

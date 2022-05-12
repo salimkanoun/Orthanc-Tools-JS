@@ -12,10 +12,11 @@ export default ({ patients }) => {
             <Col sm>
                 <TablePatientsWithNestedStudies
                     patients={patients}
+                    selectable
                 />
             </Col>
             <Col sm>
-                <TableSeries series={series} /*onDelete={onDelete}*/ hiddenRemoveRow />
+                <TableSeries series={series} /*onDelete={onDelete}*/ />
             </Col>
 
         </Row>

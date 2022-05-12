@@ -42,7 +42,7 @@ export default function WebdavEndpoints({onDeleteEndpoint, endpointsData}) {
     return (
         <Fragment>
             <h2 className="mt-5 card-title">Webdav Export Endpoints</h2>
-            <CommonTable columns={columns} tableData={data}/>
+            <CommonTable columns={columns} data={data}/>
         </Fragment>
     )
 }

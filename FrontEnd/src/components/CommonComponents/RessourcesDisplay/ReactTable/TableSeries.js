@@ -20,13 +20,12 @@ function TableSeries({
         seriesColumns.SERIES_NUMBER,
         ...(!hiddenActionBouton ? [seriesColumns.ACTION(onDelete, refresh)] : []),
         ...(!hiddenRemoveRow ? [seriesColumns.REMOVE(onDelete)] : [])
-    ], [
-        hiddenActionBouton, hiddenRemoveRow, onDelete, refresh]); 
+    ], [ onDelete, refresh]); 
     const data = useMemo(() => series.map(x => ({
         raw: {...x},
         ...x
     })), [series]);
-    return <CommonTable columns={columns} tableData={data} rowEvents={rowEvents}
+    return <CommonTable columns={columns} data={data} rowEvents={rowEvents}
                         rowStyle={rowStyle} pagination={pagination}/>
 }
 

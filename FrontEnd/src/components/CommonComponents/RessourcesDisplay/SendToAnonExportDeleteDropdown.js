@@ -1,12 +1,12 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 
-import {ButtonGroup, Dropdown} from 'react-bootstrap'
-import {treeToStudyArray} from '../../../tools/processResponse'
+import { ButtonGroup, Dropdown } from 'react-bootstrap'
+import { treeToStudyArray } from '../../../tools/processResponse'
 
-import {connect} from 'react-redux'
-import {addStudiesToDeleteList} from '../../../actions/DeleteList'
-import {addStudiesToExportList} from '../../../actions/ExportList'
-import {addStudiesToAnonList} from '../../../actions/AnonList'
+import { connect } from 'react-redux'
+import { addStudiesToDeleteList } from '../../../actions/DeleteList'
+import { addStudiesToExportList } from '../../../actions/ExportList'
+import { addStudiesToAnonList } from '../../../actions/AnonList'
 
 import apis from '../../../services/apis'
 
@@ -16,16 +16,17 @@ import apis from '../../../services/apis'
 *     - patients : an array of PatientID
 */
 
-class SendToAnonExportDeleteDropwdown extends Component {
 
+export function SendToAnonExportDeleteDropwdown(props) {
     /**
      * Make a common array from all the studies selected
      * @returns {Array.<JSON>} Selected studies
      */
-    getStudySelectedDetails = async () => {
+
+    const getStudySelectedDetails = async () => {
         let selectedIds = {}
-        selectedIds.selectedPatients = this.props.patients || []
-        selectedIds.selectedStudies = this.props.studies || []
+        selectedIds.selectedPatients = props.patients || []
+        selectedIds.selectedStudies = props.studies || []
 
         let studiesOfSelectedPatients = []
 
@@ -67,48 +68,47 @@ class SendToAnonExportDeleteDropwdown extends Component {
         return uniqueSelectedOrthancStudyId
     }
 
-    sendToDeleteList = async () => {
-        let studies = (this.props.studiesFull || await this.getStudySelectedDetails())
-        this.props.addStudiesToDeleteList(studies)
+    const sendToDeleteList = async () => {
+        let studies = (props.studiesFull || await this.getStudySelectedDetails())
+        props.addStudiesToDeleteList(studies)
     }
 
-    sendToAnonList = async () => {
-        let studies = (this.props.studiesFull || await this.getStudySelectedDetails())
-        this.props.addStudiesToAnonList(studies)
+    const sendToAnonList = async () => {
+        let studies = (props.studiesFull || await this.getStudySelectedDetails())
+        props.addStudiesToAnonList(studies)
     }
 
-    sendToExportList = async () => {
-        let studies = (this.props.studiesFull || await this.getStudySelectedDetails())
+    const sendToExportList = async () => {
+        let studies = (props.studiesFull || await getStudySelectedDetails())
         //Get selected studies array
         let selectedStudiesArray = treeToStudyArray(studies)
         //Send it to redux
-        this.props.addStudiesToExportList(selectedStudiesArray)
+        props.addStudiesToExportList(selectedStudiesArray)
     }
 
-    handleClick = (e) => {
+    const handleClick = (e) => {
         e.stopPropagation()
     }
 
 
-    render = () => {
-        return (
-            <Dropdown as={ButtonGroup} onClick={this.handleClick}>
-                <Dropdown.Toggle variant="button-dropdown-orange" className="mb-4 button-dropdown button-dropdown-orange" id="dropdown-basic">
-                    Send To
-                </Dropdown.Toggle>
-                
-                <Dropdown.Menu className="mt-2 border border-dark border-2">
-                    <Dropdown.Item className='bg-blue' onClick={this.sendToExportList}>Export List</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item className='bg-orange' onClick={this.sendToAnonList}>Anonymize List</Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item className='bg-red' onClick={this.sendToDeleteList}>Delete List</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
-        )
-    }
+    return (
+        <Dropdown as={ButtonGroup} onClick={this.handleClick}>
+            <Dropdown.Toggle variant="button-dropdown-orange" className="mb-4 button-dropdown button-dropdown-orange" id="dropdown-basic">
+                Send To
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu className="mt-2 border border-dark border-2">
+                <Dropdown.Item className='bg-blue' onClick={this.sendToExportList}>Export List</Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item className='bg-orange' onClick={this.sendToAnonList}>Anonymize List</Dropdown.Item>
+                <Dropdown.Divider />
+                <Dropdown.Item className='bg-red' onClick={this.sendToDeleteList}>Delete List</Dropdown.Item>
+            </Dropdown.Menu>
+        </Dropdown>
+    )
 }
 
+//utiliser les hooks
 const mapDispatchToProps = {
     addStudiesToDeleteList,
     addStudiesToAnonList,

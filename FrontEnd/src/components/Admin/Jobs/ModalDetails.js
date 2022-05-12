@@ -46,7 +46,7 @@ export default function ModalDetails({show, onHide, data}) {
             </Modal.Header>
             <Modal.Body>
                 <CommonTable
-                    tableData={row}
+                    data={row}
                     columns={columnDetails}
                 />
             </Modal.Body>
