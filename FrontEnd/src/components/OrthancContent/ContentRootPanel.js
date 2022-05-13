@@ -1,18 +1,13 @@
-import React, { Component, createRef, useState } from 'react'
-import SearchForm from './SearchForm'
-import SendTo from '../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown'
-import apis from '../../services/apis'
+import React, { useState } from 'react';
+import SearchForm from './SearchForm';
+import apis from '../../services/apis';
 
-import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies'
-import { connect } from 'react-redux'
-import { addStudiesToDeleteList } from '../../actions/DeleteList'
-import { addStudiesToExportList } from '../../actions/ExportList'
-import { addStudiesToAnonList } from '../../actions/AnonList'
-import { toast } from 'react-toastify'
-import LabelDropdown from "./labels/LabelDropdown";
-import LabelModal from "./labels/LabelModal";
+import { connect } from 'react-redux';
+import { addStudiesToDeleteList } from '../../actions/DeleteList';
+import { addStudiesToExportList } from '../../actions/ExportList';
+import { addStudiesToAnonList } from '../../actions/AnonList';
+import { toast } from 'react-toastify';
 import { studyArrayToNestedData } from '../../tools/processResponse';
-import TableSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableSeries';
 import ContentTable from './ContentTable';
 
 //a passer en fonctionnal component 

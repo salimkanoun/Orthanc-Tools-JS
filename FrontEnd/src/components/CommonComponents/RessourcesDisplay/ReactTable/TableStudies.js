@@ -1,6 +1,6 @@
 import CommonTable from "./CommonTable";
 import { useMemo } from "react";
-import { commonColumns, patientColumns, studyColumns } from "./ColumnFactories";
+import { commonColumns, studyColumns } from "./ColumnFactories";
 
 function TableStudies({
     studies,

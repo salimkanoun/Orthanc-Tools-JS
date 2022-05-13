@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 import { ButtonGroup, Dropdown } from 'react-bootstrap'
 import { treeToStudyArray } from '../../../tools/processResponse'
 
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { addStudiesToDeleteList } from '../../../actions/DeleteList'
 import { addStudiesToExportList } from '../../../actions/ExportList'
 import { addStudiesToAnonList } from '../../../actions/AnonList'
@@ -17,13 +17,16 @@ import apis from '../../../services/apis'
 */
 
 
-export function SendToAnonExportDeleteDropwdown(props) {
+export default function SendToAnonExportDeleteDropdown(props) {
+
+    const dispatch = useDispatch()
+
     /**
      * Make a common array from all the studies selected
      * @returns {Array.<JSON>} Selected studies
      */
 
-    const getStudySelectedDetails = async () => {
+     const getStudySelectedDetails = async () => {
         let selectedIds = {}
         selectedIds.selectedPatients = props.patients || []
         selectedIds.selectedStudies = props.studies || []
@@ -70,12 +73,12 @@ export function SendToAnonExportDeleteDropwdown(props) {
 
     const sendToDeleteList = async () => {
         let studies = (props.studiesFull || await this.getStudySelectedDetails())
-        props.addStudiesToDeleteList(studies)
+        dispatch(addStudiesToDeleteList(studies))
     }
 
     const sendToAnonList = async () => {
         let studies = (props.studiesFull || await this.getStudySelectedDetails())
-        props.addStudiesToAnonList(studies)
+        dispatch(addStudiesToAnonList(studies))
     }
 
     const sendToExportList = async () => {
@@ -83,7 +86,7 @@ export function SendToAnonExportDeleteDropwdown(props) {
         //Get selected studies array
         let selectedStudiesArray = treeToStudyArray(studies)
         //Send it to redux
-        props.addStudiesToExportList(selectedStudiesArray)
+        dispatch(addStudiesToExportList(selectedStudiesArray))
     }
 
     const handleClick = (e) => {
@@ -92,27 +95,27 @@ export function SendToAnonExportDeleteDropwdown(props) {
 
 
     return (
-        <Dropdown as={ButtonGroup} onClick={this.handleClick}>
+        <Dropdown as={ButtonGroup} onClick={handleClick}>
             <Dropdown.Toggle variant="button-dropdown-orange" className="mb-4 button-dropdown button-dropdown-orange" id="dropdown-basic">
                 Send To
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="mt-2 border border-dark border-2">
-                <Dropdown.Item className='bg-blue' onClick={this.sendToExportList}>Export List</Dropdown.Item>
+                <Dropdown.Item className='bg-blue' onClick={sendToExportList}>Export List</Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Item className='bg-orange' onClick={this.sendToAnonList}>Anonymize List</Dropdown.Item>
+                <Dropdown.Item className='bg-orange' onClick={sendToAnonList}>Anonymize List</Dropdown.Item>
                 <Dropdown.Divider />
-                <Dropdown.Item className='bg-red' onClick={this.sendToDeleteList}>Delete List</Dropdown.Item>
+                <Dropdown.Item className='bg-red' onClick={sendToDeleteList}>Delete List</Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>
     )
 }
 
-//utiliser les hooks
+/*utiliser les hooks useDispatch()
 const mapDispatchToProps = {
     addStudiesToDeleteList,
     addStudiesToAnonList,
     addStudiesToExportList
 }
 
-export default connect(null, mapDispatchToProps)(SendToAnonExportDeleteDropwdown)
+export connect(null, mapDispatchToProps)(SendToAnonExportDeleteDropdown)*/

@@ -3,9 +3,6 @@ import {connect} from 'react-redux'
 import {toast} from 'react-toastify';
 import { Row, Col } from 'react-bootstrap';
 
-import TablePatientsWithNestedStudies
-    from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies'
-
 import {emptyDeleteList, removePatientFromDeleteList, removeStudyFromDeleteList} from '../../actions/DeleteList'
 import apis from '../../services/apis'
 import ModalDelete from '../Main/ModalDelete'

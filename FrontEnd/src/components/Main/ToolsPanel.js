@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { Col, Container, Row } from 'react-bootstrap';
 
 import AnonTool from './AnonTool'
 import ExportTool from './ExportTool'
