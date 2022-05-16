@@ -26,7 +26,7 @@ function TableResultSeries({
         raw: {...x},
         ...x
     })), [series]);
-    return <CommonTable columns={columns} tableData={data} rowEvents={rowEvents}
+    return <CommonTable columns={columns} data={data} rowEvents={rowEvents}
                         rowStyle={rowStyle} pagination={pagination}/>
 }
 

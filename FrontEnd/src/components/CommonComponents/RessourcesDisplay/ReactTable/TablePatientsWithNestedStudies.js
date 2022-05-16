@@ -4,7 +4,6 @@ import { commonColumns, patientColumns, studyColumns } from "./ColumnFactories";
 import TableStudies from "./TableStudies";
 
 export default ({
-    rowStyle,
     onClickStudy,
     onClickPatient,
     patients,
@@ -14,19 +13,27 @@ export default ({
     refresh,
     actionButton,
     removeRow,
-    onSelectStudies,
     selectable,
     openLabelModal
 }) => {
 
 
     const [selectedStudies, setSelectedStudies] = useState([])
+    const [focusedStudy, setFocusedStudy] = useState(null)
 
     useEffect(() => {
         console.log(selectedStudies)
         //onSelectStudies(selectedStudies)
     }, [selectedStudies])
 
+    const onClickStudyHandler = (StudyOrthancID)=> {
+        setFocusedStudy(StudyOrthancID)
+        onClickStudy(StudyOrthancID)
+    }
+
+    const rowStyle = (StudyOrthancID) => {
+        if (StudyOrthancID === focusedStudy) return {background : 'gold'}
+    }
     const columns = useMemo(() => [
         commonColumns.RAW,
         patientColumns.ORTHANC_ID,
@@ -53,7 +60,7 @@ export default ({
             }))
             //updateselectedIds(selectedStudiesOrthancId)
         }
-        return <TableStudies getRowId={(originalRow) => originalRow.PatientOrthancID} studies={studies} onRowClick={onClickStudy} rowStyle={rowStyle} onSelectRow={onSelectStudy} selectable={selectable} actionButton />
+        return <TableStudies getRowId={(originalRow) => originalRow.PatientOrthancID} studies={studies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} onSelectRow={onSelectStudy} selectable={selectable} actionButton />
     }
 
     const updateselectedIds = (newIds) => {

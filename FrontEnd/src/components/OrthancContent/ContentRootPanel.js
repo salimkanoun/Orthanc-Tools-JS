@@ -27,6 +27,7 @@ export function ContentRootPanel(props) {
     }
 
 
+
     return (
         <div>
             <SearchForm onSubmit={sendSearch} />

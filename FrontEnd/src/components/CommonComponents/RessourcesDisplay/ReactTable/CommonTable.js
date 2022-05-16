@@ -95,7 +95,7 @@ export default ({
                         return (
                             // Use a React.Fragment here so the table markup is still valid
                             <React.Fragment key={row.getRowProps().key}>
-                                <tr {...row.getRowProps()} onClick={() => onRowClick(row.id)} style={rowStyle(row.values)}>
+                                <tr {...row.getRowProps()} onClick={() => onRowClick(row.id)} style={rowStyle(row.id)}>
                                     {row.cells.map(cell => {
                                         return (
                                             <td {...cell.getCellProps()}

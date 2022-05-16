@@ -11,6 +11,7 @@ function TableStudies({
     removeRow,
     rowEvents,
     rowStyle,
+    onRowClick,
     pagination,
     selectable,
     onSelectRow,
@@ -27,7 +28,7 @@ function TableStudies({
     ], [onDeleteStudy, refresh]);
     
     return <CommonTable getRowId={(originalRow) => originalRow.StudyOrthancID} columns={columns} data={studies} rowEvents={rowEvents}
-        rowStyle={rowStyle} pagination={pagination} selectable={selectable} onSelectRow={onSelectRow} />
+        rowStyle={rowStyle} pagination={pagination} onRowClick={onRowClick} selectable={selectable} onSelectRow={onSelectRow} />
 }
 
 export default TableStudies;
