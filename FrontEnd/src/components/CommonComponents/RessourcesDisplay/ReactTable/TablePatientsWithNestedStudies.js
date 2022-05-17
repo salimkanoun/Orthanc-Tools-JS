@@ -9,6 +9,7 @@ export default ({
     patients,
     onDeletePatient,
     onDeleteStudy,
+    onSelectStudies,
     onModify,
     refresh,
     actionButton,
@@ -23,7 +24,7 @@ export default ({
 
     useEffect(() => {
         console.log(selectedStudies)
-        //onSelectStudies(selectedStudies)
+        onSelectStudies(selectedStudies)
     }, [selectedStudies])
 
     const onClickStudyHandler = (StudyOrthancID)=> {

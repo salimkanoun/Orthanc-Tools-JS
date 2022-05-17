@@ -2,17 +2,11 @@ import React, { useState } from 'react';
 import SearchForm from './SearchForm';
 import apis from '../../services/apis';
 
-import { connect } from 'react-redux';
-import { addStudiesToDeleteList } from '../../actions/DeleteList';
-import { addStudiesToExportList } from '../../actions/ExportList';
-import { addStudiesToAnonList } from '../../actions/AnonList';
 import { toast } from 'react-toastify';
 import { studyArrayToNestedData } from '../../tools/processResponse';
 import ContentTable from './ContentTable';
 
-//a passer en fonctionnal component 
-
-export function ContentRootPanel(props) {
+export default () => {
 
     const [patients, setPatients] = useState([]);
 
@@ -36,13 +30,3 @@ export function ContentRootPanel(props) {
     )
 
 }
-
-//connect redux fonctionnal componnent
-const mapDispatchToProps = {
-    addStudiesToDeleteList,
-    addStudiesToAnonList,
-    addStudiesToExportList
-}
-
-
-export default connect(null, mapDispatchToProps)(ContentRootPanel)

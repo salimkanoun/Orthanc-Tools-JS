@@ -24,7 +24,8 @@ export function studyArrayToNestedData(studiesArray){
         responseMap[study.ParentPatient]['studies'][study.ID] = {
             PatientOrthancID: study.ParentPatient, 
             ...study.MainDicomTags,
-            StudyOrthancID : study.ID
+            StudyOrthancID : study.ID,
+            ID : study.ID
         }
         //Merge the new study entry with the existing one for this patient
         responseMap[study.ParentPatient] = {...study.PatientMainDicomTags, ...responseMap[study.ParentPatient], PatientOrthancID : study.ParentPatient}
