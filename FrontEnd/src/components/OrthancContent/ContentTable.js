@@ -16,43 +16,45 @@ export default ({ patients }) => {
 
     const dispatch = useDispatch()
 
-    
-    const onClickStudy = (StudyOrthancID)  => {
-        apis.content.getSeriesDetails(StudyOrthancID).then((series) =>{
-            let seriesMainDicomTags = series.map(series => { return {
-                SeriesOrthancID : series.ID,
-                ...series.MainDicomTags}
+
+    const onClickStudy = (StudyOrthancID) => {
+        apis.content.getSeriesDetails(StudyOrthancID).then((series) => {
+            let seriesMainDicomTags = series.map(series => {
+                return {
+                    SeriesOrthancID: series.ID,
+                    ...series.MainDicomTags
+                }
             })
-             setSeries(seriesMainDicomTags)
-            })
+            setSeries(seriesMainDicomTags)
+        })
     }
 
-    const onSendTo = (type) =>{
+    const onSendTo = (type) => {
         let studies = []
-        patients.forEach( (patient)=> {
+        patients.forEach((patient) => {
             studies.push(...Object.values(patient.studies))
         })
 
         let filteredSelectedStudies = studies.filter(study => selectedStudies.includes(study.StudyOrthancID))
 
-        if(type === "anon") dispatch(addStudiesToAnonList(filteredSelectedStudies))
-        else if(type === "export") dispatch(addStudiesToExportList(filteredSelectedStudies))
-        else if(type === "delete") dispatch(addStudiesToDeleteList(filteredSelectedStudies))
+        if (type === "anon") dispatch(addStudiesToAnonList(filteredSelectedStudies))
+        else if (type === "export") dispatch(addStudiesToExportList(filteredSelectedStudies))
+        else if (type === "delete") dispatch(addStudiesToDeleteList(filteredSelectedStudies))
     }
     console.log(patients)
     return (
         <Row>
             <Col sm>
-                <SendToAnonExportDeleteDropdown onSendTo={onSendTo}/>
+                <SendToAnonExportDeleteDropdown onSendTo={onSendTo} />
                 <TablePatientsWithNestedStudies
                     patients={patients}
                     selectable
-                    onClickStudy = {onClickStudy}
-                    onSelectStudies={(studieSelected) => {setSelectedStudies(studieSelected)}}
+                    onClickStudy={onClickStudy}
+                    onSelectStudies={(studieSelected) => { setSelectedStudies(studieSelected) }}
                 />
             </Col>
             <Col sm>
-                <TableSeries series={series} /*onDelete={onDelete}*/ />
+                <TableSeries series={series} />
             </Col>
 
         </Row>
