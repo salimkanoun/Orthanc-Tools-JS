@@ -3,7 +3,7 @@ import SearchForm from './SearchForm';
 import apis from '../../services/apis';
 
 import { toast } from 'react-toastify';
-import { studyArrayToNestedData } from '../../tools/processResponse';
+import { fillPatientModelWithStudies } from '../../tools/processResponse';
 import ContentTable from './ContentTable';
 
 export default () => {
@@ -13,8 +13,11 @@ export default () => {
     const sendSearch = async (dataForm) => {
         try {
             let answer = await apis.content.getOrthancFind(dataForm)
-            let nestedData = studyArrayToNestedData(answer)
-            setPatients(Object.values(nestedData))
+            console.log(answer)
+            let patientModel = fillPatientModelWithStudies(answer)
+            let rows = patientModel.map(patient => patient.serialize())
+            console.log(rows)
+            setPatients(rows)
         } catch (error) {
             toast.error(error.statusText)
         }

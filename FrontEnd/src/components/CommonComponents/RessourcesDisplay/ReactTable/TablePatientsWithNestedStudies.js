@@ -28,6 +28,7 @@ export default ({
     }, [selectedStudies])
 
     const onClickStudyHandler = (StudyOrthancID)=> {
+        console.log(StudyOrthancID)
         setFocusedStudy(StudyOrthancID)
         onClickStudy(StudyOrthancID)
     }
@@ -51,7 +52,7 @@ export default ({
 
     const getExpandedRow = (rowId) => {
         let patient = patients.filter((patient) => patient.PatientOrthancID === rowId)[0]
-        let studies = Object.values(patient['studies'])
+        let studies = Object.values(patient['Studies'])
 
         const onSelectStudy = (selectedStudies) => {
             console.log(selectedStudies)
@@ -61,7 +62,7 @@ export default ({
             }))
             //updateselectedIds(selectedStudiesOrthancId)
         }
-        return <TableStudies getRowId={(originalRow) => originalRow.PatientOrthancID} studies={studies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} onSelectRow={onSelectStudy} selectable={selectable} actionButton />
+        return <TableStudies studies={studies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} onSelectRow={onSelectStudy} selectable={selectable} actionButton />
     }
 
     const updateselectedIds = (newIds) => {
@@ -81,7 +82,7 @@ export default ({
         console.log(selectedPatients)
         let selectedStudiesOrthancId = []
         selectedPatients.map((patient => {
-            let studyOrthancIds = Object.values(patient.studies).map((study) => study.StudyOrthancID)
+            let studyOrthancIds = Object.values(patient.Studies).map((study) => study.StudyOrthancID)
             selectedStudiesOrthancId.push(...studyOrthancIds)
         }))
         updateselectedIds(selectedStudiesOrthancId)

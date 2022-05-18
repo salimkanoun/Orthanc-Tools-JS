@@ -9,8 +9,9 @@ import TablePatientsWithNestedStudies from "../CommonComponents/RessourcesDispla
 import TableSeries from "../CommonComponents/RessourcesDisplay/ReactTable/TableSeries"
 import SendToAnonExportDeleteDropdown from "../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown"
 
+import Series from '../../model/Series'
+
 export default ({ patients }) => {
-    console.log(patients)
     const [series, setSeries] = useState([])
     const [selectedStudies, setSelectedStudies] = useState([])
 
@@ -19,20 +20,20 @@ export default ({ patients }) => {
 
     const onClickStudy = (StudyOrthancID) => {
         apis.content.getSeriesDetails(StudyOrthancID).then((series) => {
-            let seriesMainDicomTags = series.map(series => {
-                return {
-                    SeriesOrthancID: series.ID,
-                    ...series.MainDicomTags
-                }
+            let seriesObjects = series.map(series => {
+                let seriesObject = new Series()
+                seriesObject.fillFromOrthanc(series.ID, series.MainDicomTags, series.Instances)
+                return seriesObject
             })
-            setSeries(seriesMainDicomTags)
+            let rows = seriesObjects.map(series => series.serialize())
+            setSeries(rows)
         })
     }
 
     const onSendTo = (type) => {
         let studies = []
         patients.forEach((patient) => {
-            studies.push(...Object.values(patient.studies))
+            studies.push(...Object.values(patient.Studies))
         })
 
         let filteredSelectedStudies = studies.filter(study => selectedStudies.includes(study.StudyOrthancID))

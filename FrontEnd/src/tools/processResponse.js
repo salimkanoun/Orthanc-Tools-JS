@@ -1,79 +1,81 @@
+import Study from "../model/Study"
+import Patient from "../model/Patient"
 
-export function treeToPatientArray(patientStudiesTree){
+export function treeToPatientArray(patientStudiesTree) {
     let answer = []
-    for(let patient in patientStudiesTree) {
-        answer.push( {
-            PatientOrthancID  : patient,
+    for (let patient in patientStudiesTree) {
+        answer.push({
+            PatientOrthancID: patient,
             ...patientStudiesTree[patient]
         })
     }
     return answer
-  }
+}
 
-export function studyArrayToNestedData(studiesArray){
-    //if(studiesArray === undefined) return []
-    let responseMap = []
+export function fillPatientModelWithStudies(studiesArray) {
+    console.log('ici')
     //Create Patient Key for each patient
+    let patients = {}
     studiesArray.forEach(study => {
-        responseMap[study.ParentPatient]={
-            studies : {}
-        }
+        patients[study.ParentPatient] = study.PatientMainDicomTags
     })
-    //For each study create a study entry in the parent patient
-    studiesArray.forEach(study => {
-        responseMap[study.ParentPatient]['studies'][study.ID] = {
-            PatientOrthancID: study.ParentPatient, 
-            ...study.MainDicomTags,
-            StudyOrthancID : study.ID,
-            ID : study.ID
-        }
-        //Merge the new study entry with the existing one for this patient
-        responseMap[study.ParentPatient] = {...study.PatientMainDicomTags, ...responseMap[study.ParentPatient], PatientOrthancID : study.ParentPatient}
+    console.log(Object.entries(patients))
+    let patientsObjects = Object.entries(patients).map(([orthancPatientId, PatientMainDicomTags]) => {
+
+        let patient = new Patient()
+        patient.fillFromOrthanc(orthancPatientId, PatientMainDicomTags)
+        let studiesOfPatient = studiesArray.filter(study => study.ParentPatient === orthancPatientId)
+        studiesOfPatient.forEach(study => {
+            let studyObject = new Study()
+            studyObject.fillFromOrthanc(study.ID, study.MainDicomTags)
+            studyObject.fillParentFromOrthanc(study.ParentPatient, study.PatientMainDicomTags)
+            patient.addStudy(studyObject)
+        })
+
+        return patient
     })
-    
-    return responseMap
-      
-  }
+    console.log(patientsObjects)
+    return patientsObjects
+}
 
-  export function studyArrayToPatientArray(studiesArray){
-    let nestedData = studyArrayToNestedData(studiesArray)
-    return treeToPatientArray(nestedData)
-  }
+export function studyArrayToPatientArray(studiesArray) {
+//TODO
+}
 
-  //////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
 
-  export function treeToStudyArray(studySeriesTree){
+export function treeToStudyArray(studySeriesTree) {
     let answer = []
-    for(let study in studySeriesTree) {
-        answer.push( {
-            StudyOrthancID  : study,
+    for (let study in studySeriesTree) {
+        answer.push({
+            StudyOrthancID: study,
             ...studySeriesTree[study]
         })
     }
     return answer
-  }
+}
 
-  export function seriesArrayToNestedData(seriesArray, studyDetails){
+export function seriesArrayToNestedData(seriesArray, studyDetails) {
     let responseMap = []
     //create study key for each study
     seriesArray.forEach(serie => {
-        responseMap[serie.ParentStudy]={
+        responseMap[serie.ParentStudy] = {
             series: {}
         }
     })
     //for each serie create a serie entry in the parent study
     seriesArray.forEach(serie => {
         responseMap[serie.ParentStudy].series[serie.ID] = {
-            ...serie.MainDicomTags, 
+            ...serie.MainDicomTags,
             Instances: serie.Instances.length
         }
         //merge the new serie entry with the existing one for this study
         studyDetails.forEach(study => {
-            if (study.ID === serie.ParentStudy){
+            if (study.ID === serie.ParentStudy) {
                 responseMap[serie.ParentStudy] = {
-                    ...study.MainDicomTags, 
-                    ...responseMap[serie.ParentStudy], 
-                    ...study.PatientMainDicomTags, 
+                    ...study.MainDicomTags,
+                    ...responseMap[serie.ParentStudy],
+                    ...study.PatientMainDicomTags,
                     AnonymizedFrom: study.AnonymizedFrom
                 }
             }
@@ -81,14 +83,14 @@ export function studyArrayToNestedData(studiesArray){
     })
 
     return responseMap
-  }
+}
 
-  /**
-   * 
-   * @param {array} seriesArray series Details 
-   * @param {array} studyArray study Details
-   */
-  export function seriesArrayToStudyArray(seriesArray, studyArray){
+/**
+ * 
+ * @param {array} seriesArray series Details 
+ * @param {array} studyArray study Details
+ */
+export function seriesArrayToStudyArray(seriesArray, studyArray) {
     let nestedData = seriesArrayToNestedData(seriesArray, studyArray)
     return treeToStudyArray(nestedData)
-  }
+}
