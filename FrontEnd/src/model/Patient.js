@@ -8,6 +8,7 @@ export default class Patient {
     studies = []
 
     fillFromOrthanc = (orthancId, mainDicomTags) => {
+        console.log('mainDicomTags : ', mainDicomTags)
         this.patientID = mainDicomTags.PatientID
         this.patientName = mainDicomTags.PatientName
         this.patientBirthDate = mainDicomTags.PatientBirthDate

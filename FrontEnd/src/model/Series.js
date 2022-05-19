@@ -13,7 +13,6 @@ export default class Series {
     instancesOrthancIds = []
 
     fillFromOrthanc = (orthancId, mainDicomTags, instancesOrthancIds) => {
-        console.log(mainDicomTags)
         this.bodyPartExamined = mainDicomTags.BodyPartExamined
         this.imageOrientation = mainDicomTags.ImageOrientation
         this.manufacturer = mainDicomTags.Manufacturer

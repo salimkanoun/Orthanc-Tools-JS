@@ -29,6 +29,7 @@ export default class Study {
         let patient = new Patient()
         patient.fillFromOrthanc(orthancID, mainDicomTags)
         this.parentPatient = patient
+        this.patientOrthancID = orthancID
 
 
     }

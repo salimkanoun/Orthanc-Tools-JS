@@ -1,6 +1,6 @@
-import React, { Component, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import NestedTable from "./NestedTable";
-import { commonColumns, patientColumns, studyColumns } from "./ColumnFactories";
+import { commonColumns, patientColumns } from "./ColumnFactories";
 import TableStudies from "./TableStudies";
 
 export default ({
@@ -23,12 +23,10 @@ export default ({
     const [focusedStudy, setFocusedStudy] = useState(null)
 
     useEffect(() => {
-        console.log(selectedStudies)
         onSelectStudies(selectedStudies)
     }, [selectedStudies])
 
     const onClickStudyHandler = (StudyOrthancID)=> {
-        console.log(StudyOrthancID)
         setFocusedStudy(StudyOrthancID)
         onClickStudy(StudyOrthancID)
     }
@@ -55,7 +53,6 @@ export default ({
         let studies = Object.values(patient['Studies'])
 
         const onSelectStudy = (selectedStudies) => {
-            console.log(selectedStudies)
             let selectedStudiesOrthancId = []
             selectedStudies.map((study => {
                 selectedStudiesOrthancId.push(study.StudyOrthancID)
@@ -66,20 +63,15 @@ export default ({
     }
 
     const updateselectedIds = (newIds) => {
-        console.log(newIds)
         let sumArray = [
             ...selectedStudies,
             ...newIds
         ]
-        console.log(newIds)
         let uniqueIds = [...new Set(sumArray)];
-        console.log(newIds)
-        console.log(uniqueIds)
         setSelectedStudies(uniqueIds)
 
     }
     const onSelectPatient = (selectedPatients) => {
-        console.log(selectedPatients)
         let selectedStudiesOrthancId = []
         selectedPatients.map((patient => {
             let studyOrthancIds = Object.values(patient.Studies).map((study) => study.StudyOrthancID)

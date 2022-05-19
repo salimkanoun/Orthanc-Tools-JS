@@ -1,12 +1,14 @@
-import React, {Component, Fragment} from 'react'
-import {connect} from 'react-redux'
-import {toast} from 'react-toastify';
+import React, { Component, Fragment } from 'react'
+import { connect } from 'react-redux'
+import { toast } from 'react-toastify';
 import { Row, Col } from 'react-bootstrap';
 
-import {emptyDeleteList, removePatientFromDeleteList, removeStudyFromDeleteList} from '../../actions/DeleteList'
+import { emptyDeleteList, removePatientFromDeleteList, removeStudyFromDeleteList } from '../../actions/DeleteList'
 import apis from '../../services/apis'
 import ModalDelete from '../Main/ModalDelete'
 import MonitorTask from '../../tools/MonitorTask'
+import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies';
+import { fillPatientWithStudies } from '../../tools/processResponse';
 
 class Delete extends Component {
 
@@ -21,11 +23,11 @@ class Delete extends Component {
     }
 
     openToast = () => {
-        this.toast = toast.info("Delete progress : 0%", {autoClose: false})
+        this.toast = toast.info("Delete progress : 0%", { autoClose: false })
     }
 
     updateToast = (progress) => {
-        toast.update(this.toast, {type: toast.TYPE.INFO, render: 'Delete progress : ' + Math.round(progress) + '%'})
+        toast.update(this.toast, { type: toast.TYPE.INFO, render: 'Delete progress : ' + Math.round(progress) + '%' })
     }
 
     successToast = () => {
@@ -88,7 +90,10 @@ class Delete extends Component {
     }
 
     render = () => {
-        console.log(this.props.deleteList)
+        console.log('this.props.deleteList',this.props.deleteList)
+        let patientModel = fillPatientWithStudies(this.props.deleteList)
+        console.log('patientModel : ', patientModel)
+        let rows = patientModel.map(patient => patient.serialize())
         return (
             <Fragment>
                 <Row>
@@ -105,7 +110,12 @@ class Delete extends Component {
                     </Row>
                     <Row className="mt-5">
                         <Col>
-
+                            <TablePatientsWithNestedStudies
+                                patients={rows}
+                                removeRow={true}
+                                onDeletePatient={this.onDeletePatient}
+                                onDeleteStudy={this.onDeleteStudy} 
+                                onSelectStudies={() => { }} />
                         </Col>
                     </Row>
                     <Row className="mt-5">
@@ -116,8 +126,8 @@ class Delete extends Component {
                         </Col>
                     </Row>
                 </Row>
-                   
-                <ModalDelete show={this.state.show} onHide={this.handleConfirm} onClick={this.handleClickDelete}/>
+
+                <ModalDelete show={this.state.show} onHide={this.handleConfirm} onClick={this.handleClickDelete} />
             </Fragment>
 
         )

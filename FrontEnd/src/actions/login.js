@@ -2,7 +2,6 @@ import { LOG_IN, LOG_OUT } from './actions-types'
 
 
 export function login(token, backendData){
-    console.log(backendData)
     return {
         type: LOG_IN, 
         payload: {

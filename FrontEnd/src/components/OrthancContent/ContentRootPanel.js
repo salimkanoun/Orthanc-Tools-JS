@@ -13,10 +13,8 @@ export default () => {
     const sendSearch = async (dataForm) => {
         try {
             let answer = await apis.content.getOrthancFind(dataForm)
-            console.log(answer)
             let patientModel = fillPatientModelWithStudies(answer)
             let rows = patientModel.map(patient => patient.serialize())
-            console.log(rows)
             setPatients(rows)
         } catch (error) {
             toast.error(error.statusText)

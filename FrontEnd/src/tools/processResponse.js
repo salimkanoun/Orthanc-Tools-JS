@@ -13,13 +13,11 @@ export function treeToPatientArray(patientStudiesTree) {
 }
 
 export function fillPatientModelWithStudies(studiesArray) {
-    console.log('ici')
     //Create Patient Key for each patient
     let patients = {}
     studiesArray.forEach(study => {
         patients[study.ParentPatient] = study.PatientMainDicomTags
     })
-    console.log(Object.entries(patients))
     let patientsObjects = Object.entries(patients).map(([orthancPatientId, PatientMainDicomTags]) => {
 
         let patient = new Patient()
@@ -34,12 +32,16 @@ export function fillPatientModelWithStudies(studiesArray) {
 
         return patient
     })
-    console.log(patientsObjects)
     return patientsObjects
 }
 
+export function fillPatientWithStudies(studiesArray) {
+    let patients = {}
+    
+}
+
 export function studyArrayToPatientArray(studiesArray) {
-//TODO
+    //TODO
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
