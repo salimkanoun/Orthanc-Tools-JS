@@ -1,75 +1,74 @@
 export default class Patient {
 
-    patientID = ''
-    patientOrthancID = ''
-    patientName = ''
-    patientBirthDate = ''
-    patientSex = ''
-    studies = []
+    PatientID = ''
+    PatientOrthancID = ''
+    PatientName = ''
+    PatientBirthDate = ''
+    PatientSex = ''
+    Studies = []
 
     fillFromOrthanc = (orthancId, mainDicomTags) => {
-        console.log('mainDicomTags : ', mainDicomTags)
-        this.patientID = mainDicomTags.PatientID
-        this.patientName = mainDicomTags.PatientName
-        this.patientBirthDate = mainDicomTags.PatientBirthDate
-        this.patientSex = mainDicomTags.PatientSex
-        this.patientOrthancID = orthancId
+        this.PatientID = mainDicomTags.PatientID
+        this.PatientName = mainDicomTags.PatientName
+        this.PatientBirthDate = mainDicomTags.PatientBirthDate
+        this.PatientSex = mainDicomTags.PatientSex
+        this.PatientOrthancID = orthancId
     }
 
     getId = () => {
-        return this.patientID
+        return this.PatientID
     }
 
     setPatientID = (ID) => {
-        this.patientID = ID
+        this.PatientID = ID
     }
 
     getOrthancID = () => {
-        return this.patientOrthancID
+        return this.PatientOrthancID
     }
 
     setOrthancID = (OrthancID) => {
-        this.patientOrthancID = OrthancID
+        this.PatientOrthancID = OrthancID
     }
 
     getName = () => {
-        return this.patientName
+        return this.PatientName
     }
 
     setName = (name) => {
-        this.patientName = name
+        this.PatientName = name
     }
 
     getBirthDate = () => {
-        return this.patientBirthDate
+        return this.PatientBirthDate
     }
 
     setBirthDate = (birthDate) => {
-        this.patientBirthDate = birthDate
+        this.PatientBirthDate = birthDate
     }
 
     getSex = () => {
-        return this.patientSex
+        return this.PatientSex
     }
 
     setSex = (sex) => {
-        this.patientSex = sex
+        this.PatientSex = sex
     }
 
     addStudy = (newStudy) => {
-        let knownStudies = this.studies.filter(studies => studies.getStudyInstanceUID() === newStudy.getStudyInstanceUID())
+        let knownStudies = this.Studies.filter(studies => studies.getStudyInstanceUID() === newStudy.getStudyInstanceUID())
         if (knownStudies.length > 0) throw 'Already Known Study'
-        this.studies.push(newStudy)
+        this.Studies.push(newStudy)
     }
 
     serialize = () => {
         return {
-            PatientID: this.patientID,
-            PatientOrthancID: this.patientOrthancID,
-            PatientName: this.patientName,
-            PatientBirthDate: this.patientBirthDate,
-            PatientSex: this.patientSex,
-            Studies: this.studies.map(studies => studies.serialize())
+            PatientID: this.PatientID,
+            PatientOrthancID: this.PatientOrthancID,
+            PatientName: this.PatientName,
+            PatientBirthDate: this.PatientBirthDate,
+            PatientSex: this.PatientSex,
+            Studies: this.Studies.map(studies => studies.serialize())
         }
     }
 

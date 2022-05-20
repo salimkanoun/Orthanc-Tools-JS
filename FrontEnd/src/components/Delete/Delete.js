@@ -90,9 +90,7 @@ class Delete extends Component {
     }
 
     render = () => {
-        console.log('this.props.deleteList',this.props.deleteList)
         let patientModel = fillPatientWithStudies(this.props.deleteList)
-        console.log('patientModel : ', patientModel)
         let rows = patientModel.map(patient => patient.serialize())
         return (
             <Fragment>

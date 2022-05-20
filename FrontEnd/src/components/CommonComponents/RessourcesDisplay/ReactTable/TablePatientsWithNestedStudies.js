@@ -4,7 +4,7 @@ import { commonColumns, patientColumns } from "./ColumnFactories";
 import TableStudies from "./TableStudies";
 
 export default ({
-    onClickStudy,
+    onClickStudy = () => {},
     onClickPatient,
     patients,
     onDeletePatient,

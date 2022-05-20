@@ -18,6 +18,7 @@ export function fillPatientModelWithStudies(studiesArray) {
     studiesArray.forEach(study => {
         patients[study.ParentPatient] = study.PatientMainDicomTags
     })
+
     let patientsObjects = Object.entries(patients).map(([orthancPatientId, PatientMainDicomTags]) => {
 
         let patient = new Patient()
@@ -37,7 +38,34 @@ export function fillPatientModelWithStudies(studiesArray) {
 
 export function fillPatientWithStudies(studiesArray) {
     let patients = {}
-    
+    studiesArray.forEach(study => {
+        patients[study.PatientOrthancID] = study.ParentPatient
+    })
+
+    let patientsObjects = Object.entries(patients).map(([PatientOrthancID, ParentPatient]) => {
+
+        let patient = new Patient()
+        patient.fillFromOrthanc(PatientOrthancID, ParentPatient)
+        let studiesOfPatient = studiesArray.filter(study => study.PatientOrthancID === PatientOrthancID)
+        studiesOfPatient.forEach(study => {
+            let studyObject = new Study()
+            let MainDicomTags = {
+                ReferringPhysicianName: study.ReferringPhysicianName,
+                StudyDate: study.StudyDate,
+                StudyDescription: study.StudyDescription,
+                StudyID: study.StudyID,
+                StudyInstanceUID: study.StudyInstanceUID,
+                StudyTime: study.StudyTime
+            }
+            studyObject.fillFromOrthanc(study.StudyOrthancID, MainDicomTags)
+            studyObject.fillParentFromOrthanc(study.PatientOrthancID, study.ParentPatient)
+            patient.addStudy(studyObject)
+        })
+
+        return patient
+    })
+    return patientsObjects
+
 }
 
 export function studyArrayToPatientArray(studiesArray) {

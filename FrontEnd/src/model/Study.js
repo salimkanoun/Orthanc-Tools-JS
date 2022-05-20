@@ -30,8 +30,6 @@ export default class Study {
         patient.fillFromOrthanc(orthancID, mainDicomTags)
         this.parentPatient = patient
         this.patientOrthancID = orthancID
-
-
     }
 
     setPatientOrthancID = (orthancID) => {
