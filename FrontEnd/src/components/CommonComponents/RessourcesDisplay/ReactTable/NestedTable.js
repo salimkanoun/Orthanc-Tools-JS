@@ -30,6 +30,7 @@ function NestedTable({ columns, data, getExpandedRow, onExpandedRow = () => { },
         prepareRow,
         visibleColumns,
         selectedFlatRows,
+        
         state: { pageIndex, pageSize }
     } = useTable(
         {

@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import NestedTable from "./NestedTable";
-import { commonColumns, patientColumns } from "./ColumnFactories";
+import { commonColumns, patientColumns, studyColumns } from "./ColumnFactories";
 import TableStudies from "./TableStudies";
 
 export default ({
     onClickStudy = () => {},
     onClickPatient,
     patients,
+    onRemovePatient,
+    onRemoveStudy,
     onDeletePatient,
     onDeleteStudy,
     onSelectStudies,
@@ -40,7 +42,7 @@ export default ({
         patientColumns.ID(),
         patientColumns.NAME(),
         ...(actionButton ? [patientColumns.ACTION(onDeletePatient, onModify, refresh)] : []),
-        ...(removeRow ? [patientColumns.REMOVE(onDeletePatient)] : [])
+        ...(removeRow ? [patientColumns.REMOVE(onRemovePatient)] : [])
     ], [
         onDeletePatient,
         onDeleteStudy,
@@ -59,7 +61,7 @@ export default ({
             }))
             //updateselectedIds(selectedStudiesOrthancId)
         }
-        return <TableStudies studies={studies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} onSelectRow={onSelectStudy} selectable={selectable} actionButton />
+        return <TableStudies studies={studies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} onSelectRow={onSelectStudy} selectable={selectable} removeRow={removeRow} onRemoveStudy={onRemoveStudy} actionButton={actionButton} />
     }
 
     const updateselectedIds = (newIds) => {

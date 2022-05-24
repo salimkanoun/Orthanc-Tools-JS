@@ -70,7 +70,7 @@ class Delete extends Component {
             this.successToast()
 
             this.props.deleteList.forEach(async (study) => {
-                this.props.removeStudyFromDeleteList(study.ID)
+                this.props.removeStudyFromDeleteList(study.StudyID)
             })
         })
 
@@ -81,11 +81,13 @@ class Delete extends Component {
         this.props.emptyDeleteList()
     }
 
-    onDeletePatient = (patientOrthancID) => {
+    onRemovePatient = (patientOrthancID) => {
+        console.log(patientOrthancID)
         this.props.removePatientFromDeleteList(patientOrthancID)
     }
 
-    onDeleteStudy = (studyOrthancID) => {
+    onRemoveStudy = (studyOrthancID) => {
+        console.log(studyOrthancID)
         this.props.removeStudyFromDeleteList(studyOrthancID)
     }
 
@@ -110,9 +112,9 @@ class Delete extends Component {
                         <Col>
                             <TablePatientsWithNestedStudies
                                 patients={rows}
-                                removeRow={true}
-                                onDeletePatient={this.onDeletePatient}
-                                onDeleteStudy={this.onDeleteStudy} 
+                                removeRow
+                                onRemovePatient={this.onRemovePatient}
+                                onRemoveStudy={this.onRemoveStudy}
                                 onSelectStudies={() => { }} />
                         </Col>
                     </Row>

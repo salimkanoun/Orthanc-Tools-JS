@@ -179,17 +179,12 @@ const studyColumns = {
                 </>)
         ),
     }),
-    REMOVE: (onDelete) => ({
+    REMOVE: (onRemoveStudy) => ({
         id: 'Remove',
         Header: 'Remove',
         Cell: ({row}) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {
-                try {
-                    onDelete(row.values.StudyOrthancID);
-                } catch (e) {
-                    toast.error("Remove error");
-                }
-                e.stopPropagation();
+            return <button type="button" className="btn btn-danger" onClick={() => {
+                    onRemoveStudy(row.values.StudyOrthancID);
             }}>Remove</button>
         },
     }),
@@ -249,17 +244,12 @@ const patientColumns = {
                                  onModify={onModify} row={row.values.raw} refresh={refresh}/>
         }
     }),
-    REMOVE: (onDelete) => ({
+    REMOVE: (onRemovePatient) => ({
         id: 'Remove',
         Header: 'Remove',
         Cell: ({row}) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {
-                try {
-                    onDelete(row.values.PatientOrthancID);
-                } catch (e) {
-                    toast.error("Remove error");
-                }
-                e.stopPropagation();
+            return <button type="button" className="btn btn-danger" onClick={() => {
+                onRemovePatient(row.values.PatientOrthancID);
             }}>Remove</button>
         },
         editable: false

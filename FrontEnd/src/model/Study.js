@@ -1,119 +1,119 @@
 import Patient from './Patient'
 export default class Study {
 
-    studyID = ''
-    patientOrthancID = ''
-    referringPhysiciansName = ''
-    studyDate = ''
-    studyDescription = ''
-    studyInstanceUID = ''
-    studyOrthancID = ''
-    studyTime = ''
-    series = []
-    parentPatient = {}
+    StudyID = ''
+    PatientOrthancID = ''
+    ReferringPhysiciansName = ''
+    StudyDate = ''
+    StudyDescription = ''
+    StudyInstanceUID = ''
+    StudyOrthancID = ''
+    StudyTime = ''
+    Series = []
+    ParentPatient = {}
 
     fillFromOrthanc = (orthancID, mainDicomTags) => {
-        this.studyID = mainDicomTags.StudyID
-        this.patientOrthancID = mainDicomTags.PatientOrthancID
-        this.referringPhysiciansName = mainDicomTags.ReferringPhysiciansName
-        this.studyDate = mainDicomTags.StudyDate
-        this.studyDescription = mainDicomTags.StudyDescription
-        this.studyInstanceUID = mainDicomTags.StudyInstanceUID
-        this.accessionNumber = mainDicomTags.AccessionNumber
-        this.studyTime = mainDicomTags.SstudyTime
+        this.StudyID = mainDicomTags.StudyID
+        this.PatientOrthancID = mainDicomTags.PatientOrthancID
+        this.ReferringPhysiciansName = mainDicomTags.ReferringPhysiciansName
+        this.StudyDate = mainDicomTags.StudyDate
+        this.StudyDescription = mainDicomTags.StudyDescription
+        this.StudyInstanceUID = mainDicomTags.StudyInstanceUID
+        this.AccessionNumber = mainDicomTags.AccessionNumber
+        this.StudyTime = mainDicomTags.StudyTime
 
-        this.studyOrthancID = orthancID
+        this.StudyOrthancID = orthancID
     }
 
     fillParentFromOrthanc = (orthancID, mainDicomTags) => {
         let patient = new Patient()
         patient.fillFromOrthanc(orthancID, mainDicomTags)
-        this.parentPatient = patient
-        this.patientOrthancID = orthancID
+        this.ParentPatient = patient
+        this.PatientOrthancID = orthancID
     }
 
     setPatientOrthancID = (orthancID) => {
-        this.patientOrthancID = orthancID
+        this.PatientOrthancID = orthancID
     }
 
     getStudyID = () => {
-        return this.studyID
+        return this.StudyID
     }
 
     setStudyID = (studyID) => {
-        this.studyID = studyID
+        this.StudyID = studyID
     }
 
     getPatientOrthancID = () => {
-        return this.patientOrthancID
+        return this.PatientOrthancID
     }
 
     getReferringPhysiciansName = () => {
-        return this.referringPhysiciansName
+        return this.ReferringPhysiciansName
     }
 
     setReferringPhysiciansName = (referringPhysiciansName) => {
-        this.referringPhysiciansName = referringPhysiciansName
+        this.ReferringPhysiciansName = referringPhysiciansName
     }
 
     getStudyDate = () => {
-        return this.studyDate
+        return this.StudyDate
     }
 
     setStudyDate = (studyDate) => {
-        this.studyDate = studyDate
+        this.StudyDate = studyDate
     }
 
     getStudyDescritpion = () => {
-        return this.studyDescritpion
+        return this.StudyDescritpion
     }
 
     setStudyDescritpion = (studyDescritpion) => {
-        this.studyDescritpion = studyDescritpion
+        this.StudyDescritpion = studyDescritpion
     }
 
     getStudyInstanceUID = () => {
-        return this.studyInstanceUID
+        return this.StudyInstanceUID
     }
 
     setStudyInstanceUID = (studyInstanceUID) => {
-        this.studyInstanceUID = studyInstanceUID
+        this.StudyInstanceUID = studyInstanceUID
     }
 
     getStudyOrthancID = () => {
-        return this.studyOrthancID
+        return this.StudyOrthancID
     }
 
     setStudyOrthancID = (studyOrthancID) => {
-        this.studyOrthancID = studyOrthancID
+        this.StudyOrthancID = studyOrthancID
     }
 
     getStudyTime = () => {
-        return this.studyTime
+        return this.StudyTime
     }
 
     setStudyTime = (studyTime) => {
-        this.studyTime = studyTime
+        this.StudyTime = studyTime
     }
 
     addSeries = (newSeries) => {
-        let knownSeries = this.series.filter(series => series.getSeriesInstanceUID() === newSeries.getSeriesInstanceUID())
+        let knownSeries = this.Series.filter(series => series.getSeriesInstanceUID() === newSeries.getSeriesInstanceUID())
         if (knownSeries.length > 0) throw 'Already Known Series'
-        this.series.push(newSeries)
+        this.Series.push(newSeries)
     }
 
     serialize = () => {
         return {
-            PatientOrthancID: this.patientOrthancID,
-            AccessionNumber : this.accessionNumber,
-            ReferringPhysiciansName: this.referringPhysiciansName,
-            StudyDate: this.studyDate,
-            StudyDescription: this.studyDescription,
-            StudyInstanceUID: this.studyInstanceUID,
-            StudyOrthancID: this.studyOrthancID,
-            StudyTime: this.studyTime,
-            Series: this.series,
-            ParentPatient : this.parentPatient
+            PatientOrthancID: this.PatientOrthancID,
+            AccessionNumber : this.AccessionNumber,
+            ReferringPhysiciansName: this.ReferringPhysiciansName,
+            StudyDate: this.StudyDate,
+            StudyDescription: this.StudyDescription,
+            StudyInstanceUID: this.StudyInstanceUID,
+            StudyOrthancID: this.StudyOrthancID,
+            StudyTime: this.StudyTime,
+            Series: this.Series,
+            ParentPatient : this.ParentPatient
         }
     }
 }

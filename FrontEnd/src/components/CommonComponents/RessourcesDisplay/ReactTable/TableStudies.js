@@ -9,6 +9,7 @@ function TableStudies({
     refresh,
     actionButton,
     removeRow,
+    onRemoveStudy,
     rowEvents,
     rowStyle,
     onRowClick,
@@ -24,7 +25,7 @@ function TableStudies({
         studyColumns.DESCRIPTION,
         studyColumns.ACCESSION_NUMBER,
         ...(actionButton ? [studyColumns.ACTION(onDeleteStudy, onModify, refresh)] : []),
-        ...(removeRow ? [studyColumns.REMOVE(onDeleteStudy)] : [])
+        ...(removeRow ? [studyColumns.REMOVE(onRemoveStudy)] : [])
     ], [onDeleteStudy, refresh]);
     
     return <CommonTable getRowId={(originalRow) => originalRow.StudyOrthancID} columns={columns} data={studies} rowEvents={rowEvents}
