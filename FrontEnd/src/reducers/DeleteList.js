@@ -20,7 +20,7 @@ export default function deleteListReducer (state = initialState, action ) {
         case REMOVE_PATIENT_DELETE_LIST:
           //Filter (remove) patient corresponding to payload ID
           let newSlipcedList = state.deleteList.filter(study =>{
-            return study.PatientOrthancID !== action.payload
+            return study.ParentPatient.PatientOrthancID !== action.payload
           })
           return {
             deleteList: newSlipcedList

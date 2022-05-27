@@ -5,7 +5,7 @@ export default class Patient {
     PatientName = ''
     PatientBirthDate = ''
     PatientSex = ''
-    Studies = []
+    Studies = {}
 
     fillFromOrthanc = (orthancId, mainDicomTags) => {
         this.PatientID = mainDicomTags.PatientID
@@ -16,6 +16,10 @@ export default class Patient {
     }
 
     getId = () => {
+        return this.PatientID
+    }
+
+    getPatientID = () => {
         return this.PatientID
     }
 
@@ -55,10 +59,13 @@ export default class Patient {
         this.PatientSex = sex
     }
 
+    isKnownStudy = (StudyOrthancID) => {
+        return this.Studies[StudyOrthancID] != null
+    }
+
     addStudy = (newStudy) => {
-        let knownStudies = this.Studies.filter(studies => studies.getStudyInstanceUID() === newStudy.getStudyInstanceUID())
-        if (knownStudies.length > 0) throw 'Already Known Study'
-        this.Studies.push(newStudy)
+        let StudyOrthancID = newStudy.getStudyOrthancID()
+        if ( !this.isKnownStudy(StudyOrthancID)) this.Studies[StudyOrthancID] = newStudy
     }
 
     serialize = () => {
@@ -68,7 +75,7 @@ export default class Patient {
             PatientName: this.PatientName,
             PatientBirthDate: this.PatientBirthDate,
             PatientSex: this.PatientSex,
-            Studies: this.Studies.map(studies => studies.serialize())
+            Studies: Object.values(this.Studies).map(studies => studies.serialize())
         }
     }
 

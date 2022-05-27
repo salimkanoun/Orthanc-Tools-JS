@@ -1,126 +1,126 @@
 export default class Series {
 
-    bodyPartExamined = ''
-    imageOrientation = ''
-    manufacturer = ''
-    modality = ''
-    seriesDate = ''
-    seriesDescription = ''
-    seriesInstanceUID = ''
-    seriesNumber = ''
-    seriesOrthancID = ''
-    seriesTime = ''
-    instancesOrthancIds = []
+    BodyPartExamined = ''
+    ImageOrientation = ''
+    Manufacturer = ''
+    Modality = ''
+    SeriesDate = ''
+    SeriesDescription = ''
+    SeriesInstanceUID = ''
+    SeriesNumber = ''
+    SeriesOrthancID = ''
+    SeriesTime = ''
+    InstancesOrthancIds = []
 
     fillFromOrthanc = (orthancId, mainDicomTags, instancesOrthancIds) => {
-        this.bodyPartExamined = mainDicomTags.BodyPartExamined
-        this.imageOrientation = mainDicomTags.ImageOrientation
-        this.manufacturer = mainDicomTags.Manufacturer
-        this.modality = mainDicomTags.Modality
-        this.seriesDate = mainDicomTags.SeriesDate
-        this.seriesTime = mainDicomTags.SeriesTime
-        this.seriesDescription = mainDicomTags.SeriesDescription
-        this.seriesInstanceUID = mainDicomTags.SeriesInstanceUID
-        this.seriesNumber = mainDicomTags.SeriesNumber
+        this.BodyPartExamined = mainDicomTags.BodyPartExamined
+        this.ImageOrientation = mainDicomTags.ImageOrientation
+        this.Manufacturer = mainDicomTags.Manufacturer
+        this.Modality = mainDicomTags.Modality
+        this.SeriesDate = mainDicomTags.SeriesDate
+        this.SeriesTime = mainDicomTags.SeriesTime
+        this.SeriesDescription = mainDicomTags.SeriesDescription
+        this.SeriesInstanceUID = mainDicomTags.SeriesInstanceUID
+        this.SeriesNumber = mainDicomTags.SeriesNumber
 
-        this.seriesOrthancID = orthancId
-        this.instancesOrthancIds = instancesOrthancIds
+        this.SeriesOrthancID = orthancId
+        this.InstancesOrthancIds = instancesOrthancIds
     }
 
     getNumberOfInstance = () => {
-        return this.instancesOrthancIds.length
+        return this.InstancesOrthancIds.length
     }
 
     getBodyPartExamined = () => {
-        return this.bodyPartExamined
+        return this.BodyPartExamined
     }
 
     setBodyPartExamined = (bodyPartExamined) => {
-        this.bodyPartExamined = bodyPartExamined
+        this.BodyPartExamined = bodyPartExamined
     }
 
     getImageOrientation = () => {
-        return this.imageOrientation
+        return this.ImageOrientation
     }
 
     setImageOrientation = (imageOrientation) => {
-        this.imageOrientation = imageOrientation
+        this.ImageOrientation = imageOrientation
     }
 
     getManufacturer = () => {
-        return this.manufacturer
+        return this.Manufacturer
     }
 
     setManufacturer = (manufacturer) => {
-        this.manufacturer = manufacturer
+        this.Manufacturer = manufacturer
     }
 
     getModality = () => {
-        return this.modality
+        return this.Modality
     }
 
     setModality = (modality) => {
-        this.modality = modality
+        this.Modality = modality
     }
 
     getSeriesDate = () => {
-        return this.seriesDate
+        return this.SeriesDate
     }
 
     setSeriesDate = (seriesDate) => {
-        this.seriesDate = seriesDate
+        this.SeriesDate = seriesDate
     }
 
     getSeriesDescription = () => {
-        return this.seriesDescription
+        return this.SeriesDescription
     }
 
     setSeriesDescription = (seriesDescription) => {
-        this.seriesDescription = seriesDescription
+        this.SeriesDescription = seriesDescription
     }
 
     getSeriesInstanceUID = () => {
-        return this.seriesInstanceUID
+        return this.SeriesInstanceUID
     }
 
     setSeriesInstanceUID = (seriesInstanceUID) => {
-        this.seriesInstanceUID = seriesInstanceUID
+        this.SeriesInstanceUID = seriesInstanceUID
     }
 
     getSeriesNumber = () => {
-        return this.seriesNumber
+        return this.SeriesNumber
     }
 
     setSeriesNumber = (seriesNumber) => {
-        this.seriesNumber = seriesNumber
+        this.SeriesNumber = seriesNumber
     }
 
     getSeriesOrthancID = () => {
-        return this.seriesOrthancID
+        return this.SeriesOrthancID
     }
 
     setSeriesOrthancID = (seriesOrthancID) => {
-        this.seriesOrthancID = seriesOrthancID
+        this.SeriesOrthancID = seriesOrthancID
     }
 
     getSeriesTime = () => {
-        return this.seriesTime
+        return this.SeriesTime
     }
 
     setSeriesTime = (seriesTime) => {
-        this.seriesTime = seriesTime
+        this.SeriesTime = seriesTime
     }
 
     serialize = () => {
         return {
-            Manufacturer: this.manufacturer,
-            Modality: this.modality,
-            SeriesDate: this.seriesDate,
-            SeriesDescription: this.seriesDescription,
-            SeriesInstanceUID: this.seriesInstanceUID,
-            SeriesNumber: this.seriesNumber,
-            SeriesOrthancID: this.seriesOrthancID,
-            SeriesTime: this.seriesTime,
+            Manufacturer: this.Manufacturer,
+            Modality: this.Modality,
+            SeriesDate: this.SeriesDate,
+            SeriesDescription: this.SeriesDescription,
+            SeriesInstanceUID: this.SeriesInstanceUID,
+            SeriesNumber: this.SeriesNumber,
+            SeriesOrthancID: this.SeriesOrthancID,
+            SeriesTime: this.SeriesTime,
             NumberOfInstance: this.getNumberOfInstance()
         }
     }
