@@ -19,6 +19,7 @@ function TableStudies({
     selectable,
     onSelectRow,
 }) {
+
     const columns = useMemo(() => [
         commonColumns.RAW,
         ...(withPatientColums ? [patientColumns.NAME()] : []),

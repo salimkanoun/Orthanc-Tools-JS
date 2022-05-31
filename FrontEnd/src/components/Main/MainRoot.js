@@ -32,7 +32,7 @@ const MainRoot = ({ onLogout, username, roles }) => {
 
                     <Col >
                         <Row>
-                            <ToolsPanel roles={roles} />
+                            <ToolsPanel roles={roles} apercu/>
                         </Row>
                         <Row>
                             <AnimatedSwitch />
