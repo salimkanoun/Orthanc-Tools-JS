@@ -36,6 +36,7 @@ export default ({
     const rowStyle = (StudyOrthancID) => {
         if (StudyOrthancID === focusedStudy) return {background : 'peachPuff'}
     }
+    
     const columns = useMemo(() => [
         commonColumns.RAW,
         patientColumns.ORTHANC_ID,
