@@ -9,11 +9,10 @@ export default class Study {
     StudyInstanceUID = ''
     StudyOrthancID = ''
     StudyTime = ''
-    SeriesID = []
     Series = {}
     ParentPatient = {}
 
-    fillFromOrthanc = (orthancID, mainDicomTags, SeriesOrhtancIDs) => {
+    fillFromOrthanc = (orthancID, mainDicomTags, SeriesOrthancIDs) => {
         this.StudyID = mainDicomTags.StudyID
         this.PatientOrthancID = mainDicomTags.PatientOrthancID
         this.ReferringPhysiciansName = mainDicomTags.ReferringPhysiciansName
@@ -22,7 +21,7 @@ export default class Study {
         this.StudyInstanceUID = mainDicomTags.StudyInstanceUID
         this.AccessionNumber = mainDicomTags.AccessionNumber
         this.StudyTime = mainDicomTags.StudyTime
-        this.SeriesOrthancIDs = SeriesOrhtancIDs
+        this.SeriesOrthancIDs = SeriesOrthancIDs
 
         this.StudyOrthancID = orthancID
     }
@@ -120,7 +119,6 @@ export default class Study {
             StudyInstanceUID: this.StudyInstanceUID,
             StudyOrthancID: this.StudyOrthancID,
             StudyTime: this.StudyTime,
-            SeriesID: this.SeriesID,
             SeriesOrthancIDs : this.SeriesOrthancIDs,
             Series: Object.values(this.Series).map(series => series.serialize()),
             ParentPatient: this.ParentPatient

@@ -9,15 +9,15 @@ const exportDicom = {
   exportHirachicalDicoms(OrthancIDsArray, TS) {
 
     let body = {}
-    if (TS !== 'None') {
+    if (TS !== 'None' && TS !=null) {
       body = {
-        Synchronous: true,
+        Asynchronous: false,
         Resources: OrthancIDsArray,
         Transcode: TS
       }
     } else {
       body = {
-        Synchronous: true,
+        Asynchronous: false,
         Resources: OrthancIDsArray
       }
     }
@@ -29,15 +29,15 @@ const exportDicom = {
 
   exportDicomDirDicoms(OrthancIDsArray, TS) {
     let body = {}
-    if (TS !== 'None') {
+    if (TS !== 'None' && TS !=null) {
       body = {
-        Synchronous: true,
+        Asynchronous: false,
         Resources: OrthancIDsArray,
         Transcode: TS
       }
     } else {
       body = {
-        Synchronous: true,
+        Asynchronous: false,
         Resources: OrthancIDsArray
       }
     }

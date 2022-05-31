@@ -4,24 +4,25 @@ import { seriesColumns } from "./ColumnFactories";
 
 function TableSeries({
     series,
-    onDelete,
-    refresh,
-    hiddenActionBouton,
-    hiddenRemoveRow,
-    rowEvents,
+    onDelete  = (seriesOrthancID)=> {},
+    onRemove = (seriesOrthancID)=> {},
+    actionButton = false,
+    removeRow = false,
+    onRowClick,
     rowStyle,
-    pagination
+    pagination = true
 }) {
     const columns = useMemo(() => [
         seriesColumns.ORTHANC_ID,
         seriesColumns.DESCRIPTION,
         seriesColumns.MODALITY,
         seriesColumns.SERIES_NUMBER,
-        ...(!hiddenActionBouton ? [seriesColumns.ACTION(onDelete, refresh)] : []),
-        ...(!hiddenRemoveRow ? [seriesColumns.REMOVE(onDelete)] : [])
-    ], [onDelete, refresh]);
+        //SK ACTION BUTTON A REVOIR
+        ...(actionButton ? [seriesColumns.ACTION(onDelete)] : []),
+        ...(removeRow ? [seriesColumns.REMOVE(onRemove)] : [])
+    ], []);
 
-    return <CommonTable getRowId={(row) => row.SeriesOrthancID} columns={columns} data={series} rowEvents={rowEvents}
+    return <CommonTable getRowId={(row) => row.SeriesOrthancID} columns={columns} data={series} onRowClick={onRowClick}
         rowStyle={rowStyle} pagination={pagination} />
 }
 

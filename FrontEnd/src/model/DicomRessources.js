@@ -5,7 +5,6 @@ export default class DicomRessources {
     addPatient = (newPatient) => {
         let PatientOrthancID = newPatient.PatientOrthancID
         if ( !this.isKnownPatient(PatientOrthancID) ) this.Patients[PatientOrthancID] = newPatient
-        console.log(this.Patients)
     }
 
     isKnownPatient = (PatientOrthancID) => {
@@ -14,7 +13,6 @@ export default class DicomRessources {
 
     addStudy = (PatientOrthancID, newStudy) => {
         if( ! this.isKnownPatient(PatientOrthancID)) throw 'Not Known Patient'
-        console.log(this.Patients)
         this.Patients[PatientOrthancID].addStudy(newStudy)
     }
 

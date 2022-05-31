@@ -22,7 +22,7 @@ export default ({ patients }) => {
         apis.content.getSeriesDetails(StudyOrthancID).then((series) => {
             let seriesObjects = series.map(series => {
                 let seriesObject = new Series()
-                seriesObject.fillFromOrthanc(series.ID, series.MainDicomTags, series.Instances)
+                seriesObject.fillFromOrthanc(series.ID, series.MainDicomTags, series.Instances, series.ParentStudy)
                 return seriesObject
             })
             let rows = seriesObjects.map(series => series.serialize())
@@ -54,7 +54,7 @@ export default ({ patients }) => {
                 />
             </Col>
             <Col sm>
-                <TableSeries series={series} />
+                <TableSeries series={series} actionButton />
             </Col>
 
         </Row>

@@ -21,8 +21,6 @@ export default function Delete() {
         }
     })
 
-    console.log(store)
-
     const dispatch = useDispatch()
 
     let toastInstance = useRef(null)
@@ -48,7 +46,6 @@ export default function Delete() {
     }, [store.deleteList])
 
     const toogleDeleteConfirmation = () => {
-        console.log(show)
         setShow(show => (!show))
     }
 
@@ -75,9 +72,7 @@ export default function Delete() {
 
         let deletedSeriesIdArray = []
         store.deleteList.forEach(study => {
-            console.log(study)
             deletedSeriesIdArray.push(...study.SeriesOrthancIDs)
-            console.log(deletedSeriesIdArray)
         })
 
         let answer
@@ -114,12 +109,10 @@ export default function Delete() {
     }
 
     const onRemovePatient = (patientOrthancID) => {
-        console.log(patientOrthancID)
         dispatch(removePatientFromDeleteList(patientOrthancID))
     }
 
     const onRemoveStudy = (studyOrthancID) => {
-        console.log(studyOrthancID)
         dispatch(removeStudyFromDeleteList(studyOrthancID))
     }
 

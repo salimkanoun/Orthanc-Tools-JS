@@ -11,23 +11,26 @@ export default class Series {
     SeriesOrthancID = ''
     SeriesTime = ''
     InstancesOrthancIds = []
+    StudyOrthancID = ''
 
-    fillFromOrthanc = (orthancId, mainDicomTags, instancesOrthancIds) => {
-        this.BodyPartExamined = mainDicomTags.BodyPartExamined
-        this.ImageOrientation = mainDicomTags.ImageOrientation
-        this.Manufacturer = mainDicomTags.Manufacturer
-        this.Modality = mainDicomTags.Modality
-        this.SeriesDate = mainDicomTags.SeriesDate
-        this.SeriesTime = mainDicomTags.SeriesTime
-        this.SeriesDescription = mainDicomTags.SeriesDescription
-        this.SeriesInstanceUID = mainDicomTags.SeriesInstanceUID
-        this.SeriesNumber = mainDicomTags.SeriesNumber
+    fillFromOrthanc = (orthancId, mainDicomTags, instancesOrthancIds, studyOrthancID) => {
+        this.BodyPartExamined = mainDicomTags?.BodyPartExamined
+        this.ImageOrientation = mainDicomTags?.ImageOrientation
+        this.Manufacturer = mainDicomTags?.Manufacturer
+        this.Modality = mainDicomTags?.Modality
+        this.SeriesDate = mainDicomTags?.SeriesDate
+        this.SeriesTime = mainDicomTags?.SeriesTime
+        this.SeriesDescription = mainDicomTags?.SeriesDescription
+        this.SeriesInstanceUID = mainDicomTags?.SeriesInstanceUID
+        this.SeriesNumber = mainDicomTags?.SeriesNumber
 
         this.SeriesOrthancID = orthancId
         this.InstancesOrthancIds = instancesOrthancIds
+        this.StudyOrthancID = studyOrthancID
     }
 
     getNumberOfInstance = () => {
+        console.log(this.InstancesOrthancIds)
         return this.InstancesOrthancIds.length
     }
 
@@ -121,6 +124,7 @@ export default class Series {
             SeriesNumber: this.SeriesNumber,
             SeriesOrthancID: this.SeriesOrthancID,
             SeriesTime: this.SeriesTime,
+            StudyOrthancID: this.StudyOrthancID,
             NumberOfInstance: this.getNumberOfInstance()
         }
     }

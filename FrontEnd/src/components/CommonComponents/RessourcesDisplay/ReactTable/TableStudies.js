@@ -1,6 +1,6 @@
 import CommonTable from "./CommonTable";
-import { useMemo } from "react";
-import { commonColumns, studyColumns } from "./ColumnFactories";
+import { useEffect, useMemo, useState } from "react";
+import { commonColumns, patientColumns, studyColumns } from "./ColumnFactories";
 
 function TableStudies({
     studies,
@@ -10,15 +10,19 @@ function TableStudies({
     actionButton,
     removeRow,
     onRemoveStudy,
+    withPatientColums=false,
     rowEvents,
     rowStyle,
     onRowClick,
+    onSelectStudies = () => {},
     pagination,
     selectable,
     onSelectRow,
 }) {
     const columns = useMemo(() => [
         commonColumns.RAW,
+        ...(withPatientColums ? [patientColumns.NAME()] : []),
+        ...(withPatientColums ? [patientColumns.ID()] : []),
         studyColumns.ORTHANC_ID,
         studyColumns.STUDY_INSTANCE_UID,
         studyColumns.DATE,

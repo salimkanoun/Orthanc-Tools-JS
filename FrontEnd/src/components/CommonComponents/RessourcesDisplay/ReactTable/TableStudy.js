@@ -1,20 +1,20 @@
 import CommonTable from "./CommonTable";
-import {useMemo} from "react";
-import {commonColumns, patientColumns, studyColumns} from "./ColumnFactories";
+import { useMemo } from "react";
+import { commonColumns, patientColumns, studyColumns } from "./ColumnFactories";
 
 function TableStudy({
-                        studies,
-                        onDelete,
-                        refresh,
-                        hiddenActionBouton,
-                        hiddenRemoveRow,
-                        hiddenAccessionNumber, hiddenName, hiddenID, hiddenAnonymized,
-                        onDataChange,
-                        showEditable = false,
-                        rowEvents,
-                        rowStyle,
-                        pagination
-                    }) {
+    studies,
+    onDelete,
+    refresh,
+    hiddenActionBouton,
+    hiddenRemoveRow,
+    hiddenAccessionNumber, hiddenName, hiddenID, hiddenAnonymized,
+    onDataChange,
+    showEditable = false,
+    rowEvents,
+    rowStyle,
+    pagination
+}) {
     const columns = useMemo(() => [
         commonColumns.RAW,
         studyColumns.ORTHANC_ID,
@@ -35,11 +35,11 @@ function TableStudy({
     ], [
         hiddenActionBouton, hiddenRemoveRow, hiddenAccessionNumber, hiddenName, hiddenID, onDelete, refresh, showEditable, hiddenAnonymized]);
     const data = useMemo(() => studies.map(x => ({
-        raw: {...x},
+        raw: { ...x },
         ...x
     })), [studies]);
     return <CommonTable columns={columns} data={data} onDataChange={onDataChange} rowEvents={rowEvents}
-                        rowStyle={rowStyle} pagination={pagination}/>
+        rowStyle={rowStyle} pagination={pagination} />
 }
 
 export default TableStudy;

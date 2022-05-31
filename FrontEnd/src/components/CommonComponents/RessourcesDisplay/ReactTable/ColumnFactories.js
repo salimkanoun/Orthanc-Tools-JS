@@ -53,13 +53,13 @@ const seriesColumns = {
                                        row={row.values.raw} refresh={refresh}
                                        hiddenMetadata={false} hiddenCreateDicom={true}/>
     }),
-    REMOVE: (onDelete) => ({
+    REMOVE: (onRemove) => ({
         id: 'Remove',
         Header: 'Remove',
         Cell: ({row}) => {
             return <button type="button" className="btn btn-danger" onClick={(e) => {
                 try {
-                    onDelete(row.values.SeriesOrthancID);
+                    onRemove(row.values.SeriesOrthancID);
                 } catch (e) {
                     toast.error("Remove error");
                 }
@@ -209,7 +209,7 @@ const patientColumns = {
         show: false
     },
     NAME: (textNameColumn = 'Patient Name') => ({
-        accessor: 'PatientName',
+        accessor: 'ParentPatient.PatientName',
         Header: textNameColumn,
         Filter: InvertableDataFilter('Patient Name'),
         filter: invertableDataFilter,
@@ -218,7 +218,7 @@ const patientColumns = {
 
     }),
     ID: (textIDColumn = 'Patient ID') => ({
-        accessor: 'PatientID',
+        accessor: 'ParentPatient.PatientID',
         Header: textIDColumn,
         Filter: InvertableDataFilter('Patient ID'),
         filter: invertableDataFilter,
