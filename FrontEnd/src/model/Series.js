@@ -30,7 +30,6 @@ export default class Series {
     }
 
     getNumberOfInstance = () => {
-        console.log(this.InstancesOrthancIds)
         return this.InstancesOrthancIds.length
     }
 

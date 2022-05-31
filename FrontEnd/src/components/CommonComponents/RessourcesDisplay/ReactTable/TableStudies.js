@@ -22,8 +22,8 @@ function TableStudies({
 
     const columns = useMemo(() => [
         commonColumns.RAW,
-        ...(withPatientColums ? [patientColumns.NAME()] : []),
-        ...(withPatientColums ? [patientColumns.ID()] : []),
+        ...(withPatientColums ? [patientColumns.PARENT_NAME()] : []),
+        ...(withPatientColums ? [patientColumns.PARENT_ID()] : []),
         studyColumns.ORTHANC_ID,
         studyColumns.STUDY_INSTANCE_UID,
         studyColumns.DATE,

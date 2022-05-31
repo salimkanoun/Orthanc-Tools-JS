@@ -42,7 +42,11 @@ export default ({ patients }) => {
         else if (type === "export") dispatch(addStudiesToExportList(filteredSelectedStudies))
         else if (type === "delete") dispatch(addStudiesToDeleteList(filteredSelectedStudies))
     }
+
+    console.log('patient contentTable :',patients)
+
     return (
+
         <Row>
             <Col sm>
                 <SendToAnonExportDeleteDropdown onSendTo={onSendTo} />

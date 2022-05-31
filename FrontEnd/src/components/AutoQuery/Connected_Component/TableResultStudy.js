@@ -16,6 +16,7 @@ import ExportCSVButton from '../../CommonComponents/RessourcesDisplay/ExportCSVB
 /**
  * Result Table of Query for Study Level
  */
+
 function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesFiltered}) {
     const columns = useMemo(() => {
         return [
@@ -23,8 +24,8 @@ function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesF
             studyColumns.ORTHANC_ID,
             studyColumns.INSTANCE_UID,
             studyColumns.ANONYMIZED_FROM,
-            patientColumns.NAME(),
-            patientColumns.ID(),
+            patientColumns.PARENT_NAME(),
+            patientColumns.PARENT_ID(),
             studyColumns.DATE,
             studyColumns.DESCRIPTION,
             studyColumns.REQUESTED_PROCEDURE,
@@ -34,6 +35,7 @@ function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesF
             commonColumns.AET,
         ]
     }, []);
+
     const data = useMemo(() => Object.values(results).map(result => ({
         ...result,
         raw: result

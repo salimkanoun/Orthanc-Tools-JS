@@ -209,21 +209,39 @@ const patientColumns = {
         show: false
     },
     NAME: (textNameColumn = 'Patient Name') => ({
+        accessor: 'PatientName',
+        Header: textNameColumn,
+        Filter: InvertableDataFilter('Patient Name'),
+        filter: invertableDataFilter,
+        sort: true,
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+    }),
+
+    PARENT_NAME: (textNameColumn = 'Patient Name') => ({
         accessor: 'ParentPatient.PatientName',
         Header: textNameColumn,
         Filter: InvertableDataFilter('Patient Name'),
         filter: invertableDataFilter,
         sort: true,
         style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-
     }),
+
     ID: (textIDColumn = 'Patient ID') => ({
+        accessor: 'PatientID',
+        Header: textIDColumn,
+        Filter: InvertableDataFilter('Patient ID'),
+        filter: invertableDataFilter,
+        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+    }),
+
+    PARENT_ID: (textIDColumn = 'Patient ID') => ({
         accessor: 'ParentPatient.PatientID',
         Header: textIDColumn,
         Filter: InvertableDataFilter('Patient ID'),
         filter: invertableDataFilter,
         style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }),
+    
     NEW_NAME: {
         accessor: 'newPatientName',
         Header: 'New Name',
