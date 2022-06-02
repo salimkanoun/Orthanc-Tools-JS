@@ -233,7 +233,7 @@ const patientColumns = {
         filter: invertableDataFilter,
         style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }),
-
+    
     PARENT_ID: (textIDColumn = 'Patient ID') => ({
         accessor: 'ParentPatient.PatientID',
         Header: textIDColumn,
@@ -241,7 +241,6 @@ const patientColumns = {
         filter: invertableDataFilter,
         style: {whiteSpace: 'normal', wordWrap: 'break-word'}
     }),
-    
     NEW_NAME: {
         accessor: 'newPatientName',
         Header: 'New Name',

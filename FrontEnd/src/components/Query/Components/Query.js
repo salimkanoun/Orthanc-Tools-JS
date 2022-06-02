@@ -58,7 +58,9 @@ export default () => {
 
     try {
       let queryAnswer = await apis.query.dicomQuery(aet, queryPost)
+      console.log('queryAnswer : ', queryAnswer)
       let answers = await apis.query.retrieveAnswer(queryAnswer['ID'])
+      console.log('answers : ', answers)
       setStudies(answers)
       
     } catch (error) {
@@ -67,6 +69,7 @@ export default () => {
 
   }
 
+  console.log('studies :', studies)
   return (
     <div>
       <Row>

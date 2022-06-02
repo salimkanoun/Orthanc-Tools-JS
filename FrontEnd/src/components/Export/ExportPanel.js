@@ -54,7 +54,7 @@ export default function ExportPanel() {
 
     const rowStyle = (StudyOrthancID) => {
         if (StudyOrthancID === currentStudy) return { background: 'peachPuff' }
-    }
+    } 
 
     const componentDidMount = async () => {
 

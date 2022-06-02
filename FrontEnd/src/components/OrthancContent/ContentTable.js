@@ -43,8 +43,6 @@ export default ({ patients }) => {
         else if (type === "delete") dispatch(addStudiesToDeleteList(filteredSelectedStudies))
     }
 
-    console.log('patient contentTable :',patients)
-
     return (
 
         <Row>

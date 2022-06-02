@@ -11,7 +11,7 @@ import TableStudyWithNestedSeries from '../CommonComponents/RessourcesDisplay/Re
 import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableStudiesWithNestedSeries'
 
 export default ({target, show, onHide}) =>{
-
+ 
     const [aets, setAets] = useState([])
 
     const store = useSelector(state => {

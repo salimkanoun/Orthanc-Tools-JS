@@ -1,19 +1,19 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react'
-import { connect, useDispatch, useSelector, useStore } from 'react-redux'
+import { useDispatch, useSelector, useStore } from 'react-redux'
 import { toast } from 'react-toastify';
-import { Row, Col, Toast } from 'react-bootstrap';
+import { Row, Col} from 'react-bootstrap';
 
 import { emptyDeleteList, removePatientFromDeleteList, removeStudyFromDeleteList } from '../../actions/DeleteList'
 import apis from '../../services/apis'
 import ModalDelete from '../Main/ModalDelete'
 import MonitorTask from '../../tools/MonitorTask'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies';
+import { studyArrayToPatientArray } from '../../tools/processResponse';
 
 export default function Delete() {
 
     const [show, setShow] = useState(false)
-    const [rows, setRows] = useState([])
-
+    
     const store = useSelector(state => {
         return {
             deleteList: state.DeleteList.deleteList,
@@ -24,26 +24,6 @@ export default function Delete() {
     const dispatch = useDispatch()
 
     let toastInstance = useRef(null)
-
-    useEffect(() => {
-        let patientRows = {}
-        store.deleteList.forEach(study => {
-            patientRows[study.ParentPatient.PatientOrthancID] = {
-                PatientBirthDate: study.ParentPatient.PatientBirthDate,
-                PatientID: study.ParentPatient.PatientID,
-                PatientName: study.ParentPatient.PatientName,
-                PatientOrthancID: study.ParentPatient.PatientOrthancID,
-                PatientSex: study.ParentPatient.PatientSex,
-                Studies: []
-            }
-        })
-
-        store.deleteList.forEach(study => {
-            patientRows[study.ParentPatient.PatientOrthancID].Studies.push(study)
-        })
-
-        setRows(Object.values(patientRows))
-    }, [store.deleteList])
 
     const toogleDeleteConfirmation = () => {
         setShow(show => (!show))
@@ -117,6 +97,8 @@ export default function Delete() {
     }
 
 
+    let patientRows = studyArrayToPatientArray(store.deleteList)
+    console.log('patientRows : ',patientRows)
     return (
         <Fragment>
             <Row>
@@ -134,7 +116,7 @@ export default function Delete() {
                 <Row className="mt-5">
                     <Col>
                         <TablePatientsWithNestedStudies
-                            patients={rows}
+                            patients={patientRows}
                             removeRow
                             onRemovePatient={onRemovePatient}
                             onRemoveStudy={onRemoveStudy}

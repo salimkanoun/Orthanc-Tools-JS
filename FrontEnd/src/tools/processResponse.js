@@ -31,7 +31,23 @@ export function fillPatientModelWithStudies(studiesArray) {
 }
 
 export function studyArrayToPatientArray(studiesArray) {
-    //TODO
+        let patientRows = {}
+        studiesArray.forEach(study => {
+            patientRows[study.ParentPatient.PatientOrthancID] = {
+                PatientBirthDate: study.ParentPatient.PatientBirthDate,
+                PatientID: study.ParentPatient.PatientID,
+                PatientName: study.ParentPatient.PatientName,
+                PatientOrthancID: study.ParentPatient.PatientOrthancID,
+                PatientSex: study.ParentPatient.PatientSex,
+                Studies: []
+            }
+        })
+
+        studiesArray.forEach(study => {
+            patientRows[study.ParentPatient.PatientOrthancID].Studies.push(study)
+        })
+        let responsePatientRows = Object.values(patientRows)
+        return responsePatientRows
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
