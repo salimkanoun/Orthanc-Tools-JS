@@ -29,6 +29,7 @@ export default class Study {
     fillParentPatient = (PatientOrthancID, PatientMainDicomTags) => {
         let patient = new Patient()
         patient.fillFromOrthanc(PatientOrthancID, PatientMainDicomTags)
+        this.PatientOrthancID = PatientOrthancID
         this.ParentPatient = patient
     }
 

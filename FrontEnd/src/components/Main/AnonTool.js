@@ -1,67 +1,67 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
+import React, { Component, useEffect, useState } from 'react'
+import { connect, useDispatch, useSelector, useStore } from 'react-redux'
 
 import Overlay from 'react-bootstrap/Overlay'
 import Popover from 'react-bootstrap/Popover'
 import TablePatientsWithNestedStudies
     from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies'
 
-import {emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList} from '../../actions/AnonList'
+import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList } from '../../actions/AnonList'
+import { studyArrayToPatientArray } from '../../tools/processResponse'
 
 
-class AnonTool extends Component {
+export default ({ target, show, onHide }) => {
 
-    onDeletePatient = (patientOrthancID) => {
-        this.props.removePatientFromAnonList(patientOrthancID)
+    const dispatch = useDispatch();
+
+    const store = useSelector(state => {
+        return {
+            anonList: state.AnonList.anonList
+        }
+    })
+
+    const onRemovePatient = (patientOrthancID) => {
+        console.log('ici')
+        console.log('anon list avant:', store.anonList)
+        console.log('patientOrthancID', patientOrthancID)
+        dispatch(removePatientFromAnonList(patientOrthancID))
+        console.log('anon list apres:', store.anonList)
     }
 
-    onDeleteStudy = (studyOrthancID) => {
-        this.props.removeStudyFromAnonList(studyOrthancID)
+    const onRemoveStudy = (studyOrthancID) => {
+        dispatch(removeStudyFromAnonList(studyOrthancID))
     }
 
-    handleClickEmpty = () => {
-        this.props.emptyAnonymizeList()
+    const handleClickEmpty = () => {
+        dispatch(emptyAnonymizeList())
     }
 
-    render = () => {
-        return (
-            <Overlay target={this.props.target} show={this.props.show} placement="bottom" onHide={this.props.onHide}
-                     rootClose>
-                <Popover id="popover-basic" style={{maxWidth: '100%'}}>
-                    <Popover.Header as="h3">Anon List</Popover.Header>
-                    <Popover.Body>
-                        <div className="float-right mb-3">
-                            <button type="button" className="btn otjs-button otjs-button-orange p-2" onClick={this.handleClickEmpty}>Empty
-                                List
-                            </button>
-                        </div>
-                        <TablePatientsWithNestedStudies
-                            studies={this.props.anonList}
-                            hiddenActionBouton={true}
-                            hiddenRemoveRow={false}
-                            onDeletePatient={this.onDeletePatient}
-                            onDeleteStudy={this.onDeleteStudy}
-                            hiddenSelect={true}
-                            wrapperClasses="table-responsive"
-                        />
-                    </Popover.Body>
-                </Popover>
-            </Overlay>
-        )
-    }
+    let patientsRows = studyArrayToPatientArray(store.anonList)
+
+    return (
+        <Overlay target={target} show={show} placement="bottom" onHide={onHide}
+            rootClose>
+            <Popover id="popover-basic" style={{ maxWidth: '100%' }}>
+                <Popover.Header as="h3">Anon List</Popover.Header>
+                <Popover.Body>
+                    <div className="float-right mb-3">
+                        <button type="button" className="btn otjs-button otjs-button-orange p-2" onClick={handleClickEmpty}>Empty
+                            List
+                        </button>
+                    </div>
+                    <TablePatientsWithNestedStudies
+                        patients={patientsRows}
+                        actionBouton={false}
+                        removeRow={true}
+                        onRemovePatient={onRemovePatient}
+                        onRemoveStudy={onRemoveStudy}
+                        selectable={false}
+                        onSelectStudies={() => { }}
+                        wrapperClasses="table-responsive"
+                    />
+                </Popover.Body>
+            </Popover>
+        </Overlay>
+    )
+
 }
-
-const mapStateToProps = state => {
-    return {
-        anonList: state.AnonList.anonList
-    }
-
-}
-
-const mapDispatchToProps = {
-    emptyAnonymizeList,
-    removePatientFromAnonList,
-    removeStudyFromAnonList,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AnonTool)
