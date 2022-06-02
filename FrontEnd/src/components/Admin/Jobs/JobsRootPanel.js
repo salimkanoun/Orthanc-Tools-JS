@@ -5,6 +5,7 @@ import {toast} from "react-toastify";
 import apis from "../../../services/apis";
 import ModalDetails from './ModalDetails'
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import { Button } from "react-bootstrap";
 
 const dropDown = (id) => {
     return (
@@ -56,8 +57,8 @@ function JobsTable({handleDetails, rows}) {
             accessor: 'Details',
             Header: 'Details',
             Cell: (({row}) => {
-                return (<div className="text-center"><button className='otjs-button otjs-button-blue' type='button'
-                               onClick={() => handleDetails(row.index)}>Details</button></div>)
+                return (<div className="text-center"><Button className='otjs-button otjs-button-blue'
+                               onClick={() => handleDetails(row.index)}>Details</Button></div>)
             })
         }, {
             accessor: 'Actions',

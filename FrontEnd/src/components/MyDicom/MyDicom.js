@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
 import TableMyDicomSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeriesFillFromParent'
 //import SendTo from '../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown'
-import {Row, Col} from 'react-bootstrap'
+import {Row, Col, Button} from 'react-bootstrap'
 
 class MyDicom extends Component{
   state = {
@@ -121,7 +121,7 @@ class MyDicom extends Component{
           <Row className="mt-5">
             <Col>
               {this.state.labels.map(label => (
-                <button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} type='button' className={label.label_name===this.state.currentLabel ? 'otjs-button otjs-button-green':'otjs-button otjs-button-blue'} onClick={this.handleLabelClick}> {label.label_name} </button>
+                <Button name={label.label_name} style={{margin: "5px",width:"30%"}} key={label.label_name} className={label.label_name===this.state.currentLabel ? 'otjs-button otjs-button-green':'otjs-button otjs-button-blue'} onClick={this.handleLabelClick}> {label.label_name} </Button>
               ))}
             </Col>
           </Row>

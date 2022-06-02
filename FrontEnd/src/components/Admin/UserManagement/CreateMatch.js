@@ -1,4 +1,5 @@
 import React, {Component, Fragment, useMemo} from 'react'
+import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select'
 import {toast} from 'react-toastify';
@@ -20,9 +21,9 @@ function AssociationTable({associations, deleteAssociation}) {
             accessor: 'delete',
             Header: 'Delete',
             Cell: ({row}) => {
-                return <button type='button' name='delete' className='btn btn-danger' onClick={() => {
+                return <Button name='delete' className='btn btn-danger' onClick={() => {
                     deleteAssociation(row.values.ldapGroup)
-                }}>Delete</button>
+                }}>Delete</Button>
             }
         }
     ], [deleteAssociation]);
@@ -133,9 +134,9 @@ export default class CreateMatch extends Component {
     render = () => {
         return (
             <Fragment>
-                <button type='button' className='btn btn-primary mr-3 mt-2' onClick={() => this.showModal(true)}>New
+                <Button className='btn btn-primary mr-3 mt-2' onClick={() => this.showModal(true)}>New
                     match
-                </button>
+                </Button>
                 <Modal show={this.state.show} onHide={() => this.showModal(false)}>
                     <Modal.Header closeButton>
                         <h2 className='card-title'>Create new match</h2>
@@ -153,8 +154,8 @@ export default class CreateMatch extends Component {
                         </Fragment>
                     </Modal.Body>
                     <Modal.Footer>
-                        <button type='button' name='create' className='btn btn-primary' onClick={this.create}>Create
-                        </button>
+                        <Button  name='create' className='btn btn-primary' onClick={this.create}>Create
+                        </Button>
                     </Modal.Footer>
                 </Modal>
 

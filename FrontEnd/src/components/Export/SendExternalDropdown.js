@@ -1,6 +1,6 @@
 import React, {Component, createRef} from "react"
 import Dropdown from "react-bootstrap/Dropdown"
-import {ButtonGroup, InputGroup} from "react-bootstrap"
+import {Button, ButtonGroup, InputGroup} from "react-bootstrap"
 import {toast} from "react-toastify"
 
 import apis from "../../services/apis"
@@ -53,10 +53,10 @@ export default class SendExternalDropdown extends Component {
         <p>Your DICOMs {finished ? 'has been' : 'will be'} exported as : </p>
         <InputGroup className={'bg-light'} style={{'border-radius': '4px'}}>
             <input className={'form-control'} onClick={(e) => e.stopPropagation()} disabled value={fileName}/>
-            <button type={'button'}
+            <Button
                     className={`btn btn-outline-${finished ? "success" : "primary"}  btn-otjs `}
                     onClick={() => navigator.clipboard.writeText(fileName)}>copy
-            </button>
+            </Button>
         </InputGroup>
 
     </div>

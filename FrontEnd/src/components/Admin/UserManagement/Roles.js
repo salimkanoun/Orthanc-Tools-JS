@@ -1,5 +1,5 @@
 import React, {Component, Fragment, useMemo} from "react"
-import {Row, Col, Modal} from 'react-bootstrap';
+import {Row, Col, Modal, Button} from 'react-bootstrap';
 
 import apis from '../../../services/apis'
 import ModifyRole from "./ModifyRole";
@@ -24,8 +24,8 @@ function RoleTable({roles, onDelete}) {
             Header: 'Delete',
             Cell: ({row}) => {
                 return (<div className="text-center">
-                            <button type='button' className='otjs-button otjs-button-red' name='openDelete'
-                               onClick={() => onDelete(row.values.name)}>Delete</button>
+                            <Button className='otjs-button otjs-button-red' name='openDelete'
+                               onClick={() => onDelete(row.values.name)}>Delete</Button>
                         </div>)
             }
         }
@@ -111,13 +111,13 @@ export default class Roles extends Component {
                     <Modal.Footer className="text-center">
                         <Row>
                             <Col>
-                                <button type='button' className='otjs-button otjs-button-blue'
+                                <Button className='otjs-button otjs-button-blue'
                                     onClick={() => this.setState({showDelete: false})}>Close
-                                </button>
+                                </Button>
                             </Col>
                             <Col>
-                                <button name='delete' type='button' className='otjs-button otjs-button-red' onClick={this.delete}>Delete
-                                </button>
+                                <Button name='delete' className='otjs-button otjs-button-red' onClick={this.delete}>Delete
+                                </Button>
                             </Col>
                         </Row>
                     </Modal.Footer>

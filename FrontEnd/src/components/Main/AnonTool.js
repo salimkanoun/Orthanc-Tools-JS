@@ -8,6 +8,7 @@ import TablePatientsWithNestedStudies
 
 import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList } from '../../actions/AnonList'
 import { studyArrayToPatientArray } from '../../tools/processResponse'
+import { Button } from 'react-bootstrap'
 
 
 export default ({ target, show, onHide }) => {
@@ -47,9 +48,9 @@ export default ({ target, show, onHide }) => {
                 <Popover.Header as="h3">Anon List</Popover.Header>
                 <Popover.Body>
                     <div className="float-right mb-3">
-                        <button type="button" className="btn otjs-button otjs-button-orange p-2" onClick={handleClickEmpty}>Empty
+                        <Button className="btn otjs-button otjs-button-orange p-2" onClick={handleClickEmpty}>Empty
                             List
-                        </button>
+                        </Button>
                     </div>
                     <TablePatientsWithNestedStudies
                         patients={patientsRows}

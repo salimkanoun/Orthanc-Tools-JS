@@ -2,6 +2,7 @@ import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/Com
 import React, {useMemo} from "react";
 import {InputCell, SelectCell} from "../../CommonComponents/RessourcesDisplay/ReactTable/EditableCells";
 import apis from "../../../services/apis";
+import { Button } from "react-bootstrap";
 
 
 export default function UserTable({
@@ -53,17 +54,17 @@ export default function UserTable({
             Header: 'Edit',
             editable: false,
             Cell: ({row}) => {
-                return <button type='button' name='edit' className='otjs-button otjs-button-green' onClick={() => {
+                return <Button name='edit' className='otjs-button otjs-button-green' onClick={() => {
                     modify(row.values)
-                }}>Save</button>
+                }}>Save</Button>
             }
         }, {
             id: 'delete',
             Header: 'Delete',
             editable: false,
             Cell: ({row}) => {
-                return <button type='button' name='delete' className='otjs-button otjs-button-red'
-                               onClick={() => setDelete(row.values.username, row.values.userId)}>Delete</button>
+                return <Button name='delete' className='otjs-button otjs-button-red'
+                               onClick={() => setDelete(row.values.username, row.values.userId)}>Delete</Button>
             }
         }
     ], [modify, setDelete]);

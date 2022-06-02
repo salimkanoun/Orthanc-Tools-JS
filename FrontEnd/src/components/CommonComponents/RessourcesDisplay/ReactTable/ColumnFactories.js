@@ -4,6 +4,7 @@ import {InputCell as EditableCell} from "./EditableCells";
 import {dateFilter, DateFilter, invertableDataFilter, InvertableDataFilter} from "./ColumnFilters";
 import RetrieveButton from "../../../Query/Components/RetrieveButton";
 import {toast} from "react-toastify";
+import { Button } from "react-bootstrap";
 
 const commonColumns = {
     RAW: {
@@ -57,14 +58,14 @@ const seriesColumns = {
         id: 'Remove',
         Header: 'Remove',
         Cell: ({row}) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {
+            return <Button className="btn btn-danger" onClick={(e) => {
                 try {
                     onRemove(row.values.SeriesOrthancID);
                 } catch (e) {
                     toast.error("Remove error");
                 }
                 e.stopPropagation();
-            }}>Remove</button>
+            }}>Remove</Button>
         }
     }),
     NB_SERIES_INSTANCES: {
@@ -183,9 +184,9 @@ const studyColumns = {
         id: 'Remove',
         Header: 'Remove',
         Cell: ({row}) => {
-            return <button type="button" className="btn btn-danger" onClick={() => {
+            return <Button className="btn btn-danger" onClick={() => {
                     onRemoveStudy(row.values.StudyOrthancID);
-            }}>Remove</button>
+            }}>Remove</Button>
         },
     }),
     NB_STUDY_SERIES: {
@@ -265,9 +266,9 @@ const patientColumns = {
         id: 'Remove',
         Header: 'Remove',
         Cell: ({row}) => {
-            return <button type="button" className="btn btn-danger" onClick={() => {
+            return <Button className="btn btn-danger" onClick={() => {
                 onRemovePatient(row.values.PatientOrthancID);
-            }}>Remove</button>
+            }}>Remove</Button>
         },
         editable: false
     })

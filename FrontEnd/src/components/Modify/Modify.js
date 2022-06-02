@@ -4,6 +4,7 @@ import {toast} from 'react-toastify';
 
 import MonitorJob from '../../tools/MonitorJob'
 import ModalModify from './ModalModify';
+import { Button } from 'react-bootstrap';
 
 
 export default class Modify extends Component {
@@ -175,7 +176,7 @@ export default class Modify extends Component {
         var render = <></>
         if (this.props.hidden !== true) {
             render = <Fragment>
-                <button className='dropdown-item bg-orange' type='button' onClick={this.openModify}>Modify</button>
+                <Button className='dropdown-item bg-orange' onClick={this.openModify}>Modify</Button>
                 <ModalModify
                     show={this.state.show}
                     onHide={() => this.setState({show: false})}

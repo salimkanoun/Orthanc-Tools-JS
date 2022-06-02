@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Button } from 'react-bootstrap'
 import AutoRetrieveRootPanel from './AutoRetrieveRootPanel'
 import TaskFlushPanel from './TaksFlushPanel'
 
@@ -33,16 +34,16 @@ const TaskRootPanel = () => {
                     <nav className="otjs-navmenu container-fluid">
                         <div className="otjs-navmenu-nav">
                             <li className='col-6 text-center'>
-                                <button
+                                <Button
                                     className={currentComponent === 'retrieve' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => switchTab('retrieve')}>Auto Retrieve Robots
-                                </button>
+                                </Button>
                             </li>
                             <li className='col-6 text-center'>
-                                <button
+                                <Button
                                     className={currentComponent === 'flush' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => switchTab('flush')}>Flush Tasks
-                                </button> 
+                                </Button> 
                             </li>
                         </div>
                     </nav>

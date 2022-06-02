@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Button } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
 
 export default class ModalWarning extends Component {
@@ -13,7 +14,7 @@ export default class ModalWarning extends Component {
                     Some studies are not anonymized !
                 </Modal.Body>
                 <Modal.Footer>
-                    <button type='button' className='otjs-button otjs-button-red' onClick={this.props.onHide}>Cancel</button>
+                    <Button className='otjs-button otjs-button-red' onClick={this.props.onHide}>Cancel</Button>
                     {this.props.button}
                 </Modal.Footer>
             </Modal>

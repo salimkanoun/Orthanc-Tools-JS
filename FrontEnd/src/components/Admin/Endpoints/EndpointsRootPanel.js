@@ -7,6 +7,7 @@ import EndpointForm from './EndpointForm'
 import SecurityRootPanel from './Security/SecurityRootPanel'
 import { toast } from 'react-toastify'
 import EndpointsOptions from './EndpointsOptions'
+import { Button } from 'react-bootstrap'
 
 const EndpointRootPanel = () => {
 
@@ -121,22 +122,22 @@ const EndpointRootPanel = () => {
                     <nav className="otjs-navmenu container-fluid">
                         <div className="otjs-navmenu-nav">
                             <li className='col-4 text-center'>
-                                <button
+                                <Button
                                     className={currentComponent === 'endpoints' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => switchTab('endpoints')}>Endpoints
-                                </button> 
+                                </Button> 
                             </li>
                             <li className='col-4 text-center'>
-                                <button
+                                <Button
                                     className={currentComponent === 'add' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => switchTab('add')}>Add Endpoints
-                                </button> 
+                                </Button> 
                             </li>
                             <li className='col-4 text-center'>
-                                <button
+                                <Button
                                     className={currentComponent === 'security' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => switchTab('security')}>Security
-                                </button> 
+                                </Button> 
                             </li>
                         </div>
                     </nav>

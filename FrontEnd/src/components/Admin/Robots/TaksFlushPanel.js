@@ -1,6 +1,6 @@
 import { Component, Fragment } from "react"
 import apis from '../../../services/apis'
-import {Modal, Row, Col} from 'react-bootstrap'
+import {Modal, Row, Col, Button} from 'react-bootstrap'
 
 export default class RobotStatus extends Component {
     state = {
@@ -73,8 +73,8 @@ export default class RobotStatus extends Component {
                         Warning : there is no check on the flush for the progression of the task. It empties the queues without discrimination
                     </Modal.Body>
                     <Modal.Footer>
-                        <button type='button' className='btn btn-info' onClick={()=>this.setState({flushType:null})}>Cancel</button>
-                        <button type='button' className='btn btn-danger' onClick={this.handleConfirm}>Confirm</button>
+                        <Button className='btn btn-info' onClick={()=>this.setState({flushType:null})}>Cancel</Button>
+                        <Button className='btn btn-danger' onClick={this.handleConfirm}>Confirm</Button>
                     </Modal.Footer>
                 </Modal>
             </Fragment>

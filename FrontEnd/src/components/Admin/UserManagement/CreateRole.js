@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import {Row, Col, Modal} from 'react-bootstrap'
+import {Row, Col, Modal, Button} from 'react-bootstrap'
 
 import RoleForm from './RoleForm'
 import apis from '../../../services/apis'
@@ -31,7 +31,7 @@ export default class CreateRole extends Component {
     render = () => {
         return (
             <Fragment>
-                <button type='button' className='otjs-button otjs-button-blue' onClick={() => this.setState({ show: true })} >New Role</button>
+                <Button className='otjs-button otjs-button-blue' onClick={() => this.setState({ show: true })} >New Role</Button>
                 <Modal id='create' show={this.state.show} onHide={() => this.setState({ show: false })}>
                     <Modal.Header closeButton>
                         <h2 className='card-title'>Create new role</h2>

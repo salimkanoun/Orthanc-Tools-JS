@@ -8,7 +8,7 @@ import EndpointsRootPanel from './Endpoints/EndpointsRootPanel'
 import GeneralRoot from './General/GeneralRoot'
 import TaskRootPanel from './Robots/TaskRootPanel'
 import LabelRootPanel from "./Labels/LabelRootPanel"
-import {Col, Nav, Navbar, Row} from 'react-bootstrap'
+import {Button, Col, Nav, Navbar, Row} from 'react-bootstrap'
 
 /**
  * Root Panel of Admin route
@@ -56,67 +56,67 @@ const AdminRootPanel = () => {
                     <Navbar.Toggle/>
                     <nav className="d-flex flex-column text-justify justify-content-start align-items-center">
                         <Nav className="me-auto mb-3 d-flex align-items-center">
-                            <button id="icoGeneral" type="button" value="General"
+                            <Button id="icoGeneral" value="General"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "General" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
                                 <i className="fas fa-arrow-circle-right pe-2"></i>General
-                            </button>
+                            </Button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
-                            <button id="icoUser" type="button" value="Users"
+                            <Button id="icoUser" value="Users"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "Users" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
                                 <i className="fas fa-arrow-circle-right pe-2"></i>Users
-                            </button>
+                            </Button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
-                            <button id="icoAets" type="button" value="Aets"
+                            <Button id="icoAets" value="Aets"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "Aets" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
                                 <i className="fas fa-arrow-circle-right pe-2"></i>Aets
-                            </button>
+                            </Button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
-                            <button id="icoPeers" type="button" value="Peers"
+                            <Button id="icoPeers" value="Peers"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "Peers" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
                                 <i className="fas fa-arrow-circle-right pe-2"></i>Peers
-                            </button>
+                            </Button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
-                            <button id="icoExternal" type="button" value="External Endpoints"
+                            <Button id="icoExternal" value="External Endpoints"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "External Endpoints" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
                                 <i className="fas fa-arrow-circle-right pe-2"></i>External Endpoints
-                            </button>
+                            </Button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
-                            <button id="icoRobot" type="button" value="Robots & Tasks"
+                            <Button id="icoRobot" value="Robots & Tasks"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "Robots & Tasks" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
                                 <i className="fas fa-arrow-circle-right pe-2"></i>Robots & Tasks
-                            </button>
+                            </Button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
-                            <button id="icoJob" type="button" value="Jobs"
+                            <Button id="icoJob" value="Jobs"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "Jobs" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
                                 <i className="fas fa-arrow-circle-right pe-2"></i>Jobs
-                            </button>
+                            </Button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
-                            <button id="icoCD" type="button" value="CD Burner"
+                            <Button id="icoCD" value="CD Burner"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "CD Burner" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
                                 <i className="fas fa-arrow-circle-right pe-2"></i>CD Burner
-                            </button>
+                            </Button>
                         </Nav>
                         <Nav className="me-auto d-flex align-items-center">
-                            <button id="icoLabel" type="button" value="Labels"
+                            <Button id="icoLabel" value="Labels"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "Labels" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
                                 <i className="fas fa-arrow-circle-right pe-2"></i>Labels
-                            </button>
+                            </Button>
                         </Nav>
                     </nav>
                 </Navbar>

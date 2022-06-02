@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react'
+import { Button } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import apis from '../../../../services/apis'
 import CertificateForm from './CertificateForm'
@@ -78,16 +79,16 @@ const SecurityRootPanel = () => {
                     <nav className="otjs-navmenu container-fluid">
                         <div className="otjs-navmenu-nav">
                             <li className='col-6 text-center'>
-                                <button
+                                <Button
                                     className={currentComponent === 'sshKeys' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => switchTab('sshKeys')}>Ssh Keys
-                                </button> 
+                                </Button> 
                             </li>
                             <li className='col-6 text-center'>
-                                <button
+                                <Button
                                     className={currentComponent === 'certificates' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => switchTab('certificates')}>Certificates
-                                </button> 
+                                </Button> 
                             </li>
                         </div>
                     </nav>

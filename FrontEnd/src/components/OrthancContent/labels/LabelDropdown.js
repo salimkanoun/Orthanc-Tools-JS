@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {ButtonGroup, Dropdown, FormControl, InputGroup} from "react-bootstrap";
+import {Button, ButtonGroup, Dropdown, FormControl, InputGroup} from "react-bootstrap";
 import apis from "../../../services/apis";
 
 export default class LabelDropdown extends Component {
@@ -79,11 +79,11 @@ export default class LabelDropdown extends Component {
         }
 
         return <Dropdown.ItemText key={label} className={"dropdown-item label-dropdown-item"}>
-            <button className={'btn w-100 text-left d-flex justify-content-between'}
+            <Button className={'btn w-100 text-left d-flex justify-content-between'}
                     onClick={this.handleSetLabel(label)}>
                 <p>{`• ${label}`}</p>
                 <p className={'text-light-grey'}>{symbol}</p>
-            </button>
+            </Button>
         </Dropdown.ItemText>
     }
 

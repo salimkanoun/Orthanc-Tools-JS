@@ -7,6 +7,7 @@ import { CSSTransition } from "react-transition-group";
 import ReactTooltip from "react-tooltip";
 import HelpIcon from '@material-ui/icons/Info';
 import { toast } from 'react-toastify'
+import { Button } from 'react-bootstrap';
 
 export default class Authentication extends Component {
 
@@ -113,7 +114,7 @@ export default class Authentication extends Component {
                 </fieldset>
 
                 <fieldset className='text-right'>
-                  <button name='connexion' type='button' className='btn btn-dark' onClick={this.handleClick}> Connect </button>
+                  <Button name='connexion' className='btn btn-dark' onClick={this.handleClick}> Connect </Button>
                 </fieldset>
 
               </form>

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import Toggle from 'react-toggle'
-import {Row, Col} from 'react-bootstrap'
+import {Row, Col, Button} from 'react-bootstrap'
 export default class RoleForm extends Component {
 
     state = {
@@ -145,7 +145,7 @@ export default class RoleForm extends Component {
 
                 <Row className="mt-3 text-center">
                     <Col>
-                        <button type='button' name='create' className='otjs-button otjs-button-blue' onClick={() => { this.props.onSubmitRole(this.state) }}> Validate </button>
+                        <Button name='create' className='otjs-button otjs-button-blue' onClick={() => { this.props.onSubmitRole(this.state) }}> Validate </Button>
                     </Col>
                 </Row>
 

@@ -371,13 +371,13 @@ class DicomRouterModal extends Component {
       </Modal.Body>
 
       <Modal.Footer>
-        <button className="otjs-button otjs-button-green me-2" onClick={() => this.handleSave()}>
+        <Button className="otjs-button otjs-button-green me-2" onClick={() => this.handleSave()}>
           {this.state.id ? 'Save changes' : 'Create'}
-        </button>
+        </Button>
 
-        <button className="otjs-button otjs-button-red" onClick={() => this.onHide() }>
+        <Button className="otjs-button otjs-button-red" onClick={() => this.onHide() }>
           Cancel
-        </button>
+        </Button>
       </Modal.Footer>
 
     </Modal>

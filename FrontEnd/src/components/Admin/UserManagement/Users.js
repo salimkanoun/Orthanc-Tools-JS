@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react'
-import {Modal, Row, Col} from 'react-bootstrap';
+import {Modal, Row, Col, Button} from 'react-bootstrap';
 
 import apis from '../../../services/apis';
 
@@ -124,12 +124,12 @@ export default class Users extends Component {
                     <Modal.Footer>
                         <Row className="text-center mt-2">
                             <Col>
-                                <button type='button' className='otjs-button otjs-button-blue'
+                                <Button className='otjs-button otjs-button-blue'
                                     onClick={() => this.setState({showDelete: false})}>Close
-                                </button>
+                                </Button>
                             </Col>
                             <Col>
-                                <button type='button' className='otjs-button otjs-button-red' onClick={this.delete}>Delete</button>
+                                <Button className='otjs-button otjs-button-red' onClick={this.delete}>Delete</Button>
                             </Col>
                         </Row>
                         

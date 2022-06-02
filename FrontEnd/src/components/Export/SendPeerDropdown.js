@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import {Dropdown, ButtonGroup} from "react-bootstrap";
+import {Dropdown, ButtonGroup, Button} from "react-bootstrap";
 import { toast } from "react-toastify"
 
 import apis from "../../services/apis"
@@ -71,7 +71,7 @@ export default class SendPeerDropdown extends Component {
 
         let dropDownItems = []
         this.props.peers.forEach(peer => {
-            let button = <button id={peer} type='button' className='btn btn-primary' onClick={this.handleClickDownload}>Continue Anyway</button>
+            let button = <Button id={peer} className='btn btn-primary' onClick={this.handleClickDownload}>Continue Anyway</Button>
             dropDownItems.push(<Dropdown.Item key={peer} id={peer} onClick={this.props.needConfirm ? () => { this.props.setModal(); this.props.setButton(button) } : this.handleClickDownload} >{peer}</Dropdown.Item>)
         })
 

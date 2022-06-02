@@ -9,6 +9,7 @@ import Metadata from '../../Metadata/Metadata'
 import Modify from '../../Modify/Modify'
 import {toast} from 'react-toastify'
 import CreateDicom from '../../CreateDicom/CreateDicom'
+import { Button } from 'react-bootstrap'
 
 export default class ActionBouton extends Component {
 
@@ -88,23 +89,23 @@ export default class ActionBouton extends Component {
                     <Dropdown.Menu className="mt-2 border border-dark border-2">
                         <OhifLink className='dropdown-item bg-green' {...this.props} />
                         <StoneLink className='dropdown-item bg-green' {...this.props} />
-                        <button className='dropdown-item bg-green' type='button' onClick={this.setMetadata}
+                        <Button className='dropdown-item bg-green'  onClick={this.setMetadata}
                                 hidden={this.props.hiddenMetadata}>View Metadata
-                        </button>
+                        </Button>
                         {(["patients", "studies"].includes(this.props.level) ? <CreateDicom {...this.props}/> :
                             null)}
                         <Modify hidden={this.props.hiddenModify} {...this.props} />
-                        <button className='dropdown-item bg-red' type='button' hidden={this.props.hiddenDelete}
+                        <Button className='dropdown-item bg-red' hidden={this.props.hiddenDelete}
                                 onClick={this.delete}>Delete
-                        </button>
+                        </Button>
                         {(this.props.level === "studies" && !!this.props.openLabelModal ?
-                            <button className='dropdown-item bg-blue' type='button' hidden={this.props.hiddenDelete}
+                            <Button className='dropdown-item bg-blue' hidden={this.props.hiddenDelete}
                                     onClick={() => {
                                         apis.content.getStudiesDetails(this.props.orthancID).then((study) => {
                                             this.props.openLabelModal(study)
                                         })
                                     }}>Labels
-                            </button> : null)}
+                            </Button> : null)}
 
                     </Dropdown.Menu>
                 </Dropdown>

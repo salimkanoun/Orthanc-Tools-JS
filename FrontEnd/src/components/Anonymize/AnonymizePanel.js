@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Col, Container, Row } from 'react-bootstrap'
+import { Button, Col, Container, Row } from 'react-bootstrap'
 import TablePatients from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatients'
 import apis from "../../services/apis"
 import AnonProfile from './AnonProfile'
@@ -143,10 +143,10 @@ export default (setTask) => {
                         onDataChange={onDataChangePatient}
                         rowStyle={rowStyle}
                         pagination={true} />
-                    <button type='button' className='otjs-button otjs-button-red mt-2 w-7'
+                    <Button className='otjs-button otjs-button-red mt-2 w-7'
                         onClick={onClickEmpty}>
                         Empty List
-                    </button>
+                    </Button>
                 </Col>
                 <Col xxl={6}>
                     <TableStudyAnon
@@ -170,10 +170,10 @@ export default (setTask) => {
                                 onChange={onChange} />
                         </Col>
                         <Col sm>
-                            <button type='button' className='otjs-button otjs-button-orange'
+                            <Button variant='warning' className='otjs-button'
                                 onClick={onClickAutoFill}>
                                 AutoFill
-                            </button>
+                            </Button>
                         </Col>
                     </Row>
                 </Col>
@@ -183,10 +183,10 @@ export default (setTask) => {
             </Row>
             <Row className="mt-4 border-top border-2 pt-4">
                 <Col className="text-center">
-                    <button className='otjs-button otjs-button-blue w-7' type='button'
+                    <Button className='otjs-button otjs-button-blue w-7' 
                         onClick={anonymize}>
                         Anonymize
-                    </button>
+                    </Button>
                 </Col>
             </Row>
 

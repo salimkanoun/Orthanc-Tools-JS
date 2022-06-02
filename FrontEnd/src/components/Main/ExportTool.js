@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react'
 import { connect, useDispatch, useSelector } from 'react-redux'
-import { Popover, Col, Row, Overlay } from 'react-bootstrap'
+import { Popover, Col, Row, Overlay, Button } from 'react-bootstrap'
 
 import apis from '../../services/apis'
 import SendAetDropdown from "../Export/SendAetDropdown"
@@ -63,9 +63,9 @@ export default ({target, show, onHide}) =>{
                 <Popover.Body>
                     <div className="row mb-3">
                         <div className="col float-right">
-                            <button type="button" className="btn otjs-button otjs-button-orange p-2"
+                            <Button className="btn otjs-button otjs-button-orange p-2"
                                 onClick={handleClickEmpty}>Empty List
-                            </button>
+                            </Button>
                         </div>
                     </div>
                     <TableStudiesWithNestedSeries

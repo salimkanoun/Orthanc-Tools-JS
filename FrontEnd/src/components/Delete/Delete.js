@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector, useStore } from 'react-redux'
 import { toast } from 'react-toastify';
-import { Row, Col} from 'react-bootstrap';
+import { Row, Col, Button} from 'react-bootstrap';
 
 import { emptyDeleteList, removePatientFromDeleteList, removeStudyFromDeleteList } from '../../actions/DeleteList'
 import apis from '../../services/apis'
@@ -109,8 +109,8 @@ export default function Delete() {
                 </Row>
                 <Row className="text-start mt-5">
                     <Col>
-                        <button type="button" className="otjs-button otjs-button-orange w-7" onClick={handleClickEmpty}>Empty List
-                        </button>
+                        <Button className="otjs-button otjs-button-orange w-7" onClick={handleClickEmpty}>Empty List
+                        </Button>
                     </Col>
                 </Row>
                 <Row className="mt-5">
@@ -125,9 +125,9 @@ export default function Delete() {
                 </Row>
                 <Row className="mt-5">
                     <Col>
-                        <button type="button" className="otjs-button otjs-button-red w-7" onClick={toogleDeleteConfirmation}>
+                        <Button className="otjs-button otjs-button-red w-7" onClick={toogleDeleteConfirmation}>
                             Delete List
-                        </button>
+                        </Button>
                     </Col>
                 </Row>
             </Row>

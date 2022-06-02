@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react'
-import {useSelector} from 'react-redux'
-import { Row, Col } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import { Row, Col, Button } from 'react-bootstrap'
 import TableQuery from './TableQuery'
 import Results from './Results'
 import RobotView from './RobotView'
@@ -33,19 +33,19 @@ const AutoQueryRoot = () => {
         let component = null
         switch (currentMainTab) {
             case QUERRY:
-                component = <TableQuery switchTab={switchTab}/>
+                component = <TableQuery switchTab={switchTab} />
                 break
             case RESULT:
-                component = <Results switchTab={switchTab} setTaskId={setLastTaskId}/>
+                component = <Results switchTab={switchTab} setTaskId={setLastTaskId} />
                 break
             case MY_ROBOT:
                 component = <RobotView id={lastTaskId} onDelete={() => {
                     switchTab(QUERRY)
                     setLastTaskId(null);
-                }}/>
+                }} />
                 break
             case HISTORIC:
-                component = <RobotHistoric username={username}/>
+                component = <RobotHistoric username={username} />
                 break
             default:
                 break
@@ -69,36 +69,36 @@ const AutoQueryRoot = () => {
                 <nav className='otjs-navmenu container-fluid'>
                     <div className="otjs-navmenu-nav">
                         <li className='col-3 text-center'>
-                            <button
+                            <Button
                                 className={currentMainTab === QUERRY ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'}
                                 onClick={() => setCurrentMainTab(QUERRY)}>Query List
-                            </button>
+                            </Button>
                         </li>
                         <li className='col-3 text-center'>
-                            <button
+                            <Button
                                 className={currentMainTab === RESULT ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'}
                                 onClick={() => setCurrentMainTab(RESULT)}>Results
-                            </button>
+                            </Button>
                         </li>
                         <li className='col-3 text-center'>
-                            <button
+                            <Button
                                 className={currentMainTab === MY_ROBOT ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button' + (!lastTaskId ? " disabled" : "")}
                                 onClick={() => {
                                     if (lastTaskId) setCurrentMainTab(MY_ROBOT)
                                 }}>My Retrieve Robot
-                            </button>
+                            </Button>
                         </li>
                         <li className='col-3 text-center'>
-                            <button
+                            <Button
                                 className={currentMainTab === HISTORIC ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'}
                                 onClick={() => setCurrentMainTab(HISTORIC)}>History
-                            </button>
+                            </Button>
                         </li>
                     </div>
                 </nav>
             </div>
             <div>
-                
+
                 {getComponentToDisplay()}
             </div>
         </div>

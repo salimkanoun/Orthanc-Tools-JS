@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Alert, Col, Row} from "react-bootstrap/";
+import {Alert, Button, Col, Row} from "react-bootstrap/";
 import Toggle from 'react-toggle'
 import apis from "../../services/apis";
 import DicomRouterTable from './DicomRouterTable'
@@ -115,7 +115,7 @@ class DicomRouterPanel extends Component {
             </Col>
         </Row>
         <Row className="mt-5">
-          <button type="button" className="otjs-button otjs-button-blue w-10" onClick={() => this.handleOpenModal()}>Create Router</button>
+          <Button className="otjs-button otjs-button-blue w-10" onClick={() => this.handleOpenModal()}>Create Router</Button>
         </Row>
         <Row className="mt-5 text-center">
           <Col>

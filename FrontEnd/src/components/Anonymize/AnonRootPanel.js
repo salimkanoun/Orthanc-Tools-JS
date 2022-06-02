@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import AnonymizePanelProgress from './AnonymizePanelProgress';
 import apis from '../../services/apis';
 import AnonHistoric from './AnonHistoric';
-import { Row,Col } from 'react-bootstrap';
+import { Row,Col, Button } from 'react-bootstrap';
 const ANON_TAB = "Anonymizassion"
 const PORG_TAB = "Progress"
 const HISTORIC_TAB = "Historic"
@@ -80,25 +80,25 @@ class AnonRootPanel extends Component {
                     <nav className="otjs-navmenu container-fluid">
                         <div className="otjs-navmenu-nav">
                             <li className='col-4 text-center'>
-                                <button
+                                <Button
                                     className={this.state.currentMainTab === ANON_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => this.setCurrentMainTab(ANON_TAB)}>Anonimization List
-                                </button>
+                                </Button>
                             </li>
                         
                             <li className='col-4 text-center'>
-                                <button
+                                <Button
                                     className={this.state.currentMainTab === PORG_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button' + (!this.state.anonTaskId ? ' disabled' : '')}
                                     onClick={() => {
                                         if (this.state.anonTaskId) this.setCurrentMainTab(PORG_TAB)
                                     }}>Progress
-                                </button>
+                                </Button>
                             </li>
                             <li className='col-4 text-center'>
-                                <button
+                                <Button
                                     className={this.state.currentMainTab === HISTORIC_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => this.setCurrentMainTab(HISTORIC_TAB)}> History
-                                </button>
+                                </Button>
                             </li>
                         </div>
                     </nav>

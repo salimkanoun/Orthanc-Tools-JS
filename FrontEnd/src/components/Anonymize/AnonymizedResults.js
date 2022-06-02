@@ -5,7 +5,7 @@ import TableStudy from "../CommonComponents/RessourcesDisplay/ReactTable/TableSt
 import apis from "../../services/apis"
 import task from "../../services/task"
 import MonitorTask from "../../tools/MonitorTask"
-import { Row, Col } from "react-bootstrap"
+import { Row, Col, Button } from "react-bootstrap"
 
 import {addStudiesToDeleteList} from "../../actions/DeleteList"
 import {addStudiesToExportList} from "../../actions/ExportList"
@@ -105,12 +105,12 @@ class AnonymizedResults extends Component {
                 </Row>
                 <Row>
                     <Col className="text-center">
-                        <button type='button' className='otjs-button otjs-button-blue w-10 me-4' onClick={this.exportList}>
+                        <Button className='otjs-button otjs-button-blue w-10 me-4' onClick={this.exportList}>
                             To Export List
-                        </button>
-                        <button type='button' className='otjs-button otjs-button-red w-10 ms-4' onClick={this.deleteList}>
+                        </Button>
+                        <Button className='otjs-button otjs-button-red w-10 ms-4' onClick={this.deleteList}>
                             To Delete List
-                        </button>
+                        </Button>
                     </Col>
                 </Row>
             </Fragment>

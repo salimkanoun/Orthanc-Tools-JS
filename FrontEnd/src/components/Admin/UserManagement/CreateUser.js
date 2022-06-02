@@ -5,6 +5,7 @@ import SelectRoles from './SelectRoles'
 
 import apis from '../../../services/apis';
 import {toast} from 'react-toastify';
+import { Button } from 'react-bootstrap';
 
 export default class CreateUser extends Component {
 
@@ -77,9 +78,9 @@ export default class CreateUser extends Component {
     render() {
         return (
             <Fragment>
-                <button type='button' name='create' className='otjs-button otjs-button-blue'
+                <Button name='create' className='otjs-button otjs-button-blue'
                         onClick={() => this.setState({show: true})}>New User
-                </button>
+                </Button>
                 <Modal id='create' show={this.state.show} onHide={this.resetState} size='md'>
                     <Modal.Header closeButton>
                         <h2 className='card-title'>Create User</h2>
@@ -123,7 +124,7 @@ export default class CreateUser extends Component {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <button type='button' className='otjs-button otjs-button-blue' onClick={this.createUser}>Create</button>
+                        <Button className='otjs-button otjs-button-blue' onClick={this.createUser}>Create</Button>
                     </Modal.Footer>
                 </Modal>
             </Fragment>

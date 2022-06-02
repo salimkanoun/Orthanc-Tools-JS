@@ -1,4 +1,5 @@
 import React, {Component, Fragment} from 'react'
+import { Button } from 'react-bootstrap';
 import ModalCreateDicom from "./ModalCreateDicom";
 
 
@@ -15,9 +16,9 @@ export default class CreateDicom extends Component {
     render = () => {
         return (
             <Fragment>
-                <button className='dropdown-item bg-primary' type='button'
+                <Button className='dropdown-item bg-primary' type='button'
                         onClick={this.openModify}>Create Dicom
-                </button>
+                </Button>
                 <ModalCreateDicom
                     show={this.state.show}
                     onHide={() => this.setState({show: false})}

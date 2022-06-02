@@ -14,7 +14,7 @@ import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 import SendExternalDropdown from "./SendExternalDropdown"
 import { toast } from "react-toastify"
-import { Row, Col, Dropdown, ButtonGroup } from "react-bootstrap"
+import { Row, Col, Dropdown, ButtonGroup, Button } from "react-bootstrap"
 import TableStudies from "../CommonComponents/RessourcesDisplay/ReactTable/TableStudies"
 import Series from "../../model/Series"
 
@@ -216,14 +216,14 @@ export default function ExportPanel() {
             </Row>
             <Row className="text-start mt-5">
                 <Col sm>
-                    <button type='button' className='otjs-button otjs-button-red mt-2 w-7' onClick={emptyList}>
+                    <Button className='otjs-button otjs-button-red mt-2 w-7' onClick={emptyList}>
                         Empty List
-                    </button>
+                    </Button>
                 </Col>
                 <Col sm>
-                    <button type='button' className='otjs-button otjs-button-red mt-2 w-10' onClick={removeStudy}>
+                    <Button className='otjs-button otjs-button-red mt-2 w-10' onClick={removeStudy}>
                         Remove Study
-                    </button>
+                    </Button>
                 </Col>
 
             </Row>
@@ -232,9 +232,9 @@ export default function ExportPanel() {
                     <DownloadDropdown exportIds={idArray} TS={currentTS} />
                 </Col>
                 <Col>
-                    <button type='button' className="otjs-button otjs-button-blue w-12" onClick={getCSV}>
+                    <Button className="otjs-button otjs-button-blue w-12" onClick={getCSV}>
                         Download CSV Details
-                    </button>
+                    </Button>
                 </Col>
             </Row>
             <ModalWarning show={show} onHide={() => setShow(false)}

@@ -7,6 +7,7 @@ import NumericInput from 'react-numeric-input';
 
 import apis from '../../services/apis'
 import { toast } from 'react-toastify';
+import { Button } from 'react-bootstrap';
 
 export default class Metadata extends Component {
 
@@ -123,7 +124,7 @@ export default class Metadata extends Component {
             <div>
                 <div className='row mb-4'>
                     <div className='col'>
-                        <button type='button' className='otjs-button otjs-button-blue w-12' onClick={() => this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared Tags: {this.state.text}</button>
+                        <Button className='otjs-button otjs-button-blue w-12' onClick={() => this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared Tags: {this.state.text}</Button>
                     </div>
                     <div className='col ml-3'>
                         <div className='row'>

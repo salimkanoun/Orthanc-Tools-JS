@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Button } from 'react-bootstrap'
 import OrthancSettings from './OrthancSettings/OrthancSettings'
 import RedisSettings from './Redis/RedisSettings'
 
@@ -27,16 +28,16 @@ const GeneralRoot = () => {
         <nav className="otjs-navmenu container-fluid">
           <div className="otjs-navmenu-nav">
             <li className='col-6 text-center'>
-              <button
+              <Button
                 className={selectedOptionMenu === 'orthancSettings' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                 onClick={() => switchTab('orthancSettings')}>Orthanc Settings
-              </button> 
+              </Button> 
             </li>
             <li className='col-6 text-center'>
-              <button
+              <Button
                 className={selectedOptionMenu === 'redisSettings' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                 onClick={() => switchTab('redisSettings')}>Redis Settings
-              </button> 
+              </Button> 
             </li>
           </div>
         </nav>

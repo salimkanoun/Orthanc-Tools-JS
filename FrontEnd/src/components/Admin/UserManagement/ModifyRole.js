@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react'
+import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
 
@@ -37,7 +38,7 @@ export default class ModifyRole extends Component {
         return (
             <Fragment>
                 <div className="text-center">
-                    <button type='button' className='otjs-button otjs-button-orange' name='openModify' onClick={this.handleClick}>Edit</button>
+                    <Button className='otjs-button otjs-button-orange' name='openModify' onClick={this.handleClick}>Edit</Button>
                 </div>
                 
                 <Modal id='modify' show={this.state.show} onHide={() => this.setState({ show: false })}>

@@ -1,4 +1,5 @@
 import React, {useMemo} from 'react'
+import { Button } from 'react-bootstrap';
 import Modal from "react-bootstrap/Modal";
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
@@ -51,11 +52,11 @@ export default function ModalDetails({show, onHide, data}) {
                 />
             </Modal.Body>
             <Modal.Footer>
-                <button type='button'
+                <Button
                         className='otjs-button otjs-button-blue'
                         onClick={onHide}>
                     Close
-                </button>
+                </Button>
             </Modal.Footer>
         </Modal>
     );

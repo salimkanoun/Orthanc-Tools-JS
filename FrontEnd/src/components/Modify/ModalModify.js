@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal'
 import {TagTable} from "../CommonComponents/RessourcesDisplay/ReactTable/TagTable";
 
@@ -35,8 +36,8 @@ export default class ModalModify extends Component {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button type='button' className='otjs-button otjs-button-orange me-5' onClick={this.props.modify}>Modify</button>
-                    <button type='button' className='otjs-button otjs-button-red' onClick={this.props.onHide}>Cancel</button>
+                    <Button className='otjs-button otjs-button-orange me-5' onClick={this.props.modify}>Modify</Button>
+                    <Button  className='otjs-button otjs-button-red' onClick={this.props.onHide}>Cancel</Button>
                 </Modal.Footer>
             </Modal>
         )
