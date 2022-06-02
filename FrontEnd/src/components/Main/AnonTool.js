@@ -1,5 +1,5 @@
-import React, { Component, useEffect, useState } from 'react'
-import { connect, useDispatch, useSelector, useStore } from 'react-redux'
+import React, { useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Overlay from 'react-bootstrap/Overlay'
 import Popover from 'react-bootstrap/Popover'
@@ -20,8 +20,9 @@ export default ({ target, show, onHide }) => {
         }
     })
 
+    const patientsRows = useMemo(() => studyArrayToPatientArray(store.anonList), [store.anonList])
+
     const onRemovePatient = (patientOrthancID) => {
-        console.log('ici')
         console.log('anon list avant:', store.anonList)
         console.log('patientOrthancID', patientOrthancID)
         dispatch(removePatientFromAnonList(patientOrthancID))
@@ -29,14 +30,15 @@ export default ({ target, show, onHide }) => {
     }
 
     const onRemoveStudy = (studyOrthancID) => {
+        console.log('anon list avant:', store.anonList)
+        console.log('studyOrthancID', studyOrthancID)
         dispatch(removeStudyFromAnonList(studyOrthancID))
+        console.log('anon list apres:', store.anonList)
     }
 
     const handleClickEmpty = () => {
         dispatch(emptyAnonymizeList())
     }
-
-    let patientsRows = studyArrayToPatientArray(store.anonList)
 
     return (
         <Overlay target={target} show={show} placement="bottom" onHide={onHide}

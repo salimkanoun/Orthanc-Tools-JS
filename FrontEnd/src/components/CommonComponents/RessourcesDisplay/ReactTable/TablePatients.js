@@ -4,11 +4,13 @@ import {commonColumns, patientColumns} from "./ColumnFactories";
 
 function TablePatients({
                            patients,
-                           onDelete,
+                           onDelete ,
+                           onRemovePatient,
                            onModify,
                            refresh,
-                           hiddenActionBouton,
-                           hiddenRemoveRow,
+                           actionBouton,
+                           removeRow,
+                           onRowClick,
                            onDataChange,
                            textNameColumn = 'Patient Name',
                            textIDColumn = 'Patient ID',
@@ -26,11 +28,11 @@ function TablePatients({
             patientColumns.NEW_NAME,
             patientColumns.NEW_ID
         ] : []),
-        ...(!hiddenActionBouton ? [patientColumns.ACTION(onDelete, onModify, refresh)] : []),
-        ...(!hiddenRemoveRow ? [patientColumns.REMOVE(onDelete)] : [])
+        ...(actionBouton ? [patientColumns.ACTION(onDelete, onModify, refresh)] : []),
+        ...(removeRow ? [patientColumns.REMOVE(onRemovePatient)] : [])
     ], [
-        hiddenActionBouton,
-        hiddenRemoveRow,
+        actionBouton,
+        removeRow,
         onDelete,
         onModify,
         refresh,
@@ -41,8 +43,8 @@ function TablePatients({
         raw: {...x},
         ...x
     })), [patients]);
-    return <CommonTable columns={columns} data={data} onDataChange={onDataChange} rowEvents={rowEvents}
-                        rowStyle={rowStyle} pagination={pagination}/>
+    return <CommonTable getRowId={(originalRow) => originalRow.PatientOrthancID} columns={columns} data={data} rowEvents={rowEvents}
+                        rowStyle={rowStyle} pagination={pagination} onRowClick={onRowClick} />
 }
 
 export default TablePatients;
