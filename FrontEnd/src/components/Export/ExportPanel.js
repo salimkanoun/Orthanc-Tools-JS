@@ -1,5 +1,5 @@
-import React, { Component, useMemo, Fragment, useState } from "react"
-import { connect, useDispatch, useSelector } from "react-redux"
+import React, { useMemo, Fragment, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 
 import papa from 'papaparse'
 
@@ -10,13 +10,11 @@ import SendAetDropdown from "./SendAetDropdown"
 import SendPeerDropdown from "./SendPeerDropdown"
 import ModalWarning from './ModalWarning'
 
-import { seriesArrayToStudyArray } from '../../tools/processResponse'
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 import SendExternalDropdown from "./SendExternalDropdown"
 import { toast } from "react-toastify"
 import { Row, Col, Dropdown, ButtonGroup, Button } from "react-bootstrap"
 import TableStudies from "../CommonComponents/RessourcesDisplay/ReactTable/TableStudies"
-import Series from "../../model/Series"
 
 /**
  * This componnent wrapper allows to optimise the table by memoizing data

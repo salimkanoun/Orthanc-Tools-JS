@@ -1,5 +1,5 @@
-import React, { Component, useState } from 'react'
-import { connect, useDispatch, useSelector } from 'react-redux'
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Popover, Col, Row, Overlay, Button } from 'react-bootstrap'
 
 import apis from '../../services/apis'
@@ -7,7 +7,6 @@ import SendAetDropdown from "../Export/SendAetDropdown"
 import DownloadDropdown from "../Export/DownloadDropdown"
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 import { toast } from 'react-toastify'
-import TableStudyWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableStudiesWithNestedSeries'
 import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableStudiesWithNestedSeries'
 
 export default ({target, show, onHide}) =>{

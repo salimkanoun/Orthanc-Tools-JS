@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import NestedTable from "./NestedTable";
-import { commonColumns, patientColumns, studyColumns } from "./ColumnFactories";
+import { commonColumns, patientColumns } from "./ColumnFactories";
 import TableStudies from "./TableStudies";
 
 export default ({

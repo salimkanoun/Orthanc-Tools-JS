@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { usePagination, useTable, useSortBy, useRowSelect } from 'react-table'
 import BTable from 'react-bootstrap/Table'
 import PaginationButton from "./PaginitionButton"

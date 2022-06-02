@@ -1,5 +1,5 @@
-import React, { Component, useState } from 'react'
-import { connect, useSelector } from 'react-redux'
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import AnonTool from './AnonTool'
@@ -9,7 +9,6 @@ import ExportTool from './ExportTool'
 export default ({roles, apercu}) => {
 
     const [show, setShow] = useState('')
-    const [confirmDeleteState, setConfirmDeleteState] = useState(false)
 
     const store = useSelector(state => {
         return {
@@ -21,10 +20,6 @@ export default ({roles, apercu}) => {
 
     const closePopovers = () => {
         setShow('')
-    }
-
-    const setConfirmDelete = () => {
-        setConfirmDeleteState(!confirmDeleteState)
     }
     
     const refExport = React.createRef()

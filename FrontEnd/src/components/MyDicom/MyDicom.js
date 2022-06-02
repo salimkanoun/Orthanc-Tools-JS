@@ -3,7 +3,6 @@ import apis from '../../services/apis'
 import { connect } from 'react-redux'
 import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
 import TableMyDicomSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeriesFillFromParent'
-//import SendTo from '../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown'
 import {Row, Col, Button} from 'react-bootstrap'
 
 class MyDicom extends Component{

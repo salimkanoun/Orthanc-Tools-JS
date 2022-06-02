@@ -123,10 +123,6 @@ export default (setTask) => {
 
     const onClickEmpty = () => dispatch(emptyAnonymizeList)
 
-
-    console.log('patients :', patients)
-    console.log('studiesData :', studiesData)
-    console.log('currentPatient:',currentPatient)
     return (
         <Container>
             <Row className="mt-5">

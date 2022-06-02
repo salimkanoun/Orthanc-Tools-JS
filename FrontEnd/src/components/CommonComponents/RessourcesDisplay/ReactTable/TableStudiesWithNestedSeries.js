@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import { commonColumns, patientColumns, studyColumns } from "./ColumnFactories"
 import NestedTable from "./NestedTable"
 import TableSeries from "./TableSeries"

@@ -14,8 +14,7 @@ export default ({ onLogout, roles }) => {
     const MYDICOM = "mydicom"
     const DICOM_ROUTER = "dicom-router"
     const ADMINISTRATION = "administration"
-    const LOG_OUT = ""
-
+    
     const history = useHistory()
     const location = useLocation()
     const [opened, setOpened] = useState(false)

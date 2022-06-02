@@ -29,7 +29,7 @@ export default (
         ...(actionBouton ? [studyColumns.ACTION(onDelete, refresh)] : []),
         ...(removeRow ? [studyColumns.REMOVE(onRemoveStudy)] : []),
         ...(anonymized ? [studyColumns.ANONYMIZED] : [])
-    ] , [actionBouton, removeRow, showEditable, anonymized,]
+    ] , [actionBouton, onDelete, onRemoveStudy, refresh, removeRow, showEditable, anonymized,]
     )
 
 return <CommonTable columns={columns} data={studies} pagination={pagination} />

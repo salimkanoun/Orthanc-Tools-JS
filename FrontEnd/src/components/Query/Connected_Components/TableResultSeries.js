@@ -4,10 +4,6 @@ import {commonColumns, seriesColumns} from "../../CommonComponents/RessourcesDis
 
 function TableResultSeries({
                          series,
-                         onDelete,
-                         refresh,
-                         hiddenActionBouton,
-                         hiddenRemoveRow,
                          rowEvents,
                          rowStyle,
                          pagination
@@ -20,8 +16,7 @@ function TableResultSeries({
         seriesColumns.SERIES_NUMBER,
         seriesColumns.NB_SERIES_INSTANCES,
         seriesColumns.RETRIEVE,
-    ], [
-        hiddenActionBouton, hiddenRemoveRow, onDelete, refresh]); 
+    ], []); 
     const data = useMemo(() => series.map(x => ({
         raw: {...x},
         ...x

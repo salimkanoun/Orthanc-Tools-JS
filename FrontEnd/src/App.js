@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 
 import {toast} from 'react-toastify'
-import axios from "axios"
 
 import Authentication from './components/Authentication'
 

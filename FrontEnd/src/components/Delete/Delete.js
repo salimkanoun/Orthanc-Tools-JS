@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector, useStore } from 'react-redux'
+import React, { Fragment, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify';
 import { Row, Col, Button} from 'react-bootstrap';
 
@@ -98,7 +98,7 @@ export default function Delete() {
 
 
     let patientRows = studyArrayToPatientArray(store.deleteList)
-    console.log('patientRows : ',patientRows)
+
     return (
         <Fragment>
             <Row>

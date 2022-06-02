@@ -9,7 +9,6 @@ import NestedTable from "../../CommonComponents/RessourcesDisplay/ReactTable/Nes
 import apis from "../../../services/apis";
 import TableResultSeries from './TableResultSeries';
 
-
 export default ({ studiesData, style = {} }) => {
 
     const [series, setSeries] = useState({})

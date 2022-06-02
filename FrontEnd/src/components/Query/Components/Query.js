@@ -9,7 +9,7 @@ export default () => {
 
   const [studies, setStudies] = useState([])
 
-  
+
   const onQuery = async (formData, aet) => {
 
     let dateFrom = formData.dateFrom
@@ -58,22 +58,19 @@ export default () => {
 
     try {
       let queryAnswer = await apis.query.dicomQuery(aet, queryPost)
-      console.log('queryAnswer : ', queryAnswer)
       let answers = await apis.query.retrieveAnswer(queryAnswer['ID'])
-      console.log('answers : ', answers)
       setStudies(answers)
-      
+
     } catch (error) {
-        toast.error('Dicom Failure')
+      toast.error('Dicom Failure')
     }
 
   }
 
-  console.log('studies :', studies)
   return (
     <div>
       <Row>
-        <QueryForm onQuery={onQuery}/>
+        <QueryForm onQuery={onQuery} />
       </Row>
       <Row>
         <TableResultStudy studiesData={studies} />

@@ -1,5 +1,5 @@
 import CommonTable from "./CommonTable";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { commonColumns, patientColumns, studyColumns } from "./ColumnFactories";
 
 function TableStudies({

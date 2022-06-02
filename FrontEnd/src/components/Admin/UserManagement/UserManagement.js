@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import Users from './Users'
 import Roles from './Roles'
 import Ldap from './Ldap'
+import { Button } from 'react-bootstrap'
 
 export default class UserManagement extends Component {
 
@@ -42,16 +43,19 @@ export default class UserManagement extends Component {
                     <nav className="otjs-navmenu container-fluid">
                         <div className="otjs-navmenu-nav">
                             <li className='col-3 text-center'>
-                                <button className={this.state.currentComponent === 'Users' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => this.switchTab('Users')}>Local Users</button>
+                                <Button className={this.state.currentComponent === 'Users' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => this.switchTab('Users')}>Local Users
+                                </Button>
                             </li>
                             <li className='col-4 text-center'>
-                                <button className={this.state.currentComponent === 'Roles' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => this.switchTab('Roles')}>Roles</button>
+                                <Button className={this.state.currentComponent === 'Roles' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => this.switchTab('Roles')}>Roles
+                                </Button>
                             </li>
                             <li className='col-4 text-center'>
-                                <button className={this.state.currentComponent === 'Ldap' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => this.switchTab('Ldap')}>Distant Users</button>
+                                <Button className={this.state.currentComponent === 'Ldap' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                    onClick={() => this.switchTab('Ldap')}>Distant Users
+                                </Button>
                             </li>
 
                         </div>

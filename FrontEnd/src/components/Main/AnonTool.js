@@ -24,17 +24,11 @@ export default ({ target, show, onHide }) => {
     const patientsRows = useMemo(() => studyArrayToPatientArray(store.anonList), [store.anonList])
 
     const onRemovePatient = (patientOrthancID) => {
-        console.log('anon list avant:', store.anonList)
-        console.log('patientOrthancID', patientOrthancID)
         dispatch(removePatientFromAnonList(patientOrthancID))
-        console.log('anon list apres:', store.anonList)
     }
 
     const onRemoveStudy = (studyOrthancID) => {
-        console.log('anon list avant:', store.anonList)
-        console.log('studyOrthancID', studyOrthancID)
         dispatch(removeStudyFromAnonList(studyOrthancID))
-        console.log('anon list apres:', store.anonList)
     }
 
     const handleClickEmpty = () => {
