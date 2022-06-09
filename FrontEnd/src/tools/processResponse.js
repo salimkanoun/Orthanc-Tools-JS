@@ -34,11 +34,7 @@ export function studyArrayToPatientArray(studiesArray) {
         let patientRows = {}
         studiesArray.forEach(study => {
             patientRows[study.ParentPatient.PatientOrthancID] = {
-                PatientBirthDate: study.ParentPatient.PatientBirthDate,
-                PatientID: study.ParentPatient.PatientID,
-                PatientName: study.ParentPatient.PatientName,
-                PatientOrthancID: study.ParentPatient.PatientOrthancID,
-                PatientSex: study.ParentPatient.PatientSex,
+                ...study.ParentPatient,
                 Studies: []
             }
         })

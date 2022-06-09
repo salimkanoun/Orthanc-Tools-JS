@@ -59,7 +59,7 @@ export default (setTask) => {
     const testAllId = () => {
         let answer = true
         store.anonList.forEach((item) => {
-            if (item.PatientMainDicomTags.newPatientID === undefined)
+            if (item.newPatientID === undefined)
                 answer = false
         })
         return answer
@@ -70,12 +70,12 @@ export default (setTask) => {
             let listToAnonymize = []
             store.anonList.forEach(element => {
                 let anonItem = {
-                    orthancStudyID: element.ID,
+                    orthancStudyID: element.StudyOrthancID,
                     profile: store.profile,
-                    newPatientName: element.PatientMainDicomTags.newPatientName,
-                    newPatientID: element.PatientMainDicomTags.newPatientID,
-                    newStudyDescription: element.MainDicomTags.newStudyDescription ? element.MainDicomTags.newStudyDescription : element.MainDicomTags.StudyDescription,
-                    newAccessionNumber: element.MainDicomTags.newAccessionNumber ? element.MainDicomTags.newAccessionNumber : 'OrthancToolsJS'
+                    newPatientName: element.newPatientName,
+                    newPatientID: element.newPatientID,
+                    newStudyDescription: element.newStudyDescription ? element.newStudyDescription : element.StudyDescription,
+                    newAccessionNumber: element.newAccessionNumber ? element.newAccessionNumber : 'OrthancToolsJS'
                 }
 
                 listToAnonymize.push(anonItem)
@@ -92,6 +92,7 @@ export default (setTask) => {
     }
 
     const onRemovePatient = (PatientOrthancID) => {
+        console.log(PatientOrthancID)
         dispatch(removePatientFromAnonList(PatientOrthancID))
     }
 
@@ -109,8 +110,8 @@ export default (setTask) => {
     }
 
 
-    const onDataChangePatient = (oldValue, newValue, row, column) => {
-        dispatch(saveNewValues(row.PatientOrthancID, column, newValue))
+    const onEditPatient = (PatientOrthancID, column, newValue) => {
+        dispatch(saveNewValues(PatientOrthancID, column, newValue))
     }
 
     const onDataChangeStudy = (oldValue, newValue, row, column) => {
@@ -136,7 +137,7 @@ export default (setTask) => {
                         textNameColumn={'Original Name'}
                         textIDColumn={'Original ID'}
                         showEditable={true}
-                        onDataChange={onDataChangePatient}
+                        onEdit={onEditPatient}
                         rowStyle={rowStyle}
                         pagination={true} />
                     <Button className='otjs-button otjs-button-red mt-2 w-7'

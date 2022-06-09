@@ -1,9 +1,9 @@
 import ActionBouton from "../ActionBouton";
 import React from "react";
-import {InputCell as EditableCell} from "./EditableCells";
-import {dateFilter, DateFilter, invertableDataFilter, InvertableDataFilter} from "./ColumnFilters";
+import { InputCell } from "./EditableCells";
+import { dateFilter, DateFilter, invertableDataFilter, InvertableDataFilter } from "./ColumnFilters";
 import RetrieveButton from "../../../Query/Components/RetrieveButton";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 
 const commonColumns = {
@@ -30,7 +30,7 @@ const seriesColumns = {
         Filter: InvertableDataFilter('Series Description'),
         filter: invertableDataFilter,
         sort: true,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     },
     MODALITY: {
         accessor: 'Modality',
@@ -49,15 +49,15 @@ const seriesColumns = {
     ACTION: (onDelete, refresh) => ({
         id: 'Action',
         Header: 'Action',
-        Cell: ({row}) => <ActionBouton level='series' orthancID={row.values.SeriesOrthancID}
-                                       parentID={row.values.StudyID} onDelete={onDelete}
-                                       row={row.values.raw} refresh={refresh}
-                                       hiddenMetadata={false} hiddenCreateDicom={true}/>
+        Cell: ({ row }) => <ActionBouton level='series' orthancID={row.values.SeriesOrthancID}
+            parentID={row.values.StudyID} onDelete={onDelete}
+            row={row.values.raw} refresh={refresh}
+            hiddenMetadata={false} hiddenCreateDicom={true} />
     }),
     REMOVE: (onRemove) => ({
         id: 'Remove',
         Header: 'Remove',
-        Cell: ({row}) => {
+        Cell: ({ row }) => {
             return <Button className="btn btn-danger" onClick={(e) => {
                 try {
                     onRemove(row.values.SeriesOrthancID);
@@ -75,11 +75,11 @@ const seriesColumns = {
     RETRIEVE: {
         id: 'Retrieve',
         Header: 'Retrieve',
-        Cell: ({row}) => {
+        Cell: ({ row }) => {
             return (<RetrieveButton queryAet={row.values.raw.OriginAET}
-                                    studyInstanceUID={row.values.raw.StudyInstanceUID}
-                                    seriesInstanceUID={row.values.raw.SeriesInstanceUID}
-                                    level={RetrieveButton.Series}/>)
+                studyInstanceUID={row.values.raw.StudyInstanceUID}
+                seriesInstanceUID={row.values.raw.SeriesInstanceUID}
+                level={RetrieveButton.Series} />)
         }
     }
 }
@@ -143,49 +143,38 @@ const studyColumns = {
         Header: 'Modalities',
         Filter: InvertableDataFilter('Modalities'),
         filter: invertableDataFilter,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     },
-    NEW_DESCRIPTION: {
-        accessor: 'newStudyDescription',
-        Header: 'New Description',
-        Cell: EditableCell,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    },
-    NEW_ACCESSION_NUMBER: {
-        accessor: 'newAccessionNumber',
-        Header: 'New Accession Number',
-        Cell: EditableCell,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    },
+
     ANONYMIZED: {
         accessor: 'Anonymized',
         Header: 'Anonymized ?',
         style: (row) => {
-            return {"color": row.values.AnonymizedFrom ? 'lightgreen' : 'orangered'}
+            return { "color": row.values.AnonymizedFrom ? 'lightgreen' : 'orangered' }
         },
         classes: 'text-center',
-        Cell: ({row}) => {
+        Cell: ({ row }) => {
             return row.values.AnonymizedFrom ? 'Yes' : 'No'
         },
     },
     ACTION: (onDelete, refresh, openLabelModal) => ({
         id: 'Action',
         Header: 'Action',
-        Cell: (({row}) =>
-                (<>
-                    <ActionBouton level='studies' orthancID={row.values.StudyOrthancID}
-                                  StudyInstanceUID={row.values.StudyInstanceUID} onDelete={onDelete}
-                                  row={row.values.raw}
-                                  refresh={refresh} openLabelModal={openLabelModal}/>
-                </>)
+        Cell: (({ row }) =>
+        (<>
+            <ActionBouton level='studies' orthancID={row.values.StudyOrthancID}
+                StudyInstanceUID={row.values.StudyInstanceUID} onDelete={onDelete}
+                row={row.values.raw}
+                refresh={refresh} openLabelModal={openLabelModal} />
+        </>)
         ),
     }),
     REMOVE: (onRemoveStudy) => ({
         id: 'Remove',
         Header: 'Remove',
-        Cell: ({row}) => {
+        Cell: ({ row }) => {
             return <Button className="btn btn-danger" onClick={() => {
-                    onRemoveStudy(row.values.StudyOrthancID);
+                onRemoveStudy(row.values.StudyOrthancID);
             }}>Remove</Button>
         },
     }),
@@ -196,9 +185,9 @@ const studyColumns = {
     RETRIEVE: {
         id: 'Retrieve',
         Header: 'Retrieve',
-        Cell: ({row}) => {
+        Cell: ({ row }) => {
             return (<RetrieveButton queryAet={row.values.OriginAET} studyInstanceUID={row.values.StudyInstanceUID}
-                                    level={RetrieveButton.Study}/>)
+                level={RetrieveButton.Study} />)
         }
     },
 }
@@ -215,7 +204,7 @@ const patientColumns = {
         Filter: InvertableDataFilter('Patient Name'),
         filter: invertableDataFilter,
         sort: true,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }),
 
     PARENT_NAME: (textNameColumn = 'Patient Name') => ({
@@ -224,7 +213,7 @@ const patientColumns = {
         Filter: InvertableDataFilter('Patient Name'),
         filter: invertableDataFilter,
         sort: true,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }),
 
     ID: (textIDColumn = 'Patient ID') => ({
@@ -232,40 +221,40 @@ const patientColumns = {
         Header: textIDColumn,
         Filter: InvertableDataFilter('Patient ID'),
         filter: invertableDataFilter,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }),
-    
+
     PARENT_ID: (textIDColumn = 'Patient ID') => ({
         accessor: 'ParentPatient.PatientID',
         Header: textIDColumn,
         Filter: InvertableDataFilter('Patient ID'),
         filter: invertableDataFilter,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }),
     NEW_NAME: {
         accessor: 'newPatientName',
         Header: 'New Name',
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
-        Cell: EditableCell
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
+        Cell: InputCell
     },
     NEW_ID: {
         accessor: 'newPatientID',
         Header: 'New ID',
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
-        Cell: EditableCell
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
+        Cell: InputCell
     },
     ACTION: (onDelete, onModify, refresh) => ({
         id: 'Action',
         Header: 'Action',
-        Cell: ({row}) => {
+        Cell: ({ row }) => {
             return <ActionBouton level='patients' orthancID={row.values.PatientOrthancID} onDelete={onDelete}
-                                 onModify={onModify} row={row.values.raw} refresh={refresh}/>
+                onModify={onModify} row={row.values.raw} refresh={refresh} />
         }
     }),
     REMOVE: (onRemovePatient) => ({
         id: 'Remove',
         Header: 'Remove',
-        Cell: ({row}) => {
+        Cell: ({ row }) => {
             return <Button className="btn btn-danger" onClick={() => {
                 onRemovePatient(row.values.PatientOrthancID);
             }}>Remove</Button>
@@ -276,7 +265,6 @@ const patientColumns = {
 
 
 export {
-    EditableCell,
     patientColumns,
     studyColumns,
     seriesColumns,

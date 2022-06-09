@@ -1,7 +1,7 @@
-import {EditableCell} from "./ColumnFactories";
+
 import React from "react";
 import CommonTable from "./CommonTable";
-
+import { InputCell } from "./EditableCells";
 export function TagTable({data, onDataUpdate}) {
     const columns = [
         {
@@ -16,7 +16,7 @@ export function TagTable({data, onDataUpdate}) {
         }, {
             accessor: 'Value',
             Header: 'Value',
-            Cell: EditableCell
+            Cell: InputCell
         }, {
             accessor: 'Delete',
             Header: 'Delete',

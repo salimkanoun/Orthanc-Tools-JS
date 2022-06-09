@@ -22,10 +22,6 @@ export default (
         studyColumns.ANONYMIZED_FROM,
         studyColumns.DATE,
         studyColumns.DESCRIPTION,
-        ...(showEditable ? [
-            studyColumns.NEW_DESCRIPTION,
-            studyColumns.NEW_ACCESSION_NUMBER
-        ] : []),
         ...(actionBouton ? [studyColumns.ACTION(onDelete, refresh)] : []),
         ...(removeRow ? [studyColumns.REMOVE(onRemoveStudy)] : []),
         ...(anonymized ? [studyColumns.ANONYMIZED] : [])
