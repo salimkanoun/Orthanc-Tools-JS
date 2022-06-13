@@ -231,18 +231,7 @@ const patientColumns = {
         filter: invertableDataFilter,
         style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }),
-    NEW_NAME: {
-        accessor: 'newPatientName',
-        Header: 'New Name',
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
-        Cell: InputCell
-    },
-    NEW_ID: {
-        accessor: 'newPatientID',
-        Header: 'New ID',
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
-        Cell: InputCell
-    },
+
     ACTION: (onDelete, onModify, refresh) => ({
         id: 'Action',
         Header: 'Action',

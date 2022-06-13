@@ -84,15 +84,14 @@ export default function anonListReducer(state = initialState, action) {
     case SAVE_NEW_VALUES:
       let { id, column, newValue } = action.payload
       let newList = [...state.anonList]
-      console.log(id, column, newValue)
-      console.log(newList)
+      console.log('id : ', id, 'column : ', column, 'newValue : ',newValue)
       if (column === 'newStudyDescription' || column === 'newAccessionNumber') {
-        console.log("iclai")
         newList.forEach(element => {
-          if (element.StudyOrthancID === id) element[column] = newValue
+          if (element.StudyOrthancID === id) {
+            element[column] = newValue
+          }
         })
       } else {
-        console.log("ici")
         newList.forEach(element => {
           if (element.PatientOrthancID === id) {
             element.ParentPatient = {
@@ -100,9 +99,6 @@ export default function anonListReducer(state = initialState, action) {
               [column]: newValue
             }
           }
-
-          console.log(element)
-
         })
       }
       return {

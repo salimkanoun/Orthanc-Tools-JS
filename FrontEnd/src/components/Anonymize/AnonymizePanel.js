@@ -92,11 +92,11 @@ export default (setTask) => {
     }
 
     const onRemovePatient = (PatientOrthancID) => {
-        console.log(PatientOrthancID)
         dispatch(removePatientFromAnonList(PatientOrthancID))
     }
 
     const onRemoveStudy = (StudyOrthancID) => {
+        console.log('onRemoveStudy studyOrthancID : ', StudyOrthancID)
         dispatch(removeStudyFromAnonList(StudyOrthancID))
     }
 
@@ -114,8 +114,8 @@ export default (setTask) => {
         dispatch(saveNewValues(PatientOrthancID, column, newValue))
     }
 
-    const onDataChangeStudy = (oldValue, newValue, row, column) => {
-        dispatch(saveNewValues(row.StudyOrthancID, column.dataField, newValue))
+    const onEditStudy = (StudyOrthancID, column, newValue) => {
+        dispatch(saveNewValues(StudyOrthancID, column, newValue))
     }
 
     const onChange = (e) => setPrefix(e.target.value)
@@ -152,6 +152,7 @@ export default (setTask) => {
                         removeRow={true}
                         onRemoveStudy={onRemoveStudy}
                         showEditable={true}
+                        onEdit = {onEditStudy}
                         anonymized={false}
                         pagination={true}
                     />
