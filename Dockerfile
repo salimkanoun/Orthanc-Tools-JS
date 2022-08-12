@@ -1,15 +1,17 @@
 FROM node:14.15.4 as react
 WORKDIR /app
 COPY ./FrontEnd .
+RUN npm cache clean --force
 RUN npm install
 RUN npm run build
 
-# FROM node:14-slim as ohif
-# RUN apt-get update -qy && \
-#     apt-get install -y apt git python3 make g++
-# WORKDIR /ohif
-# RUN git clone https://github.com/OHIF/Viewers.git
-# RUN cd Viewers && yarn install --frozen-lockfile && QUICK_BUILD=true PUBLIC_URL=/viewer-ohif/ yarn run build
+FROM node:14.15.4 as ohif
+RUN apt-get update -qy && \
+    apt-get install -y --no-install-recommends apt-utils\
+    git
+WORKDIR /ohif
+RUN git clone https://github.com/OHIF/Viewers.git
+RUN cd Viewers && yarn install && QUICK_BUILD=true PUBLIC_URL=/viewer-ohif/ yarn run build
 
 FROM alpine as stone
 RUN apk --no-cache add wget
@@ -22,7 +24,7 @@ FROM node:14.15.4
 WORKDIR /OrthancToolsJs
 RUN mkdir build
 COPY --from=react /app/build ./build/
-# COPY --from=ohif /ohif/Viewers/platform/viewer/dist ./build/viewer-ohif/
+COPY --from=ohif /ohif/Viewers/platform/viewer/dist ./build/viewer-ohif/
 COPY --from=stone /stone/wasm-binaries/StoneWebViewer ./build/viewer-stone/
 COPY --from=react /app/build/viewer-ohif/app-config.js ./build/viewer-ohif/
 COPY --from=react /app/build/viewer-stone/configuration.json ./build/viewer-stone/

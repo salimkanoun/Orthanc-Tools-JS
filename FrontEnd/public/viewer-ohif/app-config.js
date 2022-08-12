@@ -8,11 +8,14 @@ window.config = {
       {
         name: "Orthanc",
         wadoUriRoot:
-          "/api/wado",
+          // "/api/wado",
+          "/wado",
         qidoRoot:
-          "/api/dicom-web",
+          // "/api/dicom-web",
+          "/dicom-web",
         wadoRoot:
-          "/api/dicom-web",
+          // "/api/dicom-web",
+          "/dicom-web",
         qidoSupportsIncludeField: true,
         imageRendering: "wadors",
         thumbnailRendering: "wadors",
