@@ -71,16 +71,16 @@ export default class AutoRetrieveSchedule extends Component {
   render = () => {
     return (
       <div>
-        <h2 className="card-title">Retrieve Schedule Time : </h2>
+        <h2 className="card-title">Thời gian đặt lịch truy xuất: </h2>
         <Row className="align-items-center mt-4">
           <Col sm={3}>
-            <label htmlFor='hour_start'>Start Hour : </label>
+            <label htmlFor='hour_start'>Giờ bắt đầu: </label>
           </Col>
           <Col sm={3}>
             <input type='number' name='hourStart' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStart} />
           </Col>
           <Col sm={3}>
-            <label htmlFor='min_start'>Start Minutes : </label>
+            <label htmlFor='min_start'>Phút bắt đầu: </label>
           </Col>
           <Col sm={3}>
             <input type='number_start' name='minStart' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStart} />
@@ -88,13 +88,13 @@ export default class AutoRetrieveSchedule extends Component {
         </Row>
         <Row className="align-items-center mt-4">
           <Col sm={3}>
-          <label htmlFor='hour_stop'>Stop Hour : </label>
+          <label htmlFor='hour_stop'>Giờ kết thúc: </label>
           </Col>
           <Col sm={3}>
             <input type='number' name='hourStop' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStop} />
           </Col>
           <Col sm={3}>
-            <label htmlFor='min_stop'>Stop Minutes : </label>
+            <label htmlFor='min_stop'>Phút kết thúc : </label>
           </Col>
           <Col sm={3}>
             <input type='number' name='minStop' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStop} />
@@ -102,10 +102,10 @@ export default class AutoRetrieveSchedule extends Component {
         </Row>
         <Row className="mt-4">
           <Col>
-            <p>Server time : {this.state.serverTime}</p>
+            <p>Thời gian máy chủ: {this.state.serverTime}</p>
           </Col>
           <Col>
-            <input type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Send' />
+            <input type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Gửi' />
           </Col>
         </Row>
       </div>

@@ -83,41 +83,41 @@ export default class NavBar extends Component {
                             </Link>
                             <Link className={this.getLinkClass('import')} onClick={this.selectTabHandler} name='import'
                                   to='/import' hidden={!this.props.roles.import}>
-                                <i className="fas fa-file-import icone"></i> {this.state.opened ? ' Import' : ''}
+                                <i className="fas fa-file-import icone"></i> {this.state.opened ? 'Nhập' : ''}
                             </Link>
                             <Link className={this.getLinkClass('query')} onClick={this.selectTabHandler} name='query'
                                   to='/query' hidden={!this.props.roles.query}>
-                                <i className="fas fa-question icone"></i> {this.state.opened ? 'Query' : ''}
+                                <i className="fas fa-question icone"></i> {this.state.opened ? 'Truy vấn' : ''}
                             </Link>
                             <Link className={this.getLinkClass('auto-query')} onClick={this.selectTabHandler}
                                   name='auto-query' to='/auto-query'
                                   hidden={!this.props.roles.auto_query}>
-                                <i className="fas fa-recycle icone"></i> {this.state.opened ? 'Auto-Retrieve' : ''}
+                                <i className="fas fa-recycle icone"></i> {this.state.opened ? 'Truy xuất-Tự động' : ''}
                             </Link>
                             <Link className={this.getLinkClass('burner')} onClick={this.selectTabHandler} name='burner'
                                   to='/cd-burner' hidden={!this.props.roles.cd_burner}>
-                                <i className="fas fa-compact-disc icone"></i> {this.state.opened ? 'CD-burner' : ''}
+                                <i className="fas fa-compact-disc icone"></i> {this.state.opened ? 'Ghi CD' : ''}
                             </Link>
                             <Link className={this.getLinkClass('mydicom')} onClick={this.selectTabHandler}
                                   name='mydicom' to='/mydicom'>
-                                <i className="far fa-images icone"></i> {this.state.opened ? 'MyDicom' : ''}
+                                <i className="far fa-images icone"></i> {this.state.opened ? 'Dicom' : ''}
                             </Link>
                             <Link className={this.getLinkClass('dicom-router')} onClick={this.selectTabHandler}
                                   name='dicom-router' to='/dicom-router'
                                   hidden={!this.props.roles.autorouting}>
-                                <i className="fas fa-broadcast-tower icone"></i> {this.state.opened ? 'Dicom-Router' : ''}
+                                <i className="fas fa-broadcast-tower icone"></i> {this.state.opened ? 'Bộ định tuyến Dicom' : ''}
                             </Link>
                             <Link className={this.getLinkClass('administration')} onClick={this.selectTabHandler}
                                   name='administration' to='/administration'
                                   hidden={!this.props.roles.admin}>
-                                <i className="fas fa-cogs icone"></i> {this.state.opened ? 'Administration' : ''}
+                                <i className="fas fa-cogs icone"></i> {this.state.opened ? 'Quản trị' : ''}
                             </Link>
 
                             <div className="otjs-navbar-border" hidden={!this.state.opened}></div>
 
                             <Link className={this.getLinkClass('log-out')} name='log-out' onClick={this.props.onLogout}
                                   to='/'>
-                                <i className="fas fa-power-off icone"></i>{this.state.opened ? ' Log out' : ''}
+                                <i className="fas fa-power-off icone"></i>{this.state.opened ? 'Đăng xuất' : ''}
                             </Link>
 
 

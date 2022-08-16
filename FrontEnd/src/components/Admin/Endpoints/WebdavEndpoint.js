@@ -5,11 +5,11 @@ export default function WebdavEndpoints({onDeleteEndpoint, endpointsData}) {
 
     const columns = useMemo(() => [{
         accessor: 'label',
-        Header: 'Label'
+        Header: 'Nhãn'
     },
         {
             accessor: 'host',
-            Header: 'Host'
+            Header: 'Máy chủ'
         },
         {
             accessor: 'username',
@@ -17,22 +17,22 @@ export default function WebdavEndpoints({onDeleteEndpoint, endpointsData}) {
         },
         {
             accessor: 'targetFolder',
-            Header: 'Target Folder'
+            Header: 'Thư mục đích'
         },
         {
             accessor: 'digest',
-            Header: 'Use Digest?',
+            Header: 'Sử dụng Digest?',
             Cell: ({row}) => <p>{(row.values.digest ? '✓' : '✖')}</p>
         },
         {
             accessor: 'delete',
-            Header: 'Delete endpoint',
+            Header: 'Xóa endpoint',
             Cell: ({row}) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                             await onDeleteEndpoint(row.values.id)
-                        }} value="Remove"/>
+                        }} value="Xóa"/>
                     </div>)
             }
         }], [onDeleteEndpoint]);
@@ -41,7 +41,7 @@ export default function WebdavEndpoints({onDeleteEndpoint, endpointsData}) {
 
     return (
         <Fragment>
-            <h2 className="mt-5 card-title">Webdav Export Endpoints</h2>
+            <h2 className="mt-5 card-title">Endpoints xuất Webdav</h2>
             <CommonTable columns={columns} tableData={data}/>
         </Fragment>
     )

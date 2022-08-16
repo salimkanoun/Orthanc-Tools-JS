@@ -7,8 +7,8 @@ import { Row, Col } from 'react-bootstrap'
 /**
  * Form to declare or modify an AET
  */
-export default class CertificateForm extends Component {
 
+export default class CertificateForm extends Component {
     state = {
         file: null
     }
@@ -52,21 +52,21 @@ export default class CertificateForm extends Component {
     render = () => {
         return (
             <Fragment>
-                <h3 className="card-title">Add Certificate Authority</h3>
+                <h3 className="card-title">Thêm chứng chỉ</h3>
                 <div className="form-group">
                     <Dropzone onDrop={acceptedFile => this.setFile(acceptedFile)} >
                         {({ getRootProps, getInputProps }) => (
                             <section>
                                 <div className={this.state.inProgress ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
                                     <input {...getInputProps()} />
-                                    <p>{!!this.state.file ? this.state.file.name : "Drop Certificate file"}</p>
+                                    <p>{!!this.state.file ? this.state.file.name : "Thêm file chứng chỉ"}</p>
                                 </div>
                             </section>
                         )}
                     </Dropzone>
                     <Row>
                         <Col sm={2}>
-                            <label htmlFor="label">Label : </label>
+                            <label htmlFor="label">Nhãn: </label>
 
                         </Col>
                         <Col sm={10}>
@@ -77,7 +77,7 @@ export default class CertificateForm extends Component {
                 </div>
                 <Row className="text-center mt-4">
                     <Col>
-                        <input disabled={!this.state.file || !this.state.label} type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Send' />
+                        <input disabled={!this.state.file || !this.state.label} type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Gửi' />
                     </Col>
                 </Row>
             </Fragment>

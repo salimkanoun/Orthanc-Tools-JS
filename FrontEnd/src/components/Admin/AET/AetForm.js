@@ -74,18 +74,18 @@ export default class AetForm extends Component {
             <Fragment>
                 <Row className="mt-3">
                     <Col>
-                        <h2 className="card-title">New Aet</h2>
+                        <h2 className="card-title">AET MỚI</h2>
                     </Col>
                 </Row>
                 <Row className="form-group mt-4 align-items-center">
                     <Col sm={2}>
-                        <label htmlFor="name">Name : </label>
+                        <label htmlFor="name">Tên: </label>
                     </Col>
                     <Col sm={4}>
                         <input type='text' name="name" value={this.state.name} className="form-control" onChange={this.handleChange} />
                     </Col>
                     <Col sm={2}>
-                        <label htmlFor="aetName">Aet Name : </label>
+                        <label htmlFor="aetName">Tên AET: </label>
                     </Col>
                     <Col sm={4}>
                         <input type='text' name="aetName" value={this.state.aetName} className="form-control" onChange={this.handleChange} />
@@ -94,13 +94,13 @@ export default class AetForm extends Component {
                 </Row>
                 <Row className="form-group mt-4 align-items-center">
                     <Col sm={2}>
-                        <label htmlFor="ip">IP adress : </label>
+                        <label htmlFor="ip">Địa chỉ: </label>
                     </Col>
                     <Col sm={4}>
                         <input type='text' name="ip" value={this.state.ip} className="form-control" onChange={this.handleChange} />
                     </Col>
                     <Col sm={2}>
-                        <label htmlFor="port">Port : </label>
+                        <label htmlFor="port">Cổng: </label>
                     </Col>
                     <Col sm={4}>
                         <input type='number' min="0" max="999999" value={this.state.port} name="port" className="form-control" onChange={this.handleChange} />
@@ -108,7 +108,7 @@ export default class AetForm extends Component {
                 </Row>
                 <Row className="form-group mt-4 align-items-center">
                     <Col sm={2}>
-                        <label htmlFor="manufacturer">Manufacturer : </label>
+                        <label htmlFor="manufacturer">Nhà sản xuất : </label>
                     </Col>
                     <Col>
                         <Select className="col-sm" options={this.manufacturers} value={this.state.manufacturer} name="manufacturer" onChange={this.manufacturerChangeListener} />
@@ -116,7 +116,7 @@ export default class AetForm extends Component {
                 </Row>
                 <Row className="mt-4 align-items-center text-center">
                     <Col>
-                        <input type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Send' />
+                        <input type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Thêm' />
 
                     </Col>
                 </Row>

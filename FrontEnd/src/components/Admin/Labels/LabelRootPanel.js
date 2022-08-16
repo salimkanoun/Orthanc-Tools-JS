@@ -59,12 +59,12 @@ class LabelRootPanel extends Component {
 
         return (
         <>
-            <h2 className="card-title">Labels</h2>
+            <h2 className="card-title">Nhãn</h2>
 
             <Form onSubmitCapture={this.handleCreateSubmit} className="mt-4">
                 <InputGroup>
-                    <InputGroup.Text>New</InputGroup.Text>
-                    <FormControl placeholder={"label"} type={'text'} onChange={this.handleCreateInput}
+                    <InputGroup.Text>Nhãn mới</InputGroup.Text>
+                    <FormControl placeholder={"nhãn"} type={'text'} onChange={this.handleCreateInput}
                                  value={this.state.createLabel}/>
                     <Button variant={"outline-primary"} type={"submit"}> + </Button>
                 </InputGroup>
@@ -73,8 +73,8 @@ class LabelRootPanel extends Component {
 
             
             <InputGroup className="mt-4">
-                <InputGroup.Text>Search</InputGroup.Text>
-                <FormControl placeholder={"label"} type={'text'} onChange={this.handleSearch}
+                <InputGroup.Text>Tìm kiếm</InputGroup.Text>
+                <FormControl placeholder={"nhãn"} type={'text'} onChange={this.handleSearch}
                              value={this.state.search}/>
                 <InputGroup.Text>{filteredLabel.length}</InputGroup.Text>
             </InputGroup>

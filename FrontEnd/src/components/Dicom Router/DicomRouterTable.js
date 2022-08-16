@@ -17,15 +17,15 @@ class DicomRouterTable extends Component {
       hidden:true
     },
     {
-      Header: 'Router\'s Name',
+      Header: 'Tên bộ định tuyến',
       accessor : 'name',
     },
     {
-      Header:'Condition',
+      Header:'Tình trạng',
       accessor:'condition',
     },
     {
-      Header: 'Rules',
+      Header: 'Quy tắc',
       accessor:'rules',
       Cell: (row) => {
         let rules = row.row.values.rules
@@ -41,16 +41,16 @@ class DicomRouterTable extends Component {
       },
     },
     {
-      Header: 'Target',
+      Header: 'Mục tiêu',
       accessor: 'target',
       hidden:true
     },
     {
-      Header :'AET Destination',
+      Header :'Đích AET',
       accessor:'destination',
     },
     {
-      Header: 'Running ?',
+      Header: 'Đang chạy ?',
       accessor:'running',
       Cell:(row)=>{
         return(

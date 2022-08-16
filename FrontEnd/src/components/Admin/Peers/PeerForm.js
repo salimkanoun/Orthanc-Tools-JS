@@ -41,12 +41,12 @@ export default class PeerForm extends Component {
             <Fragment>
                 <Row className="mt-4">
                     <Col>
-                        <h2 className="card-title">Add Peer</h2>
+                        <h2 className="card-title">Thêm Peer</h2>
                     </Col>
                 </Row>
                 <Row className="mt-4 forms-group align-items-center">
                     <Col sm={3}>
-                        <label htmlFor="username">Peer Name : </label>
+                        <label htmlFor="username">Tên Peer : </label>
                     </Col>
                     <Col>  
                         <input type='text' name="name" className="form-control" onChange={this.handleChange} />
@@ -60,7 +60,7 @@ export default class PeerForm extends Component {
                         <input type='text' name="ip" className="form-control" placeholder="http://" onChange={this.handleChange} />
                     </Col>
                     <Col>
-                        <label htmlFor="port">Port : </label>
+                        <label htmlFor="port">Cổng: </label>
                     </Col>
                     <Col>
                         <input type='number' name="port" className="form-control" onChange={this.handleChange} />
@@ -68,13 +68,13 @@ export default class PeerForm extends Component {
                 </Row>
                 <Row className="mt-4 forms-group align-items-center">
                     <Col>
-                        <label htmlFor="name">Username : </label>
+                        <label htmlFor="name">Username: </label>
                     </Col>
                     <Col>
                         <input type='text' name="username" className="form-control" onChange={this.handleChange} />
                     </Col>
                     <Col>
-                        <label htmlFor="password">Password : </label>
+                        <label htmlFor="password">Mật khẩu: </label>
                     </Col>
                     <Col>
                         <input type='password' name="password" className="form-control" onChange={this.handleChange} />
@@ -82,7 +82,7 @@ export default class PeerForm extends Component {
                 </Row>
                 <Row className="mt-4 forms-group align-items-center text-center">
                     <Col>
-                        <input type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Send' />
+                        <input type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Gửi' />
                     </Col>
                 </Row>
             </Fragment>

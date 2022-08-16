@@ -35,13 +35,13 @@ const TaskRootPanel = () => {
                             <li className='col-6 text-center'>
                                 <button
                                     className={currentComponent === 'retrieve' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => switchTab('retrieve')}>Auto Retrieve Robots
+                                    onClick={() => switchTab('retrieve')}>Robots truy xuất tự động
                                 </button>
                             </li>
                             <li className='col-6 text-center'>
                                 <button
                                     className={currentComponent === 'flush' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => switchTab('flush')}>Flush Tasks
+                                    onClick={() => switchTab('flush')}>Tác vụ dọn dẹp
                                 </button> 
                             </li>
                         </div>

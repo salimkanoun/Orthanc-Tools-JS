@@ -59,21 +59,21 @@ const AdminRootPanel = () => {
                             <button id="icoGeneral" type="button" value="General"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "General" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
-                                <i className="fas fa-arrow-circle-right pe-2"></i>General
+                                <i className="fas fa-arrow-circle-right pe-2"></i>Tổng quan
                             </button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
                             <button id="icoUser" type="button" value="Users"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "Users" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
-                                <i className="fas fa-arrow-circle-right pe-2"></i>Users
+                                <i className="fas fa-arrow-circle-right pe-2"></i>Người dùng
                             </button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
                             <button id="icoAets" type="button" value="Aets"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "Aets" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
-                                <i className="fas fa-arrow-circle-right pe-2"></i>Aets
+                                <i className="fas fa-arrow-circle-right pe-2"></i>AETs
                             </button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
@@ -87,35 +87,35 @@ const AdminRootPanel = () => {
                             <button id="icoExternal" type="button" value="External Endpoints"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "External Endpoints" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
-                                <i className="fas fa-arrow-circle-right pe-2"></i>External Endpoints
+                                <i className="fas fa-arrow-circle-right pe-2"></i>Endpoints mở rộng
                             </button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
                             <button id="icoRobot" type="button" value="Robots & Tasks"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "Robots & Tasks" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
-                                <i className="fas fa-arrow-circle-right pe-2"></i>Robots & Tasks
+                                <i className="fas fa-arrow-circle-right pe-2"></i>Robots & Tác vụ
                             </button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
                             <button id="icoJob" type="button" value="Jobs"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "Jobs" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
-                                <i className="fas fa-arrow-circle-right pe-2"></i>Jobs
+                                <i className="fas fa-arrow-circle-right pe-2"></i>Công việc
                             </button>
                         </Nav>
                         <Nav className="me-auto mb-3 d-flex align-items-center">
                             <button id="icoCD" type="button" value="CD Burner"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "CD Burner" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
-                                <i className="fas fa-arrow-circle-right pe-2"></i>CD Burner
+                                <i className="fas fa-arrow-circle-right pe-2"></i>Ghi CD/DVD
                             </button>
                         </Nav>
                         <Nav className="me-auto d-flex align-items-center">
                             <button id="icoLabel" type="button" value="Labels"
                                     className={"sub-btn-admin" + (selectedOptionMenu === "Labels" ? " sub-btn-admin-active" : "")}
                                     onClick={clickHandler}>
-                                <i className="fas fa-arrow-circle-right pe-2"></i>Labels
+                                <i className="fas fa-arrow-circle-right pe-2"></i>Các nhãn
                             </button>
                         </Nav>
                     </nav>

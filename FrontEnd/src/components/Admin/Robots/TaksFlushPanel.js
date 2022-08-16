@@ -36,45 +36,45 @@ export default class RobotStatus extends Component {
     render = () => {
         return (
             <Fragment>
-                <h2 className="card-title">Flush task</h2>
+                <h2 className="card-title">Tác vụ dọn dẹp</h2>
                 <Row className="mt-4 align-items-center text-start">
                     <Col sm={3}>
-                        <p>Flush anonymisation task : </p> 
+                        <p>Dọn dẹp tác vụ ẩn danh: </p> 
                     </Col>
                     <Col sm={3}>
-                        <input type='button' className='otjs-button otjs-button-red' onClick={()=>this.handleClick('anonymize')} value='Flush' />
+                        <input type='button' className='otjs-button otjs-button-red' onClick={()=>this.handleClick('anonymize')} value='Dọn dẹp' />
                     </Col>
                     <Col sm={3}>
-                        <p>Flush delete task : </p>
+                        <p>Dọn dẹp tác vụ xóa : </p>
                     </Col>
                     <Col sm={3}>
-                        <input type='button' className='otjs-button otjs-button-red' onClick={()=>this.handleClick('delete')} value='Flush' />
+                        <input type='button' className='otjs-button otjs-button-red' onClick={()=>this.handleClick('delete')} value='Dọn dẹp' />
                     </Col>
                 </Row>
                 <Row className="mt-4 align-items-center text-start">
                     <Col sm={3}>
-                        <p>Flush export task : </p>
+                        <p>Dọn dẹp tác vụ xuất : </p>
                     </Col>
                     <Col sm={3}>
-                        <input type='button' className='otjs-button otjs-button-red' onClick={()=>this.handleClick('export')} value='Flush' />
+                        <input type='button' className='otjs-button otjs-button-red' onClick={()=>this.handleClick('export')} value='Dọn dẹp' />
                     </Col>
                     <Col sm={3}>
-                        <p>Flush retrieve task : </p>
+                        <p>Dọn dẹp tác vụ truy xuất: </p>
                     </Col>
                     <Col sm={3}>
-                        <input type='button' className='otjs-button otjs-button-red' onClick={()=>this.handleClick('retrieve')} value='Flush' />
+                        <input type='button' className='otjs-button otjs-button-red' onClick={()=>this.handleClick('retrieve')} value='Dọn dẹp' />
                     </Col>
                 </Row>
                 <Modal show={!!this.state.flushType} onHide={()=>this.setState({flushType:null})} >
                     <Modal.Header closeButton>
-                        <Modal.Title>Confirm flush</Modal.Title>
+                        <Modal.Title>Xác nhận</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        Warning : there is no check on the flush for the progression of the task. It empties the queues without discrimination
+                        Cảnh báo: không có kiểm tra về tiến độ của các tác vụ. It empties the queues without discrimination
                     </Modal.Body>
                     <Modal.Footer>
-                        <button type='button' className='btn btn-info' onClick={()=>this.setState({flushType:null})}>Cancel</button>
-                        <button type='button' className='btn btn-danger' onClick={this.handleConfirm}>Confirm</button>
+                        <button type='button' className='btn btn-info' onClick={()=>this.setState({flushType:null})}>Đóng</button>
+                        <button type='button' className='btn btn-danger' onClick={this.handleConfirm}>Xác nhận</button>
                     </Modal.Footer>
                 </Modal>
             </Fragment>

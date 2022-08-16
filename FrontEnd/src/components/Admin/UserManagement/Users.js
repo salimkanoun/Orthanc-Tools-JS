@@ -95,7 +95,7 @@ export default class Users extends Component {
         return (
             <Fragment>
                 <Row>
-                    <h2 className='card-title'>Local Users</h2>
+                    <h2 className='card-title'>Người dùng</h2>
                 </Row>
                 <Row className="mt-5">
                     <Col>

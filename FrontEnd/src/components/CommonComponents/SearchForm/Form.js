@@ -111,43 +111,43 @@ export default class Search extends Component{
                 </Row>
                 <div className='row mt-5'>
                     <div className='col-sm'>
-                        <label htmlFor='lastName' className="form-label">Last Name</label>
+                        <label htmlFor='lastName' className="form-label">Họ</label>
                         <input type='text' name='lastName' id='lastName' className='form-control' placeholder='Last name' onChange={this.handleChange} value={this.state.lastName}/>
                     </div>
                     <div className='col-sm'>
-                        <label htmlFor='firstName' className="form-label">First Name</label>
+                        <label htmlFor='firstName' className="form-label">Tên</label>
                         <input type='text' name='firstName' id='firstName' className='form-control' placeholder='First name' onChange={this.handleChange} value={this.state.firstName}/>
                     </div>
                     <div className='col-sm'>
-                        <label htmlFor='patientID' className="form-label">Patient ID</label>
+                        <label htmlFor='patientID' className="form-label">ID của bệnh nhân</label>
                         <input type='text' name='patientID' id='patientID' className='form-control' placeholder='Patient ID' onChange={this.handleChange} value={this.state.patientID}/>
                     </div>
                 </div>
                 <div className='row mt-4'>
                     <div className='col-sm'>
-                        <label htmlFor='accessionNumber' className="form-label">Accession Number</label>
+                        <label htmlFor='accessionNumber' className="form-label">Mã số truy cập</label>
                         <input type='text' name='accessionNumber' id='accessionNumber' className='form-control' placeholder='Accession Number' onChange={this.handleChange} value={this.state.accessionNumber}/>
                     </div>
                     <div className='col-sm'>
-                        <label htmlFor='studyDescription' className="form-label">Study Description</label>
+                        <label htmlFor='studyDescription' className="form-label">Mô tả ca bệnh</label>
                         <input type='text' name='studyDescription' id='studyDescription' className='form-control' placeholder='Study Description' onChange={this.handleChange} value={this.state.studyDescription}/>
                     </div>
                     <div className='col-sm'>
-                        <label htmlFor='modalities' className="form-label">Modalities</label>
+                        <label htmlFor='modalities' className="form-label">Phương pháp</label>
                         <SelectModalities previousModalities={this.state.modalities} onUpdate={this.updateModalities} />
                     </div>
                 </div>
                 <div className='row mt-4'>
                     <div className='col-sm'>
-                        <label htmlFor='date' className="form-label">Date Preset</label>
+                        <label htmlFor='date' className="form-label">Ngày theo dõi</label>
                         <Select name="dates" single options={this.dates} onChange={this.changeListener} />
                     </div>
                     <div className='col-sm'>
-                        <label htmlFor='dateFrom' className="form-label">Date From</label>
+                        <label htmlFor='dateFrom' className="form-label">Từ ngày</label>
                         <input type='date' name='dateFrom' id='dateFrom' className='form-control' placeholder='Date From' onChange={this.handleChange} value={this.state.dateFrom} disabled={this.state.presetDate !== 'none'} />
                     </div>
                     <div className='col-sm'>
-                        <label htmlFor='dateTo' className="form-label">Date To</label>
+                        <label htmlFor='dateTo' className="form-label">Đến ngày</label>
                         <input type='date' name='dateTo' id='dateTo' className='form-control' placeholder='Date To' onChange={this.handleChange} value={this.state.dateTo} disabled={this.state.presetDate !== 'none'} />
                     </div>
                 </div>

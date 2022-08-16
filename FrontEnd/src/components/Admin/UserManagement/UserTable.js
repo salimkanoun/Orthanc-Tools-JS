@@ -19,12 +19,12 @@ export default function UserTable({
             Cell: InputCell
         }, {
             accessor: 'firstname',
-            Header: 'First name',
+            Header: 'Tên',
             sort: true,
             Cell: InputCell
         }, {
             accessor: 'lastname',
-            Header: 'Last name',
+            Header: 'Họ',
             sort: true,
             Cell: InputCell
         }, {
@@ -34,13 +34,13 @@ export default function UserTable({
             Cell: InputCell
         }, {
             accessor: 'role',
-            Header: 'Role',
+            Header: 'Vai trò',
             sort: true,
             options: () => apis.role.getRoles().then(res => res.map((role) => ({value: role.name, label: role.name}))),
             Cell: SelectCell
         }, {
             accessor: 'password',
-            Header: 'New Password',
+            Header: 'Mật khẩu mới',
             type: 'password',
             Cell: InputCell
         }, {
@@ -50,20 +50,20 @@ export default function UserTable({
             Cell: SelectCell
         }, {
             id: 'edit',
-            Header: 'Edit',
+            Header: 'Sửa',
             editable: false,
             Cell: ({row}) => {
                 return <button type='button' name='edit' className='otjs-button otjs-button-green' onClick={() => {
                     modify(row.values)
-                }}>Save</button>
+                }}>Lưu</button>
             }
         }, {
             id: 'delete',
-            Header: 'Delete',
+            Header: 'Xóa',
             editable: false,
             Cell: ({row}) => {
                 return <button type='button' name='delete' className='otjs-button otjs-button-red'
-                               onClick={() => setDelete(row.values.username, row.values.userId)}>Delete</button>
+                               onClick={() => setDelete(row.values.username, row.values.userId)}>Xóa</button>
             }
         }
     ], [modify, setDelete]);

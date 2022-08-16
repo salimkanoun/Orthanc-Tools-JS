@@ -98,18 +98,18 @@ export default class EndpointForm extends Component {
     render = () => {
         return (
             <Fragment>
-                <h2 className="card-title">Add Export Endpoint</h2>
+                <h2 className="card-title">Thêm Endpoint</h2>
                 <div className="form-group mt-4">
                     <Row className="align-items-center">
                         <Col sm={2}>
-                            <label htmlFor="protocol">Protocol </label>
+                            <label htmlFor="protocol">Giao thức </label>
                         </Col>
                         <Col sm={4}>
                             <Select classNamePrefix="select" name="protocol" single options={this.protocols}
                                 onChange={this.handleSelectChange('protocol')} value={this.protocols[this.state.protocol]}/>
                         </Col>
                         <Col sm={2}>
-                            <label htmlFor="label">Label : </label>
+                            <label htmlFor="label">Nhãn: </label>
                         </Col>
                         <Col sm={4}>
                             <input type='text' name="label" className="form-control" onChange={this.handleChange}/>
@@ -117,13 +117,13 @@ export default class EndpointForm extends Component {
                     </Row>
                     <Row className="align-items-center mt-4">
                         <Col sm={2}>
-                            <label htmlFor="host">Host : </label>
+                            <label htmlFor="host">Máy chủ: </label>
                         </Col>
                         <Col sm={4}>
                             <input type='text' name="host" className="form-control" onChange={this.handleChange}/>
                         </Col>
                         <Col sm={2}>
-                            <label htmlFor="port">Port : </label>
+                            <label htmlFor="port">Cổng: </label>
                         </Col>
                         <Col sm={4}>
                             <input type='number' name="port" className="form-control" onChange={this.handleChange}/>
@@ -134,7 +134,7 @@ export default class EndpointForm extends Component {
                             this.state.protocol === 'sftp' ?
                             <>
                                 <Col sm={2}>
-                                    <label htmlFor="ssh">Use a private key?</label>
+                                    <label htmlFor="ssh">Sủ dụng private key?</label>
                                 </Col>
                                 <Col sm={2}>
                                     <input type='checkbox' name="ssh" className="form-check-input"
@@ -146,7 +146,7 @@ export default class EndpointForm extends Component {
                             this.state.protocol === 'ftp' ?
                                 <>
                                 <Col sm={2}>
-                                    <label htmlFor="ssl">Use ssl?</label>
+                                    <label htmlFor="ssl">Sử dụng ssl?</label>
                                 </Col>
                                 <Col sm={2}>
                                     <input type='checkbox' name="ssl" className="form-check-input"
@@ -158,7 +158,7 @@ export default class EndpointForm extends Component {
                             this.state.protocol === 'webdav' ?
                                 <>
                                 <Col sm={2}>
-                                    <label htmlFor="digest">Use digest?</label>
+                                    <label htmlFor="digest">Sủ dụng digest?</label>
                                 </Col>
                                 <Col sm={2}>
                                     <input type='checkbox' name="digest" className="form-check-input"
@@ -169,7 +169,7 @@ export default class EndpointForm extends Component {
                     </Row>
                     <Row className="align-items-center mt-4">
                         <Col sm={2}>
-                            <label htmlFor="username">Username : </label>
+                            <label htmlFor="username">Username: </label>
                         </Col>
                         <Col sm={4}>
                             <input type='text' name="username" className="form-control" onChange={this.handleChange}/>
@@ -186,7 +186,7 @@ export default class EndpointForm extends Component {
                                             value={this.state.keys[this.state.sshKey]}/>
                                     </Col></> : <>
                                     <Col sm={2}>
-                                        <label htmlFor="password">Password : </label>
+                                        <label htmlFor="password">Mật khẩu: </label>
                                     </Col>
                                     <Col sm={4}>
                                         <input type='password' name="password" className="form-control"
@@ -198,7 +198,7 @@ export default class EndpointForm extends Component {
                    
                     <Row className="align-items-center mt-4">
                         <Col sm={2}>
-                            <label htmlFor="targetFolder">Destination Folder : </label>
+                            <label htmlFor="targetFolder">Thư mục đích: </label>
                         </Col>
                         <Col>
                             <input type='text' name="targetFolder" className="form-control" onChange={this.handleChange}/>
@@ -208,7 +208,7 @@ export default class EndpointForm extends Component {
                 <Row className="text-center mt-4">
                     <Col>
                         <input disabled={!this.readyToSubmit()} type='button' className='otjs-button otjs-button-blue'
-                           onClick={this.handleClick} value='Send'/>
+                           onClick={this.handleClick} value='Gửi'/>
                     </Col>
                 </Row>
             </Fragment>

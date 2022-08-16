@@ -55,7 +55,7 @@ const SecurityRootPanel = () => {
             case 'certificates':
                 component =
                     <Fragment>
-                        <h2 className="card-title">Certification Authorities : </h2>
+                        <h2 className="card-title">Chứng chỉ : </h2>
                         <Certificates certificatesData={certificates} refreshCertificatesData={refreshCertificates} />
                         <CertificateForm refreshCertificatesData={refreshCertificates} />
                     </Fragment>
@@ -86,7 +86,7 @@ const SecurityRootPanel = () => {
                             <li className='col-6 text-center'>
                                 <button
                                     className={currentComponent === 'certificates' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => switchTab('certificates')}>Certificates
+                                    onClick={() => switchTab('certificates')}>Chứng chỉ
                                 </button> 
                             </li>
                         </div>

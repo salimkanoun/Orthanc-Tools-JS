@@ -78,11 +78,11 @@ export default class CreateUser extends Component {
         return (
             <Fragment>
                 <button type='button' name='create' className='otjs-button otjs-button-blue'
-                        onClick={() => this.setState({show: true})}>New User
+                        onClick={() => this.setState({show: true})}>Thêm
                 </button>
                 <Modal id='create' show={this.state.show} onHide={this.resetState} size='md'>
                     <Modal.Header closeButton>
-                        <h2 className='card-title'>Create User</h2>
+                        <h2 className='card-title'>Thêm người dùng</h2>
                     </Modal.Header>
                     <Modal.Body>
                         <div>
@@ -92,17 +92,17 @@ export default class CreateUser extends Component {
                                        value={this.state.username} onChange={this.handleChange} required/>
                             </fieldset>
                             <fieldset className="mt-3">
-                                <label>First Name</label>
+                                <label>Tên</label>
                                 <input className='form-control' type='text' placeholder='First Name' name='firstname'
                                        value={this.state.firstname} onChange={this.handleChange}/>
                             </fieldset>
                             <fieldset className="mt-3">
-                                <label>Last Name</label>
+                                <label>Họ</label>
                                 <input className='form-control' type='text' placeholder='Last Name' name='lastname'
                                        value={this.state.lastname} onChange={this.handleChange}/>
                             </fieldset>
                             <fieldset className="mt-3">
-                                <label>Password*</label>
+                                <label>Mật khẩu*</label>
                                 <input className='form-control' type='password' placeholder='password' name='password'
                                        value={this.state.password} onChange={this.handleChange} required/>
                             </fieldset>
@@ -117,13 +117,13 @@ export default class CreateUser extends Component {
                                        value={this.state.superAdmin} onChange={this.handleChange}/>
                             </fieldset>
                             <fieldset className="mt-3">
-                                <label>Roles*</label>
+                                <label>Vai trò*</label>
                                 <SelectRoles onChange={this.onRolesChange}/>
                             </fieldset>
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <button type='button' className='otjs-button otjs-button-blue' onClick={this.createUser}>Create</button>
+                        <button type='button' className='otjs-button otjs-button-blue' onClick={this.createUser}>Tạo</button>
                     </Modal.Footer>
                 </Modal>
             </Fragment>

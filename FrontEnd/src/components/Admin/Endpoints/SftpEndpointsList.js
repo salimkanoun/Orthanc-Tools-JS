@@ -5,11 +5,11 @@ export default function SftpEndpoints({endpointsData, onDeleteEndpoint}) {
 
     const columns = useMemo(() => [{
         accessor: 'label',
-        Header: 'Label'
+        Header: 'Nhãn'
     },
         {
             accessor: 'host',
-            Header: 'Host'
+            Header: 'Máy chủ'
         },
         {
             accessor: 'username',
@@ -17,7 +17,7 @@ export default function SftpEndpoints({endpointsData, onDeleteEndpoint}) {
         },
         {
             accessor: 'targetFolder',
-            Header: 'Target Folder'
+            Header: 'Thư mục đích'
         },
         {
             accessor: 'sshKey',
@@ -26,13 +26,13 @@ export default function SftpEndpoints({endpointsData, onDeleteEndpoint}) {
         },
         {
             accessor: 'delete',
-            Header: 'Delete endpoint',
+            Header: 'Xóa endpoint',
             Cell: ({row}) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                             await onDeleteEndpoint(row.id)
-                        }} value="Remove"/>
+                        }} value="Xóa"/>
                     </div>)
             },
             formatExtraData: this
@@ -42,7 +42,7 @@ export default function SftpEndpoints({endpointsData, onDeleteEndpoint}) {
 
     return (
         <Fragment>
-            <h2 className="card-title mt-5">SFTP Export Endpoints</h2>
+            <h2 className="card-title mt-5">Endpoints xuất SFTP</h2>
             <CommonTable tableData={data} columns={columns}/>
         </Fragment>
     )

@@ -16,28 +16,28 @@ export default class TableMyDicomPatientsStudies extends Component{
         hidden:true
       },
       {
-        Header: 'Patient ID',
+        Header: 'Mã bệnh nhân',
         accessor: 'PatientID',
       },
       {
-        Header :'Patient Name',
+        Header :'Tên bệnh nhân',
         accessor:'PatientName',
       },
       {
-        Header: 'Study Date',
+        Header: 'Ngày nghiên cứu',
         accessor:'StudyDate',
         disableFilters:true
       },
       {
-        Header: 'Description',
+        Header: 'Mô tả nghiên cứu',
         accessor: 'StudyDescription',
       },
       {
-        Header: 'Accession number',
+        Header: 'Mã số',
         accessor: 'AccessionNumber',
       },
       {
-        Header: 'Action',
+        Header: 'Hành động',
         Cell:(row)=>{
           return(
           <span>

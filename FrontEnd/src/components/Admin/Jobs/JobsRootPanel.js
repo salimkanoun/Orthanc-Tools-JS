@@ -46,22 +46,22 @@ function JobsTable({handleDetails, rows}) {
             sort: true
         }, {
             accessor: 'Progress',
-            Header: 'Progress',
+            Header: 'Tiến độ',
             sort: true
         }, {
             accessor: 'State',
-            Header: 'State',
+            Header: 'Trạng thái',
             sort: true
         }, {
             accessor: 'Details',
-            Header: 'Details',
+            Header: 'Chi tiết',
             Cell: (({row}) => {
                 return (<div className="text-center"><button className='otjs-button otjs-button-blue' type='button'
                                onClick={() => handleDetails(row.index)}>Details</button></div>)
             })
         }, {
             accessor: 'Actions',
-            Header: 'Actions',
+            Header: 'Hành động',
             Cell: (({row}) => {
                 return dropDown(row.values.ID)
             })
@@ -132,7 +132,7 @@ export default class JobsRootPanel extends Component {
     render = () => {
         return (
             <Fragment>
-                <h2 className="card-title mb-4">Jobs</h2>
+                <h2 className="card-title mb-4">Công việc</h2>
                 <ModalDetails show={this.state.showDetail} onHide={() => this.setState({showDetail: false})}
                               data={[this.state.rows[this.state.currentRowIndex]]}/>
                 <JobsTable handleDetails={this.handleDetails} rows={this.state.rows}/>

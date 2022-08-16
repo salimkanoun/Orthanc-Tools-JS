@@ -76,11 +76,11 @@ export default class EndpointsOptions extends Component{
     render = () => {
         return (
             <div>
-                <h2 className="card-title mt-5">Export Transcoding </h2>
+                <h2 className="card-title mt-5">Xuất Transcoding </h2>
                 
                     <Row>
                         <Col sm={3}>
-                            <label htmlFor="export_transcoding">Transfer Syntax : </label>
+                            <label htmlFor="export_transcoding">Kiểu chuyển dữ liệu : </label>
                         </Col>
                         <Col>
                             <Select single options={TRANSCODING_OPTIONS} name='export_transcoding' value={this.getSelectedObject(TRANSCODING_OPTIONS, this.state.export_transcoding)} onChange={this.handleChangeSelect} />
@@ -88,7 +88,7 @@ export default class EndpointsOptions extends Component{
                     </Row>
                     <Row className="text-center mt-3">
                         <Col>
-                            <input type="button" className="otjs-button otjs-button-blue mt-3" value="Send" onClick={this.sendForm} />
+                            <input type="button" className="otjs-button otjs-button-blue mt-3" value="Gửi" onClick={this.sendForm} />
 
                         </Col>
                     </Row>

@@ -29,12 +29,12 @@ export default class RedisSettings extends Component {
         return (
             <Fragment>
                 <div className="form-group">
-                    <h2 className="card-title">Redis Server</h2>
-                    <label htmlFor="redisAddress">Address : </label>
+                    <h2 className="card-title">Máy chủ Redis</h2>
+                    <label htmlFor="redisAddress">Địa chỉ : </label>
                     <input type='text' name="redisAddress" className="form-control" value={this.state.redisAddress} placeholder="" disabled />
-                    <label htmlFor="redisPort">Port : </label>
+                    <label htmlFor="redisPort">Cổng : </label>
                     <input type='number' min="0" max="999999" name="redisPort" className="form-control" value={this.state.redisPort} disabled />
-                    <label htmlFor="redisPassword">Password : </label>
+                    <label htmlFor="redisPassword">Mật khẩu : </label>
                     <input type='password' name="redisPassword" className="form-control" value={this.state.redisPassword} disabled />
                 </div>
             </Fragment>

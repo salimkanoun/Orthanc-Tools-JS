@@ -131,14 +131,14 @@ export default class OrthancSettings extends Component {
                 <div className="form-group">
                     <Row>
                         <Col>
-                            <h2 className="card-title">Orthanc Server</h2>
+                            <h2 className="card-title">Máy chủ Orthanc</h2>
                         </Col>
                         <Col className="text-center">
-                            <input type='button' className='otjs-button otjs-button-blue w-10 me-2' onClick={this.testConnexion} value='Check Connexion' />
-                            <input type='button' className='otjs-button otjs-button-blue w-10 ms-2' onClick={() => this.setState({ showOrthancDetails: true })} value='Orthanc Details' />
+                            <input type='button' className='otjs-button otjs-button-blue w-10 me-2' onClick={this.testConnexion} value='Kiểm tra kết nối' />
+                            <input type='button' className='otjs-button otjs-button-blue w-10 ms-2' onClick={() => this.setState({ showOrthancDetails: true })} value='Thông tin Orthanc' />
                             <Modal show={this.state.showOrthancDetails} onHide={() => this.setState({ showOrthancDetails: false })}>
                                 <Modal.Header closeButton>
-                                    <Modal.Title>Orthanc Details</Modal.Title>
+                                    <Modal.Title>Thông tin Orthanc</Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body>
                                     <OrthancInfos/>
@@ -148,13 +148,13 @@ export default class OrthancSettings extends Component {
                     </Row>
                     <Row className="align-items-center g-3 mt-5">
                         <Col sm={2}>
-                            <label htmlFor="address" className="col-form-label">Address : </label>
+                            <label htmlFor="address" className="col-form-label">Địa chỉ : </label>
                         </Col>
                         <Col sm={4}>
                             <input type='text' name="orthancAddress" className="form-control" onChange={this.handleChange} value={this.state.orthancAddress} placeholder="http://" />
                         </Col>
                         <Col sm={2}>
-                            <label htmlFor="port" className="col-form-label">Port : </label>
+                            <label htmlFor="port" className="col-form-label">Cổng : </label>
                         </Col>
                         <Col sm={4}>
                             <input type='number' min="0" max="999999" name="orthancPort" className="form-control" value={this.state.orthancPort} onChange={this.handleChange} />
@@ -168,7 +168,7 @@ export default class OrthancSettings extends Component {
                             <input type='text' name="orthancUsername" className="form-control" value={this.state.orthancUsername} onChange={this.handleChange} />
                         </Col>
                         <Col sm={2}>
-                            <label htmlFor="password"  className="col-form-label">Password : </label>
+                            <label htmlFor="password"  className="col-form-label">Mật khẩu : </label>
                         </Col>
                         <Col sm={4}>
                             <input type='password' name="orthancPassword" className="form-control" value={this.state.orthancPassword} onChange={this.handleChange} />
@@ -177,24 +177,24 @@ export default class OrthancSettings extends Component {
                 </div>
                 <Row className="mt-5 text-center">
                     <Col sm={4}>
-                        <input type='button' className='otjs-button otjs-button-blue w-10' onClick={this.submitOrthancSettings} value='Update' />
+                        <input type='button' className='otjs-button otjs-button-blue w-10' onClick={this.submitOrthancSettings} value='Cập nhật' />
 
                     </Col>
                     <Col sm={4}>
-                        <input type='button' className='otjs-button otjs-button-orange w-10' onClick={() => this.setState({ showRestart: true })} value='Restart' />
+                        <input type='button' className='otjs-button otjs-button-orange w-10' onClick={() => this.setState({ showRestart: true })} value='Khởi động lại' />
                         <Modal show={this.state.showRestart} onHide={() => this.setState({ showRestart: false })}>
                             <Modal.Header closeButton>
-                                <Modal.Title>Confirm restart</Modal.Title>
+                                <Modal.Title>Xác nhận khởi động lại</Modal.Title>
                             </Modal.Header>
-                            <Modal.Body>Are you sure to restart Orthanc system ?</Modal.Body>
+                            <Modal.Body>Bạn có chắc muốn khởi động lại hệ thống ?</Modal.Body>
                             <Modal.Footer>
-                                <input type='button' className='btn btn-secondary' onClick={() => this.setState({ showRestart: false })} value="Close" />
-                                <input type='button' className='btn btn-warning' onClick={this.reset} value="Restart" />
+                                <input type='button' className='btn btn-secondary' onClick={() => this.setState({ showRestart: false })} value="Đóng" />
+                                <input type='button' className='btn btn-warning' onClick={this.reset} value="Khởi động lại" />
                             </Modal.Footer>
                         </Modal>
                     </Col>
                     <Col sm={4}>
-                        <input type='button' className='otjs-button otjs-button-red w-10' onClick={() => this.setState({ showShutdown: true })} value='Shutdown' />
+                        <input type='button' className='otjs-button otjs-button-red w-10' onClick={() => this.setState({ showShutdown: true })} value='Tắt' />
                         <Modal show={this.state.showShutdown} onHide={() => this.setState({ showShutdown: false })}>
                             <Modal.Header closeButton>
                                 <Modal.Title>Confirm Shutdown</Modal.Title>
@@ -202,7 +202,7 @@ export default class OrthancSettings extends Component {
                             <Modal.Body>Are you sure to shutdown Orthanc system ?</Modal.Body>
                             <Modal.Footer>
                                 <input type='button' className='btn btn-secondary' onClick={() => this.setState({ showShutdown: false })} value="Close" />
-                                <input type='button' className='btn btn-danger' onClick={this.shutdown} value="Shutdown" />
+                                <input type='button' className='btn btn-danger' onClick={this.shutdown} value="tắt" />
                             </Modal.Footer>
                         </Modal>
                     </Col>

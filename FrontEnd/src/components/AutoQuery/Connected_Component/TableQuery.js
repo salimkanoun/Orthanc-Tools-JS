@@ -24,7 +24,7 @@ function CustomHeader(setOverride, type = 'text') {
     return ({column}) => {
         return (<>
             <p>{column.text}</p>
-            <FormControl placeholder={'Override'} type={type} value={column.overrideValue || ''} onChange={event => {
+            <FormControl placeholder={'Ghi đè'} type={type} value={column.overrideValue || ''} onChange={event => {
                 setOverride(column.id, event.target.value);
             }}/>
         </>)
@@ -39,28 +39,28 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
             show: false
         }, {
             accessor: 'PatientName',
-            text: 'Patient Name',
+            text: 'Tên bệnh nhân',
             Filter: InputFilter('Patient Name'),
             Header,
             overrideValue: overridesValues['PatientName'],
             Cell: EditableCell
         }, {
             accessor: 'PatientID',
-            text: 'Patient ID',
+            text: 'Mã bệnh nhân',
             Filter: InputFilter('Patient ID'),
             overrideValue: overridesValues['PatientID'],
             Header,
             Cell: EditableCell
         }, {
             accessor: 'AccessionNumber',
-            text: 'Accession Number',
+            text: 'Mã số',
             Filter: InputFilter('Accession Number'),
             Header,
             overrideValue: overridesValues['AccessionNumber'],
             Cell: EditableCell
         }, {
             accessor: 'DateFrom',
-            text: 'Date From',
+            text: 'Từ ngày',
             Filter: DateFilter(),
             filter: dFilter,
             Header: CustomHeader(setOverride, 'date'),
@@ -69,7 +69,7 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
             Cell: EditableCell
         }, {
             accessor: 'DateTo',
-            text: 'Date To',
+            text: 'Đến ngày',
             Filter: DateFilter(),
             filter: dFilter,
             type: 'date',
@@ -78,14 +78,14 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
             Cell: EditableCell
         }, {
             accessor: 'StudyDescription',
-            text: 'Study Description',
+            text: 'Mô tả tình trạng',
             Filter: InputFilter('Study Description'),
             Header,
             overrideValue: overridesValues['StudyDescription'],
             Cell: EditableCell
         }, {
             accessor: 'ModalitiesInStudy',
-            text: 'Modalities',
+            text: 'Phương pháp',
             Filter: InputFilter('Modalities'),
             Header,
             overrideValue: overridesValues['ModalitiesInStudy'],
@@ -164,7 +164,7 @@ class TableQuery extends Component {
                 </Row>
                 <Row className="text-center mt-5">
                     <Col sm={3}>
-                        <input type="button" className="otjs-button otjs-button-blue w-7" value="Add"
+                        <input type="button" className="otjs-button otjs-button-blue w-7" value="Thêm"
                                onClick={this.props.addRow}/>
                     </Col>
                     <Col sm={3}>
@@ -181,18 +181,18 @@ class TableQuery extends Component {
                         ))}/>
                     </Col>
                     <Col sm={6}>
-                        <input type="button" className="otjs-button otjs-button-orange m-2 w-10" value="Delete Selected"
+                        <input type="button" className="otjs-button otjs-button-orange m-2 w-10" value="Xóa mục đã chọn"
                                onClick={this.removeRow}/>
 
 
-                        <input type="button" className="otjs-button otjs-button-red m-2 w-10" value="Empty Table"
+                        <input type="button" className="otjs-button otjs-button-red m-2 w-10" value="Xóa bảng"
                                onClick={this.emptyTable}/>
                     </Col>
                 </Row>
                 <Row className="text-center mt-5">
                     <Col>
                         <Table queries={this.props.queries} onDataChange={this.changeHandler} aets={this.props.aets}
-                               setOverride={this.handleOverride} overridesValues={this.state.overrides}
+                              setOverride={this.handleOverride} overridesValues={this.state.overrides}
                                onSelect={this.handleSelect} onFilter={this.handleFilter}/>
                     </Col>
                 </Row>

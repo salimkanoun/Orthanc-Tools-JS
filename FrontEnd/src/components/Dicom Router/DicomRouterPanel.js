@@ -108,14 +108,14 @@ class DicomRouterPanel extends Component {
         <div><Alert show={this.state.message} variant='info'>To apply changes on the router (re)start it !</Alert></div>
         <Row className="border-bottom border-2 pb-3">
             <Col className="d-flex justify-content-start align-items-center">
-                <i className="fas fa-broadcast-tower ico me-3"></i><h2 className="card-title">Dicom Router</h2>
+                <i className="fas fa-broadcast-tower ico me-3"></i><h2 className="card-title">Bộ định tuyến Dicom</h2>
             </Col>
             <Col className="text-center">
               <Toggle checked={this.state.service_running} onChange={(e) => this.handleAutorouterService(e)} />
             </Col>
         </Row>
         <Row className="mt-5">
-          <button type="button" className="otjs-button otjs-button-blue w-10" onClick={() => this.handleOpenModal()}>Create Router</button>
+          <button type="button" className="otjs-button otjs-button-blue w-10" onClick={() => this.handleOpenModal()}>Tạo định tuyến</button>
         </Row>
         <Row className="mt-5 text-center">
           <Col>

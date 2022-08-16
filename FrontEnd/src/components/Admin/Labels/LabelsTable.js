@@ -6,12 +6,12 @@ export default function LabelsTable({labels, handlerManageRole, handlerDelete}) 
     const columns = useMemo(() => [
         {
             accessor: 'label_name',
-            Header: 'Label',
+            Header: 'Nhãn',
             hidden: false
         },
         {
             id: '_r',
-            Header: 'Roles',
+            Header: 'Vai trò',
             Cell: ({row}) => (<div className="text-center">
                                 <button className="otjs-button otjs-button-orange w-10"
                                     onClick={() => handlerManageRole(row.values.label_name)}>Manage Roles</button>
@@ -19,7 +19,7 @@ export default function LabelsTable({labels, handlerManageRole, handlerDelete}) 
         },
         {
             id: '_d',
-            Header: 'Delete',
+            Header: 'Xóa',
             Cell: ({row}) => (<div className="text-center">
                                 <button className="otjs-button otjs-button-red w-10"
                                      onClick={() => handlerDelete(row.values.label_name)}>Delete Label</button>

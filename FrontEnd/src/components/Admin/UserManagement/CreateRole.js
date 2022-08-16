@@ -31,15 +31,15 @@ export default class CreateRole extends Component {
     render = () => {
         return (
             <Fragment>
-                <button type='button' className='otjs-button otjs-button-blue' onClick={() => this.setState({ show: true })} >New Role</button>
+                <button type='button' className='otjs-button otjs-button-blue' onClick={() => this.setState({ show: true })} >Thêm</button>
                 <Modal id='create' show={this.state.show} onHide={() => this.setState({ show: false })}>
                     <Modal.Header closeButton>
-                        <h2 className='card-title'>Create new role</h2>
+                        <h2 className='card-title'>Tạo vai trò mới</h2>
                     </Modal.Header>
                     <Modal.Body>
                         <Row className="align-items-center">
                             <Col sm={2}>
-                                <label>Name*</label>
+                                <label>Tên*</label>
                             </Col>
                             <Col sm={10}>
                                 <input className='form-control' type='text' placeholder='name' name='name' value={this.state.name} onChange={(e) => this.setState({ name: e.target.value })} required />

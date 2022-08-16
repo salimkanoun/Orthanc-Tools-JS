@@ -10,19 +10,19 @@ export default function Aet({aetsData, refreshAetData}) {
 
     const columns = useMemo(() => [{
         accessor: 'name',
-        Header: 'Name'
+        Header: 'Tên'
     }, {
         accessor: 'AET',
         Header: 'AET'
     }, {
         accessor: 'Host',
-        Header: 'Host'
+        Header: 'Máy chủ`'
     }, {
         accessor: 'Port',
-        Header: 'Port'
+        Header: 'Cổng'
     }, {
         accessor: 'Manufacturer',
-        Header: 'Manufacturer'
+        Header: 'Nhà sản xuất'
     }, {
         accessor: 'echo',
         Header: 'Echo AET',
@@ -41,7 +41,7 @@ export default function Aet({aetsData, refreshAetData}) {
         }
     }, {
         accessor: 'remove',
-        Header: 'Remove AET',
+        Header: 'Xóa AET',
         Cell: ({row}) => {
             return (
                 <div className="text-center">
@@ -52,7 +52,7 @@ export default function Aet({aetsData, refreshAetData}) {
                         } catch (error) {
                             toast.error(error.statusText)
                         }
-                    }} value="Remove"/>
+                    }} value="xóa"/>
                 </div>)
         },
         formatExtraData: this

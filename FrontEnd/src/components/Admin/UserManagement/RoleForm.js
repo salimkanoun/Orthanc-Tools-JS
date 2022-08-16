@@ -48,7 +48,7 @@ export default class RoleForm extends Component {
             <Fragment>
                 <Row className="mt-3">
                     <Col sm={5}>
-                        <h5>Administration</h5>
+                        <h5>Quản trị</h5>
                     </Col>
                     <Col sm={7}>
                         <Toggle checked={this.state.admin} onChange={() => this.setState(prevState => ({ admin: !prevState.admin }))} />
@@ -56,7 +56,7 @@ export default class RoleForm extends Component {
                 </Row>
                 <Row className="mt-3">
                     <Col sm={5}>
-                        <h5>Anonymisation</h5>
+                        <h5>Ẩn danh</h5>
                     </Col>
                     <Col sm={7}>
                         <Toggle checked={this.state.anon} onChange={() => this.setState(prevState => ({ anon: !prevState.anon }))} />
@@ -64,7 +64,7 @@ export default class RoleForm extends Component {
                 </Row>
                 <Row className="mt-3">
                     <Col sm={5}>
-                        <h5>Auto-Query</h5>
+                        <h5>Truy vấn tự động</h5>
                     </Col>
                     <Col sm={7}>
                         <Toggle checked={this.state.autoQuery} onChange={() => this.setState(prevState => ({ autoQuery: !prevState.autoQuery }))} />
@@ -72,7 +72,7 @@ export default class RoleForm extends Component {
                 </Row>
                 <Row className="mt-3">
                     <Col sm={5}>
-                        <h5>Content</h5>
+                        <h5>Nội dung</h5>
                     </Col>
                     <Col sm={7}>
                         <Toggle checked={this.state.content} onChange={() => this.setState(prevState => ({ content: !prevState.content }))} />
@@ -80,7 +80,7 @@ export default class RoleForm extends Component {
                 </Row>
                 <Row className="mt-3">
                     <Col sm={5}>
-                        <h5>Delete</h5>
+                        <h5>Xóa</h5>
                     </Col>
                     <Col sm={7}>
                         <Toggle checked={this.state.delete} onChange={() => this.setState(prevState => ({ delete: !prevState.delete }))} />
@@ -88,7 +88,7 @@ export default class RoleForm extends Component {
                 </Row>
                 <Row className="mt-3">
                     <Col sm={5}>
-                        <h5>Local Export</h5>
+                        <h5>Xuất cục bộ</h5>
                     </Col>
                     <Col sm={7}>
                         <Toggle checked={this.state.exportLocal} onChange={() => this.setState(prevState => ({ exportLocal: !prevState.exportLocal }))} />
@@ -96,7 +96,7 @@ export default class RoleForm extends Component {
                 </Row>
                 <Row className="mt-3">
                     <Col sm={5}>
-                        <h5>Remote Export</h5>
+                        <h5>Xuất từ xa</h5>
                     </Col>
                     <Col sm={7}>
                         <Toggle checked={this.state.exportExtern} onChange={() => this.setState(prevState => ({ exportExtern: !prevState.exportExtern }))} />
@@ -104,7 +104,7 @@ export default class RoleForm extends Component {
                 </Row>
                 <Row className="mt-3">
                     <Col sm={5}>
-                        <h5>Query</h5>
+                        <h5>Truy vấn</h5>
                     </Col>
                     <Col sm={7}>
                         <Toggle checked={this.state.query} onChange={() => this.setState(prevState => ({ query: !prevState.query }))} />
@@ -112,7 +112,7 @@ export default class RoleForm extends Component {
                 </Row>
                 <Row className="mt-3">
                     <Col sm={5}>
-                        <h5>Import</h5>
+                        <h5>Nhập</h5>
                     </Col>
                     <Col sm={7}>
                         <Toggle checked={this.state.import} onChange={() => this.setState(prevState => ({ import: !prevState.import }))} />
@@ -120,7 +120,7 @@ export default class RoleForm extends Component {
                 </Row>
                 <Row className="mt-3">
                     <Col sm={5}>
-                        <h5>Modify</h5>
+                        <h5>Sửa</h5>
                     </Col>
                     <Col sm={7}>
                         <Toggle checked={this.state.modify} onChange={() => this.setState(prevState => ({ modify: !prevState.modify }))} />
@@ -128,7 +128,7 @@ export default class RoleForm extends Component {
                 </Row>
                 <Row className="mt-3">
                     <Col sm={5}>
-                        <h5>CD Burner</h5>
+                        <h5>Ghi CD</h5>
                     </Col>
                     <Col sm={7}>
                         <Toggle checked={this.state.cd_burner} onChange={() => this.setState(prevState => ({ cd_burner: !prevState.cd_burner }))} />
@@ -136,7 +136,7 @@ export default class RoleForm extends Component {
                 </Row>
                 <Row className="mt-3">
                     <Col sm={5}>
-                        <h5>Dicom Router</h5>
+                        <h5>Định tuyến Dicom</h5>
                     </Col>
                     <Col sm={7}>
                         <Toggle checked={this.state.autorouting} onChange={() => this.setState(prevState => ({ autorouting: !prevState.autorouting }))} />
@@ -145,7 +145,7 @@ export default class RoleForm extends Component {
 
                 <Row className="mt-3 text-center">
                     <Col>
-                        <button type='button' name='create' className='otjs-button otjs-button-blue' onClick={() => { this.props.onSubmitRole(this.state) }}> Validate </button>
+                        <button type='button' name='create' className='otjs-button otjs-button-blue' onClick={() => { this.props.onSubmitRole(this.state) }}> Xác nhận </button>
                     </Col>
                 </Row>
 

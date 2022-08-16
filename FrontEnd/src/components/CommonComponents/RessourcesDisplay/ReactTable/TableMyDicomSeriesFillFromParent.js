@@ -50,23 +50,23 @@ export default class TableSeriesFillFromParent extends Component {
             hidden : true
           },
           {
-            Header: 'Series Description',
+            Header: 'Mô tả seri phim',
             accessor: 'SeriesDescription',
           },
           {
-            Header :'Modality',
+            Header :'Phương pháp',
             accessor:'Modality'
           },
           {
-            Header:'Instances',
+            Header:'Ví dụ',
             accessor:'Instances'
           },
           {
-            Header: 'Series Number',
+            Header: 'Số seri',
             accessor:'SeriesNumber',
           },
           {
-            Header: 'Action',
+            Header: 'Hành động',
             accessor: 'action',
             Cell:(row)=>{
               return(

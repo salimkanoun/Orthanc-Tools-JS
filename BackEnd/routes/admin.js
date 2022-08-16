@@ -188,5 +188,5 @@ adminRouter.post('/autorouting/:name',[userAuthMidelware, autoroutingMidelware],
 adminRouter.put('/autorouting/:id',[userAuthMidelware, autoroutingMidelware],modifyAutorouter)
 adminRouter.put('/autorouting/:id/running',[userAuthMidelware, autoroutingMidelware],switchOnOff)
 adminRouter.delete('/autorouting/:id',[userAuthMidelware, autoroutingMidelware],deleteAutorouter)
-
+adminRouter.delete('/autorouting/:haiduong',[userAuthMidelware, autoroutingMidelware],deleteAutorouter)
 module.exports = adminRouter

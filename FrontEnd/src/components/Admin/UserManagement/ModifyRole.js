@@ -37,12 +37,12 @@ export default class ModifyRole extends Component {
         return (
             <Fragment>
                 <div className="text-center">
-                    <button type='button' className='otjs-button otjs-button-orange' name='openModify' onClick={this.handleClick}>Edit</button>
+                    <button type='button' className='otjs-button otjs-button-orange' name='openModify' onClick={this.handleClick}>Sửa</button>
                 </div>
                 
                 <Modal id='modify' show={this.state.show} onHide={() => this.setState({ show: false })}>
                     <Modal.Header closeButton>
-                        <h2 className='card-title'>Modify role {this.state.data.name}</h2>
+                        <h2 className='card-title'>Sửa vai trò {this.state.data.name}</h2>
                     </Modal.Header>
                     <Modal.Body>
                         <RoleForm data={this.state.data} onSubmitRole={this.modify} />

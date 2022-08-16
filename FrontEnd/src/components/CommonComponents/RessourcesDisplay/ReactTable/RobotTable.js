@@ -16,25 +16,25 @@ export default function RobotTable({
         },
         {
             accessor: 'name',
-            Header: 'Name'
+            Header: 'Tên'
         }, {
             accessor: 'username',
             Header: 'Username'
         }, {
             accessor: 'queriesNb',
-            Header: 'Number of Queries'
+            Header: 'Số lượng truy vấn'
         }, {
             accessor: 'validation',
-            Header: 'Progress Validation'
+            Header: 'Kiểm tra tiến độ'
         }, {
             accessor: 'retrieve',
-            Header: 'Progress Retrieve'
+            Header: 'Truy xuất tiến độ'
         }, {
             accessor: 'state',
-            Header: 'State'
+            Header: 'Trạng thái'
         }, {
             id: 'details',
-            Header: 'Show Details',
+            Header: 'Chi tiết',
             Cell: ({row}) => {
                 return <Link className='nav-link otjs-button otjs-button-blue'
                              to={'/robot/' + row.values.id}> Details </Link>
@@ -44,7 +44,7 @@ export default function RobotTable({
             show: false
         }, {
             accessor: 'valid',
-            Header: 'Validation Status',
+            Header: 'Trạng thái kiểm tra',
             show: !hideValidationButton,
             Cell: ({row}) => {
                 if (row.values.valid) {
@@ -65,7 +65,7 @@ export default function RobotTable({
             }
         }, {
             id: 'remove',
-            Header: 'Remove Robot',
+            Header: 'Xóa Robot',
             Cell: ({row}) => {
                 return (
                     <div className="text-center">

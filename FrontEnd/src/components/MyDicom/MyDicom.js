@@ -115,7 +115,7 @@ class MyDicom extends Component{
         <div>
           <Row className="border-bottom border-2 pb-3">
               <Col className="d-flex justify-content-start align-items-center">
-                  <i className="far fa-images ico me-3"></i><h2 className="card-title">My Dicom</h2>
+                  <i className="far fa-images ico me-3"></i><h2 className="card-title">Dicom của tôi</h2>
               </Col>
           </Row>
           <Row className="mt-5">

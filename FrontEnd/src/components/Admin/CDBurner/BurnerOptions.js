@@ -24,12 +24,12 @@ export default class BurnerOptions extends Component {
     ]
 
     levelOptions = [
-        { value: 'Study', label: 'Study' },
-        { value: 'Patient', label: 'Patient' }
+        { value: 'Study', label: 'Nghiên cúu' },
+        { value: 'Patient', label: 'Bệnh nhân' }
     ]
 
     supportType = [
-        { value: 'Auto', label: 'Auto' },
+        { value: 'Auto', label: 'Tự động' },
         { value: 'CD', label: 'CD' },
         { value: 'DVD', label: 'DVD' }
     ]
@@ -130,31 +130,31 @@ export default class BurnerOptions extends Component {
     render = () => {
         return (
             <div>
-                <h2 className="card-title">CD/DVD Burner Options</h2>
+                <h2 className="card-title">Tùy chọn ổ ghi CD/DVD</h2>
                 <Row className="mt-4 align-items-center">
                     <Col sm={2}>
-                        <label htmlFor="burner_monitored_path">Monitored Folder :</label>
+                        <label htmlFor="burner_monitored_path">Thư mục theo dõi:</label>
                     </Col>
                     <Col sm={4}>
-                        <input type='text' className="form-control" name='burner_monitored_path' value={this.state.burner_monitored_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Epson" />
+                        <input type='text' className="form-control" name='burner_monitored_path' value={this.state.burner_monitored_path} onChange={this.handleChange} placeholder="Ví dụ: C:\\myPath\Epson" />
                     </Col>
                     <Col sm={2}>
-                        <label htmlFor="burner_viewer_path">Viewer Folder : </label>
+                        <label htmlFor="burner_viewer_path">Thư mục người xem: </label>
                     </Col>
                     <Col sm={4}>
-                        <input type='text' className="form-control" name='burner_viewer_path' value={this.state.burner_viewer_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Viewer" />
+                        <input type='text' className="form-control" name='burner_viewer_path' value={this.state.burner_viewer_path} onChange={this.handleChange} placeholder="Ví dụ: C:\\myPath\Viewer" />
                     </Col>
 
                 </Row>
                 <Row className="mt-4 align-items-center">
                     <Col sm={2}>
-                        <label htmlFor="burner_label_path">Label Path : </label>
+                        <label htmlFor="burner_label_path">Đường dẫn nhãn: </label>
                     </Col>
                     <Col sm={4}>
-                        <input type='text' className="form-control" name='burner_label_path' value={this.state.burner_label_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Label" />
+                        <input type='text' className="form-control" name='burner_label_path' value={this.state.burner_label_path} onChange={this.handleChange} placeholder="Ví dụ: C:\\myPath\Label" />
                     </Col>
                     <Col sm={2}>
-                        <label htmlFor="burner_transfer_syntax">Transfer Syntax : </label>
+                        <label htmlFor="burner_transfer_syntax">Kiểu chuyển dữ liệu : </label>
                     </Col>
                     <Col sm={4}>
                         <Select single options={this.transferSyntaxOptions} name='burner_transfer_syntax' value={this.getSelectedObject(this.transferSyntaxOptions, this.state.burner_transfer_syntax)} onChange={this.handleChangeSelect} />
@@ -162,13 +162,13 @@ export default class BurnerOptions extends Component {
                 </Row>
                 <Row className="mt-4 align-items-center">
                     <Col sm={2}>
-                        <label htmlFor="burner_manifacturer">Manufacturer : </label>
+                        <label htmlFor="burner_manifacturer">Nhà sản xuất: </label>
                     </Col>
                     <Col sm={4}>
                         <Select single options={this.manufacturerOptions} value={this.getSelectedObject(this.manufacturerOptions, this.state.burner_manifacturer)} onChange={this.handleChangeSelect} name="burner_manifacturer" />
                     </Col>
                     <Col sm={2}>
-                        <label htmlFor="burner_monitoring_level">Monitoring Level : </label>
+                        <label htmlFor="burner_monitoring_level">Mức độ theo dõi: </label>
                     </Col>
                     <Col sm={4}>
                         <Select options={this.levelOptions} value={this.getSelectedObject(this.levelOptions, this.state.burner_monitoring_level)} onChange={this.handleChangeSelect} name="burner_monitoring_level" />
@@ -177,13 +177,13 @@ export default class BurnerOptions extends Component {
                 </Row>
                 <Row className="mt-4 align-items-center">
                     <Col sm={2}>
-                        <label htmlFor="burner_date_format">Date Format : </label>
+                        <label htmlFor="burner_date_format">Định dạng ngày: </label>
                     </Col>
                     <Col sm={4}>
                         <Select options={this.dateFormatOptions} value={this.getSelectedObject(this.dateFormatOptions, this.state.burner_date_format)} onChange={this.handleChangeSelect} name="burner_date_format" />
                     </Col>
                     <Col sm={2}>
-                        <label htmlFor="burner_support_type">Support Type : </label>
+                        <label htmlFor="burner_support_type">Loại hỗ trợ: </label>
                     </Col>
                     <Col sm={4}>
                         <Select single options={this.supportType} value={this.getSelectedObject(this.supportType, this.state.burner_support_type)} onChange={this.handleChangeSelect} name="burner_support_type" />
@@ -192,7 +192,7 @@ export default class BurnerOptions extends Component {
                 </Row>
                 <Row className="mt-4 align-items-center">
                     <Col sm={5}>
-                        <label htmlFor="burner_delete_study_after_sent">Delete Original Images From Orthanc : </label>
+                        <label htmlFor="burner_delete_study_after_sent">Xóa ảnh gốc từ Orthanc : </label>
                     </Col>
                     <Col sm={2}>
                         <input type="checkbox" checked={this.state.burner_delete_study_after_sent} name="burner_delete_study_after_sent" value="Delete Original Study/Patient" onChange={this.handleChange} />
@@ -201,7 +201,7 @@ export default class BurnerOptions extends Component {
                 </Row>
                 <Row className="text-center mt-4">
                     <Col>
-                        <input type="button" className="otjs-button otjs-button-blue" value="Send" onClick={this.sendForm} />
+                        <input type="button" className="otjs-button otjs-button-blue" value="Gửi" onClick={this.sendForm} />
                     </Col>
                 </Row>
             </div>

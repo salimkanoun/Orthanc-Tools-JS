@@ -7,16 +7,16 @@ export default function SshKeys({refreshSshKeysData, sshKeysData}) {
 
     const columns = useMemo(() => [{
         accessor: 'label',
-        Header: 'Label'
+        Header: 'Nhãn'
     },
         {
             accessor: 'pass',
-            Header: 'Has a passphrase',
+            Header: 'Có passphrase',
             Cell: ({row}) => <p>{(row.values.pass ? '✓' : '✖')}</p>
         },
         {
             accessor: 'delete',
-            Header: 'Delete Key',
+            Header: 'Xóa Key',
             Cell: ({row}) => {
                 return (
                     <div className="text-center">

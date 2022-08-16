@@ -63,7 +63,7 @@ const AutoQueryRoot = () => {
             <div className='mb-5'>
                 <Row className="pb-3">
                     <Col className="d-flex justify-content-start align-items-center">
-                        <i className="fas fa-recycle ico me-3"></i><h2 className="card-title">Auto-Retrieve</h2>
+                        <i className="fas fa-recycle ico me-3"></i><h2 className="card-title">Truy xuất tự động</h2>
                     </Col>
                 </Row>
                 <nav className='otjs-navmenu container-fluid'>
@@ -71,13 +71,13 @@ const AutoQueryRoot = () => {
                         <li className='col-3 text-center'>
                             <button
                                 className={currentMainTab === QUERRY ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'}
-                                onClick={() => setCurrentMainTab(QUERRY)}>Query List
+                                onClick={() => setCurrentMainTab(QUERRY)}>Danh sách truy vấn
                             </button>
                         </li>
                         <li className='col-3 text-center'>
                             <button
                                 className={currentMainTab === RESULT ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'}
-                                onClick={() => setCurrentMainTab(RESULT)}>Results
+                                onClick={() => setCurrentMainTab(RESULT)}>Kết quả
                             </button>
                         </li>
                         <li className='col-3 text-center'>
@@ -91,7 +91,7 @@ const AutoQueryRoot = () => {
                         <li className='col-3 text-center'>
                             <button
                                 className={currentMainTab === HISTORIC ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'}
-                                onClick={() => setCurrentMainTab(HISTORIC)}>History
+                                onClick={() => setCurrentMainTab(HISTORIC)}>Lịch sử
                             </button>
                         </li>
                     </div>

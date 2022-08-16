@@ -19,7 +19,7 @@ export default class ExportCSVButton extends Component {
 
     render() {
         return (<>
-            <button type="button" className="otjs-button otjs-button-blue w-7" onClick={this.handleClick}>{'Export CSV'}</button>
+            <button type="button" className="otjs-button otjs-button-blue w-7" onClick={this.handleClick}>{'Xuất CSV'}</button>
             <a style={{display: "none"}}
                download={this.props.fileName || "spreadsheet.csv"}
                href={this.state.fileDownloadUrl}

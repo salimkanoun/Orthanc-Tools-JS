@@ -11,21 +11,21 @@ function RoleTable({roles, onDelete}) {
     const columns = useMemo(() => [
         {
             accessor: 'name',
-            Header: 'Name',
+            Header: 'Têm',
             sort: true
         }, {
             accessor: 'edit',
-            Header: 'Edit',
+            Header: 'Sửa',
             Cell: ({row}) => {
                 return <ModifyRole name={row.values.name}/>
             }
         }, {
             accessor: 'delete',
-            Header: 'Delete',
+            Header: 'Xóa',
             Cell: ({row}) => {
                 return (<div className="text-center">
                             <button type='button' className='otjs-button otjs-button-red' name='openDelete'
-                               onClick={() => onDelete(row.values.name)}>Delete</button>
+                               onClick={() => onDelete(row.values.name)}>Xóa</button>
                         </div>)
             }
         }

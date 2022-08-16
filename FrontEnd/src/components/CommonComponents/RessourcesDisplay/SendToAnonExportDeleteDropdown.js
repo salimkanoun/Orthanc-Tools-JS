@@ -94,15 +94,15 @@ class SendToAnonExportDeleteDropwdown extends Component {
         return (
             <Dropdown as={ButtonGroup} onClick={this.handleClick}>
                 <Dropdown.Toggle variant="button-dropdown-orange" className="mb-4 button-dropdown button-dropdown-orange" id="dropdown-basic">
-                    Send To
+                    Gửi đến
                 </Dropdown.Toggle>
                 
                 <Dropdown.Menu className="mt-2 border border-dark border-2">
-                    <Dropdown.Item className='bg-blue' onClick={this.sendToExportList}>Export List</Dropdown.Item>
+                    <Dropdown.Item className='bg-blue' onClick={this.sendToExportList}>Xuất danh sách</Dropdown.Item>
                     <Dropdown.Divider />
-                    <Dropdown.Item className='bg-orange' onClick={this.sendToAnonList}>Anonymize List</Dropdown.Item>
+                    <Dropdown.Item className='bg-orange' onClick={this.sendToAnonList}>Danh sách giấu tên</Dropdown.Item>
                     <Dropdown.Divider />
-                    <Dropdown.Item className='bg-red' onClick={this.sendToDeleteList}>Delete List</Dropdown.Item>
+                    <Dropdown.Item className='bg-red' onClick={this.sendToDeleteList}>Xóa danh sách</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         )

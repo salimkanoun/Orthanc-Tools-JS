@@ -33,7 +33,7 @@ export default function Peer({peersData, refreshPeerData}) {
         }
     }, {
         id: 'Remove',
-        Header: 'Remove Peer',
+        Header: 'Xóa Peer',
         Cell: ({row}) => {
             return (
                 <div className="text-center">
@@ -44,7 +44,7 @@ export default function Peer({peersData, refreshPeerData}) {
                         } catch (error) {
                             toast.error(error.statusText)
                         }
-                    }} value="Remove"/>
+                    }} value="Xóa"/>
                 </div>)
         }
     }]

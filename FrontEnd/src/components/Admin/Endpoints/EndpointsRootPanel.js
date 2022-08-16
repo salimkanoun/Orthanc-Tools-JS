@@ -129,13 +129,13 @@ const EndpointRootPanel = () => {
                             <li className='col-4 text-center'>
                                 <button
                                     className={currentComponent === 'add' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => switchTab('add')}>Add Endpoints
+                                    onClick={() => switchTab('add')}>Thêm Endpoints
                                 </button> 
                             </li>
                             <li className='col-4 text-center'>
                                 <button
                                     className={currentComponent === 'security' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => switchTab('security')}>Security
+                                    onClick={() => switchTab('security')}>Bảo mật
                                 </button> 
                             </li>
                         </div>

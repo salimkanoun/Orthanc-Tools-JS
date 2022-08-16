@@ -29,13 +29,13 @@ const GeneralRoot = () => {
             <li className='col-6 text-center'>
               <button
                 className={selectedOptionMenu === 'orthancSettings' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                onClick={() => switchTab('orthancSettings')}>Orthanc Settings
+                onClick={() => switchTab('orthancSettings')}>Cài đặt Orthanc 
               </button> 
             </li>
             <li className='col-6 text-center'>
               <button
                 className={selectedOptionMenu === 'redisSettings' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                onClick={() => switchTab('redisSettings')}>Redis Settings
+                onClick={() => switchTab('redisSettings')}>Cài đặt Redis
               </button> 
             </li>
           </div>

@@ -50,26 +50,26 @@ export default class SshKeyForm extends Component {
     render = () => {
         return (
             <Fragment>
-                <h3 className="card-title mt-4">Add Ssh Private Key</h3>
+                <h3 className="card-title mt-4">Thêm Ssh Private Key</h3>
                 <Dropzone onDrop={acceptedFile => this.setFile(acceptedFile)} >
                     {({ getRootProps, getInputProps }) => (
                         <section>
                             <div className={this.state.inProgress ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
                                 <input {...getInputProps()} />
-                                <p>{!!this.state.file ? this.state.file.name : "Drop Private Key"}</p>
+                                <p>{!!this.state.file ? this.state.file.name : "Thả Private Key vào đây"}</p>
                             </div>
                         </section>
                     )}
                 </Dropzone>
                 <Row className="form-group mt-4 align-items-center">
                     <Col sm={2}>
-                        <label htmlFor="label">Label : </label>
+                        <label htmlFor="label">Nhãn: </label>
                     </Col>
                     <Col sm={4}>
                         <input type='text' name="label" className="form-control" onChange={this.handleChange} />   
                     </Col>
                     <Col sm={2}>
-                        <label htmlFor="pass">Passphrase : </label>
+                        <label htmlFor="pass">Passphrase: </label>
                     </Col>
                     <Col sm={4}>
                         <input type='text' name="pass" className="form-control" onChange={this.handleChange} />
@@ -77,7 +77,7 @@ export default class SshKeyForm extends Component {
                 </Row>
                 <Row className="mt-4 text-center">
                     <Col>
-                        <input disabled={!this.state.file || !this.state.label} type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Send' />
+                        <input disabled={!this.state.file || !this.state.label} type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Gửi' />
 
                     </Col>
                 </Row>

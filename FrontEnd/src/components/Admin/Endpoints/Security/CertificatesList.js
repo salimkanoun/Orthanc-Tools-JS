@@ -7,11 +7,11 @@ export default function Certificates({refreshCertificatesData, certificatesData}
 
     const columns = useMemo(() => [{
         accessor: 'label',
-        Header: 'Label'
+        Header: 'Thêm'
     },
         {
             accessor: 'delete',
-            Header: 'Delete certificate',
+            Header: 'Xóa chứng chỉ',
             Cell: ({row}) => {
                 return (
                     <div className="text-center">
@@ -23,7 +23,7 @@ export default function Certificates({refreshCertificatesData, certificatesData}
                                 toast.error(error.statusText)
                             }
 
-                        }} value="Remove"/>
+                        }} value="Xóa"/>
                     </div>)
             },
             formatExtraData: this
