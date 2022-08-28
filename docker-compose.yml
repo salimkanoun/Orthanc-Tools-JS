@@ -104,6 +104,29 @@ services:
             ORTHANC__REGISTERED_USERS: |
                     {"salim": "salim"}
 
+    ris:
+        build: ./ris-docker/
+        image: ris
+        container_name: ris
+        restart: unless-stopped
+        ports: ["5000:5000"]
+        volumes: ["ris:/RIS/static/:Z"]
+        networks:
+          - internal
+          - web
+        environment:
+            SECRET_KEY: '123456'
+            DB_URI: 'postgresql://postgres:postgres@postgres:5432/orthanctoolsjs'
+            MAIL_USERNAME: "nguyenminhhieu.it1.k52@gmail.com"
+            MAIL_PASSWORD: "lnnugyvxmwkkjfbj"
+            ADMIN_USERNAME: "itsme"
+            ADMIN_EMAIL: "itsme@A.com"
+            ADMIN_PWD: "123456"
+            ORTHANC_USERNAME: "salim"
+            ORTHANC_PWD: "salim"
+
+
+
 
 
 volumes:
@@ -111,3 +134,4 @@ volumes:
         orthancpacs:
         orthanctoolsjs:
         postgres:
+        ris:
