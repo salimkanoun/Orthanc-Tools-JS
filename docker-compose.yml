@@ -115,6 +115,7 @@ services:
           - internal
           - web
         environment:
+            PORT: 5000
             SECRET_KEY: '123456'
             DB_URI: 'postgresql://postgres:postgres@postgres:5432/orthanctoolsjs'
             MAIL_USERNAME: "nguyenminhhieu.it1.k52@gmail.com"
