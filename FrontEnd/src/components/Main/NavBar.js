@@ -79,11 +79,11 @@ export default class NavBar extends Component {
                             <div className="otjs-navbar-border" hidden={!this.state.opened}></div>
                             <Link className={this.getLinkClass('content')} onClick={this.selectTabHandler}
                                   name='content' to='/orthanc-content' hidden={!this.props.roles.content}>
-                                <i className="fas fa-search icone"></i> {this.state.opened ? 'Orthanc Content' : ''}
+                                <i className="fas fa-search icone"></i> {this.state.opened ? 'Danh sách DICOM' : ''}
                             </Link>
                             <Link className={this.getLinkClass('import')} onClick={this.selectTabHandler} name='import'
                                   to='/import' hidden={!this.props.roles.import}>
-                                <i className="fas fa-file-import icone"></i> {this.state.opened ? 'Nhập' : ''}
+                                <i className="fas fa-file-import icone"></i> {this.state.opened ? 'Thêm ảnh' : ''}
                             </Link>
                             <Link className={this.getLinkClass('query')} onClick={this.selectTabHandler} name='query'
                                   to='/query' hidden={!this.props.roles.query}>

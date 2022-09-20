@@ -9,10 +9,10 @@ const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
     info: {
-      title: 'Orthanc Tools JS',
-      description: 'API description of Orthanc Tools JS',
+      title: 'MTA-AdminMed',
+      description: 'API description of MTA-AdminMed',
       contact: {
-        name: 'Salim Kanoun'
+        name: 'Support team'
       }
 
     },

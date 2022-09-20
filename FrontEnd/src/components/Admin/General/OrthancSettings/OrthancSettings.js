@@ -197,9 +197,9 @@ export default class OrthancSettings extends Component {
                         <input type='button' className='otjs-button otjs-button-red w-10' onClick={() => this.setState({ showShutdown: true })} value='Tắt' />
                         <Modal show={this.state.showShutdown} onHide={() => this.setState({ showShutdown: false })}>
                             <Modal.Header closeButton>
-                                <Modal.Title>Confirm Shutdown</Modal.Title>
+                                <Modal.Title>Xác nhận tắt</Modal.Title>
                             </Modal.Header>
-                            <Modal.Body>Are you sure to shutdown Orthanc system ?</Modal.Body>
+                            <Modal.Body>Bạn có chắc chắn muốn tắt hệ thống Orthanc ?</Modal.Body>
                             <Modal.Footer>
                                 <input type='button' className='btn btn-secondary' onClick={() => this.setState({ showShutdown: false })} value="Close" />
                                 <input type='button' className='btn btn-danger' onClick={this.shutdown} value="tắt" />

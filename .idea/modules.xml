@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Orthanc-Tools-JS.iml" filepath="$PROJECT_DIR$/.idea/Orthanc-Tools-JS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/MTA-AdminMed.iml" filepath="$PROJECT_DIR$/.idea/MTA-AdminMed.iml" />
     </modules>
   </component>
 </project>

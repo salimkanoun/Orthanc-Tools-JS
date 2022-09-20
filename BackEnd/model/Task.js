@@ -6,7 +6,7 @@ const DeleteTask = require('./tasks/DeleteTask');
 const RetrieveTask = require('./tasks/RetrieveTask');
 
 /**
- * Represents a task to be executed by Orthanc Tool js
+ * Represents a task to be executed by MTA-AdminMed
  */
 class Task {
     /**

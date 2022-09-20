@@ -75,13 +75,14 @@ export default class Authentication extends Component {
                 <div className='col-2'>
                 </div>
                 <div className='col'>
-                  Orthanc-Tools-JS
+                  MTA-AdminMed
                       </div>
                 <div className='col-2'>
                   <HelpIcon className="mb-1" data-tip data-for='info1' fontSize="small" />
                   <ReactTooltip place="right" effect="solid" id='info1' type='dark'>
                     <div className="text-left">
-                      <span>1. Local user : your local username</span>
+                      <span>Tooltip</span>
+                      {/* <span>1. Local user : your local username</span>
                       <br></br>
                       <span>exemple : <i>durantLocal</i></span>
                       <br></br>
@@ -91,7 +92,7 @@ export default class Authentication extends Component {
                       <br></br>
                       <span>3. Distant user (without domain name) : your LDAP/AD username precede to an @ if it not contains any domain </span>
                       <br></br>
-                      <span>exemple : <i>@durantDistant</i></span>
+                      <span>exemple : <i>@durantDistant</i></span> */}
                     </div>
                   </ReactTooltip>
                 </div>

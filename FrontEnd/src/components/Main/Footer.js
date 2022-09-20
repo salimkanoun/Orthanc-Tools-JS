@@ -12,7 +12,7 @@ export default class Footer extends Component {
         <div className="footer text-center mb-3">
               
               <button type="button" className='link-button ms-3 footer-text' onClick={() => this.setState(prevState => ({ show: !prevState.show }))}>
-                  <span className="me-3">Orthanc Tools JS: {packageInfo.version}</span>About
+                  <span className="me-3">MTA-AdminMed: {packageInfo.version}</span>About
               </button>
         </div>
 
@@ -22,11 +22,11 @@ export default class Footer extends Component {
           </Modal.Header>
           <Modal.Body >
             <pre>
-              Orthanc Tools JS{'\n\n'}
-                    Maintainer : Salim Kanoun (salim.kanoun@gmail.com){'\n\n'}
-                    Contributors : Sylvain Berthier, Leo Couderc, Matthieu Legrand, Julien Davidou{'\n\n'}
+            MTA-AdminMed{'\n\n'}
+                    Maintainer : MTA team (@gmail.com){'\n\n'}
+                    Contributors : {'\n\n'}
                     Licence : AGPL v.3{'\n\n'}
-              <a href='https://github.com/salimkanoun/Orthanc-Tools-JS/'>https://github.com/salimkanoun/Orthanc-Tools-JS/</a>
+              {/* <a href='https://github.com/salimkanoun/Orthanc-Tools-JS/'>https://github.com/salimkanoun/Orthanc-Tools-JS/</a> */}
             </pre>
 
           </Modal.Body>
