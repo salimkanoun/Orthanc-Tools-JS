@@ -61,7 +61,7 @@ function JobsTable({handleDetails, rows}) {
             })
         }, {
             accessor: 'Actions',
-            Header: 'Hành động',
+            Header: 'Action',
             Cell: (({row}) => {
                 return dropDown(row.values.ID)
             })

@@ -16,7 +16,7 @@ export default class CreateDicom extends Component {
         return (
             <Fragment>
                 <button className='dropdown-item bg-primary' type='button'
-                        onClick={this.openModify}>Create Dicom
+                        onClick={this.openModify}>Tạo Dicom
                 </button>
                 <ModalCreateDicom
                     show={this.state.show}

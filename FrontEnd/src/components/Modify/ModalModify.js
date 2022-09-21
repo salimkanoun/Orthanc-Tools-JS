@@ -9,7 +9,7 @@ export default class ModalModify extends Component {
         return (
             <Modal show={this.props.show} onHide={this.props.onHide} onClick={(e) => e.stopPropagation()} size='xl'>
                 <Modal.Header closeButton>
-                    <Modal.Title>Modify {this.props.level}</Modal.Title>
+                    <Modal.Title>Sửa {this.props.level}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <TagTable data={this.props.data} onDataUpdate={this.props.onDataUpdate}/>

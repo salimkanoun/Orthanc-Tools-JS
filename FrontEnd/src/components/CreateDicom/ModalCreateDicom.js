@@ -8,7 +8,7 @@ export default class ModalCreateDicom extends Component {
         return (
             <Modal show={this.props.show} onHide={this.props.onHide} onClick={(e) => e.stopPropagation()} size='xl'>
                 <Modal.Header closeButton>
-                    <Modal.Title>Create Dicom</Modal.Title>
+                    <Modal.Title>Tạo Dicom</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <CreateDicom

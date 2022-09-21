@@ -82,20 +82,20 @@ export default class ActionBouton extends Component {
 
                 <Dropdown onClick={this.handleClick} drop='left' className="text-center">
                     <Dropdown.Toggle variant="button-dropdown-green" id="dropdown-basic" className="button-dropdown button-dropdown-green">
-                        Action
+                    Tùy chọn
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu className="mt-2 border border-dark border-2">
                         <OhifLink className='dropdown-item bg-green' {...this.props} />
                         <StoneLink className='dropdown-item bg-green' {...this.props} />
                         <button className='dropdown-item bg-green' type='button' onClick={this.setMetadata}
-                                hidden={this.props.hiddenMetadata}>View Metadata
+                                hidden={this.props.hiddenMetadata}>Xem Metadata
                         </button>
                         {(["patients", "studies"].includes(this.props.level) ? <CreateDicom {...this.props}/> :
                             null)}
                         <Modify hidden={this.props.hiddenModify} {...this.props} />
                         <button className='dropdown-item bg-red' type='button' hidden={this.props.hiddenDelete}
-                                onClick={this.delete}>Delete
+                                onClick={this.delete}>Xóa
                         </button>
                         {(this.props.level === "studies" && !!this.props.openLabelModal ?
                             <button className='dropdown-item bg-blue' type='button' hidden={this.props.hiddenDelete}
@@ -103,7 +103,7 @@ export default class ActionBouton extends Component {
                                         apis.content.getStudiesDetails(this.props.orthancID).then((study) => {
                                             this.props.openLabelModal(study)
                                         })
-                                    }}>Labels
+                                    }}>Nhãn
                             </button> : null)}
 
                     </Dropdown.Menu>

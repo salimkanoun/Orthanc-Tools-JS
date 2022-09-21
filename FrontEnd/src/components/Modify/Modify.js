@@ -175,7 +175,7 @@ export default class Modify extends Component {
         var render = <></>
         if (this.props.hidden !== true) {
             render = <Fragment>
-                <button className='dropdown-item bg-orange' type='button' onClick={this.openModify}>Modify</button>
+                <button className='dropdown-item bg-orange' type='button' onClick={this.openModify}>Sửa</button>
                 <ModalModify
                     show={this.state.show}
                     onHide={() => this.setState({show: false})}

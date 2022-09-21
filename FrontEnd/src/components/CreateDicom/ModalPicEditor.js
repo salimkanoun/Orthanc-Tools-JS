@@ -52,7 +52,7 @@ export class ModalPicEditor extends Component {
                    onHide={this.props.onHide}
                    onClick={(e) => e.stopPropagation()} size={'xxl'} contentClassName={"w-100"}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Create Dicom</Modal.Title>
+                    <Modal.Title>Tạo Dicom</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {(!!this.props.files && this.props.files.length ?

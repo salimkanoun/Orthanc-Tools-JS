@@ -44,7 +44,7 @@ const ImportRootPanel = () => {
             </li>
             <li className='col-6 text-center'>
               <button className={selectedOptionMenu === 'CreateDicom' ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'} value={'CreateDicom'} onClick={clickHandler}>
-                Create Dicom
+                Tạo Dicom
               </button>
             </li>
           </div>

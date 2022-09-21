@@ -240,7 +240,7 @@ const patientColumns = {
         id: 'Action',
         Header: 'Action',
         Cell: ({row}) => {
-            return <ActionBouton level='patients' orthancID={row.values.PatientOrthancID} onDelete={onDelete}
+            return <ActionBouton  level='patients' orthancID={row.values.PatientOrthancID} onDelete={onDelete}
                                  onModify={onModify} row={row.values.raw} refresh={refresh}/>
         }
     }),

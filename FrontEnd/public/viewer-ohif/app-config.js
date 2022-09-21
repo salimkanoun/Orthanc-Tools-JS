@@ -10,7 +10,7 @@ window.config = {
         style: {
           display: 'block',
           textIndent: '-9999px',
-          background: 'url(/viewer-ohif/logo.png)',
+          background: 'url(//logo.png)',
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
           width: '200px',
