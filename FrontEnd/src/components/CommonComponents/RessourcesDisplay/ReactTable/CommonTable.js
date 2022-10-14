@@ -6,9 +6,16 @@ import { FormCheck } from 'react-bootstrap';
 
 const LOWEST_PAGE_SIZE = 10;
 
-export default ({
-    getRowId = undefined, columns, data, pagination = false, selectable = false, onRowClick = () => { }, rowStyle = () => { }, onSelectRow = () => {}
-}) => {
+function CommonTable({
+    getRowId = undefined, 
+    columns, 
+    data, 
+    pagination = false, 
+    selectable = false, 
+    onRowClick = () => { }, 
+    rowStyle = () => { }, 
+    onSelectRow = () => {}
+}) {
 
     const {
         getTableProps,
@@ -131,3 +138,5 @@ export default ({
         </>
     )
 }
+
+export default CommonTable

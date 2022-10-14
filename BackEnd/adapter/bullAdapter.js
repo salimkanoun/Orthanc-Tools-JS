@@ -53,7 +53,8 @@ class Queue extends event.EventEmitter {
                 return;
             }
             this._invalidated = true;
-            this.emit('error', err);
+            //this.emit('error', err);
+            
         });
         this._queue.on('failed', (job, err) => {
             console.log(err);

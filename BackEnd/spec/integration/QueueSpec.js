@@ -27,6 +27,7 @@ describe('Testing Queue Adapter', function () {
                 new Queue("integration-test-bis", (jobs, done) => done(null, true));
             });
 
+
             it('should create a queue', function () {
                 new Queue("integration-test-named-bis", {
                     "test": (jobs, done) => done(null, true),
@@ -124,6 +125,7 @@ describe('Testing Queue Adapter', function () {
                 expect(res[2]).toBeInstanceOf(Queue.Job);
             });
         });
+
 
         describe('addJobs(jobsData, name, poolSize)', function () {
             it('should create a job in the queue', async function () {

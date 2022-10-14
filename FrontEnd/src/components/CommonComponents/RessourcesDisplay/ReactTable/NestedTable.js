@@ -13,7 +13,19 @@ actions.autoResetExpanded = 'autoResetExpanded'
 
 const LOWEST_PAGE_SIZE = 10;
 
-function NestedTable({ columns, data, getExpandedRow, onExpandedRow = () => { }, onSelectRow, selectable = false, rowEvent, rowStyle, getRowId, filtered = false, sorted = false }) {
+function NestedTable({ 
+    columns, 
+    data, 
+    getExpandedRow, 
+    onExpandedRow = () => { }, 
+    onSelectRow, 
+    selectable = false, 
+    rowEvent, 
+    rowStyle, 
+    getRowId, 
+    filtered = false, 
+    sorted = false 
+}) {
     const {
         getTableProps,
         getTableBodyProps,

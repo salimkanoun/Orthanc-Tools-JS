@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import NestedTable from "./NestedTable";
 import { commonColumns, patientColumns } from "./ColumnFactories";
 import TableStudies from "./TableStudies";
 
 export default ({
-    onClickStudy = () => {},
+    onClickStudy = () => { },
     onClickPatient,
     patients,
     onRemovePatient,
@@ -28,15 +28,15 @@ export default ({
         onSelectStudies(selectedStudies)
     }, [selectedStudies])
 
-    const onClickStudyHandler = (StudyOrthancID)=> {
+    const onClickStudyHandler = (StudyOrthancID) => {
         setFocusedStudy(StudyOrthancID)
         onClickStudy(StudyOrthancID)
     }
 
     const rowStyle = (StudyOrthancID) => {
-        if (StudyOrthancID === focusedStudy) return {background : 'peachPuff'}
+        if (StudyOrthancID === focusedStudy) return { background: 'peachPuff' }
     }
-    
+
     const columns = useMemo(() => [
         commonColumns.RAW,
         patientColumns.ORTHANC_ID,
@@ -51,18 +51,20 @@ export default ({
         refresh,
         openLabelModal]);
 
+
+
     const getExpandedRow = (rowId) => {
         let patient = patients.filter((patient) => patient.PatientOrthancID === rowId)[0]
         let studies = Object.values(patient['Studies'])
 
         const onSelectStudy = (selectedStudies) => {
-            let selectedStudiesOrthancId = []
-            selectedStudies.map((study => {
-                selectedStudiesOrthancId.push(study.StudyOrthancID)
+            let selectedStudiesOrthancId = selectedStudies.map((study => {
+                return study.StudyOrthancID
             }))
-            //updateselectedIds(selectedStudiesOrthancId)
+            updateselectedIds(selectedStudiesOrthancId)
         }
-        return <TableStudies studies={studies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} onSelectRow={onSelectStudy} selectable={selectable} removeRow={removeRow} onRemoveStudy={onRemoveStudy} actionButton={actionButton} />
+        //SK Issue renvoie une nouvelle instance du composant qui perd son state
+        return <TableStudies key={rowId} studies={studies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} onSelectRow={onSelectStudy} selectable={selectable} removeRow={removeRow} onRemoveStudy={onRemoveStudy} actionButton={actionButton} />
     }
 
     const updateselectedIds = (newIds) => {

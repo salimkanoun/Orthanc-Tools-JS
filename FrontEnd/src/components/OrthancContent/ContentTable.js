@@ -52,7 +52,8 @@ export default ({ patients }) => {
                     patients={patients}
                     selectable
                     onClickStudy={onClickStudy}
-                    onSelectStudies={(studieSelected) => { setSelectedStudies(studieSelected) }}
+                    onSelectStudies={(studiesSelected) => { setSelectedStudies(studiesSelected) }}
+                    actionButton
                 />
             </Col>
             <Col sm>
