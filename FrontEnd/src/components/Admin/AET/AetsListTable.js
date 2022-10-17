@@ -6,7 +6,7 @@ import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/Com
 /**
  * Table with known AETs details with Echo and Remove button
  */
-export default function Aet({aetsData, refreshAetData}) {
+export default ({aetsData, refreshAetData}) => {
 
     const columns = useMemo(() => [{
         accessor: 'name',

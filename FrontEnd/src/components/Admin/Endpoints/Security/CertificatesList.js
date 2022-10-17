@@ -3,7 +3,7 @@ import apis from '../../../../services/apis';
 import {toast} from "react-toastify";
 import CommonTable from "../../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-export default function Certificates({refreshCertificatesData, certificatesData}) {
+export default ({refreshCertificatesData, certificatesData}) => {
 
     const columns = useMemo(() => [{
         accessor: 'label',

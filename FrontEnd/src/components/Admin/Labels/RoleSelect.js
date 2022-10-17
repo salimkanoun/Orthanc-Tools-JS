@@ -1,88 +1,81 @@
 import Select from 'react-select';
-import {Component} from 'react';
+import { Component, useState } from 'react';
 import apis from "../../../services/apis";
 
-export default class RoleSelect extends Component{
+export default ({ labelProps, username }) => {
 
+    const [selected, setSelected] = useState([])
+    const [label, setLabel] = useState(labelProps)
+    const [options, setOptions] = useState([])
 
-    state = {
-        selected: [],
-        label:this.props.label,
-        options: [],
-    }
-
-    componentDidMount = async () => {
+    const componentDidMount = async () => {
         let roles = await apis.role.getRoles()
-        for(var i = 0; i < roles.length; i++){
-            roles[i].value=roles[i].name
-            roles[i].label=roles[i].value
+        for (var i = 0; i < roles.length; i++) {
+            roles[i].value = roles[i].name
+            roles[i].label = roles[i].value
         }
 
-        let selectedRoles = await apis.rolelabel.getLabelRoles(this.props.label)
-        for(var j = 0; j < selectedRoles.length; j++){
-            selectedRoles[j].value=selectedRoles[j].role_name
-            selectedRoles[j].label=selectedRoles[j].value
+        let selectedRoles = await apis.rolelabel.getLabelRoles(label)
+        for (var j = 0; j < selectedRoles.length; j++) {
+            selectedRoles[j].value = selectedRoles[j].role_name
+            selectedRoles[j].label = selectedRoles[j].value
         }
-        this.setState({
-            options:roles,
-            selected:selectedRoles
-        })
+        setOptions(roles)
+        setSelected(selectedRoles)
     }
 
-    handleOnChange = async (value) => {
+    const handleOnChange = async (value) => {
 
-        var selected = this.state.selected
+        var selected = selected
         var difference = []
-        if(value.length<selected.length){
-            for(let i = 0;i<selected.length;i++){
-                if(!(value.includes(selected[i]))){
+        if (value.length < selected.length) {
+            for (let i = 0; i < selected.length; i++) {
+                if (!(value.includes(selected[i]))) {
                     difference.push(selected[i])
                 }
             }
-            console.log('removed role: ',difference[0].value,' | to label: ',this.state.label)
-            await apis.rolelabel.deleteRoleLabel(this.props.username,difference[0].value,this.state.label)
+            console.log('removed role: ', difference[0].value, ' | to label: ', label)
+            await apis.rolelabel.deleteRoleLabel(username, difference[0].value, label)
         }
-        else if(value.length>selected.length){
-            for(let i = 0;i<value.length;i++){
-                if(!(selected.includes(value[i]))){
+        else if (value.length > selected.length) {
+            for (let i = 0; i < value.length; i++) {
+                if (!(selected.includes(value[i]))) {
                     difference.push(value[i])
                 }
             }
-            console.log('added role:',difference[0].value,' | to label: ',this.state.label)
-            await apis.rolelabel.createRoleLabel(this.props.username,difference[0].value,this.state.label)
-        }else{
+            console.log('added role:', difference[0].value, ' | to label: ', label)
+            await apis.rolelabel.createRoleLabel(username, difference[0].value, label)
+        } else {
             console.error('Selector Change Error : Selected Values didn\'t change')
         }
-        this.setState({ selected: value });
+        setSelected(value)
     }
 
-    choiceStyle = {
+    const choiceStyle = {
         control: styles => ({ ...styles, backgroundColor: 'white' }),
         multiValue: (styles) => {
             return {
-              ...styles,
+                ...styles,
             };
-          },
-          multiValueLabel: (styles) => ({
+        },
+        multiValueLabel: (styles) => ({
             ...styles,
-          }),
-          multiValueRemove: (styles => ({
+        }),
+        multiValueRemove: (styles => ({
             ...styles,
-          }))
-        };
+        }))
+    };
 
-    render() {
-        return (
-            <div>
+    return (
+        <div>
             <Select
                 closeMenuOnSelect={false}
                 isMulti
-                options={this.state.options}
-                onChange={this.handleOnChange.bind(this)}
-                value={this.state.selected}
-                style={ this.choiceStyle}
+                options={options}
+                onChange={handleOnChange.bind(this)}
+                value={selected}
+                style={choiceStyle}
             />
-            </div>
-        );
-    }
+        </div>
+    );
 }

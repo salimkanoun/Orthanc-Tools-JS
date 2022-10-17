@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
 
-export default function LabelsTable({ labels, handlerManageRole, handlerDelete }) {
+export default ({ labels, handlerManageRole, handlerDelete }) => {
     const columns = useMemo(() => [
         {
             accessor: 'label_name',

@@ -1,6 +1,6 @@
-import React, {Component, Fragment, useMemo} from "react";
+import React, { Component, Fragment, useMemo, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 
 import apis from "../../../services/apis";
 import ModalDetails from './ModalDetails'
@@ -24,12 +24,12 @@ const dropDown = (id) => {
                     await apis.jobs.resumeJob(id).catch(error => toast.error(error.statusText));
                     this.getJobs()
                 }}>Resume</Dropdown.Item>
-                
+
                 <Dropdown.Item className='bg-orange' onClick={async () => {
                     await apis.jobs.pauseJob(id).catch(error => toast.error(error.statusText));
                     this.getJobs()
                 }}>Pause</Dropdown.Item>
-                
+
                 <Dropdown.Item className='bg-red' onClick={async () => {
                     await apis.jobs.cancelJob(id).catch(error => toast.error(error.statusText));
                     this.getJobs()
@@ -39,7 +39,7 @@ const dropDown = (id) => {
     )
 }
 
-function JobsTable({handleDetails, rows}) {
+function JobsTable({ handleDetails, rows }) {
     const columns = useMemo(() => [
         {
             accessor: 'ID',
@@ -56,58 +56,54 @@ function JobsTable({handleDetails, rows}) {
         }, {
             accessor: 'Details',
             Header: 'Details',
-            Cell: (({row}) => {
+            Cell: (({ row }) => {
                 return (<div className="text-center"><Button className='otjs-button otjs-button-blue'
-                               onClick={() => handleDetails(row.index)}>Details</Button></div>)
+                    onClick={() => handleDetails(row.index)}>Details</Button></div>)
             })
         }, {
             accessor: 'Actions',
             Header: 'Actions',
-            Cell: (({row}) => {
+            Cell: (({ row }) => {
                 return dropDown(row.values.ID)
             })
         }
     ], [handleDetails]);
     const data = useMemo(() => rows, [rows]);
-    return <CommonTable data={data} columns={columns}/>
+    return <CommonTable data={data} columns={columns} />
 
 }
 
-export default class JobsRootPanel extends Component {
+export default ({ }) => {
 
-    state = {
-        rows: [],
-        showDetail: false,
-        currentRowIndex: ''
+    const [rows, setRows] = useState([])
+    const [showDetail, setShowDetail] = useState(false)
+    const [currentRowIndex, setCurrentRowIndex] = useState('')
+
+    const componentDidMount = () => {
+        getJobs()
+        startRefreshMonitoring()
     }
 
-    componentDidMount = () => {
-        this.getJobs()
-        this.startRefreshMonitoring()
+    const componentWillUnmount = () => {
+        stopRefreshMonitoring()
     }
 
-    componentWillUnmount = () => {
-        this.stopRefreshMonitoring()
-    }
-
-    startRefreshMonitoring = () => {
+    const startRefreshMonitoring = () => {
         this.intervalChcker = setInterval(() => {
-            this.getJobs()
+            getJobs()
         }, 2000)
     }
 
-    stopRefreshMonitoring = () => {
+    const stopRefreshMonitoring = () => {
         clearInterval(this.intervalChcker)
     }
 
-    handleDetails = (index) => {
-        this.setState({
-            showDetail: true,
-            currentRowIndex: index
-        });
+    const handleDetails = (index) => {
+        setShowDetail(true)
+        setCurrentRowIndex(index)
     }
 
-    getJobs = async () => {
+    const getJobs = async () => {
 
         let rows = []
 
@@ -126,18 +122,16 @@ export default class JobsRootPanel extends Component {
             })
         })
 
-        this.setState({rows: rows})
+        setRows(rows)
     }
 
 
-    render = () => {
-        return (
-            <Fragment>
-                <h2 className="card-title mb-4">Jobs</h2>
-                <ModalDetails show={this.state.showDetail} onHide={() => this.setState({showDetail: false})}
-                              data={[this.state.rows[this.state.currentRowIndex]]}/>
-                <JobsTable handleDetails={this.handleDetails} rows={this.state.rows}/>
-            </Fragment>
-        );
-    }
+    return (
+        <Fragment>
+            <h2 className="card-title mb-4">Jobs</h2>
+            <ModalDetails show={showDetail} onHide={() => setShowDetail(false)}
+                data={[rows[currentRowIndex]]} />
+            <JobsTable handleDetails={handleDetails} rows={rows} />
+        </Fragment>
+    );
 }

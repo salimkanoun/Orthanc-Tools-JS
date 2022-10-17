@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap'
 import OrthancSettings from './OrthancSettings/OrthancSettings'
 import RedisSettings from './Redis/RedisSettings'
 
-const GeneralRoot = () => {
+export default ({}) => {
 
   const [selectedOptionMenu, setSelectedOptionMenu] = useState('orthancSettings')
 
@@ -49,5 +49,3 @@ const GeneralRoot = () => {
   )
 
 }
-
-export default GeneralRoot

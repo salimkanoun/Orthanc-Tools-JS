@@ -54,6 +54,7 @@ export default ({target, show, onHide}) =>{
     }
 
     let idArray = getExportIDArray()
+    
     return (
         <Overlay target={target} show={show} placement='bottom' onHide={onHide}
             rootClose style={{ width: '33%' }}>

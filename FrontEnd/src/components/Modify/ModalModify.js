@@ -1,45 +1,56 @@
-import React, {Component} from 'react'
+import React from 'react'
 import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal'
-import {TagTable} from "../CommonComponents/RessourcesDisplay/ReactTable/TagTable";
+import { TagTable } from "../CommonComponents/RessourcesDisplay/ReactTable/TagTable";
 
 
-export default class ModalModify extends Component {
+export default ({
+    show,
+    onHide,
+    data,
+    level,
+    onDataUpdate,
+    defaultCheckedPrivateTags,
+    onClickPrivateTags,
+    defaultCheckedKeepSource,
+    onClickKeepSource,
+    modify,
+    onClickRemember
+}) => {
 
-    render = () => {
-        return (
-            <Modal show={this.props.show} onHide={this.props.onHide} onClick={(e) => e.stopPropagation()} size='xl'>
-                <Modal.Header closeButton>
-                    <Modal.Title>Modify {this.props.level}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <TagTable data={this.props.data} onDataUpdate={this.props.onDataUpdate}/>
-                    <div className='row'>
-                        <div className='col-auto'>
-                            <label htmlFor='removePrivateTags'>Removing private tags</label>
-                        </div>
-                        <div className='col-sm'>
-                            <input className='form-check-input' type='checkbox'
-                                   defaultChecked={this.props.defaultCheckedPrivateTags}
-                                   onClick={this.props.onClickPrivateTags}/>
-                        </div>
+
+    return (
+        <Modal show={show} onHide={onHide} onClick={(e) => e.stopPropagation()} size='xl'>
+            <Modal.Header closeButton>
+                <Modal.Title>Modify {level}</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <TagTable data={data} onDataUpdate={onDataUpdate} />
+                <div className='row'>
+                    <div className='col-auto'>
+                        <label htmlFor='removePrivateTags'>Removing private tags</label>
                     </div>
-                    <div className='row'>
-                        <div className='col-auto'>
-                            <label htmlFor='keepSource'>Keep Source</label>
-                        </div>
-                        <div className='col-sm'>
-                            <input className='form-check-input' type='checkbox'
-                                   defaultChecked={this.props.defaultCheckedKeepSource}
-                                   onClick={this.props.onClickKeepSource}/>
-                        </div>
+                    <div className='col-sm'>
+                        <input className='form-check-input' type='checkbox'
+                            defaultChecked={defaultCheckedPrivateTags}
+                            onClick={onClickPrivateTags} />
                     </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className='otjs-button otjs-button-orange me-5' onClick={this.props.modify}>Modify</Button>
-                    <Button  className='otjs-button otjs-button-red' onClick={this.props.onHide}>Cancel</Button>
-                </Modal.Footer>
-            </Modal>
-        )
-    }
+                </div>
+                <div className='row'>
+                    <div className='col-auto'>
+                        <label htmlFor='keepSource'>Keep Source</label>
+                    </div>
+                    <div className='col-sm'>
+                        <input className='form-check-input' type='checkbox'
+                            defaultChecked={defaultCheckedKeepSource}
+                            onClick={onClickKeepSource} />
+                    </div>
+                </div>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button className='otjs-button otjs-button-orange me-5' onClick={modify}>Modify</Button>
+                <Button className='otjs-button otjs-button-red' onClick={onHide}>Cancel</Button>
+            </Modal.Footer>
+        </Modal>
+    )
 }

@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react'
+import React, {Component, Fragment, useState} from 'react'
 import Select from 'react-select'
 import {toast} from 'react-toastify'
 import apis from '../../../services/apis'
@@ -6,23 +6,34 @@ import {Row, Col} from 'react-bootstrap'
 /**
  * Form to declare or modify an Ssh Keys
  */
-export default class EndpointForm extends Component {
+export default ({onCreateEndpoint}) => {
 
-    state = {
-        keys: []
-    }
+    const [keys, setKeys] = useState([]);
+    const [name, setName] = useState();
+    const [protocol, setProtocol] = useState();
+    const [label, setLabel] = useState();
+    const [host, setHost] = useState();
+    const [port, setPort] = useState();
+    const [username, setUsername] = useState();
+    const [password, setPassword] = useState();
+    const [targetFolder, setTargetFolder] = useState();
+    const [ssh, setSsh] = useState();
+    const [sshKey, setSshKey] = useState();
+    const [ssl, setSsl] = useState();
+    const [digest, setDigest] = useState();
 
-    protocols = [
+
+    const protocols = [
         {value: 'sftp', label: 'Sftp'},
         {value: 'ftp', label: 'Ftps/Ftp'},
         {value: 'webdav', label: 'Webdav'}
     ]
 
-    componentDidMount = () => {
-        this.loadKeys()
+    const componentDidMount = () => {
+        loadKeys()
     }
 
-    loadKeys = async () => {
+    const loadKeys = async () => {
         let sshKeys = []
         try {
             let response = await apis.sshKeys.getKeysExpend()
@@ -33,14 +44,12 @@ export default class EndpointForm extends Component {
             toast.error(error.statusText)
         }
 
-        this.setState({keys: sshKeys})
+        setKeys(sshKeys)
     }
 
-    handleSelectChange = (name) => {
+    const handleSelectChange = (name) => {
         return ((value) => {
-            this.setState({
-                [name]: value.value
-            })
+            setName(value.value)
         })
     }
 
@@ -48,54 +57,51 @@ export default class EndpointForm extends Component {
      * Fill input text of users in current state
      * @param {*} event
      */
-    handleChange = (event) => {
+    const handleChange = (event) => {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
 
-        this.setState({
-            [name]: value
-        })
+        setName(value)
 
     }
 
     /**
      * Listener on form submission
      */
-    handleClick = () => {
+    const handleClick = () => {
         let postData = {}
-
-        postData.protocol = this.state.protocol
-        postData.label = this.state.label
-        postData.host = this.state.host
-        postData.port = this.state.port
-        postData.username = this.state.username
-        postData.password = this.state.password || null
-        postData.targetFolder = this.state.targetFolder || ''
-        if (this.state.protocol === 'sftp' && this.state.ssh) {
-            postData.sshKey = this.state.sshKey
-        } else if (this.state.protocol === 'ftp') {
-            postData.ssl = this.state.ssl || false
-        } else if (this.state.protocol === 'webdav') {
-            postData.digest = this.state.digest || false
+        postData.protocol = protocol
+        postData.label = label
+        postData.host = host
+        postData.port = port
+        postData.username = username
+        postData.password = password || null
+        postData.targetFolder = targetFolder || ''
+        if (protocol === 'sftp' && ssh) {
+            postData.sshKey = sshKey
+        } else if (protocol === 'ftp') {
+            postData.ssl = ssl || false
+        } else if (protocol === 'webdav') {
+            postData.digest = digest || false
         }
 
-        this.props.onCreateEndpoint(postData)
+        onCreateEndpoint(postData)
 
     }
 
-    readyToSubmit = () => {
-        let ready = (this.state.protocol)
-        ready = ready && (this.state.label)
-        ready = ready && (this.state.host)
-        ready = ready && (this.state.port)
-        ready = ready && (this.state.username)
-        ready = ready && (this.state.sshKey || !(this.state.protocol === 'sftp' && this.state.ssh))
+    const readyToSubmit = () => {
+        let ready = (protocol)
+        ready = ready && (label)
+        ready = ready && (host)
+        ready = ready && (port)
+        ready = ready && (username)
+        ready = ready && (sshKey || !(protocol === 'sftp' && ssh))
 
         return ready
     }
 
-    render = () => {
+
         return (
             <Fragment>
                 <h2 className="card-title">Add Export Endpoint</h2>
@@ -105,14 +111,14 @@ export default class EndpointForm extends Component {
                             <label htmlFor="protocol">Protocol </label>
                         </Col>
                         <Col sm={4}>
-                            <Select classNamePrefix="select" name="protocol" single options={this.protocols}
-                                onChange={this.handleSelectChange('protocol')} value={this.protocols[this.state.protocol]}/>
+                            <Select classNamePrefix="select" name="protocol" single options={protocols}
+                                onChange={handleSelectChange('protocol')} value={protocols[protocol]}/>
                         </Col>
                         <Col sm={2}>
                             <label htmlFor="label">Label : </label>
                         </Col>
                         <Col sm={4}>
-                            <input type='text' name="label" className="form-control" onChange={this.handleChange}/>
+                            <input type='text' name="label" className="form-control" onChange={handleChange}/>
                         </Col>
                     </Row>
                     <Row className="align-items-center mt-4">
@@ -120,49 +126,49 @@ export default class EndpointForm extends Component {
                             <label htmlFor="host">Host : </label>
                         </Col>
                         <Col sm={4}>
-                            <input type='text' name="host" className="form-control" onChange={this.handleChange}/>
+                            <input type='text' name="host" className="form-control" onChange={handleChange}/>
                         </Col>
                         <Col sm={2}>
                             <label htmlFor="port">Port : </label>
                         </Col>
                         <Col sm={4}>
-                            <input type='number' name="port" className="form-control" onChange={this.handleChange}/>
+                            <input type='number' name="port" className="form-control" onChange={handleChange}/>
                         </Col>
                     </Row>
                     <Row className="align-items-center mt-4">
                         {
-                            this.state.protocol === 'sftp' ?
+                            protocol === 'sftp' ?
                             <>
                                 <Col sm={2}>
                                     <label htmlFor="ssh">Use a private key?</label>
                                 </Col>
                                 <Col sm={2}>
                                     <input type='checkbox' name="ssh" className="form-check-input"
-                                    onChange={this.handleChange}/>
+                                    onChange={handleChange}/>
                                 </Col></> :
                             <></>
                         }
                         {
-                            this.state.protocol === 'ftp' ?
+                            protocol === 'ftp' ?
                                 <>
                                 <Col sm={2}>
                                     <label htmlFor="ssl">Use ssl?</label>
                                 </Col>
                                 <Col sm={2}>
                                     <input type='checkbox' name="ssl" className="form-check-input"
-                                        onChange={this.handleChange}/>
+                                        onChange={handleChange}/>
                                 </Col></> :
                                    <> </>
                         }
                         {
-                            this.state.protocol === 'webdav' ?
+                            protocol === 'webdav' ?
                                 <>
                                 <Col sm={2}>
                                     <label htmlFor="digest">Use digest?</label>
                                 </Col>
                                 <Col sm={2}>
                                     <input type='checkbox' name="digest" className="form-check-input"
-                                        onChange={this.handleChange}/>
+                                        onChange={handleChange}/>
                                 </Col></> :
                                 <></>
                         }
@@ -172,25 +178,25 @@ export default class EndpointForm extends Component {
                             <label htmlFor="username">Username : </label>
                         </Col>
                         <Col sm={4}>
-                            <input type='text' name="username" className="form-control" onChange={this.handleChange}/>
+                            <input type='text' name="username" className="form-control" onChange={handleChange}/>
                         </Col>
                             {
-                                this.state.ssh && this.state.protocol === 'sftp' ?
+                                ssh && protocol === 'sftp' ?
                                 <>
                                     <Col sm={2}>
                                         <label htmlFor="sshKey">Ssh Key : </label>
                                     </Col>
                                     <Col sm={4}>
-                                        <Select classNamePrefix="select" name="sshKey" single options={this.state.keys}
-                                            onChange={this.handleSelectChange('sshKey')}
-                                            value={this.state.keys[this.state.sshKey]}/>
+                                        <Select classNamePrefix="select" name="sshKey" single options={keys}
+                                            onChange={handleSelectChange('sshKey')}
+                                            value={keys[sshKey]}/>
                                     </Col></> : <>
                                     <Col sm={2}>
                                         <label htmlFor="password">Password : </label>
                                     </Col>
                                     <Col sm={4}>
                                         <input type='password' name="password" className="form-control"
-                                            onChange={this.handleChange}/>
+                                            onChange={handleChange}/>
                                     </Col>
                                    </>
                             } 
@@ -201,17 +207,16 @@ export default class EndpointForm extends Component {
                             <label htmlFor="targetFolder">Destination Folder : </label>
                         </Col>
                         <Col>
-                            <input type='text' name="targetFolder" className="form-control" onChange={this.handleChange}/>
+                            <input type='text' name="targetFolder" className="form-control" onChange={handleChange}/>
                         </Col>
                     </Row>
                 </div>
                 <Row className="text-center mt-4">
                     <Col>
-                        <input disabled={!this.readyToSubmit()} type='button' className='otjs-button otjs-button-blue'
-                           onClick={this.handleClick} value='Send'/>
+                        <input disabled={!readyToSubmit()} type='button' className='otjs-button otjs-button-blue'
+                           onClick={handleClick} value='Send'/>
                     </Col>
                 </Row>
             </Fragment>
         )
-    }
 }

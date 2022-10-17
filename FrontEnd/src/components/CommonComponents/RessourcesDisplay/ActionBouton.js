@@ -11,27 +11,33 @@ import { toast } from 'react-toastify'
 import CreateDicom from '../../CreateDicom/CreateDicom'
 import { Button } from 'react-bootstrap'
 
-export default function ActionBouton(props) {
+export default ({
+    level,
+    orthancID,
+    StudyInstanceUID,
+    row,
+    hiddenModify,
+    hiddenDelete,
+    hiddenCreateDicom,
+    onDelete,
+    openLabelModal }) => {
 
     const [showMetadata, setShowMetadata] = useState(false);
     const [hiddenMetadata, setHiddenMetadata] = useState(true);
-    const [hiddenCreateDicom, setHiddenCreateDicom] = useState(false);
 
-
+    console.log(row)
     const setMetadata = () => {
         setShowMetadata(!showMetadata)
     }
 
     const fdelete = async () => {
-        console.log('props:')
-        console.log(props)
-        let orthancID = props.orthancID
-        switch (props.level) {
+        let orthancID = orthancID
+        switch (level) {
             case 'patients':
                 try {
                     await apis.content.deletePatient(orthancID)
                     toast.success("Patient " + orthancID + " have been deleted")
-                    props.onDelete(orthancID, props.parentID)
+                    onDelete(orthancID)
                 } catch (error) {
                     toast.error(error)
                 }
@@ -40,7 +46,7 @@ export default function ActionBouton(props) {
                 try {
                     await apis.content.deleteStudies(orthancID)
                     toast.success("Studies " + orthancID + " have been deleted")
-                    props.onDelete(orthancID, props.parentID)
+                    onDelete(orthancID)
                 } catch (error) {
                     toast.error(error)
                 }
@@ -49,7 +55,7 @@ export default function ActionBouton(props) {
                 try {
                     await apis.content.deleteSeries(orthancID)
                     toast.success("Series " + orthancID + " have been deleted")
-                    props.onDelete(orthancID, props.parentID)
+                    onDelete(orthancID)
                 } catch (error) {
                     toast.error(error)
                 }
@@ -73,7 +79,7 @@ export default function ActionBouton(props) {
                     <Modal.Title>Metadata</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Metadata serieID={props.orthancID} />
+                    <Metadata serieID={orthancID} />
                 </Modal.Body>
             </Modal>
 
@@ -83,22 +89,22 @@ export default function ActionBouton(props) {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="mt-2 border border-dark border-2">
-                    <OhifLink className='dropdown-item bg-green' {...props} />
-                    <StoneLink className='dropdown-item bg-green' {...props} />
+                    <OhifLink className='dropdown-item bg-green' StudyInstanceUID={row.StudyInstanceUID} />
+                    <StoneLink className='dropdown-item bg-green' StudyInstanceUID={row.StudyInstanceUID} />
                     <Button className='dropdown-item bg-green' onClick={setMetadata}
                         hidden={hiddenMetadata}>View Metadata
                     </Button>
-                    {(["patients", "studies"].includes(props.level) ? <CreateDicom {...props} /> :
+                    {(["patients", "studies"].includes(level) ? <CreateDicom orthancID={row.orthancID} level={level} /> :
                         null)}
-                    <Modify hidden={props.hiddenModify} {...props} />
-                    <Button className='dropdown-item bg-red' hidden={props.hiddenDelete}
+                    <Modify hidden={hiddenModify} orthancID={row.orthancID} level={level} row={row} />
+                    <Button className='dropdown-item bg-red' hidden={hiddenDelete}
                         onClick={fdelete}>Delete
                     </Button>
-                    {(props.level === "studies" && !!props.openLabelModal ?
-                        <Button className='dropdown-item bg-blue' hidden={props.hiddenDelete}
+                    {(level === "studies" && !!openLabelModal ?
+                        <Button className='dropdown-item bg-blue' hidden={hiddenDelete}
                             onClick={() => {
-                                apis.content.getStudiesDetails(props.orthancID).then((study) => {
-                                    props.openLabelModal(study)
+                                apis.content.getStudiesDetails(row.orthancID).then((study) => {
+                                    openLabelModal(study)
                                 })
                             }}>Labels
                         </Button> : null)}

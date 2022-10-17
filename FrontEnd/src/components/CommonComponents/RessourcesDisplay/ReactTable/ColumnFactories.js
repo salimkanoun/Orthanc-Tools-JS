@@ -1,6 +1,5 @@
 import ActionBouton from "../ActionBouton";
 import React from "react";
-import { InputCell } from "./EditableCells";
 import { dateFilter, DateFilter, invertableDataFilter, InvertableDataFilter } from "./ColumnFilters";
 import RetrieveButton from "../../../Query/Components/RetrieveButton";
 import { toast } from "react-toastify";
@@ -52,7 +51,8 @@ const seriesColumns = {
         Cell: ({ row }) => <ActionBouton level='series' orthancID={row.values.SeriesOrthancID}
             parentID={row.values.StudyID} onDelete={onDelete}
             row={row.values.raw} refresh={refresh}
-            hiddenMetadata={false} hiddenCreateDicom={true} />
+            hiddenMetadata={false} hiddenCreateDicom={true}
+            hiddenModify={false} />
     }),
     REMOVE: (onRemove) => ({
         id: 'Remove',
@@ -160,13 +160,17 @@ const studyColumns = {
     ACTION: (onDelete, refresh, openLabelModal) => ({
         id: 'Action',
         Header: 'Action',
-        Cell: (({ row }) =>
-        (<>
-            <ActionBouton level='studies' orthancID={row.values.StudyOrthancID}
-                StudyInstanceUID={row.values.StudyInstanceUID} onDelete={onDelete}
-                row={row.values.raw}
-                refresh={refresh} openLabelModal={openLabelModal} />
+        Cell: (({ row }) => (<>
+            <ActionBouton level='studies'
+                orthancID={row.values.StudyOrthancID}
+                StudyInstanceUID={row.values.StudyInstanceUID}
+                onDelete={onDelete}
+                row={row.original}
+                refresh={refresh}
+                openLabelModal={openLabelModal}
+                hiddenModify={false} />
         </>)
+
         ),
     }),
     REMOVE: (onRemoveStudy) => ({
@@ -237,7 +241,7 @@ const patientColumns = {
         Header: 'Action',
         Cell: ({ row }) => {
             return <ActionBouton level='patients' orthancID={row.values.PatientOrthancID} onDelete={onDelete}
-                onModify={onModify} row={row.values.raw} refresh={refresh} />
+                onModify={onModify} row={row.original} refresh={refresh} hiddenModify={false} />
         }
     }),
     REMOVE: (onRemovePatient) => ({

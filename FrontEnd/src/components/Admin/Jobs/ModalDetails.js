@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import Modal from "react-bootstrap/Modal";
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-export default function ModalDetails({show, onHide, data}) {
+export default ({show, onHide, data}) => {
 
     const columnDetails = useMemo(() => [
         {

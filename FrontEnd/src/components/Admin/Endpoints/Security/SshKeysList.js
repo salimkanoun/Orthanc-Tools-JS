@@ -3,7 +3,7 @@ import apis from '../../../../services/apis';
 import {toast} from "react-toastify";
 import CommonTable from "../../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-export default function SshKeys({refreshSshKeysData, sshKeysData}) {
+export default ({refreshSshKeysData, sshKeysData}) => {
 
     const columns = useMemo(() => [{
         accessor: 'label',

@@ -1,15 +1,13 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component, Fragment, useState } from 'react'
 import { toast } from 'react-toastify';
 import apis from '../../../../services/apis';
 
-export default class OrthancInfos extends Component {
+export default ({ }) => {
 
-    state = {
-        plugins: [],
-        system: []
-    }
+    const [plugins, setPlugins] = useState([]);
+    const [system, setSystem] = useState([])
 
-    componentDidMount = async () => {
+    const componentDidMount = async () => {
 
         //Fetch plugin list from backend
         let orthancSystem = null
@@ -17,51 +15,45 @@ export default class OrthancInfos extends Component {
 
         try {
             orthancSystem = await apis.options.getOrthancSystem()
-            console.log(orthancSystem)
             plugins = await apis.options.getPlugins()
         } catch (error) {
             console.log(error)
             toast.error(error.statusText)
         }
 
-        this.generatePluginList(plugins)
-        this.generateSystemList(orthancSystem)
+        generatePluginList(plugins)
+        generateSystemList(orthancSystem)
 
     }
 
-    generatePluginList = (data) => {
+    const generatePluginList = (data) => {
         let list = []
         data.forEach(element => list.push(<li key={element}>{element}</li>))
-        this.setState({
-            plugins: list
-        })
+        setPlugins(list)
 
     }
 
-    generateSystemList = (data) => {
+    const generateSystemList = (data) => {
 
         let list = []
-        Object.entries(data).forEach( ([key, value]) => {
+        Object.entries(data).forEach(([key, value]) => {
             list.push(<li key={key}>{key + ' : ' + value}</li>)
         })
-        this.setState({
-            system: list
-        })
-
+        setSystem(list)
     }
 
-    render = () => {
-        return (
-            <Fragment>
-                <h3 className="card-title">System</h3>
-                <ul>
-                    {this.state.system}
-                </ul>
-                <h3 className="card-title">Plugins</h3>
-                <ul>
-                    {this.state.plugins}
-                </ul>
-            </Fragment>
-        );
-    }
+
+    return (
+        <Fragment>
+            <h3 className="card-title">System</h3>
+            <ul>
+                {system}
+            </ul>
+            <h3 className="card-title">Plugins</h3>
+            <ul>
+                {plugins}
+            </ul>
+        </Fragment>
+    );
+
 }

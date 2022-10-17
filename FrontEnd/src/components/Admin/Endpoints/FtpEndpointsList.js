@@ -1,7 +1,7 @@
 import React, {Fragment, useMemo} from "react";
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-export default function FtpEndpoints({endpointsData, onDeleteEndpoint}) {
+export default ({endpointsData, onDeleteEndpoint}) => {
 
     const columns = useMemo(() => [{
         accessor: 'label',

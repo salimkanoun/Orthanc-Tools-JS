@@ -1,7 +1,7 @@
 import React, {Fragment, useMemo} from "react";
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-export default function WebdavEndpoints({onDeleteEndpoint, endpointsData}) {
+export default ({onDeleteEndpoint, endpointsData}) => {
 
     const columns = useMemo(() => [{
         accessor: 'label',

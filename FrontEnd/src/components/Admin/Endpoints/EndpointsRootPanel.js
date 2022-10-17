@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 import EndpointsOptions from './EndpointsOptions'
 import { Button } from 'react-bootstrap'
 
-const EndpointRootPanel = () => {
+export default ({}) => {
 
     const [endpoints, setEndpoints] = useState({
         ftp: [],
@@ -149,5 +149,3 @@ const EndpointRootPanel = () => {
         </>
     )
 }
-
-export default EndpointRootPanel
