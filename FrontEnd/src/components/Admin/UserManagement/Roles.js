@@ -1,13 +1,13 @@
-import React, {Component, Fragment, useMemo} from "react"
-import {Row, Col, Modal, Button} from 'react-bootstrap';
+import React, { Component, Fragment, useMemo, useState } from "react"
+import { Row, Col, Modal, Button } from 'react-bootstrap';
 
 import apis from '../../../services/apis'
 import ModifyRole from "./ModifyRole";
 import CreateRole from "./CreateRole";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-function RoleTable({roles, onDelete}) {
+function RoleTable({ roles, onDelete }) {
     const columns = useMemo(() => [
         {
             accessor: 'name',
@@ -16,113 +16,105 @@ function RoleTable({roles, onDelete}) {
         }, {
             accessor: 'edit',
             Header: 'Edit',
-            Cell: ({row}) => {
-                return <ModifyRole name={row.values.name}/>
+            Cell: ({ row }) => {
+                return <ModifyRole name={row.values.name} />
             }
         }, {
             accessor: 'delete',
             Header: 'Delete',
-            Cell: ({row}) => {
+            Cell: ({ row }) => {
                 return (<div className="text-center">
-                            <Button className='otjs-button otjs-button-red' name='openDelete'
-                               onClick={() => onDelete(row.values.name)}>Delete</Button>
-                        </div>)
+                    <Button className='otjs-button otjs-button-red' name='openDelete'
+                        onClick={() => onDelete(row.values.name)}>Delete</Button>
+                </div>)
             }
         }
     ], [onDelete]);
 
     const data = useMemo(() => roles, [roles]);
 
-    return <CommonTable columns={columns} data={data}/>
+    return <CommonTable columns={columns} data={data} />
 }
 
-export default class Roles extends Component {
+export default ({ }) => {
 
-    state = {
-        name: '',
-        roles: [],
-        showDelete: false
-    };
+    const [name, setName] = useState('')
+    const [roles, setRoles] = useState([])
+    const [showDelete, setShowDelete] = useState(false)
 
-    componentDidMount = () => {
-        this.getRoles()
+    const componentDidMount = () => {
+        getRoles()
     }
 
-    getRoles = async () => {
+    const getRoles = async () => {
         try {
             let roles = await apis.role.getRoles()
-            this.setState({roles: roles})
+            setRoles(roles)
         } catch (error) {
             toast.error(error.statusText)
         }
 
     }
 
-    handleDelete = (name) => {
-        this.setState({
-            name,
-            showDelete: true
-        })
+    const handleDelete = (name) => {
+        setName(name)
+        setShowDelete(true)
     }
 
-    delete = () => {
-        apis.role.deleteRole(this.state.name).then(() => {
+    const deletes = () => {
+        apis.role.deleteRole(name).then(() => {
             toast.success('Deleted')
-            this.onHide()
+            onHide()
         }).catch(error => toast.error(error.statusText))
     }
 
-    onHide = () => {
-        this.setState({
-            name: '',
-            showDelete: false
-        })
-        this.getRoles()
+    const onHide = () => {
+        setName('')
+        setShowDelete(false)
+        getRoles()
     }
 
-    render = () => {
-        return (
-            <Fragment>
-                <Row>
-                    <Col>
-                        <h2 className='card-title'>Roles Panel</h2>
-                    </Col>
-                </Row>
-                <Row className="mt-4">
-                    <Col>
-                        <CreateRole onSubmitRole={this.getRoles}/>
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col>
-                        <RoleTable roles={this.state.roles} onDelete={this.handleDelete}/>
-                    </Col>
-                </Row>
-                
-               
-                <Modal id='delete' show={this.state.showDelete} onHide={() => this.setState({showDelete: false})}
-                       size='sm'>
-                    <Modal.Header closeButton>
-                        <h2 className='card-title'>Delete Role</h2>
-                    </Modal.Header>
-                    <Modal.Body className="text-center">
-                        Are You sure to delete {this.state.name} ?
-                    </Modal.Body>
-                    <Modal.Footer className="text-center">
-                        <Row>
-                            <Col>
-                                <Button className='otjs-button otjs-button-blue'
-                                    onClick={() => this.setState({showDelete: false})}>Close
-                                </Button>
-                            </Col>
-                            <Col>
-                                <Button name='delete' className='otjs-button otjs-button-red' onClick={this.delete}>Delete
-                                </Button>
-                            </Col>
-                        </Row>
-                    </Modal.Footer>
-                </Modal>
-            </Fragment>
-        )
-    }
+    return (
+        <Fragment>
+            <Row>
+                <Col>
+                    <h2 className='card-title'>Roles Panel</h2>
+                </Col>
+            </Row>
+            <Row className="mt-4">
+                <Col>
+                    <CreateRole onSubmitRole={getRoles} />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col>
+                    <RoleTable roles={roles} onDelete={handleDelete} />
+                </Col>
+            </Row>
+
+
+            <Modal id='delete' show={showDelete} onHide={() => setShowDelete(false)}
+                size='sm'>
+                <Modal.Header closeButton>
+                    <h2 className='card-title'>Delete Role</h2>
+                </Modal.Header>
+                <Modal.Body className="text-center">
+                    Are You sure to delete {name} ?
+                </Modal.Body>
+                <Modal.Footer className="text-center">
+                    <Row>
+                        <Col>
+                            <Button className='otjs-button otjs-button-blue'
+                                onClick={() => setShowDelete(false)}>Close
+                            </Button>
+                        </Col>
+                        <Col>
+                            <Button name='delete' className='otjs-button otjs-button-red' onClick={deletes}>Delete
+                            </Button>
+                        </Col>
+                    </Row>
+                </Modal.Footer>
+            </Modal>
+        </Fragment>
+    )
 }

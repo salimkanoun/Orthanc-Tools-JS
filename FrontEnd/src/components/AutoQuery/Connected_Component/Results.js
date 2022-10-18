@@ -1,40 +1,45 @@
-import React, {Component, Fragment} from 'react';
-import {connect} from 'react-redux'
-import {Col, Row} from 'react-bootstrap';
+import React, { Component, Fragment, useState, useSelector } from 'react';
+import { connect } from 'react-redux'
+import { Col, Row } from 'react-bootstrap';
 import TableResultsStudiesSeries from './TableResultsStudiesSeries'
 import TableResultStudy from './TableResultStudy'
 
 import CreateRobot from './CreateRobot'
 
-class Results extends Component {
+export default ({ switchTab, setTaskId }) => {
 
-    state = {
-        seriesView: false
+    const [seriesView, setSeriesView] = useState(false)
+
+    const store = useSelector(state => {
+        return {
+            results: state.AutoRetrieveResultList.results,
+            resultsSeries: state.AutoRetrieveResultList.resultsSeries,
+            studiesFiltered: state.AutoRetrieveResultList.resultsStudiesFiltered,
+            seriesFiltered: state.AutoRetrieveResultList.resultsSeriesFiltered,
+        }
+    })
+
+    const filterSeriesListener = () => {
+        setSeriesView(!seriesView)
     }
 
-    filterSeriesListener = () => {
-        this.setState(state => {
-            return {seriesView: !state.seriesView}
-        })
-    }
-
-    buildArrayRetrieve = () => {
+    const buildArrayRetrieve = () => {
 
         let retrieveArray = []
 
         //If series details have been loaded robot will be defined at series level
-        if (Object.keys(this.props.resultsSeries).length > 0) {
+        if (Object.keys(store.resultsSeries).length > 0) {
             let seriesUIDArray = []
             //If exist filtered item send them, if no filtered item all series items are sent
-            if (this.props.seriesFiltered.length > 0) {
-                seriesUIDArray = this.props.seriesFiltered
+            if (store.seriesFiltered.length > 0) {
+                seriesUIDArray = store.seriesFiltered
             } else {
-                seriesUIDArray = Object.keys(this.props.resultsSeries)
+                seriesUIDArray = Object.keys(store.resultsSeries)
             }
             for (let seriesUID of seriesUIDArray) {
-                let seriesObject = this.props.resultsSeries[seriesUID]
+                let seriesObject = store.resultsSeries[seriesUID]
                 retrieveArray.push({
-                    ...this.props.results[seriesObject['StudyInstanceUID']],
+                    ...store.results[seriesObject['StudyInstanceUID']],
                     ...seriesObject
                 })
             }
@@ -42,14 +47,14 @@ class Results extends Component {
         } else {
 
             let studiesUIDArray = []
-            if (this.props.studiesFiltered.length > 0) {
-                studiesUIDArray = this.props.studiesFiltered
+            if (store.studiesFiltered.length > 0) {
+                studiesUIDArray = store.studiesFiltered
             } else {
-                studiesUIDArray = Object.keys(this.props.results)
+                studiesUIDArray = Object.keys(store.results)
             }
 
             for (let studyInstanceUID of studiesUIDArray) {
-                retrieveArray.push({...this.props.results[studyInstanceUID]})
+                retrieveArray.push({ ...store.results[studyInstanceUID] })
             }
         }
 
@@ -57,36 +62,22 @@ class Results extends Component {
 
     }
 
-    render = () => {
-        return (
-            <Fragment>
-                <Row className="mt-3 text-center border-bottom border-2 pb-3">
-                    <Col>
-                        <input type="button" className="otjs-button otjs-button-blue w-12"
-                               value={this.state.seriesView === true ? "Filter Studies" : "Filter Series"}
-                               onClick={this.filterSeriesListener}/>
-                    </Col>
-                </Row>
-                <Row className="mt-5">
-                    {this.state.seriesView === true ? <TableResultsStudiesSeries/> : <TableResultStudy/>}
-                </Row>
-                <Row className="mt-5">
-                    <CreateRobot getResultArray={this.buildArrayRetrieve} switchTab={this.props.switchTab}
-                                 setTaskId={this.props.setTaskId}/>
-                </Row>
-            </Fragment>
-        )
-    }
-
+    return (
+        <Fragment>
+            <Row className="mt-3 text-center border-bottom border-2 pb-3">
+                <Col>
+                    <input type="button" className="otjs-button otjs-button-blue w-12"
+                        value={seriesView === true ? "Filter Studies" : "Filter Series"}
+                        onClick={filterSeriesListener} />
+                </Col>
+            </Row>
+            <Row className="mt-5">
+                {seriesView === true ? <TableResultsStudiesSeries /> : <TableResultStudy />}
+            </Row>
+            <Row className="mt-5">
+                <CreateRobot getResultArray={buildArrayRetrieve} switchTab={switchTab}
+                    setTaskId={setTaskId} />
+            </Row>
+        </Fragment>
+    )
 }
-
-const mapStateToProps = (state) => {
-    return {
-        results: state.AutoRetrieveResultList.results,
-        resultsSeries: state.AutoRetrieveResultList.resultsSeries,
-        studiesFiltered: state.AutoRetrieveResultList.resultsStudiesFiltered,
-        seriesFiltered: state.AutoRetrieveResultList.resultsSeriesFiltered,
-    }
-}
-
-export default connect(mapStateToProps, null)(Results)

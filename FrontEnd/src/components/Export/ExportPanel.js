@@ -26,7 +26,7 @@ import TableStudies from "../CommonComponents/RessourcesDisplay/ReactTable/Table
  */
 
 
-export default function ExportPanel() {
+export default ({}) => {
 
     const [currentStudy, setCurrentStudy] = useState('')
     const [currentTS, setCurrentTS] = useState(null)

@@ -15,7 +15,7 @@ export default ({
     level,
     orthancID,
     StudyInstanceUID,
-    row,
+    dataDetails,
     hiddenModify,
     hiddenDelete,
     hiddenCreateDicom,
@@ -25,7 +25,7 @@ export default ({
     const [showMetadata, setShowMetadata] = useState(false);
     const [hiddenMetadata, setHiddenMetadata] = useState(true);
 
-    console.log(row)
+    console.log(dataDetails)
     const setMetadata = () => {
         setShowMetadata(!showMetadata)
     }
@@ -89,21 +89,21 @@ export default ({
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="mt-2 border border-dark border-2">
-                    <OhifLink className='dropdown-item bg-green' StudyInstanceUID={row.StudyInstanceUID} />
-                    <StoneLink className='dropdown-item bg-green' StudyInstanceUID={row.StudyInstanceUID} />
+                    <OhifLink className='dropdown-item bg-green' StudyInstanceUID={dataDetails.StudyInstanceUID} />
+                    <StoneLink className='dropdown-item bg-green' StudyInstanceUID={dataDetails.StudyInstanceUID} />
                     <Button className='dropdown-item bg-green' onClick={setMetadata}
                         hidden={hiddenMetadata}>View Metadata
                     </Button>
-                    {(["patients", "studies"].includes(level) ? <CreateDicom orthancID={row.orthancID} level={level} /> :
+                    {(["patients", "studies"].includes(level) ? <CreateDicom orthancID={dataDetails.orthancID} level={level} /> :
                         null)}
-                    <Modify hidden={hiddenModify} orthancID={row.orthancID} level={level} row={row} />
+                    <Modify hidden={hiddenModify} orthancID={dataDetails.orthancID} level={level} row={dataDetails} />
                     <Button className='dropdown-item bg-red' hidden={hiddenDelete}
                         onClick={fdelete}>Delete
                     </Button>
                     {(level === "studies" && !!openLabelModal ?
                         <Button className='dropdown-item bg-blue' hidden={hiddenDelete}
                             onClick={() => {
-                                apis.content.getStudiesDetails(row.orthancID).then((study) => {
+                                apis.content.getStudiesDetails(dataDetails.orthancID).then((study) => {
                                     openLabelModal(study)
                                 })
                             }}>Labels

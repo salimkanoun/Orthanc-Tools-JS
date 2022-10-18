@@ -11,7 +11,7 @@ import task from '../../../services/task'
  * Root Panel of AutoQuery module
  * Using Hooks
  */
-const AutoQueryRoot = () => {
+export default ({}) => {
 
     const QUERRY = 'Query'
     const RESULT = 'Result'
@@ -104,5 +104,3 @@ const AutoQueryRoot = () => {
         </div>
     )
 }
-
-export default AutoQueryRoot

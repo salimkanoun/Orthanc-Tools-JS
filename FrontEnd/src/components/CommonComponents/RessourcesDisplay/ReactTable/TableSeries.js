@@ -2,7 +2,7 @@ import CommonTable from "./CommonTable";
 import { useMemo } from "react";
 import { seriesColumns } from "./ColumnFactories";
 
-function TableSeries({
+export default ({
     series,
     onDelete  = (seriesOrthancID)=> {},
     onRemove = (seriesOrthancID)=> {},
@@ -11,7 +11,7 @@ function TableSeries({
     onRowClick,
     rowStyle,
     pagination = true
-}) {
+}) => {
     const columns = useMemo(() => [
         seriesColumns.ORTHANC_ID,
         seriesColumns.DESCRIPTION,
@@ -25,5 +25,3 @@ function TableSeries({
     return <CommonTable getRowId={(row) => row.SeriesOrthancID} columns={columns} data={series} onRowClick={onRowClick}
         rowStyle={rowStyle} pagination={pagination} />
 }
-
-export default TableSeries;

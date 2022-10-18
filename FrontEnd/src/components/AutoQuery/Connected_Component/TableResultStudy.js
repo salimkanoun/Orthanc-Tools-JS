@@ -1,7 +1,6 @@
-import React, {useMemo, useState} from 'react';
-import {connect} from 'react-redux'
-import {Col, Row} from 'react-bootstrap'
-import {addStudiesFiltered, emptyResultsTable, removeResult} from '../../../actions/TableResult'
+import React, { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
+import { Col, Row } from 'react-bootstrap'
 import {
     commonColumns,
     patientColumns,
@@ -17,7 +16,16 @@ import ExportCSVButton from '../../CommonComponents/RessourcesDisplay/ExportCSVB
  * Result Table of Query for Study Level
  */
 
-function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesFiltered}) {
+export default ({ }) => {
+
+    const dispatch = useDispatch()
+
+    const store = useSelector(state => {
+        return {
+            results: state.AutoRetrieveResultList.results,
+        }
+    })
+
     const columns = useMemo(() => {
         return [
             commonColumns.RAW,
@@ -36,10 +44,10 @@ function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesF
         ]
     }, []);
 
-    const data = useMemo(() => Object.values(results).map(result => ({
+    const data = useMemo(() => Object.values(store.results).map(result => ({
         ...result,
         raw: result
-    })), [results])
+    })), [store.results])
 
     const [selected, setSelected] = useState([]);
     return (
@@ -47,40 +55,24 @@ function TableResultStudy({results, emptyResultsTable, removeResult, addStudiesF
             <Row className="text-center">
 
                 <Col sm={6}>
-                    <ExportCSVButton className='m-2' data={selected.map(({values: {raw}}) => raw)}/>
+                    <ExportCSVButton className='m-2' data={selected.map(({ values: { raw } }) => raw)} />
                 </Col>
                 <Col sm={6}>
                     <input type="button" className="otjs-button otjs-button-orange w-10 me-3" value="Delete Selected"
-                           onClick={() => {
-                               removeResult(selected.map(x => x.values.StudyInstanceUID))
-                           }}/>
+                        onClick={() => {
+                            dispatch.removeResult(selected.map(x => x.values.StudyInstanceUID))
+                        }} />
                     <input type="button" className="otjs-button otjs-button-red w-10 ms-3" value="Empty Table"
-                           onClick={emptyResultsTable}/>
+                        onClick={dispatch.emptyResultsTable} />
                 </Col>
             </Row>
 
             <div className="mt-5">
                 <CommonSelectingSortingFilteringTable tableData={data} columns={columns} onSelect={setSelected}
-                                                      onFilter={filtered => {
-                                                          let filteredStudiesUID = filtered.map(row => row.values.raw.StudyInstanceUID)
-                                                          addStudiesFiltered(filteredStudiesUID)
-                                                      }} pagination/>
+                    onFilter={filtered => {
+                        let filteredStudiesUID = filtered.map(row => row.values.raw.StudyInstanceUID)
+                        dispatch.addStudiesFiltered(filteredStudiesUID)
+                    }} pagination />
             </div>
         </div>)
 }
-
-
-const mapStateToProps = (state) => {
-    return {
-        results: state.AutoRetrieveResultList.results,
-        filters: state.AutoRetrieveResultList.filters
-    }
-}
-
-const mapDispatchToProps = {
-    emptyResultsTable,
-    removeResult,
-    addStudiesFiltered
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TableResultStudy);

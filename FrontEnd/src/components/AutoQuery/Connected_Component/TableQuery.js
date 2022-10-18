@@ -1,18 +1,15 @@
-import React, {Component, useMemo} from 'react';
-import {connect} from 'react-redux'
-import {toast} from 'react-toastify'
-import {addRow, editCellQuery, emptyQueryTable, removeQuery} from '../../../actions/TableQuery'
-import {addStudyResult} from '../../../actions/TableResult'
-import {loadAvailableAETS} from '../../../actions/OrthancTools'
+import React, { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 
 import apis from '../../../services/apis';
-import {Col, FormControl, Row} from "react-bootstrap";
+import { Col, FormControl, Row } from "react-bootstrap";
 import {
     DateFilter,
     dateFilter as dFilter,
     InputFilter
 } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFilters";
-import {InputCell as EditableCell, SelectCell} from "../../CommonComponents/RessourcesDisplay/ReactTable/EditableCells";
+import { InputCell as EditableCell, SelectCell } from "../../CommonComponents/RessourcesDisplay/ReactTable/EditableCells";
 import CommonSelectingAndFilteringTable
     from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonSelectingAndFilteringTable";
 
@@ -21,17 +18,17 @@ import CsvLoader from "./CsvLoader";
 import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities";
 
 function CustomHeader(setOverride, type = 'text') {
-    return ({column}) => {
+    return ({ column }) => {
         return (<>
             <p>{column.text}</p>
             <FormControl placeholder={'Override'} type={type} value={column.overrideValue || ''} onChange={event => {
                 setOverride(column.id, event.target.value);
-            }}/>
+            }} />
         </>)
     }
 }
 
-function Table({queries, aets, setOverride, overridesValues, onDataChange, onSelect, onFilter}) {
+function Table({ queries, aets, setOverride, overridesValues, onDataChange, onSelect, onFilter }) {
     const columns = useMemo(() => {
         const Header = CustomHeader(setOverride);
         const columns = [{
@@ -90,11 +87,11 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
             Header,
             overrideValue: overridesValues['ModalitiesInStudy'],
             Cell: ({
-                       value: initialValue,
-                       row: {values},
-                       column: {id, accessor},
-                       onDataChange, // This is a custom function that we supplied to our table instance
-                   }) => {
+                value: initialValue,
+                row: { values },
+                column: { id, accessor },
+                onDataChange, // This is a custom function that we supplied to our table instance
+            }) => {
 
                 const [value, setValue] = React.useState(initialValue);
                 const onChange = value => {
@@ -103,17 +100,17 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
                 }
 
                 return <div>
-                    <SelectModalities previousModalities={value} onUpdate={onChange}/>
+                    <SelectModalities previousModalities={value} onUpdate={onChange} />
                 </div>
             }
         }, {
             accessor: 'Aet',
             text: 'AET',
-            options: async () => aets.map(aet => ({value: aet, label: aet})),
+            options: async () => aets.map(aet => ({ value: aet, label: aet })),
             Cell: SelectCell,
-            style: ({value}) => {
+            style: ({ value }) => {
                 if (value === '') {
-                    return {backgroundColor: '#dc3545'}
+                    return { backgroundColor: '#dc3545' }
                 }
             },
             Filter: InputFilter(),
@@ -125,108 +122,62 @@ function Table({queries, aets, setOverride, overridesValues, onDataChange, onSel
     const data = useMemo(() => queries, [queries]);
 
     return <CommonSelectingAndFilteringTable tableData={data} columns={columns} onSelect={onSelect} onFilter={onFilter}
-                                             onDataChange={onDataChange}/>
+        onDataChange={onDataChange} />
 }
 
-class TableQuery extends Component {
+export default ({ switchTab}) => {
+    const [overrides, setOverrides] = useState({})
+    const [selected, setSelected] = useState([])
+    const [filtered, setFiltered] = useState([])
 
-    componentDidMount = async () => {
+    const dispatch = useDispatch()
+
+    const store = useSelector(state => {
+        return {
+            aets: state.OrthancTools.OrthancAets,
+            queries: state.AutoRetrieveQueryList.queries
+        }
+    })
+
+    const componentDidMount = async () => {
         try {
             let aets = await apis.aets.getAets()
-            this.props.loadAvailableAETS(aets)
+            dispatch.loadAvailableAETS(aets)
         } catch (error) {
             toast.error(error.statusText)
         }
     }
 
-    removeRow = () => {
-        let selectedKeyRow = this.state.selected.map(x => x.key);
-        this.props.removeQuery(selectedKeyRow);
+    const removeRow = () => {
+        let selectedKeyRow = selected.map(x => x.key);
+        dispatch.removeQuery(selectedKeyRow);
     }
 
-    emptyTable = () => {
-        this.props.emptyQueryTable()
+    const emptyTable = () => {
+        dispatch.emptyQueryTable()
     }
 
-    state = {
-        overrides: {},
-        selected: [],
-        filtered: []
+    const changeHandler = (initialValue, value, row, column) => {
+        dispatch.editCellQuery(row.key, column, value);
     }
 
-    render = () => {
-        return (
-            <React.Fragment>
-                <Row>
-                    <Col>
-                        <CsvLoader/>
-                    </Col>
-                </Row>
-                <Row className="text-center mt-5">
-                    <Col sm={3}>
-                        <input type="button" className="otjs-button otjs-button-blue w-7" value="Add"
-                               onClick={this.props.addRow}/>
-                    </Col>
-                    <Col sm={3}>
-                        <ExportCSVButton data={this.props.queries.map(row => ({
-                                'Patient Name': row.PatientName,
-                                'Patient ID': row.PatientID,
-                                'Accession Number': row.AccessionNumber,
-                                'Date From': row.DateFrom,
-                                'Date To': row.DateTo,
-                                'Study Description': row.StudyDescription,
-                                'Modalities': row.ModalitiesInStudy,
-                                'AET': row.Aet
-                            }
-                        ))}/>
-                    </Col>
-                    <Col sm={6}>
-                        <input type="button" className="otjs-button otjs-button-orange m-2 w-10" value="Delete Selected"
-                               onClick={this.removeRow}/>
-
-
-                        <input type="button" className="otjs-button otjs-button-red m-2 w-10" value="Empty Table"
-                               onClick={this.emptyTable}/>
-                    </Col>
-                </Row>
-                <Row className="text-center mt-5">
-                    <Col>
-                        <Table queries={this.props.queries} onDataChange={this.changeHandler} aets={this.props.aets}
-                               setOverride={this.handleOverride} overridesValues={this.state.overrides}
-                               onSelect={this.handleSelect} onFilter={this.handleFilter}/>
-                    </Col>
-                </Row>
-                <Row className="text-center mt-5">
-                    <Col>
-                        <input type="button" className="otjs-button otjs-button-blue" value="Query"
-                               onClick={this.query}/>
-                    </Col>
-                </Row>
-
-            </React.Fragment>
-        )
-    }
-
-    changeHandler = (initialValue, value, row, column) => {
-        this.props.editCellQuery(row.key, column, value);
-    }
-
-    handleOverride = (label, val) => {
-        let overrides = this.state.overrides;
+    const handleOverride = (label, val) => {
+        let overrides = overrides;
         overrides[label] = val;
-        this.setState({overrides: {...overrides}})
+        setOverrides({...overrides})
     }
 
-    handleSelect = (selected) => {
-        this.setState({selected: selected.map(x => x.values)});
-    }
-    handleFilter = (filtered) => {
-        this.setState({filtered: filtered.map(x => x.values.key)});
+    const handleSelect = (selected) => {
+        setSelected(selected.map(x => x.values))
     }
 
-    query = async () => {
-        const data = this.props.queries.filter(x => this.state.filtered.includes(x.key));
-        const toastId = toast.info('Starting Studies Queries', {autoClose: false});
+    const handleFilter = (filtered) => {
+        setFiltered(filtered.map(x => x.values.key))
+    }
+
+    const query = async () => {
+        const data = store.queries.filter(x => filtered.includes(x.key));
+        const toastId = toast.info('Starting Studies Queries', { autoClose: false });
         let i = 0
 
         for (const query of data) {
@@ -236,13 +187,13 @@ class TableQuery extends Component {
             });
             //For each line make dicom query and return results
             try {
-                let answeredResults = await this.makeDicomQuery({...query, ...this.state.overrides})
+                let answeredResults = await makeDicomQuery({ ...query, ...overrides })
                 toast.update(toastId, {
                     render: 'Queried study ' + i + '/' + data.length
                 });
                 //For each results, fill the result table through Redux
                 answeredResults.forEach((answer) => {
-                    this.props.addStudyResult(answer)
+                    dispatch.addStudyResult(answer)
                 })
             } catch (err) {
                 console.error(err)
@@ -253,11 +204,11 @@ class TableQuery extends Component {
         toast.dismiss(toastId)
         toast.success('Queries completed')
 
-        this.props.switchTab('Result')
+        switchTab('Result')
 
     }
 
-    makeDicomQuery = async (queryParams) => {
+    const makeDicomQuery = async (queryParams) => {
         //Prepare Date string for post data
         let DateString = '';
         queryParams.DateFrom = queryParams.DateFrom.split('-').join('')
@@ -292,22 +243,55 @@ class TableQuery extends Component {
         return await apis.query.retrieveAnswer(createQueryRessource.ID)
     }
 
+    return (
+        <React.Fragment>
+            <Row>
+                <Col>
+                    <CsvLoader />
+                </Col>
+            </Row>
+            <Row className="text-center mt-5">
+                <Col sm={3}>
+                    <input type="button" className="otjs-button otjs-button-blue w-7" value="Add"
+                        onClick={dispatch.addRow} />
+                </Col>
+                <Col sm={3}>
+                    <ExportCSVButton data={store.queries.map(row => ({
+                        'Patient Name': row.PatientName,
+                        'Patient ID': row.PatientID,
+                        'Accession Number': row.AccessionNumber,
+                        'Date From': row.DateFrom,
+                        'Date To': row.DateTo,
+                        'Study Description': row.StudyDescription,
+                        'Modalities': row.ModalitiesInStudy,
+                        'AET': row.Aet
+                    }
+                    ))} />
+                </Col>
+                <Col sm={6}>
+                    <input type="button" className="otjs-button otjs-button-orange m-2 w-10" value="Delete Selected"
+                        onClick={removeRow} />
+
+
+                    <input type="button" className="otjs-button otjs-button-red m-2 w-10" value="Empty Table"
+                        onClick={emptyTable} />
+                </Col>
+            </Row>
+            <Row className="text-center mt-5">
+                <Col>
+                    <Table queries={store.queries} onDataChange={changeHandler} aets={store.aets}
+                        setOverride={handleOverride} overridesValues={overrides}
+                        onSelect={handleSelect} onFilter={handleFilter} />
+                </Col>
+            </Row>
+            <Row className="text-center mt-5">
+                <Col>
+                    <input type="button" className="otjs-button otjs-button-blue" value="Query"
+                        onClick={query} />
+                </Col>
+            </Row>
+
+        </React.Fragment>
+    )
+
 }
-
-const mapStateToProps = (state) => {
-    return {
-        aets: state.OrthancTools.OrthancAets,
-        queries: state.AutoRetrieveQueryList.queries
-    }
-}
-
-const mapDispatchToProps = {
-    loadAvailableAETS,
-    addRow,
-    removeQuery,
-    emptyQueryTable,
-    editCellQuery,
-    addStudyResult,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(TableQuery);

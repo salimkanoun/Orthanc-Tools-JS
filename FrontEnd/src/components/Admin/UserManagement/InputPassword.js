@@ -1,30 +1,22 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 
-export default class InputPassword extends Component {
+export default ({ previousPassword, onUpdate }) => {
 
-    state = {
-        password: ''
-    }
+    const [password, setPassword] = useState('')
 
-    componentDidMount = () => {
-        if (this.props.previousPassword != null) {
-            this.setState({
-                password: this.props.previousPassword
-            })
+    const componentDidMount = () => {
+        if (previousPassword != null) {
+            setPassword(previousPassword)
         }
     }
 
-    changeListener = (event) => {
+    const changeListener = (event) => {
         if (event.target !== null) {
-            this.setState({
-                password: event.target.value
-            })
+            setPassword(event.target.value)
         }
     }
 
-    render = () => {
-        return (
-            <input name='password' type="password" className="form-control" placeholder="password" onBlur={() => { this.props.onUpdate(this.state.password) }} value={this.state.password} onChange={this.changeListener}></input>
-        );
-    }
+    return (
+        <input name='password' type="password" className="form-control" placeholder="password" onBlur={() => { onUpdate(password) }} value={password} onChange={changeListener}></input>
+    );
 }

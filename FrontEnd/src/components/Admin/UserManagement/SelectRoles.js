@@ -1,16 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import Select from 'react-select'
 import { toast } from 'react-toastify'
 import apis from '../../../services/apis'
 
 
-export default class SelectRoles extends Component {
+export default ({onChange}) => {
 
-    state = {
-        optionRoles: {}
-    }
+    const [optionRoles, setOptionRoles] = useState({})
 
-    componentDidMount = async () => {
+
+    const componentDidMount = async () => {
         try {
             let roles = await apis.role.getRoles()
             let options = []
@@ -20,9 +19,7 @@ export default class SelectRoles extends Component {
                     label: role.name
                 })
             })
-            this.setState({
-                optionRoles: options
-            })
+            setOptionRoles(options)
 
         } catch (error) {
             toast.error(error.statusText)
@@ -30,10 +27,9 @@ export default class SelectRoles extends Component {
 
     }
 
-    render = () => {
+
         return (
-            <Select single options={this.state.optionRoles} onChange={this.props.onChange} />
+            <Select single options={optionRoles} onChange={onChange} />
         )
-    }
 
 }

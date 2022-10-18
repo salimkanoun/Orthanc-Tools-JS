@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { commonColumns, patientColumns } from "./ColumnFactories";
 import { EditableCell } from "./EditableCells";
 
-function TablePatients({
+export default ({
     patients,
     onDelete,
     onRemovePatient,
@@ -19,7 +19,7 @@ function TablePatients({
     rowEvents,
     rowStyle,
     pagination
-}) {
+}) => {
     const columns = useMemo(() => [
         commonColumns.RAW,
         patientColumns.ORTHANC_ID,
@@ -61,5 +61,3 @@ function TablePatients({
     return <CommonTable getRowId={(originalRow) => originalRow.PatientOrthancID} columns={columns} data={data} rowEvents={rowEvents}
         rowStyle={rowStyle} pagination={pagination} onRowClick={onRowClick} />
 }
-
-export default TablePatients;

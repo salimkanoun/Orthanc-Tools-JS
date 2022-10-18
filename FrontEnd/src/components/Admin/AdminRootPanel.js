@@ -15,7 +15,7 @@ import {Button, Col, Nav, Navbar, Row} from 'react-bootstrap'
  * Using React Hooks
  */
 
-const AdminRootPanel = () => {
+export default ({}) => {
 
     const [selectedOptionMenu, setSelectedOptionMenu] = useState('General')
 
@@ -128,4 +128,3 @@ const AdminRootPanel = () => {
     )
 }
 
-export default AdminRootPanel

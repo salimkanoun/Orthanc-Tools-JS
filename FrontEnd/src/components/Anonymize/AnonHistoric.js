@@ -1,4 +1,4 @@
-import React, {Component, useMemo} from 'react'
+import React, {Component, useMemo, useState} from 'react'
 import {toast} from 'react-toastify';
 import {connect} from 'react-redux'
 import apis from '../../services/apis';
@@ -48,51 +48,47 @@ function HistoricTable({tasks, deleteJobHandler, setSelectedTask}) {
     return <CommonTable columns={columns} data={data}/>
 }
 
-class AnonHistoric extends Component {
+export default ({username}) => {
 
-    state = {
-        selectedTask: null,
-        rows: []
+    const [selectedTask, setSelectedTask] = useState(null)
+    const [rows, setRows] = useState([])
+
+    const componentDidMount = () => {
+        refreshHandler()
+        startRefreshMonitoring()
     }
 
-    componentDidMount = () => {
-        this.refreshHandler()
-        this.startRefreshMonitoring()
+    const componentWillUnmount = () => {
+        stopRefreshMonitoring()
     }
 
-    componentWillUnmount = () => {
-        this.stopRefreshMonitoring()
+    const startRefreshMonitoring = () => {
+        this.intervalChcker = setInterval(refreshHandler, 2000)
     }
 
-    startRefreshMonitoring = () => {
-        this.intervalChcker = setInterval(this.refreshHandler, 2000)
-    }
-
-    stopRefreshMonitoring = () => {
+    const stopRefreshMonitoring = () => {
         clearInterval(this.intervalChcker)
     }
 
-    deleteJobHandler = async (id) => {
+    const deleteJobHandler = async (id) => {
         try {
             await apis.retrieveRobot.deleteRobot(id)
-            await this.refreshHandler()
+            await refreshHandler()
         } catch (error) {
             toast.error(error.statusText)
         }
     }
 
-    refreshHandler = () => {
-        apis.task.getTaskOfUser(this.props.username, 'anonymize')
+    const refreshHandler = () => {
+        apis.task.getTaskOfUser(username, 'anonymize')
             .then(async taksIds => await Promise.all(taksIds.map(id => task.getTask(id))))
             .then((answerData) => {
-                this.setState({
-                    rows: answerData.map(robotJob => ({
-                        id: robotJob.id,
-                        username: robotJob.creator,
-                        state: robotJob.state,
-                        queriesNb: robotJob.details.items.length
-                    }))
-                })
+                setRows(answerData.map(robotJob => ({
+                    id: robotJob.id,
+                    username: robotJob.creator,
+                    state: robotJob.state,
+                    queriesNb: robotJob.details.items.length
+                })))
 
             }).catch(error => {
             console.log(error)
@@ -102,39 +98,25 @@ class AnonHistoric extends Component {
         })
     }
 
-    render = () => {
         return (
             <>
-                <Modal dialogClassName={"big-modal"} show={!!this.state.selectedTask}
-                       onHide={() => this.setState({selectedTask: null})} size="lg">
+                <Modal dialogClassName={"big-modal"} show={!!selectedTask}
+                       onHide={() => setSelectedTask(null)} size="lg">
                     <Modal.Header closeButton>
                         <Modal.Title>Anonymize Result</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {this.state.selectedTask ?
-                            <AnonymizedResults anonTaskID={this.state.selectedTask}/> :
+                        {selectedTask ?
+                            <AnonymizedResults anonTaskID={selectedTask}/> :
                             null
                         }
                     </Modal.Body>
                 </Modal>
-                <HistoricTable tasks={this.state.rows} deleteJobHandler={this.deleteJobHandler}
+                <HistoricTable tasks={rows} deleteJobHandler={deleteJobHandler}
                                setSelectedTask={selectedTask => {
-                                   this.setState({selectedTask});
+                                   setSelectedTask({selectedTask});
                                }}/>
             </>
         )
-    }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        username: state.OrthancTools.username
-    }
-}
-
-const mapDispatchToProps = {
-    addStudiesToDeleteList,
-    addStudiesToExportList
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AnonHistoric)

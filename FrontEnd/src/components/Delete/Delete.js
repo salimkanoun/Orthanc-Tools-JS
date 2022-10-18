@@ -10,7 +10,7 @@ import MonitorTask from '../../tools/MonitorTask'
 import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies';
 import { studyArrayToPatientArray } from '../../tools/processResponse';
 
-export default function Delete() {
+export default ({}) => {
 
     const [show, setShow] = useState(false)
     

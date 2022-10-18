@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap'
 import AutoRetrieveRootPanel from './AutoRetrieveRootPanel'
 import TaskFlushPanel from './TaksFlushPanel'
 
-const TaskRootPanel = () => {
+export default ({}) => {
 
     const [currentComponent, setcurrentComponent] = useState('retrieve')
 
@@ -55,5 +55,3 @@ const TaskRootPanel = () => {
         </>
     )
 }
-
-export default TaskRootPanel

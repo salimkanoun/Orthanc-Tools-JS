@@ -1,17 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import Select from 'react-select/creatable'
 
 /**
  * Component for a Select modality input
  * Used in manual and AutoQuery
  */
-export default class SelectModalities extends Component {
+export default ({ previousModalities, onUpdate }) => {
 
-  state = {
-    selectedModalities: []
-  }
+  const [selectedModalities, setSelectedModalities] = useState([])
 
-  modalitiesRadiology = [
+  const modalitiesRadiology = [
     { value: 'CT', label: 'CT', explanation: 'Computed Tomography' },
     { value: 'DX', label: 'DX', explanation: 'Digital Radiography' },
     { value: 'CR', label: 'CR', explanation: 'Computed Radiography' },
@@ -21,12 +19,12 @@ export default class SelectModalities extends Component {
     { value: 'XA', label: 'XA', explanation: 'X-Ray Angiography' }
   ]
 
-  modalitiesNuclearMedicine = [
+  const modalitiesNuclearMedicine = [
     { value: 'PT', label: 'PT', explanation: 'Positron emission tomography' },
     { value: 'NM', label: 'NM', explanation: 'Nuclear Medicine' }
   ]
 
-  modalitiesRadiotherapy = [
+  const modalitiesRadiotherapy = [
     { value: 'RTDOSE', label: 'RTDOSE', explanation: 'Radiotherapy Dose' },
     { value: 'RTIMAGE', label: 'RTIMAGE', explanation: 'Radiotherapy Image' },
     { value: 'RTPLAN', label: 'RTPLAN', explanation: 'Radiotherapy Plan' },
@@ -35,13 +33,13 @@ export default class SelectModalities extends Component {
     { value: 'SEG', label: 'SEG', explanation: 'Segmentation' },
   ]
 
-  groupStyles = {
+  const groupStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
   }
 
-  groupBadgeStyles = {
+  const groupBadgeStyles = {
     backgroundColor: '#EBECF0',
     borderRadius: '2em',
     color: '#172B4D',
@@ -54,22 +52,22 @@ export default class SelectModalities extends Component {
     textAlign: 'center',
   }
 
-  groupedOptions = [
+  const groupedOptions = [
     {
       label: 'Radiology',
-      options: this.modalitiesRadiology,
+      options: modalitiesRadiology,
     },
     {
       label: 'NuclearMedicine',
-      options: this.modalitiesNuclearMedicine,
+      options: modalitiesNuclearMedicine,
     },
     {
       label: 'Radiotherapy',
-      options: this.modalitiesRadiotherapy,
+      options: modalitiesRadiotherapy,
     },
   ]
 
-  formatOptionLabel = ({ value, label, explanation }) => (
+  const formatOptionLabel = ({ value, label, explanation }) => (
     <div style={{ display: "flex" }}>
       <div>{label}</div>
       <div style={{ marginLeft: "10px", color: "#ccc" }}>
@@ -78,24 +76,21 @@ export default class SelectModalities extends Component {
     </div>
   );
 
-  formatGroupLabel = data => (
-    <div style={this.groupStyles}>
+  const formatGroupLabel = data => (
+    <div style={groupStyles}>
       <span> {data.label} </span>
       <span> {data.details} </span>
     </div>
   );
 
 
-  componentDidMount = () => {
+  const componentDidMount = () => {
     //If we recieve a previous modality input in props, load it in the state
-    if (this.props.previousModalities !== "") {
-      let previousModalityArray = this.props.previousModalities.split('\\').map((modality) => {
+    if (previousModalities !== "") {
+      let previousModalityArray = previousModalities.split('\\').map((modality) => {
         return { value: modality, label: modality }
       })
-
-      this.setState({
-        selectedModalities: previousModalityArray
-      })
+      setSelectedModalities(previousModalityArray)
     }
 
   }
@@ -104,37 +99,23 @@ export default class SelectModalities extends Component {
    * Fill user choice in the state
    * @param {*} value 
    */
-  changeListener = (value) => {
+  const changeListener = (value) => {
     if (value === null) value = []
-    this.setState({
-      selectedModalities: value
-    })
+    setSelectedModalities(value)
   }
 
   /**
    * On exiting component (on blur), return the string value of modalities
    */
-  saveListener = () => {
-    this.props.onUpdate(this.getValue());
-  }
-
-  render = () => {
-    return (
-        <Select isMulti menuPosition="fixed" options={this.groupedOptions}
-          formatOptionLabel={this.formatOptionLabel}
-          value={this.state.selectedModalities}
-          onBlur={this.saveListener}
-          onChange={this.changeListener}
-          formatGroupLabel={this.formatGroupLabel}
-        />
-    )
+  const saveListener = () => {
+    onUpdate(getValue());
   }
 
   /**
    * Return modality String to be used in Orthanc API query parameters
    */
-  getValue = () => {
-    let modalityArray = this.state.selectedModalities.map((modalitiesObject) => {
+  const getValue = () => {
+    let modalityArray = selectedModalities.map((modalitiesObject) => {
       return modalitiesObject.value;
     });
 
@@ -143,5 +124,15 @@ export default class SelectModalities extends Component {
 
     return modalityString;
   }
+
+  return (
+    <Select isMulti menuPosition="fixed" options={groupedOptions}
+      formatOptionLabel={formatOptionLabel}
+      value={selectedModalities}
+      onBlur={saveListener}
+      onChange={changeListener}
+      formatGroupLabel={formatGroupLabel}
+    />
+  )
 
 }

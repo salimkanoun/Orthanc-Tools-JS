@@ -2,7 +2,7 @@ import CommonTable from "./CommonTable";
 import { useMemo } from "react";
 import { commonColumns, patientColumns, studyColumns } from "./ColumnFactories";
 
-function TableStudy({
+export default ({
     studies,
     onDelete,
     refresh,
@@ -14,7 +14,7 @@ function TableStudy({
     rowEvents,
     rowStyle,
     pagination
-}) {
+}) => {
     const columns = useMemo(() => [
         commonColumns.RAW,
         studyColumns.ORTHANC_ID,
@@ -41,5 +41,3 @@ function TableStudy({
     return <CommonTable columns={columns} data={data} onDataChange={onDataChange} rowEvents={rowEvents}
         rowStyle={rowStyle} pagination={pagination} />
 }
-
-export default TableStudy;

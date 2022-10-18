@@ -2,13 +2,13 @@ import React, {useMemo} from "react";
 import {Link} from "react-router-dom";
 import CommonTable from "./CommonTable";
 
-export default function RobotTable({
+export default ({
                                        robots,
                                        validationRobotHandler,
                                        deleteJobHandler,
                                        refreshHandler,
                                        hideValidationButton
-                                   }) {
+                                   }) => {
     const columns = useMemo(() => [
         {
             accessor: 'id',

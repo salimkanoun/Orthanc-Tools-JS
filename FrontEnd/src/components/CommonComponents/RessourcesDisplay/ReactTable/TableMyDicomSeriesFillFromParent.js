@@ -69,7 +69,7 @@ export default ({ studyID, columns }) => {
           <span>
             <ActionBouton level='series'
               orthancID={row.row.values.SerieID}
-              row={row.original}
+              dataDetails={row.original}
               hiddenModify={true}
               hiddenDelete={true}
               hiddenMetadata={false}

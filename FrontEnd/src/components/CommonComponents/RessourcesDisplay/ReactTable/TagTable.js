@@ -2,6 +2,7 @@
 import React from "react";
 import CommonTable from "./CommonTable";
 import { InputCell } from "./EditableCells";
+
 export function TagTable({data, onDataUpdate}) {
     const columns = [
         {

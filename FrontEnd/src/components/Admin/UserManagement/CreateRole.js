@@ -1,54 +1,50 @@
-import React, { Component, Fragment } from 'react'
-import {Row, Col, Modal, Button} from 'react-bootstrap'
+import React, { Component, Fragment, useState } from 'react'
+import { Row, Col, Modal, Button } from 'react-bootstrap'
 
 import RoleForm from './RoleForm'
 import apis from '../../../services/apis'
 import { toast } from 'react-toastify'
 
 
-export default class CreateRole extends Component {
-    state = {
-        show: false,
-        name: ''
-    }
+export default ({ onSubmitRole }) => {
 
-    create = async (formState) => {
-        if (this.state.name === '') {
+    const [show, setShow] = useState(false)
+    const [name, setName] = useState('')
+
+
+    const create = async (formState) => {
+        if (name === '') {
             toast.error('Role name can\'t be empty')
         } else {
-            let permission = { ...formState, name: this.state.name }
+            let permission = { ...formState, name: name }
             apis.role.createRole(permission).then(() => {
-                this.setState({
-                    show: false,
-                    name: ''
-                })
+                setShow(false)
+                setName('')
                 toast.success('Crated Role')
-                this.props.onSubmitRole()
+                onSubmitRole()
             }).catch(error => toast.error(error.statusText))
         }
     }
 
-    render = () => {
-        return (
-            <Fragment>
-                <Button className='otjs-button otjs-button-blue' onClick={() => this.setState({ show: true })} >New Role</Button>
-                <Modal id='create' show={this.state.show} onHide={() => this.setState({ show: false })}>
-                    <Modal.Header closeButton>
-                        <h2 className='card-title'>Create new role</h2>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Row className="align-items-center">
-                            <Col sm={2}>
-                                <label>Name*</label>
-                            </Col>
-                            <Col sm={10}>
-                                <input className='form-control' type='text' placeholder='name' name='name' value={this.state.name} onChange={(e) => this.setState({ name: e.target.value })} required />
-                            </Col>
-                        </Row>
-                        <RoleForm onSubmitRole={this.create} />
-                    </Modal.Body>
-                </Modal>
-            </Fragment> 
-        );
-    }
+    return (
+        <Fragment>
+            <Button className='otjs-button otjs-button-blue' onClick={() => setShow(true)} >New Role</Button>
+            <Modal id='create' show={show} onHide={() => setShow(false)}>
+                <Modal.Header closeButton>
+                    <h2 className='card-title'>Create new role</h2>
+                </Modal.Header>
+                <Modal.Body>
+                    <Row className="align-items-center">
+                        <Col sm={2}>
+                            <label>Name*</label>
+                        </Col>
+                        <Col sm={10}>
+                            <input className='form-control' type='text' placeholder='name' name='name' value={name} onChange={(e) => setName(e.target.value)} required />
+                        </Col>
+                    </Row>
+                    <RoleForm onSubmitRole={create} />
+                </Modal.Body>
+            </Modal>
+        </Fragment>
+    );
 }

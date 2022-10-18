@@ -1,19 +1,17 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 
 import Users from './Users'
 import Roles from './Roles'
 import Ldap from './Ldap'
 import { Button } from 'react-bootstrap'
 
-export default class UserManagement extends Component {
+export default ({ }) => {
 
-    state = {
-        currentComponent: 'Users'
-    }
+    const [currentComponent, setCurrentComponent] = useState('Users')
 
-    getComponentToDisplay = () => {
+    const getComponentToDisplay = () => {
         let component = null
-        switch (this.state.currentComponent) {
+        switch (currentComponent) {
             case 'Users':
                 component = <Users />
                 break
@@ -30,41 +28,38 @@ export default class UserManagement extends Component {
         return component
     }
 
-    switchTab = (tabName) => {
-        this.setState({
-            currentComponent: tabName
-        })
+    const switchTab = (tabName) => {
+        setCurrentComponent(tabName)
     }
 
-    render = () => {
-        return (
-            <div>
-                <div className='mb-5'>
-                    <nav className="otjs-navmenu container-fluid">
-                        <div className="otjs-navmenu-nav">
-                            <li className='col-3 text-center'>
-                                <Button className={this.state.currentComponent === 'Users' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => this.switchTab('Users')}>Local Users
-                                </Button>
-                            </li>
-                            <li className='col-4 text-center'>
-                                <Button className={this.state.currentComponent === 'Roles' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => this.switchTab('Roles')}>Roles
-                                </Button>
-                            </li>
-                            <li className='col-4 text-center'>
-                                <Button className={this.state.currentComponent === 'Ldap' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => this.switchTab('Ldap')}>Distant Users
-                                </Button>
-                            </li>
 
-                        </div>
-                    </nav>
-                </div>
-                <div>
-                    {this.getComponentToDisplay()}
-                </div>
+    return (
+        <div>
+            <div className='mb-5'>
+                <nav className="otjs-navmenu container-fluid">
+                    <div className="otjs-navmenu-nav">
+                        <li className='col-3 text-center'>
+                            <Button className={currentComponent === 'Users' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                onClick={() => switchTab('Users')}>Local Users
+                            </Button>
+                        </li>
+                        <li className='col-4 text-center'>
+                            <Button className={currentComponent === 'Roles' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                onClick={() => switchTab('Roles')}>Roles
+                            </Button>
+                        </li>
+                        <li className='col-4 text-center'>
+                            <Button className={currentComponent === 'Ldap' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                onClick={() => switchTab('Ldap')}>Distant Users
+                            </Button>
+                        </li>
+
+                    </div>
+                </nav>
             </div>
-        )
-    }
+            <div>
+                {getComponentToDisplay()}
+            </div>
+        </div>
+    )
 }

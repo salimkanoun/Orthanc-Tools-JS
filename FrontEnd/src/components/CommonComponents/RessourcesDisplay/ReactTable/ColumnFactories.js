@@ -50,7 +50,7 @@ const seriesColumns = {
         Header: 'Action',
         Cell: ({ row }) => <ActionBouton level='series' orthancID={row.values.SeriesOrthancID}
             parentID={row.values.StudyID} onDelete={onDelete}
-            row={row.values.raw} refresh={refresh}
+            dataDetails={row.values.raw} refresh={refresh}
             hiddenMetadata={false} hiddenCreateDicom={true}
             hiddenModify={false} />
     }),
@@ -165,7 +165,7 @@ const studyColumns = {
                 orthancID={row.values.StudyOrthancID}
                 StudyInstanceUID={row.values.StudyInstanceUID}
                 onDelete={onDelete}
-                row={row.original}
+                dataDetails={row.original}
                 refresh={refresh}
                 openLabelModal={openLabelModal}
                 hiddenModify={false} />
@@ -241,7 +241,7 @@ const patientColumns = {
         Header: 'Action',
         Cell: ({ row }) => {
             return <ActionBouton level='patients' orthancID={row.values.PatientOrthancID} onDelete={onDelete}
-                onModify={onModify} row={row.original} refresh={refresh} hiddenModify={false} />
+                onModify={onModify} dataDetails={row.original} refresh={refresh} hiddenModify={false} />
         }
     }),
     REMOVE: (onRemovePatient) => ({

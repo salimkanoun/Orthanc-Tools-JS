@@ -5,10 +5,7 @@ import apis from "../../../services/apis";
 import { Button } from "react-bootstrap";
 
 
-export default function UserTable({
-                                      users, onUserUpdate, modify, setDelete
-                                  }
-) {
+export default ({users, onUserUpdate, modify, setDelete}) => {
     const columns = useMemo(() => [
         {
             accessor: 'id',

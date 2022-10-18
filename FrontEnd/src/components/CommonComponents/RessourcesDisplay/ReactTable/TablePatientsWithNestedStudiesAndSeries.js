@@ -3,7 +3,7 @@ import NestedTable from "./NestedTable";
 import { commonColumns, patientColumns, seriesColumns, studyColumns } from "./ColumnFactories"
 
 
-function TablePatientsWithNestedStudiesAndSeries({
+export default ({
     patients,
     onDelete,
     onModify,
@@ -11,7 +11,7 @@ function TablePatientsWithNestedStudiesAndSeries({
     hiddenAccessionNumber,
     hiddenActionBouton,
     hiddenRemoveRow,
-}) {
+}) => {
     if (hiddenActionBouton === undefined) hiddenActionBouton = true;
     if (hiddenRemoveRow === undefined) hiddenRemoveRow = true;
     const data = useMemo(() => patients.map(patient => {
@@ -71,5 +71,3 @@ function TablePatientsWithNestedStudiesAndSeries({
     return <NestedTable columns={columns} data={data} />
 }
 
-
-export default TablePatientsWithNestedStudiesAndSeries;
