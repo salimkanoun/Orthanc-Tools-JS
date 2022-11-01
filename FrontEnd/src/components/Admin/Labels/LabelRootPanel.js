@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import LabelsTable from "./LabelsTable";
 import apis from "../../../services/apis";
 import { Button, Form, FormControl, InputGroup } from "react-bootstrap";

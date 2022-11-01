@@ -2,12 +2,13 @@ import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/Com
 import {useMemo} from "react";
 import {commonColumns, seriesColumns} from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
 
-function TableResultSeries({
+export default ({
                          series,
                          rowEvents,
                          rowStyle,
                          pagination
-                     }) {
+                     }) => {
+
     const columns = useMemo(() => [
         commonColumns.RAW,
         seriesColumns.ORTHANC_ID,
@@ -17,13 +18,14 @@ function TableResultSeries({
         seriesColumns.NB_SERIES_INSTANCES,
         seriesColumns.RETRIEVE,
     ], []); 
+
     const data = useMemo(() => series.map(x => ({
         raw: {...x},
         ...x
     })), [series]);
+    
     return <CommonTable columns={columns} data={data} rowEvents={rowEvents}
                         rowStyle={rowStyle} pagination={pagination}/>
 }
 
-export default TableResultSeries;
 

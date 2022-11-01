@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Row, Col, Modal, Button } from 'react-bootstrap'
 
 import RoleForm from './RoleForm'

@@ -3,7 +3,7 @@ const initialState = {
   anonList: [],
   anonymizedList: [],
   profile: 'Default'
-}
+} 
 /**
  * TODO
  * @param {*} action 

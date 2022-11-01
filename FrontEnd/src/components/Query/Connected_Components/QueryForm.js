@@ -1,8 +1,5 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-
-import { loadAvailableAETS } from '../../../actions/OrthancTools'
-import { addManualQueryStudyResult } from '../../../actions/ManualQuery'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import AetButton from '../Components/AetButton'
 import apis from '../../../services/apis'
@@ -10,49 +7,41 @@ import apis from '../../../services/apis'
 import QueryForms from '../../CommonComponents/SearchForm/Form'
 import { toast } from 'react-toastify'
 
-class QueryForm extends Component {
+export default ({onQuery}) => {
 
-  componentDidMount = async () => {
+  const store = useSelector(state => {
+    return {
+      aets: state.OrthancTools.OrthancAets
+    }
+  })
+
+  const dispatch = useDispatch()
+
+  const componentDidMount = async () => {
     
     try {
       let aets = await apis.aets.getAets()
-      this.props.loadAvailableAETS(aets)
+      dispatch.loadAvailableAETS(aets)
     } catch (error) {
       toast.error(error.statusText)
     }
 
   }
 
-
-  buildAetButtons = () => {
-    return (this.props.aets.map((aet, key) =>
+  const buildAetButtons = () => {
+    return (store.aets.map((aet, key) =>
       <AetButton key={key} aetName={aet} />
     ))
   }
 
-  render = () => {
     return (
       <div>
-        <QueryForms icon="fas fa-question" onFormValidate={(formData, event) => this.props.onQuery(formData, event.target.value)} title='Query'>
+        <QueryForms icon="fas fa-question" onFormValidate={(formData, event) => onQuery(formData, event.target.value)} title='Query'>
           <div>
-            {this.props.aets !== undefined ? this.buildAetButtons() : null}
+            {store.aets !== undefined ? buildAetButtons() : null}
           </div>
         </QueryForms> 
       </div>
     )
-  }
 
 }
-
-const mapStateToProps = (state) => {
-  return {
-    aets: state.OrthancTools.OrthancAets
-  }
-}
-
-const mapDispatchToProps = {
-  loadAvailableAETS,
-  addManualQueryStudyResult
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(QueryForm)

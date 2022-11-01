@@ -12,11 +12,11 @@ import SendToAnonExportDeleteDropdown from "../CommonComponents/RessourcesDispla
 import Series from '../../model/Series'
 
 export default ({ patients }) => {
+
     const [series, setSeries] = useState([])
     const [selectedStudies, setSelectedStudies] = useState([])
 
     const dispatch = useDispatch()
-
 
     const onClickStudy = (StudyOrthancID) => {
         apis.content.getSeriesDetails(StudyOrthancID).then((series) => {

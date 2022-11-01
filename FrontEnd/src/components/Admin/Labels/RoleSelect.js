@@ -1,5 +1,5 @@
 import Select from 'react-select';
-import { Component, useState } from 'react';
+import { useState } from 'react';
 import apis from "../../../services/apis";
 
 export default ({ labelProps, username }) => {

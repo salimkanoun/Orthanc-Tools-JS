@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useMemo, useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select'

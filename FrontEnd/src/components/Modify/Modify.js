@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import MonitorJob from '../../tools/MonitorJob'
 import ModalModify from './ModalModify';
 import { Button } from 'react-bootstrap';
+import { filterProperties } from '../../model/Utils';
 
 
 export default ({
@@ -15,14 +16,48 @@ export default ({
     row
 }
 ) => {
+
+    console.log(row)
+
+    const keysToKeep = [
+        'PatientName',
+        'PatentID',
+        'PatientBirthDate',
+        'PatientSex',
+        'OtherPatientIDs',
+        'StudyDate',
+        'StudyTime',
+        'StudyID',
+        'StudyDescription',
+        'AccessionNumber',
+        'RequestedProcedureDescription',
+        'InstitutionName',
+        'RequestingPhysician',
+        'ReferringPhysicianName',
+        'SeriesDate',
+        'SeriesTime',
+        'Modality',
+        'Manufacturer',
+        'StationName',
+        'SeriesDescription',
+        'BodyPartExamined',
+        'SequenceName',
+        'ProtocolName',
+        'SeriesNumber'
+    ]
+
     const [show, setShow] = useState(false);
     const [modification, setModification] = useState({});
     const [deletes, setDeletes] = useState([]);
     const [toasts, setToasts] = useState({});
     const [keepSource, setKeepSource] = useState(localStorage.getItem('remember') === 'true' ? localStorage.getItem('keepSource') === 'true' : false);
     const [removePrivateTags, setRemovePrivateTags] = useState(localStorage.getItem('remember') === 'true' ? localStorage.getItem('removePrivateTags') === 'true' : false);
-    const [data, setData] = useState();
+    const [data, setData] = useState(filterProperties(row, keysToKeep));
     const [remember, setRemember] = useState();
+
+
+    console.log(row);
+    console.log(data);
 
     const updateToast = (id, progress) => {
         toast.update(toasts[id].current, {
@@ -61,20 +96,7 @@ export default ({
     const openModify = () => {
         setModification({})
         setShow(true)
-        let rows = []
-        let forbidden = ['studies', 'OtherPatientIDs', 'Instances', 'StudyOrthancID', 'PatientOrthancID', 'SeriesOrthancID', 'StudyID', 'SeriesInstanceUID', 'StudyInstanceUID']
-        for (let tag in row) {
-            if (!forbidden.includes(tag))
-                rows.push(
-                    {
-                        'TagName': tag,
-                        'Value':
-                            row[tag] ?
-                                row[tag] : '',
-                        deletable: false
-                    })
-        }
-        setData(rows)
+        
     }
 
     const checkRemember = () => {

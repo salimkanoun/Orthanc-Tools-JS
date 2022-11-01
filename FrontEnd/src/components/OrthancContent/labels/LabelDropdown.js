@@ -1,95 +1,89 @@
-import React, {Component} from "react";
-import {Button, ButtonGroup, Dropdown, FormControl, InputGroup} from "react-bootstrap";
+import React, { useState } from "react";
+import { Button, ButtonGroup, Dropdown, FormControl, InputGroup } from "react-bootstrap";
 import apis from "../../../services/apis";
 
-export default class LabelDropdown extends Component {
+export default ({ studiesProps }) => {
 
-    state = {
-        labels: [],
-        createLabel: '',
-        studies: {},
-        search: ''
-    }
+    const [labels, setLabels] = useState([])
+    const [createLabel, setCreateLabel] = useState('')
+    const [studies, setStudies] = useState({})
+    const [search, setSearch] = useState('')
 
-    componentDidMount() {
-        apis.label.getAllLabels().then(labels => {
-            this.setState({labels: labels.map(label => label.label_name)});
+    const componentDidMount = () => {
+        apis.label.getAllLabels().then(labelsLocal => {
+            setLabels(labelsLocal.map(label => label.label_name))
         });
     }
 
-    handleCreateInput = (event) => {
-        this.setState({
-            createLabel: event.target.value
-        })
+    const handleCreateInput = (event) => {
+        setCreateLabel(event.target.value)
     }
 
-    handleSearchInput = (event) => {
-        this.setState({
-            search: event.target.value
-        })
+    const handleSearchInput = (event) => {
+        setSearch(event.target.value)
     }
 
 
-    handleOpenClick = () => {
-        return this._refreshStudyLabel();
+    const handleOpenClick = () => {
+        return _refreshStudyLabel();
     }
 
-    async _refreshStudyLabel() {
-        let studies_tab = await this.props.studies
-        let studies = {}
+    const _refreshStudyLabel = async () => {
+        let studies_tab = await studiesProps
+        let studiesLocal = {}
         await Promise.all(studies_tab.map(study => apis.studylabel.getStudyLabels(study.MainDicomTags.StudyInstanceUID)
             .then(labels => {
-                studies[study.MainDicomTags.StudyInstanceUID + ':' + study.PatientMainDicomTags.PatientID + ':' + study.ID + ':' + study.ParentPatient] = labels.map(label => label.label_name);
+                studiesLocal[study.MainDicomTags.StudyInstanceUID + ':' + study.PatientMainDicomTags.PatientID + ':' + study.ID + ':' + study.ParentPatient] = labels.map(label => label.label_name);
             })))
-        this.setState({studies});
+        setStudies(studiesLocal)
     }
 
-    handleSetLabel(label) {
+    const handleSetLabel = (label) => {
         return async () => {
-            let count = this._containCount(label);
-            let v = Object.entries(this.state.studies).length;
-            let studies = this.state.studies;
+            let count = _containCount(label);
+            let v = Object.entries(studies).length;
+            let studies = studies;
             if (count !== v) {
-                await Promise.all(Object.entries(this.state.studies)
+                await Promise.all(Object.entries(studies)
                     .map(([study, labels]) => apis.studylabel.createStudyLabel(study.split(':')[0], label, study.split(':')[1], study.split(':')[2], study.split(':')[3])
                         .then(() => {
                             studies[study].push(label);
-                            this.setState({studies});
+                            setStudies(studies)
                         }).catch(err => {
                             if (err.status !== 409) throw err;
                         })));
             } else {
-                await Promise.all(Object.entries(this.state.studies)
+                await Promise.all(Object.entries(studies)
                     .map(([study, labels]) => apis.studylabel.deleteStudyLabel(study.split(':')[0], label).then(() => {
                         studies[study] = studies[study].filter(l => label !== l);
-                        this.setState({studies});
+                        setStudies(studies)
                     })));
             }
         }
     }
 
-    getLabelComponent = (label) => {
-        let count = this._containCount(label);
+    const getLabelComponent = (label) => {
+        let count = _containCount(label);
 
         let symbol = count;
         if (count === 0) {
             symbol = ' ';
-        } else if (count === Object.entries(this.state.studies).length) {
+        } else if (count === Object.entries(studies).length) {
             symbol = '✓' + (count !== 1 ? count : '');
         }
 
         return <Dropdown.ItemText key={label} className={"dropdown-item label-dropdown-item"}>
             <Button className={'btn w-100 text-left d-flex justify-content-between'}
-                    onClick={this.handleSetLabel(label)}>
+                onClick={handleSetLabel(label)}>
                 <p>{`• ${label}`}</p>
                 <p className={'text-light-grey'}>{symbol}</p>
             </Button>
         </Dropdown.ItemText>
     }
 
-    _containCount(label) {
+    const _containCount = (label) => {
         let count = 0;
-        Object.entries(this.state.studies).forEach(entry => {
+        Object.entries(studies).forEach(entry => {
             if (entry[1].includes(label)) {
                 count++;
             }
@@ -98,31 +92,29 @@ export default class LabelDropdown extends Component {
     }
 
 
-    render() {
-        let filteredLabels = this.state.labels.filter(label => label.includes(this.state.search))
-        return (
-            <>
-                <Dropdown as={ButtonGroup}>
-                    <Dropdown.Toggle variant="button-dropdown-blue"
-                                     className="mb-4 button-dropdown button-dropdown-blue"
-                                     id="dropdown-custom-1">Label</Dropdown.Toggle>
-                    <Dropdown.Menu className="mt-2 border border-dark border-2">
-                        <Dropdown.ItemText className='label-dropdown-item'>
-                            <InputGroup>
-                                <InputGroup.Text>{'Search'}</InputGroup.Text>
-                                <FormControl
-                                    placeholder="filter"
-                                    aria-label="search"
-                                    onChange={this.handleSearchInput}
-                                />
-                                <InputGroup.Text>{filteredLabels.length}</InputGroup.Text>
-                            </InputGroup>
-                        </Dropdown.ItemText>
-                        {filteredLabels.map(this.getLabelComponent)}
-                    </Dropdown.Menu>
-                </Dropdown>
 
-            </>
-        )
-    }
+    let filteredLabels = labels.filter(label => label.includes(search))
+    return (
+        <>
+            <Dropdown as={ButtonGroup}>
+                <Dropdown.Toggle variant="button-dropdown-blue"
+                    className="mb-4 button-dropdown button-dropdown-blue"
+                    id="dropdown-custom-1">Label</Dropdown.Toggle>
+                <Dropdown.Menu className="mt-2 border border-dark border-2">
+                    <Dropdown.ItemText className='label-dropdown-item'>
+                        <InputGroup>
+                            <InputGroup.Text>{'Search'}</InputGroup.Text>
+                            <FormControl
+                                placeholder="filter"
+                                aria-label="search"
+                                onChange={handleSearchInput}
+                            />
+                            <InputGroup.Text>{filteredLabels.length}</InputGroup.Text>
+                        </InputGroup>
+                    </Dropdown.ItemText>
+                    {filteredLabels.map(getLabelComponent)}
+                </Dropdown.Menu>
+            </Dropdown>
+        </>
+    )
 }

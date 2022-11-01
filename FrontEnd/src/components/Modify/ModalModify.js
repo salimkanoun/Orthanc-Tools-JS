@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal'
-import { TagTable } from "../CommonComponents/RessourcesDisplay/ReactTable/TagTable";
+import TagTable from '../CommonComponents/RessourcesDisplay/ReactTable/TagTable2'
 
 
 export default ({
@@ -14,8 +14,7 @@ export default ({
     onClickPrivateTags,
     defaultCheckedKeepSource,
     onClickKeepSource,
-    modify,
-    onClickRemember
+    modify
 }) => {
 
 

@@ -1,12 +1,8 @@
-import React, {Component, useMemo, useState} from 'react'
-import {toast} from 'react-toastify';
-import {connect} from 'react-redux'
-import apis from '../../services/apis';
+import React, { useMemo, useState} from 'react'
+import {toast} from 'react-toastify';import apis from '../../services/apis';
 import AnonymizedResults from './AnonymizedResults';
 import task from '../../services/task';
 import {Modal} from "react-bootstrap";
-import {addStudiesToDeleteList} from "../../actions/DeleteList";
-import {addStudiesToExportList} from "../../actions/ExportList";
 import CommonTable from "../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
 function HistoricTable({tasks, deleteJobHandler, setSelectedTask}) {

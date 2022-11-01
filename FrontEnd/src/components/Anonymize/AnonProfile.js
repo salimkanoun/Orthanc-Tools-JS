@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { connect, useDispatch, useSelector } from "react-redux"
+import React from 'react'
+import { useDispatch, useSelector } from "react-redux"
 import { Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
 

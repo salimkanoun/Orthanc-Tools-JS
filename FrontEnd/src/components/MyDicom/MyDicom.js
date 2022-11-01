@@ -1,6 +1,6 @@
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 import apis from '../../services/apis'
-import { connect, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
 import TableMyDicomSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeriesFillFromParent'
 import { Row, Col, Button } from 'react-bootstrap'

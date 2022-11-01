@@ -1,8 +1,8 @@
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 
 import AnonymizedResults from "./AnonymizedResults";
 import AnonymizePanel from './AnonymizePanel';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import AnonymizePanelProgress from './AnonymizePanelProgress';
 import apis from '../../services/apis';
 import AnonHistoric from './AnonHistoric';

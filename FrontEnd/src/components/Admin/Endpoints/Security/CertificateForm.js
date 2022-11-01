@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import apis from '../../../../services/apis'
 import Dropzone from 'react-dropzone'
 import { toast } from 'react-toastify'

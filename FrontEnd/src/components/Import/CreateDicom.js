@@ -1,7 +1,7 @@
 import React, {Component, createRef} from 'react'
 import Dropzone from 'react-dropzone'
 import apis from '../../services/apis'
-import {TagTable} from "../CommonComponents/RessourcesDisplay/ReactTable/TagTable";
+import TagTable from "../CommonComponents/RessourcesDisplay/ReactTable/TagTable2";
 import {InputGroup} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import pdfjsLib from "pdfjs-dist/webpack"

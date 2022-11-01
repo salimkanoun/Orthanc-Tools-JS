@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
 import { Row, Col } from 'react-bootstrap';

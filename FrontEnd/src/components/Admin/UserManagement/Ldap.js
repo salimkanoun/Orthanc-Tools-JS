@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from "react"
+import React, { Fragment, useState } from "react"
 import Toggle from 'react-toggle'
 import apis from "../../../services/apis"
 import Select from 'react-select'

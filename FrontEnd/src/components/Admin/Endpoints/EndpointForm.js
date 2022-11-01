@@ -1,4 +1,4 @@
-import React, {Component, Fragment, useState} from 'react'
+import React, { Fragment, useState} from 'react'
 import Select from 'react-select'
 import {toast} from 'react-toastify'
 import apis from '../../../services/apis'

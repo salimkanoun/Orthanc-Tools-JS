@@ -89,21 +89,21 @@ export default ({
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="mt-2 border border-dark border-2">
-                    <OhifLink className='dropdown-item bg-green' StudyInstanceUID={dataDetails.StudyInstanceUID} />
-                    <StoneLink className='dropdown-item bg-green' StudyInstanceUID={dataDetails.StudyInstanceUID} />
+                    <OhifLink className='dropdown-item bg-green' StudyInstanceUID={StudyInstanceUID} />
+                    <StoneLink className='dropdown-item bg-green' StudyInstanceUID={StudyInstanceUID} />
                     <Button className='dropdown-item bg-green' onClick={setMetadata}
                         hidden={hiddenMetadata}>View Metadata
                     </Button>
-                    {(["patients", "studies"].includes(level) ? <CreateDicom orthancID={dataDetails.orthancID} level={level} /> :
+                    {(["patients", "studies"].includes(level) ? <CreateDicom orthancID={orthancID} level={level} /> :
                         null)}
-                    <Modify hidden={hiddenModify} orthancID={dataDetails.orthancID} level={level} row={dataDetails} />
+                    <Modify hidden={hiddenModify} orthancID={orthancID} level={level} row={dataDetails} />
                     <Button className='dropdown-item bg-red' hidden={hiddenDelete}
                         onClick={fdelete}>Delete
                     </Button>
                     {(level === "studies" && !!openLabelModal ?
                         <Button className='dropdown-item bg-blue' hidden={hiddenDelete}
                             onClick={() => {
-                                apis.content.getStudiesDetails(dataDetails.orthancID).then((study) => {
+                                apis.content.getStudiesDetails(orthancID).then((study) => {
                                     openLabelModal(study)
                                 })
                             }}>Labels

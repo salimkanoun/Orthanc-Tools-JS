@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useMemo, useState } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { toast } from "react-toastify";
 

@@ -1,4 +1,4 @@
-import { Component, Fragment, useState } from "react"
+import { Fragment, useState } from "react"
 import apis from '../../../services/apis'
 import { Modal, Row, Col, Button } from 'react-bootstrap'
 
