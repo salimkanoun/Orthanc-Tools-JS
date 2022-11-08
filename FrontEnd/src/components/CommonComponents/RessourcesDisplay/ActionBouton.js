@@ -29,7 +29,6 @@ export default ({
     }
 
     const fdelete = async () => {
-        let orthancID = orthancID
         switch (level) {
             case 'patients':
                 try {

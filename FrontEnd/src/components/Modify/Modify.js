@@ -65,8 +65,6 @@ export default ({
 
     const [dataFilter, setDataFilter] = useState([])
 
-    console.log(deletes)
-
     const filterData = () => {
         let dataFilters = filterProperties(data, keysToKeep(level))
         setDataFilter(dataFilters);
