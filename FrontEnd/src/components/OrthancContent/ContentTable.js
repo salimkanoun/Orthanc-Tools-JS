@@ -14,7 +14,6 @@ import Series from '../../model/Series'
 export default ({ patients }) => {
 
     const [series, setSeries] = useState([])
-    console.log(series)
     const [selectedStudies, setSelectedStudies] = useState([])
 
     const dispatch = useDispatch()

@@ -51,8 +51,8 @@ const seriesColumns = {
         Header: 'Action',
         Cell: ({ row }) => {
         return (<ActionBouton level={ConstantLevel.SERIES} orthancID={row.original.SeriesOrthancID}
-            parentID={row.values.StudyID} onDelete={onDelete}
-            dataDetails={row.values.raw} refresh={refresh}
+            parentID={row.original.StudyOrthancID} onDelete={onDelete}
+            dataDetails={row.original} refresh={refresh}
             hiddenMetadata={false} hiddenCreateDicom={true}
             hiddenModify={false} />)
     }}),
