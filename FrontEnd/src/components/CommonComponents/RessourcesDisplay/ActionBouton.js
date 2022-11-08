@@ -10,7 +10,8 @@ import Modify from '../../Modify/Modify'
 import { toast } from 'react-toastify'
 import CreateDicom from '../../CreateDicom/CreateDicom'
 import { Button } from 'react-bootstrap'
-
+import ConstantLevel from '../../Modify/ConstantLevel'
+ 
 export default ({
     level,
     orthancID,
@@ -30,7 +31,7 @@ export default ({
 
     const fdelete = async () => {
         switch (level) {
-            case 'patients':
+            case ConstantLevel.PATIENTS:
                 try {
                     await apis.content.deletePatient(orthancID)
                     toast.success("Patient " + orthancID + " have been deleted")
@@ -39,7 +40,7 @@ export default ({
                     toast.error(error)
                 }
                 break
-            case 'studies':
+            case ConstantLevel.STUDIES:
                 try {
                     await apis.content.deleteStudies(orthancID)
                     toast.success("Studies " + orthancID + " have been deleted")
@@ -48,7 +49,7 @@ export default ({
                     toast.error(error)
                 }
                 break
-            case 'series':
+            case ConstantLevel.SERIES:
                 try {
                     await apis.content.deleteSeries(orthancID)
                     toast.success("Series " + orthancID + " have been deleted")
@@ -91,13 +92,13 @@ export default ({
                     <Button className='dropdown-item bg-green' onClick={setMetadata}
                         hidden={hiddenMetadata}>View Metadata
                     </Button>
-                    {(["patients", "studies"].includes(level) ? <CreateDicom orthancID={orthancID} level={level} /> :
+                    {([ConstantLevel.PATIENTS, ConstantLevel.STUDIES].includes(level) ? <CreateDicom orthancID={orthancID} level={level} /> :
                         null)}
                     <Modify hidden={hiddenModify} orthancID={orthancID} level={level} data={dataDetails} refresh={()=>{console.log('TODO REFRESH')}} />
                     <Button className='dropdown-item bg-red' hidden={hiddenDelete}
                         onClick={fdelete}>Delete
                     </Button>
-                    {(level === "studies" && !!openLabelModal ?
+                    {(level === ConstantLevel.STUDIES && !!openLabelModal ?
                         <Button className='dropdown-item bg-blue' hidden={hiddenDelete}
                             onClick={() => {
                                 apis.content.getStudiesDetails(orthancID).then((study) => {

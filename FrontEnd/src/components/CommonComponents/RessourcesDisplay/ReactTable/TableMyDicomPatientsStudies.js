@@ -1,4 +1,5 @@
 import React,{Component} from 'react'
+import ConstantLevel from '../../../Modify/ConstantLevel'
 import ActionBouton from '../ActionBouton'
 import Table from './CommonSelectingAndFilteringTable'
 
@@ -41,7 +42,7 @@ export default ({data, onRowClick, onSelect, rowStyle}) => {
         Cell:(row)=>{
           return(
           <span>
-            <ActionBouton level='studies'   
+            <ActionBouton level={ConstantLevel.STUDIES}   
               orthancID={row.cell.row.values.StudyOrthancID} 
               StudyInstanceUID={row.cell.row.values.StudyInstanceUID} 
               dataDetails={row.cell.row} 

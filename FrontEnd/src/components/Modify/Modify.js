@@ -6,6 +6,8 @@ import MonitorJob from '../../tools/MonitorJob'
 import { Button, Container, Form, Modal, Row } from 'react-bootstrap';
 import { filterProperties } from '../../model/Utils';
 import TagTable2 from '../CommonComponents/RessourcesDisplay/ReactTable/TagTable2';
+import ConstantLevel from './ConstantLevel';
+
 
 export default ({
     hidden,
@@ -18,7 +20,7 @@ export default ({
 
     const keysToKeep = (level) => {
         switch (level) {
-            case 'patients':
+            case ConstantLevel.PATIENTS:
                 return [
                     'PatientName',
                     'PatientID',
@@ -26,7 +28,7 @@ export default ({
                     'PatientSex',
                     'OtherPatientIDs'
                 ]
-            case 'studies':
+            case ConstantLevel.STUDIES:
                 return [
                     'StudyDate',
                     'StudyTime',
@@ -38,7 +40,7 @@ export default ({
                     'RequestingPhysician',
                     'ReferringPhysicianName'
                 ]
-            case 'series':
+            case ConstantLevel.SERIES:
                 return [
                     'SeriesDate',
                     'SeriesTime',
@@ -154,7 +156,7 @@ export default ({
         }
         let jobAnswer = ''
         switch (level) {
-            case 'patients':
+            case ConstantLevel.PATIENTS:
                 if (modifications?.PatientID == null)
                     alert('PatientID can\'t be empty or the same as before!')
                 else {
@@ -162,11 +164,11 @@ export default ({
                     setShow(false)
                 }
                 break
-            case 'studies':
+            case ConstantLevel.STUDIES:
                 jobAnswer = await apis.content.modifyStudy(orthancID, modifications, deletes, removePrivateTags, keepSource)
                 setShow(false)
                 break
-            case 'series':
+            case ConstantLevel.SERIES:
                 jobAnswer = await apis.content.modifySeries(orthancID, modifications, deletes, removePrivateTags, keepSource)
                 setShow(false)
                 break

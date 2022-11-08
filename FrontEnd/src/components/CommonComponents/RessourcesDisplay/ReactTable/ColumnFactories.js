@@ -4,6 +4,7 @@ import { dateFilter, DateFilter, invertableDataFilter, InvertableDataFilter } fr
 import RetrieveButton from "../../../Query/Components/RetrieveButton";
 import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
+import ConstantLevel from "../../../Modify/ConstantLevel";
 
 const commonColumns = {
     RAW: {
@@ -49,7 +50,7 @@ const seriesColumns = {
         id: 'Action',
         Header: 'Action',
         Cell: ({ row }) => {
-        return (<ActionBouton level='series' orthancID={row.original.SeriesOrthancID}
+        return (<ActionBouton level={ConstantLevel.SERIES} orthancID={row.original.SeriesOrthancID}
             parentID={row.values.StudyID} onDelete={onDelete}
             dataDetails={row.values.raw} refresh={refresh}
             hiddenMetadata={false} hiddenCreateDicom={true}
@@ -164,7 +165,7 @@ const studyColumns = {
         Cell: (({ row }) => {
         return (
         
-            <ActionBouton level='studies'
+            <ActionBouton level={ConstantLevel.STUDIES}
                 orthancID={row.original.StudyOrthancID}
                 StudyInstanceUID={row.values.StudyInstanceUID}
                 onDelete={onDelete}
@@ -244,7 +245,7 @@ const patientColumns = {
         id: 'Action',
         Header: 'Action',
         Cell: ({ row }) => {
-            return <ActionBouton level='patients' orthancID={row.original.PatientOrthancID} onDelete={onDelete}
+            return <ActionBouton level={ConstantLevel.PATIENTS} orthancID={row.original.PatientOrthancID} onDelete={onDelete}
                 onModify={onModify} dataDetails={row.original} refresh={refresh} hiddenModify={false} />
         }
     }),

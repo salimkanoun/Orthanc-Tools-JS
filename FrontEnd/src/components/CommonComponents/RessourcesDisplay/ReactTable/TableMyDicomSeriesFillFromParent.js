@@ -1,5 +1,6 @@
 import React, { Component, useState } from 'react'
 import apis from '../../../../services/apis'
+import ConstantLevel from '../../../Modify/ConstantLevel'
 import ActionBouton from '../ActionBouton'
 import CommonTable from './CommonTable'
 
@@ -67,7 +68,7 @@ export default ({ studyID, columns }) => {
       Cell: (row) => {
         return (
           <span>
-            <ActionBouton level='series'
+            <ActionBouton level={ConstantLevel.SERIES}
               orthancID={row.row.values.SerieID}
               dataDetails={row.original}
               hiddenModify={true}
