@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { usePagination, useTable, useSortBy, useRowSelect } from 'react-table'
 import BTable from 'react-bootstrap/Table'
 import PaginationButton from "./PaginitionButton"
@@ -68,7 +68,7 @@ function CommonTable({
             ])
         }
     )
-
+    
     React.useEffect(() => {
         if (!!onSelectRow) onSelectRow( selectedFlatRows.map(row => row.original) );
         // eslint-disable-next-line

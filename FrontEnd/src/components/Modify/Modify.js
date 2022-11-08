@@ -3,64 +3,78 @@ import apis from '../../services/apis';
 import { toast } from 'react-toastify';
 
 import MonitorJob from '../../tools/MonitorJob'
-import ModalModify from './ModalModify';
-import { Button } from 'react-bootstrap';
+import { Button, Container, Form, Modal, Row } from 'react-bootstrap';
 import { filterProperties } from '../../model/Utils';
-
+import TagTable2 from '../CommonComponents/RessourcesDisplay/ReactTable/TagTable2';
 
 export default ({
     hidden,
     level,
     orthancID,
     refresh,
-    row
+    data
 }
 ) => {
 
-    console.log(row)
-
-    const keysToKeep = [
-        'PatientName',
-        'PatentID',
-        'PatientBirthDate',
-        'PatientSex',
-        'OtherPatientIDs',
-        'StudyDate',
-        'StudyTime',
-        'StudyID',
-        'StudyDescription',
-        'AccessionNumber',
-        'RequestedProcedureDescription',
-        'InstitutionName',
-        'RequestingPhysician',
-        'ReferringPhysicianName',
-        'SeriesDate',
-        'SeriesTime',
-        'Modality',
-        'Manufacturer',
-        'StationName',
-        'SeriesDescription',
-        'BodyPartExamined',
-        'SequenceName',
-        'ProtocolName',
-        'SeriesNumber'
-    ]
+    const keysToKeep = (level) => {
+        switch (level) {
+            case 'patients':
+                return [
+                    'PatientName',
+                    'PatientID',
+                    'PatientBirthDate',
+                    'PatientSex',
+                    'OtherPatientIDs'
+                ]
+            case 'studies':
+                return [
+                    'StudyDate',
+                    'StudyTime',
+                    'StudyID',
+                    'StudyDescription',
+                    'AccessionNumber',
+                    'RequestedProcedureDescription',
+                    'InstitutionName',
+                    'RequestingPhysician',
+                    'ReferringPhysicianName'
+                ]
+            case 'series':
+                return [
+                    'SeriesDate',
+                    'SeriesTime',
+                    'Modality',
+                    'Manufacturer',
+                    'StationName',
+                    'SeriesDescription',
+                    'BodyPartExamined',
+                    'SequenceName',
+                    'ProtocolName',
+                    'SeriesNumber'
+                ]
+            default:
+                toast.error("Wrong level")
+        }
+    }
 
     const [show, setShow] = useState(false);
-    const [modification, setModification] = useState({});
-    const [deletes, setDeletes] = useState([]);
+    const [modifications, setModifications] = useState({}); //[key, value]
+    const [deletes, setDeletes] = useState([]); //[key]
+    const [keepSource, setKeepSource] = useState(localStorage.getItem('keepSource') === 'true' ? true : false);
+    const [removePrivateTags, setRemovePrivateTags] = useState(localStorage.getItem('removePrivateTags') === 'true' ? true : false);
     const [toasts, setToasts] = useState({});
-    const [keepSource, setKeepSource] = useState(localStorage.getItem('remember') === 'true' ? localStorage.getItem('keepSource') === 'true' : false);
-    const [removePrivateTags, setRemovePrivateTags] = useState(localStorage.getItem('remember') === 'true' ? localStorage.getItem('removePrivateTags') === 'true' : false);
-    const [data, setData] = useState(filterProperties(row, keysToKeep));
-    const [remember, setRemember] = useState();
 
+    const [dataFilter, setDataFilter] = useState([])
 
-    console.log(row);
-    console.log(data);
+    console.log(deletes)
+
+    const filterData = () => {
+        let dataFilters = filterProperties(data, keysToKeep(level))
+        setDataFilter(dataFilters);
+    }
 
     const updateToast = (id, progress) => {
-        toast.update(toasts[id].current, {
+        console.log(progress)
+        toast.update(toasts[id], {
             type: toast.TYPE.INFO,
             autoClose: false,
             render: 'Modify progress : ' + Math.round(progress) + '%'
@@ -68,7 +82,7 @@ export default ({
     }
 
     const successToast = (id) => {
-        toast.update(toasts[id].current, {
+        toast.update(toasts[id], {
             type: toast.TYPE.INFO,
             autoClose: 5000,
             render: 'Modify Done',
@@ -77,7 +91,7 @@ export default ({
     }
 
     const failToast = (id) => {
-        toast.update(toasts[id].current, {
+        toast.update(toasts[id], {
             type: toast.TYPE.INFO,
             autoClose: 5000,
             render: 'Modify fail',
@@ -86,74 +100,77 @@ export default ({
     }
 
     const openToast = (id) => {
-        setToasts(
-            toasts,
-            [id] = { current: toast("Notify progress : 0%", { autoClose: false, className: 'bg-info' }) }
-
+        setToasts({
+            ...toasts,
+            [id]: { current: toast("Notify progress : 0%", { autoClose: false, className: 'bg-info' }) }
+        }
         )
     }
 
     const openModify = () => {
-        setModification({})
+        filterData()
+        setModifications({})
         setShow(true)
-        
     }
 
     const checkRemember = () => {
         localStorage.setItem('keepSource', keepSource)
         localStorage.setItem('removePrivateTags', removePrivateTags)
-        setRemovePrivateTags(localStorage.getItem('removePrivateTags') === 'true')
-        setKeepSource(localStorage.getItem('keepSource') === 'true')
+    }
+
+    const onDataUpdate = (key, value) => {
+        if (value == '') value = null;
+        if (value != null) {
+            setModifications((state) => {
+                return {
+                    ...state,
+                    [key]: value
+                }
+            })
+        }
 
     }
 
-    const handleDataChange = (oldValue, newValue, row, column) => {
-        let modification = modification;
-        let deletes = deletes;
-        if (column === 'Value') {
-            modification[row.TagName] = newValue;
+    const onDeleteTag = (tagName, deleted) => {
+        if (deleted) {
+            setDeletes((state) => {
+                let newState = [...state]
+                if (!newState.includes(tagName)) newState.push(tagName)
+                return newState
+            })
         } else {
-            if (newValue) {
-                deletes.push(row.TagName);
-            } else {
-                deletes = deletes.filter(x => x !== row.TagName);
-            }
+            setDeletes((state) => {
+                let newState = [...state]
+                if (newState.includes(tagName)) newState = newState.filter(name => (name !== tagName))
+                return newState
+            })
         }
-        const data = data;
-        data.find(x => x.TagName === row.TagName)[column] = newValue;
-
-
-        setModification(modification)
-        setData([...data])
-        setDeletes(deletes)
-
     }
 
     const modify = async () => {
         checkRemember()
         //If no change done, simply return
-        if (Object.keys(modification).length === 0) {
+        if (Object.keys(modifications).length === 0 && deletes.length === 0) {
             toast.error('No Modification set')
             return
         }
-
         let jobAnswer = ''
         switch (level) {
             case 'patients':
-                if (!modification.PatientID || modification.PatientID === '')
+                if (modifications?.PatientID == null)
                     alert('PatientID can\'t be empty or the same as before!')
                 else {
-                    jobAnswer = await apis.content.modifyPatients(orthancID, modification, deletes, removePrivateTags, keepSource)
-                    onHide()
+                    jobAnswer = await apis.content.modifyPatients(orthancID, modifications, deletes, removePrivateTags, keepSource)
+                    setShow(false)
                 }
                 break
             case 'studies':
-                jobAnswer = await apis.content.modifyStudy(orthancID, modification, deletes, removePrivateTags, keepSource)
-                onHide()
+                jobAnswer = await apis.content.modifyStudy(orthancID, modifications, deletes, removePrivateTags, keepSource)
+                setShow(false)
                 break
             case 'series':
-                jobAnswer = await apis.content.modifySeries(orthancID, modification, deletes, removePrivateTags, keepSource)
-                onHide()
+                jobAnswer = await apis.content.modifySeries(orthancID, modifications, deletes, removePrivateTags, keepSource)
+                setShow(false)
                 break
             default:
                 toast.error("Wrong level")
@@ -174,34 +191,58 @@ export default ({
                     failToast(id)
                 }
             })
-            setToasts(...toasts,
-                [id] = createRef())
+            setToasts(
+                {
+                    ...toasts,
+                    [id]: createRef()
+                })
             openToast(id)
             jobMonitoring.startMonitoringJob()
         }
     }
 
-    const onHide = () => {
-        setShow(false)
-    }
-
     if (hidden) return <></>
+
     return (
         <Fragment>
             <Button className='dropdown-item bg-orange' onClick={openModify}>Modify</Button>
-            <ModalModify
-                show={show}
-                onHide={() => setShow(false)}
-                data={data}
-                level={level}
-                defaultCheckedPrivateTags={removePrivateTags}
-                onClickPrivateTags={() => setRemovePrivateTags(!removePrivateTags)}
-                defaultCheckedKeepSource={keepSource}
-                onClickKeepSource={() => setKeepSource(!keepSource)}
-                onClickRemember={() => setRemember(!remember)}
-                onDataUpdate={handleDataChange}
-                modify={() => modify()}
-            />
+
+            <Modal show={show} onHide={() => setShow(false)} onClick={(e) => e.stopPropagation()} size='xl'>
+                <Modal.Header closeButton>
+                    <Modal.Title> Modify {level}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <TagTable2 data={dataFilter} onDataUpdate={onDataUpdate} onDeleteTag={onDeleteTag} modifications={modifications} deleted={deletes} />
+                    <Container>
+                        <Row>
+                            <Form.Group>
+                                <Form.Label>
+                                    Removing private tags
+                                </Form.Label>
+                                <Form.Check
+                                    checked={removePrivateTags}
+                                    onClick={() => setRemovePrivateTags(!removePrivateTags)}
+                                />
+                            </Form.Group>
+                        </Row>
+                        <Row>
+                            <Form.Group>
+                                <Form.Label>
+                                    Keep Source
+                                </Form.Label>
+                                <Form.Check
+                                    checked={keepSource}
+                                    onClick={() => setKeepSource(!keepSource)}
+                                />
+                            </Form.Group>
+                        </Row>
+                    </Container>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button className='otjs-button otjs-button-orange me-5' onClick={() => modify()}>Modify</Button>
+                    <Button className='otjs-button otjs-button-red' onClick={() => setShow(false)}>Cancel</Button>
+                </Modal.Footer>
+            </Modal>
         </Fragment>
     )
 

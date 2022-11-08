@@ -3,14 +3,13 @@ import apis from '../services/apis'
 
 export default class MonitorJob {
 
+    finishCallback = () => {}
+    updateCallBack = () => {}
+ 
     constructor(jobID, interval = 1000) {
         this.jobID = jobID
         this.interval = interval
         this.continue = false
-        this.finishCallback = function (status) {
-        }
-        this.updateCallBack = function (progress) {
-        }
     }
 
     onFinish(callback) {

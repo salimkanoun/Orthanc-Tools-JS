@@ -18,14 +18,12 @@ export default ({
     dataDetails,
     hiddenModify,
     hiddenDelete,
-    hiddenCreateDicom,
     onDelete,
     openLabelModal }) => {
 
     const [showMetadata, setShowMetadata] = useState(false);
     const [hiddenMetadata, setHiddenMetadata] = useState(true);
 
-    console.log(dataDetails)
     const setMetadata = () => {
         setShowMetadata(!showMetadata)
     }
@@ -96,7 +94,7 @@ export default ({
                     </Button>
                     {(["patients", "studies"].includes(level) ? <CreateDicom orthancID={orthancID} level={level} /> :
                         null)}
-                    <Modify hidden={hiddenModify} orthancID={orthancID} level={level} row={dataDetails} />
+                    <Modify hidden={hiddenModify} orthancID={orthancID} level={level} data={dataDetails} refresh={()=>{console.log('TODO REFRESH')}} />
                     <Button className='dropdown-item bg-red' hidden={hiddenDelete}
                         onClick={fdelete}>Delete
                     </Button>
