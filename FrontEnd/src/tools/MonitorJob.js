@@ -3,6 +3,10 @@ import apis from '../services/apis'
 
 export default class MonitorJob {
 
+    state = {
+        intervalID: null
+    }
+
     finishCallback = () => {}
     updateCallBack = () => {}
  
@@ -11,6 +15,7 @@ export default class MonitorJob {
         this.interval = interval
         this.continue = false
     }
+
 
     onFinish(callback) {
         this.finishCallback = callback
@@ -23,10 +28,15 @@ export default class MonitorJob {
     startMonitoringJob() {
         this.continue = true;
         this.jobMonitoring(this.jobID)
+
+        this.state.intervalID = setInterval(() => {
+            this.jobMonitoring(this.jobID)
+        }, this.interval)
     }
 
     stopMonitoringJob() {
         this.continue = false;
+        clearInterval(this.state.intervalID)
     }
 
     async cancelJob() {
