@@ -19,15 +19,17 @@ export default ({
     dataDetails,
     hiddenModify,
     hiddenDelete,
+    hiddenMetadata,
     onDelete,
     openLabelModal }) => {
 
     const [showMetadata, setShowMetadata] = useState(false);
-    const [hiddenMetadata, setHiddenMetadata] = useState(true);
 
     const setMetadata = () => {
         setShowMetadata(!showMetadata)
     }
+
+
 
     const fdelete = async () => {
         switch (level) {
