@@ -50,12 +50,19 @@ const seriesColumns = {
         id: 'Action',
         Header: 'Action',
         Cell: ({ row }) => {
-        return (<ActionBouton level={ConstantLevel.SERIES} orthancID={row.original.SeriesOrthancID}
-            parentID={row.original.StudyOrthancID} onDelete={onDelete}
-            dataDetails={row.original} refresh={refresh}
-            hiddenMetadata={false} hiddenCreateDicom={true}
-            hiddenModify={false} />)
-    }}),
+            return (
+                <ActionBouton
+                    level={ConstantLevel.SERIES}
+                    orthancID={row.original.SeriesOrthancID}
+                    parentID={row.original.StudyOrthancID}
+                    onDelete={onDelete}
+                    dataDetails={row.original}
+                    refresh={refresh}
+                    hiddenMetadata={false}
+                    hiddenCreateDicom={true}
+                    hiddenModify={false} />)
+        }
+    }),
     REMOVE: (onRemove) => ({
         id: 'Remove',
         Header: 'Remove',
@@ -163,17 +170,18 @@ const studyColumns = {
         id: 'Action',
         Header: 'Action',
         Cell: (({ row }) => {
-        return (
-        
-            <ActionBouton level={ConstantLevel.STUDIES}
-                orthancID={row.original.StudyOrthancID}
-                StudyInstanceUID={row.values.StudyInstanceUID}
-                onDelete={onDelete}
-                dataDetails={row.original}
-                refresh={refresh}
-                openLabelModal={openLabelModal}
-                hiddenModify={false} />
-        )
+            return (
+
+                <ActionBouton level={ConstantLevel.STUDIES}
+                    orthancID={row.original.StudyOrthancID}
+                    StudyInstanceUID={row.values.StudyInstanceUID}
+                    onDelete={onDelete}
+                    dataDetails={row.original}
+                    refresh={refresh}
+                    openLabelModal={openLabelModal}
+                    hiddenModify={false}
+                    hiddenMetadata={true} />
+            )
         }
 
         ),
@@ -245,8 +253,15 @@ const patientColumns = {
         id: 'Action',
         Header: 'Action',
         Cell: ({ row }) => {
-            return <ActionBouton level={ConstantLevel.PATIENTS} orthancID={row.original.PatientOrthancID} onDelete={onDelete}
-                onModify={onModify} dataDetails={row.original} refresh={refresh} hiddenModify={false} />
+            return <ActionBouton
+                level={ConstantLevel.PATIENTS}
+                orthancID={row.original.PatientOrthancID}
+                onDelete={onDelete}
+                onModify={onModify}
+                dataDetails={row.original}
+                refresh={refresh}
+                hiddenModify={false}
+                hiddenMetadata={true} />
         }
     }),
     REMOVE: (onRemovePatient) => ({

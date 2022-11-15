@@ -101,6 +101,7 @@ export default ({
                         onClick={fdelete}>Delete
                     </Button>
                     {(level === ConstantLevel.STUDIES && !!openLabelModal ?
+                    //TODO a réinstancier
                         <Button className='dropdown-item bg-blue' hidden={hiddenDelete}
                             onClick={() => {
                                 apis.content.getStudiesDetails(orthancID).then((study) => {
