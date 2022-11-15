@@ -79,7 +79,7 @@ export default ({
                     <Modal.Title>Metadata</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Metadata serieID={orthancID} />
+                    <Metadata seriesOrthancId={orthancID}/>
                 </Modal.Body>
             </Modal>
 

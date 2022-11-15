@@ -48,7 +48,6 @@ const orthancContent = {
     },
 
     getSeriesInstances(serieID) {
-
         return axios.get('/api/series/' + serieID + '/instances').then((response) => response.data
         ).catch((error) => {
             toast.error(error)

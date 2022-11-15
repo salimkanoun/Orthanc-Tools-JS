@@ -4,7 +4,7 @@ import { seriesColumns } from "./ColumnFactories";
 
 export default ({
     series,
-    onDelete  = (seriesOrthancID)=> {},
+    onDeleteSeries  = (seriesOrthancID)=> {},
     onRemove = (seriesOrthancID)=> {},
     actionButton = false,
     removeRow = false,
@@ -18,7 +18,7 @@ export default ({
         seriesColumns.MODALITY,
         seriesColumns.SERIES_NUMBER,
         //SK ACTION BUTTON A REVOIR
-        ...(actionButton ? [seriesColumns.ACTION(onDelete)] : []),
+        ...(actionButton ? [seriesColumns.ACTION(onDeleteSeries)] : []),
         ...(removeRow ? [seriesColumns.REMOVE(onRemove)] : [])
     ], []);
 

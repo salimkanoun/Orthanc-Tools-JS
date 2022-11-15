@@ -1,4 +1,4 @@
-import React, { createRef, Fragment, useState } from 'react'
+import React, { createRef, Fragment, useCallback, useMemo, useState } from 'react'
 import apis from '../../services/apis';
 import { toast } from 'react-toastify';
 
@@ -63,6 +63,7 @@ export default ({
     const [deletes, setDeletes] = useState([]); //[key]
     const [keepSource, setKeepSource] = useState(localStorage.getItem('keepSource') === 'true' ? true : false);
     const [removePrivateTags, setRemovePrivateTags] = useState(localStorage.getItem('removePrivateTags') === 'true' ? true : false);
+
     const [toasts, setToasts] = useState({});
 
     const [dataFilter, setDataFilter] = useState([])
@@ -72,17 +73,21 @@ export default ({
         setDataFilter(dataFilters);
     }
 
-    const updateToast = (id, progress) => {
+    const updateToast = useCallback((jobId, progress) => {
+        console.log(toasts)
         console.log(progress)
-        toast.update(toasts[id], {
+        toast.update(toasts[jobId], {
             type: toast.TYPE.INFO,
             autoClose: false,
             render: 'Modify progress : ' + Math.round(progress) + '%'
         })
-    }
+    }, [Math.random()])
 
-    const successToast = (id) => {
-        toast.update(toasts[id], {
+
+
+    const successToast = (jobId) => {
+        console.log(jobId, toasts)
+        toast.update(toasts[jobId], {
             type: toast.TYPE.INFO,
             autoClose: 5000,
             render: 'Modify Done',
@@ -90,8 +95,9 @@ export default ({
         })
     }
 
-    const failToast = (id) => {
-        toast.update(toasts[id], {
+    const failToast = (jobId) => {
+        console.log(jobId, toasts)
+        toast.update(toasts[jobId], {
             type: toast.TYPE.INFO,
             autoClose: 5000,
             render: 'Modify fail',
@@ -99,10 +105,12 @@ export default ({
         })
     }
 
-    const openToast = (id) => {
+    const createToast = (jobId) => {
+        const toastId = toast.info("Modify progress : 0%", { autoClose: false })
+        console.log(jobId, toastId)
         setToasts({
             ...toasts,
-            [id]: { current: toast("Notify progress : 0%", { autoClose: false, className: 'bg-info' }) }
+            [jobId]: toastId
         }
         )
     }
@@ -176,27 +184,23 @@ export default ({
                 toast.error("Wrong level")
         }
         if (jobAnswer !== '') {
-            let id = jobAnswer.ID
-            let jobMonitoring = new MonitorJob(id)
+            let jobId = jobAnswer.ID
+            let jobMonitoring = new MonitorJob(jobId)
 
-            jobMonitoring.onUpdate(function (progress) {
-                updateToast(id, progress)
+            jobMonitoring.onUpdate( (progress)=> {
+                console.log(toasts)
+                updateToast(jobId, progress)
             })
 
             jobMonitoring.onFinish(function (state) {
                 if (state === MonitorJob.Success) {
-                    successToast(id)
+                    successToast(jobId)
                     refresh()
                 } else if (state === MonitorJob.Failure) {
-                    failToast(id)
+                    failToast(jobId)
                 }
             })
-            setToasts(
-                {
-                    ...toasts,
-                    [id]: createRef()
-                })
-            openToast(id)
+            createToast(jobId)
             jobMonitoring.startMonitoringJob()
         }
     }

@@ -5,7 +5,7 @@ import apis from '../services/apis'
 import { CSSTransition } from "react-transition-group";
 
 import ReactTooltip from "react-tooltip";
-import HelpIcon from '@material-ui/icons/Info';
+import HelpIcon from '@mui/icons-material/Info';
 import { toast } from 'react-toastify'
 import { Button } from 'react-bootstrap';
 
