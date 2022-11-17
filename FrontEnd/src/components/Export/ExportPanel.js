@@ -75,7 +75,7 @@ export default ({}) => {
 
         } catch (error) {
             setAets([])
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }
@@ -117,7 +117,7 @@ export default ({}) => {
     const getCSV = () => {
 
         if (store.exportList.seriesArray.length === 0) {
-            toast.error('Empty List')
+            toast.error('Empty List', {data:{type:'notification'}})
             return
         }
 

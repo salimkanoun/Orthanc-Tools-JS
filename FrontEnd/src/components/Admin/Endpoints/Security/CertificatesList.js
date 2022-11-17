@@ -20,7 +20,7 @@ export default ({refreshCertificatesData, certificatesData}) => {
                                 await apis.certificates.deleteCertificate(row.id);
                                 refreshCertificatesData()
                             } catch (error) {
-                                toast.error(error.statusText)
+                                toast.error(error.statusText, {data:{type:'notification'}})
                             }
 
                         }} value="Remove"/>

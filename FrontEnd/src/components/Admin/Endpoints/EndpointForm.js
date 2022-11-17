@@ -41,7 +41,7 @@ export default ({onCreateEndpoint}) => {
                 sshKeys.push({value: key.id, label: key.label})
             })
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
         setKeys(sshKeys)

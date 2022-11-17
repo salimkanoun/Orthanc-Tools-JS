@@ -28,7 +28,7 @@ export default ({target, show, onHide}) =>{
             this.setAets(aets)
         } catch (error) {
             this.setAets([])
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }

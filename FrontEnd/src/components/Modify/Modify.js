@@ -54,7 +54,7 @@ export default ({
                     'SeriesNumber'
                 ]
             default:
-                toast.error("Wrong level")
+                toast.error("Wrong level", {data:{type:'notification'}})
         }
     }
 
@@ -79,7 +79,8 @@ export default ({
         toast.update(toasts[jobId], {
             type: toast.TYPE.INFO,
             autoClose: false,
-            render: 'Modify progress : ' + Math.round(progress) + '%'
+            render: 'Modify progress : ' + Math.round(progress) + '%',
+            data:{type:'jobs'}
         })
     }, [Math.random()])
 
@@ -91,7 +92,8 @@ export default ({
             type: toast.TYPE.INFO,
             autoClose: 5000,
             render: 'Modify Done',
-            className: 'bg-success'
+            className: 'bg-success',
+            data:{type:'jobs'}
         })
     }
 
@@ -101,12 +103,13 @@ export default ({
             type: toast.TYPE.INFO,
             autoClose: 5000,
             render: 'Modify fail',
-            className: 'bg-danger'
+            className: 'bg-danger',
+            data:{type:'jobs'}
         })
     }
 
     const createToast = (jobId) => {
-        const toastId = toast.info("Modify progress : 0%", { autoClose: false })
+        const toastId = toast.info("Modify progress : 0%", { autoClose: false }, {data:{type:'jobs'}})
         console.log(jobId, toastId)
         setToasts({
             ...toasts,
@@ -159,7 +162,7 @@ export default ({
         checkRemember()
         //If no change done, simply return
         if (Object.keys(modifications).length === 0 && deletes.length === 0) {
-            toast.error('No Modification set')
+            toast.error('No Modification set', {data:{type:'notification'}})
             return
         }
         let jobAnswer = ''
@@ -181,7 +184,7 @@ export default ({
                 setShow(false)
                 break
             default:
-                toast.error("Wrong level")
+                toast.error("Wrong level", {data:{type:'notification'}})
         }
         if (jobAnswer !== '') {
             let jobId = jobAnswer.ID

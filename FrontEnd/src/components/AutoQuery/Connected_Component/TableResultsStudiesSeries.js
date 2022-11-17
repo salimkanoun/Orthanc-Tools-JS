@@ -62,13 +62,13 @@ export default ({
             if (!availableStudyUID.includes(studyUID)) emptyResultArray.push(store.results[studyUID])
         })
         if (emptyResultArray.length > 0) {
-            const id = toast.info('Starting Series Fetching');
+            const id = toast.info('Starting Series Fetching', {data:{type:'jobs'}});
             emptyResultArray.reduce((prev, studyResults, i) => {
                 return prev.then(() => {
                     return getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET).then(() => {
                         toast.update(id, {
                             render: 'Queried series ' + (i + 1) + '/' + emptyResultArray.length
-                        });
+                        }, {data:{type:'notification'}});
                     })
                 })
             }, Promise.resolve()).catch(console.error);

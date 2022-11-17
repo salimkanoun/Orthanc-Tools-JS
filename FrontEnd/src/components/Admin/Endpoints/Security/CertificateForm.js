@@ -36,7 +36,7 @@ export default ({ refreshCertificatesData }) => {
             await apis.certificates.uploadCertificate(response, file)
             refreshCertificatesData()
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
 

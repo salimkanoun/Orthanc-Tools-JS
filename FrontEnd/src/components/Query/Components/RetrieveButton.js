@@ -76,7 +76,7 @@ export default ({ level, studyInstanceUID, queryAet, seriesInstanceUID }) => {
       }
 
     } catch (error) {
-      toast.error(error.statusText)
+      toast.error(error.statusText, {data:{type:'notification'}})
       return
     }
 
@@ -124,7 +124,7 @@ export default ({ level, studyInstanceUID, queryAet, seriesInstanceUID }) => {
       let searchContent = await apis.content.getOrthancFind(contentSearch)
       setResultAnswer(searchContent[0])
     } catch (error) {
-      toast.error(error.statusText)
+      toast.error(error.statusText, {data:{type:'notification'}})
     }
 
   }

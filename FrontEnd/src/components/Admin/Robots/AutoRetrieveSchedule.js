@@ -27,7 +27,7 @@ export default ({ }) => {
       await refreshServerTime()
 
     } catch (error) {
-      toast.error(error.statusText)
+      toast.error(error.statusText, {data:{type:'notification'}})
     }
 
   }
@@ -56,9 +56,9 @@ export default ({ }) => {
     apis.options.setRobotScheduleHour(hourStart, minStart, hourStop, minStop)
       .then(async () => {
         refreshServerTime()
-        toast.success('schedule updated')
+        toast.success('schedule updated', {data:{type:'notification'}})
       })
-      .catch(error => { toast.error(error.statusText) })
+      .catch(error => { toast.error(error.statusText, {data:{type:'notification'}}) })
 
   }
 

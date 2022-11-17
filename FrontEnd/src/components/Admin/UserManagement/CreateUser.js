@@ -48,14 +48,14 @@ export default ({ getUsers }) => {
         if (role === '' ||
             username === '' ||
             password === '') {
-            toast.error('Please fill all required input')
+            toast.error('Please fill all required input', {data:{type:'notification'}})
         } else {
 
             try {
                 await apis.User.createUser(username, firstname, lastname, password, email, role, superAdmin)
                 resetState()
             } catch (error) {
-                toast.error(error.statusText)
+                toast.error(error.statusText, {data:{type:'notification'}})
             }
 
         }

@@ -34,7 +34,7 @@ export default ({ refreshPeerData }) => {
             await apis.peers.updatePeer(name, ip, port, username, password)
             refreshPeerData()
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }

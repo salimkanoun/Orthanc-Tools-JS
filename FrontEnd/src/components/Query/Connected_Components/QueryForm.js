@@ -23,7 +23,7 @@ export default ({onQuery}) => {
       let aets = await apis.aets.getAets()
       dispatch.loadAvailableAETS(aets)
     } catch (error) {
-      toast.error(error.statusText)
+      toast.error(error.statusText, {data:{type:'notification'}})
     }
 
   }

@@ -56,7 +56,7 @@ export default ({ refreshAetData }) => {
 
             refreshAetData()
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }

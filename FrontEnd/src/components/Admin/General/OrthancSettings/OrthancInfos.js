@@ -18,7 +18,7 @@ export default ({ }) => {
             plugins = await apis.options.getPlugins()
         } catch (error) {
             console.log(error)
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
         generatePluginList(plugins)

@@ -54,7 +54,7 @@ function BurnerJobsTables({jobs}) {
                             try {
                                 await apis.cdBurner.cancelCdBurner(row.cdJobID)
                             } catch (error) {
-                                toast.error(error.statusText)
+                                toast.error(error.statusText, {data:{type:'notification'}})
                             }
 
                         }} value="Cancel" disabled={disable}/>
@@ -85,7 +85,7 @@ export default class CDBurner extends Component {
         try {
             cdBurnerData = await apis.cdBurner.getCdBuner()
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
             return
         }
 
@@ -150,7 +150,7 @@ export default class CDBurner extends Component {
 
         } catch (error) {
             let message = await error.json()
-            toast.error(message.errorMessage)
+            toast.error(message.errorMessage, {data:{type:'notification'}})
         }
 
 

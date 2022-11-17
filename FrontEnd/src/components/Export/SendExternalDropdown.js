@@ -68,7 +68,7 @@ export default class SendExternalDropdown extends Component {
         try {
             taskAnswer = await apis.exportDicom.exportStudiesToExternal(this.props.username, this.props.exportIds, endpointId)
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
         let jobMonitoring = new MonitorTask(taskAnswer)
@@ -77,14 +77,15 @@ export default class SendExternalDropdown extends Component {
             this.updateProgress(info)
             toast.update(this.toastRef.current, {
                 render: this._toastContent(info.details.result),
-                progress: ((info.progress.archiving || 0) + (info.progress.sending || 0)) / 200
+                progress: ((info.progress.archiving || 0) + (info.progress.sending || 0)) / 200,
+                data:{type:'jobs'}
             })
         })
 
         jobMonitoring.onFinish(async (info) => {
             this.resetProgress()
-            if (info.state === "failed") toast.error("Export to endpoint failed", EXPORT_FAILED_TOAST);
-            else toast.success(this._toastContent(info.details.result, true), EXPORT_SUCCESS_TOAST)
+            if (info.state === "failed") toast.error("Export to endpoint failed", EXPORT_FAILED_TOAST, {data:{type:'notification'}});
+            else toast.success(this._toastContent(info.details.result, true), EXPORT_SUCCESS_TOAST, {data:{type:'notification'}})
         })
 
         this.toastRef.current = toast(this._toastContent(''), EXPORT_PROGRESS_TOAST);

@@ -51,7 +51,7 @@ export default ({ }) => {
             let roles = await apis.role.getRoles()
             setRoles(roles)
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }
@@ -63,9 +63,9 @@ export default ({ }) => {
 
     const deletes = () => {
         apis.role.deleteRole(name).then(() => {
-            toast.success('Deleted')
+            toast.success('Deleted', {data:{type:'notification'}})
             onHide()
-        }).catch(error => toast.error(error.statusText))
+        }).catch(error => toast.error(error.statusText, {data:{type:'notification'}}))
     }
 
     const onHide = () => {

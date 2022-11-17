@@ -27,7 +27,7 @@ const AetRootPanel = () => {
             let aets = await apis.aets.getAetsExpand()
             setAets(aets)
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }

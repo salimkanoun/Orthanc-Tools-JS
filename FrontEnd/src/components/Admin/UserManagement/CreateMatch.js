@@ -51,7 +51,7 @@ export default ({ }) => {
             setOptionsGroupName(optionsGroupName)
             setAssociations(associations)
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }
@@ -76,7 +76,7 @@ export default ({ }) => {
                 roles.push({ value: role.name, label: role.name })
             })
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
         return roles
@@ -86,12 +86,12 @@ export default ({ }) => {
     const create = async () => {
         try {
             await apis.ldap.createMatch(groupName.value, associedRole.value)
-            toast.success('Association Created')
+            toast.success('Association Created', {data:{type:'notification'}})
             setAssociations(await getExistingAssociations())
             showModal(false)
 
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
     }
 
@@ -104,7 +104,7 @@ export default ({ }) => {
             })
             return options
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }
@@ -116,10 +116,10 @@ export default ({ }) => {
     const deletef = async (ldapGroup) => {
         try {
             await apis.ldap.deleteMatch(ldapGroup)
-            toast.success('Assocication deleted')
+            toast.success('Assocication deleted', {data:{type:'notification'}})
             setAssociations(await getExistingAssociations())
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
     }
 

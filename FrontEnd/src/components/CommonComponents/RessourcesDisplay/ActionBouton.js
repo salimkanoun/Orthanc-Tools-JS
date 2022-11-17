@@ -36,32 +36,32 @@ export default ({
             case ConstantLevel.PATIENTS:
                 try {
                     await apis.content.deletePatient(orthancID)
-                    toast.success("Patient " + orthancID + " have been deleted")
+                    toast.success("Patient " + orthancID + " have been deleted", {data:{type:'notification'}})
                     onDelete(orthancID)
                 } catch (error) {
-                    toast.error(error)
+                    toast.error(error, {data:{type:'notification'}})
                 }
                 break
             case ConstantLevel.STUDIES:
                 try {
                     await apis.content.deleteStudies(orthancID)
-                    toast.success("Studies " + orthancID + " have been deleted")
+                    toast.success("Studies " + orthancID + " have been deleted", {data:{type:'notification'}})
                     onDelete(orthancID)
                 } catch (error) {
-                    toast.error(error)
+                    toast.error(error, {data:{type:'notification'}})
                 }
                 break
             case ConstantLevel.SERIES:
                 try {
                     await apis.content.deleteSeries(orthancID)
-                    toast.success("Series " + orthancID + " have been deleted")
+                    toast.success("Series " + orthancID + " have been deleted", {data:{type:'notification'}})
                     onDelete(orthancID)
                 } catch (error) {
-                    toast.error(error)
+                    toast.error(error, {data:{type:'notification'}})
                 }
                 break
             default:
-                toast.error("Wrong level")
+                toast.error("Wrong level", {data:{type:'notification'}})
         }
 
     }

@@ -22,7 +22,7 @@ export default ({onChange}) => {
             setOptionRoles(options)
 
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }

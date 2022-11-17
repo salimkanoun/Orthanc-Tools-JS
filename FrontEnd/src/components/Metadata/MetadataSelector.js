@@ -1,5 +1,5 @@
 import React from "react"
-import { Col, Container, FormControl, Row, Table } from "react-bootstrap"
+import { Container, FormControl, Row, Table } from "react-bootstrap"
 import Toggle from 'react-toggle'
 
 export default ({ currentInstanceNumber, numberOfInstances, useSharedTags, onInstanceNumberChange, onSharedTagsChange }) => {

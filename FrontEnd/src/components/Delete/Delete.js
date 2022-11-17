@@ -30,11 +30,11 @@ export default ({}) => {
     }
 
     const openToast = () => {
-        toastInstance = toast.info("Delete progress : 0%", { autoClose: false })
+        toastInstance = toast.info("Delete progress : 0%", { autoClose: false }, {data:{type:'jobs'}})
     }
 
     const updateToast = (progress) => {
-        toast.update(toastInstance, { type: toast.TYPE.INFO, render: 'Delete progress : ' + Math.round(progress) + '%' })
+        toast.update(toastInstance, { type: toast.TYPE.INFO, render: 'Delete progress : ' + Math.round(progress) + '%' }, {data:{type:'jobs'}})
     }
 
     const successToast = () => {
@@ -42,7 +42,8 @@ export default ({}) => {
             type: toast.TYPE.INFO,
             render: 'Delete done',
             className: 'bg-success',
-            autoClose: 2000
+            autoClose: 2000,
+            data:{type:'jobs'}
         })
     }
 
@@ -60,7 +61,7 @@ export default ({}) => {
         try {
             answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, store.username)
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
             return
         }
 

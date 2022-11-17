@@ -36,7 +36,7 @@ export default ({ refreshSshKeysData }) => {
             await apis.sshKeys.uploadKey(response.id, file)
             refreshSshKeysData()
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }

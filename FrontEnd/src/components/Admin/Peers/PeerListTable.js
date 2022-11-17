@@ -25,8 +25,8 @@ export default ({ peersData, refreshPeerData }) => {
             return (<div className="text-center">
                 <input type="button" className='otjs-button otjs-button-blue' onClick={() => {
                     apis.peers.echoPeer(row.values.name).then((response) => {
-                        toast.success('Version ' + row.values.name + ' = ' + response.Version)
-                    }).catch((error) => toast.error(error.statusText))
+                        toast.success('Version ' + row.values.name + ' = ' + response.Version, {data:{type:'notification'}})
+                    }).catch((error) => toast.error(error.statusText, {data:{type:'notification'}}))
                 }
                 } value="Echo" />
             </div>)
@@ -42,7 +42,7 @@ export default ({ peersData, refreshPeerData }) => {
                             await apis.peers.deletePeer(row.values.name);
                             refreshPeerData()
                         } catch (error) {
-                            toast.error(error.statusText)
+                            toast.error(error.statusText, {data:{type:'notification'}})
                         }
                     }} value="Remove" />
                 </div>)

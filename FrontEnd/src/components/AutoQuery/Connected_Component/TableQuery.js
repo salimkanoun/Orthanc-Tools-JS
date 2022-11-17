@@ -144,7 +144,7 @@ export default ({ switchTab}) => {
             let aets = await apis.aets.getAets()
             dispatch.loadAvailableAETS(aets)
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
     }
 
@@ -177,20 +177,20 @@ export default ({ switchTab}) => {
 
     const query = async () => {
         const data = store.queries.filter(x => filtered.includes(x.key));
-        const toastId = toast.info('Starting Studies Queries', { autoClose: false });
+        const toastId = toast.info('Starting Studies Queries', { autoClose: false }, {data:{type:'jobs'}});
         let i = 0
 
         for (const query of data) {
             i++
             toast.update(toastId, {
                 render: 'Query study ' + i + '/' + data.length
-            });
+            }, {data:{type:'jobs'}});
             //For each line make dicom query and return results
             try {
                 let answeredResults = await makeDicomQuery({ ...query, ...overrides })
                 toast.update(toastId, {
                     render: 'Queried study ' + i + '/' + data.length
-                });
+                }, {data:{type:'jobs'}});
                 //For each results, fill the result table through Redux
                 answeredResults.forEach((answer) => {
                     dispatch.addStudyResult(answer)
@@ -202,7 +202,7 @@ export default ({ switchTab}) => {
         }
 
         toast.dismiss(toastId)
-        toast.success('Queries completed')
+        toast.success('Queries completed', {data:{type:'notification'}})
 
         switchTab('Result')
 

@@ -15,7 +15,7 @@ const orthancContent = {
 
         return axios.get('/api/patients/' + ID + '?expand').then((response) => response.data
         ).catch((error) => {
-            toast.error(error)
+            toast.error(error, {data:{type:'notification'}})
         })
     },
 
@@ -23,7 +23,7 @@ const orthancContent = {
 
         return axios.get('/api/studies/' + ID + '?expand').then((response) => response.data
         ).catch((error) => {
-            toast.error(error)
+            toast.error(error, {data:{type:'notification'}})
         })
     },
 
@@ -35,7 +35,7 @@ const orthancContent = {
 
         return axios.get('/api/studies/' + studyID + '/series?expand').then((response) => response.data
         ).catch((error) => {
-            toast.error(error)
+            toast.error(error, {data:{type:'notification'}})
         })
     },
 
@@ -43,14 +43,14 @@ const orthancContent = {
 
         return axios.get('/api/series/' + serieID + '?expand').then((response) => response.data
         ).catch((error) => {
-            toast.error(error)
+            toast.error(error, {data:{type:'notification'}})
         })
     },
 
     getSeriesInstances(serieID) {
         return axios.get('/api/series/' + serieID + '/instances').then((response) => response.data
         ).catch((error) => {
-            toast.error(error)
+            toast.error(error, {data:{type:'notification'}})
         })
     },
 
@@ -58,7 +58,7 @@ const orthancContent = {
 
         return axios.get('/api/instances/' + instanceID + '/tags').then((response) => response.data
         ).catch((error) => {
-            toast.error(error)
+            toast.error(error, {data:{type:'notification'}})
         })
     },
 
@@ -66,7 +66,7 @@ const orthancContent = {
 
         return axios.get('/api/series/' + serieID + '/shared-tags').then((response) => response.data
         ).catch((error) => {
-            toast.error(error)
+            toast.error(error, {data:{type:'notification'}})
         })
     },
 
@@ -74,7 +74,7 @@ const orthancContent = {
 
         return axios.get('/api/instances/' + serieID + '/header').then((response) => response.data
         ).catch((error) => {
-            toast.error(error)
+            toast.error(error, {data:{type:'notification'}})
         })
     },
 

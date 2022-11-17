@@ -27,7 +27,7 @@ export default ({}) => {
             const answer = await apis.sshKeys.getKeysExpend()
             setSshKeys(answer)
         }catch(error){
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
     }
 
@@ -36,7 +36,7 @@ export default ({}) => {
             const answer = await apis.certificates.getCertificatesExpend()
             setCertificates(answer)
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }

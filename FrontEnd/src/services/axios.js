@@ -17,7 +17,7 @@ axios.interceptors.response.use(
         const urlString = error?.response?.config?.url
         if (status === 401 && urlString && !urlString.startsWith('/api/authentication')) {
             // Singleton toast using fixed id to avoid multiple toast if multiple api call are 401
-            toast.error('Session expired. Please reauthenticate.')
+            toast.error('Session expired. Please reauthenticate.', {data:{type:'notification'}})
             store.dispatch(logout())
         }
         return Promise.reject(error)

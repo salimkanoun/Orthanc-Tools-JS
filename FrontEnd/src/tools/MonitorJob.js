@@ -35,9 +35,9 @@ export default class MonitorJob {
 
     cancelJob = async () => {
         await apis.jobs.cancelJob(this.jobID).catch(error => {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         })
-        toast.success('Job Cancelled')
+        toast.success('Job Cancelled', {data:{type:'notification'}})
         this.stopMonitoringJob()
     }
 
@@ -50,7 +50,7 @@ export default class MonitorJob {
         } catch (error) {
             console.error(error)
             this.stopMonitoringJob()
-            toast.error('Monitoring Failed')
+            toast.error('Monitoring Failed', {data:{type:'notification'}})
             return
         }
 

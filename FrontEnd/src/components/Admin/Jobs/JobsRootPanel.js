@@ -16,22 +16,22 @@ const dropDown = (id) => {
             <Dropdown.Menu>
 
                 <Dropdown.Item className='bg-green' onClick={async () => {
-                    await apis.jobs.resumbitJob(id).catch(error => toast.error(error.statusText));
+                    await apis.jobs.resumbitJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
                     this.getJobs()
                 }}>Resumbit</Dropdown.Item>
 
                 <Dropdown.Item className='bg-blue' onClick={async () => {
-                    await apis.jobs.resumeJob(id).catch(error => toast.error(error.statusText));
+                    await apis.jobs.resumeJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
                     this.getJobs()
                 }}>Resume</Dropdown.Item>
 
                 <Dropdown.Item className='bg-orange' onClick={async () => {
-                    await apis.jobs.pauseJob(id).catch(error => toast.error(error.statusText));
+                    await apis.jobs.pauseJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
                     this.getJobs()
                 }}>Pause</Dropdown.Item>
 
                 <Dropdown.Item className='bg-red' onClick={async () => {
-                    await apis.jobs.cancelJob(id).catch(error => toast.error(error.statusText));
+                    await apis.jobs.cancelJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
                     this.getJobs()
                 }}>Cancel</Dropdown.Item>
             </Dropdown.Menu>

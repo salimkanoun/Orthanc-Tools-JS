@@ -29,7 +29,7 @@ export default ({}) => {
         apis.retrieveRobot.validateRobot(id).then(() => {
             refreshHandler()
         }).catch(error => {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         })
     }
 
@@ -38,7 +38,7 @@ export default ({}) => {
             await apis.retrieveRobot.deleteRobot(id)
             refreshHandler()
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
     }
 
@@ -56,7 +56,7 @@ export default ({}) => {
                 approved: robotJob.details.approved
             })))
         }).catch(error => {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         })
     }
 

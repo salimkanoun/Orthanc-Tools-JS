@@ -25,7 +25,7 @@ export default ({refreshSshKeysData, sshKeysData}) => {
                                 await apis.sshKeys.deleteKey(row.values.id);
                                 refreshSshKeysData()
                             } catch (error) {
-                                toast.error(error.statusText)
+                                toast.error(error.statusText, {data:{type:'notification'}})
                             }
 
                         }} value="Remove"/>

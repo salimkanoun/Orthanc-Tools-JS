@@ -40,7 +40,7 @@ export default class Users extends Component {
                 })
             })
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
         this.setState({
@@ -68,19 +68,19 @@ export default class Users extends Component {
             password,
             row.superAdmin
         ).then(() => {
-            toast.success('User modified')
+            toast.success('User modified', {data:{type:'notification'}})
             this.resetState()
-        }).catch((error) => toast.error(error.statusText))
+        }).catch((error) => toast.error(error.statusText, {data:{type:'notification'}}))
     }
 
     delete = () => {
         if (this.state.userId !== '') {
 
             apis.User.deleteUser(this.state.username).then(() => {
-                toast.success('Deleted User')
+                toast.success('Deleted User', {data:{type:'notification'}})
                 this.resetState()
             }).catch((error) => {
-                toast.error(error.statusText)
+                toast.error(error.statusText, {data:{type:'notification'}})
             })
         }
     }

@@ -31,7 +31,7 @@ export default ({ username }) => {
             await apis.retrieveRobot.deleteRobot(id)
             refreshHandler()
         } catch (error) {
-            toast.error(error.statusText + ':' + error.message)
+            toast.error(error.statusText + ':' + error.message, {data:{type:'notification'}})
         }
     }
 
@@ -56,7 +56,7 @@ export default ({ username }) => {
 
             }).catch(error => {
                 console.log(error)
-                if (error.status !== 404) toast.error(error.statusText + ' ' + error.message)
+                if (error.status !== 404) toast.error(error.statusText + ' ' + error.message, {data:{type:'notification'}})
             }).finally(() => {
                 setRows(rows)
             })

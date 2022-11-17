@@ -71,7 +71,7 @@ const seriesColumns = {
                 try {
                     onRemove(row.values.SeriesOrthancID);
                 } catch (e) {
-                    toast.error("Remove error");
+                    toast.error("Remove error", {data:{type:'notification'}});
                 }
                 e.stopPropagation();
             }}>Remove</Button>

@@ -38,7 +38,7 @@ export default ({exportIds, TS}) => {
                 apis.exportDicom.downloadZipSync(exportIds, TS, true)
             }
         } catch (error){
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
     }
 

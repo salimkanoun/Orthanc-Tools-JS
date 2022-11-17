@@ -318,7 +318,7 @@ class RobotView extends Component {
                 apis.task.getTask(this.state.id).then(this.refreshHandler)
             }
         } catch (error) {
-            toast.error(error)
+            toast.error(error, {data:{type:'notification'}})
         }
     }
 
@@ -328,7 +328,7 @@ class RobotView extends Component {
             await apis.retrieveRobot.retryRobotItem(this.props.id, row.id)
             this.startProgressMonitoring();
         } catch (error) {
-            toast.error(error)
+            toast.error(error, {data:{type:'notification'}})
         }
     }
 

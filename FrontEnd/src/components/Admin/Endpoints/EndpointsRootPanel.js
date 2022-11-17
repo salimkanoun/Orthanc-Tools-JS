@@ -59,7 +59,7 @@ export default ({}) => {
         try {
             answer = await apis.endpoints.getEndpoints()
         } catch (error){
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
             return
         }
 
@@ -96,7 +96,7 @@ export default ({}) => {
             await apis.endpoints.deleteEndpoints(id)
             await refreshEndpoints()
         } catch(error){
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
         
     }
@@ -107,9 +107,9 @@ export default ({}) => {
             await apis.endpoints.createEndpoint(postData)
             await refreshEndpoints()
             switchTab('endpoints')
-            toast.success('Endpoint Created')
+            toast.success('Endpoint Created', {data:{type:'notification'}})
         } catch(error){
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
        

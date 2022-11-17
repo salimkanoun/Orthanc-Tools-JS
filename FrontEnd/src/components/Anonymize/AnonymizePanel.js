@@ -85,10 +85,10 @@ export default (setTask) => {
                 let answer = await apis.anon.createAnonRobot(listToAnonymize, store.username) //wait for the robot's answer to know what do to next
                 setTask(answer)
             } catch (error) {
-                toast.error(error.statusText)
+                toast.error(error.statusText, {data:{type:'notification'}})
             }
 
-        } else toast.error('Fill all patient ID')
+        } else toast.error('Fill all patient ID', {data:{type:'notification'}})
     }
 
     const onRemovePatient = (PatientOrthancID) => {

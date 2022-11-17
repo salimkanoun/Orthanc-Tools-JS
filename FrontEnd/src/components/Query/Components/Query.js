@@ -62,7 +62,7 @@ export default () => {
       setStudies(answers)
 
     } catch (error) {
-      toast.error('Dicom Failure')
+      toast.error('Dicom Failure', {data:{type:'notification'}})
     }
 
   }

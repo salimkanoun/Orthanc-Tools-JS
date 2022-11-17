@@ -21,7 +21,7 @@ export default class SendPeerDropdown extends Component {
         try{
             jobAnswer = await apis.peers.storePeer(destinationPeer, this.props.exportIds)
         }catch(error){
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
             return
         }
 
@@ -35,11 +35,11 @@ export default class SendPeerDropdown extends Component {
         jobMonitoring.onFinish(async function (state) {
             if (state === MonitorJob.Success) {
                 self.resetProgress()
-                toast.success('Peer Trasnfer Success')
+                toast.success('Peer Trasnfer Success', {data:{type:'notification'}})
 
             } else if (state === MonitorJob.Failure) {
                 self.resetProgress()
-                toast.error('Peer Transfer Error')
+                toast.error('Peer Transfer Error', {data:{type:'notification'}})
 
             }
         })

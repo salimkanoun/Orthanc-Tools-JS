@@ -99,11 +99,11 @@ class DicomRouterModal extends Component {
    */
   handleSave= async () => {
     if(this.state.name==="" || this.state.rules.length===0 || this.state.destination.length===0 || this.state.condition===""){
-      toast.error('Arguments missing to create a router')
+      toast.error('Arguments missing to create a router', {data:{type:'notification'}})
     }else if(this.state.rules.length!==this.state.ruleList.length){
-      toast.error('Invalid rule, arguments missing')
+      toast.error('Invalid rule, arguments missing', {data:{type:'notification'}})
     }else if(this.state.message){
-      toast.error("Rule conflict!")
+      toast.error("Rule conflict!", {data:{type:'notification'}})
     }
     else{
       if(this.state.id){

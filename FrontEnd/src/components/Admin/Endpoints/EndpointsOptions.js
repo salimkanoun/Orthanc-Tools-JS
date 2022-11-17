@@ -49,9 +49,9 @@ export default class EndpointsOptions extends Component{
         try {
             await apis.options.setExportOptions(this.state.export_transcoding)
             await this.refreshData()
-            toast.success('Export Settings updated')
+            toast.success('Export Settings updated', {data:{type:'notification'}})
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }
@@ -63,7 +63,7 @@ export default class EndpointsOptions extends Component{
                 ...options
             })
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
 

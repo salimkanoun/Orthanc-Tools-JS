@@ -21,7 +21,7 @@ export default class RedisSettings extends Component {
                 ...answer
             })
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
     }
 

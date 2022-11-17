@@ -17,9 +17,9 @@ export default ({ propsName }) => {
             name: propsName
         }
         apis.role.modifyRole(permission).then(() => {
-            toast.success('Modified')
+            toast.success('Modified', {data:{type:'notification'}})
             setShow(false)
-        }).catch(error => toast.error(error.statusText))
+        }).catch(error => toast.error(error.statusText, {data:{type:'notification'}}))
     }
 
     const handleClick = () => {
@@ -28,7 +28,7 @@ export default ({ propsName }) => {
             setData({ ...permission })
             setShow(true)
 
-        }).catch(error => toast.error(error.statusText))
+        }).catch(error => toast.error(error.statusText, {data:{type:'notification'}}))
     }
 
     return (

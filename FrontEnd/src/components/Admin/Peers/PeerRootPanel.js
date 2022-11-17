@@ -28,7 +28,7 @@ export default ({}) => {
       const peersAnswer = await apis.peers.getPeersExpand()
       setPeers(peersAnswer)
     } catch (error){
-      toast.error(error.statusText)
+      toast.error(error.statusText, {data:{type:'notification'}})
     }
 
   }

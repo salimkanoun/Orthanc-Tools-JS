@@ -32,7 +32,7 @@ export default class Authentication extends Component {
       token= await apis.authentication.logIn(this.state.username, this.state.password)
       var decoded = jwt_decode(token);
     } catch (error) {
-      toast.error(error)
+      toast.error(error, {data:{type:'notification'}})
     }
 
     if (token?.errorMessage != null) {

@@ -71,7 +71,7 @@ export default ({username}) => {
             await apis.retrieveRobot.deleteRobot(id)
             await refreshHandler()
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
     }
 
@@ -89,7 +89,7 @@ export default ({username}) => {
             }).catch(error => {
             console.log(error)
             if (error.status === 404) {
-                toast.error(error.statusMessage);
+                toast.error(error.statusMessage, {data:{type:'notification'}});
             }
         })
     }

@@ -14,7 +14,7 @@ export default ({ onSubmitRole }) => {
 
     const create = async (formState) => {
         if (name === '') {
-            toast.error('Role name can\'t be empty')
+            toast.error('Role name can\'t be empty', {data:{type:'notification'}})
         } else {
             let permission = { ...formState, name: name }
             apis.role.createRole(permission).then(() => {
@@ -22,7 +22,7 @@ export default ({ onSubmitRole }) => {
                 setName('')
                 toast.success('Crated Role')
                 onSubmitRole()
-            }).catch(error => toast.error(error.statusText))
+            }).catch(error => toast.error(error.statusText, {data:{type:'notification'}}))
         }
     }
 

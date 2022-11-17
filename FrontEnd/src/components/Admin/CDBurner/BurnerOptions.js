@@ -90,7 +90,7 @@ export default class BurnerOptions extends Component {
                 ...options
             })
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
 
@@ -120,9 +120,9 @@ export default class BurnerOptions extends Component {
                 this.state.burner_delete_study_after_sent,
                 this.state.burner_transfer_syntax)
             await this.refreshData()
-            toast.success('Burner Settings updated')
+            toast.success('Burner Settings updated', {data:{type:'notification'}})
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
     }

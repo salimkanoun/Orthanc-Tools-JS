@@ -18,7 +18,7 @@ export default () => {
             setPatients(rows)
         } catch (error) {
             console.error(error)
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
     }
 

@@ -45,7 +45,7 @@ export default class CreateDicom extends Component {
         this.state.tags.forEach((tag) => {
             if (REQUIRED_TAGS.includes(tag.TagName) && (!tag.Value || tag.Value.length < 1)) {
                 ok = false;
-                toast.error(tag.TagName + ' should be filled');
+                toast.error(tag.TagName + ' should be filled', {data:{type:'notification'}});
             }
         })
         return ok;
@@ -56,7 +56,7 @@ export default class CreateDicom extends Component {
             return;
         }
         if (this.state.files.length < 1) {
-            toast.error('No files selected');
+            toast.error('No files selected', {data:{type:'notification'}});
             return;
         }
         const images = await this._getUniformImages();
@@ -70,12 +70,12 @@ export default class CreateDicom extends Component {
             this.setState({
                 uploadState: 'Uploaded'
             });
-            toast.success(`Dicoms successfully created (Series : ${response.ParentSeries})`);
+            toast.success(`Dicoms successfully created (Series : ${response.ParentSeries})`, {data:{type:'notification'}});
         } catch (error) {
             this.setState({
                 uploadState: 'Failed To Upload'
             });
-            toast.error('Dicoms creation failed');
+            toast.error('Dicoms creation failed', {data:{type:'notification'}});
             console.log(error);
         }
     }

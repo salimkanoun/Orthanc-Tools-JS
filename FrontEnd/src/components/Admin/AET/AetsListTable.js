@@ -31,9 +31,9 @@ export default ({aetsData, refreshAetData}) => {
                 <input type="button" className='otjs-button otjs-button-blue' onClick={async () => {
                     try {
                         await apis.aets.echoAet(row.values.name)
-                        toast.success(row.values.name + ' Success')
+                        toast.success(row.values.name + ' Success', {data:{type:'notification'}})
                     } catch (error) {
-                        toast.error(row.values.name + ' Echo Failure')
+                        toast.error(row.values.name + ' Echo Failure', {data:{type:'notification'}})
                     }
 
                 }} value="Echo"/>
@@ -50,7 +50,7 @@ export default ({aetsData, refreshAetData}) => {
                             await apis.aets.deleteAet(row.values.name);
                             refreshAetData()
                         } catch (error) {
-                            toast.error(error.statusText)
+                            toast.error(error.statusText, {data:{type:'notification'}})
                         }
                     }} value="Remove"/>
                 </div>)

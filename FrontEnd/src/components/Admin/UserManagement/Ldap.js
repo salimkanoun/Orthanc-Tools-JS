@@ -38,20 +38,20 @@ export default ({ }) => {
             base,
             group,
             user)
-            .then(() => { toast.success('LDAP Settings updated') })
-            .catch((error) => { toast.error(error.statusText) })
+            .then(() => { toast.success('LDAP Settings updated', {data:{type:'notification'}}) })
+            .catch((error) => { toast.error(error.statusText, {data:{type:'notification'}}) })
     }
 
     const testLdapSettings = () => {
 
         apis.ldap.testLdapSettings().then(answer => {
             if (answer) {
-                toast.success('Connexion established')
+                toast.success('Connexion established', {data:{type:'notification'}})
             } else {
-                toast.error('connexion failed')
+                toast.error('connexion failed', {data:{type:'notification'}})
             }
         }).catch((error) => {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         })
     }
 
@@ -64,7 +64,7 @@ export default ({ }) => {
             //Ldap
             options = await apis.ldap.getLdapSettings()
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
             return
         }
 
@@ -95,7 +95,7 @@ export default ({ }) => {
             await apis.options.changeMode(!activated)
             setActivated(!activated)
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
     }
 

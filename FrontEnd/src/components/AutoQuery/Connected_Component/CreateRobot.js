@@ -29,10 +29,10 @@ export default ({ getResultArray, setTaskId, switchTab }) => {
             let id = await apis.retrieveRobot.createRobot(store.username, projectName, getResultArray())
             setTaskId(id);
             switchTab('MyRobot')
-            toast.success('sent to robot')
+            toast.success('sent to robot', {data:{type:'notification'}})
         } catch (error) {
             console.log(error)
-            toast.error(error.statusText + ':' + error.errorMessage)
+            toast.error(error.statusText + ':' + error.errorMessage, {data:{type:'notification'}})
         }
 
     }

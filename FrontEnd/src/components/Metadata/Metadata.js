@@ -88,7 +88,6 @@ export default ({seriesOrthancId}) => {
             <Row>
                 <MetadataTable tags={data} />
             </Row>
-
         </Container>
     );
 

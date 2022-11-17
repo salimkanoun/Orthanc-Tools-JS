@@ -38,7 +38,7 @@ export default class OrthancSettings extends Component {
                 ...answer
             })
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
         try {
@@ -49,7 +49,7 @@ export default class OrthancSettings extends Component {
             })
 
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
 
 
@@ -76,8 +76,8 @@ export default class OrthancSettings extends Component {
     submitOrthancSettings = async () => {
         apis.options.setOrthancServer(this.state.orthancAddress, this.state.orthancPort,
             this.state.orthancUsername, this.state.orthancPassword)
-            .then(() => { toast.warning('Updated, modify your environnement settings for the next start') })
-            .catch((error) => { toast.error(error.statusText) })
+            .then(() => { toast.warning('Updated, modify your environnement settings for the next start', {data:{type:'notification'}}) })
+            .catch((error) => { toast.error(error.statusText, {data:{type:'notification'}}) })
     }
 
     /**
@@ -85,31 +85,31 @@ export default class OrthancSettings extends Component {
      */
     testConnexion = () => {
         apis.options.getOrthancSystem().then((answer) => {
-            toast.success('Orthanc Version: ' + answer.Version)
-        }).catch(error => { toast.error(error.statusText) })
+            toast.success('Orthanc Version: ' + answer.Version, {data:{type:'notification'}})
+        }).catch(error => { toast.error(error.statusText, {data:{type:'notification'}}) })
     }
 
     reset = () => {
         apis.options.resetOrthanc()
-            .then(() => { toast.success('Restart Done') ; this.setState({ showRestart: false }) })
-            .catch(error => { toast.error(error.statusText) })
+            .then(() => { toast.success('Restart Done', {data:{type:'notification'}}) ; this.setState({ showRestart: false }) })
+            .catch(error => { toast.error(error.statusText, {data:{type:'notification'}}) })
             
     }
 
     shutdown = () => {
         apis.options.shutdownOrthanc()
-            .then(() => { toast.success('Orthanc Stopped') ; this.setState({ showShutdown: false })})
+            .then(() => { toast.success('Orthanc Stopped', {data:{type:'notification'}}) ; this.setState({ showShutdown: false })})
             .catch((error) => {
-                toast.error(error.statusText)
+                toast.error(error.statusText, {data:{type:'notification'}})
             })
     }
 
     changeListener = (event) => {
         apis.options.setVerbosity(event.value).then(() => {
-            toast.success('Verbosity Updated')
+            toast.success('Verbosity Updated', {data:{type:'notification'}})
             this.setState({ verbositySelected: event })
         }).catch((error) => {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         })
 
     }
