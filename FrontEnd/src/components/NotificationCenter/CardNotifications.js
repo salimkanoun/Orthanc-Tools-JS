@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Alert, Button, Card } from "react-bootstrap";
 
-export default ({notifications}) => {
+export default ({notifications, clear}) => {
 
     return (
         <Fragment >
@@ -29,9 +29,10 @@ export default ({notifications}) => {
                     
                 </Card.Body>
 
-                <Button variant="primary" onClick={()=>{}}>
+                <Button variant="primary" onClick={clear}>
                     Clear All
                 </Button>
+                
             </Card>
         </Fragment>
     )

@@ -109,7 +109,7 @@ export default ({
     }
 
     const createToast = (jobId) => {
-        const toastId = toast.info("Modify progress : 0%", { autoClose: false }, {data:{type:'jobs'}})
+        const toastId = toast.info("Modify progress : 0%", { autoClose: false, data:{type:'jobs' }})
         console.log(jobId, toastId)
         setToasts({
             ...toasts,

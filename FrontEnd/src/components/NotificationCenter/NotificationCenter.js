@@ -145,7 +145,7 @@ export default () => {
             >
                 
                     <div >
-                        <NotificationContent notifications={notifications}/>
+                        <NotificationContent notifications={notifications} />
                     </div>
                 
 

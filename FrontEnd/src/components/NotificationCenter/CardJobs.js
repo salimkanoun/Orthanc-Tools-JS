@@ -1,18 +1,35 @@
 import React, { Fragment } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Alert, Button, Card } from "react-bootstrap";
 
-export default ({jobs}) => {
+export default ({jobs, clear}) => {
 
     return (
         <Fragment >
             <Card>
                 <Card.Title>Jobs</Card.Title>
                 <Card.Body>
-                    Notification 1 <br />
-                    Notification 2 <br />
+                    {
+                    (!jobs.length) && (
+                        <h4>
+                            Your queue is empty! you are all set{" "}
+                            <span role="img" aria-label="dunno what to put">
+                                🎉
+                            </span>
+                        </h4>
+                    )}
+                    {jobs.map((job) => {
+                        return (
+                            <Alert
+                                severity={(job.type) || "info"}
+                            >
+                                {job.content}
+                            </Alert>
+                        )
+                    })}
+                    
                 </Card.Body>
 
-                <Button variant="primary" onClick={()=>{}}>
+                <Button variant="primary" onClick={clear}>
                     Clear All
                 </Button>
             </Card>
