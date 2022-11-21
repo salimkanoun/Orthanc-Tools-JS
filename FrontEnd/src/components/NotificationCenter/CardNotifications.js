@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import { Alert, Button, Card } from "react-bootstrap";
 
 export default ({notifications, clear}) => {
+    console.log(notifications)
 
     return (
         <Fragment >
@@ -20,7 +21,7 @@ export default ({notifications, clear}) => {
                     {notifications.map((notification) => {
                         return (
                             <Alert
-                                severity={(notification.type) || "info"}
+                                variant={(notification.type) || "info"}
                             >
                                 {notification.content}
                             </Alert>

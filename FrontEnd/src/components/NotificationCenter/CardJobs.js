@@ -20,7 +20,7 @@ export default ({jobs, clear}) => {
                     {jobs.map((job) => {
                         return (
                             <Alert
-                                severity={(job.type) || "info"}
+                                variant={(job.type) || "info"}
                             >
                                 {job.content}
                             </Alert>
