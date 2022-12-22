@@ -66,7 +66,7 @@ const autorouting = {
     }
 
     return axios.put('/api/autorouting/'+id, autorouter).then((answer) => true
-    ) .catch(error => {
+    ).catch(error => {
         throw error
     })
   },

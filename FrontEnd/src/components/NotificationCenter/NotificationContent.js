@@ -3,7 +3,7 @@ import { Card } from "react-bootstrap"
 import CardJobs from "./CardJobs"
 import CardNotifications from "./CardNotifications"
 
-export default ({notifications}) => {
+export default ({ notifications, remove }) => {
 
     const [notificationsArray, setNotificationsArray] = useState([])
     const [jobsArray, setJobsArray] = useState([])
@@ -11,12 +11,12 @@ export default ({notifications}) => {
     //TODO faire la mise à jour des jobs
     useEffect(() => {
         let notificationsCards = notifications.map((notification) => {
-            if(notification.data.type == 'notification'){
+            if (notification.data.type == 'notification') {
                 return notification;
             }
         }).filter(notUndefined => notUndefined !== undefined);
         let jobsCards = notifications.map((notification) => {
-            if(notification.data.type == 'jobs'){
+            if (notification.data.type == 'jobs') {
                 return notification;
             }
         }).filter(notUndefined => notUndefined !== undefined);
@@ -24,21 +24,31 @@ export default ({notifications}) => {
         setJobsArray(jobsCards)
     }, [notifications])
 
-    {console.log("props notification content", notifications)}
+    { console.log("props notification content", notifications) }
 
+
+    // TODO with remove 
     const clearNotifications = () => {
-        setNotificationsArray([])
+        notifications.map(notification => {
+            if (notification.data.type == 'notification') {
+                remove(notification.id)
+            }
+        })
     }
 
     const clearJobs = () => {
-        setJobsArray([])
+        notifications.map(notification => {
+            if (notification.data.type == 'jobs') {
+                remove(notification.id)
+            }
+        })
     }
 
     return (
         <Fragment >
             <Card >
                 <Card.Header>Notification Center</Card.Header>
-                <CardJobs jobs={jobsArray} clear={clearJobs}/>
+                <CardJobs jobs={jobsArray} clear={clearJobs} />
                 <CardNotifications notifications={notificationsArray} clear={clearNotifications} />
             </Card>
         </Fragment>

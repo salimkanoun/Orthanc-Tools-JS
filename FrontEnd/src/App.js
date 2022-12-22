@@ -23,7 +23,6 @@ class App extends Component {
 
     login = (token, backendData) => {
         this.props.login(token, backendData)
-        toast.success('welcome', {data:{type:'notification'}})
     }
 
     logout = async () => {

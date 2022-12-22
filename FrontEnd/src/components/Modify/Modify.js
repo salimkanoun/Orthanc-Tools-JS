@@ -74,8 +74,6 @@ export default ({
     }
 
     const updateToast = useCallback((jobId, progress) => {
-        console.log(toasts)
-        console.log(progress)
         toast.update(toasts[jobId], {
             type: toast.TYPE.INFO,
             autoClose: false,
@@ -87,7 +85,6 @@ export default ({
 
 
     const successToast = (jobId) => {
-        console.log(jobId, toasts)
         toast.update(toasts[jobId], {
             type: toast.TYPE.INFO,
             autoClose: 5000,
@@ -98,7 +95,6 @@ export default ({
     }
 
     const failToast = (jobId) => {
-        console.log(jobId, toasts)
         toast.update(toasts[jobId], {
             type: toast.TYPE.INFO,
             autoClose: 5000,
@@ -110,7 +106,6 @@ export default ({
 
     const createToast = (jobId) => {
         const toastId = toast.info("Modify progress : 0%", { autoClose: false, data:{type:'jobs' }})
-        console.log(jobId, toastId)
         setToasts({
             ...toasts,
             [jobId]: toastId
@@ -191,7 +186,6 @@ export default ({
             let jobMonitoring = new MonitorJob(jobId)
 
             jobMonitoring.onUpdate( (progress)=> {
-                console.log(toasts)
                 updateToast(jobId, progress)
             })
 
