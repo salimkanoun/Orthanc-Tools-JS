@@ -38,7 +38,7 @@
     "express-async-errors": "^3.1.1",
     "got": "^11.8.2",
     "http-errors": "~1.8.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "jszip": "^3.6.0",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
