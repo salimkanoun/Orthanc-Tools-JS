@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Alert, Button, Card } from "react-bootstrap";
 
-export default ({ jobs, remove }) => {
+export default ({ jobs, clear, remove }) => {
 
     return (
         <Fragment >
@@ -23,7 +23,6 @@ export default ({ jobs, remove }) => {
                                 variant={(job.type) || "info"}
                             >
                                 {job.content}
-
                                 <Button onClick={() => remove(job.id)}>remove</Button>
 
                             </Alert>
@@ -32,7 +31,7 @@ export default ({ jobs, remove }) => {
 
                 </Card.Body>
 
-                <Button variant="primary" onClick={remove}>
+                <Button variant="primary" onClick={clear}>
                     Clear All
                 </Button>
             </Card>

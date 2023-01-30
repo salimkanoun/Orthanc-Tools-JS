@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Alert, Button, Card } from "react-bootstrap";
 
-export default ({ notifications, remove }) => {
+export default ({ notifications, clear, remove }) => {
 
     //TODO remove individuel ne fonctionne pas pour le moment 
     return (
@@ -22,16 +22,16 @@ export default ({ notifications, remove }) => {
                         return (
                             <Alert
                                 variant={(notification.type) || "info"}
-                                action = {<Button onClick={() => remove(notification.id)}>remove</Button>}
                             >
                                 {notification.content}
+                                <Button onClick={() => remove(notification.id)}>remove</Button>
                             </Alert>   
                         )
                     })}
 
                 </Card.Body>
 
-                <Button variant="primary" onClick={remove}>
+                <Button variant="primary" onClick={clear}>
                     Clear All
                 </Button>
 

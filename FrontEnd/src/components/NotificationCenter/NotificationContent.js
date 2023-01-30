@@ -27,7 +27,6 @@ export default ({ notifications, remove }) => {
     { console.log("props notification content", notifications) }
 
 
-    // TODO with remove 
     const clearNotifications = () => {
         notifications.map(notification => {
             if (notification.data.type == 'notification') {
@@ -48,8 +47,8 @@ export default ({ notifications, remove }) => {
         <Fragment >
             <Card >
                 <Card.Header>Notification Center</Card.Header>
-                <CardJobs jobs={jobsArray} clear={clearJobs} />
-                <CardNotifications notifications={notificationsArray} clear={clearNotifications} />
+                <CardJobs jobs={jobsArray} clear={clearJobs} remove={remove}/>
+                <CardNotifications notifications={notificationsArray} clear={clearNotifications} remove={remove}/>
             </Card>
         </Fragment>
     )
