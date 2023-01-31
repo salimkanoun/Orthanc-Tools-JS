@@ -1,101 +1,36 @@
-import React, { Fragment, useMemo, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { toast } from "react-toastify";
-
 import apis from "../../../services/apis";
 import ModalDetails from './ModalDetails'
-import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
-import { Button } from "react-bootstrap";
+import JobsTableV8 from "./JobsTableV8";
 
-const dropDown = (id) => {
-    return (
-        <Dropdown className="text-center">
-            <Dropdown.Toggle variant="button-dropdown-blue" id="dropdown-basic" className="button-dropdown button-dropdown-green">
-                Actions
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-
-                <Dropdown.Item className='bg-green' onClick={async () => {
-                    await apis.jobs.resumbitJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
-                    this.getJobs()
-                }}>Resumbit</Dropdown.Item>
-
-                <Dropdown.Item className='bg-blue' onClick={async () => {
-                    await apis.jobs.resumeJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
-                    this.getJobs()
-                }}>Resume</Dropdown.Item>
-
-                <Dropdown.Item className='bg-orange' onClick={async () => {
-                    await apis.jobs.pauseJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
-                    this.getJobs()
-                }}>Pause</Dropdown.Item>
-
-                <Dropdown.Item className='bg-red' onClick={async () => {
-                    await apis.jobs.cancelJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
-                    this.getJobs()
-                }}>Cancel</Dropdown.Item>
-            </Dropdown.Menu>
-        </Dropdown>
-    )
-}
-
-function JobsTable({ handleDetails, rows }) {
-    const columns = useMemo(() => [
-        {
-            accessor: 'ID',
-            Header: 'ID',
-            sort: true
-        }, {
-            accessor: 'Progress',
-            Header: 'Progress',
-            sort: true
-        }, {
-            accessor: 'State',
-            Header: 'State',
-            sort: true
-        }, {
-            accessor: 'Details',
-            Header: 'Details',
-            Cell: (({ row }) => {
-                return (<div className="text-center"><Button className='otjs-button otjs-button-blue'
-                    onClick={() => handleDetails(row.index)}>Details</Button></div>)
-            })
-        }, {
-            accessor: 'Actions',
-            Header: 'Actions',
-            Cell: (({ row }) => {
-                return dropDown(row.values.ID)
-            })
-        }
-    ], [handleDetails]);
-    const data = useMemo(() => rows, [rows]);
-    return <CommonTable data={data} columns={columns} />
-
-}
 
 export default ({ }) => {
 
+    const [intervalChecker, setIntervalChecker] = useState(null)
     const [rows, setRows] = useState([])
     const [showDetail, setShowDetail] = useState(false)
     const [currentRowIndex, setCurrentRowIndex] = useState('')
 
-    const componentDidMount = () => {
+    useEffect(()=>{
         getJobs()
         startRefreshMonitoring()
-    }
+    }, [])
 
-    const componentWillUnmount = () => {
-        stopRefreshMonitoring()
-    }
+    useEffect(()=>{
+        return stopRefreshMonitoring()
+    })
 
     const startRefreshMonitoring = () => {
-        this.intervalChcker = setInterval(() => {
+        let intervalChecker = setInterval(() => {
             getJobs()
         }, 2000)
+        setIntervalChecker(intervalChecker)
     }
 
     const stopRefreshMonitoring = () => {
-        clearInterval(this.intervalChcker)
+        clearInterval(intervalChecker)
     }
 
     const handleDetails = (index) => {
@@ -125,13 +60,45 @@ export default ({ }) => {
         setRows(rows)
     }
 
+    const dropDown = (id) => {
+        return (
+            <Dropdown className="text-center">
+                <Dropdown.Toggle variant="button-dropdown-blue" id="dropdown-basic" className="button-dropdown button-dropdown-green">
+                    Actions
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+    
+                    <Dropdown.Item className='bg-green' onClick={async () => {
+                        await apis.jobs.resumbitJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
+                        getJobs()
+                    }}>Resumbit</Dropdown.Item>
+    
+                    <Dropdown.Item className='bg-blue' onClick={async () => {
+                        await apis.jobs.resumeJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
+                        getJobs()
+                    }}>Resume</Dropdown.Item>
+    
+                    <Dropdown.Item className='bg-orange' onClick={async () => {
+                        await apis.jobs.pauseJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
+                        getJobs()
+                    }}>Pause</Dropdown.Item>
+    
+                    <Dropdown.Item className='bg-red' onClick={async () => {
+                        await apis.jobs.cancelJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
+                        getJobs()
+                    }}>Cancel</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
+        )
+    }
+
 
     return (
         <Fragment>
             <h2 className="card-title mb-4">Jobs</h2>
             <ModalDetails show={showDetail} onHide={() => setShowDetail(false)}
                 data={[rows[currentRowIndex]]} />
-            <JobsTable handleDetails={handleDetails} rows={rows} />
+            <JobsTableV8 handleDetails={handleDetails} rows={rows} getJobs={getJobs} dropDown={dropDown} />
         </Fragment>
     );
 }

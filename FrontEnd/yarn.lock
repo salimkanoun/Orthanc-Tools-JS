@@ -1940,6 +1940,18 @@
     "@svgr/plugin-svgo" "^5.5.0"
     "loader-utils" "^2.0.0"
 
+"@tanstack/react-table@^8.7.8":
+  "integrity" "sha512-XNfNuY9qJEk5urJWGYPWNj4POtBTuYunQNfmUla/ZUobVSS+ZIWt6wnL6kI12QNpPrf4uSVAYelUVl245nnQjQ=="
+  "resolved" "https://registry.npmjs.org/@tanstack/react-table/-/react-table-8.7.8.tgz"
+  "version" "8.7.8"
+  dependencies:
+    "@tanstack/table-core" "8.7.8"
+
+"@tanstack/table-core@8.7.8":
+  "integrity" "sha512-OvKx7v0qJTyPkMhqsWzVPZnARiqdGvDvEg8tZ/GSQs7t0Vb2sdtkGg7cdzUZ67sIg9o5/gSwvvT84ouSaP8euA=="
+  "resolved" "https://registry.npmjs.org/@tanstack/table-core/-/table-core-8.7.8.tgz"
+  "version" "8.7.8"
+
 "@toast-ui/react-image-editor@^3.15.0":
   "integrity" "sha512-oVLidJ03RsFiS+QpqqLiOvhEw7nhdAeaNRL+UNvjW8He5lYP9wh/l4SkOMhH7UGI6bZq7W950Y19mGKK3fl5+Q=="
   "resolved" "https://registry.npmjs.org/@toast-ui/react-image-editor/-/react-image-editor-3.15.2.tgz"
