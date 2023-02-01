@@ -1,32 +1,41 @@
 import React from "react";
-import { flexRender, 
-    getCoreRowModel, 
+import {
+    flexRender,
+    getCoreRowModel,
     useReactTable,
     columnDef,
     getSortedRowModel,
-    SortingState,
+    getFilteredRowModel,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-export default ({ 
-    columns, 
+import Paginate from "./Tools/Paginate";
+import Filter from "./Tools/Filter";
+
+
+export default ({
+    columns,
     data,
     canSort = false,
+    canFilter = false,
+    paginated = false,
     sortBy = []
 }) => {
 
     const [sorting, setSorting] = useState(sortBy);
 
     const table = useReactTable({
-        data ,
-        columns ,
+        data,
+        columns,
         state: {
             sorting,
         },
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
         enableSorting: canSort,
+        enableFilters: canFilter,
         enableSortingRemoval: true,
         enableMultiSort: true,
         maxMultiSortColCount: 3,
@@ -35,42 +44,42 @@ export default ({
     });
 
 
-
-    console.log(table)
-
     return (
         <>
-            <table>
+            <table className="table table-striped">
                 <thead>
                     {table.getHeaderGroups().map(headerGroup => (
                         <tr key={headerGroup.id}>
-                            {headerGroup.headers.map(header => {
-                                <th key={header.id} colSpan={header.colSpan}>
+                            {headerGroup.headers.map(header => (
+                                <th key={header.id}>
                                     {header.isPlaceholder
                                         ? null
-                                        : <>
-                                        <div 
-                                        {...{
-                                            className : header.column.getCanSort()
-                                            ? header.column.columnDef.headerClassName + ' cursor-pointer select-none'
-                                            : header.column.columnDef.headerClassName,
-                                            onClick : header.column.getToggleSortingHandler(),
-                                        }}
+                                        :
+                                        <> <div
+                                            {...{
+                                                className: header.column.getCanSort()
+                                                    ? header.column.columnDef.headerClassName + ' cursor-pointer select-none'
+                                                    : header.column.columnDef.headerClassName,
+                                                onClick: header.column.getToggleSortingHandler(),
+                                            }}
                                         >
-                                            { flexRender(
-                                            header.column.columnDef.header,
-                                            header.getContext(),
-                                            
-                                        )}
-                                        {{
+                                            {flexRender(
+                                                header.column.columnDef.header,
+                                                header.getContext(),
+                                            )}
+                                            {{
                                                 asc: ' 🔼',
                                                 desc: ' 🔽',
                                             }[header.column.getIsSorted()] ?? null}
-                                            </div>
-                                            </>
-                            }
+                                        </div>
+                                            {header.column.getCanFilter() ? (
+                                                <div>
+                                                    <Filter column={header.column} columnDef={header.column.columnDef} table={table} />
+                                                </div>
+                                            ) : null}
+                                        </>}
                                 </th>
-                            })}
+                            ))}
                         </tr>
                     ))}
                 </thead>
@@ -88,6 +97,41 @@ export default ({
                 </tbody>
 
             </table>
+            {
+                paginated ?
+                    <div className="d-flex justify-content-end">
+                        <Paginate
+                            gotoPage={table.setPageIndex}
+                            previousPage={table.previousPage}
+                            nextPage={table.nextPage}
+                            canPreviousPage={table.getCanPreviousPage()}
+                            canNextPage={table.getCanNextPage()}
+                            pageIndex={table.getState().pagination.pageIndex}
+                            pageCount={table.getPageCount()}
+                            pageSize={table.getState().pagination.pageSize}
+                            setPageSize={table.setPageSize}
+                            rowsCount={table.getPrePaginationRowModel().rows.length}
+                        />
+                    </div>
+                    :
+                    null
+            }
         </>
     )
+}
+
+function useSkipper() {
+    const shouldSkipRef = React.useRef(true)
+    const shouldSkip = shouldSkipRef.current
+
+    // Wrap a function with this to skip a pagination reset temporarily
+    const skip = useCallback(() => {
+        shouldSkipRef.current = false
+    }, [])
+
+    useEffect(() => {
+        shouldSkipRef.current = true
+    })
+
+    return [shouldSkip, skip]
 }

@@ -106,8 +106,6 @@ function NestedTable({
     }, [selectedFlatRows.length]);
 
     return (
-
-
         
         <Table striped bordered responsive {...getTableProps()}>
             <thead>

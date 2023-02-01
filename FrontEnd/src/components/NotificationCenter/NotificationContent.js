@@ -24,8 +24,6 @@ export default ({ notifications, remove }) => {
         setJobsArray(jobsCards)
     }, [notifications])
 
-    { console.log("props notification content", notifications) }
-
 
     const clearNotifications = () => {
         notifications.map(notification => {
