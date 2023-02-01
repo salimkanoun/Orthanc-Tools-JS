@@ -7,13 +7,7 @@ import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8
         const row = useMemo(() => data, [data])
 
         const columns = [
-            {
-                id: 'ID',
-                accessorKey: 'ID',
-                show : false,
-                header: () => <span>ID</span>,
-                cell: row => <i>{row.getValue()}</i>
-            },
+
             {
                 id: 'ErrorCode',
                 accessorKey: 'ErrorCode',
@@ -51,7 +45,7 @@ import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8
                 cell:  ({row}) => {
                     return (
                         <pre>
-                            {JSON.stringify(row.values.Content, null, 2)}
+                            {JSON.stringify(row.original.Content, null, 2)}
                         </pre>
                     )
                 }

@@ -18,6 +18,7 @@ export default ({
     data,
     canSort = false,
     canFilter = false,
+    canSelect = false,
     paginated = false,
     sortBy = []
 }) => {

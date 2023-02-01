@@ -1,18 +1,20 @@
 import React, { useMemo, useState } from "react";
+import { Fragment } from "react";
 import { Button } from "react-bootstrap";
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
+import ModalDetailsV8 from "./ModalDetailsV8";
 
-export default ({ handleDetails, rows, dropDown}) => {
+export default ({ rows, dropDown }) => {
 
     const data = useMemo(() => rows, [rows]);
 
-    /*const [showDetail, setShowDetail] = useState(false);
+    const [showDetail, setShowDetail] = useState(false);
     const [currentRowIndex, setCurrentRowIndex] = useState('')
 
     const handleDetails = (index) => {
         setShowDetail(true)
         setCurrentRowIndex(index)
-    }*/
+    }
 
     const columnsJobs = [
         {
@@ -20,22 +22,22 @@ export default ({ handleDetails, rows, dropDown}) => {
             accessorKey: 'ID',
             header: () => <span>ID</span>,
             cell: row => <i>{row.getValue()}</i>,
-            filterType : "STRING",
+            filterType: "STRING",
         },
         {
             id: 'Progress',
             accessorKey: 'Progress',
             header: () => <span> Progress</span>,
             cell: row => <i>{row.getValue()}</i>,
-            filterType : "NUMBER",
+            filterType: "NUMBER",
         },
         {
             id: 'State',
             accessorKey: 'State',
             header: () => <span> State</span>,
             cell: row => <i>{row.getValue()}</i>,
-            filterType : "STRING",
-            enableColumnFilter : false,
+            filterType: "STRING",
+            enableColumnFilter: false,
         },
         {
             id: 'Details',
@@ -45,7 +47,7 @@ export default ({ handleDetails, rows, dropDown}) => {
                 return (<div className="text-center"><Button className='otjs-button otjs-button-blue'
                     onClick={() => handleDetails(row.index)}>Details</Button></div>)
             }),
-            enableColumnFilter : false,
+            enableColumnFilter: false,
         },
         {
             id: 'Actions',
@@ -54,9 +56,15 @@ export default ({ handleDetails, rows, dropDown}) => {
             cell: (({ row }) => {
                 return dropDown(row.original.Content.ID)
             }),
-            enableColumnFilter : false,
+            enableColumnFilter: false,
         }
     ]
 
-    return <CommonTableV8 columns={columnsJobs} data={data} canSort canFilter paginated/>
+    return (
+        <Fragment>
+            <ModalDetailsV8 show={showDetail} onHide={() => setShowDetail(false)}
+                data={[rows[currentRowIndex]]} />
+            <CommonTableV8 columns={columnsJobs} data={data} canSort canFilter paginated canSelect />
+        </Fragment>
+    )
 }

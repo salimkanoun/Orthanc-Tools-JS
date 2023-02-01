@@ -4,14 +4,13 @@ import { toast } from "react-toastify";
 import apis from "../../../services/apis";
 import ModalDetails from './ModalDetails'
 import JobsTableV8 from "./JobsTableV8";
+import ModalDetailsV8 from "./ModalDetailsV8";
 
 
 export default ({ }) => {
 
     const [intervalChecker, setIntervalChecker] = useState(null)
     const [rows, setRows] = useState([])
-    const [showDetail, setShowDetail] = useState(false)
-    const [currentRowIndex, setCurrentRowIndex] = useState('')
 
     useEffect(()=>{
         getJobs()
@@ -33,10 +32,6 @@ export default ({ }) => {
         clearInterval(intervalChecker)
     }
 
-    const handleDetails = (index) => {
-        setShowDetail(true)
-        setCurrentRowIndex(index)
-    }
 
     const getJobs = async () => {
 
@@ -96,9 +91,7 @@ export default ({ }) => {
     return (
         <Fragment>
             <h2 className="card-title mb-4">Jobs</h2>
-            <ModalDetails show={showDetail} onHide={() => setShowDetail(false)}
-                data={[rows[currentRowIndex]]} />
-            <JobsTableV8 handleDetails={handleDetails} rows={rows} getJobs={getJobs} dropDown={dropDown} />
+            <JobsTableV8 rows={rows} getJobs={getJobs} dropDown={dropDown} />
         </Fragment>
     );
 }
