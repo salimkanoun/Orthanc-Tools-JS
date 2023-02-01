@@ -20,6 +20,7 @@ export default ({ gotoPage, previousPage, nextPage, canPreviousPage, canNextPage
                     <select
                         value={pageSize}
                         className='form-control'
+                        data-gaelo-front='pagination-show-button'
                         onChange={e => {
                             setPageSize(Number(e.target.value))
                         }}

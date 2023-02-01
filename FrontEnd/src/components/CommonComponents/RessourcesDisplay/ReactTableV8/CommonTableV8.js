@@ -6,6 +6,7 @@ import {
     columnDef,
     getSortedRowModel,
     getFilteredRowModel,
+    getPaginationRowModel
 } from "@tanstack/react-table";
 import { useState, useEffect, useCallback } from "react";
 
@@ -35,6 +36,7 @@ export default ({
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
         enableSorting: canSort,
         enableFilters: canFilter,
         enableSortingRemoval: true,
