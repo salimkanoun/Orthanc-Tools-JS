@@ -39,7 +39,7 @@
     "got": "^11.8.2",
     "http-errors": "~1.8.0",
     "jsonwebtoken": "^8.5.1",
-    "jszip": "^3.6.0",
+    "jszip": "^3.8.0",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
     "node-schedule": "^2.0.0",
