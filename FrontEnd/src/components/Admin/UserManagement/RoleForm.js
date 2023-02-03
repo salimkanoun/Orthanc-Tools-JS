@@ -1,8 +1,8 @@
-import React, { Component, Fragment, useState } from 'react'
+import React, { Component, Fragment, useEffect, useState } from 'react'
 import Toggle from 'react-toggle'
-import {Row, Col, Button} from 'react-bootstrap'
+import { Row, Col, Button } from 'react-bootstrap'
 
-export default ({data, onSubmitRole}) => {
+export default ({ data, onSubmitRole }) => {
 
     const [stateImport, setStateImport] = useState(false)
     const [content, setContent] = useState(false)
@@ -19,7 +19,7 @@ export default ({data, onSubmitRole}) => {
 
     const state = ({
         import: stateImport,
-        content : content,
+        content: content,
         anon: anon,
         export_local: export_local,
         export_extern: export_extern,
@@ -29,13 +29,13 @@ export default ({data, onSubmitRole}) => {
         admin: admin,
         modify: modify,
         cd_burner: cd_burner,
-        autorouting:autorouting,
-    },[stateImport, content, anon, export_local, export_extern, query, auto_query, stateDelete, admin, modify, cd_burner, autorouting])
+        autorouting: autorouting,
+    }, [stateImport, content, anon, export_local, export_extern, query, auto_query, stateDelete, admin, modify, cd_burner, autorouting])
 
-    const componentDidMount = () => {
 
+    useEffect(() => {
         if (data != null) {
-            
+
             setStateImport(data.import)
             setContent(data.content)
             setAnon(data.anon)
@@ -49,114 +49,114 @@ export default ({data, onSubmitRole}) => {
             setCd_burner(data.cd_burner)
             setAutorouting(data.autorouting)
         }
+    }, [])
 
-    }
 
-        return (
-            <Fragment>
-                <Row className="mt-3">
-                    <Col sm={5}>
-                        <h5>Administration</h5>
-                    </Col>
-                    <Col sm={7}>
-                        <Toggle checked={admin} onChange={() => setAdmin(!admin)} />
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col sm={5}>
-                        <h5>Anonymisation</h5>
-                    </Col>
-                    <Col sm={7}>
-                        <Toggle checked={anon} onChange={() => setAnon(!anon) } />
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col sm={5}>
-                        <h5>Auto-Query</h5>
-                    </Col>
-                    <Col sm={7}>
-                        <Toggle checked={auto_query} onChange={() => setAuto_query(!auto_query) } />
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col sm={5}>
-                        <h5>Content</h5>
-                    </Col>
-                    <Col sm={7}>
-                        <Toggle checked={content} onChange={() => setContent(!content) } />
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col sm={5}>
-                        <h5>Delete</h5>
-                    </Col>
-                    <Col sm={7}>
-                        <Toggle checked={stateDelete} onChange={() => setStateDelete(!stateDelete) }/>
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col sm={5}>
-                        <h5>Local Export</h5>
-                    </Col>
-                    <Col sm={7}>
-                        <Toggle checked={export_local} onChange={() =>setExport_local(!export_local) } />
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col sm={5}>
-                        <h5>Remote Export</h5>
-                    </Col>
-                    <Col sm={7}>
-                        <Toggle checked={export_extern} onChange={() => setExport_extern(!export_extern) } />
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col sm={5}>
-                        <h5>Query</h5>
-                    </Col>
-                    <Col sm={7}>
-                        <Toggle checked={query} onChange={() => setQuery(!query) } />
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col sm={5}>
-                        <h5>Import</h5>
-                    </Col>
-                    <Col sm={7}>
-                        <Toggle checked={stateImport} onChange={() => setStateImport(!stateImport) } />
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col sm={5}>
-                        <h5>Modify</h5>
-                    </Col>
-                    <Col sm={7}>
-                        <Toggle checked={modify} onChange={() => setModify(!modify) } />
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col sm={5}>
-                        <h5>CD Burner</h5>
-                    </Col>
-                    <Col sm={7}>
-                        <Toggle checked={cd_burner} onChange={() => setCd_burner(!cd_burner) } />
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col sm={5}>
-                        <h5>Dicom Router</h5>
-                    </Col>
-                    <Col sm={7}>
-                        <Toggle checked={autorouting} onChange={() => setAutorouting(!autorouting) } />
-                    </Col>
-                </Row>
+    return (
+        <Fragment>
+            <Row className="mt-3">
+                <Col sm={5}>
+                    <h5>Administration</h5>
+                </Col>
+                <Col sm={7}>
+                    <Toggle checked={admin} onChange={() => setAdmin(!admin)} />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col sm={5}>
+                    <h5>Anonymisation</h5>
+                </Col>
+                <Col sm={7}>
+                    <Toggle checked={anon} onChange={() => setAnon(!anon)} />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col sm={5}>
+                    <h5>Auto-Query</h5>
+                </Col>
+                <Col sm={7}>
+                    <Toggle checked={auto_query} onChange={() => setAuto_query(!auto_query)} />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col sm={5}>
+                    <h5>Content</h5>
+                </Col>
+                <Col sm={7}>
+                    <Toggle checked={content} onChange={() => setContent(!content)} />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col sm={5}>
+                    <h5>Delete</h5>
+                </Col>
+                <Col sm={7}>
+                    <Toggle checked={stateDelete} onChange={() => setStateDelete(!stateDelete)} />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col sm={5}>
+                    <h5>Local Export</h5>
+                </Col>
+                <Col sm={7}>
+                    <Toggle checked={export_local} onChange={() => setExport_local(!export_local)} />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col sm={5}>
+                    <h5>Remote Export</h5>
+                </Col>
+                <Col sm={7}>
+                    <Toggle checked={export_extern} onChange={() => setExport_extern(!export_extern)} />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col sm={5}>
+                    <h5>Query</h5>
+                </Col>
+                <Col sm={7}>
+                    <Toggle checked={query} onChange={() => setQuery(!query)} />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col sm={5}>
+                    <h5>Import</h5>
+                </Col>
+                <Col sm={7}>
+                    <Toggle checked={stateImport} onChange={() => setStateImport(!stateImport)} />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col sm={5}>
+                    <h5>Modify</h5>
+                </Col>
+                <Col sm={7}>
+                    <Toggle checked={modify} onChange={() => setModify(!modify)} />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col sm={5}>
+                    <h5>CD Burner</h5>
+                </Col>
+                <Col sm={7}>
+                    <Toggle checked={cd_burner} onChange={() => setCd_burner(!cd_burner)} />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col sm={5}>
+                    <h5>Dicom Router</h5>
+                </Col>
+                <Col sm={7}>
+                    <Toggle checked={autorouting} onChange={() => setAutorouting(!autorouting)} />
+                </Col>
+            </Row>
 
-                <Row className="mt-3 text-center">
-                    <Col>
-                        <Button name='create' className='otjs-button otjs-button-blue' onClick={() => { onSubmitRole(state) }}> Validate </Button>
-                    </Col>
-                </Row>
+            <Row className="mt-3 text-center">
+                <Col>
+                    <Button name='create' className='otjs-button otjs-button-blue' onClick={() => { onSubmitRole(state) }}> Validate </Button>
+                </Col>
+            </Row>
 
-            </Fragment>
-        );
+        </Fragment>
+    );
 }

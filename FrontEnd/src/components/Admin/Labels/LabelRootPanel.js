@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LabelsTable from "./LabelsTable";
 import apis from "../../../services/apis";
 import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
@@ -11,11 +11,11 @@ export default ({ }) => {
     const [search, setSearch] = useState('')
     const [createLabel, setCreateLabel] = useState('')
 
-    const componentDidMount = () => {
-        apis.label.getAllLabels().then(labels => {
+    useEffect(() => {
+       apis.label.getAllLabels().then(labels => {
             setLabels(labels);
         })
-    }
+    }, [])
 
     const handleManageRole = (label) => {
         setRoleManagement(label);

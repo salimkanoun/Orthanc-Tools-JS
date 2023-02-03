@@ -1,4 +1,4 @@
-import React, { Fragment, useState} from 'react'
+import React, { Fragment, useEffect, useState} from 'react'
 import Select from 'react-select'
 import {toast} from 'react-toastify'
 import apis from '../../../services/apis'
@@ -29,9 +29,9 @@ export default ({onCreateEndpoint}) => {
         {value: 'webdav', label: 'Webdav'}
     ]
 
-    const componentDidMount = () => {
+    useEffect(() => {
         loadKeys()
-    }
+    }, [])
 
     const loadKeys = async () => {
         let sshKeys = []

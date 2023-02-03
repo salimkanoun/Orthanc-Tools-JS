@@ -1,4 +1,4 @@
-import React, { useMemo, useState} from 'react'
+import React, { useEffect, useMemo, useState} from 'react'
 import {toast} from 'react-toastify';import apis from '../../services/apis';
 import AnonymizedResults from './AnonymizedResults';
 import task from '../../services/task';
@@ -49,10 +49,10 @@ export default ({username}) => {
     const [selectedTask, setSelectedTask] = useState(null)
     const [rows, setRows] = useState([])
 
-    const componentDidMount = () => {
+    useEffect(() => {
         refreshHandler()
         startRefreshMonitoring()
-    }
+    }, [])
 
     const componentWillUnmount = () => {
         stopRefreshMonitoring()

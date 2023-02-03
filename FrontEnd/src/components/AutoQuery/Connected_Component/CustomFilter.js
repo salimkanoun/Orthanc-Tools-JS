@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from 'react'
+import React, { Component, Fragment, useEffect, useState } from 'react'
 import Select from 'react-select'
 
 import { saveFilters } from '../../../actions/TableResult'
@@ -25,9 +25,11 @@ export default ({ onFilter, ID, options, saveValues }) => {
     }
 
 
-    const componentDidMount = () => {
+    useEffect(() => {
         onFilter(store.filters[ID])
-    }
+    }, [])
+
+
 
     const filter = (reverse, options) => {
         let values = []

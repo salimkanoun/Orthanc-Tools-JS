@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 import Select from 'react-select/creatable'
 
 /**
@@ -83,8 +83,7 @@ export default ({ previousModalities, onUpdate }) => {
     </div>
   );
 
-
-  const componentDidMount = () => {
+  useEffect(() => {
     //If we recieve a previous modality input in props, load it in the state
     if (previousModalities !== "") {
       let previousModalityArray = previousModalities.split('\\').map((modality) => {
@@ -92,8 +91,9 @@ export default ({ previousModalities, onUpdate }) => {
       })
       setSelectedModalities(previousModalityArray)
     }
+  }, [])
 
-  }
+
 
   /**
    * Fill user choice in the state

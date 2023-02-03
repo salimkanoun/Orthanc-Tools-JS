@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useEffect, useState} from 'react'
 import {toast} from 'react-toastify';
 import apis from '../../../services/apis';
 import RobotTable from "../../CommonComponents/RessourcesDisplay/ReactTable/RobotTable";
@@ -8,10 +8,12 @@ export default ({}) => {
 
     const [rows, setRows] = useState([])
 
-    const componentDidMount = () => {
+    useEffect(() => {
         refreshHandler()
         startRefreshMonitoring()
-    }
+    }, [])
+
+
 
     const componentWillUnmount = () => {
         stopRefreshMonitoring()
