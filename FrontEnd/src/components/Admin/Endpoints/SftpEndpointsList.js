@@ -1,49 +1,64 @@
-import React, {Fragment, useMemo} from "react";
+import React, { Fragment, useMemo } from "react";
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
-export default ({endpointsData, onDeleteEndpoint}) => {
+export default ({ endpointsData, onDeleteEndpoint }) => {
 
-    const columns = useMemo(() => [{
-        accessor: 'label',
-        Header: 'Label'
-    },
+    const data = useMemo(() => endpointsData, [endpointsData]);
+
+    const columns = [
         {
-            accessor: 'host',
-            Header: 'Host'
+            id :'label',
+            accessoryKey: 'label',
+            header: 'Label',
+            cell : (row) => {row.getValue()},
         },
         {
-            accessor: 'username',
-            Header: 'Username'
+            id : 'host',
+            accessoryKey: 'host',
+            header: 'Host',
+            cell : (row) => {row.getValue()},
         },
         {
-            accessor: 'targetFolder',
-            Header: 'Target Folder'
+            id : 'username',
+            accessoryKey: 'username',
+            header: 'Username',
+            cell : (row) => {row.getValue()},
         },
         {
-            accessor: 'sshKey',
-            Header: 'Ssh Private Key',
-            Cell: ({row}) => <p>{(row.sshKey ? row.sshKey.label : '✖')}</p>
+            id : 'targetFolder',
+            accessoryKey: 'targetFolder',
+            header: 'Target Folder',
+            cell : (row) => {row.getValue()},
         },
         {
-            accessor: 'delete',
-            Header: 'Delete endpoint',
-            Cell: ({row}) => {
+            id : 'sshKey',
+            accessoryKey: 'sshKey',
+            header: 'Ssh Private Key',
+            Cell: ({ row }) => <p>{(row.sshKey ? row.sshKey.label : '✖')}</p>
+        },
+        {
+            id  :'delete',
+            accessoryKey: 'delete',
+            header: 'Delete endpoint',
+            Cell: ({ row }) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                             await onDeleteEndpoint(row.id)
-                        }} value="Remove"/>
+                        }} value="Remove" />
                     </div>)
             },
             formatExtraData: this
-        }], [onDeleteEndpoint]);
+        }
+    ]
 
-    const data = useMemo(() => endpointsData, [endpointsData]);
+
 
     return (
         <Fragment>
             <h2 className="card-title mt-5">SFTP Export Endpoints</h2>
-            <CommonTable data={data} columns={columns}/>
+            <CommonTableV8 data={data} columns={columns} />
         </Fragment>
     )
 }

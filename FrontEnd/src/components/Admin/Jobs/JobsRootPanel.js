@@ -2,9 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { toast } from "react-toastify";
 import apis from "../../../services/apis";
-import ModalDetails from './ModalDetails'
 import JobsTableV8 from "./JobsTableV8";
-import ModalDetailsV8 from "./ModalDetailsV8";
 
 
 export default ({ }) => {

@@ -1,48 +1,94 @@
 import React from "react";
 import {
-    flexRender,
-    getCoreRowModel,
     useReactTable,
-    columnDef,
-    getSortedRowModel,
+    getCoreRowModel,
     getFilteredRowModel,
-    getPaginationRowModel
+    getFacetedRowModel,
+    getFacetedUniqueValues,
+    getFacetedMinMaxValues,
+    getPaginationRowModel,
+    getSortedRowModel,
+    flexRender, 
 } from "@tanstack/react-table";
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 
 import Paginate from "./Tools/Paginate";
 import Filter from "./Tools/Filter";
+import EditableCell from "./Tools/EditableCell";
+
 
 
 export default ({
     columns,
     data,
+    id = 'id',
     canSort = false,
     canFilter = false,
     canSelect = false,
+    canExpand = false,
     paginated = false,
-    sortBy = []
+    customRowProps = (row) => { },
+    sortBy = [],
+    renderSubComponent,
+    onCellEdit = (rowIndex, columnId, value) => { },
 }) => {
 
     const [sorting, setSorting] = useState(sortBy);
+    const [rowSelection, setRowSelection] = useState({})
+    const [columnFilters, setColumnFilters] = useState([])
+    const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper()
+
+    const getHiddenState = () => {
+        const visibleColumns = {};
+        columns.forEach(column => {
+            visibleColumns[column.id] = !(column?.hidden);
+        });
+
+        return visibleColumns
+    }
 
     const table = useReactTable({
         data,
+        getRowId: (originalRow, index, parent) => originalRow?.[id] ?? index,
         columns,
+        defaultColumn: {
+            cell: EditableCell
+        },
+        enableRowSelection: true,
         state: {
+            rowSelection,
+            columnFilters,
             sorting,
         },
+        initialState: {
+            columnVisibility: getHiddenState()
+        },
+        
+        onColumnFiltersChange: setColumnFilters,
         onSortingChange: setSorting,
+        onRowSelectionChange: setRowSelection,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        enableSorting: canSort,
+        getFacetedRowModel: getFacetedRowModel(),
+        getFacetedUniqueValues: getFacetedUniqueValues(),
+        getFacetedMinMaxValues: getFacetedMinMaxValues(),
+        enableHiding: true,
         enableFilters: canFilter,
+        enableExpanding: canExpand,
+        enableSorting: canSort,
         enableSortingRemoval: true,
         enableMultiSort: true,
         maxMultiSortColCount: 3,
         isMultiSortEvent: () => true,
+        meta: {
+            updateData: (rowIndex, columnId, value) => {
+                // Skip age index reset until after next rerender
+                skipAutoResetPageIndex()
+                onCellEdit(rowIndex, columnId, value)
+            },
+        },
         debugTable: true,
     });
 
@@ -59,6 +105,7 @@ export default ({
                                         ? null
                                         :
                                         <> <div
+                                        
                                             {...{
                                                 className: header.column.getCanSort()
                                                     ? header.column.columnDef.headerClassName + ' cursor-pointer select-none'
@@ -66,6 +113,7 @@ export default ({
                                                 onClick: header.column.getToggleSortingHandler(),
                                             }}
                                         >
+    
                                             {flexRender(
                                                 header.column.columnDef.header,
                                                 header.getContext(),
@@ -88,15 +136,30 @@ export default ({
                 </thead>
 
                 <tbody>
-                    {table.getRowModel().rows.map(row => (
-                        <tr key={row.id}>
-                            {row.getVisibleCells().map(cell => (
-                                <td key={cell.id}>
-                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                </td>
-                            ))}
-                        </tr>
-                    ))}
+                    {table.getRowModel().rows.map(row => {
+                        return (
+                            <>
+                                <tr  key={row.id} {...customRowProps(row)}>
+                                    {row.getVisibleCells().map(cell => (
+                                            <td key={cell.id}>
+                                                {flexRender(
+                                                    cell.column.columnDef.cell,
+                                                    cell.getContext()
+                                                )}
+                                            </td>
+                                        )
+                                    )}
+                                </tr>
+                                {row.getIsExpanded() && (
+                                    <tr>
+                                        <td colSpan={row.getVisibleCells().length}>
+                                            {renderSubComponent({row})}
+                                        </td>
+                                    </tr>
+                                )}
+                            </>
+                        )
+                    })}
                 </tbody>
 
             </table>
@@ -128,11 +191,11 @@ function useSkipper() {
     const shouldSkip = shouldSkipRef.current
 
     // Wrap a function with this to skip a pagination reset temporarily
-    const skip = useCallback(() => {
+    const skip = React.useCallback(() => {
         shouldSkipRef.current = false
     }, [])
 
-    useEffect(() => {
+    React.useEffect(() => {
         shouldSkipRef.current = true
     })
 

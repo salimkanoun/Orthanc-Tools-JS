@@ -1,47 +1,61 @@
-import React, {Fragment, useMemo} from "react";
+import React, { Fragment, useMemo } from "react";
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
-export default ({endpointsData, onDeleteEndpoint}) => {
+export default ({ endpointsData, onDeleteEndpoint }) => {
 
-    const columns = useMemo(() => [{
-        accessor: 'label',
-        Header: 'Label'
-    },
+    const columns = [
         {
-            accessor: 'host',
-            Header: 'Host'
+            id : 'id',
+            accessoryKey: 'label',
+            header: 'Label',
+            cell : (row) => {row.getValue()},
         },
         {
-            accessor: 'username',
-            Header: 'Username'
+            id : 'host',
+            accessoryKey: 'host',
+            header: 'Host',
+            cell : (row) => {row.getValue()},
         },
         {
-            accessor: 'targetFolder',
-            Header: 'Target Folder'
+            id : 'username',
+            accessorykey: 'username',
+            header: 'Username',
+            cell : (row) => {row.getValue()},
         },
         {
-            accessor: 'ssl',
-            Header: 'Use ssl?',
-            Cell: ({row}) => <p>{(row.values.ssl ? '✓' : '✖')}</p>
+            id : 'targetFolder',
+            accessoryKey: 'targetFolder',
+            header: 'Target Folder',
+            cell : (row) => {row.getValue()},
         },
         {
+            id : 'ssl',
+            accessoryKey: 'ssl',
+            header: 'Use ssl?',
+            Cell: ({ row }) => <p>{(row.values.ssl ? '✓' : '✖')}</p>
+        },
+        {
+            id : 'delete',
+            accessorKey : 'delete',
             dataField: 'delete',
-            Header: 'Delete endpoint',
-            Cell: ({row}) => {
+            header: 'Delete endpoint',
+            Cell: ({ row }) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                             await onDeleteEndpoint(row.values.id)
-                        }} value="Remove"/>
+                        }} value="Remove" />
                     </div>)
             },
             formatExtraData: this
-        }], [onDeleteEndpoint]);
+        }
+    ]
 
     return (
         <Fragment>
             <h2 className="card-title mt-5">FTP/FTPS Export Endpoints</h2>
-            <CommonTable data={endpointsData} columns={columns}/>
+            <CommonTableV8 data={endpointsData} columns={columns} />
         </Fragment>
     )
 }
