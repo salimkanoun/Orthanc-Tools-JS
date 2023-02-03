@@ -16,27 +16,28 @@ export default ({aetsData, refreshAetData}) => {
     const columns = [
     {
         id : 'name',
-        accessoryKey: 'name',
+        accessorKey: 'name',
         header: 'Name'
     }, {
         id: 'AET',
-        accessoryKey: 'AET',
+        accessorKey: 'AET',
         header: 'AET'
     }, {
         id : 'host',
-        accessoryKey: 'Host',
+        accessorKey: 'Host',
         header: 'Host'
     }, {
         id : 'Port',
-        accessoryKey: 'Port',
+        accessorKey: 'Port',
         header: 'Port'
     }, {
         id : 'Manufacturer',
-        accessoryKey: 'Manufacturer',
+        accessorKey: 'Manufacturer',
         header: 'Manufacturer'
     }, {
+        //TODO button ne s'affiche pas
         id : 'echo',
-        accessoryKey: 'echo',
+        accessorKey: 'echo',
         header: 'Echo AET',
         Cell: ({row}) => {
             return (<div className="text-center">
@@ -52,8 +53,9 @@ export default ({aetsData, refreshAetData}) => {
             </div>)
         }
     }, {
+        //TODO button ne s'affiche pas
         id : 'remove',
-        accessoryKey: 'remove',
+        accessorKey: 'remove',
         header: 'Remove AET',
         Cell: ({row}) => {
             return (

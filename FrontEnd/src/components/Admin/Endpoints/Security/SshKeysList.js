@@ -1,23 +1,28 @@
-import React, {Fragment, useMemo} from "react";
+import React, { Fragment, useMemo } from "react";
 import apis from '../../../../services/apis';
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import CommonTable from "../../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
-export default ({refreshSshKeysData, sshKeysData}) => {
+export default ({ refreshSshKeysData, sshKeysData }) => {
 
-    const columns = useMemo(() => [{
-        accessor: 'label',
-        Header: 'Label'
-    },
+    const columns = [
         {
-            accessor: 'pass',
-            Header: 'Has a passphrase',
-            Cell: ({row}) => <p>{(row.values.pass ? '✓' : '✖')}</p>
+            id: 'label',
+            accessorKey: 'label',
+            header: 'Label'
         },
         {
-            accessor: 'delete',
-            Header: 'Delete Key',
-            Cell: ({row}) => {
+            id: 'pass',
+            accessorKey: 'pass',
+            header: 'Has a passphrase',
+            Cell: ({ row }) => <p>{(row.values.pass ? '✓' : '✖')}</p>
+        },
+        {
+            id: 'delete',
+            accessorKey: 'delete',
+            header: 'Delete Key',
+            Cell: ({ row }) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
@@ -25,21 +30,22 @@ export default ({refreshSshKeysData, sshKeysData}) => {
                                 await apis.sshKeys.deleteKey(row.values.id);
                                 refreshSshKeysData()
                             } catch (error) {
-                                toast.error(error.statusText, {data:{type:'notification'}})
+                                toast.error(error.statusText, { data: { type: 'notification' } })
                             }
 
-                        }} value="Remove"/>
+                        }} value="Remove" />
                     </div>
                 )
             },
             formatExtraData: this
-        }], [refreshSshKeysData]);
+        }
+    ]
 
     const data = useMemo(() => sshKeysData, [sshKeysData])
 
     return (
         <Fragment>
-            <CommonTable data={data} columns={columns}/>
+            <CommonTableV8 data={data} columns={columns} />
         </Fragment>
     )
 }

@@ -15,22 +15,19 @@ export default ({ peersData, refreshPeerData }) => {
     const columns = [
     {
         id : 'id',
-        accessoryKey: 'Username',
+        accessorKey: 'Username',
         header: 'Username',
-        cell : (row) => {row.getValue()},
     }, {
         id : 'name',
-        accessoryKey: 'name',
+        accessorKey: 'name',
         header: 'PeerName',
-        cell : (row) => {row.getValue()},
     }, {
         id : 'Url',
-        accessoryKey: 'Url',
+        accessorKey: 'Url',
         header: 'Url',
-        cell : (row) => {row.getValue()},
     }, {
         id: 'Echo',
-        accessoryKey : 'Echo',
+        accessorKey : 'Echo',
         header: 'Echo Peer',
         Cell: ({ row }) => {
             return (<div className="text-center">
@@ -44,7 +41,7 @@ export default ({ peersData, refreshPeerData }) => {
         }
     }, {
         id: 'Remove',
-        accessoryKey : 'Remove',
+        accessorKey : 'Remove',
         header: 'Remove Peer',
         Cell: ({ row }) => {
             return (

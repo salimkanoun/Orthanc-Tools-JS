@@ -1,18 +1,22 @@
-import React, {Fragment, useMemo} from "react";
+import React, { Fragment, useMemo } from "react";
 import apis from '../../../../services/apis';
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import CommonTable from "../../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
-export default ({refreshCertificatesData, certificatesData}) => {
+export default ({ refreshCertificatesData, certificatesData }) => {
 
-    const columns = useMemo(() => [{
-        accessor: 'label',
-        Header: 'Label'
-    },
+    const columns = [
         {
-            accessor: 'delete',
-            Header: 'Delete certificate',
-            Cell: ({row}) => {
+            id: 'label',
+            accessorKey: 'label',
+            header: 'Label'
+        },
+        {
+            id: 'delete',
+            accessorKey: 'delete',
+            header: 'Delete certificate',
+            Cell: ({ row }) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
@@ -20,19 +24,20 @@ export default ({refreshCertificatesData, certificatesData}) => {
                                 await apis.certificates.deleteCertificate(row.id);
                                 refreshCertificatesData()
                             } catch (error) {
-                                toast.error(error.statusText, {data:{type:'notification'}})
+                                toast.error(error.statusText, { data: { type: 'notification' } })
                             }
 
-                        }} value="Remove"/>
+                        }} value="Remove" />
                     </div>)
             },
             formatExtraData: this
-        }], [refreshCertificatesData]);
+        }
+    ]
 
 
     return (
         <Fragment>
-            <CommonTable data={certificatesData} columns={columns}/>
+            <CommonTableV8 data={certificatesData} columns={columns} />
         </Fragment>
     )
 

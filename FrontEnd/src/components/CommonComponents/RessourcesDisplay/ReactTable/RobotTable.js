@@ -1,59 +1,73 @@
-import React, {useMemo} from "react";
-import {Link} from "react-router-dom";
+import React, { useMemo } from "react";
+import { Link } from "react-router-dom";
+import CommonTableV8 from "../ReactTableV8/CommonTableV8";
 import CommonTable from "./CommonTable";
 
 export default ({
-                                       robots,
-                                       validationRobotHandler,
-                                       deleteJobHandler,
-                                       refreshHandler,
-                                       hideValidationButton
-                                   }) => {
-    const columns = useMemo(() => [
+    robots,
+    validationRobotHandler,
+    deleteJobHandler,
+    refreshHandler,
+    hideValidationButton
+}) => {
+
+
+    const columns = [
         {
-            accessor: 'id',
-            show: false,
+            id: 'id',
+            accessorKey: 'id',
+            header: 'id',
+            hidden: true,
         },
         {
-            accessor: 'name',
-            Header: 'Name'
+            id: 'name',
+            accessorKey: 'name',
+            header: 'Name'
         }, {
-            accessor: 'username',
-            Header: 'Username'
+            id: 'username',
+            accessorKey: 'username',
+            header: 'Username'
         }, {
-            accessor: 'queriesNb',
-            Header: 'Number of Queries'
+            id: 'quesriesNb',
+            accessorKey: 'queriesNb',
+            header: 'Number of Queries'
         }, {
-            accessor: 'validation',
-            Header: 'Progress Validation'
+            id: 'validation',
+            accessorKey: 'validation',
+            header: 'Progress Validation'
         }, {
-            accessor: 'retrieve',
-            Header: 'Progress Retrieve'
+            id: 'retrieve',
+            accessorKey: 'retrieve',
+            header: 'Progress Retrieve'
         }, {
-            accessor: 'state',
+            id: 'state',
+            accessorKey: 'state',
             Header: 'State'
         }, {
             id: 'details',
-            Header: 'Show Details',
-            Cell: ({row}) => {
+            header: 'Show Details',
+            Cell: ({ row }) => {
                 return <Link className='nav-link otjs-button otjs-button-blue'
-                             to={'/robot/' + row.values.id}> Details </Link>
+                    to={'/robot/' + row.values.id}> Details </Link>
             }
         }, {
-            accessor: "approved",
-            show: false
+            id: 'approved',
+            accessorKey: "approved",
+            header: 'approved',
+            hidden: true
         }, {
-            accessor: 'valid',
-            Header: 'Validation Status',
-            show: !hideValidationButton,
-            Cell: ({row}) => {
+            id: 'valid',
+            accessorKey: 'valid',
+            header: 'Validation Status',
+            hidden: hideValidationButton,
+            Cell: ({ row }) => {
                 if (row.values.valid) {
                     if (!row.values.approved) {
                         return (
                             <div className="text-center">
                                 <input type="button" className='otjs-button otjs-button-green w-7'
-                                       onClick={() => validationRobotHandler(row.values.id, refreshHandler)}
-                                       value="Validate"/>
+                                    onClick={() => validationRobotHandler(row.values.id, refreshHandler)}
+                                    value="Validate" />
                             </div>
                         )
                     } else {
@@ -65,19 +79,20 @@ export default ({
             }
         }, {
             id: 'remove',
-            Header: 'Remove Robot',
-            Cell: ({row}) => {
+            header: 'Remove Robot',
+            Cell: ({ row }) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red w-10'
-                               onClick={() => deleteJobHandler(row.values.id, refreshHandler)}
-                               value="Remove Job"/>
+                            onClick={() => deleteJobHandler(row.values.id, refreshHandler)}
+                            value="Remove Job" />
                     </div>
                 )
             }
-        }], [validationRobotHandler, deleteJobHandler, refreshHandler, hideValidationButton])
+        }
+    ]
 
     const data = useMemo(() => robots, [robots]);
 
-    return <CommonTable columns={columns} data={data} pagination/>
+    return <CommonTableV8 columns={columns} data={data} pagination />
 }

@@ -11,19 +11,18 @@ function RoleTable({ roles, onDelete }) {
     const columns = [
         {
             id : "name",
-            accessoryKey: 'name',
+            accessorKey: 'name',
             header: 'Name',
-            cell : (row) => {row.getValue()}
         }, {
             id : 'id',
-            accessoryKey: 'edit',
+            accessorKey: 'edit',
             header: 'Edit',
             Cell: ({ row }) => {
                 return <ModifyRole name={row.values.name} />
             }
         }, {
             id : 'delete',
-            accessoryKey: 'delete',
+            accessorKey: 'delete',
             header: 'Delete',
             Cell: ({ row }) => {
                 return (<div className="text-center">

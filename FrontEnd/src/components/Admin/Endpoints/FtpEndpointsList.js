@@ -7,31 +7,27 @@ export default ({ endpointsData, onDeleteEndpoint }) => {
     const columns = [
         {
             id : 'id',
-            accessoryKey: 'label',
+            accessorKey: 'label',
             header: 'Label',
-            cell : (row) => {row.getValue()},
         },
         {
             id : 'host',
-            accessoryKey: 'host',
+            accessorKey: 'host',
             header: 'Host',
-            cell : (row) => {row.getValue()},
         },
         {
             id : 'username',
-            accessorykey: 'username',
+            accessorkey: 'username',
             header: 'Username',
-            cell : (row) => {row.getValue()},
         },
         {
             id : 'targetFolder',
-            accessoryKey: 'targetFolder',
+            accessorKey: 'targetFolder',
             header: 'Target Folder',
-            cell : (row) => {row.getValue()},
         },
         {
             id : 'ssl',
-            accessoryKey: 'ssl',
+            accessorKey: 'ssl',
             header: 'Use ssl?',
             Cell: ({ row }) => <p>{(row.values.ssl ? '✓' : '✖')}</p>
         },

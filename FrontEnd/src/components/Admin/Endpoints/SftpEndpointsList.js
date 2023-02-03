@@ -9,37 +9,33 @@ export default ({ endpointsData, onDeleteEndpoint }) => {
     const columns = [
         {
             id :'label',
-            accessoryKey: 'label',
+            accessorKey: 'label',
             header: 'Label',
-            cell : (row) => {row.getValue()},
         },
         {
             id : 'host',
-            accessoryKey: 'host',
+            accessorKey: 'host',
             header: 'Host',
-            cell : (row) => {row.getValue()},
         },
         {
             id : 'username',
-            accessoryKey: 'username',
+            accessorKey: 'username',
             header: 'Username',
-            cell : (row) => {row.getValue()},
         },
         {
             id : 'targetFolder',
-            accessoryKey: 'targetFolder',
+            accessorKey: 'targetFolder',
             header: 'Target Folder',
-            cell : (row) => {row.getValue()},
         },
         {
             id : 'sshKey',
-            accessoryKey: 'sshKey',
+            accessorKey: 'sshKey',
             header: 'Ssh Private Key',
             Cell: ({ row }) => <p>{(row.sshKey ? row.sshKey.label : '✖')}</p>
         },
         {
             id  :'delete',
-            accessoryKey: 'delete',
+            accessorKey: 'delete',
             header: 'Delete endpoint',
             Cell: ({ row }) => {
                 return (
