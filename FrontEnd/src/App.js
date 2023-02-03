@@ -1,10 +1,17 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 import Authentication from './components/Authentication'
 
 import { login, logout } from './actions/login'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import apis from './services/apis'
+
+import {
+    QueryClient,
+    QueryClientProvider,
+    useQuery,
+} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 //CSS Boostrap
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -12,56 +19,48 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'react-toastify/dist/ReactToastify.css'
 //Custom CSS
 import './assets/styles/orthancToolsJs.scss'
+import { ToastContainer } from 'react-toastify'
 import { BrowserRouter } from 'react-router-dom'
 import MainRoot from './components/Main/MainRoot'
-import { toast, ToastContainer } from 'react-toastify'
 
 // Configuring Toastify params that will be used all over the app
+const App = () => {
+
+    const dispatch = useDispatch()
+    const username = useSelector((state) => state.OrthancTools.username)
+    const roles = useSelector((state) => state.OrthancTools.roles)
 
 
-class App extends Component {
-
-    login = (token, backendData) => {
-        this.props.login(token, backendData)
+    const onLogin = (token, backendData) => {
+        dispatch(login(token, backendData))
     }
 
-    logout = async () => {
-        this.props.logout() //empty all reducer
+    const onLogout = async () => {
+        dispatch(logout()) //empty all reducer
         await apis.authentication.logOut() //ask backend to reset cookie http only
     }
 
 
-    render() {
-        return (
-            <BrowserRouter>
+    const queryClient = new QueryClient();
+
+    return (
+        <BrowserRouter>
+            <QueryClientProvider client={queryClient}>
                 <div hidden>
-                <ToastContainer
-                    position={'top-right'}
-                    autoClose={5000}
-                    newestOnTop
-                />
+                    <ToastContainer
+                        position={'top-right'}
+                        autoClose={5000}
+                        newestOnTop
+                    />
                 </div>
-                {this.props.username ?
-                    <MainRoot onLogout={this.logout} username={this.props.username} roles={this.props.roles} />
+                {username ?
+                    <MainRoot onLogout={onLogout} username={username} roles={roles} />
                     :
-                    <Authentication onLogin={this.login} />}
-            </BrowserRouter>
-        );
-    }
+                    <Authentication onLogin={onLogin} />}
+            </QueryClientProvider>
+        </BrowserRouter>
+    );
+
 }
 
-
-const mapsDispatchToProps = {
-    logout,
-    login
-}
-
-const mapStateToProps = (state) => {
-    return {
-        username: state.OrthancTools.username,
-        roles: state.OrthancTools.roles
-    }
-}
-
-export default connect(mapStateToProps, mapsDispatchToProps)(App)
-
+export default App;

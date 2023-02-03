@@ -8,11 +8,9 @@ export default ({ rows, dropDown }) => {
 
     const data = useMemo(() => rows, [rows]);
 
-    const [showDetail, setShowDetail] = useState(false);
     const [currentRowIndex, setCurrentRowIndex] = useState('')
 
     const handleDetails = (index) => {
-        setShowDetail(true)
         setCurrentRowIndex(index)
     }
 
@@ -20,21 +18,22 @@ export default ({ rows, dropDown }) => {
         {
             id: 'ID',
             accessorKey: 'ID',
-            header: () => <span>ID</span>,
+            header: "ID",
             cell: row => <i>{row.getValue()}</i>,
             filterType: "STRING",
+            isEditable : true,
         },
         {
             id: 'Progress',
             accessorKey: 'Progress',
-            header: () => <span> Progress</span>,
+            header: "Progress",
             cell: row => <i>{row.getValue()}</i>,
             filterType: "NUMBER",
         },
         {
             id: 'State',
             accessorKey: 'State',
-            header: () => <span> State</span>,
+            header: "State",
             cell: row => <i>{row.getValue()}</i>,
             filterType: "STRING",
             enableColumnFilter: false,
@@ -42,29 +41,31 @@ export default ({ rows, dropDown }) => {
         {
             id: 'Details',
             accessorKey: 'Details',
-            header: () => <span> Details </span>,
+            header: "Details" ,
             cell: (({ row }) => {
                 return (<div className="text-center"><Button className='otjs-button otjs-button-blue'
-                    onClick={() => handleDetails(row.index)}>Details</Button></div>)
+                    onClick={() => {handleDetails(row.index); row.toggleExpanded()}}>Details</Button></div>)
             }),
             enableColumnFilter: false,
         },
         {
             id: 'Actions',
             accessorKey: 'Actions',
-            header: () => <span>Actions</span>,
+            header: "Actions",
             cell: (({ row }) => {
                 return dropDown(row.original.Content.ID)
             }),
             enableColumnFilter: false,
         }
     ]
+    
+    const renderSubComponent = ({row}) => {
+        return <ModalDetailsV8 data={[row.original]} />
+    }
 
     return (
         <Fragment>
-            <ModalDetailsV8 show={showDetail} onHide={() => setShowDetail(false)}
-                data={[rows[currentRowIndex]]} />
-            <CommonTableV8 columns={columnsJobs} data={data} canSort canFilter paginated canSelect />
+            <CommonTableV8 columns={columnsJobs} data={data} canSort canFilter paginated canSelect canExpand renderSubComponent={renderSubComponent}/>
         </Fragment>
     )
 }

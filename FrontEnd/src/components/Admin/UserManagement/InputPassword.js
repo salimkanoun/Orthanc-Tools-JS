@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export default ({ previousPassword, onUpdate }) => {
 
     const [password, setPassword] = useState('')
 
-    const componentDidMount = () => {
+    useEffect(() => {
         if (previousPassword != null) {
             setPassword(previousPassword)
         }
-    }
+    }, [])
+
 
     const changeListener = (event) => {
         if (event.target !== null) {

@@ -1,14 +1,18 @@
-import React, { useEffect, useMemo } from "react";
-import { Button, Modal } from "react-bootstrap";
+import React, { useMemo } from "react";
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
 export default ({ data }) => {
 
     const row = useMemo(() => data, [data])
-    console.log(row)
 
     const columns = [
-
+        {
+            id: 'ID',
+            accessorKey: 'ID',
+            header: 'ID',
+            cell: row => <i>{row.getValue()}</i>,
+            hidden: true,
+        },
         {
             id: 'ErrorCode',
             accessorKey: 'ErrorCode',
@@ -45,11 +49,10 @@ export default ({ data }) => {
             header: "Details",
             cell: ({ row }) => {
                 return (
-                    <div style={{overflowX : 'auto'}}>
-
-<pre >
-                        {JSON.stringify(row.original.Content, null, 2)}
-                    </pre>
+                    <div style={{ overflowX: 'auto' }}>
+                        <pre >
+                            {JSON.stringify(row.original.Content, null, 2)}
+                        </pre>
                     </div>
                 )
             }

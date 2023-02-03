@@ -1,27 +1,30 @@
-import React, { Fragment, useMemo, useState } from "react"
+import React, { Fragment, useMemo, useState, useEffect } from "react"
 import { Row, Col, Modal, Button } from 'react-bootstrap';
 
 import apis from '../../../services/apis'
 import ModifyRole from "./ModifyRole";
 import CreateRole from "./CreateRole";
 import { toast } from "react-toastify";
-import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
 function RoleTable({ roles, onDelete }) {
-    const columns = useMemo(() => [
+    const columns = [
         {
-            accessor: 'name',
-            Header: 'Name',
-            sort: true
+            id : "name",
+            accessoryKey: 'name',
+            header: 'Name',
+            cell : (row) => {row.getValue()}
         }, {
-            accessor: 'edit',
-            Header: 'Edit',
+            id : 'id',
+            accessoryKey: 'edit',
+            header: 'Edit',
             Cell: ({ row }) => {
                 return <ModifyRole name={row.values.name} />
             }
         }, {
-            accessor: 'delete',
-            Header: 'Delete',
+            id : 'delete',
+            accessoryKey: 'delete',
+            header: 'Delete',
             Cell: ({ row }) => {
                 return (<div className="text-center">
                     <Button className='otjs-button otjs-button-red' name='openDelete'
@@ -29,11 +32,11 @@ function RoleTable({ roles, onDelete }) {
                 </div>)
             }
         }
-    ], [onDelete]);
+    ];
 
     const data = useMemo(() => roles, [roles]);
 
-    return <CommonTable columns={columns} data={data} />
+    return <CommonTableV8 columns={columns} data={data} />
 }
 
 export default ({ }) => {
@@ -42,9 +45,9 @@ export default ({ }) => {
     const [roles, setRoles] = useState([])
     const [showDelete, setShowDelete] = useState(false)
 
-    const componentDidMount = () => {
+    useEffect(() => {
         getRoles()
-    }
+    }, [])
 
     const getRoles = async () => {
         try {

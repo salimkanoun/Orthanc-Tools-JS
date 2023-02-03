@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo } from 'react'
 import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
-import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
 
 /**
  * Table with known Peers details with Echo and Remove butto
@@ -9,18 +9,29 @@ import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/Com
 
 export default ({ peersData, refreshPeerData }) => {
 
-    const columns = [{
-        accessor: 'Username',
-        Header: 'Username'
+    
+    const data = useMemo(() => Object.entries(peersData).map(([name, peer]) => ({ name, ...peer })), [peersData]);
+
+    const columns = [
+    {
+        id : 'id',
+        accessoryKey: 'Username',
+        header: 'Username',
+        cell : (row) => {row.getValue()},
     }, {
-        accessor: 'name',
-        Header: 'PeerName'
+        id : 'name',
+        accessoryKey: 'name',
+        header: 'PeerName',
+        cell : (row) => {row.getValue()},
     }, {
-        accessor: 'Url',
-        Header: 'Url'
+        id : 'Url',
+        accessoryKey: 'Url',
+        header: 'Url',
+        cell : (row) => {row.getValue()},
     }, {
         id: 'Echo',
-        Header: 'Echo Peer',
+        accessoryKey : 'Echo',
+        header: 'Echo Peer',
         Cell: ({ row }) => {
             return (<div className="text-center">
                 <input type="button" className='otjs-button otjs-button-blue' onClick={() => {
@@ -33,7 +44,8 @@ export default ({ peersData, refreshPeerData }) => {
         }
     }, {
         id: 'Remove',
-        Header: 'Remove Peer',
+        accessoryKey : 'Remove',
+        header: 'Remove Peer',
         Cell: ({ row }) => {
             return (
                 <div className="text-center">
@@ -47,13 +59,13 @@ export default ({ peersData, refreshPeerData }) => {
                     }} value="Remove" />
                 </div>)
         }
-    }]
+    }
+]
 
-    const data = useMemo(() => Object.entries(peersData).map(([name, peer]) => ({ name, ...peer })), [peersData]);
 
     return (
         <Fragment>
-            <CommonTable data={data} columns={columns} />
+            <CommonTableV8 data={data} columns={columns} />
         </Fragment>
     )
 

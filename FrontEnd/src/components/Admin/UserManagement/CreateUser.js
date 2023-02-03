@@ -7,7 +7,7 @@ import apis from '../../../services/apis';
 import { toast } from 'react-toastify';
 import { Button } from 'react-bootstrap';
 
-export default ({ getUsers }) => {
+export default () => {
 
     const [id, setId] = useState('')
     const [username, setUsername] = useState('')
@@ -41,7 +41,6 @@ export default ({ getUsers }) => {
         setRole('')
         setPassword('')
         setShow(false)
-        getUsers()
     }
 
     const createUser = async () => {

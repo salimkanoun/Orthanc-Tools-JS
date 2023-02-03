@@ -1,61 +1,53 @@
-import React, {Component, Fragment} from 'react'
-import {Modal, Row, Col, Button} from 'react-bootstrap';
+import React, { Fragment, useEffect, useState } from 'react'
+import { Modal, Row, Col, Button } from 'react-bootstrap';
 
 import apis from '../../../services/apis';
 
 import CreateUser from './CreateUser'
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 import UserTable from "./UserTable";
+import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
 
 
-export default class Users extends Component {
+export default () => {
 
-    state = {
-        username: '',
-        users: [],
-        roles: [],
-        showDelete: false,
-    }
+    const [username, setUsername] = useState('');
+    const [showDelete, setShowDelete] = useState(false);
+    const [userId, setUserId] = useState();
 
-    async componentDidMount() {
-        this.getUsers();
-        this.getRoles();
-    }
-
-    getRoles = () => {
-        apis.role.getRoles().then(roles => {
-            this.setState({roles: roles.map(r => r.name)})
-        })
-    }
-
-    getUsers = async () => {
-        let users = []
-
-        try {
-            let answer = await apis.User.getUsers()
-            answer.forEach((user) => {
-                users.push({
+    const { data: users, isLoading : isLoadingUsers } = useCustomQuery(
+        ['users'],
+        () => apis.User.getUsers(),
+        undefined,
+        (answer) => {
+            return answer.map((user) => {
+                return ({
                     ...user,
                     password: ''
                 })
             })
-        } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+        })
+
+    const deleteUser = useCustomMutation(
+        ({username}) =>  apis.User.deleteUser(username),
+        [['users']]
+    )
+
+    const { data : roles, isLoading : isLoadingRoles } = useCustomQuery(
+        ['roles'],
+        () => apis.role.getRoles(),
+        undefined,
+        (roles) => {
+            return roles.map(r => r.name)
         }
+    )
 
-        this.setState({
-            users: users,
-        })
+
+    const resetState = () => {
+        setShowDelete(false)
     }
 
-    resetState = () => {
-        this.setState({
-            showDelete: false
-        })
-        this.getUsers()
-    }
-
-    modify = async (row) => {
+    const modify = async (row) => {
 
         let password = row.password == null ? null : row.password
 
@@ -68,76 +60,63 @@ export default class Users extends Component {
             password,
             row.superAdmin
         ).then(() => {
-            toast.success('User modified', {data:{type:'notification'}})
-            this.resetState()
-        }).catch((error) => toast.error(error.statusText, {data:{type:'notification'}}))
+            toast.success('User modified', { data: { type: 'notification' } })
+            resetState()
+        }).catch((error) => toast.error(error.statusText, { data: { type: 'notification' } }))
     }
 
-    delete = () => {
-        if (this.state.userId !== '') {
 
-            apis.User.deleteUser(this.state.username).then(() => {
-                toast.success('Deleted User', {data:{type:'notification'}})
-                this.resetState()
-            }).catch((error) => {
-                toast.error(error.statusText, {data:{type:'notification'}})
-            })
-        }
-    }
-
-    changeHandler = (initialValue, value, row, column) => {
-        let users = [...this.state.users];
+    const changeHandler = (initialValue, value, row, column) => {
+        let users = [...users];
         users.find(user => user.username === row.username)[column] = value;
-        this.setState({users});
     }
+    console.log(users, isLoadingUsers)
+    if (isLoadingUsers) return "Loading Users"
+    console.log(roles, isLoadingRoles)
+    if (isLoadingRoles) return "Loading Roles"
 
-    render = () => {
-        return (
-            <Fragment>
-                <Row>
-                    <h2 className='card-title'>Local Users</h2>
-                </Row>
-                <Row className="mt-5">
-                    <Col>
-                        <CreateUser getUsers={this.getUsers}/>
-                    </Col>
-                </Row>
-                <Row className="mt-3">
-                    <Col>
-                        <UserTable users={this.state.users} roles={this.state.roles} modify={this.modify}
-                               setDelete={(username, userId) => {
-                                   this.setState({
-                                       username,
-                                       userId,
-                                       showDelete: true
-                                   })
-                        }} onUserUpdate={this.changeHandler}/>
-                    </Col>
-                </Row>
-                <Modal id='delete' show={this.state.showDelete} onHide={this.resetState} size='sm'>
-                    <Modal.Header closeButton>
-                        <h2 className='card-title'>Delete User</h2>
-                    </Modal.Header>
-                    <Modal.Body className="text-center">
-                        Are You sure to delete {this.state.username} ?
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Row className="text-center mt-2">
-                            <Col>
-                                <Button className='otjs-button otjs-button-blue'
-                                    onClick={() => this.setState({showDelete: false})}>Close
-                                </Button>
-                            </Col>
-                            <Col>
-                                <Button className='otjs-button otjs-button-red' onClick={this.delete}>Delete</Button>
-                            </Col>
-                        </Row>
-                        
-                    </Modal.Footer>
-                </Modal>
+    return (
+        <Fragment>
+            <Row>
+                <h2 className='card-title'>Local Users</h2>
+            </Row>
+            <Row className="mt-5">
+                <Col>
+                    <CreateUser />
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                <Col>
+                    <UserTable users={users} roles={roles} modify={modify}
+                        setDelete={(username, userId) => {
+                            setUsername(username);
+                            setUserId(userId);
+                            setShowDelete(true);
+                        }} onUserUpdate={changeHandler} />
+                </Col>
+            </Row>
+            <Modal id='delete' show={showDelete} onHide={resetState} size='sm'>
+                <Modal.Header closeButton>
+                    <h2 className='card-title'>Delete User</h2>
+                </Modal.Header>
+                <Modal.Body className="text-center">
+                    Are You sure to delete {username} ?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Row className="text-center mt-2">
+                        <Col>
+                            <Button className='otjs-button otjs-button-blue'
+                                onClick={() => setShowDelete(false)}>Close
+                            </Button>
+                        </Col>
+                        <Col>
+                            <Button className='otjs-button otjs-button-red' onClick={() => deleteUser({username}) }>Delete</Button>
+                        </Col>
+                    </Row>
+                </Modal.Footer>
+            </Modal>
 
-            </Fragment>
+        </Fragment>
 
-        );
-    }
+    );
 }

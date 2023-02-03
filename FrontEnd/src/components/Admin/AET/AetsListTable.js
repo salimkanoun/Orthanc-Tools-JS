@@ -1,31 +1,43 @@
 import React, {Fragment, useMemo} from 'react'
 import {toast} from 'react-toastify';
 import apis from '../../../services/apis';
-import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
 
 /**
  * Table with known AETs details with Echo and Remove button
  */
 export default ({aetsData, refreshAetData}) => {
 
-    const columns = useMemo(() => [{
-        accessor: 'name',
-        Header: 'Name'
+    const data = useMemo(() => Object.entries(aetsData).map(([name, data]) => ({
+        name,
+        ...data
+    })), [aetsData]);
+
+    const columns = [
+    {
+        id : 'name',
+        accessoryKey: 'name',
+        header: 'Name'
     }, {
-        accessor: 'AET',
-        Header: 'AET'
+        id: 'AET',
+        accessoryKey: 'AET',
+        header: 'AET'
     }, {
-        accessor: 'Host',
-        Header: 'Host'
+        id : 'host',
+        accessoryKey: 'Host',
+        header: 'Host'
     }, {
-        accessor: 'Port',
-        Header: 'Port'
+        id : 'Port',
+        accessoryKey: 'Port',
+        header: 'Port'
     }, {
-        accessor: 'Manufacturer',
-        Header: 'Manufacturer'
+        id : 'Manufacturer',
+        accessoryKey: 'Manufacturer',
+        header: 'Manufacturer'
     }, {
-        accessor: 'echo',
-        Header: 'Echo AET',
+        id : 'echo',
+        accessoryKey: 'echo',
+        header: 'Echo AET',
         Cell: ({row}) => {
             return (<div className="text-center">
                 <input type="button" className='otjs-button otjs-button-blue' onClick={async () => {
@@ -40,8 +52,9 @@ export default ({aetsData, refreshAetData}) => {
             </div>)
         }
     }, {
-        accessor: 'remove',
-        Header: 'Remove AET',
+        id : 'remove',
+        accessoryKey: 'remove',
+        header: 'Remove AET',
         Cell: ({row}) => {
             return (
                 <div className="text-center">
@@ -56,19 +69,16 @@ export default ({aetsData, refreshAetData}) => {
                 </div>)
         },
         formatExtraData: this
-    }], [refreshAetData]);
+    }]
+    ;
 
     /**
      * Translate Orthanc API in array of Rows to be consumed by BootstrapTable
      */
-    const data = useMemo(() => Object.entries(aetsData).map(([name, data]) => ({
-        name,
-        ...data
-    })), [aetsData]);
 
     return (
         <Fragment>
-            <CommonTable data={data} columns={columns}/>
+            <CommonTableV8 data={data} columns={columns}/>
         </Fragment>
     )
 }

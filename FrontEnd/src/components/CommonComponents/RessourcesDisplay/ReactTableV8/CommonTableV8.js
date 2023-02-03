@@ -51,9 +51,6 @@ export default ({
         data,
         getRowId: (originalRow, index, parent) => originalRow?.[id] ?? index,
         columns,
-        defaultColumn: {
-            cell: EditableCell
-        },
         enableRowSelection: true,
         state: {
             rowSelection,

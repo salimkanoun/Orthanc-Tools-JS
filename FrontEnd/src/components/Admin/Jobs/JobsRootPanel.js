@@ -9,6 +9,8 @@ export default ({ }) => {
 
     const [intervalChecker, setIntervalChecker] = useState(null)
     const [rows, setRows] = useState([])
+    const [showDetail, setShowDetail] = useState(false)
+    const [currentRowIndex, setCurrentRowIndex] = useState('')
 
     useEffect(()=>{
         getJobs()
