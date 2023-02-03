@@ -29,14 +29,14 @@ export default ({ endpointsData, onDeleteEndpoint }) => {
             id : 'ssl',
             accessorKey: 'ssl',
             header: 'Use ssl?',
-            Cell: ({ row }) => <p>{(row.values.ssl ? '✓' : '✖')}</p>
+            cell: ({ row }) => <p>{(row.values.ssl ? '✓' : '✖')}</p>
         },
         {
             id : 'delete',
             accessorKey : 'delete',
             dataField: 'delete',
             header: 'Delete endpoint',
-            Cell: ({ row }) => {
+            cell: ({ row }) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {

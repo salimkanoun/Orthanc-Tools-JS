@@ -13,20 +13,20 @@ export default ({users, onUserUpdate, modify, setDelete}) => {
             id: 'id',
             accessorKey: 'id',
             header: 'ID',
-            hiddenState: true
+            hidden: true
         }, {
             id : 'username',
             accessorKey: 'username',
             header: "Username",
             enableColumnFilter: true,
-            //cell: InputCell,
+            //cell : InputCell
         },
         {
             id : 'firstname',
             accessorKey: 'firstname',
             header: "First name",
             enableColumnFilter: true,
-            //cell: InputCe
+            //cell: InputCell
         }, 
         {
             id : 'lastname',

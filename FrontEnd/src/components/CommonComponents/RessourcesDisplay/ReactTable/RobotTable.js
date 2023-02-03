@@ -46,7 +46,7 @@ export default ({
         }, {
             id: 'details',
             header: 'Show Details',
-            Cell: ({ row }) => {
+            cell: ({ row }) => {
                 return <Link className='nav-link otjs-button otjs-button-blue'
                     to={'/robot/' + row.values.id}> Details </Link>
             }
@@ -60,7 +60,7 @@ export default ({
             accessorKey: 'valid',
             header: 'Validation Status',
             hidden: hideValidationButton,
-            Cell: ({ row }) => {
+            cell: ({ row }) => {
                 if (row.values.valid) {
                     if (!row.values.approved) {
                         return (
@@ -80,7 +80,7 @@ export default ({
         }, {
             id: 'remove',
             header: 'Remove Robot',
-            Cell: ({ row }) => {
+            cell: ({ row }) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red w-10'

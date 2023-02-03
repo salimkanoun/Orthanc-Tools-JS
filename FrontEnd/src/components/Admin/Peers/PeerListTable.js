@@ -29,7 +29,7 @@ export default ({ peersData, refreshPeerData }) => {
         id: 'Echo',
         accessorKey : 'Echo',
         header: 'Echo Peer',
-        Cell: ({ row }) => {
+        cell: ({ row }) => {
             return (<div className="text-center">
                 <input type="button" className='otjs-button otjs-button-blue' onClick={() => {
                     apis.peers.echoPeer(row.values.name).then((response) => {
@@ -43,7 +43,7 @@ export default ({ peersData, refreshPeerData }) => {
         id: 'Remove',
         accessorKey : 'Remove',
         header: 'Remove Peer',
-        Cell: ({ row }) => {
+        cell: ({ row }) => {
             return (
                 <div className="text-center">
                     <input type="button" className='otjs-button otjs-button-red' onClick={async () => {

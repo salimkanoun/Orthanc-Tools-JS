@@ -31,13 +31,13 @@ export default ({ endpointsData, onDeleteEndpoint }) => {
             id : 'sshKey',
             accessorKey: 'sshKey',
             header: 'Ssh Private Key',
-            Cell: ({ row }) => <p>{(row.sshKey ? row.sshKey.label : '✖')}</p>
+            cell: ({ row }) => <p>{(row.sshKey ? row.sshKey.label : '✖')}</p>
         },
         {
             id  :'delete',
             accessorKey: 'delete',
             header: 'Delete endpoint',
-            Cell: ({ row }) => {
+            cell: ({ row }) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {

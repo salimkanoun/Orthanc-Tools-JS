@@ -28,7 +28,7 @@ export default ({show, onHide, data}) => {
         }, {
             accessor: 'Content',
             Header: 'Details',
-            Cell: ({row}) => {
+            cell: ({row}) => {
                 return (
                     <pre>
                         {JSON.stringify(row.values.Content, null, 2)}

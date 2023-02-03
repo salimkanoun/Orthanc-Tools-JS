@@ -17,14 +17,14 @@ function RoleTable({ roles, onDelete }) {
             id : 'id',
             accessorKey: 'edit',
             header: 'Edit',
-            Cell: ({ row }) => {
+            cell: ({ row }) => {
                 return <ModifyRole name={row.values.name} />
             }
         }, {
             id : 'delete',
             accessorKey: 'delete',
             header: 'Delete',
-            Cell: ({ row }) => {
+            cell: ({ row }) => {
                 return (<div className="text-center">
                     <Button className='otjs-button otjs-button-red' name='openDelete'
                         onClick={() => onDelete(row.values.name)}>Delete</Button>

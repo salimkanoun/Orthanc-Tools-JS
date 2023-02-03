@@ -16,13 +16,13 @@ export default ({ refreshSshKeysData, sshKeysData }) => {
             id: 'pass',
             accessorKey: 'pass',
             header: 'Has a passphrase',
-            Cell: ({ row }) => <p>{(row.values.pass ? '✓' : '✖')}</p>
+            cell: ({ row }) => <p>{(row.values.pass ? '✓' : '✖')}</p>
         },
         {
             id: 'delete',
             accessorKey: 'delete',
             header: 'Delete Key',
-            Cell: ({ row }) => {
+            cell: ({ row }) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {

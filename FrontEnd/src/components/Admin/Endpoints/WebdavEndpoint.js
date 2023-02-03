@@ -31,13 +31,13 @@ export default ({ onDeleteEndpoint, endpointsData }) => {
             id  : 'digest', 
             accessorKey: 'digest',
             header: 'Use Digest?',
-            Cell: ({ row }) => <p>{(row.values.digest ? '✓' : '✖')}</p>
+            cell: ({ row }) => <p>{(row.values.digest ? '✓' : '✖')}</p>
         },
         {
             id : 'delete',
             accessorKey: 'delete',
             header: 'Delete endpoint',
-            Cell: ({ row }) => {
+            cell: ({ row }) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {

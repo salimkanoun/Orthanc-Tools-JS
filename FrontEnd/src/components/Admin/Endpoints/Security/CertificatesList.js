@@ -16,7 +16,7 @@ export default ({ refreshCertificatesData, certificatesData }) => {
             id: 'delete',
             accessorKey: 'delete',
             header: 'Delete certificate',
-            Cell: ({ row }) => {
+            cell: ({ row }) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
