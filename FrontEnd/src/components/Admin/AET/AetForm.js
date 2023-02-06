@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react'
 import Select from 'react-select'
 import { toast } from 'react-toastify'
 import apis from '../../../services/aets'
-import { Row, Col } from 'react-bootstrap'
+import { Row, Col, FormGroup, Form } from 'react-bootstrap'
 /**
  * Form to declare or modify an AET
  */
@@ -56,34 +56,23 @@ export default ({ refreshAetData }) => {
 
             refreshAetData()
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
 
     }
 
 
     return (
-        <Fragment>
-            <Row className="mt-3">
-                <Col>
-                    <h2 className="card-title">New Aet</h2>
-                </Col>
-            </Row>
-            <Row className="form-group mt-4 align-items-center">
-                <Col sm={2}>
-                    <label htmlFor="name">Name : </label>
-                </Col>
-                <Col sm={4}>
-                    <input type='text' name="name" value={name} className="form-control" onChange={handleChange} />
-                </Col>
-                <Col sm={2}>
-                    <label htmlFor="aetName">Aet Name : </label>
-                </Col>
-                <Col sm={4}>
-                    <input type='text' name="aetName" value={aetName} className="form-control" onChange={handleChange} />
-                </Col>
-
-            </Row>
+        <Form>
+            <h2 className="card-title">New Aet</h2>
+            <FormGroup>
+                <Form.Label>Name :</Form.Label>
+                <Form.Control type="text" value={name} placeholder="Name" onChange={handleChange} />
+            </FormGroup>
+            <FormGroup>
+                <Form.Label>Aet Name :</Form.Label>
+                <Form.Control type="text" value={aetName} placeholder="Aet Name" onChange={handleChange} />
+            </FormGroup>
             <Row className="form-group mt-4 align-items-center">
                 <Col sm={2}>
                     <label htmlFor="ip">IP adress : </label>
@@ -112,6 +101,6 @@ export default ({ refreshAetData }) => {
 
                 </Col>
             </Row>
-        </Fragment>
+        </Form>
     )
 }
