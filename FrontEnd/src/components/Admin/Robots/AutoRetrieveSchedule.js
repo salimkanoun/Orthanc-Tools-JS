@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
 import { Row, Col } from 'react-bootstrap';
@@ -16,21 +16,24 @@ export default ({ }) => {
   /**
    * Get defined schedule hour and min from backend
    */
-  const componentDidMount = async () => {
+
+   useEffect(() => {
+    const getOptions = async () => {await apis.options.getOptions()}
+    const refresh = async() => {await refreshServerTime()}
     try {
-      const response = await apis.options.getOptions()
+      const response = getOptions()
       setHourStart(response.hour_start)
       setMinStart(response.min_start)
       setHourStop(response.hour_stop)
       setMinStop(response.min_stop)
 
-      await refreshServerTime()
+      refresh()
 
     } catch (error) {
       toast.error(error.statusText, {data:{type:'notification'}})
     }
+  }, []);
 
-  }
 
   const refreshServerTime = async () => {
     let serverTime = await apis.options.getServerTime()

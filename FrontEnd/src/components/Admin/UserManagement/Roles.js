@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
 function RoleTable({ roles, onDelete }) {
+    const data = useMemo(() => roles, [roles]);
+    console.log(data)
     const columns = [
         {
             id : "name",
@@ -18,7 +20,7 @@ function RoleTable({ roles, onDelete }) {
             accessorKey: 'edit',
             header: 'Edit',
             cell: ({ row }) => {
-                return <ModifyRole name={row.values.name} />
+                return <ModifyRole name={row.name} />
             }
         }, {
             id : 'delete',
@@ -33,7 +35,6 @@ function RoleTable({ roles, onDelete }) {
         }
     ];
 
-    const data = useMemo(() => roles, [roles]);
 
     return <CommonTableV8 columns={columns} data={data} />
 }

@@ -1,21 +1,22 @@
-import React, { useState} from 'react'
-import {toast} from 'react-toastify';
+import React, { useState, useEffect } from 'react'
+import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
 import RobotTable from "../../CommonComponents/RessourcesDisplay/ReactTable/RobotTable";
 
 
-export default ({}) => {
+export default ({ }) => {
 
     const [rows, setRows] = useState([])
 
-    const componentDidMount = () => {
+    useEffect(() => {
         refreshHandler()
         startRefreshMonitoring()
-    }
+    }, []);
 
-    const componentWillUnmount = () => {
+    useEffect(() => {
         stopRefreshMonitoring()
-    }
+    }, []);
+
 
     const startRefreshMonitoring = () => {
         this.intervalChcker = setInterval(refreshHandler, 2000)
@@ -29,7 +30,7 @@ export default ({}) => {
         apis.retrieveRobot.validateRobot(id).then(() => {
             refreshHandler()
         }).catch(error => {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         })
     }
 
@@ -38,7 +39,7 @@ export default ({}) => {
             await apis.retrieveRobot.deleteRobot(id)
             refreshHandler()
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
     }
 
@@ -56,15 +57,15 @@ export default ({}) => {
                 approved: robotJob.details.approved
             })))
         }).catch(error => {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         })
     }
 
-        return (
-            <>
-                <h2 className="card-title mt-4">Retrieve Robots : </h2>
-                <RobotTable robots={rows} deleteJobHandler={deleteJobHandler}
-                            refreshHandler={refreshHandler} validationRobotHandler={validationRobotHandler}/>
-            </>
-        )
+    return (
+        <>
+            <h2 className="card-title mt-4">Retrieve Robots : </h2>
+            <RobotTable robots={rows} deleteJobHandler={deleteJobHandler}
+                refreshHandler={refreshHandler} validationRobotHandler={validationRobotHandler} />
+        </>
+    )
 }

@@ -1,5 +1,5 @@
 import Select from 'react-select';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import apis from "../../../services/apis";
 
 export default ({ labelProps, username }) => {
@@ -8,21 +8,24 @@ export default ({ labelProps, username }) => {
     const [label, setLabel] = useState(labelProps)
     const [options, setOptions] = useState([])
 
-    const componentDidMount = async () => {
-        let roles = await apis.role.getRoles()
+    useEffect(() => {
+        const getRoles = async () => {await apis.role.getRoles()}
+        let roles = getRoles()
         for (var i = 0; i < roles.length; i++) {
             roles[i].value = roles[i].name
             roles[i].label = roles[i].value
         }
 
-        let selectedRoles = await apis.rolelabel.getLabelRoles(label)
+        const getLabelRoles = async () => {await apis.rolelabel.getLabelRoles(label)}
+        let selectedRoles = getLabelRoles()
         for (var j = 0; j < selectedRoles.length; j++) {
             selectedRoles[j].value = selectedRoles[j].role_name
             selectedRoles[j].label = selectedRoles[j].value
         }
         setOptions(roles)
         setSelected(selectedRoles)
-    }
+    }, []);
+
 
     const handleOnChange = async (value) => {
 

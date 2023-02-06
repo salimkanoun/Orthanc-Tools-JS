@@ -26,7 +26,8 @@ export default () => {
                     password: ''
                 })
             })
-        })
+        }
+    )
 
     const deleteUser = useCustomMutation(
         ({username}) =>  apis.User.deleteUser(username),
@@ -70,9 +71,8 @@ export default () => {
         let users = [...users];
         users.find(user => user.username === row.username)[column] = value;
     }
-    console.log(users, isLoadingUsers)
+    
     if (isLoadingUsers) return "Loading Users"
-    console.log(roles, isLoadingRoles)
     if (isLoadingRoles) return "Loading Roles"
 
     return (

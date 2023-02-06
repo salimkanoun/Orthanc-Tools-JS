@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react"
+import React, { Fragment, useEffect, useState } from "react"
 import Toggle from 'react-toggle'
 import apis from "../../../services/apis"
 import Select from 'react-select'
@@ -55,14 +55,18 @@ export default ({ }) => {
         })
     }
 
-    const componentDidMount = async () => {
+    useEffect(()=> {
+
+        const getActivated = async () => {await apis.options.getMode()}
+        const getOptions = async () => {await apis.ldap.getLdapSettings()}
+        
         let activated, options
 
         try {
             //Mode
-            activated = await apis.options.getMode()
+            activated = getActivated()
             //Ldap
-            options = await apis.ldap.getLdapSettings()
+            options = getOptions()
         } catch (error) {
             toast.error(error.statusText, {data:{type:'notification'}})
             return
@@ -88,7 +92,8 @@ export default ({ }) => {
         setGroup(options.group)
         setUser(options.user)
         setBase(options.base)
-    }
+    }, [])
+
 
     const changeMode = async () => {
         try {

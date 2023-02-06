@@ -1,17 +1,17 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 import Select from 'react-select'
 import { toast } from 'react-toastify'
 import apis from '../../../services/apis'
 
 
-export default ({onChange}) => {
+export default ({ onChange }) => {
 
     const [optionRoles, setOptionRoles] = useState({})
 
-
-    const componentDidMount = async () => {
+    useEffect(() => {
+        const getRolesApis = async () => { await apis.role.getRoles() }
         try {
-            let roles = await apis.role.getRoles()
+            let roles = getRolesApis
             let options = []
             roles.forEach((role) => {
                 options.push({
@@ -22,14 +22,14 @@ export default ({onChange}) => {
             setOptionRoles(options)
 
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
+    }, [])
 
-    }
 
 
-        return (
-            <Select single options={optionRoles} onChange={onChange} />
-        )
+    return (
+        <Select single options={optionRoles} onChange={onChange} />
+    )
 
 }

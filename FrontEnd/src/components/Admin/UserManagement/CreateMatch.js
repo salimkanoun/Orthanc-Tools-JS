@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { Fragment, useEffect, useMemo, useState } from 'react'
 import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select'
@@ -40,21 +40,23 @@ export default ({ }) => {
     const [optionsGroupName, setOptionsGroupName] = useState([])
     const [associations, setAssociations] = useState([])
 
-    const componentDidMount = async () => {
-
+    useEffect(() => {
+        const getOptionsGroupName = async () => { await getExistingGroupOptions()}
+        const getOptionGroupRole  = async () => {await getAssociedRole()}
+        const getAssociations = async () => {await getExistingAssociations()}
         try {
-            let optionsGroupName = await getExistingGroupOptions()
-            let optionGroupRole = await getAssociedRole()
-            let associations = await getExistingAssociations()
+            let optionsGroupName = getOptionsGroupName()
+            let optionGroupRole = getOptionGroupRole()
+            let associations = getAssociations()
 
             setOptionsAssociedRole(optionGroupRole)
             setOptionsGroupName(optionsGroupName)
             setAssociations(associations)
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
+    }, []);
 
-    }
 
     const getExistingAssociations = async () => {
         return await apis.ldap.getAllCorrespodences()
@@ -76,7 +78,7 @@ export default ({ }) => {
                 roles.push({ value: role.name, label: role.name })
             })
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
 
         return roles
@@ -86,12 +88,12 @@ export default ({ }) => {
     const create = async () => {
         try {
             await apis.ldap.createMatch(groupName.value, associedRole.value)
-            toast.success('Association Created', {data:{type:'notification'}})
+            toast.success('Association Created', { data: { type: 'notification' } })
             setAssociations(await getExistingAssociations())
             showModal(false)
 
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
     }
 
@@ -104,7 +106,7 @@ export default ({ }) => {
             })
             return options
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
 
     }
@@ -116,10 +118,10 @@ export default ({ }) => {
     const deletef = async (ldapGroup) => {
         try {
             await apis.ldap.deleteMatch(ldapGroup)
-            toast.success('Assocication deleted', {data:{type:'notification'}})
+            toast.success('Assocication deleted', { data: { type: 'notification' } })
             setAssociations(await getExistingAssociations())
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
     }
 

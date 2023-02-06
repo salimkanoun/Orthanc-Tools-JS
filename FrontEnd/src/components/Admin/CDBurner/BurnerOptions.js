@@ -95,6 +95,8 @@ export default class BurnerOptions extends Component {
 
 
     }
+
+    
     componentDidMount = async () => {
         await this.refreshData()
 

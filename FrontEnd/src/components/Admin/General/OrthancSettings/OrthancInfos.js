@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import apis from '../../../../services/apis';
 
@@ -7,24 +7,16 @@ export default ({ }) => {
     const [plugins, setPlugins] = useState([]);
     const [system, setSystem] = useState([])
 
-    const componentDidMount = async () => {
-
-        //Fetch plugin list from backend
-        let orthancSystem = null
-        let plugins = null
-
-        try {
-            orthancSystem = await apis.options.getOrthancSystem()
-            plugins = await apis.options.getPlugins()
-        } catch (error) {
-            console.log(error)
-            toast.error(error.statusText, {data:{type:'notification'}})
+    useEffect(() => {
+        const functionAwait = async() => {
+            let orthancSystem = await apis.options.getOrthancSystem()
+            let plugins = await apis.options.getPlugins()
+            generatePluginList(plugins)
+            generateSystemList(orthancSystem)
         }
 
-        generatePluginList(plugins)
-        generateSystemList(orthancSystem)
-
-    }
+        functionAwait()
+    }, []);
 
     const generatePluginList = (data) => {
         let list = []
