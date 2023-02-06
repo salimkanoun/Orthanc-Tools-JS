@@ -9,6 +9,8 @@ import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8
  */
 export default ({ aetsData, refreshAetData }) => {
 
+    console.log(aetsData)
+
     const data = useMemo(() => Object.entries(aetsData).map(([name, data]) => ({
         name,
         ...data

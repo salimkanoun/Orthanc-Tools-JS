@@ -57,6 +57,7 @@ const App = () => {
                     <MainRoot onLogout={onLogout} username={username} roles={roles} />
                     :
                     <Authentication onLogin={onLogin} />}
+                <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
         </BrowserRouter>
     );

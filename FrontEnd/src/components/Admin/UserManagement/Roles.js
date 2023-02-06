@@ -1,63 +1,26 @@
-import React, { Fragment, useMemo, useState, useEffect } from "react"
+import React, { Fragment, useState } from "react"
 import { Row, Col, Modal, Button } from 'react-bootstrap';
 
 import apis from '../../../services/apis'
-import ModifyRole from "./ModifyRole";
 import CreateRole from "./CreateRole";
 import { toast } from "react-toastify";
-import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
+import { useCustomQuery } from "../../CommonComponents/ReactQuery/hooks";
+import RoleTable from "../UserManagement/RoleTable";
 
-function RoleTable({ roles, onDelete }) {
-    const data = useMemo(() => roles, [roles]);
-    console.log(data)
-    const columns = [
-        {
-            id : "name",
-            accessorKey: 'name',
-            header: 'Name',
-        }, {
-            id : 'id',
-            accessorKey: 'edit',
-            header: 'Edit',
-            cell: ({ row }) => {
-                return <ModifyRole name={row.name} />
-            }
-        }, {
-            id : 'delete',
-            accessorKey: 'delete',
-            header: 'Delete',
-            cell: ({ row }) => {
-                return (<div className="text-center">
-                    <Button className='otjs-button otjs-button-red' name='openDelete'
-                        onClick={() => onDelete(row.values.name)}>Delete</Button>
-                </div>)
-            }
-        }
-    ];
-
-
-    return <CommonTableV8 columns={columns} data={data} />
-}
 
 export default ({ }) => {
 
     const [name, setName] = useState('')
-    const [roles, setRoles] = useState([])
     const [showDelete, setShowDelete] = useState(false)
 
-    useEffect(() => {
-        getRoles()
-    }, [])
 
-    const getRoles = async () => {
-        try {
-            let roles = await apis.role.getRoles()
-            setRoles(roles)
-        } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
-        }
+    const { data: roles, isLoading : isLoadingRoles, refetch : refetchRole } = useCustomQuery(
+        ['roles'],
+        () => apis.role.getRoles(),
+        undefined,
+    )
 
-    }
+
 
     const handleDelete = (name) => {
         setName(name)
@@ -74,8 +37,10 @@ export default ({ }) => {
     const onHide = () => {
         setName('')
         setShowDelete(false)
-        getRoles()
+        refetchRole()
     }
+    
+    if (isLoadingRoles) return "Loading roles"
 
     return (
         <Fragment>
@@ -86,7 +51,7 @@ export default ({ }) => {
             </Row>
             <Row className="mt-4">
                 <Col>
-                    <CreateRole onSubmitRole={getRoles} />
+                    <CreateRole onSubmitRole={refetchRole()} />
                 </Col>
             </Row>
             <Row className="mt-3">

@@ -3,6 +3,7 @@ import Aets from './AetsListTable'
 import AetForm from './AetForm'
 import apis from '../../../services/apis'
 import {toast} from 'react-toastify'
+import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 
 /**
  * Root Panel of AETs options
@@ -22,6 +23,14 @@ const AetRootPanel = () => {
     /**
      * Get Aets Data from backend
      */
+
+    /*const { data: aets, isLoading : isLoadingAets, refetch : refetchAets } = useCustomQuery(
+        ['aets'],
+        () => apis.aets.getAetsExpand(),
+        undefined,
+    )*/
+
+
     const refreshAetsData = async () => {
         try {
             let aets = await apis.aets.getAetsExpand()
