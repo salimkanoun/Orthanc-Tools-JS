@@ -2,19 +2,20 @@ import React, { Fragment, useMemo } from 'react'
 import { Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
+import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks';
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
 
 /**
  * Table with known AETs details with Echo and Remove button
  */
-export default ({ aetsData, refreshAetData }) => {
+export default ({ aetsData }) => {
 
     console.log(aetsData)
 
-    const data = useMemo(() => Object.entries(aetsData).map(([name, data]) => ({
-        name,
-        ...data
-    })), [aetsData]);
+    const deleteAet = useCustomMutation(
+        ({ name }) => apis.aets.deleteAet(name),
+        [['aets']]
+    )
 
     const columns = [
         {
@@ -42,34 +43,28 @@ export default ({ aetsData, refreshAetData }) => {
             accessorKey: 'echo',
             header: 'Echo AET',
             cell: (({ row }) => {
-                return (<div className="text-center"><Button className='otjs-button otjs-button-blue'
-                    onClick={async () => {
-                        try {
-                            await apis.aets.echoAet(row.values.name)
-                            toast.success(row.values.name + ' Success', { data: { type: 'notification' } })
-                        } catch (error) {
-                            toast.error(row.values.name + ' Echo Failure', { data: { type: 'notification' } })
-                        }
-
-                    }} > Echo </Button>
-                </div>)
+                return (
+                    <Button className='otjs-button otjs-button-blue'
+                        onClick={() => {
+                            const name = row.original.name
+                            apis.aets.echoAet(name)
+                                .then(() => { toast.success(name + ' Success', { data: { type: 'notification' } }) })
+                                .catch(() => { toast.error(name + ' Echo Failure', { data: { type: 'notification' } }) })
+                        }} > Echo </Button>
+                )
             })
-        }, {
+        },
+        {
             id: 'remove',
             accessorKey: 'remove',
             header: 'Remove AET',
             cell: ({ row }) => {
                 return (
-                    <div className="text-center">
-                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
-                            try {
-                                await apis.aets.deleteAet(row.values.name);
-                                refreshAetData()
-                            } catch (error) {
-                                toast.error(error.statusText, { data: { type: 'notification' } })
-                            }
-                        }} value="Remove" />
-                    </div>)
+                    <Button className='otjs-button otjs-button-red' onClick={() => {
+                        const name = row.original.name
+                        deleteAet.mutate({ name })
+                    }}  > Remove </Button>
+                )
             },
             formatExtraData: this
         }]
@@ -78,10 +73,9 @@ export default ({ aetsData, refreshAetData }) => {
     /**
      * Translate Orthanc API in array of Rows to be consumed by BootstrapTable
      */
-
     return (
         <Fragment>
-            <CommonTableV8 data={data} columns={columns} />
+            <CommonTableV8 data={aetsData} columns={columns} />
         </Fragment>
     )
 }

@@ -6,7 +6,6 @@ import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8
 
 export default ({ roles, onDelete }) => {
     const data = useMemo(() => roles, [roles]);
-    console.log(data)
     const columns = [
         {
             id : "name",

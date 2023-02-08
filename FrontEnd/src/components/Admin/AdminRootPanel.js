@@ -8,7 +8,7 @@ import EndpointsRootPanel from './Endpoints/EndpointsRootPanel'
 import GeneralRoot from './General/GeneralRoot'
 import TaskRootPanel from './Robots/TaskRootPanel'
 import LabelRootPanel from "./Labels/LabelRootPanel"
-import { Button, Col, Nav, Navbar, Row } from 'react-bootstrap'
+import { Button, Col, Container, Nav, Navbar, Row } from 'react-bootstrap'
 
 /**
  * Root Panel of Admin route
@@ -26,7 +26,7 @@ export default () => {
     const LABELS = 'Labels'
 
 
-    const [selectedOptionMenu, setSelectedOptionMenu] = useState('General')
+    const [selectedOptionMenu, setSelectedOptionMenu] = useState(GENERAL)
 
     const onSelectMenuHandler = (type) => {
         setSelectedOptionMenu(type);

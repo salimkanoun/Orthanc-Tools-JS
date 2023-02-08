@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import Form from '../CommonComponents/SearchForm/Form'
 
-export default class SearchForm extends Component{
+export default ({onSubmit}) => {
 
-    dataSearch = (formData) => {
+    const dataSearch = (formData) => {
          
         //dateForm
         let date = ""
@@ -33,16 +33,14 @@ export default class SearchForm extends Component{
         }
 
         //Call submit function to be handled by parent
-        this.props.onSubmit(contentSearch)
+        onSubmit(contentSearch)
 
     }
 
     //form
-    render(){
         return (
-            <Form title="Search" icon="fas fa-search" onFormValidate={this.dataSearch} >
+            <Form title="Search" icon="fas fa-search" onFormValidate={dataSearch} >
                     <input type='button' className='btn otjs-button otjs-button-blue' value='Search' />
             </Form>
         )
-    }
 }

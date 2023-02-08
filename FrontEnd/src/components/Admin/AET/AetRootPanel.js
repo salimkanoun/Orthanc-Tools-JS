@@ -1,50 +1,35 @@
 import React, {useEffect, useState} from 'react'
-import Aets from './AetsListTable'
 import AetForm from './AetForm'
 import apis from '../../../services/apis'
-import {toast} from 'react-toastify'
 import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
+import AetsTable from './AetsTable'
 
 /**
  * Root Panel of AETs options
  */
 const AetRootPanel = () => {
 
-    const [aets, setAets] = useState([])
-
-    /**
-     * Replacement of ComponentDidMount
-     * See https://dev.to/trentyang/replace-lifecycle-with-hooks-in-react-3d4n
-     */
-    useEffect(() => {
-        refreshAetsData()
-    }, [])
-
-    /**
-     * Get Aets Data from backend
-     */
-
-    /*const { data: aets, isLoading : isLoadingAets, refetch : refetchAets } = useCustomQuery(
+    const { data: aets, isLoading : isLoadingAets } = useCustomQuery(
         ['aets'],
         () => apis.aets.getAetsExpand(),
         undefined,
-    )*/
-
-
-    const refreshAetsData = async () => {
-        try {
-            let aets = await apis.aets.getAetsExpand()
-            setAets(aets)
-        } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+        (answer) => {
+            return Object.entries(answer).map(([aetName, data]) => ({
+                name : aetName,
+                ...data
+            })
+            ) 
         }
+    )
 
-    }
+    console.log(aets)
+
+    if (isLoadingAets) return "Loading...."
 
     return (
         <>
-            <Aets aetsData={aets} refreshAetData={refreshAetsData}/>
-            <AetForm refreshAetData={refreshAetsData}/>
+            <AetsTable aetsData={aets} />
+            <AetForm />
         </>
     )
 }

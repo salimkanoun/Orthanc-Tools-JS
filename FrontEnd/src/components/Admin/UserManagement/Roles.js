@@ -20,7 +20,7 @@ export default ({ }) => {
         undefined,
     )
 
-
+console.log(refetchRole)
 
     const handleDelete = (name) => {
         setName(name)

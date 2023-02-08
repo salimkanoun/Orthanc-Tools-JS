@@ -1,12 +1,12 @@
-import React, { Fragment, useState } from 'react'
-import Select from 'react-select'
-import { toast } from 'react-toastify'
+import React, { useState } from 'react'
 import apis from '../../../services/aets'
-import { Row, Col, FormGroup, Form } from 'react-bootstrap'
+import { Row, Col, FormGroup, Form, Button } from 'react-bootstrap'
+import Select from 'react-select'
+import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks'
 /**
  * Form to declare or modify an AET
  */
-export default ({ refreshAetData }) => {
+export default ({ }) => {
 
     const [name, setName] = useState('');
     const [aetName, setAetName] = useState('');
@@ -23,84 +23,89 @@ export default ({ refreshAetData }) => {
     ]
 
     /**
-     * Fill input text of users in current state
-     * @param {*} event 
-     */
-    const handleChange = (event) => {
-        const target = event.target
-        const name = target.name
-        const value = target.type === 'checkbox' ? target.checked : target.value
-
-        setName(value)
-    }
-
-    /**
      * Fill manufacturer select choice in current state
      * @param {*} item 
      */
-    const manufacturerChangeListener = (item) => {
-        setManufacturer(item)
+    const manufacturerChangeListener = (option) => {
+        setManufacturer(option)
     }
 
-    /**
-     * Listener on form submission
-     */
-    const handleClick = async () => {
-        try {
-            await apis.updateAet(name, aetName, ip, port, manufacturer.value)
-            setName('')
-            setAetName('')
-            setIp('')
-            setPort('')
-            setManufacturer({ value: 'Generic', label: 'Generic' })
 
-            refreshAetData()
-        } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        }
+    const sendAet = useCustomMutation(
+        ({ name, aetName, ip, port, manufacturer }) => {
+            apis.updateAet(name, aetName, ip, port, manufacturer)
+            resetState()
+        },
+        [['aets']]
+    )
 
+    const onHandleSend = () => {
+        let manufacturerValue = manufacturer.value
+        sendAet.mutate ({ name, aetName, ip, port, manufacturerValue }) 
     }
 
+    const resetState = () => {
+        setName('')
+        setAetName('')
+        setIp('')
+        setPort('')
+        setManufacturer({ value: 'Generic', label: 'Generic' })
+    }
+
+    const manufacturerOptions = manufacturers.map((type) =>
+        ({
+            value: type.value,
+            label: type.label
+        })
+    )
 
     return (
         <Form>
             <h2 className="card-title">New Aet</h2>
-            <FormGroup>
-                <Form.Label>Name :</Form.Label>
-                <Form.Control type="text" value={name} placeholder="Name" onChange={handleChange} />
-            </FormGroup>
-            <FormGroup>
-                <Form.Label>Aet Name :</Form.Label>
-                <Form.Control type="text" value={aetName} placeholder="Aet Name" onChange={handleChange} />
-            </FormGroup>
-            <Row className="form-group mt-4 align-items-center">
-                <Col sm={2}>
-                    <label htmlFor="ip">IP adress : </label>
-                </Col>
-                <Col sm={4}>
-                    <input type='text' name="ip" value={ip} className="form-control" onChange={handleChange} />
-                </Col>
-                <Col sm={2}>
-                    <label htmlFor="port">Port : </label>
-                </Col>
-                <Col sm={4}>
-                    <input type='number' min="0" max="999999" value={port} name="port" className="form-control" onChange={handleChange} />
-                </Col>
-            </Row>
-            <Row className="form-group mt-4 align-items-center">
-                <Col sm={2}>
-                    <label htmlFor="manufacturer">Manufacturer : </label>
-                </Col>
+            
+            <Row>
                 <Col>
-                    <Select className="col-sm" options={manufacturers} value={manufacturer} name="manufacturer" onChange={manufacturerChangeListener} />
+                    <FormGroup>
+                        <Form.Label>Name :</Form.Label>
+                        <Form.Control type="text" value={name} placeholder="Name" onChange={(event) => setName(event.target.value)} />
+                    </FormGroup>
                 </Col>
-            </Row>
-            <Row className="mt-4 align-items-center text-center">
-                <Col>
-                    <input type='button' className='otjs-button otjs-button-blue' onClick={handleClick} value='Send' />
 
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Aet Name :</Form.Label>
+                        <Form.Control type="text" value={aetName} placeholder="Aet Name" onChange={(event) => setAetName(event.target.value)} />
+                    </FormGroup>
                 </Col>
             </Row>
+
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>IP adress :</Form.Label>
+                        <Form.Control type="text" value={ip} placeholder="IP adress" onChange={(event) => setIp(event.target.value)} />
+                    </FormGroup>
+                </Col>
+
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Port :</Form.Label>
+                        <Form.Control type="number" min="0" max="999999" value={port} placeholder="Port" onChange={(event) => setPort(event.target.value)} />
+                    </FormGroup>
+                </Col>
+            </Row>
+
+            <FormGroup>
+                <Form.Label>Manufacturer :</Form.Label>
+                <Select value = {manufacturer} options={manufacturerOptions}  onChange={manufacturerChangeListener} isClearable />
+            </FormGroup>
+
+            <FormGroup>
+                <Button value="Send" onClick={onHandleSend} className='otjs-button otjs-button-blue'> Send </Button>
+            </FormGroup>
+
         </Form>
+
+
     )
 }
