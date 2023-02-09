@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap'
 import OrthancSettings from './OrthancSettings/OrthancSettings'
 import RedisSettings from './Redis/RedisSettings'
 
-export default ({}) => {
+export default () => {
 
   const [selectedOptionMenu, setSelectedOptionMenu] = useState('orthancSettings')
 

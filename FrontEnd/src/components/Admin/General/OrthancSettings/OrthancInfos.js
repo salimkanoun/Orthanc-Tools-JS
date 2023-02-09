@@ -1,38 +1,36 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import apis from '../../../../services/apis';
+import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks';
 
 export default ({ }) => {
 
-    const [plugins, setPlugins] = useState([]);
-    const [system, setSystem] = useState([])
-
-    useEffect(() => {
-        const functionAwait = async() => {
-            let orthancSystem = await apis.options.getOrthancSystem()
-            let plugins = await apis.options.getPlugins()
-            generatePluginList(plugins)
-            generateSystemList(orthancSystem)
+    const { data: plugins, isLoading: isLoadingPlugins } = useCustomQuery(
+        ['plugins'],
+        () => apis.options.getPlugins(),
+        undefined,
+        (answer) => {
+            return answer.map((element) => {
+                return <li key={element}>{element}</li>
+            }
+            )
         }
+    )
 
-        functionAwait()
-    }, []);
+    const { data: system, isLoading: isLoadingSystem } = useCustomQuery(
+        ['system'],
+        () => apis.options.getOrthancSystem(),
+        undefined,
+        (answer) => {
+            return Object.entries(answer).map(([key, value]) => {
+                return <li key={key}>{key + ' : ' + value}</li>
+            }
+            )
+        }
+    )
 
-    const generatePluginList = (data) => {
-        let list = []
-        data.forEach(element => list.push(<li key={element}>{element}</li>))
-        setPlugins(list)
-
-    }
-
-    const generateSystemList = (data) => {
-
-        let list = []
-        Object.entries(data).forEach(([key, value]) => {
-            list.push(<li key={key}>{key + ' : ' + value}</li>)
-        })
-        setSystem(list)
-    }
+    if (isLoadingPlugins) return "Loading ..."
+    if (isLoadingSystem) return "Loading..."
 
 
     return (

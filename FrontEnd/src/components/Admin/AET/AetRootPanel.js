@@ -9,16 +9,16 @@ import AetsTable from './AetsTable'
  */
 export default () => {
 
-    const { data: aets, isLoading : isLoadingAets } = useCustomQuery(
+    const { data: aets, isLoading: isLoadingAets } = useCustomQuery(
         ['aets'],
         () => apis.aets.getAetsExpand(),
         undefined,
         (answer) => {
             return Object.entries(answer).map(([aetName, data]) => ({
-                name : aetName,
+                name: aetName,
                 ...data
             })
-            ) 
+            )
         }
     )
 
