@@ -6,7 +6,7 @@ import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks'
 /**
  * Form to declare or modify an AET
  */
-export default ({ }) => {
+export default () => {
 
     const [name, setName] = useState('');
     const [aetName, setAetName] = useState('');
@@ -101,11 +101,9 @@ export default ({ }) => {
             </FormGroup>
 
             <FormGroup>
-                <Button value="Send" onClick={onHandleSend} className='otjs-button otjs-button-blue'> Send </Button>
+                <Button onClick={onHandleSend} className='otjs-button otjs-button-blue'> Send </Button>
             </FormGroup>
 
         </Form>
-
-
     )
 }

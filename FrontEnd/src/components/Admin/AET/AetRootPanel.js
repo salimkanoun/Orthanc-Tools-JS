@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import AetForm from './AetForm'
 import apis from '../../../services/apis'
 import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
@@ -7,7 +7,7 @@ import AetsTable from './AetsTable'
 /**
  * Root Panel of AETs options
  */
-const AetRootPanel = () => {
+export default () => {
 
     const { data: aets, isLoading : isLoadingAets } = useCustomQuery(
         ['aets'],
@@ -22,8 +22,6 @@ const AetRootPanel = () => {
         }
     )
 
-    console.log(aets)
-
     if (isLoadingAets) return "Loading...."
 
     return (
@@ -33,5 +31,3 @@ const AetRootPanel = () => {
         </>
     )
 }
-
-export default AetRootPanel

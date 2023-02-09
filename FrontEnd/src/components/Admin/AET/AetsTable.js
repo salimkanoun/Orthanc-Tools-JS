@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from 'react'
+import React from 'react'
 import { Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
@@ -9,8 +9,6 @@ import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8
  * Table with known AETs details with Echo and Remove button
  */
 export default ({ aetsData }) => {
-
-    console.log(aetsData)
 
     const deleteAet = useCustomMutation(
         ({ name }) => apis.aets.deleteAet(name),
@@ -74,8 +72,6 @@ export default ({ aetsData }) => {
      * Translate Orthanc API in array of Rows to be consumed by BootstrapTable
      */
     return (
-        <Fragment>
-            <CommonTableV8 data={aetsData} columns={columns} />
-        </Fragment>
+        <CommonTableV8 data={aetsData} columns={columns} />
     )
 }
