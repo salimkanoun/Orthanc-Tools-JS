@@ -8,39 +8,29 @@ export default () => {
         ['plugins'],
         () => apis.options.getPlugins(),
         undefined,
-        (answer) => {
-            return answer.map((element) => {
-                return <li key={element}>{element}</li>
-            }
-            )
-        }
     )
 
     const { data: system, isLoading: isLoadingSystem } = useCustomQuery(
         ['system'],
         () => apis.options.getOrthancSystem(),
-        undefined,
-        (answer) => {
-            return Object.entries(answer).map(([key, value]) => {
-                return <li key={key}>{key + ' : ' + value}</li>
-            }
-            )
-        }
+        undefined
     )
 
-    if (isLoadingPlugins) return "Loading ..."
-    if (isLoadingSystem) return "Loading..."
-
+    if (isLoadingSystem || isLoadingPlugins) return "Loading ..."
 
     return (
         <Fragment>
             <h3 className="card-title">System</h3>
             <ul>
-                {system}
+                {
+                    Object.entries(system).map(([key, value]) => <li key={key}>{key + ' : ' + value}</li>)
+                }
             </ul>
             <h3 className="card-title">Plugins</h3>
             <ul>
-                {plugins}
+                {
+                    plugins.map((element) => <li key={element}>{element}</li>)
+                }
             </ul>
         </Fragment>
     );

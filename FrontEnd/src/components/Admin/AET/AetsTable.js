@@ -48,7 +48,9 @@ export default ({ aetsData }) => {
                             apis.aets.echoAet(name)
                                 .then(() => { toast.success(name + ' Success', { data: { type: 'notification' } }) })
                                 .catch(() => { toast.error(name + ' Echo Failure', { data: { type: 'notification' } }) })
-                        }} > Echo </Button>
+                        }} >
+                        Echo
+                    </Button>
                 )
             })
         },
@@ -61,7 +63,9 @@ export default ({ aetsData }) => {
                     <Button className='otjs-button otjs-button-red' onClick={() => {
                         const name = row.original.name
                         deleteAet.mutate({ name })
-                    }}  > Remove </Button>
+                    }}  >
+                        Remove
+                    </Button>
                 )
             },
             formatExtraData: this

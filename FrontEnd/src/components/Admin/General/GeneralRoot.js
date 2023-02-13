@@ -5,39 +5,44 @@ import RedisSettings from './Redis/RedisSettings'
 
 export default () => {
 
-  const [selectedOptionMenu, setSelectedOptionMenu] = useState('orthancSettings')
+  const ORTHANC_SETTINGS = 'orthancSettings'
+  const REDIS_SETTINGS = 'redisSettings'
 
-  let switchTab = (optionName) => {
+  const [selectedOptionMenu, setSelectedOptionMenu] = useState(ORTHANC_SETTINGS)
+
+  const switchTab = (optionName) => {
     setSelectedOptionMenu(optionName)
   }
 
-  let getComponentToDisplay = () => {
+  const getComponentToDisplay = () => {
     switch (selectedOptionMenu) {
-      case 'orthancSettings':
+      case ORTHANC_SETTINGS:
         return (<OrthancSettings />)
-      case 'redisSettings': 
+      case REDIS_SETTINGS:
         return (<RedisSettings />)
       default:
         return (null)
     }
   }
 
-  return ( 
-    <div>
+  return (
+    <>
       <div className='mb-5'>
         <nav className="otjs-navmenu container-fluid">
           <div className="otjs-navmenu-nav">
             <li className='col-6 text-center'>
               <Button
-                className={selectedOptionMenu === 'orthancSettings' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                onClick={() => switchTab('orthancSettings')}>Orthanc Settings
-              </Button> 
+                className={selectedOptionMenu === ORTHANC_SETTINGS ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                onClick={() => switchTab(ORTHANC_SETTINGS)}>
+                  Orthanc Settings
+              </Button>
             </li>
             <li className='col-6 text-center'>
               <Button
-                className={selectedOptionMenu === 'redisSettings' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                onClick={() => switchTab('redisSettings')}>Redis Settings
-              </Button> 
+                className={selectedOptionMenu === REDIS_SETTINGS ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                onClick={() => switchTab(REDIS_SETTINGS)}>
+                  Redis Settings
+              </Button>
             </li>
           </div>
         </nav>
@@ -45,7 +50,6 @@ export default () => {
       <div>
         {getComponentToDisplay()}
       </div>
-    </div>
+    </>
   )
-
 }

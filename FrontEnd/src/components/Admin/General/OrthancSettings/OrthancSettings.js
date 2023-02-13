@@ -1,21 +1,27 @@
-import React, { Component, Fragment, useEffect, useState } from 'react'
-import apis from '../../../../services/apis'
+import React, {  useState } from 'react'
+
+import { Row, Col, Modal, Form, FormGroup, Button } from 'react-bootstrap'
+import { toast } from 'react-toastify'
 import Select from 'react-select'
 
-import { toast } from 'react-toastify'
-import { Row, Col, Modal, Form, FormGroup, Button } from 'react-bootstrap'
+import { useCustomMutation, useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks'
+
+import OrthancSettingsForms from './OrthancSettingsForms'
 import OrthancInfos from './OrthancInfos'
+import apis from '../../../../services/apis'
 
 export default () => {
-    const [orthancAddress, setOrthancAddress] = useState('')
-    const [orthancPort, setOrthancPort] = useState(0)
-    const [orthancUsername, setOrthancUsername] = useState('')
-    const [orthancPassword, setOrthancPassword] = useState('')
+
+    const [orthancSettings, setOrthancSettings] = useState({
+        address: '',
+        port: '',
+        username: '',
+        password: ''
+    })
+
     const [showRestart, setShowRestart] = useState(false)
     const [showShutdown, setShowShutdown] = useState(false)
     const [showOrthancDetails, setShowOrthancDetails] = useState(false)
-    const [verbositySelected, setVerbositySelected] = useState(null)
-
 
     const verbosities = [
         { value: 'default', label: 'Default' },
@@ -23,44 +29,43 @@ export default () => {
         { value: 'trace', label: 'Trace' }
     ]
 
-
-    /**
-     * Fetch value from BackEnd
-     */
-    useEffect(() => {
-        const functionUseEffect = async () => {
-            try {
-                let answer = await apis.options.getOrthancServer()
-                console.log(answer)
-                setOrthancAddress(answer.orthancAddress)
-                setOrthancPassword(answer.orthancPassword)
-                setOrthancPort(answer.orthancPort)
-                setOrthancUsername(answer.orthancUsername)
-            } catch (error) {
-                toast.error(error.statusText, { data: { type: 'notification' } })
-            }
-
-            try {
-                let verbosity = await apis.options.getVerbosity()
-                let verbosityOption = getVerbosityOption(verbosity)
-                setVerbositySelected(verbosityOption)
-
-            } catch (error) {
-                toast.error(error.statusText, { data: { type: 'notification' } })
-            }
+    const { isLoading } = useCustomQuery('orthancSettings',
+        () => apis.options.getOrthancServer(),
+        undefined,
+        undefined,
+        (answer) => {
+            setOrthancSettings({
+                address: answer.orthancAddress,
+                port: answer.orthancPort,
+                username: answer.orthancUsername,
+                password: answer.orthancPassword
+            })
         }
-        functionUseEffect()
-    }, [])
+    )
+
+    const { data: verbosity } = useCustomQuery('orthancVerbosity',
+        () => apis.options.getVerbosity()
+    )
+
+
+    const updateVerbosity = useCustomMutation(
+        ({ verbosity }) => apis.options.setVerbosity(verbosity),
+        [['orthancVerbosity']]
+    )
 
 
     /**
      * Send new value to BackEnd
      */
     const submitOrthancSettings = async () => {
+
+        //TODO MUTATION
+        /*
         apis.options.setOrthancServer(orthancAddress, orthancPort,
             orthancUsername, orthancPassword)
             .then(() => { toast.warning('Updated, modify your environnement settings for the next start', { data: { type: 'notification' } }) })
             .catch((error) => { toast.error(error.statusText, { data: { type: 'notification' } }) })
+            */
     }
 
     /**
@@ -74,39 +79,32 @@ export default () => {
 
     const reset = () => {
         apis.options.resetOrthanc()
-            .then(() => { toast.success('Restart Done', { data: { type: 'notification' } }); setShowRestart(false) })
+            .then(() => { toast.success('Restart Done', { data: { type: 'notification' } }); })
             .catch(error => { toast.error(error.statusText, { data: { type: 'notification' } }) })
-
+        setShowRestart(false)
     }
 
     const shutdown = () => {
         apis.options.shutdownOrthanc()
-            .then(() => { toast.success('Orthanc Stopped', { data: { type: 'notification' } }); setShowShutdown(false) })
+            .then(() => { toast.success('Orthanc Stopped', { data: { type: 'notification' } }); })
             .catch((error) => {
                 toast.error(error.statusText, { data: { type: 'notification' } })
             })
+        setShowShutdown(false)
     }
 
-    const changeListener = (event) => {
-        apis.options.setVerbosity(event.value).then(() => {
-            toast.success('Verbosity Updated', { data: { type: 'notification' } })
-            setVerbositySelected(event)
-        }).catch((error) => {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        })
-
+    const onSettingsChange = (key, value) => {
+        setOrthancSettings((orthancSettings) => ({
+            ...orthancSettings,
+            [key]: value
+        }))
     }
 
-
-    const getVerbosityOption = (verbosity) => {
-        let index = -1
-        verbosities.forEach(element => {
-            if (element.value === verbosity) {
-                index = verbosities.indexOf(element)
-            }
-        })
-        return verbosities[index]
+    const onVerbosityChange = (selectedOption) => {
+        let verbosity = selectedOption.value
+        updateVerbosity({ verbosity })
     }
+
 
     return (
         <Form>
@@ -122,91 +120,55 @@ export default () => {
                         <OrthancInfos />
                     </Modal.Body>
                 </Modal>
-
+                <Modal show={showRestart} onHide={() => setShowRestart(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirm restart</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Are you sure to restart Orthanc system ?</Modal.Body>
+                    <Modal.Footer>
+                        <FormGroup>
+                            <Button className='btn btn-secondary' onClick={() => setShowRestart(false)}> Close </Button>
+                            <Button className='btn btn-warning' onClick={reset} >Restart</Button>
+                        </FormGroup>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={showShutdown} onHide={() => setShowShutdown(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Confirm Shutdown</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Are you sure to shutdown Orthanc system ?</Modal.Body>
+                    <Modal.Footer>
+                        <FormGroup>
+                            <Button className='btn btn-secondary' onClick={() => setShowShutdown(false)}> Close </Button>
+                            <Button className='btn btn-danger' onClick={shutdown}> Shutdown</Button>
+                        </FormGroup>
+                    </Modal.Footer>
+                </Modal>
             </FormGroup>
-
-
-            <Row >
-                <Col>
-                    <FormGroup>
-                        <Form.Label>Adress : </Form.Label>
-                        <Form.Control type="text" value={orthancAddress} placeholder="http://" onChange={(event) => { setOrthancAddress(event.target === 'checkbox' ? event.target.checked : event.target.value) }} />
-                    </FormGroup>
-                </Col>
-                <Col>
-                    <FormGroup>
-                        <Form.Label>Port : </Form.Label>
-                        <Form.Control type="number" value={orthancPort} placeholder="orthancPort" onChange={(event) => { setOrthancPort(event.target === 'checkbox' ? event.target.checked : event.target.value) }} />
-                    </FormGroup>
-                </Col>
-            </Row>
-
-            <Row >
-                <Col >
-                    <FormGroup>
-                        <Form.Label> Username : </Form.Label>
-                        <Form.Control type="text" value={orthancUsername} placeholder="orthancUsername" onChange={(event) => { setOrthancUsername(event.target === 'checkbox' ? event.target.checked : event.target.value) }} />
-                    </FormGroup>
-                </Col>
-                <Col >
-                    <FormGroup>
-                        <Form.Label> Password : </Form.Label>
-                        <Form.Control type="password" value={orthancPassword} placeholder="orthancPassword" onChange={(event) => { setOrthancPassword(event.target === 'checkbox' ? event.target.checked : event.target.value) }} />
-                    </FormGroup>
-                </Col>
-            </Row>
-
-            <Row >
-                <Col>
-                    <FormGroup>
+            {
+                isLoading ?
+                    <Row>
+                        <OrthancSettingsForms orthancAddress={orthancSettings.address} orthancPort={orthancSettings.port} orthancUsername={orthancSettings.username} orthancPassword={orthancSettings.password} onChange={onSettingsChange} />
                         <Button className='otjs-button otjs-button-blue w-10' onClick={submitOrthancSettings}> Update </Button>
-                    </FormGroup>
+                    </Row>
+                    :
+                    null
+            }
+            <Row >
+                <Col>
+                    <Button className='otjs-button otjs-button-orange w-10' onClick={() => setShowRestart(true)}> Restart </Button>
                 </Col>
                 <Col >
-                    <FormGroup>
-                        <Button className='otjs-button otjs-button-orange w-10' onClick={() => setShowRestart(true)}> Restart </Button>
-                        <Modal show={showRestart} onHide={() => setShowRestart(false)}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Confirm restart</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>Are you sure to restart Orthanc system ?</Modal.Body>
-                            <Modal.Footer>
-                                <FormGroup>
-                                    <Button className='btn btn-secondary' onClick={() => setShowRestart(false)}> Close </Button>
-                                    <Button className='btn btn-warning' onClick={reset} >Restart</Button>
-                                </FormGroup>
-                            </Modal.Footer>
-                        </Modal>
-                    </FormGroup>
-                </Col>
-                <Col >
-                    <FormGroup>
-                        <Button className='otjs-button otjs-button-red w-10' onClick={() => setShowShutdown(true)} > Shutdown </Button>
-                        <Modal show={showShutdown} onHide={() => setShowShutdown(false)}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Confirm Shutdown</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>Are you sure to shutdown Orthanc system ?</Modal.Body>
-                            <Modal.Footer>
-                                <FormGroup>
-                                    <Button className='btn btn-secondary' onClick={() => setShowShutdown(false)}> Close </Button>
-                                    <Button className='btn btn-danger' onClick={shutdown}> Shutdown</Button>
-                                </FormGroup>
-                            </Modal.Footer>
-                        </Modal>
-                    </FormGroup>
+                    <Button className='otjs-button otjs-button-red w-10' onClick={() => setShowShutdown(true)} > Shutdown </Button>
                 </Col>
             </Row>
-
-            <Row >
-                <Col >
+            <Row>
+                <Col>
                     <FormGroup>
                         <Form.Label> Verbosity </Form.Label>
-                        <Select value={verbositySelected} options={verbosities} onChange={changeListener} />
+                        <Select value={verbosities.find((verbosityOption) => verbosityOption.value === verbosity)} options={verbosities} onChange={onVerbosityChange} />
                     </FormGroup>
-
                 </Col>
-
             </Row>
         </Form>
     )

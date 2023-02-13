@@ -22,6 +22,13 @@ export default () => {
         { value: 'GE', label: 'GE' }
     ]
 
+    const manufacturerOptions = manufacturers.map((type) =>
+        ({
+            value: type.value,
+            label: type.label
+        })
+    )
+
     /**
      * Fill manufacturer select choice in current state
      * @param {*} item 
@@ -34,17 +41,19 @@ export default () => {
     const sendAet = useCustomMutation(
         ({ name, aetName, ip, port, manufacturer }) => {
             apis.updateAet(name, aetName, ip, port, manufacturer)
-            resetState()
+            //Empty form to allow a new AET definition
+            resetForm()
         },
         [['aets']]
     )
 
     const onHandleSend = () => {
         let manufacturerValue = manufacturer.value
-        sendAet.mutate ({ name, aetName, ip, port, manufacturerValue }) 
+        sendAet.mutate({ name, aetName, ip, port, manufacturerValue })
     }
 
-    const resetState = () => {
+
+    const resetForm = () => {
         setName('')
         setAetName('')
         setIp('')
@@ -52,17 +61,10 @@ export default () => {
         setManufacturer({ value: 'Generic', label: 'Generic' })
     }
 
-    const manufacturerOptions = manufacturers.map((type) =>
-        ({
-            value: type.value,
-            label: type.label
-        })
-    )
-
     return (
         <Form>
             <h2 className="card-title">New Aet</h2>
-            
+
             <Row>
                 <Col>
                     <FormGroup>
@@ -97,7 +99,7 @@ export default () => {
 
             <FormGroup>
                 <Form.Label>Manufacturer :</Form.Label>
-                <Select value = {manufacturer} options={manufacturerOptions}  onChange={manufacturerChangeListener} isClearable />
+                <Select value={manufacturer} options={manufacturerOptions} onChange={manufacturerChangeListener} isClearable />
             </FormGroup>
 
             <FormGroup>
