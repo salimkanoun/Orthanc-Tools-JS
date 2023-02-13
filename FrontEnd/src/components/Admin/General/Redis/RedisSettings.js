@@ -1,40 +1,32 @@
-import React, { Component, Fragment, useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
-
+import React from 'react'
+import { Form, FormGroup } from 'react-bootstrap'
 import apis from '../../../../services/apis'
+import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks'
+
 export default () => {
 
-    const [redisAddress, setRedisAddress] = useState('localhost')
-    const [redisPort, setRedisPort] = useState(6379)
-    const [redisPassword, setRedisPassword] = useState('')
+    const {data : redisServer, isLoading : isLoadingRedisServer} = useCustomQuery(
+        ['redisServer'],
+        ()=> apis.options.getRedisServer(),
+    )
 
-    useEffect(() => {
-        functionUseEffect()
-    }, {})
-
-    const functionUseEffect = async () => {
-        try {
-            let answer = await apis.options.getRedisServer()
-            setRedisAddress(answer.redisAddress)
-            setRedisPort(answer.redisPort)
-            setRedisPassword(answer.redisPassword)
-        } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        }
-    }
-
+    if (isLoadingRedisServer) return "Loading..."
 
     return (
-        <Fragment>
-            <div className="form-group">
+        <Form>
                 <h2 className="card-title">Redis Server</h2>
-                <label htmlFor="redisAddress">Address : </label>
-                <input type='text' name="redisAddress" className="form-control" value={redisAddress} placeholder="" disabled />
-                <label htmlFor="redisPort">Port : </label>
-                <input type='number' min="0" max="999999" name="redisPort" className="form-control" value={redisPort} disabled />
-                <label htmlFor="redisPassword">Password : </label>
-                <input type='password' name="redisPassword" className="form-control" value={redisPassword} disabled />
-            </div>
-        </Fragment>
+                <FormGroup>
+                    <Form.Label >Address : </Form.Label>
+                    <Form.Control type="text" value={redisServer.redisAddress} disabled/>
+                </FormGroup>
+                <FormGroup>
+                    <Form.Label> Port : </Form.Label>
+                    <Form.Control type="number" value={redisServer.redisPort} disabled/>
+                </FormGroup>
+                <FormGroup>
+                    <Form.Label> Password : </Form.Label>
+                    <Form.Control type="password" value={redisServer.redisPassword} disabled/>
+                </FormGroup>
+        </Form>
     )
 }

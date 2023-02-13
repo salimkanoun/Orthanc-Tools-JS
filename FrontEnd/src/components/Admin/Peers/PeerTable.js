@@ -65,7 +65,6 @@ export default ({ peersData }) => {
 
     return (
         <CommonTableV8 data={peersData} columns={columns} />
-
     )
 
 

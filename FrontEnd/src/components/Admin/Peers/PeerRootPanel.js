@@ -14,6 +14,7 @@ export default () => {
     () => apis.peers.getPeersExpand(),
     undefined,
     (answer) => {
+      console.log(answer)
       return Object.entries(answer).map(([peerName, data]) => ({
         name: peerName,
         ...data

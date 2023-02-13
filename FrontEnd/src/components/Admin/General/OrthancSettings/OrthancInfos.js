@@ -1,9 +1,8 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { toast } from 'react-toastify';
+import React, { Fragment } from 'react'
 import apis from '../../../../services/apis';
 import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks';
 
-export default ({ }) => {
+export default () => {
 
     const { data: plugins, isLoading: isLoadingPlugins } = useCustomQuery(
         ['plugins'],
@@ -45,5 +44,4 @@ export default ({ }) => {
             </ul>
         </Fragment>
     );
-
 }

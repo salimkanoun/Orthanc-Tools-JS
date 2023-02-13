@@ -3,7 +3,7 @@ import apis from '../../../../services/apis'
 import Select from 'react-select'
 
 import { toast } from 'react-toastify'
-import { Row, Col, Modal } from 'react-bootstrap'
+import { Row, Col, Modal, Form, FormGroup, Button } from 'react-bootstrap'
 import OrthancInfos from './OrthancInfos'
 
 export default () => {
@@ -23,32 +23,34 @@ export default () => {
         { value: 'trace', label: 'Trace' }
     ]
 
+
     /**
      * Fetch value from BackEnd
      */
-    useEffect(()=> {
+    useEffect(() => {
+        const functionUseEffect = async () => {
+            try {
+                let answer = await apis.options.getOrthancServer()
+                console.log(answer)
+                setOrthancAddress(answer.orthancAddress)
+                setOrthancPassword(answer.orthancPassword)
+                setOrthancPort(answer.orthancPort)
+                setOrthancUsername(answer.orthancUsername)
+            } catch (error) {
+                toast.error(error.statusText, { data: { type: 'notification' } })
+            }
+
+            try {
+                let verbosity = await apis.options.getVerbosity()
+                let verbosityOption = getVerbosityOption(verbosity)
+                setVerbositySelected(verbosityOption)
+
+            } catch (error) {
+                toast.error(error.statusText, { data: { type: 'notification' } })
+            }
+        }
         functionUseEffect()
     }, [])
-
-    const functionUseEffect = async () => {try {
-            let answer = await apis.options.getOrthancServer()
-            console.log(answer)
-            setOrthancAddress(answer.orthancAddress)
-            setOrthancPassword(answer.orthancPassword)
-            setOrthancPort(answer.orthancPort)
-            setOrthancUsername(answer.orthancUsername)
-        } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        }
-
-        try {
-            let verbosity = await apis.options.getVerbosity()
-            let verbosityOption = getVerbosityOption(verbosity)
-            setVerbositySelected(verbosityOption)
-
-        } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        }}
 
 
     /**
@@ -107,95 +109,105 @@ export default () => {
     }
 
     return (
-        <Fragment>
-            <div className="form-group">
-                <Row>
-                    <Col>
-                        <h2 className="card-title">Orthanc Server</h2>
-                    </Col>
-                    <Col className="text-center">
-                        <input type='button' className='otjs-button otjs-button-blue w-10 me-2' onClick={testConnexion} value='Check Connexion' />
-                        <input type='button' className='otjs-button otjs-button-blue w-10 ms-2' onClick={() => setShowOrthancDetails(true)} value='Orthanc Details' />
-                        <Modal show={showOrthancDetails} onHide={() => setShowOrthancDetails(false)}>
+        <Form>
+            <FormGroup>
+                <h2 className="card-title">Orthanc Server</h2>
+                <Button className='otjs-button otjs-button-blue w-10 me-2' onClick={testConnexion}> Check Connexion </Button>
+                <Button className='otjs-button otjs-button-blue w-10 me-2' onClick={() => setShowOrthancDetails(true)}> Orthanc Details </Button>
+                <Modal show={showOrthancDetails} onHide={() => setShowOrthancDetails(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Orthanc Details</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <OrthancInfos />
+                    </Modal.Body>
+                </Modal>
+
+            </FormGroup>
+
+
+            <Row >
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Adress : </Form.Label>
+                        <Form.Control type="text" value={orthancAddress} placeholder="http://" onChange={(event) => { setOrthancAddress(event.target === 'checkbox' ? event.target.checked : event.target.value) }} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Port : </Form.Label>
+                        <Form.Control type="number" value={orthancPort} placeholder="orthancPort" onChange={(event) => { setOrthancPort(event.target === 'checkbox' ? event.target.checked : event.target.value) }} />
+                    </FormGroup>
+                </Col>
+            </Row>
+
+            <Row >
+                <Col >
+                    <FormGroup>
+                        <Form.Label> Username : </Form.Label>
+                        <Form.Control type="text" value={orthancUsername} placeholder="orthancUsername" onChange={(event) => { setOrthancUsername(event.target === 'checkbox' ? event.target.checked : event.target.value) }} />
+                    </FormGroup>
+                </Col>
+                <Col >
+                    <FormGroup>
+                        <Form.Label> Password : </Form.Label>
+                        <Form.Control type="password" value={orthancPassword} placeholder="orthancPassword" onChange={(event) => { setOrthancPassword(event.target === 'checkbox' ? event.target.checked : event.target.value) }} />
+                    </FormGroup>
+                </Col>
+            </Row>
+
+            <Row >
+                <Col>
+                    <FormGroup>
+                        <Button className='otjs-button otjs-button-blue w-10' onClick={submitOrthancSettings}> Update </Button>
+                    </FormGroup>
+                </Col>
+                <Col >
+                    <FormGroup>
+                        <Button className='otjs-button otjs-button-orange w-10' onClick={() => setShowRestart(true)}> Restart </Button>
+                        <Modal show={showRestart} onHide={() => setShowRestart(false)}>
                             <Modal.Header closeButton>
-                                <Modal.Title>Orthanc Details</Modal.Title>
+                                <Modal.Title>Confirm restart</Modal.Title>
                             </Modal.Header>
-                            <Modal.Body>
-                                <OrthancInfos />
-                            </Modal.Body>
+                            <Modal.Body>Are you sure to restart Orthanc system ?</Modal.Body>
+                            <Modal.Footer>
+                                <FormGroup>
+                                    <Button className='btn btn-secondary' onClick={() => setShowRestart(false)}> Close </Button>
+                                    <Button className='btn btn-warning' onClick={reset} >Restart</Button>
+                                </FormGroup>
+                            </Modal.Footer>
                         </Modal>
-                    </Col>
-                </Row>
-                <Row className="align-items-center g-3 mt-5">
-                    <Col sm={2}>
-                        <label htmlFor="address" className="col-form-label">Address : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='text' name="orthancAddress" className="form-control" onChange={(event) => {setOrthancAddress(event.target ==='checkbox' ? event.target.checked : event.target.value)}} value={orthancAddress} placeholder="http://" />
-                    </Col>
-                    <Col sm={2}>
-                        <label htmlFor="port" className="col-form-label">Port : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='number' min="0" max="999999" name="orthancPort" className="form-control" value={orthancPort} onChange={(event) => {setOrthancPort(event.target ==='checkbox' ? event.target.checked : event.target.value)}} />
-                    </Col>
-                </Row>
-                <Row className="align-items-center g-3 mt-2">
-                    <Col sm={2}>
-                        <label htmlFor="username" className="col-form-label">Username : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='text' name="orthancUsername" className="form-control" value={orthancUsername} onChange={(event) => {setOrthancUsername(event.target ==='checkbox' ? event.target.checked : event.target.value)}} />
-                    </Col>
-                    <Col sm={2}>
-                        <label htmlFor="password" className="col-form-label">Password : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='password' name="orthancPassword" className="form-control" value={orthancPassword} onChange={(event) => {setOrthancPassword(event.target ==='checkbox' ? event.target.checked : event.target.value)}} />
-                    </Col>
-                </Row>
-            </div>
-            <Row className="mt-5 text-center">
-                <Col sm={4}>
-                    <input type='button' className='otjs-button otjs-button-blue w-10' onClick={submitOrthancSettings} value='Update' />
-
+                    </FormGroup>
                 </Col>
-                <Col sm={4}>
-                    <input type='button' className='otjs-button otjs-button-orange w-10' onClick={() => setShowRestart(true)} value='Restart' />
-                    <Modal show={showRestart} onHide={() => setShowRestart(false)}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Confirm restart</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Are you sure to restart Orthanc system ?</Modal.Body>
-                        <Modal.Footer>
-                            <input type='button' className='btn btn-secondary' onClick={() => setShowRestart(false)} value="Close" />
-                            <input type='button' className='btn btn-warning' onClick={reset} value="Restart" />
-                        </Modal.Footer>
-                    </Modal>
-                </Col>
-                <Col sm={4}>
-                    <input type='button' className='otjs-button otjs-button-red w-10' onClick={() => setShowShutdown(true)} value='Shutdown' />
-                    <Modal show={showShutdown} onHide={() => setShowShutdown(false)}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>Confirm Shutdown</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Are you sure to shutdown Orthanc system ?</Modal.Body>
-                        <Modal.Footer>
-                            <input type='button' className='btn btn-secondary' onClick={() => setShowShutdown(false)} value="Close" />
-                            <input type='button' className='btn btn-danger' onClick={shutdown} value="Shutdown" />
-                        </Modal.Footer>
-                    </Modal>
+                <Col >
+                    <FormGroup>
+                        <Button className='otjs-button otjs-button-red w-10' onClick={() => setShowShutdown(true)} > Shutdown </Button>
+                        <Modal show={showShutdown} onHide={() => setShowShutdown(false)}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Confirm Shutdown</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>Are you sure to shutdown Orthanc system ?</Modal.Body>
+                            <Modal.Footer>
+                                <FormGroup>
+                                    <Button className='btn btn-secondary' onClick={() => setShowShutdown(false)}> Close </Button>
+                                    <Button className='btn btn-danger' onClick={shutdown}> Shutdown</Button>
+                                </FormGroup>
+                            </Modal.Footer>
+                        </Modal>
+                    </FormGroup>
                 </Col>
             </Row>
-            <Row className="mt-5 align-items-center">
-                <Col sm={2}>
-                    <label htmlFor="verbosity">Verbosity : </label>
-                </Col>
-                <Col sm={10}>
-                    <Select name="verbosity" single options={verbosities} onChange={changeListener} value={verbositySelected} />
+
+            <Row >
+                <Col >
+                    <FormGroup>
+                        <Form.Label> Verbosity </Form.Label>
+                        <Select value={verbositySelected} options={verbosities} onChange={changeListener} />
+                    </FormGroup>
+
                 </Col>
 
             </Row>
-        </Fragment>
+        </Form>
     )
 }
