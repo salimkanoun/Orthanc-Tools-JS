@@ -66,5 +66,5 @@ export default () => {
                 <Button className='otjs-button otjs-button-blue' onClick={() => sendPeer.mutate({ name, ip, port, username, password })}> Send </Button>
             </FormGroup>
         </Form>
-    )
+    ) 
 }

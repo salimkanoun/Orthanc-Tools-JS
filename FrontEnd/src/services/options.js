@@ -66,8 +66,7 @@ const options = {
 
   //set verbosity in Orthanc
   setVerbosity(value) {
-
-    return axios.put('/api/tools/log-level', value).then((answer) => true
+    return axios.put('/api/tools/log-level', value, {headers : {'Content-Type' : 'text/plain'}}).then((answer) => true
     ).catch(error => {
       throw error
   })

@@ -29,7 +29,7 @@ export default () => {
         { value: 'trace', label: 'Trace' }
     ]
 
-    const { isLoading } = useCustomQuery('orthancSettings',
+    const { isLoading } = useCustomQuery(['orthancSettings'],
         () => apis.options.getOrthancServer(),
         undefined,
         undefined,
@@ -43,7 +43,7 @@ export default () => {
         }
     )
 
-    const { data: verbosity } = useCustomQuery('orthancVerbosity',
+    const { data: verbosity } = useCustomQuery(['orthancVerbosity'],
         () => apis.options.getVerbosity()
     )
 
@@ -54,10 +54,14 @@ export default () => {
     )
 
 
-    /**
-     * Send new value to BackEnd
-     */
-    const submitOrthancSettings = async () => {
+    const submitOrthancSettings = useCustomMutation(
+        ({orthancAddress, orthancPort, orthancUsername, orthancPassword}) => {
+            apis.options.setOrthancServer(orthancAddress, orthancPort, orthancUsername, orthancPassword)
+        }, 
+        [['orthancSettings']]
+    )
+
+    //const submitOrthancSettings = async () => {
 
         //TODO MUTATION
         /*
@@ -66,11 +70,13 @@ export default () => {
             .then(() => { toast.warning('Updated, modify your environnement settings for the next start', { data: { type: 'notification' } }) })
             .catch((error) => { toast.error(error.statusText, { data: { type: 'notification' } }) })
             */
-    }
+    //}
 
     /**
      * Try to connect to Orthanc System API, response is shown in an toastify
      */
+
+    //TODO enlever du notification center
     const testConnexion = () => {
         apis.options.getOrthancSystem().then((answer) => {
             toast.success('Orthanc Version: ' + answer.Version, { data: { type: 'notification' } })
@@ -102,7 +108,7 @@ export default () => {
 
     const onVerbosityChange = (selectedOption) => {
         let verbosity = selectedOption.value
-        updateVerbosity({ verbosity })
+        updateVerbosity.mutate({ verbosity })
     }
 
 
@@ -146,10 +152,10 @@ export default () => {
                 </Modal>
             </FormGroup>
             {
-                isLoading ?
+                ! isLoading ?
                     <Row>
                         <OrthancSettingsForms orthancAddress={orthancSettings.address} orthancPort={orthancSettings.port} orthancUsername={orthancSettings.username} orthancPassword={orthancSettings.password} onChange={onSettingsChange} />
-                        <Button className='otjs-button otjs-button-blue w-10' onClick={submitOrthancSettings}> Update </Button>
+                        <Button className='otjs-button otjs-button-blue w-10' onClick={() => submitOrthancSettings.mutate({...orthancSettings})}> Update </Button>
                     </Row>
                     :
                     null
