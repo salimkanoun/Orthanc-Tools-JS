@@ -1,37 +1,17 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import { toast } from "react-toastify";
+
 import apis from "../../../services/apis";
 import { useCustomQuery } from "../../CommonComponents/ReactQuery/hooks";
 import JobsTableV8 from "./JobsTableV8";
+import { keys } from "../../../model/Constant";
 
 
-export default ({ }) => {
-
-    const [intervalChecker, setIntervalChecker] = useState(null)
-    const [showDetail, setShowDetail] = useState(false)
-    const [currentRowIndex, setCurrentRowIndex] = useState('')
-
-    useEffect(()=>{
-        startRefreshMonitoring()
-    }, [])
-
-    useEffect(()=>{
-        return stopRefreshMonitoring()
-    })
-
-    const startRefreshMonitoring = () => {
-        let intervalChecker = setInterval(() => {
-        }, 2000)
-        setIntervalChecker(intervalChecker)
-    }
-
-    const stopRefreshMonitoring = () => {
-        clearInterval(intervalChecker)
-    }
+export default () => {
 
     const {data : jobs, isLoading : isLoadingJobs } = useCustomQuery(
-        ['jobs'],
+        [keys.JOBS_KEY],
         () => apis.jobs.getJobs(),
         undefined,
         (jobsDetails) => { 
@@ -40,7 +20,9 @@ export default ({ }) => {
                     ...jobsDetails
                 })
             })
-        }
+        },
+        undefined,
+        2000
     )
 
     const dropDown = (id) => {
@@ -75,13 +57,13 @@ export default ({ }) => {
         )
     }
 
-    if (isLoadingJobs) return "Loading Jobs"
+    if (isLoadingJobs) return "Loading ..."
 
 
     return (
-        <Fragment>
+        <>
             <h2 className="card-title mb-4">Jobs</h2>
             <JobsTableV8 rows={jobs} dropDown={dropDown} />
-        </Fragment>
+        </>
     );
 }

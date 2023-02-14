@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import apis from '../../../services/apis'
 import { Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
 import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks'
+import { keys } from '../../../model/Constant'
 /**
  * Form to declare or modify an Orthanc Peer
  */
@@ -18,7 +19,7 @@ export default () => {
         ({ name, ip, port, username, password }) => {
             apis.peers.updatePeer(name, ip, port, username, password)
         },
-        [['peers']]
+        [[keys.PEERS_KEY]]
     )
 
 

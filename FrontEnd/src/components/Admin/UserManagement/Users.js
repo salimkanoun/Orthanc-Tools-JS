@@ -7,6 +7,7 @@ import CreateUser from './CreateUser'
 import { toast } from 'react-toastify';
 import UserTable from "./UserTable";
 import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
+import { keys } from '../../../model/Constant';
 
 
 export default () => {
@@ -16,7 +17,7 @@ export default () => {
     const [userId, setUserId] = useState();
 
     const { data: users, isLoading : isLoadingUsers } = useCustomQuery(
-        ['users'],
+        [keys.USERS_KEY],
         () => apis.User.getUsers(),
         undefined,
         (answer) => {
@@ -31,11 +32,11 @@ export default () => {
 
     const deleteUser = useCustomMutation(
         ({username}) =>  apis.User.deleteUser(username),
-        [['users']]
+        [[keys.USERS_KEY]]
     )
 
     const { data : roles, isLoading : isLoadingRoles } = useCustomQuery(
-        ['roles'],
+        [keys.ROLES_KEY],
         () => apis.role.getRoles(),
         undefined,
         (roles) => {
@@ -72,8 +73,7 @@ export default () => {
         users.find(user => user.username === row.username)[column] = value;
     }
     
-    if (isLoadingUsers) return "Loading Users"
-    if (isLoadingRoles) return "Loading Roles"
+    if (isLoadingUsers || isLoadingRoles) return "Loading ..."
 
     return (
         <Fragment>

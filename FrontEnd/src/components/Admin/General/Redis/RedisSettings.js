@@ -2,11 +2,12 @@ import React from 'react'
 import { Form, FormGroup } from 'react-bootstrap'
 import apis from '../../../../services/apis'
 import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks'
+import { keys } from '../../../../model/Constant'
 
 export default () => {
 
     const { data: redisServer, isLoading: isLoadingRedisServer } = useCustomQuery(
-        ['redisServer'],
+        [keys.REDIS_SERVER_KEY],
         () => apis.options.getRedisServer(),
     )
 

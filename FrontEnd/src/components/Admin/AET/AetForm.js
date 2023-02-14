@@ -3,6 +3,7 @@ import apis from '../../../services/aets'
 import { Row, Col, FormGroup, Form, Button } from 'react-bootstrap'
 import Select from 'react-select'
 import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks'
+import { keys } from '../../../model/Constant'
 /**
  * Form to declare or modify an AET
  */
@@ -23,10 +24,10 @@ export default () => {
     ]
 
     const manufacturerOptions = manufacturers.map((type) =>
-        ({
-            value: type.value,
-            label: type.label
-        })
+    ({
+        value: type.value,
+        label: type.label
+    })
     )
 
     /**
@@ -44,7 +45,7 @@ export default () => {
             //Empty form to allow a new AET definition
             resetForm()
         },
-        [['aets']]
+        [[keys.AETS_KEY]]
     )
 
     const onHandleSend = () => {
@@ -103,7 +104,9 @@ export default () => {
             </FormGroup>
 
             <FormGroup>
-                <Button onClick={onHandleSend} className='otjs-button otjs-button-blue'> Send </Button>
+                <Row className="justify-content-md-center">
+                    <Button onClick={onHandleSend} className='otjs-button otjs-button-blue'> Send </Button>
+                </Row>
             </FormGroup>
 
         </Form>

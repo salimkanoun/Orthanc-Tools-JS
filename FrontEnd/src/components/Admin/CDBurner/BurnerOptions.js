@@ -1,11 +1,16 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
+import { Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
 import Select from 'react-select'
 import { toast } from 'react-toastify'
-import apis from '../../../services/apis'
-import { Row, Col } from 'react-bootstrap'
-export default class BurnerOptions extends Component {
+import { keys } from '../../../model/Constant'
 
-    state = {
+import apis from '../../../services/apis'
+import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
+
+
+export default () => {
+
+    const [burner, setBurner] = useState({
         burner_monitored_path: '',
         burner_viewer_path: '',
         burner_label_path: '',
@@ -15,31 +20,30 @@ export default class BurnerOptions extends Component {
         burner_date_format: '',
         burner_delete_study_after_sent: false,
         burner_transfer_syntax: null
+    })
 
-    }
-
-    manufacturerOptions = [
+    const manufacturerOptions = [
         { value: 'Epson', label: 'Epson' },
         { value: 'Primera', label: 'Primera' }
     ]
 
-    levelOptions = [
+    const levelOptions = [
         { value: 'Study', label: 'Study' },
         { value: 'Patient', label: 'Patient' }
     ]
 
-    supportType = [
+    const supportType = [
         { value: 'Auto', label: 'Auto' },
         { value: 'CD', label: 'CD' },
         { value: 'DVD', label: 'DVD' }
     ]
 
-    dateFormatOptions = [
+    const dateFormatOptions = [
         { value: 'uk', label: 'MMDDYYYY' },
         { value: 'fr', label: "DDMMYYYY" }
     ]
 
-    transferSyntaxOptions = [
+    const transferSyntaxOptions = [
         { value: 'None', label: 'None (Original TS)' },
         { value: '1.2.840.10008.1.2', label: 'Implicit VR Endian' },
         { value: '1.2.840.10008.1.2.1', label: 'Explicit VR Little Endian' },
@@ -58,51 +62,67 @@ export default class BurnerOptions extends Component {
 
     ]
 
+    const { isLoading } = useCustomQuery(
+        [keys.BURNER_KEY],
+        () => apis.options.getOptions(),
+        undefined,
+        (answer) => {
+            console.log(answer)
+            setBurner({
+                burner_monitored_path: answer.burner_monitored_path,
+                burner_viewer_path: answer.burner_viewer_path,
+                burner_label_path: answer.burner_label_path,
+                burner_manifacturer: answer.burner_manifacturer,
+                burner_monitoring_level: answer.burner_monitoring_level,
+                burner_support_type: answer.burner_support_type,
+                burner_date_format: answer.burner_date_format,
+                burner_delete_study_after_sent: answer.burner_delete_study_after_sent,
+                burner_transfer_syntax: answer.burner_transfer_syntax
+            })
+        }
+    )
 
-    handleChange = (event) => {
+    const sendForm = useCustomMutation(
+        ({ burner_monitored_path, burner_viewer_path, burner_label_path, burner_manifacturer, 
+            burner_monitoring_level, burner_support_type, burner_date_format, 
+            burner_delete_study_after_sent, burner_transfer_syntax}) => {
+            apis.options.setBurnerOptions(
+                burner_monitored_path,
+                burner_viewer_path,
+                burner_label_path,
+                burner_manifacturer,
+                burner_monitoring_level,
+                burner_support_type,
+                burner_date_format,
+                burner_delete_study_after_sent,
+                burner_transfer_syntax
+            )
+        },
+        [[keys.BURNER_KEY]]
+    )
+
+
+    const handleChange = (event) => {
         const target = event.target
         const name = target.name
         const value = target.type === 'checkbox' ? target.checked : target.value
 
-        this.setState({
+        setBurner((burner) => ({
+            ...burner,
             [name]: value
-        })
+        }))
 
     }
 
-    handleChangeSelect = (event, metadata) => {
-        this.setState({
+    const handleChangeSelect = (event, metadata) => {
+        setBurner((burner) => ({
+            ...burner,
             [metadata.name]: event.value
-        })
+        }))
 
     }
 
-    onTSChange = (TSValue) => {
-        this.setState({
-            burner_transfer_syntax: TSValue
-        })
-    }
-
-    refreshData = async () => {
-        try {
-            let options = await apis.options.getOptions()
-            this.setState({
-                ...options
-            })
-        } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
-        }
-
-
-    }
-
-    
-    componentDidMount = async () => {
-        await this.refreshData()
-
-    }
-
-    getSelectedObject = (objectArray, searchedValue) => {
+    const getSelectedObject = (objectArray, searchedValue) => {
         let filteredArray = objectArray.filter(item => {
             return item.value === searchedValue ? true : false
         })
@@ -110,104 +130,87 @@ export default class BurnerOptions extends Component {
         return filteredArray[0]
     }
 
-    sendForm = async () => {
-        try {
-            await apis.options.setBurnerOptions(this.state.burner_monitored_path,
-                this.state.burner_viewer_path,
-                this.state.burner_label_path,
-                this.state.burner_manifacturer,
-                this.state.burner_monitoring_level,
-                this.state.burner_support_type,
-                this.state.burner_date_format,
-                this.state.burner_delete_study_after_sent,
-                this.state.burner_transfer_syntax)
-            await this.refreshData()
-            toast.success('Burner Settings updated', {data:{type:'notification'}})
-        } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
-        }
+    if (isLoading) return "Loading ..."
 
-    }
+    return (
+        <Form>
+            <h2 className="card-title">CD/DVD Burner Options</h2>
 
-    render = () => {
-        return (
-            <div>
-                <h2 className="card-title">CD/DVD Burner Options</h2>
-                <Row className="mt-4 align-items-center">
-                    <Col sm={2}>
-                        <label htmlFor="burner_monitored_path">Monitored Folder :</label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='text' className="form-control" name='burner_monitored_path' value={this.state.burner_monitored_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Epson" />
-                    </Col>
-                    <Col sm={2}>
-                        <label htmlFor="burner_viewer_path">Viewer Folder : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='text' className="form-control" name='burner_viewer_path' value={this.state.burner_viewer_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Viewer" />
-                    </Col>
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Monitored Folder :</Form.Label>
+                        <Form.Control type="text" value={burner.burner_monitored_path} placeholder="Example : C:\\myPath\Epson" onChange={handleChange} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Viewer Folder :</Form.Label>
+                        <Form.Control type="text" value={burner.burner_viewer_path} placeholder="Example : C:\\myPath\Viewer" onChange={handleChange} />
+                    </FormGroup>
+                </Col>
+            </Row>
 
-                </Row>
-                <Row className="mt-4 align-items-center">
-                    <Col sm={2}>
-                        <label htmlFor="burner_label_path">Label Path : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='text' className="form-control" name='burner_label_path' value={this.state.burner_label_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Label" />
-                    </Col>
-                    <Col sm={2}>
-                        <label htmlFor="burner_transfer_syntax">Transfer Syntax : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <Select single options={this.transferSyntaxOptions} name='burner_transfer_syntax' value={this.getSelectedObject(this.transferSyntaxOptions, this.state.burner_transfer_syntax)} onChange={this.handleChangeSelect} />
-                    </Col>
-                </Row>
-                <Row className="mt-4 align-items-center">
-                    <Col sm={2}>
-                        <label htmlFor="burner_manifacturer">Manufacturer : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <Select single options={this.manufacturerOptions} value={this.getSelectedObject(this.manufacturerOptions, this.state.burner_manifacturer)} onChange={this.handleChangeSelect} name="burner_manifacturer" />
-                    </Col>
-                    <Col sm={2}>
-                        <label htmlFor="burner_monitoring_level">Monitoring Level : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <Select options={this.levelOptions} value={this.getSelectedObject(this.levelOptions, this.state.burner_monitoring_level)} onChange={this.handleChangeSelect} name="burner_monitoring_level" />
-                    </Col>
+            <Row >
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Label Path : </Form.Label>
+                        <Form.Control type="text" value={burner.burner_label_path} placeholder="Example : C:\\myPath\Label" onChange={handleChange} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Transfer Syntax :</Form.Label>
+                        <Select value={getSelectedObject(transferSyntaxOptions, burner.burner_transfer_syntax)} options={transferSyntaxOptions} onChange={handleChangeSelect} single />
+                    </FormGroup>
+                </Col>
+            </Row>
 
-                </Row>
-                <Row className="mt-4 align-items-center">
-                    <Col sm={2}>
-                        <label htmlFor="burner_date_format">Date Format : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <Select options={this.dateFormatOptions} value={this.getSelectedObject(this.dateFormatOptions, this.state.burner_date_format)} onChange={this.handleChangeSelect} name="burner_date_format" />
-                    </Col>
-                    <Col sm={2}>
-                        <label htmlFor="burner_support_type">Support Type : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <Select single options={this.supportType} value={this.getSelectedObject(this.supportType, this.state.burner_support_type)} onChange={this.handleChangeSelect} name="burner_support_type" />
-                    </Col>
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Manufacturer : </Form.Label>
+                        <Select value={getSelectedObject(manufacturerOptions, burner.burner_manifacturer)} options={manufacturerOptions} onChange={handleChangeSelect} single />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Monitoring Level : </Form.Label>
+                        <Select value={getSelectedObject(levelOptions, burner.burner_monitoring_level)} options={levelOptions} onChange={handleChangeSelect} />
+                    </FormGroup>
+                </Col>
+            </Row>
 
-                </Row>
-                <Row className="mt-4 align-items-center">
-                    <Col sm={5}>
-                        <label htmlFor="burner_delete_study_after_sent">Delete Original Images From Orthanc : </label>
-                    </Col>
-                    <Col sm={2}>
-                        <input type="checkbox" checked={this.state.burner_delete_study_after_sent} name="burner_delete_study_after_sent" value="Delete Original Study/Patient" onChange={this.handleChange} />
-                    </Col>
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Date Format :</Form.Label>
+                        <Select value={getSelectedObject(dateFormatOptions, burner.burner_date_format)} options={dateFormatOptions} onChange={handleChangeSelect} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Support Type :</Form.Label>
+                        <Select value={getSelectedObject(supportType, burner.burner_support_type)} options={supportType} onChange={handleChangeSelect} single />
+                    </FormGroup>
+                </Col>
+            </Row>
 
+            <Row>
+                <Col>
+                    <Form.Label>Delete Original Images From Orthanc :</Form.Label>
+                </Col>
+                <Col>
+                    <Form.Check Check={burner.burner_delete_study_after_sent} onChange={handleChange} />
+                </Col>
+            </Row>
+
+            <FormGroup>
+                <Row className="justify-content-md-center">
+                    <Button onClick={() => sendForm.mutate({...burner})} className='otjs-button otjs-button-blue'> Send </Button>
                 </Row>
-                <Row className="text-center mt-4">
-                    <Col>
-                        <input type="button" className="otjs-button otjs-button-blue" value="Send" onClick={this.sendForm} />
-                    </Col>
-                </Row>
-            </div>
-        )
-    }
+            </FormGroup>
+        </Form>
+    )
 
 }

@@ -1,4 +1,4 @@
-import React, {  useState } from 'react'
+import React, { useState } from 'react'
 
 import { Row, Col, Modal, Form, FormGroup, Button } from 'react-bootstrap'
 import { toast } from 'react-toastify'
@@ -9,6 +9,7 @@ import { useCustomMutation, useCustomQuery } from '../../../CommonComponents/Rea
 import OrthancSettingsForms from './OrthancSettingsForms'
 import OrthancInfos from './OrthancInfos'
 import apis from '../../../../services/apis'
+import { keys } from '../../../../model/Constant'
 
 export default () => {
 
@@ -29,7 +30,8 @@ export default () => {
         { value: 'trace', label: 'Trace' }
     ]
 
-    const { isLoading } = useCustomQuery(['orthancSettings'],
+    const { isLoading } = useCustomQuery(
+        [keys.ORTHANC_SETTINGS_KEY],
         () => apis.options.getOrthancServer(),
         undefined,
         undefined,
@@ -43,34 +45,24 @@ export default () => {
         }
     )
 
-    const { data: verbosity } = useCustomQuery(['orthancVerbosity'],
+    const { data: verbosity } = useCustomQuery(
+        [keys.ORTHANC_VERBOSITY_KEY],
         () => apis.options.getVerbosity()
     )
 
 
     const updateVerbosity = useCustomMutation(
         ({ verbosity }) => apis.options.setVerbosity(verbosity),
-        [['orthancVerbosity']]
+        [[keys.ORTHANC_VERBOSITY_KEY]]
     )
 
 
     const submitOrthancSettings = useCustomMutation(
-        ({orthancAddress, orthancPort, orthancUsername, orthancPassword}) => {
+        ({ orthancAddress, orthancPort, orthancUsername, orthancPassword }) => {
             apis.options.setOrthancServer(orthancAddress, orthancPort, orthancUsername, orthancPassword)
-        }, 
-        [['orthancSettings']]
+        },
+        [[keys.ORTHANC_SETTINGS_KEY]]
     )
-
-    //const submitOrthancSettings = async () => {
-
-        //TODO MUTATION
-        /*
-        apis.options.setOrthancServer(orthancAddress, orthancPort,
-            orthancUsername, orthancPassword)
-            .then(() => { toast.warning('Updated, modify your environnement settings for the next start', { data: { type: 'notification' } }) })
-            .catch((error) => { toast.error(error.statusText, { data: { type: 'notification' } }) })
-            */
-    //}
 
     /**
      * Try to connect to Orthanc System API, response is shown in an toastify
@@ -79,22 +71,22 @@ export default () => {
     //TODO enlever du notification center
     const testConnexion = () => {
         apis.options.getOrthancSystem().then((answer) => {
-            toast.success('Orthanc Version: ' + answer.Version, { data: { type: 'notification' } })
-        }).catch(error => { toast.error(error.statusText, { data: { type: 'notification' } }) })
+            toast.success('Orthanc Version: ' + answer.Version, { data: { type: 'info' } })
+        }).catch(error => { toast.error(error.statusText, { data: { type: 'info' } }) })
     }
 
     const reset = () => {
         apis.options.resetOrthanc()
-            .then(() => { toast.success('Restart Done', { data: { type: 'notification' } }); })
-            .catch(error => { toast.error(error.statusText, { data: { type: 'notification' } }) })
+            .then(() => { toast.success('Restart Done', { data: { type: 'info' } }); })
+            .catch(error => { toast.error(error.statusText, { data: { type: 'info' } }) })
         setShowRestart(false)
     }
 
     const shutdown = () => {
         apis.options.shutdownOrthanc()
-            .then(() => { toast.success('Orthanc Stopped', { data: { type: 'notification' } }); })
+            .then(() => { toast.success('Orthanc Stopped', { data: { type: 'info' } }); })
             .catch((error) => {
-                toast.error(error.statusText, { data: { type: 'notification' } })
+                toast.error(error.statusText)
             })
         setShowShutdown(false)
     }
@@ -152,10 +144,12 @@ export default () => {
                 </Modal>
             </FormGroup>
             {
-                ! isLoading ?
+                !isLoading ?
                     <Row>
                         <OrthancSettingsForms orthancAddress={orthancSettings.address} orthancPort={orthancSettings.port} orthancUsername={orthancSettings.username} orthancPassword={orthancSettings.password} onChange={onSettingsChange} />
-                        <Button className='otjs-button otjs-button-blue w-10' onClick={() => submitOrthancSettings.mutate({...orthancSettings})}> Update </Button>
+                        <Row className="justify-content-md-center">
+                            <Button className='otjs-button otjs-button-blue w-10' onClick={() => submitOrthancSettings.mutate({ ...orthancSettings })}> Update </Button>
+                        </Row>
                     </Row>
                     :
                     null

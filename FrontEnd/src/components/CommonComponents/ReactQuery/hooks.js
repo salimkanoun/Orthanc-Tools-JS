@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
-export const useCustomQuery = (queryKey, queryFn, onError = undefined, select =undefined, onSuccess = undefined) => {
+export const useCustomQuery = (queryKey, queryFn, onError = undefined, select =undefined, onSuccess = undefined, refetchInterval = false) => {
     return useQuery(
         queryKey,
         queryFn,
@@ -9,7 +9,8 @@ export const useCustomQuery = (queryKey, queryFn, onError = undefined, select =u
             retry : false,
             onError : onError,
             select : select,
-            onSuccess : onSuccess   
+            onSuccess : onSuccess , 
+            refetchInterval : refetchInterval 
          }
       )
 }

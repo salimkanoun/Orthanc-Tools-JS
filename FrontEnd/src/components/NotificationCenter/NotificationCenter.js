@@ -26,7 +26,7 @@ export default () => {
         <div>
 
             <IconButton size="large" onClick={toggleNotificationCenter} ref={target}>
-                <Badge badgeContent={unreadCount} color="primary">
+                <Badge color="primary">
                     <MailIcon color="action" />
                 </Badge>
             </IconButton>

@@ -3,6 +3,7 @@ import PeerForm from './PeerForm'
 import apis from '../../../services/apis'
 import PeerTable from './PeerTable'
 import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
+import { keys } from '../../../model/Constant'
 
 /**
  * Root Panel of Peers options
@@ -10,7 +11,7 @@ import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 export default () => {
 
   const { data: peers, isLoading: isLoadingPeers } = useCustomQuery(
-    ['peers'],
+    [keys.PEERS_KEY],
     () => apis.peers.getPeersExpand(),
     undefined,
     (answer) => {

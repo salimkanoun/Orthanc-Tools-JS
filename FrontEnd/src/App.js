@@ -46,12 +46,13 @@ const App = () => {
     return (
         <BrowserRouter>
             <QueryClientProvider client={queryClient}>
-                <div hidden>
+                <div >
                     <ToastContainer
-                        position={'top-right'}
+                        position={'bottom-right'}
                         autoClose={5000}
                         newestOnTop
-                    />
+                        closeOnClick
+                    > </ToastContainer>
                 </div>
                 {username ?
                     <MainRoot onLogout={onLogout} username={username} roles={roles} />

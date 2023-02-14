@@ -1,18 +1,12 @@
-import React, { useMemo, useState } from "react";
-import { Fragment } from "react";
+import React, { useMemo } from "react";
 import { Button } from "react-bootstrap";
+
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 import ModalDetailsV8 from "./ModalDetailsV8";
 
 export default ({ rows, dropDown }) => {
 
     const data = useMemo(() => rows, [rows]);
-
-    const [currentRowIndex, setCurrentRowIndex] = useState('')
-
-    const handleDetails = (index) => {
-        setCurrentRowIndex(index)
-    }
 
     const columnsJobs = [
         {
@@ -44,7 +38,7 @@ export default ({ rows, dropDown }) => {
             header: "Details" ,
             cell: (({ row }) => {
                 return (<div className="text-center"><Button className='otjs-button otjs-button-blue'
-                    onClick={() => {handleDetails(row.index); row.toggleExpanded()}}>Details</Button></div>)
+                    onClick={() => {row.toggleExpanded()}}>Details</Button></div>)
             }),
             enableColumnFilter: false,
         },
@@ -64,8 +58,8 @@ export default ({ rows, dropDown }) => {
     }
 
     return (
-        <Fragment>
+        <>
             <CommonTableV8 columns={columnsJobs} data={data} canSort canFilter paginated canSelect canExpand renderSubComponent={renderSubComponent}/>
-        </Fragment>
+        </>
     )
 }

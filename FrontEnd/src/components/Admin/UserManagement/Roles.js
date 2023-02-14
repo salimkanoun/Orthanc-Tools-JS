@@ -6,6 +6,7 @@ import CreateRole from "./CreateRole";
 import { toast } from "react-toastify";
 import { useCustomQuery } from "../../CommonComponents/ReactQuery/hooks";
 import RoleTable from "../UserManagement/RoleTable";
+import { keys } from "../../../model/Constant";
 
 
 export default ({ }) => {
@@ -15,12 +16,10 @@ export default ({ }) => {
 
 
     const { data: roles, isLoading : isLoadingRoles, refetch : refetchRole } = useCustomQuery(
-        ['roles'],
+        [keys.ROLES_KEY],
         () => apis.role.getRoles(),
         undefined,
     )
-
-console.log(refetchRole)
 
     const handleDelete = (name) => {
         setName(name)

@@ -1,17 +1,18 @@
 import React, { Fragment } from 'react'
 import apis from '../../../../services/apis';
 import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks';
+import { keys } from '../../../../model/Constant';
 
 export default () => {
 
     const { data: plugins, isLoading: isLoadingPlugins } = useCustomQuery(
-        ['plugins'],
+        [keys.PLUGINS_KEY],
         () => apis.options.getPlugins(),
         undefined,
     )
 
     const { data: system, isLoading: isLoadingSystem } = useCustomQuery(
-        ['system'],
+        [keys.PLUGINS_KEY],
         () => apis.options.getOrthancSystem(),
         undefined
     )

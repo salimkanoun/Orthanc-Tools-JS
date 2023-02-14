@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
 import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks';
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
+import { keys } from '../../../model/Constant'
 
 /**
  * Table with known AETs details with Echo and Remove button
@@ -12,7 +13,7 @@ export default ({ aetsData }) => {
 
     const deleteAet = useCustomMutation(
         ({ name }) => apis.aets.deleteAet(name),
-        [['aets']]
+        [[keys.AETS_KEY]]
     )
 
     const columns = [
@@ -46,8 +47,8 @@ export default ({ aetsData }) => {
                         onClick={() => {
                             const name = row.original.name
                             apis.aets.echoAet(name)
-                                .then(() => { toast.success(name + ' Success', { data: { type: 'notification' } }) })
-                                .catch(() => { toast.error(name + ' Echo Failure', { data: { type: 'notification' } }) })
+                                .then(() => { toast.success(name + ' Success', { data: { type: 'info' } }) })
+                                .catch(() => { toast.error(name + ' Echo Failure', { data: { type: 'info' } }) })
                         }} >
                         Echo
                     </Button>

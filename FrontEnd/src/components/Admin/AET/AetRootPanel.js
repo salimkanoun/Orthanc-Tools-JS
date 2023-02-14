@@ -3,6 +3,7 @@ import AetForm from './AetForm'
 import apis from '../../../services/apis'
 import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 import AetsTable from './AetsTable'
+import { keys } from '../../../model/Constant'
 
 /**
  * Root Panel of AETs options
@@ -10,7 +11,7 @@ import AetsTable from './AetsTable'
 export default () => {
 
     const { data: aets, isLoading: isLoadingAets } = useCustomQuery(
-        ['aets'],
+        [keys.AETS_KEY],
         () => apis.aets.getAetsExpand(),
         undefined,
         (answer) => {

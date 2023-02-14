@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
 import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks';
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
+import { keys } from '../../../model/Constant';
 
 /**
  * Table with known Peers details with Echo and Remove butto
@@ -13,7 +14,7 @@ export default ({ peersData }) => {
 
     const deletePeer = useCustomMutation(
         ({ name }) => apis.peers.deletePeer(name),
-        [['peers']]
+        [[keys.PEERS_KEY]]
     )
 
     const columns = [
