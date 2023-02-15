@@ -1,71 +1,52 @@
-import React, { useState, useEffect } from 'react'
-import { toast } from 'react-toastify';
+import React from 'react'
+import { keys } from '../../../model/Constant';
 import apis from '../../../services/apis';
+import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
 import RobotTable from "../../CommonComponents/RessourcesDisplay/ReactTable/RobotTable";
 
 
-export default ({ }) => {
+export default () => {
 
-    const [rows, setRows] = useState([])
+    const { data: rows, isLoading } = useCustomQuery(
+        [keys.ROBOTS_KEY],
+        () => apis.retrieveRobot.getAllRobotsDetails(),
+        undefined,
+        undefined,
+        (answerData) => {
+            return answerData.map((robotJob) => {
+                return ({
+                    id: robotJob.id,
+                    name: robotJob.details.projectName,
+                    username: robotJob.creator,
+                    retrieve: robotJob.progress.retrieve + '%',
+                    validation: robotJob.progress.validation + '%',
+                    state: robotJob.state,
+                    queriesNb: robotJob.details.items.length,
+                    valid: robotJob.details.valid,
+                    approved: robotJob.details.approved
+                })
+            })
+        },
+        undefined,
+        2000
+    )
 
-    useEffect(() => {
-        refreshHandler()
-        startRefreshMonitoring()
-    }, []);
+    const validationRobotHandler = useCustomMutation(
+        ({ id }) => apis.retrieveRobot.validateRobot(id),
+        [[keys.ROBOTS_KEY]]
+    )
 
-    useEffect(() => {
-        stopRefreshMonitoring()
-    }, []);
+    const deleteJobHandler = useCustomMutation(
+        ({ id }) => apis.retrieveRobot.deleteRobot(id),
+        [[keys.ROBOTS_KEY]]
+    )
 
-
-    const startRefreshMonitoring = () => {
-        this.intervalChcker = setInterval(refreshHandler, 2000)
-    }
-
-    const stopRefreshMonitoring = () => {
-        clearInterval(this.intervalChcker)
-    }
-
-    const validationRobotHandler = (id, refreshHandler) => {
-        apis.retrieveRobot.validateRobot(id).then(() => {
-            refreshHandler()
-        }).catch(error => {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        })
-    }
-
-    const deleteJobHandler = async (id, refreshHandler) => {
-        try {
-            await apis.retrieveRobot.deleteRobot(id)
-            refreshHandler()
-        } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        }
-    }
-
-    const refreshHandler = () => {
-        apis.retrieveRobot.getAllRobotsDetails().then((answerData) => {
-            setRows(answerData.map(robotJob => ({
-                id: robotJob.id,
-                name: robotJob.details.projectName,
-                username: robotJob.creator,
-                retrieve: robotJob.progress.retrieve + '%',
-                validation: robotJob.progress.validation + '%',
-                state: robotJob.state,
-                queriesNb: robotJob.details.items.length,
-                valid: robotJob.details.valid,
-                approved: robotJob.details.approved
-            })))
-        }).catch(error => {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        })
-    }
+    if (isLoading) return "Loading ..."
 
     return (
         <>
             <h2 className="card-title mt-4">Retrieve Robots : </h2>
-            <RobotTable robots={rows} deleteJobHandler={deleteJobHandler}
-                refreshHandler={refreshHandler} validationRobotHandler={validationRobotHandler} />
+            <RobotTable robots={rows} deleteJobHandler={deleteJobHandler} validationRobotHandler={validationRobotHandler} />
         </>
     )
 }

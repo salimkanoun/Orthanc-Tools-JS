@@ -1,13 +1,12 @@
 import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
+
 import CommonTableV8 from "../ReactTableV8/CommonTableV8";
-import CommonTable from "./CommonTable";
 
 export default ({
     robots,
     validationRobotHandler,
     deleteJobHandler,
-    refreshHandler,
     hideValidationButton
 }) => {
 
@@ -66,7 +65,7 @@ export default ({
                         return (
                             <div className="text-center">
                                 <input type="button" className='otjs-button otjs-button-green w-7'
-                                    onClick={() => validationRobotHandler(row.values.id, refreshHandler)}
+                                    onClick={() => validationRobotHandler(row.values.id)}
                                     value="Validate" />
                             </div>
                         )
@@ -84,7 +83,7 @@ export default ({
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red w-10'
-                            onClick={() => deleteJobHandler(row.values.id, refreshHandler)}
+                            onClick={() => deleteJobHandler(row.values.id)}
                             value="Remove Job" />
                     </div>
                 )

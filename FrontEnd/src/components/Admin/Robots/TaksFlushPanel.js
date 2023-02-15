@@ -1,10 +1,17 @@
-import { Fragment, useState } from "react"
+import { useState } from "react"
+import { Modal, Row, Col, Button, Form } from 'react-bootstrap'
+
 import apis from '../../../services/apis'
-import { Modal, Row, Col, Button } from 'react-bootstrap'
 
 export default ({ }) => {
 
     const [flushType, setFlushType] = useState(null)
+
+    const RETRIEVE = 'retrieve'
+    const ANONYMIZE = 'anonymize'
+    const DELETE = 'delete'
+    const EXPORT = 'export'
+
 
     const handleClick = (type) => {
         setFlushType(type)
@@ -12,16 +19,16 @@ export default ({ }) => {
 
     const handleConfirm = () => {
         switch (flushType) {
-            case 'retrieve':
+            case RETRIEVE:
                 apis.retrieveRobot.flush();
                 break;
-            case 'anonymize':
+            case ANONYMIZE:
                 apis.anon.flush();
                 break;
-            case 'delete':
+            case DELETE:
                 apis.deleteRobot.flush();
                 break;
-            case 'export':
+            case EXPORT:
                 apis.exportDicom.flushExternalExport();
                 break;
             default:
@@ -30,37 +37,34 @@ export default ({ }) => {
         setFlushType(null)
     }
 
+
+
     return (
-        <Fragment>
+        <Form>
             <h2 className="card-title">Flush task</h2>
-            <Row className="mt-4 align-items-center text-start">
-                <Col sm={3}>
-                    <p>Flush anonymisation task : </p>
+
+            <Row>
+                <Col>
+                    <Form.Label>Flush anonymisation task : </Form.Label>
+                    <Button className='otjs-button otjs-button-red' onClick={() => handleClick(ANONYMIZE)}> Flush </Button>
                 </Col>
-                <Col sm={3}>
-                    <input type='button' className='otjs-button otjs-button-red' onClick={() => handleClick('anonymize')} value='Flush' />
-                </Col>
-                <Col sm={3}>
-                    <p>Flush delete task : </p>
-                </Col>
-                <Col sm={3}>
-                    <input type='button' className='otjs-button otjs-button-red' onClick={() => handleClick('delete')} value='Flush' />
+                <Col>
+                    <Form.Label>Flush delete task : </Form.Label>
+                    <Button className='otjs-button otjs-button-red' onClick={() => handleClick(DELETE)}> Flush </Button>
                 </Col>
             </Row>
-            <Row className="mt-4 align-items-center text-start">
-                <Col sm={3}>
-                    <p>Flush export task : </p>
+
+            <Row>
+                <Col>
+                    <Form.Label>Flush export task : </Form.Label>
+                    <Button className='otjs-button otjs-button-red' onClick={() => handleClick(EXPORT)}> Flush </Button>
                 </Col>
-                <Col sm={3}>
-                    <input type='button' className='otjs-button otjs-button-red' onClick={() => handleClick('export')} value='Flush' />
-                </Col>
-                <Col sm={3}>
-                    <p>Flush retrieve task : </p>
-                </Col>
-                <Col sm={3}>
-                    <input type='button' className='otjs-button otjs-button-red' onClick={() => handleClick('retrieve')} value='Flush' />
+                <Col>
+                    <Form.Label>Flush retrieve task : </Form.Label>
+                    <Button className='otjs-button otjs-button-red' onClick={() => handleClick(RETRIEVE)}> Flush </Button>
                 </Col>
             </Row>
+
             <Modal show={!!flushType} onHide={() => setFlushType(null)} >
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm flush</Modal.Title>
@@ -73,6 +77,6 @@ export default ({ }) => {
                     <Button className='btn btn-danger' onClick={handleConfirm}>Confirm</Button>
                 </Modal.Footer>
             </Modal>
-        </Fragment>
+        </Form>
     )
 }

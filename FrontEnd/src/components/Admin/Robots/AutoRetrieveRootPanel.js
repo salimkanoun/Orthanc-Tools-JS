@@ -1,13 +1,13 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import AutoRetrieveSchedule from './AutoRetrieveSchedule'
 import RobotStatus from './RobotStatus'
 
-export default ({ }) => {
+export default () => {
 
   return (
-    <Fragment>
+    <>
       <AutoRetrieveSchedule />
       <RobotStatus />
-    </Fragment>
+    </>
   )
 }

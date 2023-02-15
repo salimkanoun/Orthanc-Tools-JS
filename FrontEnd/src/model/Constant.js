@@ -10,7 +10,8 @@ const keys = {
     PEERS_KEY : 'peers',
     ROLES_KEY : 'roles',
     USERS_KEY : 'users',
-    BURNER_KEY : 'burner'
+    BURNER_KEY : 'burner',
+    ROBOTS_KEY : 'robots'
 }
 
 export {keys}

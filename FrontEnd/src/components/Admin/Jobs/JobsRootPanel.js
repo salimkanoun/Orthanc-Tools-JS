@@ -22,8 +22,7 @@ export default () => {
             })
         },
         undefined,
-        2000,
-        true
+        2000
     )
 
     const dropDown = (id) => {
