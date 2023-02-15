@@ -3,25 +3,25 @@ import Select from 'react-select'
 import {toast} from 'react-toastify'
 import apis from '../../../services/apis'
 import {Row, Col} from 'react-bootstrap'
+import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 /**
  * Form to declare or modify an Ssh Keys
  */
 export default ({onCreateEndpoint}) => {
 
-    const [keys, setKeys] = useState([]);
-    const [name, setName] = useState();
-    const [protocol, setProtocol] = useState();
-    const [label, setLabel] = useState();
-    const [host, setHost] = useState();
-    const [port, setPort] = useState();
-    const [username, setUsername] = useState();
-    const [password, setPassword] = useState();
-    const [targetFolder, setTargetFolder] = useState();
-    const [ssh, setSsh] = useState();
-    const [sshKey, setSshKey] = useState();
-    const [ssl, setSsl] = useState();
-    const [digest, setDigest] = useState();
-
+    const [endpoint, setEndpoint] = useState({
+        protocol : null,
+        label : null,
+        host : null,
+        port : null,
+        username : null,
+        password : null,
+        targetFolder : null,
+        ssh : null,
+        sshKey : null,
+        ssl : null,
+        digest : null
+    })
 
     const protocols = [
         {value: 'sftp', label: 'Sftp'},
@@ -29,41 +29,35 @@ export default ({onCreateEndpoint}) => {
         {value: 'webdav', label: 'Webdav'}
     ]
 
-    useEffect(() => {
-        loadKeys()
-    }, [])
-
-    const loadKeys = async () => {
-        let sshKeys = []
-        try {
-            let response = await apis.sshKeys.getKeysExpend()
-            response.forEach(key => {
-                sshKeys.push({value: key.id, label: key.label})
+    const {data: keys, isLoading} = useCustomQuery(
+        ['endpoints'],
+        () => apis.sshKeys.getKeysExpend(),
+        (answer) => {
+            return answer.map((key) => {
+                return ({
+                    value : key.id,
+                    label: key.label
+                })
             })
-        } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
         }
+    )
 
-        setKeys(sshKeys)
-    }
-
-    const handleSelectChange = (name) => {
-        return ((value) => {
-            setName(value.value)
-        })
+    const handleSelectChange = (key, event) => {
+        setEndpoint((endpoint)=> ({
+            ...endpoint,
+            [key] : event
+        }))
     }
 
     /**
      * Fill input text of users in current state
      * @param {*} event
      */
-    const handleChange = (event) => {
-        const target = event.target
-        const name = target.name
-        const value = target.type === 'checkbox' ? target.checked : target.value
-
-        setName(value)
-
+     const handleChange = (key, value) => {
+        setEndpoint((endpoint) => ({
+            ...endpoint,
+            [key]: value
+        }))
     }
 
     /**
@@ -71,32 +65,30 @@ export default ({onCreateEndpoint}) => {
      */
     const handleClick = () => {
         let postData = {}
-        postData.protocol = protocol
-        postData.label = label
-        postData.host = host
-        postData.port = port
-        postData.username = username
-        postData.password = password || null
-        postData.targetFolder = targetFolder || ''
-        if (protocol === 'sftp' && ssh) {
-            postData.sshKey = sshKey
-        } else if (protocol === 'ftp') {
-            postData.ssl = ssl || false
-        } else if (protocol === 'webdav') {
-            postData.digest = digest || false
+        postData.protocol = endpoint.protocol
+        postData.label = endpoint.label
+        postData.host = endpoint.host
+        postData.port = endpoint.port
+        postData.username = endpoint.username
+        postData.password = endpoint.password || null
+        postData.targetFolder = endpoint.targetFolder || ''
+        if (endpoint.protocol === 'sftp' && endpoint.ssh) {
+            postData.sshKey = endpoint.sshKey
+        } else if (endpoint.protocol === 'ftp') {
+            postData.ssl = endpoint.ssl || false
+        } else if (endpoint.protocol === 'webdav') {
+            postData.digest = endpoint.digest || false
         }
-
         onCreateEndpoint(postData)
-
     }
 
     const readyToSubmit = () => {
-        let ready = (protocol)
-        ready = ready && (label)
-        ready = ready && (host)
-        ready = ready && (port)
-        ready = ready && (username)
-        ready = ready && (sshKey || !(protocol === 'sftp' && ssh))
+        let ready = (endpoint.protocol)
+        ready = ready && (endpoint.label)
+        ready = ready && (endpoint.host)
+        ready = ready && (endpoint.port)
+        ready = ready && (endpoint.username)
+        ready = ready && (endpoint.sshKey || !(endpoint.protocol === 'sftp' && endpoint.ssh))
 
         return ready
     }
@@ -112,13 +104,13 @@ export default ({onCreateEndpoint}) => {
                         </Col>
                         <Col sm={4}>
                             <Select classNamePrefix="select" name="protocol" single options={protocols}
-                                onChange={handleSelectChange('protocol')} value={protocols[protocol]}/>
+                                onChange={(event) => handleSelectChange('protocol', event)} value={protocols[endpoint.protocol]}/>
                         </Col>
                         <Col sm={2}>
                             <label htmlFor="label">Label : </label>
                         </Col>
                         <Col sm={4}>
-                            <input type='text' name="label" className="form-control" onChange={handleChange}/>
+                            <input type='text' name="label" className="form-control" onChange={(event) => handleChange('label', event.target.value)}/>
                         </Col>
                     </Row>
                     <Row className="align-items-center mt-4">
@@ -126,49 +118,49 @@ export default ({onCreateEndpoint}) => {
                             <label htmlFor="host">Host : </label>
                         </Col>
                         <Col sm={4}>
-                            <input type='text' name="host" className="form-control" onChange={handleChange}/>
+                            <input type='text' name="host" className="form-control" onChange={(event) => handleChange('host', event.target.value)}/>
                         </Col>
                         <Col sm={2}>
                             <label htmlFor="port">Port : </label>
                         </Col>
                         <Col sm={4}>
-                            <input type='number' name="port" className="form-control" onChange={handleChange}/>
+                            <input type='number' name="port" className="form-control" onChange={(event) => handleChange('port', event.target.value)}/>
                         </Col>
                     </Row>
                     <Row className="align-items-center mt-4">
                         {
-                            protocol === 'sftp' ?
+                            endpoint.protocol === 'sftp' ?
                             <>
                                 <Col sm={2}>
                                     <label htmlFor="ssh">Use a private key?</label>
                                 </Col>
                                 <Col sm={2}>
                                     <input type='checkbox' name="ssh" className="form-check-input"
-                                    onChange={handleChange}/>
+                                    onChange={(event) => handleChange('ssh', event.target.value)}/>
                                 </Col></> :
                             <></>
                         }
                         {
-                            protocol === 'ftp' ?
+                            endpoint.protocol === 'ftp' ?
                                 <>
                                 <Col sm={2}>
                                     <label htmlFor="ssl">Use ssl?</label>
                                 </Col>
                                 <Col sm={2}>
                                     <input type='checkbox' name="ssl" className="form-check-input"
-                                        onChange={handleChange}/>
+                                        onChange={(event) => handleChange('ssl', event.target.value)}/>
                                 </Col></> :
                                    <> </>
                         }
                         {
-                            protocol === 'webdav' ?
+                            endpoint.protocol === 'webdav' ?
                                 <>
                                 <Col sm={2}>
                                     <label htmlFor="digest">Use digest?</label>
                                 </Col>
                                 <Col sm={2}>
                                     <input type='checkbox' name="digest" className="form-check-input"
-                                        onChange={handleChange}/>
+                                        onChange={(event) => handleChange('digest', event.target.value)}/>
                                 </Col></> :
                                 <></>
                         }
@@ -178,25 +170,25 @@ export default ({onCreateEndpoint}) => {
                             <label htmlFor="username">Username : </label>
                         </Col>
                         <Col sm={4}>
-                            <input type='text' name="username" className="form-control" onChange={handleChange}/>
+                            <input type='text' name="username" className="form-control" onChange={(event) => handleChange('username', event.target.value)}/>
                         </Col>
                             {
-                                ssh && protocol === 'sftp' ?
+                                endpoint.ssh && endpoint.protocol === 'sftp' ?
                                 <>
                                     <Col sm={2}>
                                         <label htmlFor="sshKey">Ssh Key : </label>
                                     </Col>
                                     <Col sm={4}>
                                         <Select classNamePrefix="select" name="sshKey" single options={keys}
-                                            onChange={handleSelectChange('sshKey')}
-                                            value={keys[sshKey]}/>
+                                            onChange={(event) => handleSelectChange('sshKey', event)}
+                                            value={keys[endpoint.sshKey]}/>
                                     </Col></> : <>
                                     <Col sm={2}>
                                         <label htmlFor="password">Password : </label>
                                     </Col>
                                     <Col sm={4}>
                                         <input type='password' name="password" className="form-control"
-                                            onChange={handleChange}/>
+                                            onChange={(event) => handleChange('password', event.target.value)}/>
                                     </Col>
                                    </>
                             } 
@@ -207,7 +199,7 @@ export default ({onCreateEndpoint}) => {
                             <label htmlFor="targetFolder">Destination Folder : </label>
                         </Col>
                         <Col>
-                            <input type='text' name="targetFolder" className="form-control" onChange={handleChange}/>
+                            <input type='text' name="targetFolder" className="form-control" onChange={(event) => handleChange('targetFolder', event.target.value)}/>
                         </Col>
                     </Row>
                 </div>
