@@ -68,23 +68,22 @@ export default () => {
      * Try to connect to Orthanc System API, response is shown in an toastify
      */
 
-    //TODO enlever du notification center
     const testConnexion = () => {
         apis.options.getOrthancSystem().then((answer) => {
-            toast.success('Orthanc Version: ' + answer.Version, { data: { type: 'info' } })
-        }).catch(error => { toast.error(error.statusText, { data: { type: 'info' } }) })
+            toast.success('Orthanc Version: ' + answer.Version )
+        }).catch(error => { toast.error(error.statusText) })
     }
 
     const reset = () => {
         apis.options.resetOrthanc()
-            .then(() => { toast.success('Restart Done', { data: { type: 'info' } }); })
-            .catch(error => { toast.error(error.statusText, { data: { type: 'info' } }) })
+            .then(() => { toast.success('Restart Done')})
+            .catch(error => { toast.error(error.statusText) })
         setShowRestart(false)
     }
 
     const shutdown = () => {
         apis.options.shutdownOrthanc()
-            .then(() => { toast.success('Orthanc Stopped', { data: { type: 'info' } }); })
+            .then(() => { toast.success('Orthanc Stopped')})
             .catch((error) => {
                 toast.error(error.statusText)
             })

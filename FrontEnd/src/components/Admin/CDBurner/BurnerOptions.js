@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
 import Select from 'react-select'
-import { toast } from 'react-toastify'
 import { keys } from '../../../model/Constant'
 
 import apis from '../../../services/apis'
@@ -66,8 +65,8 @@ export default () => {
         [keys.BURNER_KEY],
         () => apis.options.getOptions(),
         undefined,
+        undefined,
         (answer) => {
-            console.log(answer)
             setBurner({
                 burner_monitored_path: answer.burner_monitored_path,
                 burner_viewer_path: answer.burner_viewer_path,
@@ -79,7 +78,7 @@ export default () => {
                 burner_delete_study_after_sent: answer.burner_delete_study_after_sent,
                 burner_transfer_syntax: answer.burner_transfer_syntax
             })
-        }
+        },
     )
 
     const sendForm = useCustomMutation(
@@ -102,22 +101,17 @@ export default () => {
     )
 
 
-    const handleChange = (event) => {
-        const target = event.target
-        const name = target.name
-        const value = target.type === 'checkbox' ? target.checked : target.value
-
+    const handleChange = (key, value) => {
         setBurner((burner) => ({
             ...burner,
-            [name]: value
+            [key]: value
         }))
-
     }
 
-    const handleChangeSelect = (event, metadata) => {
+    const handleChangeSelect = (key, event) => {
         setBurner((burner) => ({
             ...burner,
-            [metadata.name]: event.value
+            [key]: event
         }))
 
     }
@@ -140,13 +134,13 @@ export default () => {
                 <Col>
                     <FormGroup>
                         <Form.Label>Monitored Folder :</Form.Label>
-                        <Form.Control type="text" value={burner.burner_monitored_path} placeholder="Example : C:\\myPath\Epson" onChange={handleChange} />
+                        <Form.Control type="text" value={burner.burner_monitored_path} placeholder="Example : C:\\myPath\Epson" onChange={(event) => handleChange('burner_monitored_path', event.target.value)} />
                     </FormGroup>
                 </Col>
                 <Col>
                     <FormGroup>
                         <Form.Label>Viewer Folder :</Form.Label>
-                        <Form.Control type="text" value={burner.burner_viewer_path} placeholder="Example : C:\\myPath\Viewer" onChange={handleChange} />
+                        <Form.Control type="text" value={burner.burner_viewer_path} placeholder="Example : C:\\myPath\Viewer" onChange={(event) => handleChange('burner_viewer_path', event.target.value)} />
                     </FormGroup>
                 </Col>
             </Row>
@@ -155,13 +149,13 @@ export default () => {
                 <Col>
                     <FormGroup>
                         <Form.Label>Label Path : </Form.Label>
-                        <Form.Control type="text" value={burner.burner_label_path} placeholder="Example : C:\\myPath\Label" onChange={handleChange} />
+                        <Form.Control type="text" value={burner.burner_label_path} placeholder="Example : C:\\myPath\Label" onChange={(event) => handleChange('burner_label_path', event.target.value)} />
                     </FormGroup>
                 </Col>
                 <Col>
                     <FormGroup>
                         <Form.Label>Transfer Syntax :</Form.Label>
-                        <Select value={getSelectedObject(transferSyntaxOptions, burner.burner_transfer_syntax)} options={transferSyntaxOptions} onChange={handleChangeSelect} single />
+                        <Select value={getSelectedObject(transferSyntaxOptions, burner.burner_transfer_syntax)} options={transferSyntaxOptions} onChange={(event) =>handleChangeSelect('burner_transfer_syntax', event)} single />
                     </FormGroup>
                 </Col>
             </Row>
@@ -170,13 +164,13 @@ export default () => {
                 <Col>
                     <FormGroup>
                         <Form.Label>Manufacturer : </Form.Label>
-                        <Select value={getSelectedObject(manufacturerOptions, burner.burner_manifacturer)} options={manufacturerOptions} onChange={handleChangeSelect} single />
+                        <Select value={getSelectedObject(manufacturerOptions, burner.burner_manifacturer)} options={manufacturerOptions} onChange={(event) =>handleChangeSelect('burner_manifacturer', event)} single />
                     </FormGroup>
                 </Col>
                 <Col>
                     <FormGroup>
                         <Form.Label>Monitoring Level : </Form.Label>
-                        <Select value={getSelectedObject(levelOptions, burner.burner_monitoring_level)} options={levelOptions} onChange={handleChangeSelect} />
+                        <Select value={getSelectedObject(levelOptions, burner.burner_monitoring_level)} options={levelOptions} onChange={(event) =>handleChangeSelect('burner_monitoring_level', event)} />
                     </FormGroup>
                 </Col>
             </Row>
@@ -185,13 +179,13 @@ export default () => {
                 <Col>
                     <FormGroup>
                         <Form.Label>Date Format :</Form.Label>
-                        <Select value={getSelectedObject(dateFormatOptions, burner.burner_date_format)} options={dateFormatOptions} onChange={handleChangeSelect} />
+                        <Select value={getSelectedObject(dateFormatOptions, burner.burner_date_format)} options={dateFormatOptions} onChange={(event) =>handleChangeSelect('burner_date_format', event)} />
                     </FormGroup>
                 </Col>
                 <Col>
                     <FormGroup>
                         <Form.Label>Support Type :</Form.Label>
-                        <Select value={getSelectedObject(supportType, burner.burner_support_type)} options={supportType} onChange={handleChangeSelect} single />
+                        <Select value={getSelectedObject(supportType, burner.burner_support_type)} options={supportType} onChange={(event) =>handleChangeSelect('burner_support_type', event)} single />
                     </FormGroup>
                 </Col>
             </Row>
@@ -201,7 +195,7 @@ export default () => {
                     <Form.Label>Delete Original Images From Orthanc :</Form.Label>
                 </Col>
                 <Col>
-                    <Form.Check Check={burner.burner_delete_study_after_sent} onChange={handleChange} />
+                    <Form.Check Check={burner.burner_delete_study_after_sent} onChange={(event) => handleChange('burner_delete_study_after_sent', event)} />
                 </Col>
             </Row>
 
