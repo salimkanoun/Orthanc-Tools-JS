@@ -1,5 +1,4 @@
-import React, { Fragment, useMemo } from "react";
-import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import React, { useMemo } from "react";
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
 export default ({ endpointsData, onDeleteEndpoint }) => {
@@ -41,7 +40,8 @@ export default ({ endpointsData, onDeleteEndpoint }) => {
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
-                            await onDeleteEndpoint(row.id)
+                            let id = row.id
+                            await onDeleteEndpoint.mutate({id})
                         }} value="Remove" />
                     </div>)
             },
@@ -52,10 +52,10 @@ export default ({ endpointsData, onDeleteEndpoint }) => {
 
 
     return (
-        <Fragment>
+        <>
             <h2 className="card-title mt-5">SFTP Export Endpoints</h2>
             <CommonTableV8 data={data} columns={columns} />
-        </Fragment>
+        </>
     )
 }
 

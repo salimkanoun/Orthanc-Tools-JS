@@ -1,7 +1,6 @@
-import React, { Fragment, useMemo } from "react";
+import React, { Fragment } from "react";
 import apis from '../../../../services/apis';
 import { toast } from "react-toastify";
-import CommonTable from "../../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
 export default ({ refreshCertificatesData, certificatesData }) => {

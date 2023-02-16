@@ -1,35 +1,52 @@
-import FtpEndpoints from './FtpEndpointsList'
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, Fragment } from 'react'
+import { Button } from 'react-bootstrap'
+
 import apis from '../../../services/apis'
 import SftpEndpoints from './SftpEndpointsList'
 import WebdavEndpoints from './WebdavEndpoint'
 import EndpointForm from './EndpointForm'
+import FtpEndpoints from './FtpEndpointsList'
 import SecurityRootPanel from './Security/SecurityRootPanel'
-import { toast } from 'react-toastify'
 import EndpointsOptions from './EndpointsOptions'
-import { Button } from 'react-bootstrap'
 
-export default ({}) => {
+import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
+import { keys } from '../../../model/Constant'
 
-    const [endpoints, setEndpoints] = useState({
-        ftp: [],
-        sftp: [],
-        webdav: []
-    })
+export default () => {
 
     const [currentComponent, setcurrentComponent] = useState('endpoints')
 
+    const {data : endpoints, isLoading} = useCustomQuery(
+        [keys.ENDPOINTS_KEY],
+        () => apis.endpoints.getEndpoints(),
+        undefined,
+        (answer) => {
+            let endpoints = {
+                ftp: [],
+                sftp: [],
+                webdav: []
+            }
+            answer.forEach((endpoint) => {
+                switch (endpoint.protocol) {
+                    case 'ftp':
+                    case 'ftps':
+                        endpoints.ftp.push(endpoint)
+                        break;
+                    case 'sftp':
+                        endpoints.sftp.push(endpoint)
+                        break;
+                    case 'webdav':
+                        endpoints.webdav.push(endpoint)
+                        break;
+                    default:
+                        break;
+                }
+            })
+            return endpoints
+        }
+    )
 
-    /**
-     * Replacement of ComponentDidMount
-     * See https://dev.to/trentyang/replace-lifecycle-with-hooks-in-react-3d4n
-     */
-    useEffect(() => {
-        refreshEndpoints()
-    }, [])
-
-
-    let getComponentToDisplay = () => {
+    const getComponentToDisplay = () => {
         let component = null
         switch (currentComponent) {
             case 'endpoints':
@@ -50,71 +67,28 @@ export default ({}) => {
             default:
                 break
         }
-
         return component
     }
 
-    let refreshEndpoints = async () => {
-        let answer 
-        try {
-            answer = await apis.endpoints.getEndpoints()
-        } catch (error){
-            toast.error(error.statusText, {data:{type:'notification'}})
-            return
-        }
-
-        let endpoints = {
-            ftp: [],
-            sftp: [],
-            webdav: []
-        }
-        answer.forEach((endpoint) => {
-            switch (endpoint.protocol) {
-                case 'ftp':
-                case 'ftps':
-                    endpoints.ftp.push(endpoint)
-                    break;
-                case 'sftp':
-                    endpoints.sftp.push(endpoint)
-                    break;
-                case 'webdav':
-                    endpoints.webdav.push(endpoint)
-                    break;
-                default:
-                    break;
-            }
-        });
-        setEndpoints(endpoints)
-    }
-
-    let switchTab = (name) => {
+    const switchTab = (name) => {
         setcurrentComponent(name)
     }
 
-    let onDeleteEndpoint = async (id)=> {
-        try{
-            await apis.endpoints.deleteEndpoints(id)
-            await refreshEndpoints()
-        } catch(error){
-            toast.error(error.statusText, {data:{type:'notification'}})
-        }
-        
-    }
 
-    let onCreateEndpoint = async (postData)=>{
+    const onDeleteEndpoint = useCustomMutation(
+        ({id}) => apis.endpoints.deleteEndpoints(id),
+        [[keys.ENDPOINTS_KEY]]
+    )
 
-        try{
-            await apis.endpoints.createEndpoint(postData)
-            await refreshEndpoints()
-            switchTab('endpoints')
-            toast.success('Endpoint Created', {data:{type:'notification'}})
-        } catch(error){
-            toast.error(error.statusText, {data:{type:'notification'}})
-        }
+    const onCreateEndpoint = useCustomMutation(
+        ({postData}) => {apis.endpoints.createEndpoint(postData)
+        switchTab('endpoints')},
+        [[keys.ENDPOINTS_KEY]]
+    )
 
-       
 
-    }
+    if (isLoading) return "Loading ..."
+
     return (
         <>
             <div>

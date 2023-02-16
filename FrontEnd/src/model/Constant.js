@@ -11,7 +11,9 @@ const keys = {
     ROLES_KEY : 'roles',
     USERS_KEY : 'users',
     BURNER_KEY : 'burner',
-    ROBOTS_KEY : 'robots'
+    ROBOTS_KEY : 'robots',
+    ENDPOINTS_KEY : 'endpoints',
+    EXPORT_TRANSCODING : 'export_transcoding'
 }
 
 export {keys}

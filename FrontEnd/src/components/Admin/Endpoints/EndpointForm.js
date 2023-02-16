@@ -1,41 +1,41 @@
-import React, { Fragment, useEffect, useState} from 'react'
+import React, { useState } from 'react'
 import Select from 'react-select'
-import {toast} from 'react-toastify'
 import apis from '../../../services/apis'
-import {Row, Col} from 'react-bootstrap'
+import { Row, Col, Form, Button, FormGroup } from 'react-bootstrap'
 import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
+import { keys } from '../../../model/Constant'
 /**
  * Form to declare or modify an Ssh Keys
  */
-export default ({onCreateEndpoint}) => {
+export default ({ onCreateEndpoint }) => {
 
     const [endpoint, setEndpoint] = useState({
-        protocol : null,
-        label : null,
-        host : null,
-        port : null,
-        username : null,
-        password : null,
-        targetFolder : null,
-        ssh : null,
-        sshKey : null,
-        ssl : null,
-        digest : null
+        protocol: null,
+        label: null,
+        host: null,
+        port: null,
+        username: null,
+        password: null,
+        targetFolder: null,
+        ssh: null,
+        sshKey: null,
+        ssl: null,
+        digest: null
     })
 
     const protocols = [
-        {value: 'sftp', label: 'Sftp'},
-        {value: 'ftp', label: 'Ftps/Ftp'},
-        {value: 'webdav', label: 'Webdav'}
+        { value: 'sftp', label: 'Sftp' },
+        { value: 'ftp', label: 'Ftps/Ftp' },
+        { value: 'webdav', label: 'Webdav' }
     ]
 
-    const {data: keys, isLoading} = useCustomQuery(
-        ['endpoints'],
+    const { data, isLoading } = useCustomQuery(
+        [keys.ENDPOINTS_KEY],
         () => apis.sshKeys.getKeysExpend(),
         (answer) => {
             return answer.map((key) => {
                 return ({
-                    value : key.id,
+                    value: key.id,
                     label: key.label
                 })
             })
@@ -43,9 +43,9 @@ export default ({onCreateEndpoint}) => {
     )
 
     const handleSelectChange = (key, event) => {
-        setEndpoint((endpoint)=> ({
+        setEndpoint((endpoint) => ({
             ...endpoint,
-            [key] : event
+            [key]: event
         }))
     }
 
@@ -53,7 +53,7 @@ export default ({onCreateEndpoint}) => {
      * Fill input text of users in current state
      * @param {*} event
      */
-     const handleChange = (key, value) => {
+    const handleChange = (key, value) => {
         setEndpoint((endpoint) => ({
             ...endpoint,
             [key]: value
@@ -79,7 +79,7 @@ export default ({onCreateEndpoint}) => {
         } else if (endpoint.protocol === 'webdav') {
             postData.digest = endpoint.digest || false
         }
-        onCreateEndpoint(postData)
+        onCreateEndpoint.mutate({postData})
     }
 
     const readyToSubmit = () => {
@@ -94,121 +94,120 @@ export default ({onCreateEndpoint}) => {
     }
 
 
-        return (
-            <Fragment>
-                <h2 className="card-title">Add Export Endpoint</h2>
-                <div className="form-group mt-4">
-                    <Row className="align-items-center">
-                        <Col sm={2}>
-                            <label htmlFor="protocol">Protocol </label>
-                        </Col>
-                        <Col sm={4}>
-                            <Select classNamePrefix="select" name="protocol" single options={protocols}
-                                onChange={(event) => handleSelectChange('protocol', event)} value={protocols[endpoint.protocol]}/>
-                        </Col>
-                        <Col sm={2}>
-                            <label htmlFor="label">Label : </label>
-                        </Col>
-                        <Col sm={4}>
-                            <input type='text' name="label" className="form-control" onChange={(event) => handleChange('label', event.target.value)}/>
-                        </Col>
-                    </Row>
-                    <Row className="align-items-center mt-4">
-                        <Col sm={2}>
-                            <label htmlFor="host">Host : </label>
-                        </Col>
-                        <Col sm={4}>
-                            <input type='text' name="host" className="form-control" onChange={(event) => handleChange('host', event.target.value)}/>
-                        </Col>
-                        <Col sm={2}>
-                            <label htmlFor="port">Port : </label>
-                        </Col>
-                        <Col sm={4}>
-                            <input type='number' name="port" className="form-control" onChange={(event) => handleChange('port', event.target.value)}/>
-                        </Col>
-                    </Row>
-                    <Row className="align-items-center mt-4">
-                        {
-                            endpoint.protocol === 'sftp' ?
-                            <>
-                                <Col sm={2}>
-                                    <label htmlFor="ssh">Use a private key?</label>
-                                </Col>
-                                <Col sm={2}>
-                                    <input type='checkbox' name="ssh" className="form-check-input"
-                                    onChange={(event) => handleChange('ssh', event.target.value)}/>
-                                </Col></> :
-                            <></>
-                        }
-                        {
-                            endpoint.protocol === 'ftp' ?
-                                <>
-                                <Col sm={2}>
-                                    <label htmlFor="ssl">Use ssl?</label>
-                                </Col>
-                                <Col sm={2}>
-                                    <input type='checkbox' name="ssl" className="form-check-input"
-                                        onChange={(event) => handleChange('ssl', event.target.value)}/>
-                                </Col></> :
-                                   <> </>
-                        }
-                        {
-                            endpoint.protocol === 'webdav' ?
-                                <>
-                                <Col sm={2}>
-                                    <label htmlFor="digest">Use digest?</label>
-                                </Col>
-                                <Col sm={2}>
-                                    <input type='checkbox' name="digest" className="form-check-input"
-                                        onChange={(event) => handleChange('digest', event.target.value)}/>
-                                </Col></> :
-                                <></>
-                        }
-                    </Row>
-                    <Row className="align-items-center mt-4">
-                        <Col sm={2}>
-                            <label htmlFor="username">Username : </label>
-                        </Col>
-                        <Col sm={4}>
-                            <input type='text' name="username" className="form-control" onChange={(event) => handleChange('username', event.target.value)}/>
-                        </Col>
-                            {
-                                endpoint.ssh && endpoint.protocol === 'sftp' ?
-                                <>
-                                    <Col sm={2}>
-                                        <label htmlFor="sshKey">Ssh Key : </label>
-                                    </Col>
-                                    <Col sm={4}>
-                                        <Select classNamePrefix="select" name="sshKey" single options={keys}
-                                            onChange={(event) => handleSelectChange('sshKey', event)}
-                                            value={keys[endpoint.sshKey]}/>
-                                    </Col></> : <>
-                                    <Col sm={2}>
-                                        <label htmlFor="password">Password : </label>
-                                    </Col>
-                                    <Col sm={4}>
-                                        <input type='password' name="password" className="form-control"
-                                            onChange={(event) => handleChange('password', event.target.value)}/>
-                                    </Col>
-                                   </>
-                            } 
-                    </Row>
-                   
-                    <Row className="align-items-center mt-4">
-                        <Col sm={2}>
-                            <label htmlFor="targetFolder">Destination Folder : </label>
-                        </Col>
+    return (
+        <Form>
+            <h2 className="card-title">Add Export Endpoint</h2>
+            
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label> Protocol </Form.Label>
+                        <Select classNamePrefix="select" name="protocol" single options={protocols}
+                            onChange={(event) => handleSelectChange('protocol', event)} value={protocols[endpoint.protocol]} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label> Label : </Form.Label>
+                        <Form.Control type="text" value={endpoint.label} onChange={(event) => handleChange('label', event.target.value)} />
+                    </FormGroup>
+                </Col>
+            </Row>
+
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label> Host : </Form.Label>
+                        <Form.Control type="text" value={endpoint.host} onChange={(event) => handleChange('host', event.target.value)} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label> Port </Form.Label>
+                        <Form.Control type="number" value={endpoint.port} onChange={(event) => handleChange('port', event.target.value)} />
+                    </FormGroup>
+                </Col>
+            </Row>
+
+            <Row>
+                {
+                    endpoint.protocol === 'sftp' ?
                         <Col>
-                            <input type='text' name="targetFolder" className="form-control" onChange={(event) => handleChange('targetFolder', event.target.value)}/>
+                            <FormGroup>
+                                <Form.Label>Use a private key?</Form.Label>
+                                <Form.Check Check={endpoint.ssh} onChange={(event) => handleChange('ssh', event.target.value)} />
+                            </FormGroup>
                         </Col>
-                    </Row>
-                </div>
-                <Row className="text-center mt-4">
-                    <Col>
-                        <input disabled={!readyToSubmit()} type='button' className='otjs-button otjs-button-blue'
-                           onClick={handleClick} value='Send'/>
-                    </Col>
-                </Row>
-            </Fragment>
-        )
+                        :
+                        <></>
+                }
+                {
+                    endpoint.protocol === 'ftp' ?
+                        <Col>
+                            <FormGroup>
+                                <Form.Label>Use ssl?</Form.Label>
+                                <Form.Check Check={endpoint.ssl} onChange={(event) => handleChange('ssl', event.target.value)} />
+                            </FormGroup>
+                        </Col>
+                        :
+                        <> </>
+                }
+                {
+                    endpoint.protocol === 'webdav' ?
+                        <Col>
+                            <FormGroup>
+                                <Form.Label>Use digest?</Form.Label>
+                                <Form.Check Check={endpoint.digest} onChange={(event) => handleChange('digest', event.target.value)} />
+                            </FormGroup>
+                        </Col>
+                        :
+                        <></>
+                }
+            </Row>
+
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label> Username : </Form.Label>
+                        <Form.Control type="text" value={endpoint.username} onChange={(event) => handleChange('username', event.target.value)} />
+                    </FormGroup>
+                </Col>
+                {
+                    endpoint.ssh && endpoint.protocol === 'sftp' ?
+                        <>
+                            <Col>
+                                <FormGroup>
+                                    <Form.Label> Ssh Key : </Form.Label>
+                                    <Select single options={data} onChange={(event) => handleSelectChange('sshKey', event)} value={data[endpoint.sshKey]} />
+                                </FormGroup>
+                            </Col>
+                        </>
+                        :
+                        <>
+                            <Col>
+                                <FormGroup>
+                                    <Form.Label> Password</Form.Label>
+                                    <Form.Control type="password" value={endpoint.password} onChange={(event) => handleChange('password', event.target.value)} />
+                                </FormGroup>
+                            </Col>
+                        </>
+                }
+            </Row>
+
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label> Destination Folder : </Form.Label>
+                        <Form.Control type="text" value={endpoint.targetFolder} onChange={(event) => handleChange('targetFolder', event.target.value)} />
+                    </FormGroup>
+                </Col>
+            </Row>
+
+
+            <Row className="justify-content-md-center">
+                <Button disabled={!readyToSubmit()} className='otjs-button otjs-button-blue'
+                    onClick={handleClick}> Send </Button>
+            </Row>
+        </Form>
+    )
 }

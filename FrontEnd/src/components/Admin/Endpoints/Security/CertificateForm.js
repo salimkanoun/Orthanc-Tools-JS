@@ -1,8 +1,9 @@
-import React, { Fragment, useState } from 'react'
-import apis from '../../../../services/apis'
+import React, { useState } from 'react'
+import { Row, Col, Form, Button, FormGroup } from 'react-bootstrap'
 import Dropzone from 'react-dropzone'
 import { toast } from 'react-toastify'
-import { Row, Col } from 'react-bootstrap'
+
+import apis from '../../../../services/apis'
 
 /**
  * Form to declare or modify an AET
@@ -10,22 +11,8 @@ import { Row, Col } from 'react-bootstrap'
 export default ({ refreshCertificatesData }) => {
 
     const [file, setFile] = useState(null);
-    const [name, setName] = useState();
     const [label, setLabel] = useState();
     const [inProgress, setInProgress] = useState();
-
-    /**
-     * Fill input text of users in current state
-     * @param {*} event 
-     */
-    const handleChange = (event) => {
-        const target = event.target
-        const name = target.name
-        const value = target.type === 'checkbox' ? target.checked : target.value
-
-        setName(value)
-
-    }
 
     /**
      * Listener on form submission
@@ -36,10 +23,8 @@ export default ({ refreshCertificatesData }) => {
             await apis.certificates.uploadCertificate(response, file)
             refreshCertificatesData()
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
-
-
     }
 
     const setFile0 = (file) => {
@@ -48,36 +33,36 @@ export default ({ refreshCertificatesData }) => {
 
 
     return (
-        <Fragment>
+        <Form>
             <h3 className="card-title">Add Certificate Authority</h3>
-            <div className="form-group">
-                <Dropzone onDrop={acceptedFile => setFile0(acceptedFile)} >
-                    {({ getRootProps, getInputProps }) => (
-                        <section>
-                            <div className={inProgress ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
-                                <input {...getInputProps()} />
-                                <p>{!!file ? file.name : "Drop Certificate file"}</p>
-                            </div>
-                        </section>
-                    )}
-                </Dropzone>
-                <Row>
-                    <Col sm={2}>
-                        <label htmlFor="label">Label : </label>
 
-                    </Col>
-                    <Col sm={10}>
-                        <input type='text' name="label" className="form-control" onChange={handleChange} />
-                    </Col>
-                </Row>
+            <Dropzone onDrop={acceptedFile => setFile0(acceptedFile)} >
+                {({ getRootProps, getInputProps }) => (
+                    <section>
+                        <div className={inProgress ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
+                            <input {...getInputProps()} />
+                            <p>{!!file ? file.name : "Drop Certificate file"}</p>
+                        </div>
+                    </section>
+                )}
+            </Dropzone>
 
-            </div>
-            <Row className="text-center mt-4">
+
+            <Row>
                 <Col>
-                    <input disabled={!file || !label} type='button' className='otjs-button otjs-button-blue' onClick={handleClick} value='Send' />
+                    <FormGroup>
+                        <Form.Label> Label : </Form.Label>
+                        <Form.Control type="text" value={label} onChange={(event) => setLabel(event.target.value)} />
+                    </FormGroup>
                 </Col>
             </Row>
-        </Fragment>
+
+            <Row className="text-center mt-4">
+                <Col>
+                    <Button disabled={!file || !label} className='otjs-button otjs-button-blue' onClick={handleClick}> Send </Button>
+                </Col>
+            </Row>
+        </Form>
     )
 
 }
