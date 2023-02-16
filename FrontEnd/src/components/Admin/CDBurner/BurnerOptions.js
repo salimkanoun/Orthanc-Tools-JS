@@ -58,7 +58,6 @@ export default () => {
         { value: '1.2.840.10008.1.2.4.91', label: 'JPEG 2000 (91)' },
         { value: '1.2.840.10008.1.2.4.92', label: 'JPEG 2000 (92)' },
         { value: '1.2.840.10008.1.2.4.93', label: 'JPEG 2000 (93)' }
-
     ]
 
     const { isLoading } = useCustomQuery(
@@ -82,9 +81,9 @@ export default () => {
     )
 
     const sendForm = useCustomMutation(
-        ({ burner_monitored_path, burner_viewer_path, burner_label_path, burner_manifacturer, 
-            burner_monitoring_level, burner_support_type, burner_date_format, 
-            burner_delete_study_after_sent, burner_transfer_syntax}) => {
+        ({ burner_monitored_path, burner_viewer_path, burner_label_path, burner_manifacturer,
+            burner_monitoring_level, burner_support_type, burner_date_format,
+            burner_delete_study_after_sent, burner_transfer_syntax }) => {
             apis.options.setBurnerOptions(
                 burner_monitored_path,
                 burner_viewer_path,
@@ -108,19 +107,10 @@ export default () => {
         }))
     }
 
-    const handleChangeSelect = (key, event) => {
-        setBurner((burner) => ({
-            ...burner,
-            [key]: event
-        }))
-
-    }
-
     const getSelectedObject = (objectArray, searchedValue) => {
         let filteredArray = objectArray.filter(item => {
             return item.value === searchedValue ? true : false
         })
-
         return filteredArray[0]
     }
 
@@ -155,7 +145,7 @@ export default () => {
                 <Col>
                     <FormGroup>
                         <Form.Label>Transfer Syntax :</Form.Label>
-                        <Select value={getSelectedObject(transferSyntaxOptions, burner.burner_transfer_syntax)} options={transferSyntaxOptions} onChange={(event) =>handleChangeSelect('burner_transfer_syntax', event)} single />
+                        <Select value={getSelectedObject(transferSyntaxOptions, burner.burner_transfer_syntax)} options={transferSyntaxOptions} onChange={(event) => handleChange('burner_transfer_syntax', event)} single />
                     </FormGroup>
                 </Col>
             </Row>
@@ -164,13 +154,13 @@ export default () => {
                 <Col>
                     <FormGroup>
                         <Form.Label>Manufacturer : </Form.Label>
-                        <Select value={getSelectedObject(manufacturerOptions, burner.burner_manifacturer)} options={manufacturerOptions} onChange={(event) =>handleChangeSelect('burner_manifacturer', event)} single />
+                        <Select value={getSelectedObject(manufacturerOptions, burner.burner_manifacturer)} options={manufacturerOptions} onChange={(event) => handleChange('burner_manifacturer', event)} single />
                     </FormGroup>
                 </Col>
                 <Col>
                     <FormGroup>
                         <Form.Label>Monitoring Level : </Form.Label>
-                        <Select value={getSelectedObject(levelOptions, burner.burner_monitoring_level)} options={levelOptions} onChange={(event) =>handleChangeSelect('burner_monitoring_level', event)} />
+                        <Select value={getSelectedObject(levelOptions, burner.burner_monitoring_level)} options={levelOptions} onChange={(event) => handleChange('burner_monitoring_level', event)} />
                     </FormGroup>
                 </Col>
             </Row>
@@ -179,13 +169,13 @@ export default () => {
                 <Col>
                     <FormGroup>
                         <Form.Label>Date Format :</Form.Label>
-                        <Select value={getSelectedObject(dateFormatOptions, burner.burner_date_format)} options={dateFormatOptions} onChange={(event) =>handleChangeSelect('burner_date_format', event)} />
+                        <Select value={getSelectedObject(dateFormatOptions, burner.burner_date_format)} options={dateFormatOptions} onChange={(event) => handleChange('burner_date_format', event)} />
                     </FormGroup>
                 </Col>
                 <Col>
                     <FormGroup>
                         <Form.Label>Support Type :</Form.Label>
-                        <Select value={getSelectedObject(supportType, burner.burner_support_type)} options={supportType} onChange={(event) =>handleChangeSelect('burner_support_type', event)} single />
+                        <Select value={getSelectedObject(supportType, burner.burner_support_type)} options={supportType} onChange={(event) => handleChange('burner_support_type', event)} single />
                     </FormGroup>
                 </Col>
             </Row>
@@ -201,7 +191,7 @@ export default () => {
 
             <FormGroup>
                 <Row className="justify-content-md-center">
-                    <Button onClick={() => sendForm.mutate({...burner})} className='otjs-button otjs-button-blue'> Send </Button>
+                    <Button onClick={() => sendForm.mutate({ ...burner })} className='otjs-button otjs-button-blue'> Send </Button>
                 </Row>
             </FormGroup>
         </Form>

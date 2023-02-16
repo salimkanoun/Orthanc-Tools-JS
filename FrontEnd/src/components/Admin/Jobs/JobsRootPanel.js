@@ -14,16 +14,18 @@ export default () => {
         [keys.JOBS_KEY],
         () => apis.jobs.getJobs(),
         undefined,
-        (jobsDetails) => { 
-            return jobsDetails.map((jobsDetails) => {
-                return ({
-                    ...jobsDetails
-                })
-            })
-        },
+        undefined,
         undefined,
         2000
     )
+
+    const onResubmitJob = (jobId) => {
+        apis.jobs.resumbitJob(jobId).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
+    }
+
+    const onResumeJob = (jobId) => {
+        apis.jobs.resumeJob(jobId).catch(error => toast.error(error.statusText, {data:{type:'notification'}}))
+    }
 
     const dropDown = (id) => {
         return (
@@ -32,16 +34,9 @@ export default () => {
                     Actions
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
+                    <Dropdown.Item className='bg-green' onClick={() => onResubmitJob(id) }>Resumbit</Dropdown.Item>
     
-                    <Dropdown.Item className='bg-green' onClick={async () => {
-                        await apis.jobs.resumbitJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
-                        //getJobs()
-                    }}>Resumbit</Dropdown.Item>
-    
-                    <Dropdown.Item className='bg-blue' onClick={async () => {
-                        await apis.jobs.resumeJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
-                        //getJobs()
-                    }}>Resume</Dropdown.Item>
+                    <Dropdown.Item className='bg-blue' onClick={() => onResumeJob(id)}>Resume</Dropdown.Item>
     
                     <Dropdown.Item className='bg-orange' onClick={async () => {
                         await apis.jobs.pauseJob(id).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
