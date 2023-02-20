@@ -48,6 +48,7 @@ const App = () => {
             <QueryClientProvider client={queryClient}>
                 <div >
                     <ToastContainer
+                        enableMultiContainer
                         containerId={'message'}
                         position={'bottom-right'}
                         autoClose={5000}
@@ -55,6 +56,7 @@ const App = () => {
                         closeOnClick
                     > </ToastContainer>
                     <ToastContainer
+                        enableMultiContainer
                         containerId={'jobs'}
                         position={'bottom-left'}
                         autoClose={5000}
