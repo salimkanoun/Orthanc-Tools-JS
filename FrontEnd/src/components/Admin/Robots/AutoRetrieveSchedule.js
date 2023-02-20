@@ -7,7 +7,6 @@ import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
 export default () => {
 
   /*Init state */
-  const [name, setName] = useState()
   const [serverTime, setServerTime] = useState('')
   const [infoTime, setInfoTime] = useState({
     hourStart: '00',

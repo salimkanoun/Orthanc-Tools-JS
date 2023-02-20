@@ -1,46 +1,31 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, Fragment } from 'react'
 import { Button } from 'react-bootstrap'
-import { toast } from 'react-toastify'
+import { keys } from '../../../../model/Constant'
 import apis from '../../../../services/apis'
+import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks'
 import CertificateForm from './CertificateForm'
 import Certificates from './CertificatesList'
 import SshKeyForm from './SshKeyForm'
 import SshKeys from './SshKeysList'
 
-export default ({}) => {
+export default () => {
 
-    const [certificates, setCertificates] = useState([])
-    const [sshKeys, setSshKeys] = useState([])
     const [currentComponent, setCurrentComponent] = useState("sshKeys")
 
     /**
      * Replacement of ComponentDidMount
      * See https://dev.to/trentyang/replace-lifecycle-with-hooks-in-react-3d4n
      */
-    useEffect(() => {
-        refreshSshKeys()
-        refreshCertificates()
-    }, [])
-    
 
-    let refreshSshKeys = async () => {
-        try{
-            const answer = await apis.sshKeys.getKeysExpend()
-            setSshKeys(answer)
-        }catch(error){
-            toast.error(error.statusText, {data:{type:'notification'}})
-        }
-    }
+    const {data : sshKeys, isLoading : isLoadingSsh} = useCustomQuery(
+        [keys.SSH_KEY],
+        () => apis.sshKeys.getKeysExpend()
+    )
 
-    let refreshCertificates = async () => {
-        try{
-            const answer = await apis.certificates.getCertificatesExpend()
-            setCertificates(answer)
-        } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
-        }
-
-    }
+    const {data : certificates, isLoading : isLoadingCertificates} = useCustomQuery(
+        [keys.CERTIFICATES_KEY],
+        () => apis.certificates.getCertificatesExpend()
+    )
 
 
     let getComponentToDisplay = () => {
@@ -50,16 +35,16 @@ export default ({}) => {
                 component =
                     <Fragment>
                         <h2 className="card-title">Ssh Private Keys : </h2>
-                        <SshKeys sshKeysData={sshKeys} refreshSshKeysData={refreshSshKeys} />
-                        <SshKeyForm refreshSshKeysData={refreshSshKeys} />
+                        <SshKeys sshKeysData={sshKeys} />
+                        <SshKeyForm />
                     </Fragment>
                 break
             case 'certificates':
                 component =
                     <Fragment>
                         <h2 className="card-title">Certification Authorities : </h2>
-                        <Certificates certificatesData={certificates} refreshCertificatesData={refreshCertificates} />
-                        <CertificateForm refreshCertificatesData={refreshCertificates} />
+                        <Certificates certificatesData={certificates} />
+                        <CertificateForm />
                     </Fragment>
                 break
             default:
@@ -72,6 +57,8 @@ export default ({}) => {
     let switchTab = (tabName) => {
         setCurrentComponent(tabName)
     }
+
+    if (isLoadingCertificates || isLoadingSsh) return "Loadong ..."
 
     return (
         <>

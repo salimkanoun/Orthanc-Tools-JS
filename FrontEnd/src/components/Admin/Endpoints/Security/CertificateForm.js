@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import { Row, Col, Form, Button, FormGroup } from 'react-bootstrap'
 import Dropzone from 'react-dropzone'
-import { toast } from 'react-toastify'
+import { keys } from '../../../../model/Constant'
 
 import apis from '../../../../services/apis'
+import { useCustomMutation } from '../../../CommonComponents/ReactQuery/hooks'
 
 /**
  * Form to declare or modify an AET
  */
-export default ({ refreshCertificatesData }) => {
+export default ({}) => {
 
     const [file, setFile] = useState(null);
     const [label, setLabel] = useState();
@@ -17,15 +18,14 @@ export default ({ refreshCertificatesData }) => {
     /**
      * Listener on form submission
      */
-    const handleClick = async () => {
-        try {
-            let response = await apis.certificates.createCertificate(label)
-            await apis.certificates.uploadCertificate(response, file)
-            refreshCertificatesData()
-        } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        }
-    }
+
+    const handleClick = useCustomMutation( 
+        ({label, file}) => {
+            let response = apis.certificates.createCertificate(label)
+            apis.certificates.uploadCertificate(response, file)
+        },
+        [[keys.CERTIFICATES_KEY]]
+    )
 
     const setFile0 = (file) => {
         setFile(file[0])
@@ -59,7 +59,7 @@ export default ({ refreshCertificatesData }) => {
 
             <Row className="text-center mt-4">
                 <Col>
-                    <Button disabled={!file || !label} className='otjs-button otjs-button-blue' onClick={handleClick}> Send </Button>
+                    <Button disabled={!file || !label} className='otjs-button otjs-button-blue' onClick={() => handleClick.mutate(label, file)}> Send </Button>
                 </Col>
             </Row>
         </Form>

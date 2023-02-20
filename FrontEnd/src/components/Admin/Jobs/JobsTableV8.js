@@ -1,12 +1,50 @@
 import React, { useMemo } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Dropdown } from "react-bootstrap";
+import { toast } from "react-toastify";
 
+import apis from "../../../services/apis";
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 import ModalDetailsV8 from "./ModalDetailsV8";
 
-export default ({ rows, dropDown }) => {
+export default ({ rows }) => {
 
     const data = useMemo(() => rows, [rows]);
+
+    const onResubmitJob = (jobId) => {
+        apis.jobs.resumbitJob(jobId).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
+    }
+
+    const onResumeJob = (jobId) => {
+        apis.jobs.resumeJob(jobId).catch(error => toast.error(error.statusText, {data:{type:'notification'}}))
+    }
+
+    const onPauseJob = (jobId) => {
+        apis.jobs.pauseJob(jobId).catch(error => toast.error(error.statusText, {data:{type:'notification'}}))
+    }
+
+    const onCancelJob = (jobId) => {
+        apis.jobs.cancelJob(jobId).catch(error => toast.error(error.statusText, {data:{type:'notification'}}))
+    }
+
+    const dropDown = (id) => {
+        return (
+            <Dropdown className="text-center">
+                <Dropdown.Toggle variant="button-dropdown-blue" id="dropdown-basic" className="button-dropdown button-dropdown-green">
+                    Actions
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                    <Dropdown.Item className='bg-green' onClick={() => onResubmitJob(id)}>Resumbit</Dropdown.Item>
+
+                    <Dropdown.Item className='bg-blue' onClick={() => onResumeJob(id)}>Resume</Dropdown.Item>
+    
+                    <Dropdown.Item className='bg-orange' onClick={() => onPauseJob(id)}>Pause</Dropdown.Item>
+    
+                    <Dropdown.Item className='bg-red' onClick={() => onCancelJob(id) }>Cancel</Dropdown.Item>
+                </Dropdown.Menu>
+            </Dropdown>
+        )
+    }
 
     const columnsJobs = [
         {

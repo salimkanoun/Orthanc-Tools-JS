@@ -1,9 +1,17 @@
 import React, { Fragment } from "react";
 import apis from '../../../../services/apis';
-import { toast } from "react-toastify";
 import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
+import { useCustomMutation } from "../../../CommonComponents/ReactQuery/hooks";
+import { keys } from "../../../../model/Constant";
 
-export default ({ refreshCertificatesData, certificatesData }) => {
+export default ({certificatesData }) => {
+
+    const deleteCertificate = useCustomMutation(
+        ({id}) => {
+            apis.certificates.deleteCertificate(id);
+        },
+        [[keys.CERTIFICATES_KEY]]
+    )
 
     const columns = [
         {
@@ -18,15 +26,7 @@ export default ({ refreshCertificatesData, certificatesData }) => {
             cell: ({ row }) => {
                 return (
                     <div className="text-center">
-                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
-                            try {
-                                await apis.certificates.deleteCertificate(row.id);
-                                refreshCertificatesData()
-                            } catch (error) {
-                                toast.error(error.statusText, { data: { type: 'notification' } })
-                            }
-
-                        }} value="Remove" />
+                        <input type="button" className='otjs-button otjs-button-red' onClick={() => {deleteCertificate.mutate(row.id)}} value="Remove" />
                     </div>)
             },
             formatExtraData: this
@@ -35,9 +35,9 @@ export default ({ refreshCertificatesData, certificatesData }) => {
 
 
     return (
-        <Fragment>
+        <>
             <CommonTableV8 data={certificatesData} columns={columns} />
-        </Fragment>
+        </>
     )
 
 }

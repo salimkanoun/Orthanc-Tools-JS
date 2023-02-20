@@ -1,9 +1,18 @@
 import React, { useMemo } from "react";
 import { Button } from "react-bootstrap";
+import { keys } from "../../../model/Constant";
+import apis from "../../../services/apis";
+import { useCustomMutation } from "../../CommonComponents/ReactQuery/hooks";
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
 
-export default ({ labels, handlerManageRole, handlerDelete }) => {
+export default ({ labels, handlerManageRole }) => {
+
+    const deleteLabels = useCustomMutation(
+        ({label}) => apis.label.deleteLabels(label),
+        [[keys.LABELS_KEY]]
+    )
+
     const columns = useMemo(() => [
         {
             accessor: 'label_name',
@@ -24,11 +33,11 @@ export default ({ labels, handlerManageRole, handlerDelete }) => {
             Header: 'Delete',
             Cell: ({ row }) => (<div className="text-center">
                 <Button className="otjs-button otjs-button-red w-10"
-                    onClick={() => handlerDelete(row.values.label_name)}>Delete Label
+                    onClick={() => deleteLabels.mutate(row.values.label_name)}>Delete Label
                 </Button>
             </div>)
         }
-    ], [handlerManageRole, handlerDelete]);
+    ], [handlerManageRole,]);
 
 
     return (

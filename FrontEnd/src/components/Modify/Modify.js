@@ -74,18 +74,20 @@ export default ({
     }
 
     const updateToast = useCallback((jobId, progress) => {
-        toast.update(toasts[jobId], {
+        toast.update(toasts[jobId], {containerId :'jobs'},
+         {
             type: toast.TYPE.INFO,
             autoClose: false,
             render: 'Modify progress : ' + Math.round(progress) + '%',
-            data:{type:'jobs'}
+            data:{type:'jobs'},
         })
     }, [Math.random()])
 
 
 
     const successToast = (jobId) => {
-        toast.update(toasts[jobId], {
+        toast.update(toasts[jobId], {containerId :'jobs'},
+        {
             type: toast.TYPE.INFO,
             autoClose: 5000,
             render: 'Modify Done',
@@ -95,7 +97,8 @@ export default ({
     }
 
     const failToast = (jobId) => {
-        toast.update(toasts[jobId], {
+        toast.update(toasts[jobId], {containerId :'jobs'},
+        {
             type: toast.TYPE.INFO,
             autoClose: 5000,
             render: 'Modify fail',
@@ -105,7 +108,8 @@ export default ({
     }
 
     const createToast = (jobId) => {
-        const toastId = toast.info("Modify progress : 0%", { autoClose: false, data:{type:'jobs' }})
+        const toastId = toast.info("Modify progress : 0%", {containerId :'jobs'},
+        { autoClose: false, data:{type:'jobs' }})
         setToasts({
             ...toasts,
             [jobId]: toastId

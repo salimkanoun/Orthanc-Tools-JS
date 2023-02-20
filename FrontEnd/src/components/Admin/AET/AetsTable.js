@@ -47,8 +47,8 @@ export default ({ aetsData }) => {
                         onClick={() => {
                             const name = row.original.name
                             apis.aets.echoAet(name)
-                                .then(() => { toast.success(name + ' Success', { data: { type: 'info' } }) })
-                                .catch(() => { toast.error(name + ' Echo Failure', { data: { type: 'info' } }) })
+                                .then(() => { toast.success(name + ' Success', {containerId :'message'}) })
+                                .catch(() => { toast.error(name + ' Echo Failure', {containerId :'message'}) })
                         }} >
                         Echo
                     </Button>

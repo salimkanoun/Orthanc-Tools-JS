@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react'
-import { Row, Col, Modal, Button } from 'react-bootstrap'
+import { Row, Col, Modal, Button, Form } from 'react-bootstrap'
 
 import RoleForm from './RoleForm'
 import apis from '../../../services/apis'
@@ -35,12 +35,10 @@ export default ({ onSubmitRole }) => {
                 </Modal.Header>
                 <Modal.Body>
                     <Row className="align-items-center">
-                        <Col sm={2}>
-                            <label>Name*</label>
-                        </Col>
-                        <Col sm={10}>
-                            <input className='form-control' type='text' placeholder='name' name='name' value={name} onChange={(e) => setName(e.target.value)} required />
-                        </Col>
+                        <Form>
+                            <Form.Label>Name*</Form.Label>
+                            <Form.Control type="text" value={name} placeholder='name' onChange={(e) => setName(e.target.value)} required/>
+                        </Form>
                     </Row>
                     <RoleForm onSubmitRole={create} />
                 </Modal.Body>

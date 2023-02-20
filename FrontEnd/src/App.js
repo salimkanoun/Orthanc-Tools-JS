@@ -48,7 +48,15 @@ const App = () => {
             <QueryClientProvider client={queryClient}>
                 <div >
                     <ToastContainer
+                        containerId={'message'}
                         position={'bottom-right'}
+                        autoClose={5000}
+                        newestOnTop
+                        closeOnClick
+                    > </ToastContainer>
+                    <ToastContainer
+                        containerId={'jobs'}
+                        position={'bottom-left'}
                         autoClose={5000}
                         newestOnTop
                         closeOnClick

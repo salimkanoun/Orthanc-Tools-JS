@@ -1,10 +1,11 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react'
-import { Button } from 'react-bootstrap';
+import React, { Fragment, useMemo, useState } from 'react'
+import { Button, Form } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select'
-import { toast } from 'react-toastify';
+import { keys } from '../../../model/Constant';
 
 import apis from '../../../services/apis'
+import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
 import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
 
@@ -22,7 +23,7 @@ function AssociationTable({ associations, deleteAssociation }) {
             Header: 'Delete',
             Cell: ({ row }) => {
                 return <Button name='delete' className='btn btn-danger' onClick={() => {
-                    deleteAssociation(row.values.ldapGroup)
+                    deleteAssociation.mutate(row.values.ldapGroup)
                 }}>Delete</Button>
             }
         }
@@ -31,36 +32,61 @@ function AssociationTable({ associations, deleteAssociation }) {
     return <CommonTable data={data} columns={columns} />
 }
 
-export default ({ }) => {
+export default () => {
 
     const [show, setShow] = useState(false)
     const [groupName, setGroupName] = useState('')
     const [associedRole, setAssociedRole] = useState('')
-    const [optionsAssociedRole, setOptionsAssociedRole] = useState([])
-    const [optionsGroupName, setOptionsGroupName] = useState([])
-    const [associations, setAssociations] = useState([])
 
-    useEffect(() => {
-        const getOptionsGroupName = async () => { await getExistingGroupOptions()}
-        const getOptionGroupRole  = async () => {await getAssociedRole()}
-        const getAssociations = async () => {await getExistingAssociations()}
-        try {
-            let optionsGroupName = getOptionsGroupName()
-            let optionGroupRole = getOptionGroupRole()
-            let associations = getAssociations()
-
-            setOptionsAssociedRole(optionGroupRole)
-            setOptionsGroupName(optionsGroupName)
-            setAssociations(associations)
-        } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
+    const {data : optionsGroupName, isLoading : isLoadingOptionsGroupName } = useCustomQuery(
+        [keys.OPTIONS_GROUP_NAME_KEY],
+        () => apis.ldap.getAllGroupName(),
+        undefined,
+        (answer) => {
+            return answer.map((group) => {
+                //SK Ajouter un render de description dans le select ? (info qui vient du LDAP)
+                return ({ 
+                    label: group.cn, 
+                    value: group.cn, 
+                    description: group.description 
+                })
+            })
         }
-    }, []);
+    )
 
+    const {data : optionsAssociedRole, isLoading : isLoadingOptionsAssociedRole} = useCustomQuery(
+        [keys.OPTIONS_ASSOCIED_ROLE_KEY],
+        () => apis.role.getRoles(),
+        undefined,
+        (answer) => {
+            return answer.map((role) => {
+                return ({
+                    value : role.name,
+                    label : role.name
+                })
+            })
+        }
+    )
 
-    const getExistingAssociations = async () => {
-        return await apis.ldap.getAllCorrespodences()
+    const {date : associations, isLoading : isLoadingAssociations} = useCustomQuery(
+        [keys.ASSOCIATIONS_KEY],
+        () => apis.ldap.getAllCorrespodences()
+    )
+
+    const showModal = (show) => {
+        setShow(show)
     }
+
+    const createAssociation = useCustomMutation (
+        ({groupNameValue, associedRoleValue}) => apis.ldap.createMatch(groupNameValue, associedRoleValue),
+        [[keys.ASSOCIATIONS_KEY]],
+        showModal(false)
+    )
+
+    const deleteAssociation = useCustomMutation(
+        ({ldapGroup}) => apis.ldap.deleteMatch(ldapGroup),
+        [[keys.ASSOCIATIONS_KEY]]
+    )
 
     const changeGroup = (event) => {
         setGroupName(event)
@@ -70,60 +96,8 @@ export default ({ }) => {
         setAssociedRole(event)
     }
 
-    const getAssociedRole = async () => {
-        let roles = []
-        try {
-            let existingsRoles = await apis.role.getRoles()
-            existingsRoles.forEach((role) => {
-                roles.push({ value: role.name, label: role.name })
-            })
-        } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        }
 
-        return roles
-
-    }
-
-    const create = async () => {
-        try {
-            await apis.ldap.createMatch(groupName.value, associedRole.value)
-            toast.success('Association Created', { data: { type: 'notification' } })
-            setAssociations(await getExistingAssociations())
-            showModal(false)
-
-        } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        }
-    }
-
-    const getExistingGroupOptions = async () => {
-        try {
-            let answer = await apis.ldap.getAllGroupName()
-            let options = answer.map((group) => {
-                //SK Ajouter un render de description dans le select ? (info qui vient du LDAP)
-                return { label: group.cn, value: group.cn, description: group.description }
-            })
-            return options
-        } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        }
-
-    }
-
-    const showModal = (show) => {
-        setShow(show)
-    }
-
-    const deletef = async (ldapGroup) => {
-        try {
-            await apis.ldap.deleteMatch(ldapGroup)
-            toast.success('Assocication deleted', { data: { type: 'notification' } })
-            setAssociations(await getExistingAssociations())
-        } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        }
-    }
+    
 
     return (
         <Fragment>
@@ -135,25 +109,25 @@ export default ({ }) => {
                     <h2 className='card-title'>Create new match</h2>
                 </Modal.Header>
                 <Modal.Body>
-                    <Fragment>
-                        <label>Group name</label>
+                    <Form>
+                        <Form.Label>Group name</Form.Label>
                         <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single
                             options={optionsGroupName} onChange={changeGroup}
                             value={groupName} required />
-                        <label className='mt-3'>Associed role</label>
+                        <Form.Label>Associed role</Form.Label>
                         <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single
                             options={optionsAssociedRole} onChange={changeRole}
                             value={associedRole} required />
-                    </Fragment>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button name='create' className='btn btn-primary' onClick={create}>Create
+                    <Button name='create' className='btn btn-primary' onClick={() => createAssociation.mutate(groupName.value,associedRole.value)}>Create
                     </Button>
                 </Modal.Footer>
             </Modal>
 
             <div className="form-group mr-3 mt-3">
-                <AssociationTable associations={associations} deleteAssociation={deletef} />
+                <AssociationTable associations={associations} deleteAssociation={deleteAssociation} />
             </div>
         </Fragment>
 

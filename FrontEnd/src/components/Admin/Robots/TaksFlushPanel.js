@@ -3,7 +3,7 @@ import { Modal, Row, Col, Button, Form } from 'react-bootstrap'
 
 import apis from '../../../services/apis'
 
-export default ({ }) => {
+export default () => {
 
     const [flushType, setFlushType] = useState(null)
 

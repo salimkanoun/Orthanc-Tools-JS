@@ -3,45 +3,40 @@ import LabelsTable from "./LabelsTable";
 import apis from "../../../services/apis";
 import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
 import RoleManagementModal from "./RoleManagementModal";
+import { useCustomMutation, useCustomQuery } from "../../CommonComponents/ReactQuery/hooks";
+import { keys } from "../../../model/Constant";
 
 export default ({ }) => {
 
     const [roleManagement, setRoleManagement] = useState(null)
-    const [labels, setLabels] = useState({})
     const [search, setSearch] = useState('')
     const [createLabel, setCreateLabel] = useState('')
 
-    useEffect(() => {
-       apis.label.getAllLabels().then(labels => {
-            setLabels(labels);
-        })
-    }, [])
+    const {data : labels, isLoading } = useCustomQuery(
+        [keys.LABELS_KEY],
+        () => apis.label.getAllLabels()
+    )
 
     const handleManageRole = (label) => {
         setRoleManagement(label);
-    }
-
-    const handlerDelete = (label) => {
-        apis.label.deleteLabels(label).then(() => {
-            apis.label.getAllLabels().then(labels => {
-                setLabels(labels);
-            })
-        });
     }
 
     const handleSearch = (event) => {
         setSearch(event.target.value)
     }
 
-    const handleCreateSubmit = (e) => {
-        e.preventDefault();
-        if (createLabel.length < 1) return;
-        return apis.label.createLabels(createLabel).then(() => {
+    const createLabels = useCustomMutation (
+        ({createLabel}) => {
+            apis.label.createLabels(createLabel)
             setCreateLabel('')
-            return apis.label.getAllLabels()
-        }).then(labels => {
-            setLabels(labels)
-        });
+        },
+        [[keys.LABELS_KEY]]
+    )
+
+    const handleCreateSubmit = (event) => {
+        event.preventDefault();
+        if (createLabel.length < 1) return;
+        createLabels.mutate(createLabel)
     }
 
     const handleCreateInput = (event) => {
@@ -49,6 +44,8 @@ export default ({ }) => {
     }
 
     let filteredLabel = labels.filter(label => label.label_name.includes(search));
+
+    if (isLoading) return "Loading ..."
 
     return (
         <>
@@ -71,8 +68,7 @@ export default ({ }) => {
                     value={search} />
                 <InputGroup.Text>{filteredLabel.length}</InputGroup.Text>
             </InputGroup>
-            <LabelsTable labels={filteredLabel} handlerManageRole={handleManageRole}
-                handlerDelete={handlerDelete} />
+            <LabelsTable labels={filteredLabel} handlerManageRole={handleManageRole}/>
 
 
         </>)

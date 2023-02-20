@@ -1,15 +1,16 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import apis from '../../../../services/apis'
 import Dropzone from 'react-dropzone'
-import { toast } from 'react-toastify'
-import { Row, Col } from 'react-bootstrap'
+import { Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
+import { useCustomMutation } from '../../../CommonComponents/ReactQuery/hooks'
+import { keys } from '../../../../model/Constant'
+
 /**
  * Form to declare or modify an Ssh Keys
  */
-export default ({ refreshSshKeysData }) => {
+export default ({ }) => {
 
     const [file, setFile] = useState(null);
-    const [name, setName] = useState();
     const [label, setLabel] = useState();
     const [pass, setPass] = useState();
     const [inProgress, setInProgress] = useState();
@@ -18,35 +19,25 @@ export default ({ refreshSshKeysData }) => {
      * Fill input text of users in current state
      * @param {*} event 
      */
-    const handleChange = (event) => {
-        const target = event.target
-        const name = target.name
-        const value = target.type === 'checkbox' ? target.checked : target.value
-
-        setName(value)
-
-    }
 
     /**
      * Listener on form submission
      */
-    const handleClick = async () => {
-        try {
-            let response = await apis.sshKeys.createKey(label, pass)
-            await apis.sshKeys.uploadKey(response.id, file)
-            refreshSshKeysData()
-        } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
-        }
 
-    }
+    const sendSsh = useCustomMutation(
+        ({ label, pass, file }) => {
+            let response = apis.sshKeys.createKey(label, pass)
+            apis.sshKeys.uploadKey(response.id, file)
+        },
+        [[keys.SSH_KEY]]
+    )
 
     const setFile0 = (file) => {
         setFile(file[0])
     }
 
     return (
-        <Fragment>
+        <Form>
             <h3 className="card-title mt-4">Add Ssh Private Key</h3>
             <Dropzone onDrop={acceptedFile => setFile0(acceptedFile)} >
                 {({ getRootProps, getInputProps }) => (
@@ -58,27 +49,27 @@ export default ({ refreshSshKeysData }) => {
                     </section>
                 )}
             </Dropzone>
-            <Row className="form-group mt-4 align-items-center">
-                <Col sm={2}>
-                    <label htmlFor="label">Label : </label>
+
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label> Label :</Form.Label>
+                        <Form.Control type="text" value={label} placeholder="Label" onChange={(event) => setLabel(event.target.value)} />
+                    </FormGroup>
                 </Col>
-                <Col sm={4}>
-                    <input type='text' name="label" className="form-control" onChange={handleChange} />
-                </Col>
-                <Col sm={2}>
-                    <label htmlFor="pass">Passphrase : </label>
-                </Col>
-                <Col sm={4}>
-                    <input type='text' name="pass" className="form-control" onChange={handleChange} />
+                <Col>
+                    <FormGroup>
+                        <Form.Label> Passphrase : </Form.Label>
+                        <Form.Control type="text" value={pass} placeholder="Passphrase" onChange={(event) => setPass(event.target.value)} />
+                    </FormGroup>
                 </Col>
             </Row>
             <Row className="mt-4 text-center">
                 <Col>
-                    <input disabled={!file || !label} type='button' className='otjs-button otjs-button-blue' onClick={handleClick} value='Send' />
-
+                    <Button disabled={!file || !label} className='otjs-button otjs-button-blue' onClick={() => sendSsh.mutate({ label, pass, file })}> Send </Button> 
                 </Col>
             </Row>
-        </Fragment>
+        </Form>
     )
 
 }

@@ -13,7 +13,13 @@ const keys = {
     BURNER_KEY : 'burner',
     ROBOTS_KEY : 'robots',
     ENDPOINTS_KEY : 'endpoints',
-    EXPORT_TRANSCODING : 'export_transcoding'
+    EXPORT_TRANSCODING : 'export_transcoding',
+    SSH_KEY : 'ssh',
+    CERTIFICATES_KEY : 'certificates',
+    LABELS_KEY : 'labels',
+    OPTIONS_GROUP_NAME_KEY : 'optionsGroupName',
+    OPTIONS_ASSOCIED_ROLE_KEY : 'optionsAssociedRole',
+    ASSOCIATIONS_KEY : 'associations'
 }
 
 export {keys}

@@ -20,15 +20,13 @@ export default ({ }) => {
     const [base, setBase] = useState('')
     const [group, setGroup] = useState('')
     const [user, setUser] = useState('')
-    const [name, setName] = useState()
 
     const optionsTypeGroup = [
         { value: 'ad', label: 'Active Directory' },
         { value: 'ldap', label: 'LDAP' }
     ]
 
-    const etLdapSetting = () => {
-
+    const setLdapSetting = () => {
         apis.ldap.setLdapSettings(changeType.value,
             address,
             port,
@@ -104,14 +102,6 @@ export default ({ }) => {
         }
     }
 
-    const handleChange = (event) => {
-        const target = event.target
-        const name = target.name
-        const value = target.value
-
-        setName(value)
-    }
-
     const changeListener = (event) => {
         setChangeType(event)
     }
@@ -157,7 +147,7 @@ export default ({ }) => {
                             <br></br>
                             <span><i>ldaps//:</i> secure connexion </span>
                         </ReactTooltip>
-                        <input type='text' name="protocol" className="form-control" onChange={handleChange} value={protocol} placeholder="ldap(s)://" />
+                        <input type='text' name="protocol" className="form-control" onChange={(event) => setProtocol(event.target.value)} value={protocol} placeholder="ldap(s)://" />
                     </Col>
                 </Row>
                 <Row className="mt-3 align-items-center">
@@ -171,7 +161,7 @@ export default ({ }) => {
                             <br></br>
                             <span>example : <i>127.0.0.1</i> or <i>chu.exemple.fr</i></span>
                         </ReactTooltip>
-                        <input type='text' name="address" className="form-control" onChange={handleChange} value={address} />
+                        <input type='text' name="address" className="form-control" onChange={(event) => setAddress(event.target.value)} value={address} />
                     </Col>
                     <Col sm={3}>
                         <label className="pe-2" htmlFor="port">Port : </label>
@@ -183,7 +173,7 @@ export default ({ }) => {
                             <br></br>
                             <span><i>636</i> secure connexion </span>
                         </ReactTooltip>
-                        <input type='number' min='0' max='1000' name='port' className='form-control' onChange={handleChange} value={port} />
+                        <input type='number' min='0' max='1000' name='port' className='form-control' onChange={(event) => setPort(event.target.value)} value={port} />
                     </Col>
                 </Row>
                 <Row className="mt-3 align-items-center">
@@ -197,7 +187,7 @@ export default ({ }) => {
                             <br></br>
                             <span>example : <i>dc=chu,dc=exemple,dc=fr</i></span>
                         </ReactTooltip>
-                        <input type='text' name="base" className="form-control" value={base} onChange={handleChange} />
+                        <input type='text' name="base" className="form-control" value={base} onChange={(event) => setBase(event.target.value)} />
                     </Col>
                 </Row>
                 <Row className="mt-3 align-items-center">
@@ -209,7 +199,7 @@ export default ({ }) => {
                         <ReactTooltip place="right" effect="solid" id='info5' type='dark'>
                             <span>DN from witch user researchs will be made</span>
                         </ReactTooltip>
-                        <input type='text' name="DN" className="form-control" value={DN} onChange={handleChange} />
+                        <input type='text' name="DN" className="form-control" value={DN} onChange={(event) => setDN(event.target.value)} />
                     </Col>
                     <Col sm={3}>
                         <label className="pe-2" htmlFor="password">Bind DN password : </label>
@@ -219,7 +209,7 @@ export default ({ }) => {
                         <ReactTooltip place="right" effect="solid" id='info6' type='dark'>
                             <span>Password of the user from witch researchs will be made</span>
                         </ReactTooltip>
-                        <input type='password' name="password" className="form-control" value={password} onChange={handleChange} />
+                        <input type='password' name="password" className="form-control" value={password} onChange={(event) => setPassword(event.target.value)} />
                     </Col>
                 </Row>
                 <Row className="mt-3 align-items-center">
@@ -231,7 +221,7 @@ export default ({ }) => {
                         <ReactTooltip place="right" effect="solid" id='info7' type='dark'>
                             <span>DN for groups researchs</span>
                         </ReactTooltip>
-                        <input type='text' name="group" className="form-control" onChange={handleChange} value={group} />
+                        <input type='text' name="group" className="form-control" onChange={(event) => setGroup(event.target.value)} value={group} />
                     </Col>
                     <Col sm={3}>
                         <label className="pe-2" htmlFor="user">User filter </label>
@@ -241,12 +231,12 @@ export default ({ }) => {
                         <ReactTooltip place="right" effect="solid" id='info8' type='dark'>
                             <span>DN for users researchs</span>
                         </ReactTooltip>
-                        <input type='text' name="user" className="form-control" onChange={handleChange} value={user} />
+                        <input type='text' name="user" className="form-control" onChange={(event) => setUser(event.target.value)} value={user} />
                     </Col>
                 </Row>
                 <Row className="text-center align-items-center mt-3">
                     <Col className="">
-                        <input type='button' className='otjs-button otjs-button-blue w-10' onClick={this.setLdapSetting} value='Update' />
+                        <input type='button' className='otjs-button otjs-button-blue w-10' onClick={setLdapSetting} value='Update' />
                     </Col>
                     <Col className="">
                         <input type='button' className='otjs-button otjs-button-blue w-10' onClick={testLdapSettings} value='Check Connexion' />
