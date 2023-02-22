@@ -49,23 +49,13 @@ export default () => {
         setShowDelete(false)
     }
 
-    const modify = async (row) => {
-
-        let password = row.password == null ? null : row.password
-
-        await apis.User.modifyUser(
-            row.username,
-            row.firstname,
-            row.lastname,
-            row.email,
-            row.role,
-            password,
-            row.superAdmin
-        ).then(() => {
-            toast.success('User modified', { data: { type: 'notification' } })
-            resetState()
-        }).catch((error) => toast.error(error.statusText, { data: { type: 'notification' } }))
-    }
+    const modify = useCustomMutation(
+        (username, firstname, lastname, email, role, password, superAdmin) => {
+            apis.User.modifyUser(username, firstname, lastname, email, role, password, superAdmin)         
+            resetState()   
+        },
+        [[keys.USERS_KEY]]
+    )
 
 
     const changeHandler = (initialValue, value, row, column) => {
@@ -82,7 +72,7 @@ export default () => {
             </Row>
             <Row className="mt-5">
                 <Col>
-                    <CreateUser />
+                    <CreateUser/>
                 </Col>
             </Row>
             <Row className="mt-3">

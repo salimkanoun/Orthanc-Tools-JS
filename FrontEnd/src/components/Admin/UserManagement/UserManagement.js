@@ -1,11 +1,11 @@
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 
 import Users from './Users'
 import Roles from './Roles'
 import Ldap from './Ldap'
 import { Button } from 'react-bootstrap'
 
-export default ({ }) => {
+export default () => {
 
     const [currentComponent, setCurrentComponent] = useState('Users')
 

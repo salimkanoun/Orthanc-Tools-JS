@@ -1,5 +1,5 @@
-import React, { Fragment, useState } from 'react'
-import { Row, Col, Modal, Button, Form } from 'react-bootstrap'
+import React, { useState } from 'react'
+import { Row, Modal, Button, Form } from 'react-bootstrap'
 
 import RoleForm from './RoleForm'
 import apis from '../../../services/apis'
@@ -27,7 +27,7 @@ export default ({ onSubmitRole }) => {
     }
 
     return (
-        <Fragment>
+        <>
             <Button className='otjs-button otjs-button-blue' onClick={() => setShow(true)} >New Role</Button>
             <Modal id='create' show={show} onHide={() => setShow(false)}>
                 <Modal.Header closeButton>
@@ -37,12 +37,12 @@ export default ({ onSubmitRole }) => {
                     <Row className="align-items-center">
                         <Form>
                             <Form.Label>Name*</Form.Label>
-                            <Form.Control type="text" value={name} placeholder='name' onChange={(e) => setName(e.target.value)} required/>
+                            <Form.Control type="text" value={name} placeholder='name' onChange={(event) => setName(event.target.value)} required/>
                         </Form>
                     </Row>
                     <RoleForm onSubmitRole={create} />
                 </Modal.Body>
             </Modal>
-        </Fragment>
+        </>
     );
 }

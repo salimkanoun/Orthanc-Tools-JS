@@ -8,7 +8,7 @@ import CreateMatch from "./CreateMatch";
 import { toast } from "react-toastify";
 import { Col, Row } from 'react-bootstrap'
 
-export default ({ }) => {
+export default () => {
 
     const [activated, setActivated] = useState(false)
     const [port, setPort] = useState(389)
@@ -36,28 +36,28 @@ export default ({ }) => {
             base,
             group,
             user)
-            .then(() => { toast.success('LDAP Settings updated', {data:{type:'notification'}}) })
-            .catch((error) => { toast.error(error.statusText, {data:{type:'notification'}}) })
+            .then(() => { toast.success('LDAP Settings updated', { data: { type: 'notification' } }) })
+            .catch((error) => { toast.error(error.statusText, { data: { type: 'notification' } }) })
     }
 
     const testLdapSettings = () => {
 
         apis.ldap.testLdapSettings().then(answer => {
             if (answer) {
-                toast.success('Connexion established', {data:{type:'notification'}})
+                toast.success('Connexion established', { data: { type: 'notification' } })
             } else {
-                toast.error('connexion failed', {data:{type:'notification'}})
+                toast.error('connexion failed', { data: { type: 'notification' } })
             }
         }).catch((error) => {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         })
     }
 
-    useEffect(()=> {
+    useEffect(() => {
 
-        const getActivated = async () => {await apis.options.getMode()}
-        const getOptions = async () => {await apis.ldap.getLdapSettings()}
-        
+        const getActivated = async () => { await apis.options.getMode() }
+        const getOptions = async () => { await apis.ldap.getLdapSettings() }
+
         let activated, options
 
         try {
@@ -66,7 +66,7 @@ export default ({ }) => {
             //Ldap
             options = getOptions()
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
             return
         }
 
@@ -98,13 +98,14 @@ export default ({ }) => {
             await apis.options.changeMode(!activated)
             setActivated(!activated)
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
     }
 
     const changeListener = (event) => {
         setChangeType(event)
     }
+
 
     return (
         <Fragment>
@@ -248,7 +249,8 @@ export default ({ }) => {
 
             {activated ?
                 <CreateMatch />
-                : null}
+                : null
+            }
 
         </Fragment>
     )

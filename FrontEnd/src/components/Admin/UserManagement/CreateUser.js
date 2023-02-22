@@ -1,11 +1,12 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import Modal from 'react-bootstrap/Modal';
+import { toast } from 'react-toastify';
+import { Button, Form, FormGroup, Row } from 'react-bootstrap';
 
 import SelectRoles from './SelectRoles'
-
 import apis from '../../../services/apis';
-import { toast } from 'react-toastify';
-import { Button } from 'react-bootstrap';
+import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks';
+import { keys } from '../../../model/Constant';
 
 export default () => {
 
@@ -18,18 +19,9 @@ export default () => {
     const [password, setPassword] = useState('')
     const [superAdmin, setSuperAdmin] = useState(false)
     const [show, setShow] = useState(false)
-    const [name, setName] = useState()
 
     const onRolesChange = (event) => {
         setRole(event.value)
-    }
-
-    const handleChange = (event) => {
-        const target = event.target
-        const name = target.name
-        const value = target.value
-
-        setName(value)
     }
 
     const resetState = () => {
@@ -44,24 +36,27 @@ export default () => {
     }
 
     const createUser = async () => {
+        console.log('create')
         if (role === '' ||
             username === '' ||
             password === '') {
-            toast.error('Please fill all required input', {data:{type:'notification'}})
+            toast.error('Please fill all required input', { data: { type: 'notification' } })
         } else {
-
-            try {
-                await apis.User.createUser(username, firstname, lastname, password, email, role, superAdmin)
-                resetState()
-            } catch (error) {
-                toast.error(error.statusText, {data:{type:'notification'}})
-            }
-
+            createUserMutation.mutate(username, firstname, lastname, password, email, role, superAdmin)
         }
     }
 
+    const createUserMutation = useCustomMutation(
+        ({ username, firstname, lastname, password, email, role, superAdmin }) => {
+            apis.User.createUser(username, firstname, lastname, password, email, role, superAdmin)
+            resetState()
+        },
+        [[keys.USERS_KEY]]
+    )
+
+
     return (
-        <Fragment>
+        <>
             <Button name='create' className='otjs-button otjs-button-blue'
                 onClick={() => setShow(true)}>New User
             </Button>
@@ -70,48 +65,56 @@ export default () => {
                     <h2 className='card-title'>Create User</h2>
                 </Modal.Header>
                 <Modal.Body>
-                    <div>
-                        <fieldset className="mt-3">
-                            <label>Username*</label>
-                            <input className='form-control' type='text' placeholder='username' name='username'
-                                value={username} onChange={handleChange} required />
-                        </fieldset>
-                        <fieldset className="mt-3">
-                            <label>First Name</label>
-                            <input className='form-control' type='text' placeholder='First Name' name='firstname'
-                                value={firstname} onChange={handleChange} />
-                        </fieldset>
-                        <fieldset className="mt-3">
-                            <label>Last Name</label>
-                            <input className='form-control' type='text' placeholder='Last Name' name='lastname'
-                                value={lastname} onChange={handleChange} />
-                        </fieldset>
-                        <fieldset className="mt-3">
-                            <label>Password*</label>
-                            <input className='form-control' type='password' placeholder='password' name='password'
-                                value={password} onChange={handleChange} required />
-                        </fieldset>
-                        <fieldset className="mt-3">
-                            <label>Mail</label>
-                            <input className='form-control' type='text' placeholder='example@example.com'
-                                name='email' value={email} onChange={handleChange} />
-                        </fieldset>
-                        <fieldset className="mt-3">
-                            <label>Super Admin</label>
-                            <input className='form-check-input' type='checkbox' name='superAdmin'
-                                value={superAdmin} onChange={handleChange} />
-                        </fieldset>
-                        <fieldset className="mt-3">
-                            <label>Roles*</label>
-                            <SelectRoles onChange={onRolesChange} />
-                        </fieldset>
-                    </div>
+                    <Form>
+                        <Row>
+                            <FormGroup>
+                                <Form.Label>Username*</Form.Label>
+                                <Form.Control type='text' placeholder='username' value={username} onChange={(event) => setUsername(event.target.value)} required />
+                            </FormGroup>
+                        </Row>
+                        <Row>
+                            <FormGroup>
+                                <Form.Label>First Name</Form.Label>
+                                <Form.Control type='text' placeholder='First Name' value={firstname} onChange={(event) => setFirstname(event.target.value)} />
+                            </FormGroup>
+                        </Row>
+                        <Row>
+                            <FormGroup>
+                                <Form.Label>Last Name</Form.Label>
+                                <Form.Control type='text' placeholder='Last Name' value={lastname} onChange={(event) => setLastname(event.target.value)} />
+                            </FormGroup>
+                        </Row>
+                        <Row>
+                            <FormGroup>
+                                <Form.Label>Password*</Form.Label>
+                                <Form.Control type='password' placeholder='password' value={password} onChange={(event) => setPassword(event.target.value)} required />
+                            </FormGroup>
+                        </Row>
+                        <Row>
+                            <FormGroup>
+                                <Form.Label>Mail</Form.Label>
+                                <Form.Control type='text' placeholder='example@example.com' value={email} onChange={(event) => setEmail(event.target.value)} />
+                            </FormGroup>
+                        </Row>
+                        <Row>
+                            <FormGroup>
+                                <Form.Label>Super Admin</Form.Label>
+                                <Form.Check Check={superAdmin} onChange={(event) => setSuperAdmin(event.target.value)} />
+                            </FormGroup>
+                        </Row>
+                        <Row>
+                            <FormGroup>
+                                <Form.Label>Roles*</Form.Label>
+                                <SelectRoles onChange={onRolesChange} />
+                            </FormGroup>
+                        </Row>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button className='otjs-button otjs-button-blue' onClick={createUser}>Create</Button>
                 </Modal.Footer>
             </Modal>
-        </Fragment>
+        </>
 
     );
 }

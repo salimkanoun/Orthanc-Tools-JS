@@ -69,8 +69,9 @@ export default ({users, onUserUpdate, modify, setDelete}) => {
             accessorKey: 'edit',
             header: "Edit",
             cell: ({row}) => {
-                return (<Button name='edit' className='otjs-button otjs-button-green' onClick={() => {
-                    modify(row.values)
+                return (<Button className='otjs-button otjs-button-green' onClick={() => {
+                    console.log(row)
+                    modify.mutate(...row)
                 }}>Save</Button>)
             },
         },

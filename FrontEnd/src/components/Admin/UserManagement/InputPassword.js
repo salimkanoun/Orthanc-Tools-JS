@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Form } from 'react-bootstrap'
 
 export default ({ previousPassword, onUpdate }) => {
 
@@ -18,6 +19,6 @@ export default ({ previousPassword, onUpdate }) => {
     }
 
     return (
-        <input name='password' type="password" className="form-control" placeholder="password" onBlur={() => { onUpdate(password) }} value={password} onChange={changeListener}></input>
+        <Form.Control type="password" placeholder="password" onBlur={() => { onUpdate(password) }} value={password} onChange={changeListener}/>
     );
 }

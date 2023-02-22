@@ -9,7 +9,7 @@ import RoleTable from "../UserManagement/RoleTable";
 import { keys } from "../../../model/Constant";
 
 
-export default ({ }) => {
+export default () => {
 
     const [name, setName] = useState('')
     const [showDelete, setShowDelete] = useState(false)

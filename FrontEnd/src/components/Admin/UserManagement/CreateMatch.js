@@ -1,36 +1,13 @@
-import React, { Fragment, useMemo, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Button, Form } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import Select from 'react-select'
-import { keys } from '../../../model/Constant';
 
+import { keys } from '../../../model/Constant';
 import apis from '../../../services/apis'
 import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
-import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import AssociationTable from './AssociationTable';
 
-
-function AssociationTable({ associations, deleteAssociation }) {
-    const columns = useMemo(() => [
-        {
-            accessor: 'ldapGroup',
-            Header: 'Group name',
-            sort: true
-        }, {
-            accessor: 'localRole',
-            Header: 'Associed role',
-        }, {
-            accessor: 'delete',
-            Header: 'Delete',
-            Cell: ({ row }) => {
-                return <Button name='delete' className='btn btn-danger' onClick={() => {
-                    deleteAssociation.mutate(row.values.ldapGroup)
-                }}>Delete</Button>
-            }
-        }
-    ], [deleteAssociation]);
-    const data = useMemo(() => associations, [associations]);
-    return <CommonTable data={data} columns={columns} />
-}
 
 export default () => {
 
@@ -78,14 +55,11 @@ export default () => {
     }
 
     const createAssociation = useCustomMutation (
-        ({groupNameValue, associedRoleValue}) => apis.ldap.createMatch(groupNameValue, associedRoleValue),
+        ({groupNameValue, associedRoleValue}) => {
+            apis.ldap.createMatch(groupNameValue, associedRoleValue)
+            showModal(false)
+        },
         [[keys.ASSOCIATIONS_KEY]],
-        showModal(false)
-    )
-
-    const deleteAssociation = useCustomMutation(
-        ({ldapGroup}) => apis.ldap.deleteMatch(ldapGroup),
-        [[keys.ASSOCIATIONS_KEY]]
     )
 
     const changeGroup = (event) => {
@@ -96,9 +70,10 @@ export default () => {
         setAssociedRole(event)
     }
 
+    if (isLoadingAssociations || isLoadingOptionsAssociedRole || isLoadingOptionsGroupName) return "Loading CreateMatch"
 
+    console.log(associations, optionsAssociedRole, optionsGroupName)
     
-
     return (
         <Fragment>
             <Button className='btn btn-primary mr-3 mt-2' onClick={() => showModal(true)}>New
@@ -127,7 +102,7 @@ export default () => {
             </Modal>
 
             <div className="form-group mr-3 mt-3">
-                <AssociationTable associations={associations} deleteAssociation={deleteAssociation} />
+                <AssociationTable associations={associations}/>
             </div>
         </Fragment>
 

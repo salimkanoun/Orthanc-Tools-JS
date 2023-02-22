@@ -1,33 +1,28 @@
-import React, { Component, useEffect, useState } from 'react'
+import React from 'react'
 import Select from 'react-select'
-import { toast } from 'react-toastify'
+import { keys } from '../../../model/Constant'
 import apis from '../../../services/apis'
+import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 
 
 export default ({ onChange }) => {
 
-    const [optionRoles, setOptionRoles] = useState({})
-
-    useEffect(() => {
-        const getRolesApis = async () => { await apis.role.getRoles() }
-        try {
-            let roles = getRolesApis
-            let options = []
-            roles.forEach((role) => {
-                options.push({
+    const {data : optionRoles, isLoading} = useCustomQuery(
+        [keys.ROLES_KEY],
+        () => apis.role.getRoles(),
+        undefined,
+        (answer) => {
+            return answer.map((role) => {
+                return ({
                     value: role.name,
                     label: role.name
                 })
             })
-            setOptionRoles(options)
-
-        } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
         }
-    }, [])
+    )
 
-
-
+    if (isLoading) return "Loading..."
+    
     return (
         <Select single options={optionRoles} onChange={onChange} />
     )

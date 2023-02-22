@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import apis from '../../../services/apis'
 
 import RoleForm from './RoleForm'
+
 export default ({ propsName }) => {
 
     const [show, setShow] = useState(false)
