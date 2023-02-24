@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import React, { useMemo, useState } from "react";
 import apis from "../../../../services/apis";
 import { Button } from "react-bootstrap";
 import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
@@ -7,7 +7,7 @@ import { keys } from "../../../../model/Constant";
 import UserForm from "./UserForm";
 
 
-export default ({users, roles}) => {
+export default ({ users, roles }) => {
 
     const [show, setShow] = useState(false)
     const [currentRow, setCurrentRow] = useState(null)
@@ -22,7 +22,7 @@ export default ({users, roles}) => {
     }
 
     const deleteUser = useCustomMutation(
-        ({username}) =>  apis.User.deleteUser(username),
+        ({ username }) => apis.User.deleteUser(username),
         [[keys.USERS_KEY]]
     )
 
@@ -35,31 +35,31 @@ export default ({users, roles}) => {
             header: 'ID',
             hidden: true
         }, {
-            id : 'username',
+            id: 'username',
             accessorKey: 'username',
             header: "Username",
             enableColumnFilter: true,
         },
         {
-            id : 'firstname',
+            id: 'firstname',
             accessorKey: 'firstname',
             header: "First name",
             enableColumnFilter: true,
-        }, 
+        },
         {
-            id : 'lastname',
+            id: 'lastname',
             accessorKey: 'lastname',
             header: "Last name",
             enableColumnFilter: true,
-        }, 
+        },
         {
-            id : 'email',
+            id: 'email',
             accessorKey: 'email',
             header: "E-mail",
             enableColumnFilter: true,
         },
         {
-            id : 'role',
+            id: 'role',
             accessorKey: 'role',
             header: "Role",
             enableColumnFilter: true,
@@ -68,38 +68,38 @@ export default ({users, roles}) => {
                 type : 'SELECT',
                 options: roles.map((role) => ({value: role, label: role}))
             }*/
-        }, 
+        },
         {
-            id : 'password',
+            id: 'password',
             accessorKey: 'password',
             header: "New Password",
-            type : "password",
+            type: "password",
         },
         {
-            id : 'superAdmin',
+            id: 'superAdmin',
             accessorKey: 'superAdmin',
             header: "Super Admin",
-            options: async () => [{value: true, label: 'Yes'}, {value: false, label: 'No'}],
+            options: async () => [{ value: true, label: 'Yes' }, { value: false, label: 'No' }],
         },
         {
-            id : 'edit',
+            id: 'edit',
             accessorKey: 'edit',
             header: "Edit",
-            cell: ({row}) => {
+            cell: ({ row }) => {
                 return (<Button className='otjs-button otjs-button-green' onClick={() => {
                     setShow(true)
-                    setCurrentRow(row.original)
-                    console.log(currentRow)
+                    setCurrentRow(row)
+                    console.log(row)
                 }}>Modify</Button>)
             },
         },
         {
-            id : 'delete',
+            id: 'delete',
             accessorKey: 'delete',
             header: "Delete",
-            cell: ({row}) => {
-                return ( <Button name='delete' className='otjs-button otjs-button-red'
-                               onClick={() => deleteUser(row.values.username)}>Delete</Button>)
+            cell: ({ row }) => {
+                return (<Button name='delete' className='otjs-button otjs-button-red'
+                    onClick={() => deleteUser(row.values.username)}>Delete</Button>)
             }
         }
     ];
@@ -109,8 +109,8 @@ export default ({users, roles}) => {
     }
 
     return <>
-    
-    <CommonTableV8 onCellEdit={cellEditHandler} data={data} columns={columns} />
+        {/*<UserForm show={show} data={currentRow} modify queryFunction={modifyUser} />*/ }
+        <CommonTableV8 onCellEdit={cellEditHandler} data={data} columns={columns} />
     </>
-    
+
 }
