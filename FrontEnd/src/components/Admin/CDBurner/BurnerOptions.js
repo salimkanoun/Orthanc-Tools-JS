@@ -5,6 +5,7 @@ import { keys } from '../../../model/Constant'
 
 import apis from '../../../services/apis'
 import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
+import Spinner from '../../CommonComponents/Spinner'
 
 
 export default () => {
@@ -114,7 +115,7 @@ export default () => {
         return filteredArray[0]
     }
 
-    if (isLoading) return "Loading ..."
+    if (isLoading) return <Spinner/>
 
     return (
         <Form>

@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import apis from '../../../../services/apis';
 import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks';
 import { keys } from '../../../../model/Constant';
+import Spinner from '../../../CommonComponents/Spinner';
 
 export default () => {
 
@@ -17,7 +18,7 @@ export default () => {
         undefined
     )
 
-    if (isLoadingSystem || isLoadingPlugins) return "Loading ..."
+    if (isLoadingSystem || isLoadingPlugins) return <Spinner/>
 
     return (
         <Fragment>

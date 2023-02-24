@@ -7,6 +7,7 @@ import CertificateForm from './CertificateForm'
 import Certificates from './CertificatesList'
 import SshKeyForm from './SshKeyForm'
 import SshKeys from './SshKeysList'
+import Spinner from '../../../CommonComponents/Spinner'
 
 export default () => {
 
@@ -58,7 +59,7 @@ export default () => {
         setCurrentComponent(tabName)
     }
 
-    if (isLoadingCertificates || isLoadingSsh) return "Loadong ..."
+    if (isLoadingCertificates || isLoadingSsh) return <Spinner/>
 
     return (
         <>

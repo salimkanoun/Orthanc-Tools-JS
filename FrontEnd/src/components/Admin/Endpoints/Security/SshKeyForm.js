@@ -8,7 +8,7 @@ import { keys } from '../../../../model/Constant'
 /**
  * Form to declare or modify an Ssh Keys
  */
-export default ({ }) => {
+export default () => {
 
     const [file, setFile] = useState(null);
     const [label, setLabel] = useState();

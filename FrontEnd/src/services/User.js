@@ -27,7 +27,6 @@ const user = {
   },
 
   deleteUser(username) {
-
     return axios.delete('/api/users/' + username).then((answer) => {
     })
   },

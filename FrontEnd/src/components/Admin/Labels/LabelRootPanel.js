@@ -5,16 +5,21 @@ import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
 import RoleManagementModal from "./RoleManagementModal";
 import { useCustomMutation, useCustomQuery } from "../../CommonComponents/ReactQuery/hooks";
 import { keys } from "../../../model/Constant";
+import Spinner from "../../CommonComponents/Spinner";
 
-export default ({ }) => {
+export default () => {
 
     const [roleManagement, setRoleManagement] = useState(null)
     const [search, setSearch] = useState('')
     const [createLabel, setCreateLabel] = useState('')
 
-    const {data : labels, isLoading } = useCustomQuery(
+    const { data: filteredLabel, isLoading } = useCustomQuery(
         [keys.LABELS_KEY],
-        () => apis.label.getAllLabels()
+        () => apis.label.getAllLabels(),
+        undefined,
+        (answer) => {
+            return answer.filter(label => label.label_name.includes(search))
+        }
     )
 
     const handleManageRole = (label) => {
@@ -25,8 +30,8 @@ export default ({ }) => {
         setSearch(event.target.value)
     }
 
-    const createLabels = useCustomMutation (
-        ({createLabel}) => {
+    const createLabels = useCustomMutation(
+        ({ createLabel }) => {
             apis.label.createLabels(createLabel)
             setCreateLabel('')
         },
@@ -43,9 +48,7 @@ export default ({ }) => {
         setCreateLabel(event.target.value)
     }
 
-    let filteredLabel = labels.filter(label => label.label_name.includes(search));
-
-    if (isLoading) return "Loading ..."
+    if (isLoading) return <Spinner/>
 
     return (
         <>
@@ -68,8 +71,7 @@ export default ({ }) => {
                     value={search} />
                 <InputGroup.Text>{filteredLabel.length}</InputGroup.Text>
             </InputGroup>
-            <LabelsTable labels={filteredLabel} handlerManageRole={handleManageRole}/>
-
-
-        </>)
+            <LabelsTable labels={filteredLabel} handlerManageRole={handleManageRole} />
+        </>
+    )
 }

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { Button, OverlayTrigger, Popover, Tooltip } from "react-bootstrap"
 import Select from "react-select"
+import CalendarUtc from "../../../CalendarUtc"
 
 export default ({ getValue, row: { index, id: rowId }, column: { columnDef: { id: columnId, style, editionProperties: { type, minLength, maxLength, min, max, placeholder, options, isClearable = true, disabled } = {}, isEditable = false } }, table }) => {
 
-    console.log("editable")
-    
     if (!isEditable) return getValue()
 
     // Update the state of the cell normally
@@ -29,15 +28,13 @@ export default ({ getValue, row: { index, id: rowId }, column: { columnDef: { id
 
     if (type == 'SELECT') {
         return (
-            <div className='c_select__wrapper' style={style} data-gaelo-front={'editable-cell-' + columnId + '-select'}>
+            <div style={style} >
                 <Select
                     name={columnId}
                     isClearable={isClearable}
                     menuPosition='fixed'
                     menuPlacement='top'
                     placeholder='Select...'
-                    className='c_select'
-                    classNamePrefix='c_select'
                     value={options.filter((option) => option.value === value)}
                     options={options}
                     onChange={(option, actionMeta) => {
@@ -48,16 +45,15 @@ export default ({ getValue, row: { index, id: rowId }, column: { columnDef: { id
         )
     }
 
-    /*if (type == 'CALENDAR') {
+    if (type == 'CALENDAR') {
 
         const [visible, setVisible] = useState(false)
         let calendarDate = value ? new Date(value) : null
         const myButton = <Button variant='light' style={style}>{calendarDate ? calendarDate.toLocaleDateString("en-US") : 'N/A'}</Button>
 
         const myCalendar = (
-            <Popover className='pop__calendar'>
+            <Popover>
                 <CalendarUtc
-                    name={columnId + '_date'}
                     onChange={(date) => {
                         setVisible(false)
                         if (date.getTime() === calendarDate?.getTime()) date = null
@@ -76,7 +72,7 @@ export default ({ getValue, row: { index, id: rowId }, column: { columnDef: { id
                 show={visible}
                 onToggle={(show) => { setVisible(show) }}
                 overlay={
-                    <Tooltip className='pop__calendar__wrapper'>
+                    <Tooltip>
                         {myCalendar}
                     </Tooltip>
                 }
@@ -84,7 +80,7 @@ export default ({ getValue, row: { index, id: rowId }, column: { columnDef: { id
                 {myButton}
             </OverlayTrigger>
         )
-    }*/
+    }
 
     if (type === 'CHECKBOX') {
         return (

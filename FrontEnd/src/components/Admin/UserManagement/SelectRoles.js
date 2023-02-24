@@ -3,6 +3,7 @@ import Select from 'react-select'
 import { keys } from '../../../model/Constant'
 import apis from '../../../services/apis'
 import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
+import Spinner from '../../CommonComponents/Spinner'
 
 
 export default ({ onChange }) => {
@@ -21,7 +22,7 @@ export default ({ onChange }) => {
         }
     )
 
-    if (isLoading) return "Loading..."
+    if (isLoading) return <Spinner/>
     
     return (
         <Select single options={optionRoles} onChange={onChange} />

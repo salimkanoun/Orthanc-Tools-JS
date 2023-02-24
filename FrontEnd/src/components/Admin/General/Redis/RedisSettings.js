@@ -3,6 +3,7 @@ import { Form, FormGroup } from 'react-bootstrap'
 import apis from '../../../../services/apis'
 import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks'
 import { keys } from '../../../../model/Constant'
+import Spinner from '../../../CommonComponents/Spinner'
 
 export default () => {
 
@@ -11,7 +12,7 @@ export default () => {
         () => apis.options.getRedisServer(),
     )
 
-    if (isLoadingRedisServer) return "Loading..."
+    if (isLoadingRedisServer) return <Spinner/>
 
     return (
         <Form>

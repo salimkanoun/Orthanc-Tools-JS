@@ -1,8 +1,8 @@
 import React, { useMemo } from "react"
 import { Button } from 'react-bootstrap';
-
+import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 import ModifyRole from "./ModifyRole";
-import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
+
 
 export default ({ roles, onDelete }) => {
     const data = useMemo(() => roles, [roles]);

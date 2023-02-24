@@ -9,7 +9,7 @@ import { useCustomMutation } from '../../../CommonComponents/ReactQuery/hooks'
 /**
  * Form to declare or modify an AET
  */
-export default ({}) => {
+export default () => {
 
     const [file, setFile] = useState(null);
     const [label, setLabel] = useState();

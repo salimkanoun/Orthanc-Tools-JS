@@ -3,6 +3,7 @@ import { keys } from '../../../model/Constant';
 import apis from '../../../services/apis';
 import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
 import RobotTable from "../../CommonComponents/RessourcesDisplay/ReactTable/RobotTable";
+import Spinner from '../../CommonComponents/Spinner';
 
 
 export default () => {
@@ -41,7 +42,7 @@ export default () => {
         [[keys.ROBOTS_KEY]]
     )
 
-    if (isLoading) return "Loading ..."
+    if (isLoading) return <Spinner/>
 
     return (
         <>

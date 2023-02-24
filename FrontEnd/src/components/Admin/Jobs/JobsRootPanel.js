@@ -5,6 +5,7 @@ import apis from "../../../services/apis";
 import { useCustomQuery } from "../../CommonComponents/ReactQuery/hooks";
 import JobsTableV8 from "./JobsTableV8";
 import { keys } from "../../../model/Constant";
+import Spinner from "../../CommonComponents/Spinner";
 
 
 export default () => {
@@ -18,7 +19,7 @@ export default () => {
         2000
     )
 
-    if (isLoadingJobs) return "Loading ..."
+    if (isLoadingJobs) return <Spinner/>
 
 
     return (

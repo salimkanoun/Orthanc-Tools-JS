@@ -3,9 +3,10 @@ import { Button } from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
 
-import apis from '../../../services/apis'
+import apis from '../../../../services/apis';
+import RoleForm from './RoleForm';
 
-import RoleForm from './RoleForm'
+
 
 export default ({ propsName }) => {
 

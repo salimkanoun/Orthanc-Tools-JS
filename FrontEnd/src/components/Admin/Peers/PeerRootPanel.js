@@ -4,6 +4,7 @@ import apis from '../../../services/apis'
 import PeerTable from './PeerTable'
 import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 import { keys } from '../../../model/Constant'
+import Spinner from '../../CommonComponents/Spinner'
 
 /**
  * Root Panel of Peers options
@@ -25,7 +26,7 @@ export default () => {
   )
 
 
-  if (isLoadingPeers) return "Loading..."
+  if (isLoadingPeers) return <Spinner/>
 
   return (
     <>

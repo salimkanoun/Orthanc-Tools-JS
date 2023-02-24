@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import AetRootPanel from './AET/AetRootPanel'
 import PeerRootPanel from './Peers/PeerRootPanel'
 import JobsRootPanel from './Jobs/JobsRootPanel'
-import UserManagement from './UserManagement/UserManagement'
+import UserRoot from './UserManagement/UserRoot'
 import BurnerOptions from './CDBurner/BurnerOptions'
 import EndpointsRootPanel from './Endpoints/EndpointsRootPanel'
 import GeneralRoot from './General/GeneralRoot'
@@ -49,7 +49,7 @@ export default () => {
             case CD_BURNER:
                 return (<BurnerOptions />)
             case USERS:
-                return (<UserManagement />)
+                return (<UserRoot />)
             case LABELS:
                 return (<LabelRootPanel />)
             default:

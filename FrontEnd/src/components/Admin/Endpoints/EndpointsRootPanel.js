@@ -11,6 +11,7 @@ import EndpointsOptions from './EndpointsOptions'
 
 import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 import { keys } from '../../../model/Constant'
+import Spinner from '../../CommonComponents/Spinner'
 
 export default () => {
 
@@ -87,7 +88,7 @@ export default () => {
     )
 
 
-    if (isLoading) return "Loading ..."
+    if (isLoading) return <Spinner/>
 
     return (
         <>

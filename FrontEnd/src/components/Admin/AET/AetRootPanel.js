@@ -4,6 +4,7 @@ import apis from '../../../services/apis'
 import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 import AetsTable from './AetsTable'
 import { keys } from '../../../model/Constant'
+import Spinner from '../../CommonComponents/Spinner'
 
 /**
  * Root Panel of AETs options
@@ -23,7 +24,7 @@ export default () => {
         }
     )
 
-    if (isLoadingAets) return "Loading...."
+    if (isLoadingAets) return <Spinner/>
 
     return (
         <>

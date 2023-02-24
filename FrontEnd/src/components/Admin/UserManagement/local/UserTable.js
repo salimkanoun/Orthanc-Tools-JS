@@ -1,10 +1,30 @@
-import React, {useMemo} from "react";
-import apis from "../../../services/apis";
+import React, {useMemo, useState} from "react";
+import apis from "../../../../services/apis";
 import { Button } from "react-bootstrap";
-import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
+import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
+import { useCustomMutation } from "../../../CommonComponents/ReactQuery/hooks";
+import { keys } from "../../../../model/Constant";
+import UserForm from "./UserForm";
 
 
-export default ({users, onUserUpdate, modify, setDelete}) => {
+export default ({users, roles}) => {
+
+    const [show, setShow] = useState(false)
+    const [currentRow, setCurrentRow] = useState(null)
+
+    const modify = useCustomMutation(
+        (username, firstname, lastname, email, role, password, superAdmin) => apis.User.modifyUser(username, firstname, lastname, email, role, password, superAdmin),
+        [[keys.USERS_KEY]]
+    )
+
+    const modifyUser = (state, role) => {
+        modify.mutate(state.username, state.firstname, state.lastname, state.email, role, state.password, state.superAdmin)
+    }
+
+    const deleteUser = useCustomMutation(
+        ({username}) =>  apis.User.deleteUser(username),
+        [[keys.USERS_KEY]]
+    )
 
     const data = useMemo(() => users, [users]);
 
@@ -19,49 +39,46 @@ export default ({users, onUserUpdate, modify, setDelete}) => {
             accessorKey: 'username',
             header: "Username",
             enableColumnFilter: true,
-            //cell : InputCell
         },
         {
             id : 'firstname',
             accessorKey: 'firstname',
             header: "First name",
             enableColumnFilter: true,
-            //cell: InputCell
         }, 
         {
             id : 'lastname',
             accessorKey: 'lastname',
             header: "Last name",
             enableColumnFilter: true,
-            //cell: InputCell
         }, 
         {
             id : 'email',
             accessorKey: 'email',
             header: "E-mail",
             enableColumnFilter: true,
-            //cell: InputCell,
         },
         {
             id : 'role',
             accessorKey: 'role',
             header: "Role",
             enableColumnFilter: true,
-            //cell: SelectCell,
-            options: () => apis.role.getRoles().then(res => res.map((role) => ({value: role.name, label: role.name}))),
+            /*isEditable : true,
+            editionProperties : {
+                type : 'SELECT',
+                options: roles.map((role) => ({value: role, label: role}))
+            }*/
         }, 
         {
             id : 'password',
             accessorKey: 'password',
             header: "New Password",
             type : "password",
-            //cell: InputCell,
         },
         {
             id : 'superAdmin',
             accessorKey: 'superAdmin',
             header: "Super Admin",
-            // cell: SelectCell,
             options: async () => [{value: true, label: 'Yes'}, {value: false, label: 'No'}],
         },
         {
@@ -70,9 +87,10 @@ export default ({users, onUserUpdate, modify, setDelete}) => {
             header: "Edit",
             cell: ({row}) => {
                 return (<Button className='otjs-button otjs-button-green' onClick={() => {
-                    console.log(row)
-                    modify.mutate(...row)
-                }}>Save</Button>)
+                    setShow(true)
+                    setCurrentRow(row.original)
+                    console.log(currentRow)
+                }}>Modify</Button>)
             },
         },
         {
@@ -81,10 +99,18 @@ export default ({users, onUserUpdate, modify, setDelete}) => {
             header: "Delete",
             cell: ({row}) => {
                 return ( <Button name='delete' className='otjs-button otjs-button-red'
-                               onClick={() => setDelete(row.values.username, row.values.userId)}>Delete</Button>)
+                               onClick={() => deleteUser(row.values.username)}>Delete</Button>)
             }
         }
     ];
 
-    return <CommonTableV8 data={data} columns={columns} />
+    const cellEditHandler = (rowId, column, value) => {
+        console.log(rowId, column, value)
+    }
+
+    return <>
+    
+    <CommonTableV8 onCellEdit={cellEditHandler} data={data} columns={columns} />
+    </>
+    
 }

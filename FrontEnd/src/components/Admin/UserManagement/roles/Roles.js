@@ -1,12 +1,14 @@
 import React, { Fragment, useState } from "react"
 import { Row, Col, Modal, Button } from 'react-bootstrap';
-
-import apis from '../../../services/apis'
-import CreateRole from "./CreateRole";
 import { toast } from "react-toastify";
-import { useCustomQuery } from "../../CommonComponents/ReactQuery/hooks";
-import RoleTable from "../UserManagement/RoleTable";
-import { keys } from "../../../model/Constant";
+import { keys } from "../../../../model/Constant";
+import apis from "../../../../services/apis";
+import { useCustomQuery } from "../../../CommonComponents/ReactQuery/hooks";
+import Spinner from "../../../CommonComponents/Spinner";
+import CreateRole from "./CreateRole";
+import RoleTable from "./RoleTable";
+
+
 
 
 export default () => {
@@ -39,7 +41,7 @@ export default () => {
         refetchRole()
     }
     
-    if (isLoadingRoles) return "Loading roles"
+    if (isLoadingRoles) return <Spinner/>
 
     return (
         <Fragment>
