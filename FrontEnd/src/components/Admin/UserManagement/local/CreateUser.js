@@ -35,7 +35,7 @@ export default () => {
             <Button name='create' className='otjs-button otjs-button-blue'
                 onClick={() => setShow(true)}>New User
             </Button>
-            <UserForm show={show} create queryFunction={createUser} />
+            <UserForm show={show} setShow={setShow} create queryFunction={createUser} />
         </>
     );
 }

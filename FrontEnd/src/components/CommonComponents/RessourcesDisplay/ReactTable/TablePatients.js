@@ -14,7 +14,7 @@ export default ({
     onRowClick,
     onEdit,
     textNameColumn = 'Patient Name',
-    textIDColumn = 'Patient ID',
+    textIDColumn = 'Patient ID', 
     showEditable = false,
     rowEvents,
     rowStyle,

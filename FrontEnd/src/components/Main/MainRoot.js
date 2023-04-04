@@ -12,7 +12,7 @@ import DicomRouterPanel from '../Dicom Router/DicomRouterPanel'
 import ExportPanel from '../Export/ExportPanel'
 import ImportRootPanel from '../Import/ImportRootPanel'
 import MyDicom from '../MyDicom/MyDicom'
-import ContentRootPanel from '../OrthancContent/ContentRootPanel'
+import ContentRootPanel from '../Content/ContentRootPanel'
 import Query from '../Query/Components/Query'
 import NavBar from './NavBar'
 import RobotView from '../AutoQuery/Connected_Component/RobotView';

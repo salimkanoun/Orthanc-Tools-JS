@@ -1,10 +1,9 @@
-import React, { useMemo, Fragment, useState } from "react"
+import React, { useMemo, Fragment, useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import papa from 'papaparse'
 
 import apis from '../../services/apis'
-import TableSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableSeries'
 import DownloadDropdown from "./DownloadDropdown"
 import SendAetDropdown from "./SendAetDropdown"
 import SendPeerDropdown from "./SendPeerDropdown"
@@ -14,7 +13,9 @@ import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList 
 import SendExternalDropdown from "./SendExternalDropdown"
 import { toast } from "react-toastify"
 import { Row, Col, Dropdown, ButtonGroup, Button } from "react-bootstrap"
-import TableStudies from "../CommonComponents/RessourcesDisplay/ReactTable/TableStudies"
+//import TableStudies from "../CommonComponents/RessourcesDisplay/ReactTable/TableStudies"
+import TableSeries from "../CommonComponents/RessourcesDisplay/ReactTableV8/TableSeries"
+import TableStudies from "../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudies"
 
 /**
  * This componnent wrapper allows to optimise the table by memoizing data
@@ -26,7 +27,7 @@ import TableStudies from "../CommonComponents/RessourcesDisplay/ReactTable/Table
  */
 
 
-export default ({}) => {
+export default () => {
 
     const [currentStudy, setCurrentStudy] = useState('')
     const [currentTS, setCurrentTS] = useState(null)
@@ -35,6 +36,34 @@ export default ({}) => {
     const [endpoints, setEndpoints] = useState([])
     const [show, setShow] = useState(false)
     const [button, setButton] = useState('')
+
+    useEffect(() => {
+        const getAets = async () => { await apis.aets.getAets() }
+        const getPeers = async () => { await apis.peers.getPeers() }
+        const getEndpoints = async () => { await apis.endpoints.getEndpoints() }
+        const getExportOption = async () => { await apis.options.getExportOption() }
+        try {
+            let aets = getAets()
+            let peers = getPeers()
+            let endpoints = getEndpoints()
+            let TS = getExportOption()
+
+            endpoints.push({
+                id: -1,
+                label: 'On Server Hard Disk',
+                protocol: 'local',
+            })
+
+            setAets(aets)
+            setPeers(peers)
+            setEndpoints(endpoints)
+            setCurrentTS(TS)
+
+        } catch (error) {
+            setAets([])
+            toast.error(error.statusText, { data: { type: 'notification' } })
+        }
+    }, [])
 
 
     const onClickStudyHandler = (StudyOrthancID) => {
@@ -52,33 +81,8 @@ export default ({}) => {
 
     const rowStyle = (StudyOrthancID) => {
         if (StudyOrthancID === currentStudy) return { background: 'peachPuff' }
-    } 
-
-    const componentDidMount = async () => {
-
-        try {
-            let aets = await apis.aets.getAets()
-            let peers = await apis.peers.getPeers()
-            let endpoints = await apis.endpoints.getEndpoints()
-            let TS = await apis.options.getExportOption()
-
-            endpoints.push({
-                id: -1,
-                label: 'On Server Hard Disk',
-                protocol: 'local',
-            })
-
-            setAets(aets)
-            setPeers(peers)
-            setEndpoints(endpoints)
-            setCurrentTS(TS)
-
-        } catch (error) {
-            setAets([])
-            toast.error(error.statusText, {data:{type:'notification'}})
-        }
-
     }
+
 
     const getExportIDArray = () => {
         let ids = []
@@ -92,9 +96,44 @@ export default ({}) => {
         dispatch(removeSeriesFromExportList(seriesOrthancID))
     }
 
+    const additionalColumnsSeries = [
+        {
+            id: 'Remove',
+            accessorKey: 'Remove',
+            header: 'Remove',
+            cell: (({ row }) => {
+                return (
+                    <Button className="btn btn-danger" onClick={(e) => {
+                        try {
+                            removeSeries(row.values.SeriesOrthancID);
+                        } catch (e) {
+                            toast.error("Remove error", { data: { type: 'notification' } });
+                        }
+                        e.stopPropagation();
+                    }}>Remove</Button>
+                )
+            })
+        }
+    ]
+
     const removeStudy = () => {
         dispatch(removeStudyFromExportList(currentStudy))
     }
+
+    const additionalColumnsStudies = [
+        {
+            id: 'ParentPatient.PatientName',
+            accessorKey: 'ParentPatient.PatientName',
+            header: 'Patient Name',
+            filterType: "STRING"
+        },
+        {
+            id: 'ParentPatient.PatientID',
+            accessorKey: 'ParentPatient.PatientID',
+            header: 'Patient ID',
+            filterType: "STRING"
+        }
+    ]
 
     const emptyList = () => {
         dispatch(emptyExportList())
@@ -117,7 +156,7 @@ export default ({}) => {
     const getCSV = () => {
 
         if (store.exportList.seriesArray.length === 0) {
-            toast.error('Empty List', {data:{type:'notification'}})
+            toast.error('Empty List', { data: { type: 'notification' } })
             return
         }
 
@@ -194,7 +233,7 @@ export default ({}) => {
             </Row>
             <Row className="mt-5">
                 <Col sm>
-                    <TableStudies
+                    {/*<TableStudies
                         studies={store.exportList.studyArray}
                         onRowClick={onClickStudyHandler}
                         rowStyle={rowStyle}
@@ -202,15 +241,18 @@ export default ({}) => {
                         removeRow={false}
                         pagination={true}
                         hiddenAnonymized={false}
-                        withPatientColums={true} />
-
+    withPatientColums={true} />*/}
+                    <TableStudies data={store.exportList.studyArray}
+                        additionalColumns={additionalColumnsStudies}
+                        onRowClick={onClickStudyHandler}
+                        rowStyle={rowStyle} />
                 </Col>
+
 
                 <Col sm>
-                    <TableSeries series={data}
-                        removeRow onRemove={removeSeries} />
-
+                    <TableSeries series={data} additionalColumns={additionalColumnsSeries} />
                 </Col>
+
             </Row>
             <Row className="text-start mt-5">
                 <Col sm>

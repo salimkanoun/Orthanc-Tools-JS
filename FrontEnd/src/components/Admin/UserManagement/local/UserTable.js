@@ -89,7 +89,7 @@ export default ({ users, roles }) => {
                 return (<Button className='otjs-button otjs-button-green' onClick={() => {
                     setShow(true)
                     setCurrentRow(row)
-                    console.log(row)
+                    console.log(row.original)
                 }}>Modify</Button>)
             },
         },
@@ -108,9 +108,17 @@ export default ({ users, roles }) => {
         console.log(rowId, column, value)
     }
 
-    return <>
-        {/*<UserForm show={show} data={currentRow} modify queryFunction={modifyUser} />*/ }
-        <CommonTableV8 onCellEdit={cellEditHandler} data={data} columns={columns} />
-    </>
+
+    return (
+        <>
+            <CommonTableV8 onCellEdit={cellEditHandler} data={data} columns={columns} />
+            {
+                currentRow ?  
+                 <UserForm show={show} setShow={setShow} data={currentRow.original} modify queryFunction={modifyUser} />
+                : null
+            }
+           
+        </>
+    )
 
 }

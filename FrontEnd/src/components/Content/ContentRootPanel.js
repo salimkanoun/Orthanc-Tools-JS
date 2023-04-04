@@ -22,8 +22,6 @@ export default () => {
         }
     }
 
-
-
     return (
         <div>
             <SearchForm onSubmit={sendSearch} />

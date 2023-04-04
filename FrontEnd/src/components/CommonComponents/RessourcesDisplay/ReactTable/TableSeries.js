@@ -13,7 +13,7 @@ export default ({
     pagination = true
 }) => {
     const columns = useMemo(() => [
-        seriesColumns.ORTHANC_ID,
+        seriesColumns.ORTHANC_ID, 
         seriesColumns.DESCRIPTION,
         seriesColumns.MODALITY,
         seriesColumns.SERIES_NUMBER,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     useReactTable,
     getCoreRowModel,
@@ -8,15 +8,13 @@ import {
     getFacetedMinMaxValues,
     getPaginationRowModel,
     getSortedRowModel,
-    flexRender, 
+    flexRender,
 } from "@tanstack/react-table";
 import { useState } from "react";
 
 import Paginate from "./Tools/Paginate";
 import Filter from "./Tools/Filter";
 import EditableCell from "./Tools/EditableCell";
-
-
 
 export default ({
     columns,
@@ -30,6 +28,9 @@ export default ({
     customRowProps = (row) => { },
     sortBy = [],
     renderSubComponent,
+    onRowClick = () => { }, 
+    rowStyle = () => { }, 
+    onSelectRow = (state) => { },
     onCellEdit = (rowIndex, columnId, value) => { },
 }) => {
 
@@ -37,6 +38,10 @@ export default ({
     const [rowSelection, setRowSelection] = useState({})
     const [columnFilters, setColumnFilters] = useState([])
     const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper()
+
+    useEffect(() => {
+        onSelectRow(rowSelection)
+    }, [rowSelection.length])
 
     const getHiddenState = () => {
         const visibleColumns = {};
@@ -51,8 +56,8 @@ export default ({
         data,
         getRowId: (originalRow, index, parent) => originalRow?.[id] ?? index,
         columns,
-        defaultColumn : { 
-            cell : EditableCell
+        defaultColumn: {
+            cell: EditableCell
         },
         enableRowSelection: true,
         state: {
@@ -63,7 +68,7 @@ export default ({
         initialState: {
             columnVisibility: getHiddenState()
         },
-        
+
         onColumnFiltersChange: setColumnFilters,
         onSortingChange: setSorting,
         onRowSelectionChange: setRowSelection,
@@ -105,7 +110,7 @@ export default ({
                                         ? null
                                         :
                                         <> <div
-                                        
+
                                             {...{
                                                 className: header.column.getCanSort()
                                                     ? header.column.columnDef.headerClassName + ' cursor-pointer select-none'
@@ -113,7 +118,7 @@ export default ({
                                                 onClick: header.column.getToggleSortingHandler(),
                                             }}
                                         >
-    
+
                                             {flexRender(
                                                 header.column.columnDef.header,
                                                 header.getContext(),
@@ -139,21 +144,21 @@ export default ({
                     {table.getRowModel().rows.map(row => {
                         return (
                             <>
-                                <tr  key={row.id} {...customRowProps(row)}>
+                                <tr key={row.id} {...customRowProps(row)} onClick={() => onRowClick(row.id)} style={rowStyle(row.id)}>
                                     {row.getVisibleCells().map(cell => (
-                                            <td key={cell.id}>
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext()
-                                                )}
-                                            </td>
-                                        )
+                                        <td key={cell.id}>
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
+                                        </td>
+                                    )
                                     )}
                                 </tr>
                                 {row.getIsExpanded() && (
                                     <tr>
                                         <td colSpan={row.getVisibleCells().length}>
-                                            {renderSubComponent({row})}
+                                            {renderSubComponent({ row })}
                                         </td>
                                     </tr>
                                 )}
