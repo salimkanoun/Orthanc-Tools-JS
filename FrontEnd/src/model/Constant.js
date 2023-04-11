@@ -22,4 +22,10 @@ const keys = {
     ASSOCIATIONS_KEY : 'associations'
 }
 
-export {keys}
+const filter = {
+    STRING_FILTER : "STRING",
+    DATE_FILTER : "DATE",
+    NUMBER_FILTER : "NUMBER"
+}
+
+export {keys, filter}

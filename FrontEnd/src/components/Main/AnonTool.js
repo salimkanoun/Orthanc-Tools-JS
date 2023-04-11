@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import Overlay from 'react-bootstrap/Overlay'
 import Popover from 'react-bootstrap/Popover'
-import TablePatientsWithNestedStudies
-    from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies'
+//import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies'
 
 import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList } from '../../actions/AnonList'
 import { studyArrayToPatientArray } from '../../tools/processResponse'
 import { Button } from 'react-bootstrap'
+import TablePatienWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatienWithNestedStudies'
+import { patientColumns } from '../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories'
 
 
 export default ({ target, show, onHide }) => {
@@ -35,6 +36,10 @@ export default ({ target, show, onHide }) => {
         dispatch(emptyAnonymizeList())
     }
 
+    const additionalColumnsPatients = [
+        patientColumns.REMOVE(onRemovePatient)
+    ]
+
     return (
         <Overlay target={target} show={show} placement="bottom" onHide={onHide}
             rootClose>
@@ -46,7 +51,7 @@ export default ({ target, show, onHide }) => {
                             List
                         </Button>
                     </div>
-                    <TablePatientsWithNestedStudies
+                    {/*<TablePatientsWithNestedStudies
                         patients={patientsRows}
                         actionBouton={false}
                         removeRow={true}
@@ -55,7 +60,9 @@ export default ({ target, show, onHide }) => {
                         selectable={false}
                         onSelectStudies={() => { }}
                         wrapperClasses="table-responsive"
-                    />
+    />*/}
+    <TablePatienWithNestedStudies patients={patientsRows} additionalColumnsPatients={additionalColumnsPatients} onSelectStudies={() => { }}/>
+
                 </Popover.Body>
             </Popover>
         </Overlay>

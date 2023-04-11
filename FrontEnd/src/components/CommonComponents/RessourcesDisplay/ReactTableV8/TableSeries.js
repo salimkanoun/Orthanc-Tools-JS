@@ -1,4 +1,5 @@
 import React from "react";
+import { seriesColumns } from "./ColomnFactories";
 import CommonTableV8 from "./CommonTableV8";
 
 export default ({
@@ -7,33 +8,13 @@ export default ({
 }) => {
 
     const columns = [
-        {
-            id: 'SeriesOrthancID',
-            accessorKey: 'SeriesOrthancID',
-            header: 'SeriesOrthancID',
-            hidden: true,
-        },
-        {
-            id: 'SeriesDescription',
-            accessorKey: 'SeriesDescription',
-            header: 'SeriesDescription',
-            filterType: "STRING",
-        },
-        {
-            id: 'Modality',
-            accessorKey: 'Modality',
-            header: 'Modality',
-            filterType: "STRING"
-        },
-        {
-            id: 'SeriesNumber',
-            accessorKey: 'SeriesNumber',
-            header: 'SeriesNumber',
-            filterType: "NUMBER"
-        }
+        seriesColumns.ORTHANC_ID, 
+        seriesColumns.DESCRIPTION,
+        seriesColumns.MODALITY,
+        seriesColumns.SERIES_NUMBER,
     ]
 
     return (
-        <CommonTableV8 data={series} columns={columns.concat(additionalColumns)}/>
+        <CommonTableV8 id={"SeriesOrthancID"} data={series} canSelect selectedIds={[]} onSelectRow={(data) => console.log(data)} columns={columns.concat(additionalColumns)}/>
     )
 }

@@ -36,7 +36,7 @@ export default ({ columnsTable,  data, renderSubComponent }) => {
     const table = useReactTable({
         data,
         columns : columnsConcat,
-        getRowCanExpand,
+        //getRowCanExpand ,
         getCoreRowModel: getCoreRowModel(),
         getExpandedRowModel: getExpandedRowModel(),
     })

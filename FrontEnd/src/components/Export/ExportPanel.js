@@ -67,6 +67,7 @@ export default () => {
 
 
     const onClickStudyHandler = (StudyOrthancID) => {
+        console.log(StudyOrthancID)
         setCurrentStudy(StudyOrthancID)
     }
 
@@ -233,16 +234,8 @@ export default () => {
             </Row>
             <Row className="mt-5">
                 <Col sm>
-                    {/*<TableStudies
+                    <TableStudies 
                         studies={store.exportList.studyArray}
-                        onRowClick={onClickStudyHandler}
-                        rowStyle={rowStyle}
-                        actionBouton={false}
-                        removeRow={false}
-                        pagination={true}
-                        hiddenAnonymized={false}
-    withPatientColums={true} />*/}
-                    <TableStudies data={store.exportList.studyArray}
                         additionalColumns={additionalColumnsStudies}
                         onRowClick={onClickStudyHandler}
                         rowStyle={rowStyle} />

@@ -7,7 +7,9 @@ import SendAetDropdown from "../Export/SendAetDropdown"
 import DownloadDropdown from "../Export/DownloadDropdown"
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
 import { toast } from 'react-toastify'
-import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableStudiesWithNestedSeries'
+import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudiesWithNestedSeries'
+import { seriesColumns, studyColumns } from '../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories'
+//import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableStudiesWithNestedSeries'
 
 export default ({target, show, onHide}) =>{
  
@@ -41,9 +43,16 @@ export default ({target, show, onHide}) =>{
         dispatch(removeSeriesFromExportList(serieID))
     }
 
+    const additionalColumnsSeries = [
+        [seriesColumns.REMOVE(onRemoveSeries)]
+    ]
     const onRemoveStudy = (studyID) => {
         dispatch(removeStudyFromExportList(studyID))
     }
+
+    const additionalColumnsStudies = [
+        [studyColumns.REMOVE(onRemoveStudy)]
+    ]
 
     const getExportIDArray = () => {
         let ids = []
@@ -68,7 +77,7 @@ export default ({target, show, onHide}) =>{
                             </Button>
                         </div>
                     </div>
-                    <TableStudiesWithNestedSeries
+                    {/*<TableStudiesWithNestedSeries
                         series={store.seriesArray}
                         studies={store.studyArray}
                         removeRow={true}
@@ -78,7 +87,14 @@ export default ({target, show, onHide}) =>{
                         onRemoveStudy={onRemoveStudy}
                         onRemoveSeries={onRemoveSeries}
                         pagination={true}
-                        wrapperClasses="table-responsive" />
+    wrapperClasses="table-responsive" />*/}
+    <TableStudiesWithNestedSeries
+    studies = {store.studyArray}
+    series = {store.seriesArray}
+    withPatientColums 
+    additionalColumnsStudies = {additionalColumnsStudies}
+    additionalColumnsSeries = {additionalColumnsSeries}
+    />
                     <Row className="text-center mt-5">
                         <Col sm={6}>
                             <DownloadDropdown exportIds={idArray} />

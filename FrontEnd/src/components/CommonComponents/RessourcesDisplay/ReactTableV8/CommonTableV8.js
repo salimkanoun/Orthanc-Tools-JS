@@ -15,6 +15,7 @@ import { useState } from "react";
 import Paginate from "./Tools/Paginate";
 import Filter from "./Tools/Filter";
 import EditableCell from "./Tools/EditableCell";
+import { selectColumn } from "./Tools/TableUtils";
 
 export default ({
     columns,
@@ -31,6 +32,7 @@ export default ({
     onRowClick = () => { }, 
     rowStyle = () => { }, 
     onSelectRow = (state) => { },
+    selectedIds = null,
     onCellEdit = (rowIndex, columnId, value) => { },
 }) => {
 
@@ -40,8 +42,22 @@ export default ({
     const [autoResetPageIndex, skipAutoResetPageIndex] = useSkipper()
 
     useEffect(() => {
-        onSelectRow(rowSelection)
-    }, [rowSelection.length])
+        onSelectRow(Object.keys(rowSelection))
+    }, [Object.keys(rowSelection).length])
+
+    //TODO controlled behaviour for selection
+    /*
+    useEffect(()=> {
+        if(!selectedIds) return 
+        const generateSelectedState = (selectedIds) => {
+            let state = {}
+            selectedIds.forEach((id)=> state[id] = true)
+            return state
+        }
+
+        setRowSelection(generateSelectedState(selectedIds))
+    }, [selectedIds?.length])
+    */
 
     const getHiddenState = () => {
         const visibleColumns = {};
@@ -52,10 +68,12 @@ export default ({
         return visibleColumns
     }
 
+
+
     const table = useReactTable({
         data,
         getRowId: (originalRow, index, parent) => originalRow?.[id] ?? index,
-        columns,
+        columns : (canSelect ? [selectColumn, ...columns] : columns),
         defaultColumn: {
             cell: EditableCell
         },

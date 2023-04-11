@@ -10,12 +10,6 @@ export default ({
 
     const columns = [
         {
-            id : 'raw',
-            accessorKey : 'raw',
-            header : 'Raw',
-            hidden : true
-        },
-        {
             id : 'StudyOrthancID',
             accessorKey : 'StudyOrthancID',
             header : 'Study Orthanc ID',
@@ -48,6 +42,6 @@ export default ({
     ]
 
     return (
-        <CommonTableV8 data={studies} columns={columns.concat(additionalColumns)} rowStyle={rowStyle} onRowClick={onRowClick}/>
+        <CommonTableV8 id="StudyOrthancID" data={studies} columns={columns.concat(additionalColumns)} rowStyle={rowStyle} onRowClick={onRowClick}/>
     )
 }
