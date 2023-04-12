@@ -13,7 +13,6 @@ import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList 
 import SendExternalDropdown from "./SendExternalDropdown"
 import { toast } from "react-toastify"
 import { Row, Col, Dropdown, ButtonGroup, Button } from "react-bootstrap"
-//import TableStudies from "../CommonComponents/RessourcesDisplay/ReactTable/TableStudies"
 import TableSeries from "../CommonComponents/RessourcesDisplay/ReactTableV8/TableSeries"
 import TableStudies from "../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudies"
 
@@ -105,12 +104,8 @@ export default () => {
             cell: (({ row }) => {
                 return (
                     <Button className="btn btn-danger" onClick={(e) => {
-                        try {
-                            removeSeries(row.values.SeriesOrthancID);
-                        } catch (e) {
-                            toast.error("Remove error", { data: { type: 'notification' } });
-                        }
                         e.stopPropagation();
+                        removeSeries(row.original.SeriesOrthancID);
                     }}>Remove</Button>
                 )
             })
@@ -121,20 +116,7 @@ export default () => {
         dispatch(removeStudyFromExportList(currentStudy))
     }
 
-    const additionalColumnsStudies = [
-        {
-            id: 'ParentPatient.PatientName',
-            accessorKey: 'ParentPatient.PatientName',
-            header: 'Patient Name',
-            filterType: "STRING"
-        },
-        {
-            id: 'ParentPatient.PatientID',
-            accessorKey: 'ParentPatient.PatientID',
-            header: 'Patient ID',
-            filterType: "STRING"
-        }
-    ]
+    
 
     const emptyList = () => {
         dispatch(emptyExportList())
@@ -201,6 +183,7 @@ export default () => {
 
     let idArray = getExportIDArray()
     let constConfirm = confirm()
+
     return (
         <Fragment>
             <Row className="border-bottom border-2 pb-3">
@@ -236,9 +219,9 @@ export default () => {
                 <Col sm>
                     <TableStudies 
                         studies={store.exportList.studyArray}
-                        additionalColumns={additionalColumnsStudies}
                         onRowClick={onClickStudyHandler}
-                        rowStyle={rowStyle} />
+                        rowStyle={rowStyle} 
+                        withPatientColums/>
                 </Col>
 
 

@@ -73,7 +73,7 @@ const patientColumns = {
         header : 'Remove',
         cell : (({row}) => {
             return <Button className="btn btn-danger" onClick={() => {
-                onRemovePatient(row.values.PatientOrthancID);
+                onRemovePatient(row.original.PatientOrthancID);
             }}>Remove</Button>
         }) 
     }),
@@ -139,10 +139,10 @@ const studyColumns = {
         accessorKey : 'Anonymized',
         header : 'Anonymized ?', 
         style: (row) => {
-            return { "color": row.values.AnonymizedFrom ? 'lightgreen' : 'orangered' }
+            return { "color": row.original.AnonymizedFrom ? 'lightgreen' : 'orangered' }
         },
         cell: (({ row }) => {
-            return row.values.AnonymizedFrom ? 'Yes' : 'No'})
+            return row.original.AnonymizedFrom ? 'Yes' : 'No'})
     },
     ACTION : (onDelete, refresh, openLabelModal) => ({
         id : 'Action',
@@ -151,7 +151,7 @@ const studyColumns = {
         cell : (({ row }) => {
             return <ActionBouton level={ConstantLevel.STUDIES}
             orthancID={row.original.StudyOrthancID}
-            StudyInstanceUID={row.values.StudyInstanceUID}
+            StudyInstanceUID={row.original.StudyInstanceUID}
             onDelete={onDelete}
             dataDetails={row.original}
             refresh={refresh}
@@ -166,7 +166,7 @@ const studyColumns = {
         header : 'Remove', 
         cell : ({row}) => {
             return <Button className="btn btn-danger" onClick={() => {
-                onRemoveStudy(row.values.StudyOrthancID);
+                onRemoveStudy(row.original.StudyOrthancID);
             }}>Remove</Button> 
         }
     }),
@@ -180,7 +180,7 @@ const studyColumns = {
         accessorKey : 'Retrieve',
         header : 'Retrieve', 
         cell : ({row}) => {
-            return <RetrieveButton queryAet={row.values.OriginAET} studyInstanceUID={row.values.StudyInstanceUID}
+            return <RetrieveButton queryAet={row.original.OriginAET} studyInstanceUID={row.original.StudyInstanceUID}
                 level={RetrieveButton.Study} />
         }
     },
@@ -236,7 +236,7 @@ const seriesColumns = {
         cell : ({row}) => {
             return <Button className="btn btn-danger" onClick={(e) => {
                 try {
-                    onRemove(row.values.SeriesOrthancID);
+                    onRemove(row.original.SeriesOrthancID);
                 } catch (e) {
                     toast.error("Remove error", {data:{type:'notification'}});
                 }
@@ -254,9 +254,9 @@ const seriesColumns = {
         accessorKey : 'Retrieve',
         header : 'Retrieve', 
         cell : ({row}) => {
-            return (<RetrieveButton queryAet={row.values.raw.OriginAET}
-                studyInstanceUID={row.values.raw.StudyInstanceUID}
-                seriesInstanceUID={row.values.raw.SeriesInstanceUID}
+            return (<RetrieveButton queryAet={row.original.raw.OriginAET}
+                studyInstanceUID={row.original.raw.StudyInstanceUID}
+                seriesInstanceUID={row.original.raw.SeriesInstanceUID}
                 level={RetrieveButton.Series} />)
         }
     }

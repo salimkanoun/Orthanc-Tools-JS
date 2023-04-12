@@ -5,7 +5,6 @@ import {
     getExpandedRowModel,
     flexRender,
 } from '@tanstack/react-table'
-import CommonTableV8 from "./CommonTableV8";
 
 export default ({ columnsTable,  data, renderSubComponent }) => {
     //renderSubData : fonction qui à partir d'une row, renvoie les données à nester

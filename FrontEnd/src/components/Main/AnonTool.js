@@ -3,13 +3,12 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import Overlay from 'react-bootstrap/Overlay'
 import Popover from 'react-bootstrap/Popover'
-//import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies'
 
 import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList } from '../../actions/AnonList'
 import { studyArrayToPatientArray } from '../../tools/processResponse'
 import { Button } from 'react-bootstrap'
-import TablePatienWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatienWithNestedStudies'
 import { patientColumns } from '../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories'
+import TablePatientWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudies'
 
 
 export default ({ target, show, onHide }) => {
@@ -51,18 +50,8 @@ export default ({ target, show, onHide }) => {
                             List
                         </Button>
                     </div>
-                    {/*<TablePatientsWithNestedStudies
-                        patients={patientsRows}
-                        actionBouton={false}
-                        removeRow={true}
-                        onRemovePatient={onRemovePatient}
-                        onRemoveStudy={onRemoveStudy}
-                        selectable={false}
-                        onSelectStudies={() => { }}
-                        wrapperClasses="table-responsive"
-    />*/}
-    <TablePatienWithNestedStudies patients={patientsRows} additionalColumnsPatients={additionalColumnsPatients} onSelectStudies={() => { }}/>
 
+                    <TablePatientWithNestedStudies patients={patientsRows} additionalColumnsPatients={additionalColumnsPatients} onSelectStudies={() => { }} />
                 </Popover.Body>
             </Popover>
         </Overlay>

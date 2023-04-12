@@ -4,7 +4,9 @@ import CommonTableV8 from "./CommonTableV8";
 
 export default ({
     series, 
-    additionalColumns = []
+    additionalColumns = [],
+    selectedIds = undefined,
+    onSelectRow = undefined
 }) => {
 
     const columns = [
@@ -15,6 +17,13 @@ export default ({
     ]
 
     return (
-        <CommonTableV8 id={"SeriesOrthancID"} data={series} canSelect selectedIds={[]} onSelectRow={(data) => console.log(data)} columns={columns.concat(additionalColumns)}/>
+        <CommonTableV8 
+            id={"SeriesOrthancID"} 
+            data={series} 
+            canSelect 
+            selectedIds={selectedIds} 
+            onSelectRow={onSelectRow} 
+            columns={columns.concat(additionalColumns)}
+            />
     )
 }

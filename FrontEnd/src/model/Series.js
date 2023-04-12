@@ -1,28 +1,28 @@
 export default class Series {
 
-    BodyPartExamined = ''
-    ImageOrientation = ''
-    Manufacturer = ''
-    Modality = ''
-    SeriesDate = ''
-    SeriesDescription = ''
-    SeriesInstanceUID = ''
-    SeriesNumber = ''
-    SeriesOrthancID = ''
-    SeriesTime = ''
+    BodyPartExamined = null
+    ImageOrientation = null
+    Manufacturer = null
+    Modality = null
+    SeriesDate = null
+    SeriesDescription = null
+    SeriesInstanceUID = null
+    SeriesNumber = null
+    SeriesOrthancID = null
+    SeriesTime = null
     InstancesOrthancIds = []
-    StudyOrthancID = ''
+    StudyOrthancID = null
 
     fillFromOrthanc = (orthancId, mainDicomTags, instancesOrthancIds, studyOrthancID) => {
-        this.BodyPartExamined = mainDicomTags?.BodyPartExamined
-        this.ImageOrientation = mainDicomTags?.ImageOrientation
-        this.Manufacturer = mainDicomTags?.Manufacturer
-        this.Modality = mainDicomTags?.Modality
-        this.SeriesDate = mainDicomTags?.SeriesDate
-        this.SeriesTime = mainDicomTags?.SeriesTime
-        this.SeriesDescription = mainDicomTags?.SeriesDescription
-        this.SeriesInstanceUID = mainDicomTags?.SeriesInstanceUID
-        this.SeriesNumber = mainDicomTags?.SeriesNumber
+        this.BodyPartExamined = mainDicomTags?.BodyPartExamined ?? null
+        this.ImageOrientation = mainDicomTags?.ImageOrientation ?? null
+        this.Manufacturer = mainDicomTags?.Manufacturer ?? null
+        this.Modality = mainDicomTags?.Modality ?? null
+        this.SeriesDate = mainDicomTags?.SeriesDate ?? null
+        this.SeriesTime = mainDicomTags?.SeriesTime ?? null
+        this.SeriesDescription = mainDicomTags?.SeriesDescription ?? null
+        this.SeriesInstanceUID = mainDicomTags?.SeriesInstanceUID ?? null
+        this.SeriesNumber = mainDicomTags?.SeriesNumber ?? null
 
         this.SeriesOrthancID = orthancId
         this.InstancesOrthancIds = instancesOrthancIds

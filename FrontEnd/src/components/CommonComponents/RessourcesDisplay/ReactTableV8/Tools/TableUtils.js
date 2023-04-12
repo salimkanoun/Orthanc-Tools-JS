@@ -29,3 +29,19 @@ export const selectColumn = {
     ),
 }
 
+export const expandColumn =
+{
+    id: 'expander',
+    accessorKey: 'expand',
+    header: '',
+    cell: ({ row }) => (
+        <div
+        className={'d-flex justify-content-center expand-cell align-content-center'}
+            {...{
+                onClick: () => row.toggleExpanded(),
+            }}
+        >
+            {row.getIsExpanded() ? '⬇' : '➡'}
+        </div>
+    )
+}

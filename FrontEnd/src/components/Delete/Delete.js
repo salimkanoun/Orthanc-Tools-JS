@@ -1,19 +1,20 @@
 import React, { Fragment, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify';
-import { Row, Col, Button} from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 
 import { emptyDeleteList, removePatientFromDeleteList, removeStudyFromDeleteList } from '../../actions/DeleteList'
 import apis from '../../services/apis'
 import ModalDelete from '../Main/ModalDelete'
 import MonitorTask from '../../tools/MonitorTask'
-import TablePatientsWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies';
+import TablePatientWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudies';
 import { studyArrayToPatientArray } from '../../tools/processResponse';
+import { patientColumns, studyColumns } from '../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories';
 
-export default ({}) => {
+export default () => {
 
     const [show, setShow] = useState(false)
-    
+
     const store = useSelector(state => {
         return {
             deleteList: state.DeleteList.deleteList,
@@ -30,11 +31,11 @@ export default ({}) => {
     }
 
     const openToast = () => {
-        toastInstance = toast.info("Delete progress : 0%", { autoClose: false }, {data:{type:'jobs'}})
+        toastInstance = toast.info("Delete progress : 0%", { autoClose: false }, { data: { type: 'jobs' } })
     }
 
     const updateToast = (progress) => {
-        toast.update(toastInstance, { type: toast.TYPE.INFO, render: 'Delete progress : ' + Math.round(progress) + '%' }, {data:{type:'jobs'}})
+        toast.update(toastInstance, { type: toast.TYPE.INFO, render: 'Delete progress : ' + Math.round(progress) + '%' }, { data: { type: 'jobs' } })
     }
 
     const successToast = () => {
@@ -43,7 +44,7 @@ export default ({}) => {
             render: 'Delete done',
             className: 'bg-success',
             autoClose: 2000,
-            data:{type:'jobs'}
+            data: { type: 'jobs' }
         })
     }
 
@@ -61,7 +62,7 @@ export default ({}) => {
         try {
             answer = await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, store.username)
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
             return
         }
 
@@ -100,6 +101,14 @@ export default ({}) => {
 
     let patientRows = studyArrayToPatientArray(store.deleteList)
 
+    const additionalColumnsPatients = [
+        patientColumns.REMOVE(onRemovePatient)
+    ]
+
+    const additionalColumnsStudies = [
+        studyColumns.REMOVE(onRemoveStudy)
+    ]
+
     return (
         <Fragment>
             <Row>
@@ -116,12 +125,12 @@ export default ({}) => {
                 </Row>
                 <Row className="mt-5">
                     <Col>
-                        <TablePatientsWithNestedStudies
+                        <TablePatientWithNestedStudies
                             patients={patientRows}
-                            removeRow
-                            onRemovePatient={onRemovePatient}
-                            onRemoveStudy={onRemoveStudy}
-                            onSelectStudies={() => { }} />
+                            additionalColumnsPatients={additionalColumnsPatients}
+                            additionalColumnsStudies={additionalColumnsStudies}
+                            onSelectStudies={() => { }}
+                        />
                     </Col>
                 </Row>
                 <Row className="mt-5">

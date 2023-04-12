@@ -1,28 +1,27 @@
 import Patient from './Patient'
 export default class Study {
 
-    StudyID = ''
-    PatientOrthancID = ''
-    ReferringPhysiciansName = ''
-    StudyDate = ''
-    StudyDescription = ''
-    StudyInstanceUID = ''
-    StudyOrthancID = ''
-    StudyTime = ''
+    StudyID = null
+    PatientOrthancID = null
+    ReferringPhysiciansName = null
+    StudyDate = null
+    StudyDescription = null
+    StudyInstanceUID = null
+    StudyOrthancID = null
+    StudyTime = null
     Series = {}
     ParentPatient = {}
 
     fillFromOrthanc = (orthancID, mainDicomTags, SeriesOrthancIDs) => {
-        this.StudyID = mainDicomTags.StudyID
-        this.PatientOrthancID = mainDicomTags.PatientOrthancID
-        this.ReferringPhysiciansName = mainDicomTags.ReferringPhysiciansName
-        this.StudyDate = mainDicomTags.StudyDate
-        this.StudyDescription = mainDicomTags.StudyDescription
-        this.StudyInstanceUID = mainDicomTags.StudyInstanceUID
-        this.AccessionNumber = mainDicomTags.AccessionNumber
-        this.StudyTime = mainDicomTags.StudyTime
-        this.SeriesOrthancIDs = SeriesOrthancIDs
-
+        this.StudyID = mainDicomTags?.StudyID ?? null
+        this.PatientOrthancID = mainDicomTags?.PatientOrthancID ?? null
+        this.ReferringPhysiciansName = mainDicomTags?.ReferringPhysiciansName ?? null
+        this.StudyDate = mainDicomTags?.StudyDate ?? null
+        this.StudyDescription = mainDicomTags?.StudyDescription ?? null
+        this.StudyInstanceUID = mainDicomTags?.StudyInstanceUID ?? null
+        this.AccessionNumber = mainDicomTags?.AccessionNumber ?? null
+        this.StudyTime = mainDicomTags?.StudyTime ?? null
+        this.SeriesOrthancIDs = SeriesOrthancIDs 
         this.StudyOrthancID = orthancID
     }
 

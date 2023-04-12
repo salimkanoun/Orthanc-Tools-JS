@@ -1,17 +1,17 @@
 export default class Patient {
 
-    PatientID = ''
-    PatientOrthancID = ''
-    PatientName = ''
-    PatientBirthDate = ''
-    PatientSex = ''
+    PatientID = null
+    PatientOrthancID = null
+    PatientName = null
+    PatientBirthDate = null
+    PatientSex = null
     Studies = {}
 
     fillFromOrthanc = (orthancId, mainDicomTags) => {
-        this.PatientID = mainDicomTags.PatientID
-        this.PatientName = mainDicomTags.PatientName
-        this.PatientBirthDate = mainDicomTags.PatientBirthDate
-        this.PatientSex = mainDicomTags.PatientSex
+        this.PatientID = mainDicomTags?.PatientID ?? null
+        this.PatientName = mainDicomTags?.PatientName ?? null
+        this.PatientBirthDate = mainDicomTags?.PatientBirthDate ?? null
+        this.PatientSex = mainDicomTags?.PatientSex ?? null
         this.PatientOrthancID = orthancId
     }
 

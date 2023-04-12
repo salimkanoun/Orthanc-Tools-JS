@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { commonColumns, patientColumns } from "./ColomnFactories";
-import NestedTableV8 from "./NestedTableV8";
+import CommonTableV8 from "./CommonTableV8";
 import TableStudies from "./TableStudies";
 
 export default ({
@@ -24,7 +24,6 @@ export default ({
 
 
     const columns = [
-        commonColumns.RAW,
         patientColumns.ORTHANC_ID,
         patientColumns.ID,
         patientColumns.NAME,
@@ -32,9 +31,10 @@ export default ({
 
     const columnsPatients = columns.concat(additionalColumnsPatients)
 
-    const renderSubComponent = (rowId) => {
-        let patient = patients.filter((patient) => patient.PatientOrthancID === rowId)[0]
-        let studies = Object.values(patient['Studies'])
+    const renderSubComponent = ({row}) => {
+        let rowId = row.id
+        let patient = patients.find((patient) => patient.PatientOrthancID === rowId)
+        let studies = Object.values(patient.Studies)
 
         const onSelectStudy = (selectedStudies) => {
             let selectedStudiesOrthancId = selectedStudies.map((study => {
@@ -42,7 +42,7 @@ export default ({
             }))
             updateselectedIds(selectedStudiesOrthancId)
         }
-
+        
         return <TableStudies studies={studies} additionalColumns={additionalColumnsStudies} onRowClick={onClickStudyHandler}/>
     }
 
@@ -56,6 +56,6 @@ export default ({
 
     }
 
-    return <NestedTableV8 columnsTable={columnsPatients} data={patients} renderSubComponent={() => renderSubComponent} />
+    return <CommonTableV8 id={patientColumns.ORTHANC_ID.id} canExpand columns={columnsPatients} data={patients} renderSubComponent={renderSubComponent} />
  
 }

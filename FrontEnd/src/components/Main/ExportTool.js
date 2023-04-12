@@ -9,10 +9,9 @@ import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList 
 import { toast } from 'react-toastify'
 import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudiesWithNestedSeries'
 import { seriesColumns, studyColumns } from '../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories'
-//import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableStudiesWithNestedSeries'
 
-export default ({target, show, onHide}) =>{
- 
+export default ({ target, show, onHide }) => {
+
     const [aets, setAets] = useState([])
 
     const store = useSelector(state => {
@@ -30,7 +29,7 @@ export default ({target, show, onHide}) =>{
             this.setAets(aets)
         } catch (error) {
             this.setAets([])
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
 
     }
@@ -44,14 +43,14 @@ export default ({target, show, onHide}) =>{
     }
 
     const additionalColumnsSeries = [
-        [seriesColumns.REMOVE(onRemoveSeries)]
+        seriesColumns.REMOVE(onRemoveSeries)
     ]
     const onRemoveStudy = (studyID) => {
         dispatch(removeStudyFromExportList(studyID))
     }
 
     const additionalColumnsStudies = [
-        [studyColumns.REMOVE(onRemoveStudy)]
+        studyColumns.REMOVE(onRemoveStudy)
     ]
 
     const getExportIDArray = () => {
@@ -63,7 +62,7 @@ export default ({target, show, onHide}) =>{
     }
 
     let idArray = getExportIDArray()
-    
+
     return (
         <Overlay target={target} show={show} placement='bottom' onHide={onHide}
             rootClose style={{ width: '33%' }}>
@@ -77,24 +76,14 @@ export default ({target, show, onHide}) =>{
                             </Button>
                         </div>
                     </div>
-                    {/*<TableStudiesWithNestedSeries
-                        series={store.seriesArray}
+
+                    <TableStudiesWithNestedSeries
                         studies={store.studyArray}
-                        removeRow={true}
-                        accessionNumber={false}
-                        actionButton={false}
-                        withPatientColums={true}
-                        onRemoveStudy={onRemoveStudy}
-                        onRemoveSeries={onRemoveSeries}
-                        pagination={true}
-    wrapperClasses="table-responsive" />*/}
-    <TableStudiesWithNestedSeries
-    studies = {store.studyArray}
-    series = {store.seriesArray}
-    withPatientColums 
-    additionalColumnsStudies = {additionalColumnsStudies}
-    additionalColumnsSeries = {additionalColumnsSeries}
-    />
+                        series={store.seriesArray}
+                        withPatientColums
+                        additionalColumnsStudies={additionalColumnsStudies}
+                        additionalColumnsSeries={additionalColumnsSeries}
+                    />
                     <Row className="text-center mt-5">
                         <Col sm={6}>
                             <DownloadDropdown exportIds={idArray} />

@@ -1,4 +1,5 @@
 import React from "react";
+import { patientColumns, studyColumns } from "./ColomnFactories";
 import CommonTableV8 from "./CommonTableV8";
 
 export default ({
@@ -6,42 +7,20 @@ export default ({
     additionalColumns = [],
     rowStyle,
     onRowClick,
+    withPatientColums = false
 }) => {
 
     const columns = [
-        {
-            id : 'StudyOrthancID',
-            accessorKey : 'StudyOrthancID',
-            header : 'Study Orthanc ID',
-            hidden : true,
-        },
-        {
-            id : 'StudyInstanceUID',
-            accessorKey : 'StudyInstanceUID',
-            header : 'StudyInstanceUID',
-            hidden : true
-        },
-        {
-            id : 'StudyDate',
-            accessorKey : 'StudyDate',
-            header : 'Acquisition Date',
-            filterType : "DATE"
-        },
-        {
-            id : 'StudyDescription',
-            accessorKey : 'StudyDescription',
-            header : 'Description',
-            filterType : "STRING"
-        },
-        {
-            id : 'AccessionNumber',
-            accessorKey : 'AccessionNumber',
-            header : 'Accession Number',
-            filterType : "NUMBER"
-        }
+        studyColumns.ORTHANC_ID,
+        ...(withPatientColums ? [patientColumns.PARENT_NAME] : []),
+        ...(withPatientColums ? [patientColumns.PARENT_ID] : []),
+        studyColumns.STUDY_INSTANCE_UID,
+        studyColumns.DATE,
+        studyColumns.DESCRIPTION,
+        studyColumns.ACCESSION_NUMBER
     ]
 
     return (
-        <CommonTableV8 id="StudyOrthancID" data={studies} columns={columns.concat(additionalColumns)} rowStyle={rowStyle} onRowClick={onRowClick}/>
+        <CommonTableV8 id="StudyOrthancID" data={studies} columns={columns.concat(additionalColumns)} rowStyle={rowStyle} onRowClick={onRowClick} />
     )
 }

@@ -9,13 +9,14 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     flexRender,
+    getExpandedRowModel,
 } from "@tanstack/react-table";
 import { useState } from "react";
 
 import Paginate from "./Tools/Paginate";
 import Filter from "./Tools/Filter";
 import EditableCell from "./Tools/EditableCell";
-import { selectColumn } from "./Tools/TableUtils";
+import { expandColumn, selectColumn } from "./Tools/TableUtils";
 
 export default ({
     columns,
@@ -28,7 +29,7 @@ export default ({
     paginated = false,
     customRowProps = (row) => { },
     sortBy = [],
-    renderSubComponent,
+    renderSubComponent = (rowId) => {},
     onRowClick = () => { }, 
     rowStyle = () => { }, 
     onSelectRow = (state) => { },
@@ -68,12 +69,20 @@ export default ({
         return visibleColumns
     }
 
+    const getColumns = () => {
+        let newColumns = columns
+        if(canSelect) newColumns.unshift(selectColumn)
+        if(canExpand) newColumns.unshift(expandColumn)
+        return newColumns
+        
+    }
 
+    console.log(canExpand)
 
     const table = useReactTable({
         data,
         getRowId: (originalRow, index, parent) => originalRow?.[id] ?? index,
-        columns : (canSelect ? [selectColumn, ...columns] : columns),
+        columns : getColumns(),
         defaultColumn: {
             cell: EditableCell
         },
@@ -81,7 +90,7 @@ export default ({
         state: {
             rowSelection,
             columnFilters,
-            sorting,
+            sorting
         },
         initialState: {
             columnVisibility: getHiddenState()
@@ -91,6 +100,7 @@ export default ({
         onSortingChange: setSorting,
         onRowSelectionChange: setRowSelection,
         getCoreRowModel: getCoreRowModel(),
+        getExpandedRowModel: getExpandedRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -100,6 +110,7 @@ export default ({
         enableHiding: true,
         enableFilters: canFilter,
         enableExpanding: canExpand,
+        //getRowCanExpand : () => canExpand,
         enableSorting: canSort,
         enableSortingRemoval: true,
         enableMultiSort: true,
