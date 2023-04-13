@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 
 import { Row, Modal, Form, FormGroup, Button } from 'react-bootstrap'
-import { toast } from 'react-toastify'
 
 import { useCustomMutation, useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks'
 
@@ -9,6 +8,7 @@ import OrthancSettingsForms from './OrthancSettingsForms'
 import OrthancInfos from './OrthancInfos'
 import apis from '../../../../services/apis'
 import { keys } from '../../../../model/Constant'
+import { errorMessage, successMessage } from '../../../../tools/toastify'
 
 export default () => {
 
@@ -51,24 +51,22 @@ export default () => {
 
     const testConnexion = () => {
         apis.options.getOrthancSystem().then((answer) => {
-            console.log(answer)
-            toast.success("Delete progress : 0%", { data: { type: 'message' } })
-            //toast.success('Orthanc Version: ' + answer.Version)
-        }).catch(error => { toast.error(error.statusText) })
+            successMessage("Orthanc Version: " + answer.Version)
+        }).catch(error => { errorMessage(error?.response?.data) })
     }
 
     const reset = () => {
         apis.options.resetOrthanc()
-            .then(() => { toast.success('Restart Done') })
-            .catch(error => { toast.error(error.statusText) })
+            .then(() => { successMessage('Restart Done') })
+            .catch(error => { errorMessage(error.response?.data) })
         setShowRestart(false)
     }
 
     const shutdown = () => {
         apis.options.shutdownOrthanc()
-            .then(() => { toast.success('Orthanc Stopped') })
+            .then(() => { successMessage('Orthanc Stopped') })
             .catch((error) => {
-                toast.error(error.statusText)
+                errorMessage(error.response?.data)
             })
         setShowShutdown(false)
     }
@@ -134,7 +132,7 @@ export default () => {
                     <Button className='otjs-button otjs-button-blue w-10 me-2' onClick={() => setShowOrthancDetails(true)}> Orthanc Details </Button>
                     <Button className='otjs-button otjs-button-orange w-10' onClick={() => setShowRestart(true)}> Restart </Button>
                     <Button className='otjs-button otjs-button-red w-10' onClick={() => setShowShutdown(true)} > Shutdown </Button>
-                    
+
                 </Row>
 
             </Form>

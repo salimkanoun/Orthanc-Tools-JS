@@ -30,24 +30,21 @@ const options = {
   },
 
   getOrthancServer() {
-    return axios.get('/api/options/orthanc').then((answer) => answer.data).catch((error) => { console.log(error) ; throw error })
+    return axios.get('/api/options/orthanc').then((answer) => answer.data).catch((error) => { throw error })
   },
 
   getRedisServer() {
-
     return axios.get('/api/options/redis').then((answer) => answer.data
     ).catch(error => { throw error })
 
   },
 
   getOrthancSystem() {
-
     return axios.get('/api/system').then((answer) => answer.data
-    ).catch((error) => { throw error})
+    ).catch((error) => {throw error})
   },
 
   resetOrthanc() {
-
     return axios.post('/api/tools/reset').then((answer) => answer.data
     ).catch((error) => { throw error})
   },
