@@ -80,7 +80,7 @@ export default () => {
 
     return (
         <>
-            <h1 className="card-title">Orthanc Server</h1>
+            <h2 className="card-title">Orthanc Server</h2>
             <Form>
                 <FormGroup>
                     <Modal show={showOrthancDetails} onHide={() => setShowOrthancDetails(false)}>
