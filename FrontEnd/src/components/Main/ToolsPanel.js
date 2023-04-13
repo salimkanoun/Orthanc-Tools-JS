@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 
 import AnonTool from './AnonTool'
 import ExportTool from './ExportTool'
+import NotificationCenter from '../NotificationCenter/NotificationCenter'
 
 
 export default ({roles, apercu}) => {
@@ -26,7 +27,7 @@ export default ({roles, apercu}) => {
     const refAnon = React.createRef()
     const refDelete = React.createRef()
     return (
-        <div className='d-flex justify-content-end'>
+        <div className='d-flex justify-content-end align-items-center'>
             <span className="mr-1" hidden={!roles.anon}>
                 <Link id='anon' ref={refAnon} type="button" className="btn otjs-btn-tools otjs-btn-tools-blue w-12"
                     onMouseOver={apercu ? () => setShow('anon') : null} to='/anonymize'>
@@ -52,6 +53,10 @@ export default ({roles, apercu}) => {
                     Delete <span className="badge bg-light text-dark">{store.deleteList.length}</span>
                 </Link>
             </span>
+            <span>
+                <NotificationCenter />
+            </span>
+            
         </div>
     )
 }

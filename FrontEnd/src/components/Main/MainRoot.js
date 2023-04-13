@@ -25,18 +25,13 @@ const MainRoot = ({ onLogout, username, roles }) => {
 
     return (
         <>
-            <Container>
+            <Container fluid>
                 <Row>
                     <Col xs={"auto"} sm={"auto"}>
                         <NavBar onLogout={onLogout} username={username} roles={roles} />
                     </Col>
 
                     <Col >
-                        <Row >
-                            <div className="d-flex justify-content-end">
-                                <NotificationCenter />
-                            </div>
-                        </Row>
                         <Row>
                             <ToolsPanel roles={roles} apercu />
                         </Row>
