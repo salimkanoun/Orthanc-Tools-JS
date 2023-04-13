@@ -15,8 +15,8 @@ import { Button, Col, Container, Nav, Navbar, Row } from 'react-bootstrap'
  */
 export default () => {
 
-    const GENERAL = 'general'
-    const AETS = 'aets'
+    const GENERAL = 'General'
+    const AETS = 'Aets'
     const PEERS = 'Peers'
     const EXTERNAL_ENDPOINTS = 'External Endpoints'
     const ROBOTS_TASK = 'Robots & Tasks'
@@ -25,6 +25,7 @@ export default () => {
     const USERS = 'Users'
     const LABELS = 'Labels'
 
+    const MENU_ITEMS = [GENERAL, AETS, PEERS, EXTERNAL_ENDPOINTS, ROBOTS_TASK, JOBS, CD_BURNER, USERS, LABELS]
 
     const [selectedOptionMenu, setSelectedOptionMenu] = useState(GENERAL)
 
@@ -56,8 +57,6 @@ export default () => {
                 return ([])
         }
     }
-
-    const MENU_ITEMS = [GENERAL, AETS, PEERS, EXTERNAL_ENDPOINTS, ROBOTS_TASK, JOBS, CD_BURNER, USERS, LABELS]
 
     return (
         <Container fluid>

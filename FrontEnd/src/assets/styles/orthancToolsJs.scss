@@ -14,6 +14,12 @@ $color-orange-active: #BA7E25;
 $color-red: #E1325B;
 $color-red-active: #A02443;
 
+h1 {
+  color: $color-text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
