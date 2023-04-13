@@ -50,7 +50,7 @@ export default ({ data }) => {
             header: "Details",
             cell: ({ row }) => {
                 return (
-                    <div style={{ overflowX: 'auto' }}>
+                    <div style={{ maxWidth:'300px' }}>
                         <pre >
                             {JSON.stringify(row.original.Content, null, 2)}
                         </pre>

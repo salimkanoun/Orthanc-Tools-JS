@@ -16,11 +16,8 @@ export default ({ gotoPage, previousPage, nextPage, canPreviousPage, canNextPage
             <ButtonGroup className='mr-2 select_group'>
                 <InputGroup>
                     <InputGroup.Text>Show</InputGroup.Text>
-
                     <select
                         value={pageSize}
-                        className='form-control'
-                        data-gaelo-front='pagination-show-button'
                         onChange={e => {
                             setPageSize(Number(e.target.value))
                         }}
@@ -35,11 +32,11 @@ export default ({ gotoPage, previousPage, nextPage, canPreviousPage, canNextPage
             </ButtonGroup>
 
             <ButtonGroup>
-                <Button variant='secondary' onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</Button>
-                <Button variant='secondary' onClick={() => previousPage()} disabled={!canPreviousPage}>{'<'}</Button>
+                <Button variant='warning' onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</Button>
+                <Button variant='warning' onClick={() => previousPage()} disabled={!canPreviousPage}>{'<'}</Button>
 
                 <InputGroup>
-                    <InputGroup.Text>Page:{' '}</InputGroup.Text>
+                    <InputGroup.Text>Page: </InputGroup.Text>
 
                     <input
                         type='number'
@@ -53,7 +50,7 @@ export default ({ gotoPage, previousPage, nextPage, canPreviousPage, canNextPage
                         }}
                         style={
                             {
-                                width: '10px',
+                                minWidth: '20px',
                                 //Remove arrows/spinners
                                 WebkitAppearance: 'none',
                                 MozAppearance: 'textfield'
@@ -63,8 +60,8 @@ export default ({ gotoPage, previousPage, nextPage, canPreviousPage, canNextPage
 
                     <InputGroup.Text>of {pageCount}</InputGroup.Text>
                 </InputGroup>
-                <Button variant='secondary' onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</Button>
-                <Button variant='secondary' onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>{'>>'}</Button>
+                <Button variant='warning' onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</Button>
+                <Button variant='warning' onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>{'>>'}</Button>
             </ButtonGroup>
         </div>
     )

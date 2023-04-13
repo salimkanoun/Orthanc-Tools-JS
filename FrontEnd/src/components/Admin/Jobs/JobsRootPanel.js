@@ -16,7 +16,7 @@ export default () => {
         undefined,
         undefined,
         undefined,
-        2000
+        5000
     )
 
     if (isLoadingJobs) return <Spinner/>

@@ -5,25 +5,26 @@ import { toast } from "react-toastify";
 import apis from "../../../services/apis";
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 import ModalDetailsV8 from "./ModalDetailsV8";
+import { errorMessage } from "../../../tools/toastify";
 
 export default ({ rows }) => {
 
     const data = useMemo(() => rows, [rows]);
 
     const onResubmitJob = (jobId) => {
-        apis.jobs.resumbitJob(jobId).catch(error => toast.error(error.statusText, {data:{type:'notification'}}));
+        apis.jobs.resumbitJob(jobId).catch(error => errorMessage(error.response.statusText));
     }
 
     const onResumeJob = (jobId) => {
-        apis.jobs.resumeJob(jobId).catch(error => toast.error(error.statusText, {data:{type:'notification'}}))
+        apis.jobs.resumeJob(jobId).catch(error => errorMessage(error.response.statusText))
     }
 
     const onPauseJob = (jobId) => {
-        apis.jobs.pauseJob(jobId).catch(error => toast.error(error.statusText, {data:{type:'notification'}}))
+        apis.jobs.pauseJob(jobId).catch(error => errorMessage(error.response.statusText))
     }
 
     const onCancelJob = (jobId) => {
-        apis.jobs.cancelJob(jobId).catch(error => toast.error(error.statusText, {data:{type:'notification'}}))
+        apis.jobs.cancelJob(jobId).catch(error => errorMessage(error.response.statusText))
     }
 
     const dropDown = (id) => {
@@ -85,7 +86,7 @@ export default ({ rows }) => {
             accessorKey: 'Actions',
             header: "Actions",
             cell: (({ row }) => {
-                return dropDown(row.original.Content.ID)
+                return dropDown(row.original.ID)
             }),
             enableColumnFilter: false,
         }
@@ -96,8 +97,8 @@ export default ({ rows }) => {
     }
 
     return (
-        <>
-            <CommonTableV8 columns={columnsJobs} data={data} canSort canFilter paginated canSelect canExpand renderSubComponent={renderSubComponent}/>
-        </>
+        <div >
+            <CommonTableV8 columns={columnsJobs} data={data} canSort paginated canExpand renderSubComponent={renderSubComponent}/>
+        </div>
     )
 }
