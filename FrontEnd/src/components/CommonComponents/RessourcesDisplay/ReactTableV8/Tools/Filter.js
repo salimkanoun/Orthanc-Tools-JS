@@ -134,7 +134,6 @@ export default ({
     //Input by default
     return (
         <DebouncedInput
-            data-gaelo-front={'column-filter-' + columnDef.id + '-input'}
             value={columnFilterValue ?? ''}
             onChange={value => column.setFilterValue(value)}
             placeholder="search"

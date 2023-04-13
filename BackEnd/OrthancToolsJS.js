@@ -107,7 +107,7 @@ app.listen(port, (error) => {
     console.log('Listening on port: ' + port)
     if (app.get('env') === 'production') {
       //Autostart monitonring service if needed
-      //autoStartMonitoring()
+      autoStartMonitoring()
     }
   }
 })

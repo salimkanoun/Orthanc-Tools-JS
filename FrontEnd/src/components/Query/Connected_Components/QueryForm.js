@@ -1,47 +1,39 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 
 import AetButton from '../Components/AetButton'
 import apis from '../../../services/apis'
 
 import QueryForms from '../../CommonComponents/SearchForm/Form'
 import { toast } from 'react-toastify'
+import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
+import Spinner from '../../CommonComponents/Spinner'
+import { keys } from '../../../model/Constant'
 
-export default ({onQuery}) => {
+export default ({ onQuery }) => {
 
-  const store = useSelector(state => {
-    return {
-      aets: state.OrthancTools.OrthancAets
-    }
-  })
-
-  const dispatch = useDispatch()
-
-  const componentDidMount = async () => {
+  const { data: aets, isLoading } = useCustomQuery(
+    [keys.AETS_KEY],
+    () => apis.aets.getAets(),
+    undefined
     
-    try {
-      let aets = await apis.aets.getAets()
-      dispatch.loadAvailableAETS(aets)
-    } catch (error) {
-      toast.error(error.statusText, {data:{type:'notification'}})
-    }
-
-  }
+  )
 
   const buildAetButtons = () => {
-    return (store.aets.map((aet, key) =>
+    return (aets.map((aet, key) =>
       <AetButton key={key} aetName={aet} />
     ))
   }
 
-    return (
-      <div>
-        <QueryForms icon="fas fa-question" onFormValidate={(formData, event) => onQuery(formData, event.target.value)} title='Query'>
-          <div>
-            {store.aets !== undefined ? buildAetButtons() : null}
-          </div>
-        </QueryForms> 
-      </div>
-    )
+  if (isLoading) return <Spinner />
+
+  return (
+    <div>
+      <QueryForms icon="fas fa-question" onFormValidate={(formData, event) => onQuery(formData, event.target.value)} title='Query'>
+        <div>
+          {buildAetButtons()}
+        </div>
+      </QueryForms>
+    </div>
+  )
 
 }
