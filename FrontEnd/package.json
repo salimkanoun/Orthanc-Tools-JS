@@ -41,12 +41,13 @@
     "react-tooltip": "^4.2.21",
     "redux": "^4.1.0",
     "redux-thunk": "^2.3.0",
+    "sass": "^1.62.0",
     "streamsaver": "^2.0.5",
     "web-streams-polyfill": "^3.0.3",
     "worker-loader": "^3.0.8"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -65,8 +66,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "node-sass": "^6.0.1"
   }
 }
