@@ -4,7 +4,7 @@ const options = {
 
   setRobotScheduleHour(hour_start, min_start, hour_stop, min_stop) {
 
-    return axios.put('/api/options', { hour_start, min_start, hour_stop, min_stop }).then((answer) => 
+    return axios.put('/api/options', { hour_start, min_start, hour_stop, min_stop }).then((answer) =>
       true
     )
   },
@@ -24,7 +24,7 @@ const options = {
       orthancPassword: password
     }
 
-    return axios.put('/api/options/orthanc', postData).then((answser) => 
+    return axios.put('/api/options/orthanc', postData).then((answser) =>
       true
     )
   },
@@ -41,18 +41,18 @@ const options = {
 
   getOrthancSystem() {
     return axios.get('/api/system').then((answer) => answer.data
-    ).catch((error) => {throw error})
+    ).catch((error) => { throw error })
   },
 
   resetOrthanc() {
     return axios.post('/api/tools/reset').then((answer) => answer.data
-    ).catch((error) => { throw error})
+    ).catch((error) => { throw error })
   },
 
   shutdownOrthanc() {
 
     return axios.post('/api/tools/shutdown').then((answer) => answer.data
-    ).catch((error) => { throw error})
+    ).catch((error) => { throw error })
   },
 
   //return current verbosity in Orthanc log
@@ -63,14 +63,14 @@ const options = {
 
   //set verbosity in Orthanc
   setVerbosity(value) {
-    return axios.put('/api/tools/log-level', value, {headers : {'Content-Type' : 'text/plain'}}).then((answer) => true
+    return axios.put('/api/tools/log-level', value, { headers: { 'Content-Type': 'text/plain' } }).then((answer) => true
     ).catch(error => {
       throw error
-  })
+    })
   },
 
   getPlugins() {
-    return axios.get('/api/plugins').then(response =>  response.data
+    return axios.get('/api/plugins').then(response => response.data
     ).catch(error => {
       throw error
     })
@@ -89,7 +89,7 @@ const options = {
       mode: mode
     }
 
-    return axios.put('/api/changeMode', payload).then(response =>  response.data
+    return axios.put('/api/changeMode', payload).then(response => response.data
     ).catch(error => {
       throw error
     })
@@ -110,7 +110,7 @@ const options = {
 
     }
 
-    return axios.put('/api/monitoring/burning/options', payload).then(response => true
+    return axios.put('/api/monitoring/burning/options', payload).then(() => true
     ).catch(error => {
       throw error
     })
