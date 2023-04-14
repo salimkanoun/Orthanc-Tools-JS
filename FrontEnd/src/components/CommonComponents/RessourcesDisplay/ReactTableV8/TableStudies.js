@@ -7,7 +7,9 @@ export default ({
     additionalColumns = [],
     rowStyle,
     onRowClick,
-    withPatientColums = false
+    withPatientColums = false,
+    selectable = false,
+    onSelect = undefined
 }) => {
 
     const columns = [
@@ -21,6 +23,6 @@ export default ({
     ]
 
     return (
-        <CommonTableV8 id="StudyOrthancID" data={studies} columns={columns.concat(additionalColumns)} rowStyle={rowStyle} onRowClick={onRowClick} />
+        <CommonTableV8 id="StudyOrthancID" data={studies} columns={columns.concat(additionalColumns)} rowStyle={rowStyle} onRowClick={onRowClick} canSelect={selectable} onSelectRow={onSelect} />
     )
 }

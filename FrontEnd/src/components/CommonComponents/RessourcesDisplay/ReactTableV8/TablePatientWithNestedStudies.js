@@ -3,17 +3,22 @@ import { commonColumns, patientColumns } from "./ColomnFactories";
 import CommonTableV8 from "./CommonTableV8";
 import TableStudies from "./TableStudies";
 
+//TODO : gerer deselection
+//gerer selection parent => selection study
 export default ({
     patients,
     additionalColumnsPatients = [],
-    additionalColumnsStudies  = [],
+    additionalColumnsStudies = [],
     onSelectStudies,
+    selectable = false,
+    rowStyle,
     onClickStudy = () => { },
 }) => {
     const [selectedStudies, setSelectedStudies] = useState([])
     const [focusedStudy, setFocusedStudy] = useState(null)
 
     useEffect(() => {
+        console.log(selectedStudies)
         onSelectStudies(selectedStudies)
     }, [selectedStudies])
 
@@ -31,19 +36,20 @@ export default ({
 
     const columnsPatients = columns.concat(additionalColumnsPatients)
 
-    const renderSubComponent = ({row}) => {
+    const renderSubComponent = ({ row }) => {
         let rowId = row.id
         let patient = patients.find((patient) => patient.PatientOrthancID === rowId)
         let studies = Object.values(patient.Studies)
 
         const onSelectStudy = (selectedStudies) => {
-            let selectedStudiesOrthancId = selectedStudies.map((study => {
-                return study.StudyOrthancID
+            let selectedStudiesOrthancId = selectedStudies.map((StudyOrthancID => {
+                console.log(StudyOrthancID)
+                return StudyOrthancID
             }))
             updateselectedIds(selectedStudiesOrthancId)
         }
-        
-        return <TableStudies studies={studies} additionalColumns={additionalColumnsStudies} onRowClick={onClickStudyHandler}/>
+
+        return <TableStudies studies={studies} additionalColumns={additionalColumnsStudies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} selectable={selectable} onSelect={onSelectStudy} />
     }
 
     const updateselectedIds = (newIds) => {
@@ -56,6 +62,6 @@ export default ({
 
     }
 
-    return <CommonTableV8 id={patientColumns.ORTHANC_ID.id} canExpand columns={columnsPatients} data={patients} renderSubComponent={renderSubComponent} />
- 
+    return <CommonTableV8 id={patientColumns.ORTHANC_ID.id} canExpand columns={columnsPatients} data={patients} renderSubComponent={renderSubComponent} canSelect={selectable} />
+
 }

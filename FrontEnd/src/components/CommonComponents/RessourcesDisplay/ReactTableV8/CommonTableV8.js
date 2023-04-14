@@ -29,9 +29,9 @@ export default ({
     paginated = false,
     customRowProps = (row) => { },
     sortBy = [],
-    renderSubComponent = (rowId) => {},
-    onRowClick = () => { }, 
-    rowStyle = () => { }, 
+    renderSubComponent = (rowId) => { },
+    onRowClick = () => { },
+    rowStyle = () => { },
     onSelectRow = (state) => { },
     selectedIds = null,
     onCellEdit = (rowIndex, columnId, value) => { },
@@ -71,18 +71,16 @@ export default ({
 
     const getColumns = () => {
         let newColumns = columns
-        if(canSelect) newColumns.unshift(selectColumn)
-        if(canExpand) newColumns.unshift(expandColumn)
+        if (canSelect) newColumns.unshift(selectColumn)
+        if (canExpand) newColumns.unshift(expandColumn)
         return newColumns
-        
-    }
 
-    console.log(canExpand)
+    }
 
     const table = useReactTable({
         data,
         getRowId: (originalRow, index, parent) => originalRow?.[id] ?? index,
-        columns : getColumns(),
+        columns: getColumns(),
         defaultColumn: {
             cell: EditableCell
         },
