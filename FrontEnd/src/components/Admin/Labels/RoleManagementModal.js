@@ -5,12 +5,6 @@ import RoleSelect from "./RoleSelect";
 
 export default ({ label, username, handlerManageRole }) => {
 
-    const store = useSelector(state => {
-        return {
-            username: state.OrthancTools.username
-        }
-    })
-
     return (
         <Modal
             show={
