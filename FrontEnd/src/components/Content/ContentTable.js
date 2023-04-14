@@ -5,16 +5,19 @@ import { addStudiesToAnonList } from "../../actions/AnonList"
 import { addStudiesToDeleteList } from "../../actions/DeleteList"
 import { addStudiesToExportList } from "../../actions/ExportList"
 import apis from "../../services/apis"
-import TablePatientsWithNestedStudies from "../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudies"
-import TableSeries from "../CommonComponents/RessourcesDisplay/ReactTable/TableSeries"
 import SendToAnonExportDeleteDropdown from "../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown"
 
+import TablePatientWithNestedStudies from "../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudies"
+import TableSeries from "../CommonComponents/RessourcesDisplay/ReactTableV8/TableSeries"
+
 import Series from '../../model/Series'
+import { patientColumns, seriesColumns, studyColumns } from "../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories"
 
 export default ({ patients }) => {
 
     const [series, setSeries] = useState([])
     const [selectedStudies, setSelectedStudies] = useState([])
+    const [currentStudy, setCurrentStudy] = useState('')
 
     const dispatch = useDispatch()
 
@@ -28,9 +31,11 @@ export default ({ patients }) => {
             let rows = seriesObjects.map(series => series.serialize())
             setSeries(rows)
         })
+        setCurrentStudy(StudyOrthancID)
     }
 
     const onSendTo = (type) => {
+        console.log(selectedStudies)
         let studies = []
         patients.forEach((patient) => {
             studies.push(...Object.values(patient.Studies))
@@ -43,21 +48,40 @@ export default ({ patients }) => {
         else if (type === "delete") dispatch(addStudiesToDeleteList(filteredSelectedStudies))
     }
 
+    const additionalColumnsPatients = [
+        patientColumns.ACTION()
+    ]
+
+    const additionalColumnsStudies = [
+        studyColumns.ACTION()
+    ]
+
+    const additionalColumnsSeries = [
+        seriesColumns.ACTION()
+    ]
+
+    const rowStyle = (StudyOrthancID) => {
+        if (StudyOrthancID === currentStudy) return { background: 'peachPuff' }
+    }
+
     return (
 
         <Row>
             <Col sm>
                 <SendToAnonExportDeleteDropdown onSendTo={onSendTo} />
-                <TablePatientsWithNestedStudies
+
+                <TablePatientWithNestedStudies
                     patients={patients}
-                    selectable
                     onClickStudy={onClickStudy}
+                    rowStyle={rowStyle}
+                    selectable
                     onSelectStudies={(studiesSelected) => { setSelectedStudies(studiesSelected) }}
-                    actionButton
+                    additionalColumnsPatients={additionalColumnsPatients}
+                    additionalColumnsStudies={additionalColumnsStudies}
                 />
             </Col>
             <Col sm>
-                <TableSeries series={series} actionButton />
+                <TableSeries series={series} additionalColumns={additionalColumnsSeries} />
             </Col>
 
         </Row>
