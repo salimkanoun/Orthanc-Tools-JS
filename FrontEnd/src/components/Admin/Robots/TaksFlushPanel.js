@@ -1,82 +1,75 @@
-import { useState } from "react"
-import { Modal, Row, Col, Button, Form } from 'react-bootstrap'
+import React from "react"
+import { Row, Col, Button, Form } from 'react-bootstrap'
 
 import apis from '../../../services/apis'
+import { confirm } from "../../CommonComponents/ConfirmGlobal"
+import { useCustomMutation } from "../../CommonComponents/ReactQuery/hooks"
+import { keys } from "../../../model/Constant"
 
 export default () => {
-
-    const [flushType, setFlushType] = useState(null)
 
     const RETRIEVE = 'retrieve'
     const ANONYMIZE = 'anonymize'
     const DELETE = 'delete'
     const EXPORT = 'export'
 
+    const flushRetrieve = useCustomMutation(
+        () => apis.retrieveRobot.flush(),
+        [[keys.ROBOTS_KEY]]
+    )
 
-    const handleClick = (type) => {
-        setFlushType(type)
-    }
+    const flushAnonymize = useCustomMutation(
+        () => apis.anon.flush(),
+        [[keys.ROBOTS_KEY]]
+    )
 
-    const handleConfirm = () => {
-        switch (flushType) {
-            case RETRIEVE:
-                apis.retrieveRobot.flush();
-                break;
-            case ANONYMIZE:
-                apis.anon.flush();
-                break;
-            case DELETE:
-                apis.deleteRobot.flush();
-                break;
-            case EXPORT:
-                apis.exportDicom.flushExternalExport();
-                break;
-            default:
-                break;
+    const flushDelete = useCustomMutation(
+        () => apis.deleteRobot.flush(),
+        [[keys.ROBOTS_KEY]]
+    )
+
+    const flushExport = useCustomMutation(
+        () => apis.exportDicom.flushExternalExport(),
+        [[keys.ROBOTS_KEY]]
+    )
+
+    const clickHandler = async (flushType) => {
+        if (await confirm({ message: 'Warning : there is no check on the flush for the progression of the task. It empties the queues without discrimination' })) {
+            switch (flushType) {
+                case RETRIEVE:
+                    flushRetrieve.mutate();
+                    break;
+                case ANONYMIZE:
+                    flushAnonymize.mutate();
+                    break;
+                case DELETE:
+                    flushDelete.mutate();
+                    break;
+                case EXPORT:
+                    flushExport.mutate();
+                    break;
+                default:
+                    break;
+            }
         }
-        setFlushType(null)
     }
-
-
 
     return (
         <Form>
-            <h2 className="card-title">Flush task</h2>
-
             <Row>
                 <Col>
-                    <Form.Label>Flush anonymisation task : </Form.Label>
-                    <Button className='otjs-button otjs-button-red' onClick={() => handleClick(ANONYMIZE)}> Flush </Button>
+                    <Button variant="danger" onClick={() => clickHandler(ANONYMIZE)}> Flush Anon Tasks </Button>
                 </Col>
                 <Col>
-                    <Form.Label>Flush delete task : </Form.Label>
-                    <Button className='otjs-button otjs-button-red' onClick={() => handleClick(DELETE)}> Flush </Button>
+                    <Button variant="danger" onClick={() => clickHandler(DELETE)}> Flush Delete tasks </Button>
+                </Col>
+                <Col>
+                    <Button variant="danger" onClick={() => clickHandler(EXPORT)}> Flush Export tasks </Button>
+                </Col>
+                <Col>
+                    <Button variant="danger" onClick={() => clickHandler(RETRIEVE)}> Flush Retrieve task </Button>
                 </Col>
             </Row>
-
-            <Row>
-                <Col>
-                    <Form.Label>Flush export task : </Form.Label>
-                    <Button className='otjs-button otjs-button-red' onClick={() => handleClick(EXPORT)}> Flush </Button>
-                </Col>
-                <Col>
-                    <Form.Label>Flush retrieve task : </Form.Label>
-                    <Button className='otjs-button otjs-button-red' onClick={() => handleClick(RETRIEVE)}> Flush </Button>
-                </Col>
-            </Row>
-
-            <Modal show={!!flushType} onHide={() => setFlushType(null)} >
-                <Modal.Header closeButton>
-                    <Modal.Title>Confirm flush</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Warning : there is no check on the flush for the progression of the task. It empties the queues without discrimination
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className='btn btn-info' onClick={() => setFlushType(null)}>Cancel</Button>
-                    <Button className='btn btn-danger' onClick={handleConfirm}>Confirm</Button>
-                </Modal.Footer>
-            </Modal>
         </Form>
     )
 }

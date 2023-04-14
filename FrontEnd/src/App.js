@@ -22,6 +22,7 @@ import './assets/styles/orthancToolsJs.scss'
 import { ToastContainer } from 'react-toastify'
 import { BrowserRouter } from 'react-router-dom'
 import MainRoot from './components/Main/MainRoot'
+import ConfirmGlobal from './components/CommonComponents/ConfirmGlobal'
 
 // Configuring Toastify params that will be used all over the app
 const App = () => {
@@ -46,6 +47,7 @@ const App = () => {
     return (
         <BrowserRouter>
             <QueryClientProvider client={queryClient}>
+                <ConfirmGlobal/>
                 <div >
                     <ToastContainer
                         enableMultiContainer
