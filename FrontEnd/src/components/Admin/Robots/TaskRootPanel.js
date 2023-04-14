@@ -5,21 +5,23 @@ import TaskFlushPanel from './TaksFlushPanel'
 
 export default () => {
 
-    const [currentComponent, setcurrentComponent] = useState('retrieve')
+    const RETRIEVE_TAB = 'retrieve'
+    const FLUSH_TAB = 'flush'
+
+    const [currentComponent, setcurrentComponent] = useState(RETRIEVE_TAB)
 
     let getComponentToDisplay = () => {
         let component = null
         switch (currentComponent) {
-            case 'retrieve':
-                component = <AutoRetrieveRootPanel/>
+            case RETRIEVE_TAB:
+                component = <AutoRetrieveRootPanel />
                 break;
-            case 'flush':
+            case FLUSH_TAB:
                 component = <TaskFlushPanel />
                 break;
             default:
                 break;
         }
-
         return component
     }
 
@@ -29,28 +31,26 @@ export default () => {
 
     return (
         <>
+            <div className='mb-5'>
+                <nav className="otjs-navmenu container-fluid">
+                    <div className="otjs-navmenu-nav">
+                        <li className='col-6 text-center'>
+                            <Button
+                                className={currentComponent === RETRIEVE_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                onClick={() => switchTab(RETRIEVE_TAB)}>Auto Retrieve Robots
+                            </Button>
+                        </li>
+                        <li className='col-6 text-center'>
+                            <Button
+                                className={currentComponent === FLUSH_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                onClick={() => switchTab(FLUSH_TAB)}>Flush Tasks
+                            </Button>
+                        </li>
+                    </div>
+                </nav>
+            </div>
             <div>
-                <div className='mb-5'>
-                    <nav className="otjs-navmenu container-fluid">
-                        <div className="otjs-navmenu-nav">
-                            <li className='col-6 text-center'>
-                                <Button
-                                    className={currentComponent === 'retrieve' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => switchTab('retrieve')}>Auto Retrieve Robots
-                                </Button>
-                            </li>
-                            <li className='col-6 text-center'>
-                                <Button
-                                    className={currentComponent === 'flush' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                    onClick={() => switchTab('flush')}>Flush Tasks
-                                </Button> 
-                            </li>
-                        </div>
-                    </nav>
-                </div>
-                <div>
-                    {getComponentToDisplay()}
-                </div>
+                {getComponentToDisplay()}
             </div>
         </>
     )

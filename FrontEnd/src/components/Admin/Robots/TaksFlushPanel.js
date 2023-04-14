@@ -5,6 +5,7 @@ import apis from '../../../services/apis'
 import { confirm } from "../../CommonComponents/ConfirmGlobal"
 import { useCustomMutation } from "../../CommonComponents/ReactQuery/hooks"
 import { keys } from "../../../model/Constant"
+import { successMessage } from "../../../tools/toastify"
 
 export default () => {
 
@@ -15,22 +16,26 @@ export default () => {
 
     const flushRetrieve = useCustomMutation(
         () => apis.retrieveRobot.flush(),
-        [[keys.ROBOTS_KEY]]
+        [[keys.ROBOTS_KEY]],
+        () =>  successMessage('Flushed')
     )
 
     const flushAnonymize = useCustomMutation(
         () => apis.anon.flush(),
-        [[keys.ROBOTS_KEY]]
+        [[keys.ROBOTS_KEY]],
+        () =>  successMessage('Flushed')
     )
 
     const flushDelete = useCustomMutation(
         () => apis.deleteRobot.flush(),
-        [[keys.ROBOTS_KEY]]
+        [[keys.ROBOTS_KEY]],
+        () =>  successMessage('Flushed')
     )
 
     const flushExport = useCustomMutation(
         () => apis.exportDicom.flushExternalExport(),
-        [[keys.ROBOTS_KEY]]
+        [[keys.ROBOTS_KEY]],
+        () =>  successMessage('Flushed')
     )
 
     const clickHandler = async (flushType) => {
