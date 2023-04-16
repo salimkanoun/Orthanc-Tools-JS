@@ -15,10 +15,7 @@ import { errorMessage, successMessage } from "../../../../tools/toastify";
 
 export default () => {
 
-    const [name, setName] = useState('')
-    const [showDelete, setShowDelete] = useState(false)
     const [modifyRole, setModifyRole] = useState(null)
-
 
     const { data: roles, isLoading: isLoadingRoles, refetch: refetchRole } = useCustomQuery(
         [keys.ROLES_KEY],
@@ -32,11 +29,6 @@ export default () => {
         () => successMessage('Role Deleted'),
         (error) => errorMessage(error?.errorMessage ?? "Failed")
     )
-
-    const handleDelete = (name) => {
-        setName(name)
-        setShowDelete(true)
-    }
 
     const onDeleteRole = async (roleName) => {
         if (await confirm({ title : "Delete Role" , message: "Delete Role " + roleName + " ?" })) {
@@ -63,7 +55,6 @@ export default () => {
                     <RoleTable roles={roles} onOpenModify={(name) => setModifyRole(name)} onDelete={onDeleteRole} />
                 </Col>
             </Row>
-
 
             <Modal id='modify' show={modifyRole != null} onHide={() => setModifyRole(null)}>
                 <Modal.Header closeButton>
