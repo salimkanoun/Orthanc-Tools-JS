@@ -50,7 +50,6 @@ export default ({ labelName }) => {
         if(metadata.action ==="select-option"){
             createRoleLabel.mutate({labelName : labelName, roleName : metadata.option.value})
         }
-
     }
 
     const choiceStyle = {

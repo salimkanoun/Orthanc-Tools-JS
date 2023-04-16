@@ -84,7 +84,7 @@ const exportLocalMidelware = async function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
   }
-  else if (req.roles.export_local) {
+  else if (req.roles.exportLocal) {
     next()
   } else {
     res.sendStatus(403);
@@ -95,7 +95,7 @@ const exportRemoteMidelware = async function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
   }
-  else if (req.roles.export_remote) {
+  else if (req.roles.exportRemote) {
     next()
   } else {
     res.sendStatus(403);
@@ -117,7 +117,7 @@ const autoQueryMidelware = async function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
   }
-  else if (req.roles.auto_query) {
+  else if (req.roles.autoQuery) {
     next()
   } else {
     res.sendStatus(403);
@@ -151,7 +151,7 @@ const cdBurnerMidelware = async function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
   }
-  else if (req.roles.cd_burner) {
+  else if (req.roles.cdBurner) {
     next()
   } else {
     res.sendStatus(403);
