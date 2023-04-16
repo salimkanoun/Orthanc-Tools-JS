@@ -21,7 +21,7 @@ export default () => {
     return (
         <Modal show={open} onHide={() => setOpen(false)}>
             <Modal.Header closeButton>
-                <Modal.Title></Modal.Title>
+                <Modal.Title>{props.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {props.message}

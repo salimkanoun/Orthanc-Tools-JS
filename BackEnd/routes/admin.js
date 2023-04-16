@@ -104,9 +104,9 @@ adminRouter.get('/plugins', [userAuthMidelware, userAdminMidelware], reverseProx
 //roles
 adminRouter.get('/roles', [userAuthMidelware, userAdminMidelware], getRoles)
 adminRouter.get('/roles/:name', [userAuthMidelware, userAdminMidelware], getPermission)
-adminRouter.put('/roles', [userAuthMidelware, userAdminMidelware], modifyRole)
+adminRouter.put('/roles/:name', [userAuthMidelware, userAdminMidelware], modifyRole)
 adminRouter.post('/roles', [userAuthMidelware, userAdminMidelware], createRole)
-adminRouter.delete('/roles', [userAuthMidelware, userAdminMidelware], deleteRole)
+adminRouter.delete('/roles/:name', [userAuthMidelware, userAdminMidelware], deleteRole)
 
 //Mode
 //SK A EXPLICITER C EST AUTHENTICATION MODE

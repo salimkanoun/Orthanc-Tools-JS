@@ -8,13 +8,12 @@ const createRole = async function (req, res) {
 
 const modifyRole = async function (req, res) {
     const body = req.body
-    await Roles.modifyRoles(body.name, body)
+    await Roles.modifyRoles(req.params.name, body)
     res.sendStatus(200)
 }
 
 const deleteRole = async function (req, res) {
-    const body = req.body
-    await Roles.deleteRole(body.name)
+    await Roles.deleteRole(req.params.name)
     res.sendStatus(200)
 }
 

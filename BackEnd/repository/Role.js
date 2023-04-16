@@ -1,19 +1,19 @@
 const db = require('../database/models')
-const {OTJSDBEntityNotFoundException} = require('../Exceptions/OTJSErrors')
+const { OTJSDBEntityNotFoundException } = require('../Exceptions/OTJSErrors')
 
-class Role{
+class Role {
 
-  static async getRole(name){
+  static async getRole(name) {
     return db.Role.findOne({
-      where:{name:name}
+      where: { name: name }
     })
   }
 
-  static async getAllRole(){
-    return db.Role.findAll().catch((error)=> {throw error})
+  static async getAllRole() {
+    return db.Role.findAll().catch((error) => { throw error })
   }
 
-  static async create(name,importR,content,anon,exportLocal,exportExtern,query,autoQuery,deleteR,modify,cd_burner,autorouting,admin){
+  static async create(name, importR, content, anon, exportLocal, exportExtern, query, autoQuery, deleteR, modify, cd_burner, autorouting, admin) {
     return db.Role.create({
       name: name,
       import: importR,
@@ -26,31 +26,31 @@ class Role{
       delete: deleteR,
       modify: modify,
       cd_burner: cd_burner,
-      autorouting:autorouting,
+      autorouting: autorouting,
       admin: admin
     })
   }
 
-  static async getRoleByName(name){
-    return db.Role.findAll({where:{name:name}})
+  static async getRoleByName(name) {
+    return db.Role.findOne({ where: { name: name } })
   }
 
-  static async delete(name){
+  static async delete(name) {
     const role = await Role.getRole(name)
-    if(role==null){
+    if (role == null) {
       throw new OTJSDBEntityNotFoundException('This role doesn\'t exist')
     }
-    return db.Role.destroy({where:{name:name}})
+    return db.Role.destroy({ where: { name: name } })
   }
 
   //voir pour faire avec un getEntity, modification de l'entity puis .save()
-  static async update(name,importR,content,anon,exportLocal,exportExtern,query,autoQuery,deleteR,modify,cd_burner,autorouting,admin){
-    
+  static async update(name, importR, content, anon, exportLocal, exportExtern, query, autoQuery, deleteR, modify, cd_burner, autorouting, admin) {
+
     const role = await Role.getRole(name)
-    if(role==null){
+    if (role == null) {
       throw new OTJSDBEntityNotFoundException('This role doesn\'t exist')
     }
-    
+
     role.import = importR
     role.content = content
     role.anon = anon
@@ -69,4 +69,4 @@ class Role{
 
 }
 
-module.exports=Role
+module.exports = Role

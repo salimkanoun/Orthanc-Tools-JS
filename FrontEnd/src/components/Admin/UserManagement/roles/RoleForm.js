@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Toggle from 'react-toggle'
 import { Row, Col, Button } from 'react-bootstrap'
 
@@ -20,24 +20,23 @@ export default ({ data, onSubmitRole }) => {
     })
 
     useEffect(() => {
-        console.log(data)
         if (data != null) {
             setState({
-                ['import'] : data.import,
-                ['content'] : data.content,
-                ['anon'] : data.anon , 
-                ['export_local'] : data.export_local , 
-                ['export_extern'] : data.export_extern , 
-                ['query'] : data.query , 
-                ['auto_query'] : data.auto_query , 
-                ['delete'] : data.delete , 
-                ['admin'] : data.admin , 
-                ['modify'] : data.modify , 
-                ['cd_burner'] : data.cd_burner , 
-                ['autorouting'] : data.autorouting , 
+                import: data.import,
+                content: data.content,
+                anon: data.anon,
+                export_local: data.export_local,
+                export_extern: data.export_extern,
+                query: data.query,
+                auto_query: data.auto_query,
+                delete: data.delete,
+                admin: data.admin,
+                modify: data.modify,
+                cd_burner: data.cd_burner,
+                autorouting: data.autorouting
             })
         }
-    }, [data])
+    }, [JSON.stringify(data)])
 
 
     const onChange = (key, event) => {
@@ -153,7 +152,6 @@ export default ({ data, onSubmitRole }) => {
                     <Button name='create' className='otjs-button otjs-button-blue' onClick={() => { onSubmitRole(state) }}> Validate </Button>
                 </Col>
             </Row>
-
         </Fragment>
     );
 }

@@ -4,28 +4,33 @@ import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTabl
 import ModifyRole from "./ModifyRole";
 
 
-export default ({ roles, onDelete }) => {
+export default ({ roles, onDelete, onOpenModify }) => {
     const data = useMemo(() => roles, [roles]);
     const columns = [
         {
-            id : "name",
+            id: "name",
             accessorKey: 'name',
             header: 'Name',
         }, {
-            id : 'id',
+            id: 'id',
             accessorKey: 'edit',
             header: 'Edit',
             cell: ({ row }) => {
-                return <ModifyRole name={row.name} />
+                return (
+                    <div className="text-center">
+                        <Button className='otjs-button otjs-button-orange' onClick={() => onOpenModify(row.original.name)}>Edit</Button>
+                    </div>
+
+                )
             }
         }, {
-            id : 'delete',
+            id: 'delete',
             accessorKey: 'delete',
             header: 'Delete',
             cell: ({ row }) => {
                 return (<div className="text-center">
                     <Button className='otjs-button otjs-button-red' name='openDelete'
-                        onClick={() => onDelete(row.values.name)}>Delete</Button>
+                        onClick={() => onDelete(row.original.name)}>Delete</Button>
                 </div>)
             }
         }

@@ -1,26 +1,36 @@
 import React, { Fragment, useState } from "react"
-import { Row, Col, Modal, Button } from 'react-bootstrap';
-import { toast } from "react-toastify";
-import { keys } from "../../../../model/Constant";
-import apis from "../../../../services/apis";
-import { useCustomQuery } from "../../../CommonComponents/ReactQuery/hooks";
-import Spinner from "../../../CommonComponents/Spinner";
+
+import { Row, Col, Modal } from 'react-bootstrap';
+
 import CreateRole from "./CreateRole";
 import RoleTable from "./RoleTable";
+import ModifyRole from "./ModifyRole";
+import Spinner from "../../../CommonComponents/Spinner";
+import { confirm } from "../../../CommonComponents/ConfirmGlobal";
 
-
-
+import { useCustomMutation, useCustomQuery } from "../../../CommonComponents/ReactQuery/hooks";
+import { keys } from "../../../../model/Constant";
+import apis from "../../../../services/apis";
+import { errorMessage, successMessage } from "../../../../tools/toastify";
 
 export default () => {
 
     const [name, setName] = useState('')
     const [showDelete, setShowDelete] = useState(false)
+    const [modifyRole, setModifyRole] = useState(null)
 
 
-    const { data: roles, isLoading : isLoadingRoles, refetch : refetchRole } = useCustomQuery(
+    const { data: roles, isLoading: isLoadingRoles, refetch: refetchRole } = useCustomQuery(
         [keys.ROLES_KEY],
         () => apis.role.getRoles(),
         undefined,
+    )
+
+    const deleteRole = useCustomMutation(
+        ({ roleName }) => apis.role.deleteRole(roleName),
+        [[keys.ROLES_KEY]],
+        () => successMessage('Role Deleted'),
+        (error) => errorMessage(error?.errorMessage ?? "Failed")
     )
 
     const handleDelete = (name) => {
@@ -28,20 +38,13 @@ export default () => {
         setShowDelete(true)
     }
 
-    const deletes = () => {
-        apis.role.deleteRole(name).then(() => {
-            toast.success('Deleted', {data:{type:'notification'}})
-            onHide()
-        }).catch(error => toast.error(error.statusText, {data:{type:'notification'}}))
+    const onDeleteRole = async (roleName) => {
+        if (await confirm({ title : "Delete Role" , message: "Delete Role " + roleName + " ?" })) {
+            deleteRole.mutate({ roleName })
+        }
     }
 
-    const onHide = () => {
-        setName('')
-        setShowDelete(false)
-        refetchRole()
-    }
-    
-    if (isLoadingRoles) return <Spinner/>
+    if (isLoadingRoles) return <Spinner />
 
     return (
         <Fragment>
@@ -57,32 +60,18 @@ export default () => {
             </Row>
             <Row className="mt-3">
                 <Col>
-                    <RoleTable roles={roles} onDelete={handleDelete} />
+                    <RoleTable roles={roles} onOpenModify={(name) => setModifyRole(name)} onDelete={onDeleteRole} />
                 </Col>
             </Row>
 
 
-            <Modal id='delete' show={showDelete} onHide={() => setShowDelete(false)}
-                size='sm'>
+            <Modal id='modify' show={modifyRole != null} onHide={() => setModifyRole(null)}>
                 <Modal.Header closeButton>
-                    <h2 className='card-title'>Delete Role</h2>
+                    <h2 className='card-title'>Modify role {modifyRole}</h2>
                 </Modal.Header>
-                <Modal.Body className="text-center">
-                    Are You sure to delete {name} ?
+                <Modal.Body>
+                    <ModifyRole roleName={modifyRole} onClose={() => setModifyRole(null)} />
                 </Modal.Body>
-                <Modal.Footer className="text-center">
-                    <Row>
-                        <Col>
-                            <Button className='otjs-button otjs-button-blue'
-                                onClick={() => setShowDelete(false)}>Close
-                            </Button>
-                        </Col>
-                        <Col>
-                            <Button name='delete' className='otjs-button otjs-button-red' onClick={deletes}>Delete
-                            </Button>
-                        </Col>
-                    </Row>
-                </Modal.Footer>
             </Modal>
         </Fragment>
     )

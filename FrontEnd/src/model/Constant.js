@@ -21,7 +21,8 @@ const keys = {
     OPTIONS_ASSOCIED_ROLE_KEY : 'optionsAssociedRole',
     ASSOCIATIONS_KEY : 'associations',
     OPTIONS_KEY : 'options',
-    TIME : 'time'
+    TIME : 'time',
+    ROLE : 'role'
 }
 
 const filter = {
