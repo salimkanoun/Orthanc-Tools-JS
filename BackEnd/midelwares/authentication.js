@@ -95,7 +95,7 @@ const exportRemoteMidelware = async function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
   }
-  else if (req.roles.export_extern) {
+  else if (req.roles.export_remote) {
     next()
   } else {
     res.sendStatus(403);
