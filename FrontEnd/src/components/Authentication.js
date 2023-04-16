@@ -4,7 +4,7 @@ import jwt_decode from "jwt-decode";
 import apis from '../services/apis'
 import { CSSTransition } from "react-transition-group";
 
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 import HelpIcon from '@mui/icons-material/Info';
 import { toast } from 'react-toastify'
 import { Button } from 'react-bootstrap';

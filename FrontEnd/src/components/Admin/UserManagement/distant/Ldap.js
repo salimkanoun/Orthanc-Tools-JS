@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react"
 import Toggle from 'react-toggle'
 import Select from 'react-select'
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 import HelpIcon from '@mui/icons-material/HelpSharp';
 import { toast } from "react-toastify";
 import { Col, Row } from 'react-bootstrap'
