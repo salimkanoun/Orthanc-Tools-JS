@@ -1,33 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { Button, Form, FormControl, InputGroup, Modal } from "react-bootstrap";
+
+import Spinner from "../../CommonComponents/Spinner";
 import LabelsTable from "./LabelsTable";
-import apis from "../../../services/apis";
-import { Button, Form, FormControl, InputGroup } from "react-bootstrap";
-import RoleManagementModal from "./RoleManagementModal";
+
 import { useCustomMutation, useCustomQuery } from "../../CommonComponents/ReactQuery/hooks";
 import { keys } from "../../../model/Constant";
-import Spinner from "../../CommonComponents/Spinner";
+import apis from "../../../services/apis";
 
 export default () => {
 
     const [roleManagement, setRoleManagement] = useState(null)
-    const [search, setSearch] = useState('')
+
     const [createLabel, setCreateLabel] = useState('')
 
-    const { data: filteredLabel, isLoading } = useCustomQuery(
+    const { data: labels, isLoading } = useCustomQuery(
         [keys.LABELS_KEY],
-        () => apis.label.getAllLabels(),
-        undefined,
-        (answer) => {
-            return answer.filter(label => label.label_name.includes(search))
-        }
+        () => apis.label.getAllLabels()
     )
 
     const handleManageRole = (label) => {
         setRoleManagement(label);
-    }
-
-    const handleSearch = (event) => {
-        setSearch(event.target.value)
     }
 
     const createLabels = useCustomMutation(
@@ -48,12 +41,24 @@ export default () => {
         setCreateLabel(event.target.value)
     }
 
-    if (isLoading) return <Spinner/>
+    if (isLoading) return <Spinner />
 
+    console.log(labels)
     return (
         <>
             <h2 className="card-title">Labels</h2>
-
+            <Modal
+                show={roleManagement != null}
+                onHide={() => setRoleManagement(null)}
+                backdrop="static"
+                keyboard={true}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>{`${roleManagement} label roles  `}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                </Modal.Body>
+            </Modal>
             <Form onSubmitCapture={handleCreateSubmit} className="mt-4">
                 <InputGroup>
                     <InputGroup.Text>New</InputGroup.Text>
@@ -62,16 +67,7 @@ export default () => {
                     <Button variant={"outline-primary"} type={"submit"}> + </Button>
                 </InputGroup>
             </Form>
-            <RoleManagementModal label={roleManagement} handlerManageRole={handleManageRole} />
-
-
-            <InputGroup className="mt-4">
-                <InputGroup.Text>Search</InputGroup.Text>
-                <FormControl placeholder={"label"} type={'text'} onChange={handleSearch}
-                    value={search} />
-                <InputGroup.Text>{filteredLabel.length}</InputGroup.Text>
-            </InputGroup>
-            <LabelsTable labels={filteredLabel} handlerManageRole={handleManageRole} />
+            <LabelsTable labels={labels} handlerManageRole={handleManageRole} />
         </>
     )
 }
