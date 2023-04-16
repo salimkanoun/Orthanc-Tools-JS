@@ -7,6 +7,7 @@ import LabelsTable from "./LabelsTable";
 import { useCustomMutation, useCustomQuery } from "../../CommonComponents/ReactQuery/hooks";
 import { keys } from "../../../model/Constant";
 import apis from "../../../services/apis";
+import RoleSelect from "./RoleSelect";
 
 export default () => {
 
@@ -24,17 +25,15 @@ export default () => {
     }
 
     const createLabels = useCustomMutation(
-        ({ createLabel }) => {
-            apis.label.createLabels(createLabel)
-            setCreateLabel('')
-        },
-        [[keys.LABELS_KEY]]
+        ({ name }) => apis.label.createLabels(name),
+        [[keys.LABELS_KEY]],
+        () => setCreateLabel('')
     )
 
     const handleCreateSubmit = (event) => {
         event.preventDefault();
         if (createLabel.length < 1) return;
-        createLabels.mutate(createLabel)
+        createLabels.mutate({ name: createLabel })
     }
 
     const handleCreateInput = (event) => {
@@ -57,6 +56,7 @@ export default () => {
                     <Modal.Title>{`${roleManagement} label roles  `}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <RoleSelect />
                 </Modal.Body>
             </Modal>
             <Form onSubmitCapture={handleCreateSubmit} className="mt-4">

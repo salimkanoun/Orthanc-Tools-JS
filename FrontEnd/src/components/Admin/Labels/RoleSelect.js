@@ -1,31 +1,18 @@
 import Select from 'react-select';
 import { useEffect, useState } from 'react';
 import apis from "../../../services/apis";
+import SelectRoles from '../UserManagement/SelectRoles';
+import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
+import { keys } from '../../../model/Constant';
 
-export default ({ labelProps, username }) => {
+export default ({ labelName, username }) => {
 
     const [selected, setSelected] = useState([])
-    const [label, setLabel] = useState(labelProps)
     const [options, setOptions] = useState([])
 
-    useEffect(() => {
-        const getRoles = async () => {await apis.role.getRoles()}
-        let roles = getRoles()
-        for (var i = 0; i < roles.length; i++) {
-            roles[i].value = roles[i].name
-            roles[i].label = roles[i].value
-        }
-
-        const getLabelRoles = async () => {await apis.rolelabel.getLabelRoles(label)}
-        let selectedRoles = getLabelRoles()
-        for (var j = 0; j < selectedRoles.length; j++) {
-            selectedRoles[j].value = selectedRoles[j].role_name
-            selectedRoles[j].label = selectedRoles[j].value
-        }
-        setOptions(roles)
-        setSelected(selectedRoles)
-    }, []);
-
+    const { data: labelRole } = useCustomQuery([keys.LABELS_KEY, labelName],
+        () => apis.rolelabel.getLabelRoles(labelName)
+    )
 
     const handleOnChange = async (value) => {
 
@@ -37,8 +24,8 @@ export default ({ labelProps, username }) => {
                     difference.push(selected[i])
                 }
             }
-            console.log('removed role: ', difference[0].value, ' | to label: ', label)
-            await apis.rolelabel.deleteRoleLabel(username, difference[0].value, label)
+            console.log('removed role: ', difference[0].value, ' | to label: ', labelName)
+            await apis.rolelabel.deleteRoleLabel(username, difference[0].value, labelName)
         }
         else if (value.length > selected.length) {
             for (let i = 0; i < value.length; i++) {
@@ -46,8 +33,8 @@ export default ({ labelProps, username }) => {
                     difference.push(value[i])
                 }
             }
-            console.log('added role:', difference[0].value, ' | to label: ', label)
-            await apis.rolelabel.createRoleLabel(username, difference[0].value, label)
+            console.log('added role:', difference[0].value, ' | to label: ', labelName)
+            await apis.rolelabel.createRoleLabel(username, difference[0].value, labelName)
         } else {
             console.error('Selector Change Error : Selected Values didn\'t change')
         }
@@ -71,6 +58,7 @@ export default ({ labelProps, username }) => {
 
     return (
         <div>
+            <SelectRoles />
             <Select
                 closeMenuOnSelect={false}
                 isMulti
