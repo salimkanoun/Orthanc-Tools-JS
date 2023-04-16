@@ -5,9 +5,9 @@ import apis from '../../../services/apis'
 import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 import Spinner from '../../CommonComponents/Spinner'
 
-export default ({ onChange }) => {
+export default ({ onChange, value }) => {
 
-    const {data : optionRoles, isLoading} = useCustomQuery(
+    const { data: optionRoles, isLoading } = useCustomQuery(
         [keys.ROLES_KEY],
         () => apis.role.getRoles(),
         undefined,
@@ -21,10 +21,10 @@ export default ({ onChange }) => {
         }
     )
 
-    if (isLoading) return <Spinner/>
-    
+    if (isLoading) return <Spinner />
+
     return (
-        <Select single options={optionRoles} onChange={onChange} />
+        <Select value={optionRoles.find((option) => option.value === value)} single options={optionRoles} onChange={onChange} />
     )
 
 }

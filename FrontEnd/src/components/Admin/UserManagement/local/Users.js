@@ -17,26 +17,20 @@ export default () => {
 
     const createUserMutation = useCustomMutation(
         ({ username, firstname, lastname, password, email, role, superAdmin }) => {
-            apis.User.createUser(username, firstname, lastname, password, email, role, superAdmin)
-            showCreate(false)
+            return apis.User.createUser(username, firstname, lastname, password, email, role, superAdmin)
         },
         [[keys.USERS_KEY]],
-        () => successMessage('Created'),
-        (error) => errorMessage(error?.errorMessage ?? 'Failed')
+        () => {
+            successMessage('Created');
+            setShowCreate(false)
+        },
+        (error) => errorMessage(error?.data?.errorMessage ?? 'Failed')
     )
 
     const { data: users, isLoading: isLoadingUsers } = useCustomQuery(
         [keys.USERS_KEY],
         () => apis.User.getUsers(),
-        undefined,
-        (answer) => {
-            return answer.map((user) => {
-                return ({
-                    ...user,
-                    password: ''
-                })
-            })
-        }
+        undefined
     )
 
     const { data: roles, isLoading: isLoadingRoles } = useCustomQuery(
@@ -49,8 +43,13 @@ export default () => {
     )
 
     const modifyMutation = useCustomMutation(
-        (username, firstname, lastname, email, role, password, superAdmin) => apis.User.modifyUser(username, firstname, lastname, email, role, password, superAdmin),
-        [[keys.USERS_KEY]]
+        ({ username, firstname, lastname, email, role, password, superAdmin }) => apis.User.modifyUser(username, firstname, lastname, email, role, password, superAdmin),
+        [[keys.USERS_KEY]],
+        () => {
+            successMessage('Updated')
+            setEditUser(null)
+        },
+        (error) => errorMessage(error?.data?.errorMessage)
     )
 
     const checkUserData = (userData) => {
@@ -63,15 +62,15 @@ export default () => {
         return true
     }
 
-    const createUser = async (userData) => {
+    const createUser = (userData) => {
         if (checkUserData(userData)) {
-            createUserMutation.mutate(userData.username, userData.firstname, userData.lastname, userData.password, userData.email, userData.role, userData.superAdmin)
+            createUserMutation.mutate(userData)
         }
     }
 
-    const modifyUser = async (userData) => {
+    const modifyUser = (userData) => {
         if (checkUserData(userData)) {
-            modifyMutation.mutate(userData.username, userData.firstname, userData.lastname, userData.password, userData.email, userData.role, userData.superAdmin)
+            modifyMutation.mutate(userData)
         }
     }
 

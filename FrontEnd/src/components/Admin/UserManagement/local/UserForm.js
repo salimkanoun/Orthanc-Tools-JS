@@ -68,13 +68,13 @@ export default ({ data = {}, children, onValidate }) => {
             <Row>
                 <FormGroup>
                     <Form.Label>Super Admin</Form.Label>
-                    <Form.Check Check={state.superAdmin} onChange={(event) => onChange('superAdmin', event.target.value)} />
+                    <Form.Check checked={state.superAdmin} onChange={(event) => onChange('superAdmin', event.target.checked)} />
                 </FormGroup>
             </Row>
             <Row>
                 <FormGroup>
                     <Form.Label>Roles*</Form.Label>
-                    <SelectRoles onChange={onRolesChange} />
+                    <SelectRoles value={role} onChange={onRolesChange} />
                 </FormGroup>
             </Row>
             <Row>

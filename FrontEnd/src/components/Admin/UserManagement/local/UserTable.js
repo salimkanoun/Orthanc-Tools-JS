@@ -42,7 +42,10 @@ export default ({ users, onEditClick }) => {
         {
             id: 'superAdmin',
             accessorKey: 'superAdmin',
-            header: "Super Admin"
+            header: "Super Admin",
+            cell : ({getValue}) => (
+                <input type="checkbox" disabled={true} checked={getValue()} />
+            )
         },
         {
             id: 'edit',
@@ -59,7 +62,7 @@ export default ({ users, onEditClick }) => {
             header: "Delete",
             cell: ({ row }) => (
                 <Button name='delete' className='otjs-button otjs-button-red'
-                    onClick={() => deleteUser(row.original.username)}>Delete</Button>
+                    onClick={() => deleteUser.mutate({username : row.original.username})}>Delete</Button>
             )
         }
     ];
