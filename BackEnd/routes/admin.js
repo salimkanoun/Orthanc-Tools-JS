@@ -165,11 +165,11 @@ adminRouter.post('/labels/:name', [userAuthMidelware, userAdminMidelware], creat
 adminRouter.delete('/labels/:name', [userAuthMidelware, userAdminMidelware], deleteLabel)
 
 //RoleLabel
-adminRouter.get('/users/labels', [userAuthMidelware,userAdminMidelware], getAllRolesLabels)
-adminRouter.get('/users/labels/:label', [userAuthMidelware,roleAccessLabelMidelware], getLabelRoles)
-adminRouter.get('/users/:name/roles/:role_name/labels', [userAuthMidelware], getRoleLabels)
-adminRouter.post('/users/:name/labels/:name', [userAuthMidelware, userAdminMidelware], createRoleLabel)
-adminRouter.delete('/users/:name/labels/:name', [userAuthMidelware, userAdminMidelware], deleteRoleLabel)
+adminRouter.get('/labels/roles', [userAuthMidelware,userAdminMidelware], getAllRolesLabels)
+adminRouter.get('/labels/:label/roles', [userAuthMidelware,userAdminMidelware], getLabelRoles)
+adminRouter.get('/roles/:name/labels', [userAuthMidelware], getRoleLabels)
+adminRouter.post('/labels/:name/roles', [userAuthMidelware, userAdminMidelware], createRoleLabel)
+adminRouter.delete('/labels/:name/roles', [userAuthMidelware, userAdminMidelware], deleteRoleLabel)
 
 //StudyLabel
 adminRouter.get('/studies/labels', [userAuthMidelware,userAdminMidelware], getStudiesLabels)

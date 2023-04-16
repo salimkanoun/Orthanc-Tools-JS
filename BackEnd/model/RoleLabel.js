@@ -10,8 +10,6 @@ class RoleLabel {
      */
     static async createRoleLabel(roleName, labelName) {
         const RoleLabel = await RoleLabelRepo.getRoleLabel(roleName, labelName)
-
-
         if (RoleLabel) {
             throw new OTJSConflictException('This association RoleLabel already exist');
         }

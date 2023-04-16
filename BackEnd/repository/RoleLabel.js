@@ -36,8 +36,8 @@ class RoleLabel {
     }
 
     static delete(roleName, labelName) {
-        const user_label = RoleLabel.getRoleLabel(roleName, labelName)
-        if (user_label == null) {
+        const roleLabel = RoleLabel.getRoleLabel(roleName, labelName)
+        if (roleLabel == null) {
             throw new OTJSDBEntityNotFoundException('This RoleLabel doesn\'t exist')
         }
 

@@ -21,7 +21,6 @@ import { Row, Col, Container } from 'react-bootstrap';
 import ToolsPanel from './ToolsPanel';
 
 const MainRoot = ({ onLogout, username, roles }) => {
-    console.log(roles)
 
     return (
         <>

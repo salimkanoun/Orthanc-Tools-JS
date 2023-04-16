@@ -7,13 +7,16 @@ import { useCustomMutation } from "../../CommonComponents/ReactQuery/hooks";
 
 import { keys } from "../../../model/Constant";
 import apis from "../../../services/apis";
+import { errorMessage, successMessage } from "../../../tools/toastify";
 
 
 export default ({ labels = [], handlerManageRole }) => {
 
     const deleteLabels = useCustomMutation(
         ({ name }) => apis.label.deleteLabels(name),
-        [[keys.LABELS_KEY]]
+        [[keys.LABELS_KEY]],
+        () => successMessage('Deleted'),
+        () => errorMessage('Failed, remove all roles before label deletion')
     )
 
     const columns = useMemo(() => [

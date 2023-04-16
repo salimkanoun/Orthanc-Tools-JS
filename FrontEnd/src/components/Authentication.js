@@ -40,7 +40,6 @@ export default class Authentication extends Component {
         errorMessage: token.errorMessage
       })
     } else {
-      console.log(token)
       this.props.onLogin(token, decoded)
     }
 

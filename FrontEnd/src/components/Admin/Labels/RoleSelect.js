@@ -1,44 +1,56 @@
 import Select from 'react-select';
-import { useEffect, useState } from 'react';
+import Spinner from '../../CommonComponents/Spinner';
+
 import apis from "../../../services/apis";
-import SelectRoles from '../UserManagement/SelectRoles';
-import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
+import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
+import { errorMessage, successMessage } from '../../../tools/toastify';
 import { keys } from '../../../model/Constant';
 
-export default ({ labelName, username }) => {
+export default ({ labelName }) => {
 
-    const [selected, setSelected] = useState([])
-    const [options, setOptions] = useState([])
-
-    const { data: labelRole } = useCustomQuery([keys.LABELS_KEY, labelName],
-        () => apis.rolelabel.getLabelRoles(labelName)
+    const { data: optionRoles, isLoading: isLoadingAllRoles } = useCustomQuery(
+        [keys.ROLES_KEY],
+        () => apis.role.getRoles(),
+        undefined,
+        (answer) => {
+            return answer.map((role) => {
+                return ({
+                    value: role.name,
+                    label: role.name
+                })
+            })
+        }
     )
 
-    const handleOnChange = async (value) => {
+    const { data: labelRoleOptions, isLoading: isLoadingRoles } = useCustomQuery(
+        [keys.LABELS_KEY, labelName],
+        () => apis.rolelabel.getLabelRoles(labelName),
+        undefined,
+        (data) => data.map(role => ({ label: role, value: role }))
+    )
 
-        var selected = selected
-        var difference = []
-        if (value.length < selected.length) {
-            for (let i = 0; i < selected.length; i++) {
-                if (!(value.includes(selected[i]))) {
-                    difference.push(selected[i])
-                }
-            }
-            console.log('removed role: ', difference[0].value, ' | to label: ', labelName)
-            await apis.rolelabel.deleteRoleLabel(username, difference[0].value, labelName)
+    const mutateDeleteRoleLabel = useCustomMutation(
+        ({ roleName, labelName }) => apis.rolelabel.deleteRoleLabel(roleName, labelName),
+        [[keys.LABELS_KEY, labelName]],
+        () => successMessage('Role Removed'),
+        (error) => errorMessage(error?.data?.errorMessage, 'Failed')
+    )
+
+    const createRoleLabel = useCustomMutation(
+        ({ roleName, labelName }) => apis.rolelabel.createRoleLabel(roleName, labelName),
+        [[keys.LABELS_KEY, labelName]],
+        () => successMessage('Role Added'),
+        (error) => errorMessage(error?.data?.errorMessage, 'Failed')
+    )
+
+    const handleOnChange = (value, metadata) => {
+        if(metadata.action === "remove-value"){
+            mutateDeleteRoleLabel.mutate({labelName : labelName, roleName : metadata.removedValue.value})
         }
-        else if (value.length > selected.length) {
-            for (let i = 0; i < value.length; i++) {
-                if (!(selected.includes(value[i]))) {
-                    difference.push(value[i])
-                }
-            }
-            console.log('added role:', difference[0].value, ' | to label: ', labelName)
-            await apis.rolelabel.createRoleLabel(username, difference[0].value, labelName)
-        } else {
-            console.error('Selector Change Error : Selected Values didn\'t change')
+        if(metadata.action ==="select-option"){
+            createRoleLabel.mutate({labelName : labelName, roleName : metadata.option.value})
         }
-        setSelected(value)
+
     }
 
     const choiceStyle = {
@@ -56,17 +68,17 @@ export default ({ labelName, username }) => {
         }))
     };
 
+    if (isLoadingAllRoles || isLoadingRoles) return <Spinner />
+
     return (
-        <div>
-            <SelectRoles />
-            <Select
-                closeMenuOnSelect={false}
-                isMulti
-                options={options}
-                onChange={handleOnChange.bind(this)}
-                value={selected}
-                style={choiceStyle}
-            />
-        </div>
+        <Select
+            closeMenuOnSelect={false}
+            isMulti
+            options={optionRoles}
+            value={labelRoleOptions}
+            style={choiceStyle}
+            onChange = {handleOnChange}
+            isClearable = {false}
+        />
     );
 }

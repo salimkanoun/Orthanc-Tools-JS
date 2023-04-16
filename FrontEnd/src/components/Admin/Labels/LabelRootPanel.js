@@ -11,8 +11,7 @@ import RoleSelect from "./RoleSelect";
 
 export default () => {
 
-    const [roleManagement, setRoleManagement] = useState(null)
-
+    const [editLabel, setEditLabel] = useState(null)
     const [createLabel, setCreateLabel] = useState('')
 
     const { data: labels, isLoading } = useCustomQuery(
@@ -21,7 +20,7 @@ export default () => {
     )
 
     const handleManageRole = (label) => {
-        setRoleManagement(label);
+        setEditLabel(label);
     }
 
     const createLabels = useCustomMutation(
@@ -41,22 +40,21 @@ export default () => {
     }
 
     if (isLoading) return <Spinner />
-
-    console.log(labels)
+    
     return (
         <>
             <h2 className="card-title">Labels</h2>
             <Modal
-                show={roleManagement != null}
-                onHide={() => setRoleManagement(null)}
+                show={editLabel != null}
+                onHide={() => setEditLabel(null)}
                 backdrop="static"
                 keyboard={true}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>{`${roleManagement} label roles  `}</Modal.Title>
+                    <Modal.Title>{`${editLabel} label roles  `}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <RoleSelect />
+                    <RoleSelect labelName = {editLabel} />
                 </Modal.Body>
             </Modal>
             <Form onSubmitCapture={handleCreateSubmit} className="mt-4">

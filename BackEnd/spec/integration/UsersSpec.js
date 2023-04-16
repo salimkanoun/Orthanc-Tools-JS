@@ -57,7 +57,6 @@ describe('Testing User Table', function () {
 
         it('should return and count all the super users (at least one with admin)', async () => {
             const user = await User.findAndCountAllSuperUser()
-            console.log(user.rows[0].dataValues.username)
             expect(user).not.toBeNull()
             expect(user.count).toEqual(1)
 

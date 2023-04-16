@@ -6,8 +6,7 @@ const rolelabel = {
      * @returns {Array.<JSON>}
      */
     getRolesLabels() {
-
-        return axios.get('/api/users/labels').then((answer) => answer.data
+        return axios.get('/api/labels/roles').then((answer) => answer.data
         ).catch(error => {
             throw error
         })
@@ -19,9 +18,8 @@ const rolelabel = {
      * @param {String} role_name role to search for
      * @returns {Array.<JSON>}
      */
-    getRoleLabels(username, role_name) {
-
-        return axios.get('/api/users/' + username + '/roles/' + role_name + '/labels').then((answer) => answer.data
+    getRoleLabels(role_name) {
+        return axios.get('/api/roles/' + role_name + '/labels').then((answer) => answer.data
         ).catch(error => {
             throw error
         })
@@ -32,9 +30,8 @@ const rolelabel = {
      * @param {String} label_name name of the label to search for
      * @returns {Array.<JSON>}
      */
-    getLabelRoles(label_name) {
-
-        return axios.get('/api/users/labels/' + label_name + '/').then((answer) => answer.data
+    getLabelRoles(labelName) {
+        return axios.get('/api/labels/' + labelName + '/roles').then((answer) => answer.data
         ).catch(error => {
             throw error
         })
@@ -47,13 +44,13 @@ const rolelabel = {
      * @param {String} label_name name of the label to link
      * @returns 
      */
-    createRoleLabel(username, role_name, label_name) {
+    createRoleLabel(roleName, labelName) {
         const rolename = {
-            role_name: role_name
+            role_name: roleName
         }
 
-        return axios.post('/api/users/' + username + '/labels/' + label_name, rolename).then((answer) =>
-             true
+        return axios.post('/api/labels/' + labelName + '/roles', rolename).then((answer) =>
+            true
         ).catch(error => {
             throw error
         })
@@ -67,15 +64,16 @@ const rolelabel = {
      * @param {*} label_name name of the label
      * @returns 
      */
-    deleteRoleLabel(username, role_name, label_name) {
-        const rolename = {
-            role_name: role_name
+    deleteRoleLabel(roleName, labelName) {
+        const payload = {
+            roleName: roleName
         }
 
-        return axios.delete('/api/users/' + username + '/labels/' + label_name, rolename).then((answer) => true
+        return axios.delete('/api/labels/' + labelName + '/roles', { data: payload }).then(() => true
         ).catch(error => {
             throw error
         })
     }
 }
+
 export default rolelabel
