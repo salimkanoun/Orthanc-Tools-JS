@@ -22,7 +22,6 @@ const keys = {
     ASSOCIATIONS_KEY : 'associations',
     OPTIONS_KEY : 'options',
     TIME : 'time',
-    ROLE : 'role'
 }
 
 const filter = {

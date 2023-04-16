@@ -17,7 +17,7 @@ export default () => {
 
     const [modifyRole, setModifyRole] = useState(null)
 
-    const { data: roles, isLoading: isLoadingRoles, refetch: refetchRole } = useCustomQuery(
+    const { data: roles, isLoading: isLoadingRoles } = useCustomQuery(
         [keys.ROLES_KEY],
         () => apis.role.getRoles(),
         undefined,
@@ -47,7 +47,7 @@ export default () => {
             </Row>
             <Row className="mt-4">
                 <Col>
-                    <CreateRole onSubmitRole={refetchRole()} />
+                    <CreateRole />
                 </Col>
             </Row>
             <Row className="mt-3">

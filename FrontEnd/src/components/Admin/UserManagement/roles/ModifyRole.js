@@ -11,13 +11,13 @@ import apis from '../../../../services/apis';
 export default ({ roleName, onClose }) => {
 
     const { data: roleData, isLoading } = useCustomQuery(
-        [keys.ROLE, roleName],
+        [keys.ROLES_KEY, roleName],
         () => apis.role.getPermission(roleName)
     )
 
     const mutateRole = useCustomMutation(
         ({ permission }) => apis.role.modifyRole(roleName, permission),
-        [[keys.ROLE, roleName]],
+        [[keys.ROLES_KEY, roleName]],
         () => { successMessage('Updated'); onClose() },
         (error) => errorMessage(error?.data?.errorMessage ?? 'Failed')
     )
