@@ -23,7 +23,6 @@ export default ({ roleName, onClose }) => {
     )
 
     const modify = (permission) => {
-        console.log(permission)
         mutateRole.mutate({ permission })
     }
 

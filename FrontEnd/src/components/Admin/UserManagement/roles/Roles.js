@@ -31,7 +31,7 @@ export default () => {
     )
 
     const onDeleteRole = async (roleName) => {
-        if (await confirm({ title : "Delete Role" , message: "Delete Role " + roleName + " ?" })) {
+        if (await confirm({ title: "Delete Role", message: "Delete Role " + roleName + " ?" })) {
             deleteRole.mutate({ roleName })
         }
     }

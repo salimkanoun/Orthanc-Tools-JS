@@ -10,7 +10,6 @@ export default ({ onSubmitRole }) => {
     const [show, setShow] = useState(false)
     const [name, setName] = useState('')
 
-
     const create = async (formState) => {
         if (name === '') {
             toast.error('Role name can\'t be empty', {data:{type:'notification'}})
