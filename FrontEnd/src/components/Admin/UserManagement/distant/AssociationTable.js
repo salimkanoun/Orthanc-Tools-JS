@@ -7,7 +7,6 @@ import { useCustomMutation } from "../../../CommonComponents/ReactQuery/hooks";
 import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
 
-
 export default ({associations}) => {
     
     const deleteAssociation = useCustomMutation(
@@ -20,7 +19,6 @@ export default ({associations}) => {
             id : 'ldapGroup',
             accessorKey: 'ldapGroup',
             header: 'Group name',
-            sort: true
         }, {
             id : 'localRole',
             accessorKey: 'localRole',
@@ -37,5 +35,5 @@ export default ({associations}) => {
         }
     ];
 
-    return <CommonTableV8 data={associations} columns={columns} />
+    return <CommonTableV8 data={associations} canSort columns={columns} />
 }
