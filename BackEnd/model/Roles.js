@@ -1,7 +1,7 @@
 const Role = require('../repository/Role')
-const {OTJSConflictException, OTJSBadRequestException} = require('./../Exceptions/OTJSErrors');
+const { OTJSConflictException, OTJSBadRequestException } = require('./../Exceptions/OTJSErrors');
 const RoleEntity = require('./Entities/RoleEntity');
- 
+
 class Roles {
 
   static async createRoles(payload) {
@@ -13,18 +13,18 @@ class Roles {
     }
 
     return Role.create(payload.name,
-        payload.import,
-        payload.content,
-        payload.anon,
-        payload.exportLocal,
-        payload.exportRemote,
-        payload.query,
-        payload.autoQuery,
-        payload.delete,
-        payload.modify,
-        payload.cdBurner,
-        payload.autorouting,
-        payload.admin)
+      payload.import,
+      payload.content,
+      payload.anon,
+      payload.exportLocal,
+      payload.exportRemote,
+      payload.query,
+      payload.autoQuery,
+      payload.delete,
+      payload.modify,
+      payload.cdBurner,
+      payload.autorouting,
+      payload.admin)
   }
 
   static async getAllRoles() {
@@ -33,8 +33,7 @@ class Roles {
 
   static async getRole(name) {
     let role = await Role.getRole(name)
-    console.log(name, role)
-    return RoleEntity.createRolefromDB(role)
+    return role
   }
 
   static deleteRole(name) {
@@ -58,7 +57,7 @@ class Roles {
       payload.cdBurner,
       payload.autorouting,
       payload.admin)
-  } 
+  }
 
 }
 

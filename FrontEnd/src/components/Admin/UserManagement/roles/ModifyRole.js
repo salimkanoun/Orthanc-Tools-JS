@@ -12,9 +12,10 @@ export default ({ roleName, onClose }) => {
 
     const { data: roleData, isLoading } = useCustomQuery(
         [keys.ROLES_KEY, roleName],
-        () => apis.role.getPermission(roleName)
+        () => apis.role.getRole(roleName)
     )
 
+    console.log(roleData)
     const mutateRole = useCustomMutation(
         ({ permission }) => apis.role.modifyRole(roleName, permission),
         [[keys.ROLES_KEY, roleName]],

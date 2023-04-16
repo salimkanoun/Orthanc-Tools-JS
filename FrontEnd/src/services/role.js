@@ -9,7 +9,7 @@ const role = {
         })
     },
 
-    getPermission(name) {
+    getRole(name) {
         return axios.get('/api/roles/' + name).then((answer) => answer.data
         ).catch(error => {
             throw error

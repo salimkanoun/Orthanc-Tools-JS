@@ -12,14 +12,12 @@ class RoleEntity {
     cdBurner
     autorouting
     admin
-
-    
 }
 
 RoleEntity.createRolefromDB = (dbEntity) => {
     let role = new RoleEntity()
     role.name = dbEntity.name
-    role.import = dbEntity.importR
+    role.import = dbEntity.import
     role.content = dbEntity.content
     role.anon = dbEntity.anon
     role.exportLocal = dbEntity.export_local
@@ -30,6 +28,7 @@ RoleEntity.createRolefromDB = (dbEntity) => {
     role.cdBurner = dbEntity.cd_burner
     role.autorouting = dbEntity.autorouting
     role.admin = dbEntity.admin
+    role.delete = dbEntity.delete
     return role
 }
 

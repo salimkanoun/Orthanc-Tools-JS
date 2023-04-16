@@ -50,10 +50,10 @@ class Role {
     role.import = importR
     role.content = content
     role.anon = anon
-    role.exportLocal = exportLocal
-    role.exportRemote = exportRemote
+    role.export_local = exportLocal
+    role.export_remote = exportRemote
     role.query = query
-    role.autoQuery = autoQuery
+    role.auto_query = autoQuery
     role.delete = deleteRole
     role.modify = modify
     role.cd_burner = cd_burner

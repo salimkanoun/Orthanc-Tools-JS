@@ -71,7 +71,7 @@ export default ({ data, onSubmitRole }) => {
                     <h5>Auto-Query</h5>
                 </Col>
                 <Col sm={7}>
-                    <Toggle checked={state.auto_query} onChange={() => onChange('autoQuery', !state.autoQuery)} />
+                    <Toggle checked={state.autoQuery} onChange={() => onChange('autoQuery', !state.autoQuery)} />
                 </Col>
             </Row>
             <Row className="mt-3">
@@ -95,7 +95,7 @@ export default ({ data, onSubmitRole }) => {
                     <h5>Local Export</h5>
                 </Col>
                 <Col sm={7}>
-                    <Toggle checked={state.export_local} onChange={() => onChange('exportLocal', !state.exportLocal)} />
+                    <Toggle checked={state.exportLocal} onChange={() => onChange('exportLocal', !state.exportLocal)} />
                 </Col>
             </Row>
             <Row className="mt-3">
@@ -135,7 +135,7 @@ export default ({ data, onSubmitRole }) => {
                     <h5>CD Burner</h5>
                 </Col>
                 <Col sm={7}>
-                    <Toggle checked={state.cd_burner} onChange={() => onChange('cdBurner', !state.cdBurner)} />
+                    <Toggle checked={state.cdBurner} onChange={() => onChange('cdBurner', !state.cdBurner)} />
                 </Col>
             </Row>
             <Row className="mt-3">

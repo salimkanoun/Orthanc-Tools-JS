@@ -20,12 +20,13 @@ const deleteRole = async function (req, res) {
 
 const getRoles = async function (req, res) {
     let roles = await Roles.getAllRoles()
-    res.json(roles)
+    let formattedRoles = roles.map(role => RoleEntity.createRolefromDB(role))
+    res.json(formattedRoles)
 }
 
 const getRole = async function (req, res) {
-    let permission = await Roles.getRole(req.params.name)
-    res.json(RoleEntity.createRolefromDB(permission))
+    let role = await Roles.getRole(req.params.name)
+    res.json(RoleEntity.createRolefromDB(role))
 }
 
 module.exports = { createRole, modifyRole, deleteRole, getRoles, getRole }
