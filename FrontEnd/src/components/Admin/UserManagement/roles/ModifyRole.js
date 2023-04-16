@@ -4,32 +4,22 @@ import RoleForm from './RoleForm';
 import Spinner from '../../../CommonComponents/Spinner';
 
 import { keys } from '../../../../model/Constant';
-import { useCustomMutation, useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks';
-import { errorMessage, successMessage } from '../../../../tools/toastify';
+import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks';
 import apis from '../../../../services/apis';
 
-export default ({ roleName, onClose }) => {
+export default ({ roleName, onUpdateRole }) => {
 
     const { data: roleData, isLoading } = useCustomQuery(
         [keys.ROLES_KEY, roleName],
-        () => apis.role.getRole(roleName)
+        () => {
+            //If condition to avoid requesting null role when unmouting (racing issue)
+            if (roleName) return apis.role.getRole(roleName)
+        }
     )
-
-    console.log(roleData)
-    const mutateRole = useCustomMutation(
-        ({ permission }) => apis.role.modifyRole(roleName, permission),
-        [[keys.ROLES_KEY, roleName]],
-        () => { successMessage('Updated'); onClose() },
-        (error) => errorMessage(error?.data?.errorMessage ?? 'Failed')
-    )
-
-    const modify = (permission) => {
-        mutateRole.mutate({ permission })
-    }
 
     if (isLoading) return <Spinner />
 
     return (
-        <RoleForm data={roleData} onSubmitRole={modify} />
+        <RoleForm data={roleData} onUpdateRole={(role) => onUpdateRole(roleName, role)} />
     );
 }

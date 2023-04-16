@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react"
 
-import { Row, Col, Modal } from 'react-bootstrap';
+import { Row, Col, Modal, Button } from 'react-bootstrap';
 
 import CreateRole from "./CreateRole";
 import RoleTable from "./RoleTable";
@@ -16,6 +16,7 @@ import { errorMessage, successMessage } from "../../../../tools/toastify";
 export default () => {
 
     const [modifyRole, setModifyRole] = useState(null)
+    const [showCreate, setShowCreate] = useState(false)
 
     const { data: roles, isLoading: isLoadingRoles } = useCustomQuery(
         [keys.ROLES_KEY],
@@ -29,6 +30,19 @@ export default () => {
         () => successMessage('Role Deleted'),
         (error) => errorMessage(error?.errorMessage ?? "Failed")
     )
+
+    const mutateRole = useCustomMutation(
+        ({ roleName, permission }) => apis.role.modifyRole(roleName, permission),
+        [[keys.ROLES_KEY]],
+        () => successMessage('Updated'),
+        (error) => errorMessage(error?.data?.errorMessage ?? 'Failed')
+    )
+
+
+    const onUpdateRole = (roleName, permission) => {
+        mutateRole.mutate({ roleName, permission })
+        setModifyRole(null)
+    }
 
     const onDeleteRole = async (roleName) => {
         if (await confirm({ title: "Delete Role", message: "Delete Role " + roleName + " ?" })) {
@@ -47,7 +61,7 @@ export default () => {
             </Row>
             <Row className="mt-4">
                 <Col>
-                    <CreateRole />
+                    <Button className='otjs-button otjs-button-blue' onClick={() => setShowCreate(true)} >New Role</Button>
                 </Col>
             </Row>
             <Row className="mt-3">
@@ -56,12 +70,21 @@ export default () => {
                 </Col>
             </Row>
 
+            <Modal id='create' show={showCreate} onHide={() => setShowCreate(false)}>
+                <Modal.Header closeButton>
+                    <h2 className='card-title'>Create new role</h2>
+                </Modal.Header>
+                <Modal.Body>
+                    <CreateRole onClose = {()=>setShowCreate(false)}/>
+                </Modal.Body>
+            </Modal>
+
             <Modal id='modify' show={modifyRole != null} onHide={() => setModifyRole(null)}>
                 <Modal.Header closeButton>
                     <h2 className='card-title'>Modify role {modifyRole}</h2>
                 </Modal.Header>
                 <Modal.Body>
-                    <ModifyRole roleName={modifyRole} onClose={() => setModifyRole(null)} />
+                    <ModifyRole roleName={modifyRole} onUpdateRole={onUpdateRole} />
                 </Modal.Body>
             </Modal>
         </Fragment>

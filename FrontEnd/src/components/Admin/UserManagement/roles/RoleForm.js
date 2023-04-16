@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import Toggle from 'react-toggle'
 import { Row, Col, Button } from 'react-bootstrap'
 
-export default ({ data, onSubmitRole }) => {
+export default ({ data, onUpdateRole }) => {
 
     const [state, setState] = useState({
         import: false,
@@ -149,7 +149,7 @@ export default ({ data, onSubmitRole }) => {
 
             <Row className="mt-3 text-center">
                 <Col>
-                    <Button name='create' className='otjs-button otjs-button-blue' onClick={() => { onSubmitRole(state) }}> Validate </Button>
+                    <Button name='create' className='otjs-button otjs-button-blue' onClick={() => { onUpdateRole(state) }}> Validate </Button>
                 </Col>
             </Row>
         </Fragment>
