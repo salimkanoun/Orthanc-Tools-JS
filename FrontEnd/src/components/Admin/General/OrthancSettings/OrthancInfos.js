@@ -4,6 +4,7 @@ import { useCustomMutation, useCustomQuery } from '../../../CommonComponents/Rea
 import { keys } from '../../../../model/Constant';
 import Spinner from '../../../CommonComponents/Spinner';
 import Select from 'react-select';
+import { errorMessage, successMessage } from '../../../../tools/toastify';
 
 export default () => {
 
@@ -20,7 +21,9 @@ export default () => {
 
     const updateVerbosity = useCustomMutation(
         ({ verbosity }) => apis.options.setVerbosity(verbosity),
-        [[keys.ORTHANC_VERBOSITY_KEY]]
+        [[keys.ORTHANC_VERBOSITY_KEY]],
+        () => successMessage('Updated'),
+        () => errorMessage('Update Failed')
     )
 
     const onVerbosityChange = (selectedOption) => {
