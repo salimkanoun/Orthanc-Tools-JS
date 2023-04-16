@@ -5,9 +5,6 @@ import { toast } from 'react-toastify'
 import apis from '../../../../services/apis'
 import RoleForm from './RoleForm'
 
-
-
-
 export default ({ onSubmitRole }) => {
 
     const [show, setShow] = useState(false)
