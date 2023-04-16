@@ -19,9 +19,9 @@ import RobotView from '../AutoQuery/Connected_Component/RobotView';
 import Footer from './Footer';
 import { Row, Col, Container } from 'react-bootstrap';
 import ToolsPanel from './ToolsPanel';
-import NotificationCenter from '../NotificationCenter/NotificationCenter';
 
 const MainRoot = ({ onLogout, username, roles }) => {
+    console.log(roles)
 
     return (
         <>

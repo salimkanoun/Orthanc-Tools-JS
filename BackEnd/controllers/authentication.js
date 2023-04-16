@@ -23,13 +23,13 @@ const login = async function (req, res) {
         import: infosUser.import,
         content: infosUser.content,
         anon: infosUser.anon,
-        export_local: infosUser.export_local,
-        export_remote: infosUser.export_remote,
+        exportLocal: infosUser.export_local,
+        exportRemote: infosUser.export_remote,
         query: infosUser.query,
-        auto_query: infosUser.auto_query,
+        autoQuery: infosUser.auto_query,
         delete: infosUser.delete,
         modify: infosUser.modify,
-        cd_burner: infosUser.cd_burner,
+        cdBurner: infosUser.cd_burner,
         autorouting: infosUser.autorouting
       }
 

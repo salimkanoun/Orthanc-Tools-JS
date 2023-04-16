@@ -5,7 +5,6 @@ import apis from '../../../services/apis'
 import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 import Spinner from '../../CommonComponents/Spinner'
 
-
 export default ({ onChange }) => {
 
     const {data : optionRoles, isLoading} = useCustomQuery(
