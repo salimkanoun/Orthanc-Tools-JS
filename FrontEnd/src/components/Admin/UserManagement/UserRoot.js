@@ -46,7 +46,7 @@ export default () => {
                         <li className='col-4 text-center'>
                             <Button
                                 className={currentComponent === TAB_LDAP ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
-                                onClick={() => setCurrentComponent(TAB_LDAP)}>Roles
+                                onClick={() => setCurrentComponent(TAB_LDAP)}>LDAP / AD
                             </Button>
                         </li>
                     </div>
