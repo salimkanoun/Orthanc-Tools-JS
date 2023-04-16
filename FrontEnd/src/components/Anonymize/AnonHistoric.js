@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState} from 'react'
-import {toast} from 'react-toastify';import apis from '../../services/apis';
+import {toast} from 'react-toastify';
+import apis from '../../services/apis';
 import AnonymizedResults from './AnonymizedResults';
 import task from '../../services/task';
 import {Modal} from "react-bootstrap";

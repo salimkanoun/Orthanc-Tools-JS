@@ -4,7 +4,8 @@ import apis from '../../services/apis'
 import TagTable from "../CommonComponents/RessourcesDisplay/ReactTable/TagTable2";
 import {InputGroup} from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import pdfjsLib from "pdfjs-dist/webpack"
+//Cette librairie a revoir non comaptible webpack 5
+//import pdfjsLib from "pdfjs-dist/webpack"
 import {ModalPicEditor} from "../CreateDicom/ModalPicEditor";
 import {toast} from "react-toastify";
 
@@ -203,6 +204,7 @@ export default class CreateDicom extends Component {
                 resolve(fr)
             }
         }).then(({result}) => {
+            /*
             return pdfjsLib.getDocument({data: result}).promise.then(async (pdf) => {
                 console.log(pdf)
                 let pageImage = []
@@ -213,6 +215,7 @@ export default class CreateDicom extends Component {
                 }
                 return pageImage;
             })
+            */
         })
     }
 
