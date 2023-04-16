@@ -11,7 +11,7 @@ import { errorMessage, successMessage } from '../../../tools/toastify';
  * Table with known Peers details with Echo and Remove butto
  */
 
-export default ({ peersData }) => {
+export default ({ peersData = [] }) => {
 
     const deletePeer = useCustomMutation(
         ({ name }) => apis.peers.deletePeer(name),
