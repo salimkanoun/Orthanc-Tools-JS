@@ -8,7 +8,7 @@ import { useCustomMutation } from '../../../CommonComponents/ReactQuery/hooks'
 import { keys } from '../../../../model/Constant'
 import { errorMessage, successMessage } from '../../../../tools/toastify'
 
-export default ({ onSubmitRole }) => {
+export default () => {
 
     const [show, setShow] = useState(false)
     const [name, setName] = useState('')

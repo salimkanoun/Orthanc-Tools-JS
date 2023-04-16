@@ -24,7 +24,7 @@ const login = async function (req, res) {
         content: infosUser.content,
         anon: infosUser.anon,
         export_local: infosUser.export_local,
-        export_extern: infosUser.export_extern,
+        export_remote: infosUser.export_remote,
         query: infosUser.query,
         auto_query: infosUser.auto_query,
         delete: infosUser.delete,

@@ -91,7 +91,7 @@ const exportLocalMidelware = async function (req, res, next) {
   }
 }
 
-const exportExternMidelware = async function (req, res, next) {
+const exportRemoteMidelware = async function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
   }
@@ -207,6 +207,6 @@ const roleAccessLabelMidelware = async function(req,res,next){
 
 module.exports = {
   userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
-  exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, cdBurnerMidelware, isCurrentUserOrAdminMidelWare,
+  exportRemoteMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, cdBurnerMidelware, isCurrentUserOrAdminMidelWare,
   ownTaskOrIsAdminMidelware, roleAccessLabelMidelware, autoroutingMidelware
 }    

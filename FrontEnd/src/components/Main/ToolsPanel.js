@@ -38,7 +38,7 @@ export default ({roles, apercu}) => {
                 <AnonTool target={refAnon} show={show === 'anon' ? true : false}
                     onHide={closePopovers} />
             </span>
-            <span className="mr-1" hidden={!roles.export_extern || !roles.export_local}>
+            <span className="mr-1" hidden={!roles.exportRemote || !roles.exportLocal}>
                 <Link id='export' ref={refExport} type="button" className="btn otjs-btn-tools otjs-btn-tools-orange w-12"
                     onMouseOver={apercu ? () => setShow('export') : null} to='/export'>
                     <i class="fas fa-file-export me-2"></i> Export

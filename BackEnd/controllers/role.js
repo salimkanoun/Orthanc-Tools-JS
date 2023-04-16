@@ -1,3 +1,4 @@
+const RoleEntity = require('../model/Entities/RoleEntity')
 var Roles = require('../model/Roles')
 
 const createRole = async function (req, res) {
@@ -22,9 +23,9 @@ const getRoles = async function (req, res) {
     res.json(roles)
 }
 
-const getPermission = async function (req, res) {
-    let permission = await Roles.getPermission(req.params.name)
-    res.json(permission)
+const getRole = async function (req, res) {
+    let permission = await Roles.getRole(req.params.name)
+    res.json(RoleEntity.createRolefromDB(permission))
 }
 
-module.exports = { createRole, modifyRole, deleteRole, getRoles, getPermission }
+module.exports = { createRole, modifyRole, deleteRole, getRoles, getRole }

@@ -8,14 +8,14 @@ export default ({ data, onSubmitRole }) => {
         import: false,
         content: false,
         anon: false,
-        export_local: false,
-        export_extern: false,
+        exportLocal: false,
+        exportRemote: false,
         query: false,
-        auto_query: false,
+        autoQuery: false,
         delete: false,
         admin: false,
         modify: false,
-        cd_burner: false,
+        cdBurner: false,
         autorouting: false,
     })
 
@@ -25,14 +25,14 @@ export default ({ data, onSubmitRole }) => {
                 import: data.import,
                 content: data.content,
                 anon: data.anon,
-                export_local: data.export_local,
-                export_extern: data.export_extern,
+                exportLocal: data.exportLocal,
+                exportRemote: data.exportRemote,
                 query: data.query,
-                auto_query: data.auto_query,
+                autoQuery: data.autoQuery,
                 delete: data.delete,
                 admin: data.admin,
                 modify: data.modify,
-                cd_burner: data.cd_burner,
+                cdBurner: data.cdBurner,
                 autorouting: data.autorouting
             })
         }
@@ -71,7 +71,7 @@ export default ({ data, onSubmitRole }) => {
                     <h5>Auto-Query</h5>
                 </Col>
                 <Col sm={7}>
-                    <Toggle checked={state.auto_query} onChange={() => onChange('auto_query', !state.auto_query)} />
+                    <Toggle checked={state.auto_query} onChange={() => onChange('autoQuery', !state.autoQuery)} />
                 </Col>
             </Row>
             <Row className="mt-3">
@@ -95,7 +95,7 @@ export default ({ data, onSubmitRole }) => {
                     <h5>Local Export</h5>
                 </Col>
                 <Col sm={7}>
-                    <Toggle checked={state.export_local} onChange={() => onChange('export_local', !state.export_local)} />
+                    <Toggle checked={state.export_local} onChange={() => onChange('exportLocal', !state.exportLocal)} />
                 </Col>
             </Row>
             <Row className="mt-3">
@@ -103,7 +103,7 @@ export default ({ data, onSubmitRole }) => {
                     <h5>Remote Export</h5>
                 </Col>
                 <Col sm={7}>
-                    <Toggle checked={state.export_extern} onChange={() => onChange('export_extern', !state.export_extern)} />
+                    <Toggle checked={state.exportRemote} onChange={() => onChange('exportRemote', !state.exportRemote)} />
                 </Col>
             </Row>
             <Row className="mt-3">
@@ -135,7 +135,7 @@ export default ({ data, onSubmitRole }) => {
                     <h5>CD Burner</h5>
                 </Col>
                 <Col sm={7}>
-                    <Toggle checked={state.cd_burner} onChange={() => onChange('cd_burner', !state.cd_burner)} />
+                    <Toggle checked={state.cd_burner} onChange={() => onChange('cdBurner', !state.cdBurner)} />
                 </Col>
             </Row>
             <Row className="mt-3">
