@@ -93,7 +93,6 @@ export default ({
         initialState: {
             columnVisibility: getHiddenState()
         },
-
         onColumnFiltersChange: setColumnFilters,
         onSortingChange: setSorting,
         onRowSelectionChange: setRowSelection,

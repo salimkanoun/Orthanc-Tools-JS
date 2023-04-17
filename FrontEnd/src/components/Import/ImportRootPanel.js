@@ -1,28 +1,22 @@
 import React, { useState } from 'react'
+import { Row, Col, Button } from 'react-bootstrap'
+
 import Import from './Import'
 import CreateDicom from './CreateDicom'
-import {Row, Col, Button} from 'react-bootstrap'
-/**
- * Root Panel of Admin route
- * Using React Hooks
- */
 
-const ImportRootPanel = () => {
+export default () => {
 
-  const [selectedOptionMenu, setSelectedOptionMenu] = useState('ImportDicom')
-  function clickHandler(event) {
-    console.log(event)
-    setSelectedOptionMenu(event.target.value)
-  }
+  const IMPORT_TAB = 'import'
+  const CREATE_TAB = 'create'
 
-  function getComponentToDisplay() {
+  const [selectedOptionMenu, setSelectedOptionMenu] = useState(IMPORT_TAB)
+
+  const getComponentToDisplay = () => {
     switch (selectedOptionMenu) {
-      case 'ImportDicom':
+      case IMPORT_TAB:
         return (<Import />)
-      case 'CreateDicom':
+      case CREATE_TAB:
         return (<CreateDicom />)
-      default: 
-        return ([]) 
     }
   }
 
@@ -31,19 +25,21 @@ const ImportRootPanel = () => {
       <div className='mb-5'>
         <Row className="pb-3">
           <Col className="d-flex justify-content-start align-items-center">
-              <i className="fas fa-file-import ico me-3"></i><h2 className="card-title">Import Dicom Files</h2>
+            <i className="fas fa-file-import ico me-3"></i><h2 className="card-title">Import Dicom Files</h2>
           </Col>
         </Row>
 
         <nav className='otjs-navmenu container-fluid'>
           <div className="otjs-navmenu-nav">
             <li className='col-6 text-center'>
-              <Button className={selectedOptionMenu === 'ImportDicom' ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'} value={'ImportDicom'} onClick={clickHandler}>
+              <Button className={selectedOptionMenu === IMPORT_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'}
+                onClick={() => setSelectedOptionMenu(IMPORT_TAB)}>
                 Import Dicom
               </Button>
             </li>
             <li className='col-6 text-center'>
-              <Button className={selectedOptionMenu === 'CreateDicom' ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'} value={'CreateDicom'} onClick={clickHandler}>
+              <Button className={selectedOptionMenu === CREATE_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'}
+                onClick={() => setSelectedOptionMenu(CREATE_TAB)}>
                 Create Dicom
               </Button>
             </li>
@@ -56,5 +52,3 @@ const ImportRootPanel = () => {
     </div>
   )
 }
-
-export default ImportRootPanel
