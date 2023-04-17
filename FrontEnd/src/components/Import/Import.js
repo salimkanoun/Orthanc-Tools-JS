@@ -7,13 +7,13 @@ import Dropzone from 'react-dropzone'
 
 import TableImportError from './TableImportError'
 import AnonExportDeleteSendButton from './AnonExportDeleteSendButton'
-import TablePatientWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudies'
 
 import { treeToPatientArray, treeToStudyArray } from '../../tools/processResponse'
 import { addStudiesToExportList } from '../../actions/ExportList'
 import { addStudiesToDeleteList } from '../../actions/DeleteList'
 import { addStudiesToAnonList } from '../../actions/AnonList'
 import apis from '../../services/apis'
+import TablePatientWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudiesAndSeries'
 
 export default () => {
 
@@ -67,10 +67,8 @@ export default () => {
 
                 try {
                     let response = await apis.importDicom.importDicom(stringBuffer)
-                    console.log(response)
                     await addUploadedFileToState(response)
                 } catch (error) {
-                    console.log(error)
                     addErrorToState(file.name, error.statusText)
                 }
 
@@ -109,7 +107,7 @@ export default () => {
         setSeriesObjects(series => {
             series[seriesDetails.ID] = {
                 ...seriesDetails,
-                Instances: 1
+                NumberOfInstances: 1
             }
             return series
         })
@@ -128,7 +126,7 @@ export default () => {
 
         if (isExistingSerie) {
             setSeriesObjects((series) => {
-                series[orthancAnswer.ParentSeries]['Instances']++
+                series[orthancAnswer.ParentSeries]['NumberOfInstances'] = ++series[orthancAnswer.ParentSeries]['NumberOfInstances']
                 return series
             })
 
@@ -149,21 +147,22 @@ export default () => {
     const buildImportTree = () => {
         let importedTree = {}
 
-        function addNewPatient(patientID, patientDetails) {
+        const addNewPatient = (patientID, patientDetails) => {
             if (!Object.keys(importedTree).includes(patientID)) {
                 importedTree[patientID] = {
                     PatientOrthancID: patientID,
                     ...patientDetails,
-                    studies: {}
+                    Studies: {}
                 }
             }
         }
 
-        function addNewStudy(studyID, studyDetails) {
-            if (!Object.keys(importedTree[studyDetails.ParentPatient]['studies']).includes(studyID)) {
-                importedTree[studyDetails.ParentPatient]['studies'][studyID] = {
+        const addNewStudy = (studyID, studyDetails) => {
+            if (!Object.keys(importedTree[studyDetails.ParentPatient]['Studies']).includes(studyID)) {
+                importedTree[studyDetails.ParentPatient]['Studies'][studyID] = {
                     ...studyDetails["MainDicomTags"],
-                    series: {}
+                    StudyOrthancID: studyID,
+                    Series: {}
                 }
             }
 
@@ -175,9 +174,10 @@ export default () => {
             let patientDetails = patientsObjects[studyDetails.ParentPatient]
             addNewPatient(studyDetails.ParentPatient, patientDetails)
             addNewStudy(series.ParentStudy, studyDetails)
-            importedTree[studyDetails.ParentPatient]['studies'][series.ParentStudy]['series'][series.ID] = {
+            importedTree[studyDetails.ParentPatient]['Studies'][series.ParentStudy]['Series'][series.ID] = {
                 ...series["MainDicomTags"],
-                Instances: series['Instances']
+                StudyOrthancID: series.ParentStudy,
+                NumberOfInstances: series['NumberOfInstances']
             }
         }
 
@@ -186,9 +186,6 @@ export default () => {
         return resultArray
 
     }
-
-
-
 
     const sendImportedToExport = () => {
         dispatch(addStudiesToExportList(treeToStudyArray(studiesObjects)))
@@ -245,7 +242,7 @@ export default () => {
             </Row>
             <Row className="mt-5">
                 <Col>
-                    <TablePatientWithNestedStudies patients={buildImportTree()} />
+                    <TablePatientWithNestedStudiesAndSeries patients={buildImportTree()} />
                 </Col>
             </Row>
             <AnonExportDeleteSendButton onAnonClick={sendImportedToAnon}

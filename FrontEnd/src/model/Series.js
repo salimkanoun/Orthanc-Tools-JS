@@ -29,7 +29,7 @@ export default class Series {
         this.StudyOrthancID = studyOrthancID
     }
 
-    getNumberOfInstance = () => {
+    getNumberOfInstances = () => {
         return this.InstancesOrthancIds.length
     }
 
@@ -124,7 +124,7 @@ export default class Series {
             SeriesOrthancID: this.SeriesOrthancID,
             SeriesTime: this.SeriesTime,
             StudyOrthancID: this.StudyOrthancID,
-            NumberOfInstance: this.getNumberOfInstance()
+            NumberOfInstances: this.getNumberOfInstances()
         }
     }
 
