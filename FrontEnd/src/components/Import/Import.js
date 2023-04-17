@@ -1,40 +1,44 @@
-import React, {Component} from 'react'
-import {connect} from "react-redux"
+import React, { useEffect, useState } from 'react'
+import { useDispatch } from "react-redux"
+import { Prompt } from 'react-router-dom'
 
 import Dropzone from 'react-dropzone'
-import ProgressBar from 'react-bootstrap/ProgressBar'
-import {Modal, Row, Col} from 'react-bootstrap'
+import { Modal, Row, Col, ProgressBar } from 'react-bootstrap'
 
-import TablePatientsWithNestedStudiesAndSeries
-    from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatientsWithNestedStudiesAndSeries'
 import TableImportError from './TableImportError'
-import apis from '../../services/apis'
-import {treeToPatientArray, treeToStudyArray} from '../../tools/processResponse'
-
-import {addStudiesToExportList} from '../../actions/ExportList'
-import {addStudiesToDeleteList} from '../../actions/DeleteList'
-import {addStudiesToAnonList} from '../../actions/AnonList'
-import {Prompt} from 'react-router-dom'
-
 import AnonExportDeleteSendButton from './AnonExportDeleteSendButton'
+import TablePatientWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudiesAndSeries'
 
-class Import extends Component {
+import { treeToPatientArray, treeToStudyArray } from '../../tools/processResponse'
+import { addStudiesToExportList } from '../../actions/ExportList'
+import { addStudiesToDeleteList } from '../../actions/DeleteList'
+import { addStudiesToAnonList } from '../../actions/AnonList'
+import apis from '../../services/apis'
 
-    state = {
-        errors: [],
-        patientsObjects: {},
-        studiesObjects: {},
-        seriesObjects: {},
-        showErrors: false,
-        inProgress: false,
-        isDragging: false,
-        numberOfFiles: 0,
-        processedFiles: 0
-    }
 
-    cancelImport = false
+export default () => {
 
-    __pFileReader = (file) => {
+    const [errors, setErrors] = useState([])
+    const [patientsObjects, setPatientsObjects] = useState({})
+    const [studiesObjects, setStudiesObjects] = useState({})
+    const [seriesObjects, setSeriesObjects] = useState({})
+    const [showErrors, setShowErrors] = useState(false)
+    const [inProgress, setInProgress] = useState(false)
+    const [isDragging, setIsDragging] = useState(false)
+    const [numberOfFiles, setNumberOfFiles] = useState(0)
+    const [processedFiles, setProcessedFiles] = useState(0)
+
+    const [cancelImport, setCancelImport] = useState(false)
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        return () => {
+            setCancelImport(true)
+        }
+    }, [])
+
+    const __pFileReader = (file) => {
         return new Promise((resolve, reject) => {
             var fr = new FileReader()
             fr.readAsArrayBuffer(file)
@@ -44,137 +48,138 @@ class Import extends Component {
         })
     }
 
-    addFile = async (files) => {
+    const addFile = async (files) => {
 
-        this.setState({isDragging: false, inProgress: true, numberOfFiles: files.length, processedFiles: 0})
+        setIsDragging(false)
+        setInProgress(true)
+        setNumberOfFiles(files.length)
+        setProcessedFiles(0)
+
         let i = 1
         for (let file of files) {
 
-            if (this.cancelImport) {
+            if (cancelImport) {
                 console.log('Upload Interrupted')
                 return
             }
 
-            await this.__pFileReader(file).then(async (reader) => {
+            await __pFileReader(file).then(async (reader) => {
                 const stringBuffer = new Uint8Array(reader.result)
 
                 try {
                     let response = await apis.importDicom.importDicom(stringBuffer)
-                    await this.addUploadedFileToState(response)
-
+                    await addUploadedFileToState(response)
                 } catch (error) {
-                    this.addErrorToState(file.name, error.statusText)
+                    addErrorToState(file.name, error.statusText)
                 }
 
             })
-            this.setState((state) => {
-                return {processedFiles: ++state.processedFiles}
-            })
+            setProcessedFiles((processedFiles) => ++processedFiles)
             i = ++i
         }
-
-        this.setState({inProgress: false})
+        setInProgress(false)
     }
 
-    componentWillUnmount = () => {
-        this.cancelImport = true
+    const addErrorToState = (filename, error) => {
+        setErrors((errors) => [
+            ...errors,
+            {
+                fileID: Math.random(),
+                filename: filename,
+                error: error
+            }
+        ])
+
     }
 
-    /**
-     * add a failed import in error list
-     * @param {string} fileID
-     * @param {string} file
-     * @param {string} error
-     */
-    addErrorToState = (filename, error) => {
-        let errors = this.state.errors
-        errors.push({
-            fileID: Math.random(),
-            filename: filename,
-            error: error
+    const addStudyToState = (studyDetails) => {
+        setStudiesObjects((studies) => {
+            studies[studyDetails.ID] = studyDetails
+            return studies
         })
 
-        this.setState({
-            errors: errors
+        setPatientsObjects((patient) => {
+            patient[studyDetails.ParentPatient] = studyDetails.PatientMainDicomTags
+            return patient
         })
-
     }
 
-    addUploadedFileToState = async (orthancAnswer) => {
-        console.log(orthancAnswer)
-        let isExistingSerie = this.isKnownSeries(orthancAnswer.ParentSeries)
+    const addSeriesToState = (seriesDetails) => {
+        setSeriesObjects(series => {
+            series[seriesDetails.ID] = {
+                ...seriesDetails,
+                NumberOfInstances: 1
+            }
+            return series
+        })
+    }
+
+    const isKnownSeries = (seriesID) => {
+        return Object.keys(seriesObjects).includes(seriesID)
+    }
+
+    const isKnownStudy = (studyID) => {
+        return Object.keys(studiesObjects).includes(studyID)
+    }
+
+    const addUploadedFileToState = async (orthancAnswer) => {
+        let isExistingSerie = isKnownSeries(orthancAnswer.ParentSeries)
 
         if (isExistingSerie) {
-            this.setState(state => {
-                state.seriesObjects[orthancAnswer.ParentSeries]['Instances']++
-                return state
+            setSeriesObjects((series) => {
+                series[orthancAnswer.ParentSeries]['NumberOfInstances']++
+                return series
             })
             return
         }
 
-        let isExistingStudy = this.isKnownStudy(orthancAnswer.ParentStudy)
+        let isExistingStudy = isKnownStudy(orthancAnswer.ParentStudy)
 
         if (!isExistingStudy) {
             let studyDetails = await apis.content.getStudiesDetails(orthancAnswer.ParentStudy)
-            this.addStudyToState(studyDetails)
+            addStudyToState(studyDetails)
         }
 
         let seriesDetails = await apis.content.getSeriesDetailsByID(orthancAnswer.ParentSeries)
-        this.addSeriesToState(seriesDetails)
+        addSeriesToState(seriesDetails)
 
     }
+    console.log(seriesObjects)
 
-    addStudyToState = (studyDetails) => {
-        this.setState(state => {
-            state.studiesObjects[studyDetails.ID] = studyDetails
-            state.patientsObjects[studyDetails.ParentPatient] = studyDetails.PatientMainDicomTags
-            return state
-        })
-    }
-
-    addSeriesToState = (seriesDetails) => {
-        this.setState(state => {
-            state.seriesObjects[seriesDetails.ID] = {
-                ...seriesDetails,
-                Instances: 1
-            }
-            return state
-        })
-    }
-
-    buildImportTree = () => {
-        let importedSeries = this.state.seriesObjects
+    const buildImportTree = () => {
         let importedTree = {}
 
-        function addNewPatient(patientID, patientDetails) {
+        const addNewPatient = (patientID, patientDetails) => {
             if (!Object.keys(importedTree).includes(patientID)) {
                 importedTree[patientID] = {
                     PatientOrthancID: patientID,
                     ...patientDetails,
-                    studies: {}
+                    Studies: {}
                 }
             }
         }
 
-        function addNewStudy(studyID, studyDetails) {
-            if (!Object.keys(importedTree[studyDetails.ParentPatient]['studies']).includes(studyID)) {
-                importedTree[studyDetails.ParentPatient]['studies'][studyID] = {
+        const addNewStudy = (studyID, studyDetails) => {
+            if (!Object.keys(importedTree[studyDetails.ParentPatient]['Studies']).includes(studyID)) {
+                importedTree[studyDetails.ParentPatient]['Studies'][studyID] = {
                     ...studyDetails["MainDicomTags"],
-                    series: {}
+                    StudyOrthancID: studyID,
+                    Series: {}
                 }
             }
 
         }
 
-        for (let seriesID of Object.keys(importedSeries)) {
-            let series = this.state.seriesObjects[seriesID]
-            let studyDetails = this.state.studiesObjects[series.ParentStudy]
-            let patientDetails = this.state.patientsObjects[studyDetails.ParentPatient]
+        for (let seriesID of Object.keys(seriesObjects)) {
+            let series = seriesObjects[seriesID]
+            let studyDetails = studiesObjects[series.ParentStudy]
+            let patientDetails = patientsObjects[studyDetails.ParentPatient]
             addNewPatient(studyDetails.ParentPatient, patientDetails)
             addNewStudy(series.ParentStudy, studyDetails)
-            importedTree[studyDetails.ParentPatient]['studies'][series.ParentStudy]['series'][series.ID] = {
+            importedTree[studyDetails.ParentPatient]['Studies'][series.ParentStudy]['Series'][series.ID] = {
                 ...series["MainDicomTags"],
-                Instances: series['Instances']
+                StudyOrthancID: series.ParentStudy,
+                NumberOfInstances: series['NumberOfInstances']
             }
         }
 
@@ -184,106 +189,68 @@ class Import extends Component {
 
     }
 
-    /**
-     * check if study is already known
-     * @param {string} studyID
-     */
-    isKnownStudy = (studyID) => {
-        return Object.keys(this.state.studiesObjects).includes(studyID)
+    const sendImportedToExport = () => {
+        dispatch(addStudiesToExportList(treeToStudyArray(studiesObjects)))
     }
 
-    isKnownSeries = (seriesID) => {
-        return Object.keys(this.state.seriesObjects).includes(seriesID)
+    const sendImportedToAnon = () => {
+        dispatch(addStudiesToAnonList(treeToStudyArray(studiesObjects)))
     }
 
-    sendImportedToExport = () => {
-        this.props.addStudiesToExportList(treeToStudyArray(this.state.studiesObjects))
+    const sendImportedToDelete = () => {
+        dispatch(addStudiesToDeleteList(treeToStudyArray(studiesObjects)))
     }
 
-    sendImportedToAnon = () => {
-        this.props.addStudiesToAnonList(treeToStudyArray(this.state.studiesObjects))
-    }
-
-    sendImportedToDelete = () => {
-        this.props.addStudiesToDeleteList(treeToStudyArray(this.state.studiesObjects))
-    }
-
-    /**
-     * Trigger the display of the error table
-     */
-    handleShowErrorClick = () => {
-        this.setState({
-            showErrors: !this.state.showErrors
-        })
-    }
-
-    dragListener = (dragStarted) => {
-        this.setState({isDragging: dragStarted})
-    }
-
-    render = () => {
-        return (
-            <div>
-                
-                <Row className="mt-5">
-                    <Col>
-                        <Dropzone onDragEnter={() => this.dragListener(true)} onDragLeave={() => this.dragListener(false)}
-                                disabled={this.state.inProgress} onDrop={acceptedFiles => this.addFile(acceptedFiles)}>
-                            {({getRootProps, getInputProps}) => (
-                                <section>
-                                    <div
-                                        className={(this.state.isDragging || this.state.inProgress) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
-                                        <input directory="" webkitdirectory="" {...getInputProps()} />
-                                        <p>{this.state.inProgress ? "Uploading" : "Drop Dicom Folder"}</p>
-                                    </div>
-                                </section>
-                            )}
-                        </Dropzone>
-                        <ProgressBar variant='info' now={this.state.processedFiles} min={0} max={this.state.numberOfFiles}
-                                    label={this.state.processedFiles > 0 ? 'Uploading ' + this.state.processedFiles + '/' + this.state.numberOfFiles : null}/>
-                    </Col>
-                </Row>
-                <Row className="mt-5">
-                    <Col>
-                        <input type="button" className="otjs-button otjs-button-red w-10"
-                            value={"See Errors (" + this.state.errors.length + ")"}
-                            onClick={this.handleShowErrorClick}/>
-                    </Col>
-                </Row>
-
-                <Modal show={this.state.showErrors} onHide={this.handleShowErrorClick} size='xl'>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Errors</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <TableImportError data={this.state.errors}/>
-                    </Modal.Body>
-                </Modal>
-                <Row className="mt-5">
-                    <Col>
-                        <TablePatientsWithNestedStudiesAndSeries
-                            patients={this.buildImportTree()}
-                        />
-                    </Col>
-                </Row>
-            
-                <AnonExportDeleteSendButton onAnonClick={this.sendImportedToAnon}
-                                            onExportClick={this.sendImportedToExport}
-                                            onDeleteClick={this.sendImportedToDelete}/>
-                
-                
-                <Prompt when={this.state.inProgress} message='Import in progress. Quit this page will stop the import'/>
-            </div>
-
-        )
-    }
+    return (
+        <div>
+            <Prompt when={inProgress} message='Import in progress. Quit this page will stop the import' />
+            <Modal show={showErrors} onHide={() => setShowErrors(false)} size='xl'>
+                <Modal.Header closeButton>
+                    <Modal.Title>Errors</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <TableImportError data={errors} />
+                </Modal.Body>
+            </Modal>
+            <Row className="mt-5">
+                <Col>
+                    <Dropzone onDragEnter={() => setIsDragging(true)} onDragLeave={() => setIsDragging(false)}
+                        disabled={inProgress} onDrop={acceptedFiles => addFile(acceptedFiles)}>
+                        {({ getRootProps, getInputProps }) => (
+                            <section>
+                                <div
+                                    className={(isDragging || inProgress) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
+                                    <input directory="" webkitdirectory="" {...getInputProps()} />
+                                    <p>{inProgress ? "Uploading" : "Drop Dicom Folder"}</p>
+                                </div>
+                            </section>
+                        )}
+                    </Dropzone>
+                    <ProgressBar
+                        variant='info'
+                        now={processedFiles}
+                        min={0}
+                        max={numberOfFiles}
+                        label={processedFiles > 0 ? 'Uploading ' + processedFiles + '/' + numberOfFiles : null}
+                    />
+                </Col>
+            </Row>
+            <Row className="mt-5">
+                <Col>
+                    <input type="button" className="otjs-button otjs-button-red w-10"
+                        value={"See Errors (" + errors.length + ")"}
+                        onClick={() => setShowErrors(true)} />
+                </Col>
+            </Row>
+            <Row className="mt-5">
+                <Col>
+                    <TablePatientWithNestedStudiesAndSeries patients={buildImportTree()} />
+                </Col>
+            </Row>
+            <AnonExportDeleteSendButton onAnonClick={sendImportedToAnon}
+                onExportClick={sendImportedToExport}
+                onDeleteClick={sendImportedToDelete}
+            />
+        </div>
+    )
 }
-
-const mapDispatchToProps = {
-    addStudiesToExportList,
-    addStudiesToDeleteList,
-    addStudiesToAnonList
-
-}
-
-export default connect(null, mapDispatchToProps)(Import)
