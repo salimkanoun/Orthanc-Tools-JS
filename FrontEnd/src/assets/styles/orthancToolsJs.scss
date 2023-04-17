@@ -14,6 +14,12 @@ $color-orange-active: #BA7E25;
 $color-red: #E1325B;
 $color-red-active: #A02443;
 
+h1 {
+  color: $color-text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -908,7 +914,7 @@ code {
   width: calc(100% + 2px);
   height: calc(100% + 2px);
   outline: none;
-  box-shadow: 0 0 0 0.2rem rgb(0, 123, 255 / 25%);
+  //box-shadow: 0 0 0 0.2rem rgb(0, 123, 255 / 25%);
 }
 
 .form-control.form-control-search-select > div {

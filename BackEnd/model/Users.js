@@ -166,7 +166,7 @@ class Users {
             content: false,
             anon: false,
             export_local: false,
-            export_extern: false,
+            export_remote: false,
             query: false,
             auto_query: false,
             delete: false,
@@ -192,7 +192,7 @@ class Users {
                 if (role.content === false) role.content = currentRole.content
                 if (role.anon === false) role.anon = currentRole.anon
                 if (role.export_local === false) role.export_local = currentRole.export_local
-                if (role.export_extern === false) role.export_extern = currentRole.export_extern
+                if (role.export_remote === false) role.export_remote = currentRole.export_remote
                 if (role.query === false) role.query = currentRole.query
                 if (role.auto_query === false) role.auto_query = currentRole.auto_query
                 if (role.delete === false) role.delete = currentRole.delete

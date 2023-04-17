@@ -4,9 +4,7 @@ import { Row, Col, FormGroup, Form, Button } from 'react-bootstrap'
 import Select from 'react-select'
 import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks'
 import { keys } from '../../../model/Constant'
-/**
- * Form to declare or modify an AET
- */
+
 export default () => {
 
     const [name, setName] = useState('');
@@ -23,21 +21,14 @@ export default () => {
         { value: 'GE', label: 'GE' }
     ]
 
-    const manufacturerOptions = manufacturers.map((type) =>
-    ({
+    const manufacturerOptions = manufacturers.map((type) => ({
         value: type.value,
         label: type.label
-    })
-    )
+    }))
 
-    /**
-     * Fill manufacturer select choice in current state
-     * @param {*} item 
-     */
     const manufacturerChangeListener = (option) => {
         setManufacturer(option)
     }
-
 
     const sendAet = useCustomMutation(
         ({ name, aetName, ip, port, manufacturer }) => {
@@ -65,7 +56,6 @@ export default () => {
     return (
         <Form>
             <h2 className="card-title">New Aet</h2>
-
             <Row>
                 <Col>
                     <FormGroup>
@@ -81,7 +71,6 @@ export default () => {
                     </FormGroup>
                 </Col>
             </Row>
-
             <Row>
                 <Col>
                     <FormGroup>
@@ -89,7 +78,6 @@ export default () => {
                         <Form.Control type="text" value={ip} placeholder="IP adress" onChange={(event) => setIp(event.target.value)} />
                     </FormGroup>
                 </Col>
-
                 <Col>
                     <FormGroup>
                         <Form.Label>Port :</Form.Label>
@@ -97,18 +85,15 @@ export default () => {
                     </FormGroup>
                 </Col>
             </Row>
-
             <FormGroup>
                 <Form.Label>Manufacturer :</Form.Label>
                 <Select value={manufacturer} options={manufacturerOptions} onChange={manufacturerChangeListener} isClearable />
             </FormGroup>
-
             <FormGroup>
-                <Row className="justify-content-md-center">
+                <Row className="d-flex justify-content-end">
                     <Button onClick={onHandleSend} className='otjs-button otjs-button-blue'> Send </Button>
                 </Row>
             </FormGroup>
-
         </Form>
     )
 }

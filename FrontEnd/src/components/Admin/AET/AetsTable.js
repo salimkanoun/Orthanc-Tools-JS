@@ -9,7 +9,7 @@ import { keys } from '../../../model/Constant'
 /**
  * Table with known AETs details with Echo and Remove button
  */
-export default ({ aetsData }) => {
+export default ({ aetsData = [] }) => {
 
     const deleteAet = useCustomMutation(
         ({ name }) => apis.aets.deleteAet(name),

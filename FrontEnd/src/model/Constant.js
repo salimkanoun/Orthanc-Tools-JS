@@ -19,7 +19,9 @@ const keys = {
     LABELS_KEY : 'labels',
     OPTIONS_GROUP_NAME_KEY : 'optionsGroupName',
     OPTIONS_ASSOCIED_ROLE_KEY : 'optionsAssociedRole',
-    ASSOCIATIONS_KEY : 'associations'
+    ASSOCIATIONS_KEY : 'associations',
+    OPTIONS_KEY : 'options',
+    TIME : 'time',
 }
 
 const filter = {

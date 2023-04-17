@@ -3,8 +3,7 @@ import axios from "axios"
 const importDicom = {
 
     importDicom(dicomFile) {
-
-        return axios.post('/api/instances', dicomFile)
+        return axios.post('/api/instances', dicomFile, {headers : {'Content-Type' : 'application/dicom'}})
             .then(async (answer) => answer.data)
     },
 

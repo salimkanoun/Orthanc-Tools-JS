@@ -60,12 +60,12 @@ export default ({
             header: 'Validation Status',
             hidden: hideValidationButton,
             cell: ({ row }) => {
-                if (row.values.valid) {
-                    if (!row.values.approved) {
+                if (row.original.valid) {
+                    if (!row.original.approved) {
                         return (
                             <div className="text-center">
                                 <input type="button" className='otjs-button otjs-button-green w-7'
-                                    onClick={() => validationRobotHandler(row.values.id)}
+                                    onClick={() => validationRobotHandler(row.original.id)}
                                     value="Validate" />
                             </div>
                         )
@@ -83,7 +83,7 @@ export default ({
                 return (
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red w-10'
-                            onClick={() => deleteJobHandler(row.values.id)}
+                            onClick={() => deleteJobHandler(row.original.id)}
                             value="Remove Job" />
                     </div>
                 )

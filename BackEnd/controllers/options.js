@@ -58,8 +58,7 @@ const changeMode = async function(req, res) {
   const mode = await req.body.mode
   Options.changeMode(mode)
   res.json(true)
-}  
-
+}
 
 const setExportOption = async function(req, res){
   let body = req.body

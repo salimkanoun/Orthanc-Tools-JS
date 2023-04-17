@@ -22,7 +22,7 @@ module.exports = {
         type: Sequelize.BOOLEAN, 
         defaultValue: false
       },
-      export_extern: {
+      export_remote: {
         type: Sequelize.BOOLEAN, 
         defaultValue: false
       },
@@ -70,7 +70,7 @@ module.exports = {
         content: true, 
         anon: true, 
         export_local: true, 
-        export_extern: true,
+        export_remote: true,
         query: true,
         auto_query: true,
         delete: true, 
@@ -86,7 +86,7 @@ module.exports = {
         content: true, 
         anon: true, 
         export_local: true, 
-        export_extern: true,
+        export_remote: true,
         query: true,
         auto_query: true,
         delete: true, 

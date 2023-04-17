@@ -25,7 +25,7 @@ const {
     contentMidelware,
     anonMidelware,
     exportLocalMidelware,
-    exportExternMidelware,
+    exportRemoteMidelware,
     queryMidelware,
     autoQueryMidelware,
     deleteMidelware,
@@ -79,8 +79,8 @@ router.post('/tools/create-media-extended', [userAuthMidelware, exportLocalMidel
 router.post('/tools/create-dicom', [userAuthMidelware, importMidelware], reverseProxyPost)
 
 //Orthanc Peers Routes
-router.get('/peers*', [userAuthMidelware, exportExternMidelware], reverseProxyGet)
-router.post('/peers/*/store', [userAuthMidelware, exportExternMidelware], reverseProxyPost)
+router.get('/peers*', [userAuthMidelware, exportRemoteMidelware], reverseProxyGet)
+router.post('/peers/*/store', [userAuthMidelware, exportRemoteMidelware], reverseProxyPost)
 
 //Jobs to monitor orthanc
 router.get('/jobs*', [userAuthMidelware], reverseProxyGet)
@@ -145,7 +145,7 @@ router.post('/tasks/:username/anonymize', [userAuthMidelware, anonMidelware], ad
 router.post('/tasks/:username/delete', [userAuthMidelware, isCurrentUserOrAdminMidelWare], addDeleteTask)
 
 //FTP & WebDav Exports
-router.post('/tasks/:user/export', [userAuthMidelware, exportExternMidelware], addExportTask)
+router.post('/tasks/:user/export', [userAuthMidelware, exportRemoteMidelware], addExportTask)
 
 //Tasks
 //SK : ICI MANQUE LES MIDDELWARE

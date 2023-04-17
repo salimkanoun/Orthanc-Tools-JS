@@ -24,7 +24,7 @@ export default ({ roles, usernameProps }) => {
 
   const componentDidMount = async () => {
     try {
-      await getRoleLabels()
+      await getRoleLabels(role_name)
     } catch (err) { console.log(err) }
   }
 
@@ -32,7 +32,7 @@ export default ({ roles, usernameProps }) => {
    * Recuperate labels associate to User's role
    */
   const getRoleLabels = async () => {
-    let label_tab = await apis.rolelabel.getRoleLabels(username, role_name)
+    let label_tab = await apis.rolelabel.getRoleLabels(role_name)
     setLabels(label_tab)
   }
 

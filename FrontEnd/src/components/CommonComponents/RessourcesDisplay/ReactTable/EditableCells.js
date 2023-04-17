@@ -1,5 +1,5 @@
 import React from "react";
-import AsyncSelect from "react-select/async/dist/react-select.esm";
+//import AsyncSelect from "react-select/async/dist/react-select.esm";
 import { FormControl } from "react-bootstrap";
 
 
@@ -79,15 +79,18 @@ export function SelectCell({
         if (onDataChange) onDataChange(initialValue, value.value, values, id || accessor)
     }
 
-    return <div>
-        <AsyncSelect className={'react-select'} single defaultOptions value={value}
+    /*
+            <AsyncSelect className={'react-select'} single defaultOptions value={value}
             loadOptions={() => options().then(res => {
                 setValue(res.find(x => x.value === initialValue))
                 return res;
             })} onChange={onChange}
             style={{ 'min-width': '100px' }}
             menuPosition={'fixed'}
-        />
+        />*/
+    return <div>
+        
+
     </div>
 
 }

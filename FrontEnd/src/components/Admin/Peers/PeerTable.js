@@ -5,12 +5,13 @@ import apis from '../../../services/apis';
 import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks';
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
 import { keys } from '../../../model/Constant';
+import { errorMessage, successMessage } from '../../../tools/toastify';
 
 /**
  * Table with known Peers details with Echo and Remove butto
  */
 
-export default ({ peersData }) => {
+export default ({ peersData = [] }) => {
 
     const deletePeer = useCustomMutation(
         ({ name }) => apis.peers.deletePeer(name),
@@ -40,8 +41,8 @@ export default ({ peersData }) => {
                         onClick={() => {
                             const name = row.original.name
                             apis.peers.echoPeer(name)
-                                .then((response) => { toast.success('Version ' + name + ' = ' + response.Version, { data: { type: 'notification' } }) })
-                                .catch((error) => { toast.error(error.statusText, { data: { type: 'notification' } }) })
+                                .then((response) => { successMessage('Version ' + name + ' = ' + response.Version) })
+                                .catch((error) => { errorMessage(error.statusText) })
                         }} > Echo </Button>
                 )
             })

@@ -20,7 +20,7 @@ axios.interceptors.response.use(
             toast.error('Session expired. Please reauthenticate.', {data:{type:'notification'}})
             store.dispatch(logout())
         }
-        return Promise.reject(error)
+        return Promise.reject(error.response ?? error)
     }
 )
 

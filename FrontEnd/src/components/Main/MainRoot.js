@@ -19,24 +19,18 @@ import RobotView from '../AutoQuery/Connected_Component/RobotView';
 import Footer from './Footer';
 import { Row, Col, Container } from 'react-bootstrap';
 import ToolsPanel from './ToolsPanel';
-import NotificationCenter from '../NotificationCenter/NotificationCenter';
 
 const MainRoot = ({ onLogout, username, roles }) => {
 
     return (
         <>
-            <Container>
+            <Container fluid>
                 <Row>
                     <Col xs={"auto"} sm={"auto"}>
                         <NavBar onLogout={onLogout} username={username} roles={roles} />
                     </Col>
 
                     <Col >
-                        <Row >
-                            <div className="d-flex justify-content-end">
-                                <NotificationCenter />
-                            </div>
-                        </Row>
                         <Row>
                             <ToolsPanel roles={roles} apercu />
                         </Row>

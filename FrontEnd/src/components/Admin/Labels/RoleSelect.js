@@ -1,57 +1,55 @@
 import Select from 'react-select';
-import { useEffect, useState } from 'react';
+import Spinner from '../../CommonComponents/Spinner';
+
 import apis from "../../../services/apis";
+import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
+import { errorMessage, successMessage } from '../../../tools/toastify';
+import { keys } from '../../../model/Constant';
 
-export default ({ labelProps, username }) => {
+export default ({ labelName }) => {
 
-    const [selected, setSelected] = useState([])
-    const [label, setLabel] = useState(labelProps)
-    const [options, setOptions] = useState([])
-
-    useEffect(() => {
-        const getRoles = async () => {await apis.role.getRoles()}
-        let roles = getRoles()
-        for (var i = 0; i < roles.length; i++) {
-            roles[i].value = roles[i].name
-            roles[i].label = roles[i].value
+    const { data: optionRoles, isLoading: isLoadingAllRoles } = useCustomQuery(
+        [keys.ROLES_KEY],
+        () => apis.role.getRoles(),
+        undefined,
+        (answer) => {
+            return answer.map((role) => {
+                return ({
+                    value: role.name,
+                    label: role.name
+                })
+            })
         }
+    )
 
-        const getLabelRoles = async () => {await apis.rolelabel.getLabelRoles(label)}
-        let selectedRoles = getLabelRoles()
-        for (var j = 0; j < selectedRoles.length; j++) {
-            selectedRoles[j].value = selectedRoles[j].role_name
-            selectedRoles[j].label = selectedRoles[j].value
+    const { data: labelRoleOptions, isLoading: isLoadingRoles } = useCustomQuery(
+        [keys.LABELS_KEY, labelName],
+        () => apis.rolelabel.getLabelRoles(labelName),
+        undefined,
+        (data) => data.map(role => ({ label: role, value: role }))
+    )
+
+    const mutateDeleteRoleLabel = useCustomMutation(
+        ({ roleName, labelName }) => apis.rolelabel.deleteRoleLabel(roleName, labelName),
+        [[keys.LABELS_KEY, labelName]],
+        () => successMessage('Role Removed'),
+        (error) => errorMessage(error?.data?.errorMessage, 'Failed')
+    )
+
+    const createRoleLabel = useCustomMutation(
+        ({ roleName, labelName }) => apis.rolelabel.createRoleLabel(roleName, labelName),
+        [[keys.LABELS_KEY, labelName]],
+        () => successMessage('Role Added'),
+        (error) => errorMessage(error?.data?.errorMessage, 'Failed')
+    )
+
+    const handleOnChange = (value, metadata) => {
+        if(metadata.action === "remove-value"){
+            mutateDeleteRoleLabel.mutate({labelName : labelName, roleName : metadata.removedValue.value})
         }
-        setOptions(roles)
-        setSelected(selectedRoles)
-    }, []);
-
-
-    const handleOnChange = async (value) => {
-
-        var selected = selected
-        var difference = []
-        if (value.length < selected.length) {
-            for (let i = 0; i < selected.length; i++) {
-                if (!(value.includes(selected[i]))) {
-                    difference.push(selected[i])
-                }
-            }
-            console.log('removed role: ', difference[0].value, ' | to label: ', label)
-            await apis.rolelabel.deleteRoleLabel(username, difference[0].value, label)
+        if(metadata.action ==="select-option"){
+            createRoleLabel.mutate({labelName : labelName, roleName : metadata.option.value})
         }
-        else if (value.length > selected.length) {
-            for (let i = 0; i < value.length; i++) {
-                if (!(selected.includes(value[i]))) {
-                    difference.push(value[i])
-                }
-            }
-            console.log('added role:', difference[0].value, ' | to label: ', label)
-            await apis.rolelabel.createRoleLabel(username, difference[0].value, label)
-        } else {
-            console.error('Selector Change Error : Selected Values didn\'t change')
-        }
-        setSelected(value)
     }
 
     const choiceStyle = {
@@ -69,16 +67,17 @@ export default ({ labelProps, username }) => {
         }))
     };
 
+    if (isLoadingAllRoles || isLoadingRoles) return <Spinner />
+
     return (
-        <div>
-            <Select
-                closeMenuOnSelect={false}
-                isMulti
-                options={options}
-                onChange={handleOnChange.bind(this)}
-                value={selected}
-                style={choiceStyle}
-            />
-        </div>
+        <Select
+            closeMenuOnSelect={false}
+            isMulti
+            options={optionRoles}
+            value={labelRoleOptions}
+            style={choiceStyle}
+            onChange = {handleOnChange}
+            isClearable = {false}
+        />
     );
 }

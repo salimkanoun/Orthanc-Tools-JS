@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
 import Select from 'react-select'
-import { keys } from '../../../model/Constant'
 
+import Spinner from '../../CommonComponents/Spinner'
 import apis from '../../../services/apis'
 import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
-import Spinner from '../../CommonComponents/Spinner'
-
+import { errorMessage, successMessage } from '../../../tools/toastify'
+import { keys } from '../../../model/Constant'
 
 export default () => {
 
@@ -85,7 +85,7 @@ export default () => {
         ({ burner_monitored_path, burner_viewer_path, burner_label_path, burner_manifacturer,
             burner_monitoring_level, burner_support_type, burner_date_format,
             burner_delete_study_after_sent, burner_transfer_syntax }) => {
-            apis.options.setBurnerOptions(
+            return apis.options.setBurnerOptions(
                 burner_monitored_path,
                 burner_viewer_path,
                 burner_label_path,
@@ -97,7 +97,9 @@ export default () => {
                 burner_transfer_syntax
             )
         },
-        [[keys.BURNER_KEY]]
+        [[keys.BURNER_KEY]],
+        () => successMessage("Updated"),
+        () => errorMessage('Error')
     )
 
 
@@ -109,13 +111,10 @@ export default () => {
     }
 
     const getSelectedObject = (objectArray, searchedValue) => {
-        let filteredArray = objectArray.filter(item => {
-            return item.value === searchedValue ? true : false
-        })
-        return filteredArray[0]
+        return objectArray.find(option => option.value === searchedValue)
     }
 
-    if (isLoading) return <Spinner/>
+    if (isLoading) return <Spinner />
 
     return (
         <Form>
@@ -146,7 +145,7 @@ export default () => {
                 <Col>
                     <FormGroup>
                         <Form.Label>Transfer Syntax :</Form.Label>
-                        <Select value={getSelectedObject(transferSyntaxOptions, burner.burner_transfer_syntax)} options={transferSyntaxOptions} onChange={(event) => handleChange('burner_transfer_syntax', event)} single />
+                        <Select value={getSelectedObject(transferSyntaxOptions, burner.burner_transfer_syntax)} options={transferSyntaxOptions} onChange={(option) => handleChange('burner_transfer_syntax', option.value)} />
                     </FormGroup>
                 </Col>
             </Row>
@@ -155,13 +154,13 @@ export default () => {
                 <Col>
                     <FormGroup>
                         <Form.Label>Manufacturer : </Form.Label>
-                        <Select value={getSelectedObject(manufacturerOptions, burner.burner_manifacturer)} options={manufacturerOptions} onChange={(event) => handleChange('burner_manifacturer', event)} single />
+                        <Select value={getSelectedObject(manufacturerOptions, burner.burner_manifacturer)} options={manufacturerOptions} onChange={(option) => handleChange('burner_manifacturer', option.value)} />
                     </FormGroup>
                 </Col>
                 <Col>
                     <FormGroup>
                         <Form.Label>Monitoring Level : </Form.Label>
-                        <Select value={getSelectedObject(levelOptions, burner.burner_monitoring_level)} options={levelOptions} onChange={(event) => handleChange('burner_monitoring_level', event)} />
+                        <Select value={getSelectedObject(levelOptions, burner.burner_monitoring_level)} options={levelOptions} onChange={(option) => handleChange('burner_monitoring_level', option.value)} />
                     </FormGroup>
                 </Col>
             </Row>
@@ -170,13 +169,13 @@ export default () => {
                 <Col>
                     <FormGroup>
                         <Form.Label>Date Format :</Form.Label>
-                        <Select value={getSelectedObject(dateFormatOptions, burner.burner_date_format)} options={dateFormatOptions} onChange={(event) => handleChange('burner_date_format', event)} />
+                        <Select value={getSelectedObject(dateFormatOptions, burner.burner_date_format)} options={dateFormatOptions} onChange={(option) => handleChange('burner_date_format', option.value)} />
                     </FormGroup>
                 </Col>
                 <Col>
                     <FormGroup>
                         <Form.Label>Support Type :</Form.Label>
-                        <Select value={getSelectedObject(supportType, burner.burner_support_type)} options={supportType} onChange={(event) => handleChange('burner_support_type', event)} single />
+                        <Select value={getSelectedObject(supportType, burner.burner_support_type)} options={supportType} onChange={(option) => handleChange('burner_support_type', option.value)} />
                     </FormGroup>
                 </Col>
             </Row>
@@ -186,12 +185,12 @@ export default () => {
                     <Form.Label>Delete Original Images From Orthanc :</Form.Label>
                 </Col>
                 <Col>
-                    <Form.Check Check={burner.burner_delete_study_after_sent} onChange={(event) => handleChange('burner_delete_study_after_sent', event)} />
+                    <Form.Check checked={burner.burner_delete_study_after_sent} onChange={(event) => handleChange('burner_delete_study_after_sent', event.target.checked)} />
                 </Col>
             </Row>
 
             <FormGroup>
-                <Row className="justify-content-md-center">
+                <Row className="d-flex justify-content-end">
                     <Button onClick={() => sendForm.mutate({ ...burner })} className='otjs-button otjs-button-blue'> Send </Button>
                 </Row>
             </FormGroup>

@@ -10,8 +10,6 @@ import Spinner from '../../../CommonComponents/Spinner';
 import AssociationTable from './AssociationTable';
 
 
-
-
 export default () => {
 
     const [show, setShow] = useState(false)

@@ -65,11 +65,11 @@ export default ({ onLogout, roles }) => {
                             </li>
 
                             <li>
-                                <Nav.Link className={getLinkClass('auto-query')} onClick={() => selectTabHandler(AUTO_QUERY)} name='auto_query' /*hidden={!roles.auto_query}*/><i className="fas fa-recycle icone"></i> {opened ? '  Auto Retrieve' : ''} </Nav.Link>
+                                <Nav.Link className={getLinkClass('auto-query')} onClick={() => selectTabHandler(AUTO_QUERY)} name='auto_query' /*hidden={!roles.autoQuery}*/><i className="fas fa-recycle icone"></i> {opened ? '  Auto Retrieve' : ''} </Nav.Link>
                             </li>
 
                             <li>
-                                <Nav.Link className={getLinkClass('cd-burner')} onClick={() => selectTabHandler(BURNER)} name='burner' /*hidden={!roles.cd_burner}*/><i className="fas fa-compact-disc icone"></i>{opened ? '  CD-Burner' : ''}</Nav.Link>
+                                <Nav.Link className={getLinkClass('cd-burner')} onClick={() => selectTabHandler(BURNER)} name='burner' /*hidden={!roles.cdBurner}*/><i className="fas fa-compact-disc icone"></i>{opened ? '  CD-Burner' : ''}</Nav.Link>
                             </li>
 
                             <li>

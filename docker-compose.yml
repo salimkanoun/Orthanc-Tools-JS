@@ -6,7 +6,7 @@ services:
     
     redis:
         image: redis:alpine
-        ports: ["6739:6739"]
+        ports: ["6379:6379"]
 
     postgres:
         container_name: postgres

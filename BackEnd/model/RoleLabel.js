@@ -4,29 +4,27 @@ const {OTJSConflictException} = require('../Exceptions/OTJSErrors')
 class RoleLabel {
     /**
      * Create a RoleLabel
-     * @param {String} role_name name of the role
-     * @param {String} label_name name of the label
+     * @param {String} roleName name of the role
+     * @param {String} labelName name of the label
      * @returns 
      */
-    static async createRoleLabel(role_name, label_name) {
-        const RoleLabel = await RoleLabelRepo.getRoleLabel(role_name, label_name)
-
-
+    static async createRoleLabel(roleName, labelName) {
+        const RoleLabel = await RoleLabelRepo.getRoleLabel(roleName, labelName)
         if (RoleLabel) {
             throw new OTJSConflictException('This association RoleLabel already exist');
         }
 
-        return RoleLabelRepo.create(role_name, label_name)
+        return RoleLabelRepo.create(roleName, labelName)
     }
 
     /**
      * RoleLabel to delete
-     * @param {String} role_name name of the role
-     * @param {String} label_name name of the label
+     * @param {String} roleName name of the role
+     * @param {String} labelName name of the label
      * @returns 
      */
-    static async deleteRoleLabel(role_name, label_name) {
-        return RoleLabelRepo.delete(role_name, label_name)
+    static async deleteRoleLabel(roleName, labelName) {
+        return RoleLabelRepo.delete(roleName, labelName)
     }
 
     /**
@@ -48,11 +46,11 @@ class RoleLabel {
 
     /**
      * Get all roles linked to one label
-     * @param {String} label_name name of the label
+     * @param {String} labelName name of the label
      * @returns 
      */
-    static async getRolesFromLabel(label_name) {
-        return RoleLabelRepo.getRolesByLabel(label_name)
+    static async getRolesFromLabel(labelName) {
+        return RoleLabelRepo.getRolesByLabel(labelName)
     }
 }
 

@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     content: DataTypes.BOOLEAN,
     anon: DataTypes.BOOLEAN,
     export_local: DataTypes.BOOLEAN,
-    export_extern: DataTypes.BOOLEAN,
+    export_remote: DataTypes.BOOLEAN,
     query: DataTypes.BOOLEAN,
     auto_query: DataTypes.BOOLEAN,
     delete: DataTypes.BOOLEAN,

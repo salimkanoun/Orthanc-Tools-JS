@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 
 import AnonTool from './AnonTool'
 import ExportTool from './ExportTool'
+import NotificationCenter from '../NotificationCenter/NotificationCenter'
 
 
 export default ({roles, apercu}) => {
@@ -26,7 +27,7 @@ export default ({roles, apercu}) => {
     const refAnon = React.createRef()
     const refDelete = React.createRef()
     return (
-        <div className='d-flex justify-content-end'>
+        <div className='d-flex justify-content-end align-items-center'>
             <span className="mr-1" hidden={!roles.anon}>
                 <Link id='anon' ref={refAnon} type="button" className="btn otjs-btn-tools otjs-btn-tools-blue w-12"
                     onMouseOver={apercu ? () => setShow('anon') : null} to='/anonymize'>
@@ -37,7 +38,7 @@ export default ({roles, apercu}) => {
                 <AnonTool target={refAnon} show={show === 'anon' ? true : false}
                     onHide={closePopovers} />
             </span>
-            <span className="mr-1" hidden={!roles.export_extern || !roles.export_local}>
+            <span className="mr-1" hidden={!roles.exportRemote || !roles.exportLocal}>
                 <Link id='export' ref={refExport} type="button" className="btn otjs-btn-tools otjs-btn-tools-orange w-12"
                     onMouseOver={apercu ? () => setShow('export') : null} to='/export'>
                     <i class="fas fa-file-export me-2"></i> Export
@@ -52,6 +53,10 @@ export default ({roles, apercu}) => {
                     Delete <span className="badge bg-light text-dark">{store.deleteList.length}</span>
                 </Link>
             </span>
+            <span>
+                <NotificationCenter />
+            </span>
+            
         </div>
     )
 }

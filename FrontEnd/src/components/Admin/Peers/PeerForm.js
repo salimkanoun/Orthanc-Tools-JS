@@ -24,7 +24,7 @@ export default () => {
 
 
     return (
-        <Form>
+        <Form autoComplete='off'>
             <h2 className="card-title">Add Peer</h2>
 
             <FormGroup>
@@ -52,18 +52,18 @@ export default () => {
                 <Col>
                     <FormGroup>
                         <Form.Label>Username : </Form.Label>
-                        <Form.Control type="text" value={username} placeholder="username" onChange={(event) => setUsername(event.target.value)} />
+                        <Form.Control autoComplete='off' type="text" value={username} placeholder="username" onChange={(event) => setUsername(event.target.value)} />
                     </FormGroup>
                 </Col>
                 <Col>
                     <FormGroup>
                         <Form.Label >Password : </Form.Label>
-                        <Form.Control type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+                        <Form.Control autoComplete='off' type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
                     </FormGroup>
                 </Col>
             </Row>
 
-            <FormGroup>
+            <FormGroup className='d-flex justify-content-end'>
                 <Button className='otjs-button otjs-button-blue' onClick={() => sendPeer.mutate({ name, ip, port, username, password })}> Send </Button>
             </FormGroup>
         </Form>
