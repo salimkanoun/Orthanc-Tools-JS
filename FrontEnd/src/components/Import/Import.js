@@ -2,18 +2,19 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from "react-redux"
 import { Prompt } from 'react-router-dom'
 
-import { Modal, Row, Col, ProgressBar } from 'react-bootstrap'
 import Dropzone from 'react-dropzone'
+import { Modal, Row, Col, ProgressBar } from 'react-bootstrap'
 
 import TableImportError from './TableImportError'
 import AnonExportDeleteSendButton from './AnonExportDeleteSendButton'
+import TablePatientWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudiesAndSeries'
 
 import { treeToPatientArray, treeToStudyArray } from '../../tools/processResponse'
 import { addStudiesToExportList } from '../../actions/ExportList'
 import { addStudiesToDeleteList } from '../../actions/DeleteList'
 import { addStudiesToAnonList } from '../../actions/AnonList'
 import apis from '../../services/apis'
-import TablePatientWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudiesAndSeries'
+
 
 export default () => {
 
@@ -126,10 +127,10 @@ export default () => {
 
         if (isExistingSerie) {
             setSeriesObjects((series) => {
-                series[orthancAnswer.ParentSeries]['NumberOfInstances'] = ++series[orthancAnswer.ParentSeries]['NumberOfInstances']
+                series[orthancAnswer.ParentSeries]['NumberOfInstances']++
                 return series
             })
-
+            return
         }
 
         let isExistingStudy = isKnownStudy(orthancAnswer.ParentStudy)
@@ -143,6 +144,7 @@ export default () => {
         addSeriesToState(seriesDetails)
 
     }
+    console.log(seriesObjects)
 
     const buildImportTree = () => {
         let importedTree = {}

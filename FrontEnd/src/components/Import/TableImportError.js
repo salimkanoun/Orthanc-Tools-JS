@@ -20,8 +20,6 @@ export default ({ data }) => {
     ]
 
     return (
-        <CommonTableV8 columns={columns} data={data} canSort />
+        <CommonTableV8 columns={columns} data={data} canSort paginated />
     )
-
-
 }
