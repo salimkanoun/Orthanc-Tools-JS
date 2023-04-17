@@ -1,10 +1,11 @@
+const LabelEntity = require('../model/Entities/LabelEntity')
 var Labels = require('../model/Labels')
 /**
  * Create a Label
  * @param {*} req express request
  * @param {*} res request result
  */
-const createLabel = async function(req,res){
+const createLabel = async function (req, res) {
   await Labels.createLabels(req.params.name)
   res.sendStatus(201)
 }
@@ -14,9 +15,10 @@ const createLabel = async function(req,res){
  * @param {*} req express request
  * @param {*} res request result
  */
-const getLabels = async function(req,res){
+const getLabels = async function (req, res) {
   let labels = await Labels.getAllLabels()
-  res.json(labels)
+  answer = labels.map(label => LabelEntity.createRolefromDB(label))
+  res.json(answer)
 }
 
 /**
@@ -24,9 +26,9 @@ const getLabels = async function(req,res){
  * @param {*} req express request
  * @param {*} res request result
  */
-const modifyLabel = async function(req,res){
+const modifyLabel = async function (req, res) {
   const body = req.body
-  await Labels.modifyLabels(req.params.name,body.label_name)
+  await Labels.modifyLabels(req.params.name, body.labelName)
   res.sendStatus(200)
 }
 
@@ -35,9 +37,9 @@ const modifyLabel = async function(req,res){
  * @param {*} req express request
  * @param {*} res request result
  */
-const deleteLabel = async function(req,res){
+const deleteLabel = async function (req, res) {
   await Labels.deleteLabels(req.params.name)
   res.sendStatus(200)
 }
 
-module.exports = {createLabel,getLabels,modifyLabel,deleteLabel}
+module.exports = { createLabel, getLabels, modifyLabel, deleteLabel }

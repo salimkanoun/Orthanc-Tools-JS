@@ -1,196 +1,254 @@
-import React, {Component, createRef, Fragment} from 'react'
+import React, { createRef, Fragment, useCallback, useMemo, useState } from 'react'
 import apis from '../../services/apis';
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 
 import MonitorJob from '../../tools/MonitorJob'
-import ModalModify from './ModalModify';
+import { Button, Container, Form, Modal, Row } from 'react-bootstrap';
+import { filterProperties } from '../../model/Utils';
+import TagTable2 from '../CommonComponents/RessourcesDisplay/ReactTable/TagTable2';
+import ConstantLevel from './ConstantLevel';
 
 
-export default class Modify extends Component {
+export default ({
+    hidden,
+    level,
+    orthancID,
+    refresh,
+    data
+}
+) => {
 
-    state = {
-        show: false,
-        modification: {},
-        deletes: [],
-        toasts: {},
-        keepSource: localStorage.getItem('remember') === 'true' ? localStorage.getItem('keepSource') === 'true' : false,
-        removePrivateTags: localStorage.getItem('remember') === 'true' ? localStorage.getItem('removePrivateTags') === 'true' : false,
+    const keysToKeep = (level) => {
+        switch (level) {
+            case ConstantLevel.PATIENTS:
+                return [
+                    'PatientName',
+                    'PatientID',
+                    'PatientBirthDate',
+                    'PatientSex',
+                    'OtherPatientIDs'
+                ]
+            case ConstantLevel.STUDIES:
+                return [
+                    'StudyDate',
+                    'StudyTime',
+                    'StudyID',
+                    'StudyDescription',
+                    'AccessionNumber',
+                    'RequestedProcedureDescription',
+                    'InstitutionName',
+                    'RequestingPhysician',
+                    'ReferringPhysicianName'
+                ]
+            case ConstantLevel.SERIES:
+                return [
+                    'SeriesDate',
+                    'SeriesTime',
+                    'Modality',
+                    'Manufacturer',
+                    'StationName',
+                    'SeriesDescription',
+                    'BodyPartExamined',
+                    'SequenceName',
+                    'ProtocolName',
+                    'SeriesNumber'
+                ]
+            default:
+                toast.error("Wrong level", {data:{type:'notification'}})
+        }
     }
 
-    updateToast = (id, progress) => {
-        toast.update(this.state.toasts[id].current, {
+    const [show, setShow] = useState(false);
+    const [modifications, setModifications] = useState({}); //[key, value]
+    const [deletes, setDeletes] = useState([]); //[key]
+    const [keepSource, setKeepSource] = useState(localStorage.getItem('keepSource') === 'true' ? true : false);
+    const [removePrivateTags, setRemovePrivateTags] = useState(localStorage.getItem('removePrivateTags') === 'true' ? true : false);
+
+    const [toasts, setToasts] = useState({});
+
+    const [dataFilter, setDataFilter] = useState([])
+
+    const filterData = () => {
+        let dataFilters = filterProperties(data, keysToKeep(level))
+        setDataFilter(dataFilters);
+    }
+
+    const updateToast = useCallback((jobId, progress) => {
+        toast.update(toasts[jobId], {containerId :'jobs'},
+         {
             type: toast.TYPE.INFO,
             autoClose: false,
-            render: 'Modify progress : ' + Math.round(progress) + '%'
+            render: 'Modify progress : ' + Math.round(progress) + '%',
+            data:{type:'jobs'},
         })
-    }
+    }, [Math.random()])
 
-    successToast = (id) => {
-        toast.update(this.state.toasts[id].current, {
+
+
+    const successToast = (jobId) => {
+        toast.update(toasts[jobId], {containerId :'jobs'},
+        {
             type: toast.TYPE.INFO,
             autoClose: 5000,
             render: 'Modify Done',
-            className: 'bg-success'
+            className: 'bg-success',
+            data:{type:'jobs'}
         })
     }
 
-    failToast = (id) => {
-        toast.update(this.state.toasts[id].current, {
+    const failToast = (jobId) => {
+        toast.update(toasts[jobId], {containerId :'jobs'},
+        {
             type: toast.TYPE.INFO,
             autoClose: 5000,
             render: 'Modify fail',
-            className: 'bg-danger'
+            className: 'bg-danger',
+            data:{type:'jobs'}
         })
     }
 
-    openToast = (id) => {
-        this.setState(prevState => ({
-            toasts: {
-                ...prevState.toasts,
-                [id]: {current: toast("Notify progress : 0%", {autoClose: false, className: 'bg-info'})}
-            }
-        }))
-    }
-
-    openModify = () => {
-        this.setState({modification: {}, show: true})
-        let rows = []
-        let forbidden = ['studies', 'OtherPatientIDs', 'Instances', 'StudyOrthancID', 'PatientOrthancID', 'SeriesOrthancID', 'StudyID', 'SeriesInstanceUID', 'StudyInstanceUID']
-        for (let tag in this.props.row) {
-            if (!forbidden.includes(tag))
-                rows.push(
-                    {
-                        'TagName': tag,
-                        'Value':
-                            this.props.row[tag] ?
-                                this.props.row[tag] : '',
-                        deletable: false
-                    })
+    const createToast = (jobId) => {
+        const toastId = toast.info("Modify progress : 0%", {containerId :'jobs'},
+        { autoClose: false, data:{type:'jobs' }})
+        setToasts({
+            ...toasts,
+            [jobId]: toastId
         }
-        this.setState({data: rows})
+        )
     }
 
-    checkRemember = () => {
-        localStorage.setItem('keepSource', this.state.keepSource)
-        localStorage.setItem('removePrivateTags', this.state.removePrivateTags)
-
-        this.setState({
-            removePrivateTags: localStorage.getItem('removePrivateTags') === 'true',
-            keepSource: localStorage.getItem('keepSource') === 'true'
-        })
+    const openModify = () => {
+        filterData()
+        setModifications({})
+        setShow(true)
     }
 
-    handleDataChange = (oldValue, newValue, row, column) => {
-        let modification = this.state.modification;
-        let deletes = this.state.deletes;
-        if (column === 'Value') {
-            modification[row.TagName] = newValue;
+    const checkRemember = () => {
+        localStorage.setItem('keepSource', keepSource)
+        localStorage.setItem('removePrivateTags', removePrivateTags)
+    }
+
+    const onDataUpdate = (key, value) => {
+        if (value == '') value = null;
+        if (value != null) {
+            setModifications((state) => {
+                return {
+                    ...state,
+                    [key]: value
+                }
+            })
+        }
+
+    }
+
+    const onDeleteTag = (tagName, deleted) => {
+        if (deleted) {
+            setDeletes((state) => {
+                let newState = [...state]
+                if (!newState.includes(tagName)) newState.push(tagName)
+                return newState
+            })
         } else {
-            if (newValue) {
-                deletes.push(row.TagName);
-            } else {
-                deletes = deletes.filter(x => x !== row.TagName);
-            }
+            setDeletes((state) => {
+                let newState = [...state]
+                if (newState.includes(tagName)) newState = newState.filter(name => (name !== tagName))
+                return newState
+            })
         }
-        const data = this.state.data;
-        data.find(x => x.TagName === row.TagName)[column] = newValue;
-
-        this.setState({
-            modification,
-            data: [...data],
-            deletes
-        })
     }
 
-    modify = async () => {
-        this.checkRemember()
+    const modify = async () => {
+        checkRemember()
         //If no change done, simply return
-        if (Object.keys(this.state.modification).length === 0) {
-            toast.error('No Modification set')
+        if (Object.keys(modifications).length === 0 && deletes.length === 0) {
+            toast.error('No Modification set', {data:{type:'notification'}})
             return
         }
-
         let jobAnswer = ''
-        switch (this.props.level) {
-            case 'patients':
-                if (!this.state.modification.PatientID || this.state.modification.PatientID === '')
+        switch (level) {
+            case ConstantLevel.PATIENTS:
+                if (modifications?.PatientID == null)
                     alert('PatientID can\'t be empty or the same as before!')
                 else {
-                    jobAnswer = await apis.content.modifyPatients(this.props.orthancID, this.state.modification, this.state.deletes, this.state.removePrivateTags, this.state.keepSource)
-                    this.onHide()
+                    jobAnswer = await apis.content.modifyPatients(orthancID, modifications, deletes, removePrivateTags, keepSource)
+                    setShow(false)
                 }
                 break
-            case 'studies':
-                jobAnswer = await apis.content.modifyStudy(this.props.orthancID, this.state.modification, this.state.deletes, this.state.removePrivateTags, this.state.keepSource)
-                this.onHide()
+            case ConstantLevel.STUDIES:
+                jobAnswer = await apis.content.modifyStudy(orthancID, modifications, deletes, removePrivateTags, keepSource)
+                setShow(false)
                 break
-            case 'series':
-                jobAnswer = await apis.content.modifySeries(this.props.orthancID, this.state.modification, this.state.deletes, this.state.removePrivateTags, this.state.keepSource)
-                this.onHide()
+            case ConstantLevel.SERIES:
+                jobAnswer = await apis.content.modifySeries(orthancID, modifications, deletes, removePrivateTags, keepSource)
+                setShow(false)
                 break
             default:
-                toast.error("Wrong level")
+                toast.error("Wrong level", {data:{type:'notification'}})
         }
         if (jobAnswer !== '') {
-            let id = jobAnswer.ID
-            let jobMonitoring = new MonitorJob(id)
-            let self = this
-            jobMonitoring.onUpdate(function (progress) {
-                self.updateToast(id, progress)
+            let jobId = jobAnswer.ID
+            let jobMonitoring = new MonitorJob(jobId)
+
+            jobMonitoring.onUpdate( (progress)=> {
+                updateToast(jobId, progress)
             })
 
             jobMonitoring.onFinish(function (state) {
                 if (state === MonitorJob.Success) {
-                    self.successToast(id)
-                    self.props.refresh()
+                    successToast(jobId)
+                    refresh()
                 } else if (state === MonitorJob.Failure) {
-                    self.failToast(id)
+                    failToast(jobId)
                 }
-                self.job = undefined
             })
-            this.setState(prevState => ({toasts: {...prevState.toasts, [id]: createRef()}}))
-            this.openToast(id)
+            createToast(jobId)
             jobMonitoring.startMonitoringJob()
-            this.job = jobMonitoring
         }
     }
 
-    onHide = () => {
-        this.setState({
-            show: false
-        })
-    }
+    if (hidden) return <></>
 
-    afterSaveCell = (oldValue, newValue, row, column) => {
-        this.setState(prevState => ({
-            modification: {
-                ...prevState.modification,
-                [row.TagName]: row.Value
-            }
-        }))
-    }
+    return (
+        <Fragment>
+            <Button className='dropdown-item bg-orange' onClick={openModify}>Modify</Button>
 
-    render = () => {
+            <Modal show={show} onHide={() => setShow(false)} onClick={(e) => e.stopPropagation()} size='xl'>
+                <Modal.Header closeButton>
+                    <Modal.Title> Modify {level}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <TagTable2 data={dataFilter} onDataUpdate={onDataUpdate} onDeleteTag={onDeleteTag} modifications={modifications} deleted={deletes} />
+                    <Container>
+                        <Row>
+                            <Form.Group>
+                                <Form.Label>
+                                    Removing private tags
+                                </Form.Label>
+                                <Form.Check
+                                    checked={removePrivateTags}
+                                    onClick={() => setRemovePrivateTags(!removePrivateTags)}
+                                />
+                            </Form.Group>
+                        </Row>
+                        <Row>
+                            <Form.Group>
+                                <Form.Label>
+                                    Keep Source
+                                </Form.Label>
+                                <Form.Check
+                                    checked={keepSource}
+                                    onClick={() => setKeepSource(!keepSource)}
+                                />
+                            </Form.Group>
+                        </Row>
+                    </Container>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button className='otjs-button otjs-button-orange me-5' onClick={() => modify()}>Modify</Button>
+                    <Button className='otjs-button otjs-button-red' onClick={() => setShow(false)}>Cancel</Button>
+                </Modal.Footer>
+            </Modal>
+        </Fragment>
+    )
 
-        var render = <></>
-        if (this.props.hidden !== true) {
-            render = <Fragment>
-                <button className='dropdown-item bg-orange' type='button' onClick={this.openModify}>Modify</button>
-                <ModalModify
-                    show={this.state.show}
-                    onHide={() => this.setState({show: false})}
-                    data={this.state.data}
-                    level={this.props.level}
-                    defaultCheckedPrivateTags={this.state.removePrivateTags}
-                    onClickPrivateTags={() => this.setState(prevState => ({removePrivateTags: !prevState.removePrivateTags}))}
-                    defaultCheckedKeepSource={this.state.keepSource}
-                    onClickKeepSource={() => this.setState(prevState => ({keepSource: !prevState.keepSource}))}
-                    onClickRemember={() => this.setState(prevState => ({remember: !prevState.remember}))}
-                    onDataUpdate={this.handleDataChange}
-                    modify={() => this.modify()}
-                />
-            </Fragment>
-        }
-        return render
-    }
 }

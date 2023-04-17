@@ -1,5 +1,4 @@
-import React, {useMemo} from 'react';
-import {connect} from 'react-redux'
+import React, { useCallback, useMemo, useState } from 'react';
 import {
     commonColumns,
     patientColumns,
@@ -8,17 +7,18 @@ import {
 } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
 import NestedTable from "../../CommonComponents/RessourcesDisplay/ReactTable/NestedTable";
 import apis from "../../../services/apis";
-import {addManualQuerySeriesDetails} from "../../../actions/ManualQuery";
- 
+import TableResultSeries from './TableResultSeries';
 
-function TableResult({results, style, addManualQuerySeriesDetails}) {
-    style = style || {};
+export default ({ studiesData, style = {} }) => {
+
+    const [series, setSeries] = useState({})
+    
     const columns = useMemo(() => [
         commonColumns.RAW,
         studyColumns.ORTHANC_ID,
-        studyColumns.INSTANCE_UID,
-        patientColumns.NAME(),
-        patientColumns.ID(),
+        studyColumns.STUDY_INSTANCE_UID,
+        patientColumns.PARENT_NAME(),
+        patientColumns.PARENT_ID(),
         studyColumns.DATE,
         studyColumns.DESCRIPTION,
         studyColumns.REQUESTED_PROCEDURE,
@@ -26,23 +26,10 @@ function TableResult({results, style, addManualQuerySeriesDetails}) {
         seriesColumns.NB_SERIES_INSTANCES,
         commonColumns.AET,
         studyColumns.RETRIEVE
-        , {
-            accessor: 'seriesDetails',
-            lazy: true,
-            table: [
-                commonColumns.RAW,
-                seriesColumns.ORTHANC_ID,
-                seriesColumns.DESCRIPTION,
-                seriesColumns.MODALITY,
-                seriesColumns.SERIES_NUMBER,
-                seriesColumns.NB_SERIES_INSTANCES,
-                commonColumns.AET,
-                seriesColumns.RETRIEVE
-            ]
-        }
     ], [])
-    const data = useMemo(() => results.map(result => {
-        let res = {...result, raw: result}
+
+
+    const fetchSeriesDetails = async (StudyInstanceUID, AET) => {
 
         let queryData = {
             Level: 'Series',
@@ -51,57 +38,39 @@ function TableResult({results, style, addManualQuerySeriesDetails}) {
                 ProtocolName: '',
                 SeriesDescription: '',
                 SeriesInstanceUID: '',
-                StudyInstanceUID: result.StudyInstanceUID,
+                StudyInstanceUID: StudyInstanceUID,
                 SeriesNumber: '',
                 NumberOfSeriesRelatedInstances: ''
             }
         }
 
+        let seriesAnswer = await apis.query.dicomQuery(AET, queryData)
+            .then(queryAnswers => apis.query.retrieveAnswer(queryAnswers.ID))
+        return seriesAnswer
+    }
 
-        const seriesDetails = [...result.seriesDetails];
-        if (seriesDetails.length !== 0) {
-            res.seriesDetails = async () => {
-                return seriesDetails.map(serie => ({
-                    ...serie,
-                    raw: serie
-                }))
-            }
-        } else {
-            res.seriesDetails = () => {
-                return apis.query.dicomQuery(result.OriginAET, queryData)
-                    .then(queryAnswers => apis.query.retrieveAnswer(queryAnswers.ID))
-                    .then(seriesAnswers => {
-                        addManualQuerySeriesDetails(seriesAnswers, result.StudyInstanceUID);
-                        return seriesAnswers;
-                    })
-                    .then(series => series.map(serie => ({
-                        ...serie,
-                        raw: serie
-                    })))
-            }
-        }
-        return res;
-    }), [results, addManualQuerySeriesDetails]);
+    let onExpandedRow = (studyInstanceUID, row) => {
+        fetchSeriesDetails(studyInstanceUID, row.OriginAET).then(newSeries => {
+            setSeries(previousState => ({...previousState, 
+                                [studyInstanceUID] : newSeries})
+            )
+        })
+    }
+
+    const getExpandedRow = useCallback((rowId) => {
+        let studyInstanceUID = rowId
+        let filteredSeries = series[studyInstanceUID] ?? []
+        return < TableResultSeries series={filteredSeries} />
+
+    }, [Object.keys(series).length])
 
     return (
         <React.Fragment>
             <div style={style}>
                 <div className="mt-5 h-5">
-                    <NestedTable columns={columns} data={data} filtered sorted hiddenSelect/>
+                    <NestedTable getRowId={(originalRow) => originalRow.StudyInstanceUID} onExpandedRow={onExpandedRow} columns={columns} getExpandedRow={getExpandedRow} data={studiesData} filtered sorted />
                 </div>
             </div>
         </React.Fragment>
     )
 }
-
-const mapStateToProps = (state) => {
-    return {
-        results: state.ManualQuery.manualQueryResults
-    }
-}
-
-const mapDispatchToProps = {
-    addManualQuerySeriesDetails
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TableResult);

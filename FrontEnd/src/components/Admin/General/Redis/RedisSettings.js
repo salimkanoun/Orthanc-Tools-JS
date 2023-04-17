@@ -1,43 +1,34 @@
-import React, { Component, Fragment } from 'react'
-import { toast } from 'react-toastify'
-
+import React from 'react'
+import { Form, FormGroup } from 'react-bootstrap'
 import apis from '../../../../services/apis'
-export default class RedisSettings extends Component {
+import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks'
+import { keys } from '../../../../model/Constant'
+import Spinner from '../../../CommonComponents/Spinner'
 
-    /** Init State */
-    state = {
-        redisAddress: 'localhost',
-        redisPort: 6379,
-        redisPassword : ''
-    }
+export default () => {
 
-    /**
-     * Fetch value from BackEnd
-     */
-    componentDidMount = async () => {
-        try {
-            let answer = await apis.options.getRedisServer()
-            this.setState({
-                ...answer
-            })
-        } catch (error) {
-            toast.error(error.statusText)
-        }
-    }
+    const { data: redisServer, isLoading: isLoadingRedisServer } = useCustomQuery(
+        [keys.REDIS_SERVER_KEY],
+        () => apis.options.getRedisServer(),
+    )
 
-    render = () => {
-        return (
-            <Fragment>
-                <div className="form-group">
-                    <h2 className="card-title">Redis Server</h2>
-                    <label htmlFor="redisAddress">Address : </label>
-                    <input type='text' name="redisAddress" className="form-control" value={this.state.redisAddress} placeholder="" disabled />
-                    <label htmlFor="redisPort">Port : </label>
-                    <input type='number' min="0" max="999999" name="redisPort" className="form-control" value={this.state.redisPort} disabled />
-                    <label htmlFor="redisPassword">Password : </label>
-                    <input type='password' name="redisPassword" className="form-control" value={this.state.redisPassword} disabled />
-                </div>
-            </Fragment>
-        )
-    }
+    if (isLoadingRedisServer) return <Spinner/>
+
+    return (
+        <Form>
+            <h2 className="card-title">Redis Server</h2>
+            <FormGroup>
+                <Form.Label >Address : </Form.Label>
+                <Form.Control type="text" value={redisServer.redisAddress} disabled />
+            </FormGroup>
+            <FormGroup>
+                <Form.Label> Port : </Form.Label>
+                <Form.Control type="number" value={redisServer.redisPort} disabled />
+            </FormGroup>
+            <FormGroup>
+                <Form.Label> Password : </Form.Label>
+                <Form.Control type="password" value={redisServer.redisPassword} disabled />
+            </FormGroup>
+        </Form>
+    )
 }

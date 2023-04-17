@@ -1,22 +1,19 @@
-import React, { Component, Fragment } from 'react'
-import Select from 'react-select'
-import { toast } from 'react-toastify'
+import React, { useState } from 'react'
 import apis from '../../../services/aets'
-import { Row, Col } from 'react-bootstrap'
-/**
- * Form to declare or modify an AET
- */
-export default class AetForm extends Component {
+import { Row, Col, FormGroup, Form, Button } from 'react-bootstrap'
+import Select from 'react-select'
+import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks'
+import { keys } from '../../../model/Constant'
 
-    state = {
-        name: '',
-        aetName: '',
-        ip: '',
-        port: '',
-        manufacturer: { value: 'Generic', label: 'Generic' }
-    }
+export default () => {
 
-    manufacturers = [
+    const [name, setName] = useState('');
+    const [aetName, setAetName] = useState('');
+    const [ip, setIp] = useState('');
+    const [port, setPort] = useState('');
+    const [manufacturer, setManufacturer] = useState({ value: 'Generic', label: 'Generic' });
+
+    const manufacturers = [
         { value: 'Generic', label: 'Generic' },
         { value: 'GenericNoWildcardInDates', label: 'GenericNoWildcardInDates' },
         { value: 'GenericNoUniversalWildcard', label: 'GenericNoUniversalWildcard' },
@@ -24,103 +21,79 @@ export default class AetForm extends Component {
         { value: 'GE', label: 'GE' }
     ]
 
-    /**
-     * Fill input text of users in current state
-     * @param {*} event 
-     */
-    handleChange = (event) => {
-        const target = event.target
-        const name = target.name
-        const value = target.type === 'checkbox' ? target.checked : target.value
+    const manufacturerOptions = manufacturers.map((type) => ({
+        value: type.value,
+        label: type.label
+    }))
 
-        this.setState({
-            [name]: value
-        })
-
+    const manufacturerChangeListener = (option) => {
+        setManufacturer(option)
     }
 
-    /**
-     * Fill manufacturer select choice in current state
-     * @param {*} item 
-     */
-    manufacturerChangeListener = (item) => {
-        this.setState({
-            manufacturer: item
-        })
+    const sendAet = useCustomMutation(
+        ({ name, aetName, ip, port, manufacturer }) => {
+            apis.updateAet(name, aetName, ip, port, manufacturer)
+            //Empty form to allow a new AET definition
+            resetForm()
+        },
+        [[keys.AETS_KEY]]
+    )
+
+    const onHandleSend = () => {
+        let manufacturerValue = manufacturer.value
+        sendAet.mutate({ name, aetName, ip, port, manufacturerValue })
     }
 
-    /**
-     * Listener on form submission
-     */
-    handleClick = async () => {
-        try {
-            await apis.updateAet(this.state.name, this.state.aetName, this.state.ip, this.state.port, this.state.manufacturer.value)
-            this.setState({
-                name: '',
-                aetName: '',
-                ip: '',
-                port: '',
-                manufacturer: { value: 'Generic', label: 'Generic' }
-            })
-            this.props.refreshAetData()
-        } catch (error) {
-            toast.error(error.statusText)
-        }
 
+    const resetForm = () => {
+        setName('')
+        setAetName('')
+        setIp('')
+        setPort('')
+        setManufacturer({ value: 'Generic', label: 'Generic' })
     }
 
-    render = () => {
-        return (
-            <Fragment>
-                <Row className="mt-3">
-                    <Col>
-                        <h2 className="card-title">New Aet</h2>
-                    </Col>
-                </Row>
-                <Row className="form-group mt-4 align-items-center">
-                    <Col sm={2}>
-                        <label htmlFor="name">Name : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='text' name="name" value={this.state.name} className="form-control" onChange={this.handleChange} />
-                    </Col>
-                    <Col sm={2}>
-                        <label htmlFor="aetName">Aet Name : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='text' name="aetName" value={this.state.aetName} className="form-control" onChange={this.handleChange} />
-                    </Col>
-                    
-                </Row>
-                <Row className="form-group mt-4 align-items-center">
-                    <Col sm={2}>
-                        <label htmlFor="ip">IP adress : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='text' name="ip" value={this.state.ip} className="form-control" onChange={this.handleChange} />
-                    </Col>
-                    <Col sm={2}>
-                        <label htmlFor="port">Port : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='number' min="0" max="999999" value={this.state.port} name="port" className="form-control" onChange={this.handleChange} />
-                    </Col>
-                </Row>
-                <Row className="form-group mt-4 align-items-center">
-                    <Col sm={2}>
-                        <label htmlFor="manufacturer">Manufacturer : </label>
-                    </Col>
-                    <Col>
-                        <Select className="col-sm" options={this.manufacturers} value={this.state.manufacturer} name="manufacturer" onChange={this.manufacturerChangeListener} />
-                    </Col>
-                </Row>
-                <Row className="mt-4 align-items-center text-center">
-                    <Col>
-                        <input type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Send' />
+    return (
+        <Form>
+            <h2 className="card-title">New Aet</h2>
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Name :</Form.Label>
+                        <Form.Control type="text" value={name} placeholder="Name" onChange={(event) => setName(event.target.value)} />
+                    </FormGroup>
+                </Col>
 
-                    </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Aet Name :</Form.Label>
+                        <Form.Control type="text" value={aetName} placeholder="Aet Name" onChange={(event) => setAetName(event.target.value)} />
+                    </FormGroup>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>IP adress :</Form.Label>
+                        <Form.Control type="text" value={ip} placeholder="IP adress" onChange={(event) => setIp(event.target.value)} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Port :</Form.Label>
+                        <Form.Control type="number" min="0" max="999999" value={port} placeholder="Port" onChange={(event) => setPort(event.target.value)} />
+                    </FormGroup>
+                </Col>
+            </Row>
+            <FormGroup>
+                <Form.Label>Manufacturer :</Form.Label>
+                <Select value={manufacturer} options={manufacturerOptions} onChange={manufacturerChangeListener} isClearable />
+            </FormGroup>
+            <FormGroup>
+                <Row className="d-flex justify-content-end">
+                    <Button onClick={onHandleSend} className='otjs-button otjs-button-blue'> Send </Button>
                 </Row>
-            </Fragment>
-        )
-    }
+            </FormGroup>
+        </Form>
+    )
 }

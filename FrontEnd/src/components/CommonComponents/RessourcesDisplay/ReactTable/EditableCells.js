@@ -1,13 +1,37 @@
 import React from "react";
-import AsyncSelect from "react-select/async/dist/react-select.esm";
-import {FormControl} from "react-bootstrap";
+//import AsyncSelect from "react-select/async/dist/react-select.esm";
+import { FormControl } from "react-bootstrap";
+
+
+export function EditableCell({
+    value,
+    onChange
+}) {
+    const [toggled, setToggled] = React.useState(false)
+
+    // We'll only update the external data when the input is blurred
+    const onBlur = () => {
+        setToggled(false);
+    }
+
+    return toggled ? <FormControl autoFocus={true} type="text" value={value} onChange={(event) => onChange(event.target.value)} onBlur={onBlur}
+    /> :
+        <div style={{ 'height': '100%', 'minWidth': '50px', padding: 0, display: 'flex' }}
+            onClick={() => {
+                if (!toggled) setToggled(true)
+            }}>
+            <p>{value}</p>
+        </div>
+
+}
+
 
 export function InputCell({
-                              value: initialValue,
-                              row: {values},
-                              column: {id, accessor, type},
-                              onDataChange,
-                          }) {
+    value: initialValue,
+    row: { values },
+    column: { id, accessor, type },
+    onDataChange,
+}) {
     type = type || 'text'
 
     // We need to keep and update the state of the cell normally
@@ -31,22 +55,22 @@ export function InputCell({
     }
 
     return toggled ? <FormControl autoFocus={true} type={type} value={value} onChange={onChange} onBlur={onBlur}
-        /> :
-        <div style={{'height': '100%', 'minWidth': '50px', padding: 0, display: 'flex'}}
-             onClick={() => {
-                 if (values.editable === undefined || values.editable) setToggled(true)
-             }}>
+    /> :
+        <div style={{ 'height': '100%', 'minWidth': '50px', padding: 0, display: 'flex' }}
+            onClick={() => {
+                if (values.editable === undefined || values.editable) setToggled(true)
+            }}>
             <p>{value}</p>
         </div>
 
 }
 
 export function SelectCell({
-                               value: initialValue,
-                               row: {values},
-                               column: {id, accessor, options},
-                               onDataChange, // This is a custom function that we supplied to our table instance
-                           }) {
+    value: initialValue,
+    row: { values },
+    column: { id, accessor, options },
+    onDataChange, // This is a custom function that we supplied to our table instance
+}) {
 
     const [value, setValue] = React.useState(null);
 
@@ -55,15 +79,18 @@ export function SelectCell({
         if (onDataChange) onDataChange(initialValue, value.value, values, id || accessor)
     }
 
+    /*
+            <AsyncSelect className={'react-select'} single defaultOptions value={value}
+            loadOptions={() => options().then(res => {
+                setValue(res.find(x => x.value === initialValue))
+                return res;
+            })} onChange={onChange}
+            style={{ 'min-width': '100px' }}
+            menuPosition={'fixed'}
+        />*/
     return <div>
-        <AsyncSelect className={'react-select'} single defaultOptions value={value}
-                     loadOptions={() => options().then(res => {
-                         setValue(res.find(x => x.value === initialValue))
-                         return res;
-                     })} onChange={onChange}
-                     style={{'min-width': '100px'}}
-                     menuPosition={'fixed'}
-        />
+        
+
     </div>
 
 }

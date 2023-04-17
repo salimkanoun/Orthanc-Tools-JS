@@ -1,10 +1,11 @@
 import React,{Component} from 'react'
+import ConstantLevel from '../../../Modify/ConstantLevel'
 import ActionBouton from '../ActionBouton'
 import Table from './CommonSelectingAndFilteringTable'
 
-export default class TableMyDicomPatientsStudies extends Component{
+export default ({data, onRowClick, onSelect, rowStyle}) => {
 
-  columns = [
+  const columns = [
       {
         Header: 'Study Orthanc ID',
         accessor : 'StudyOrthancID',
@@ -41,10 +42,10 @@ export default class TableMyDicomPatientsStudies extends Component{
         Cell:(row)=>{
           return(
           <span>
-            <ActionBouton level='studies'   
+            <ActionBouton level={ConstantLevel.STUDIES}   
               orthancID={row.cell.row.values.StudyOrthancID} 
               StudyInstanceUID={row.cell.row.values.StudyInstanceUID} 
-              row={row.cell.row} 
+              dataDetails={row.cell.row} 
               hiddenModify={true} 
               hiddenDelete={true} 
               hiddenCreateDicom={true} 
@@ -55,15 +56,13 @@ export default class TableMyDicomPatientsStudies extends Component{
       },
     ]
 
-    render = () => {
       return (
           <Table 
-            tableData={this.props.data}
-            columns={this.columns}
-            onRowClick={this.props.onRowClick}
-            onSelect={this.props.onSelect}
-            rowStyle={this.props.rowStyle}
+            tableData={data}
+            columns={columns}
+            onRowClick={onRowClick}
+            onSelect={onSelect}
+            rowStyle={rowStyle}
           />
       )
-  }
 }

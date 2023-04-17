@@ -1,75 +1,63 @@
-import React, { Component } from "react"
+import React, { Component, useState } from "react"
 import { Dropdown, ButtonGroup } from "react-bootstrap"
 import { toast } from "react-toastify"
 
 import apis from '../../services/apis'
 
-export default class DownloadDropdown extends Component {
+export default ({exportIds, TS}) => {
 
-    state = {
-        buttonText: "Download",
-        disabled: false
+    const [buttonText, setButtonText] = useState("Download")
+    const [disabled, setDisabled] = useState(false)
+
+    const updateProgress = (progress) => {
+        setButtonText("Preparing Zip " + progress + "%")
+        setDisabled(true)
     }
 
-    updateProgress = (progress) => {
-        this.setState({
-            buttonText: "Preparing Zip " + progress + "%",
-            disabled: true
-        })
+    const setStatusDownloading = () => {
+        setButtonText("Downloading")
+        setDisabled(true)
     }
 
-    setStatusDownloading = () => {
-        this.setState({
-            buttonText: "Downloading",
-            disabled: true
-        })
+    const resetProgress = () => {
+        setButtonText("Download")
+        setDisabled(false)
     }
 
-    resetProgress = () => {
-        this.setState({
-            buttonText: "Download",
-            disabled: false
-        })
-    }
-
-    handleRootClick = (e) => {
+    const handleRootClick = (e) => {
         e.stopPropagation()
     }
 
-    handleClickDownload = async (e) => {
+    const handleClickDownload = async (e) => {
         e.stopPropagation()
 
         try{
             if (e.currentTarget.id === 'hirarchical') {
-                apis.exportDicom.downloadZipSync(this.props.exportIds, this.props.TS, false)
+                apis.exportDicom.downloadZipSync(exportIds, TS, false)
             } else {
-                apis.exportDicom.downloadZipSync(this.props.exportIds, this.props.TS, true)
+                apis.exportDicom.downloadZipSync(exportIds, TS, true)
             }
         } catch (error){
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
         }
     }
 
-    render = () => {
 
         return (
-            <Dropdown as={ButtonGroup} onClick={this.handleRootClick}>
-                <Dropdown.Toggle variant="button-dropdown-blue" className="button-dropdown button-dropdown-blue w-7" id="dropdown-basic" disabled={this.state.disabled}>
-                    {this.state.buttonText}
+            <Dropdown as={ButtonGroup} onClick={handleRootClick}>
+                <Dropdown.Toggle variant="button-dropdown-blue" className="button-dropdown button-dropdown-blue w-7" id="dropdown-basic" disabled={disabled}>
+                    {buttonText}
                 </Dropdown.Toggle>
                 
                 <Dropdown.Menu className="mt-2 border border-dark border-2">
-                    <Dropdown.Item id='hirarchical' onClick={this.handleClickDownload}>
+                    <Dropdown.Item id='hirarchical' onClick={handleClickDownload}>
                         Hirarchical
                     </Dropdown.Item>
-                    <Dropdown.Item id='dicomdir' onClick={this.handleClickDownload}>
+                    <Dropdown.Item id='dicomdir' onClick={handleClickDownload}>
                         Dicomdir
                     </Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
 
         )
-    }
-
-
 }

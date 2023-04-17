@@ -1,33 +1,27 @@
 import CommonTable from "./CommonTable";
-import {useMemo} from "react";
-import {commonColumns, seriesColumns} from "./ColumnFactories";
+import { useMemo } from "react";
+import { seriesColumns } from "./ColumnFactories";
 
-function TableSeries({
-                         series,
-                         onDelete,
-                         refresh,
-                         hiddenActionBouton,
-                         hiddenRemoveRow,
-                         rowEvents,
-                         rowStyle,
-                         pagination
-                     }) {
+export default ({
+    series,
+    onDeleteSeries  = (seriesOrthancID)=> {},
+    onRemove = (seriesOrthancID)=> {},
+    actionButton = false,
+    removeRow = false,
+    onRowClick,
+    rowStyle,
+    pagination = true
+}) => {
     const columns = useMemo(() => [
-        commonColumns.RAW,
-        seriesColumns.ORTHANC_ID,
+        seriesColumns.ORTHANC_ID, 
         seriesColumns.DESCRIPTION,
         seriesColumns.MODALITY,
         seriesColumns.SERIES_NUMBER,
-        ...(!hiddenActionBouton ? [seriesColumns.ACTION(onDelete, refresh)] : []),
-        ...(!hiddenRemoveRow ? [seriesColumns.REMOVE(onDelete)] : [])
-    ], [
-        hiddenActionBouton, hiddenRemoveRow, onDelete, refresh]); 
-    const data = useMemo(() => series.map(x => ({
-        raw: {...x},
-        ...x
-    })), [series]);
-    return <CommonTable columns={columns} tableData={data} rowEvents={rowEvents}
-                        rowStyle={rowStyle} pagination={pagination}/>
-}
+        //SK ACTION BUTTON A REVOIR
+        ...(actionButton ? [seriesColumns.ACTION(onDeleteSeries)] : []),
+        ...(removeRow ? [seriesColumns.REMOVE(onRemove)] : [])
+    ], []);
 
-export default TableSeries;
+    return <CommonTable getRowId={(row) => row.SeriesOrthancID} columns={columns} data={series} onRowClick={onRowClick}
+        rowStyle={rowStyle} pagination={pagination} />
+}

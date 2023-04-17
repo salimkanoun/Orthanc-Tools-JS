@@ -1,59 +1,43 @@
-import React, {useMemo} from "react";
-import NestedTable from "./NestedTable";
-import {seriesArrayToStudyArray} from "../../../../tools/processResponse";
-import {commonColumns, seriesColumns, studyColumns} from "./ColumnFactories";
+import { useMemo } from "react"
+import { commonColumns, patientColumns, studyColumns } from "./ColumnFactories"
+import NestedTable from "./NestedTable"
+import TableSeries from "./TableSeries"
 
-function TableStudiesWithNestedSeries({
-                                          studies,
-                                          series,
-                                          onDelete,
-                                          onModify,
-                                          refresh,
-                                          hiddenAccessionNumber,
-                                          hiddenActionBouton,
-                                          hiddenRemoveRow,
-                                      }) {
-    if (hiddenActionBouton === undefined) hiddenActionBouton = true;
-    if (hiddenRemoveRow === undefined) hiddenRemoveRow = true;
-    const data = useMemo(() => seriesArrayToStudyArray(series, studies).map(study => {
-        study.series = Object.entries(study.series).map(([ID, values]) => ({
-            SeriesOrthancID: ID, ...values,
-            raw: {SeriesOrthancID: ID, ...values}
-        }))
-        study.raw = {...study};
-        return study;
-    }), [studies, series]);
+
+export default ({ 
+    series,
+    studies,
+    removeRow,
+    accessionNumber,
+    actionButton,
+    withPatientColums,
+    onRemoveStudy,
+    onRemoveSeries,
+    onDeleteStudy,
+    onModify,
+    refresh,
+    pagination,
+}) => {
+
+    const getExpandedRow = (rowId) => {
+        const seriesObject = series.filter(serie => serie.StudyOrthancID === rowId)
+        return <TableSeries series={seriesObject} removeRow onRemove={onRemoveSeries} />
+    }
+
     const columns = useMemo(() => [
         commonColumns.RAW,
+        ...(withPatientColums ? [patientColumns.PARENT_NAME()] : []),
+        ...(withPatientColums ? [patientColumns.PARENT_ID()] : []),
         studyColumns.ORTHANC_ID,
-        studyColumns.INSTANCE_UID,
-        studyColumns.ANONYMIZED_FROM,
+        studyColumns.STUDY_INSTANCE_UID,
         studyColumns.DATE,
         studyColumns.DESCRIPTION,
-        ...(!hiddenAccessionNumber ? [studyColumns.ACCESSION_NUMBER] : []),
-        ...(!hiddenActionBouton ? [studyColumns.ACTION(onDelete, refresh)] : []),
-        ...(!hiddenRemoveRow ? [studyColumns.REMOVE(onDelete)] : []),
-        {
-            accessor: "series",
-            table: [
-                commonColumns.RAW,
-                seriesColumns.ORTHANC_ID,
-                seriesColumns.DESCRIPTION,
-                seriesColumns.MODALITY,
-                seriesColumns.SERIES_NUMBER,
-                ...(!hiddenActionBouton ? [seriesColumns.ACTION(onDelete, refresh)] : []),
-                ...(!hiddenRemoveRow ? [seriesColumns.REMOVE(onDelete)] : [])
-            ]
-        }
-    ], [
-        onDelete,
-        refresh,
-        hiddenAccessionNumber,
-        hiddenActionBouton,
-        hiddenRemoveRow]);
+        studyColumns.ACCESSION_NUMBER,
+        ...(actionButton ? [studyColumns.ACTION(onDeleteStudy, onModify, refresh)] : []),
+        ...(removeRow ? [studyColumns.REMOVE(onRemoveStudy)] : [])
+    ], [onDeleteStudy, refresh]);
 
-    return <NestedTable columns={columns} data={data} setSelected={() => {
-    }} hiddenSelect={true}/>
+    return <NestedTable getRowId={(originalRow) => originalRow.StudyOrthancID} columns={columns} data={studies} getExpandedRow={getExpandedRow}
+         removeRow/>
+
 }
-
-export default TableStudiesWithNestedSeries;

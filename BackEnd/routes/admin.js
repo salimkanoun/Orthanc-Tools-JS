@@ -22,7 +22,7 @@ const {
     reverseProxyPutPlainText,
     reverseProxyDelete
 } = require('../controllers/reverseProxy')
-const {getRoles, createRole, modifyRole, deleteRole, getPermission} = require('../controllers/role')
+const {getRoles, createRole, modifyRole, deleteRole, getRole} = require('../controllers/role')
 
 const {
     getLdapSettings, setLdapSettings, testLdapSettings, getLdapCorrespondences,
@@ -103,10 +103,10 @@ adminRouter.get('/plugins', [userAuthMidelware, userAdminMidelware], reverseProx
 
 //roles
 adminRouter.get('/roles', [userAuthMidelware, userAdminMidelware], getRoles)
-adminRouter.get('/roles/:name', [userAuthMidelware, userAdminMidelware], getPermission)
-adminRouter.put('/roles', [userAuthMidelware, userAdminMidelware], modifyRole)
+adminRouter.get('/roles/:name', [userAuthMidelware, userAdminMidelware], getRole)
+adminRouter.put('/roles/:name', [userAuthMidelware, userAdminMidelware], modifyRole)
 adminRouter.post('/roles', [userAuthMidelware, userAdminMidelware], createRole)
-adminRouter.delete('/roles', [userAuthMidelware, userAdminMidelware], deleteRole)
+adminRouter.delete('/roles/:name', [userAuthMidelware, userAdminMidelware], deleteRole)
 
 //Mode
 //SK A EXPLICITER C EST AUTHENTICATION MODE
@@ -165,11 +165,11 @@ adminRouter.post('/labels/:name', [userAuthMidelware, userAdminMidelware], creat
 adminRouter.delete('/labels/:name', [userAuthMidelware, userAdminMidelware], deleteLabel)
 
 //RoleLabel
-adminRouter.get('/users/labels', [userAuthMidelware,userAdminMidelware], getAllRolesLabels)
-adminRouter.get('/users/labels/:label', [userAuthMidelware,roleAccessLabelMidelware], getLabelRoles)
-adminRouter.get('/users/:name/roles/:role_name/labels', [userAuthMidelware], getRoleLabels)
-adminRouter.post('/users/:name/labels/:name', [userAuthMidelware, userAdminMidelware], createRoleLabel)
-adminRouter.delete('/users/:name/labels/:name', [userAuthMidelware, userAdminMidelware], deleteRoleLabel)
+adminRouter.get('/labels/roles', [userAuthMidelware,userAdminMidelware], getAllRolesLabels)
+adminRouter.get('/labels/:label/roles', [userAuthMidelware,userAdminMidelware], getLabelRoles)
+adminRouter.get('/roles/:name/labels', [userAuthMidelware], getRoleLabels)
+adminRouter.post('/labels/:name/roles', [userAuthMidelware, userAdminMidelware], createRoleLabel)
+adminRouter.delete('/labels/:name/roles', [userAuthMidelware, userAdminMidelware], deleteRoleLabel)
 
 //StudyLabel
 adminRouter.get('/studies/labels', [userAuthMidelware,userAdminMidelware], getStudiesLabels)

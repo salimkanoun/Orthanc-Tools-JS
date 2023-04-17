@@ -1,83 +1,41 @@
+import axios from "axios"
+
 const role = {
 
     getRoles() {
-        const getRolesOptions = {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
-
-        return fetch('/api/roles', getRolesOptions).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return answer.json()
-        }).catch(error => {
+        return axios.get('/api/roles').then((answer) => answer.data
+        ).catch(error => {
             throw error
         })
     },
 
-    getPermission(name) {
-        const getPermissionOptions = {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            }
-        }
-
-        return fetch('/api/roles/' + name, getPermissionOptions).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return answer.json()
+    getRole(name) {
+        return axios.get('/api/roles/' + name).then((answer) => answer.data
+        ).catch(error => {
+            throw error
         })
     },
 
     createRole(payload) {
-
-        const createRoleOptions = {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify(payload)
-        }
-
-        return fetch('/api/roles', createRoleOptions).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return true
+        return axios.post('/api/roles', payload).then((answer) =>
+            true
+        ).catch(error => {
+            throw error
         })
     },
 
-    modifyRole(payload) {
-        const modifyRoleOptions = {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify(payload)
-        }
-
-        return fetch('/api/roles', modifyRoleOptions).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return true
+    modifyRole(roleName, payload) {
+        return axios.put('/api/roles/'+roleName, payload).then((answer) => true
+        ).catch(error => {
+            throw error
         })
     },
 
-    deleteRole(name) {
-        const deleteRoleOptions = {
-            method: 'DELETE',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify([name])
-        }
-
-        return fetch('/api/roles', deleteRoleOptions).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return true
+    deleteRole(roleName) {
+        return axios.delete('/api/roles/'+roleName).then((answer) =>
+            true
+        ).catch(error => {
+            throw error
         })
     }
 

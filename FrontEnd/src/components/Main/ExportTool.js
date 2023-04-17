@@ -1,108 +1,100 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import { Popover, Col, Row, Overlay} from 'react-bootstrap'
+import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Popover, Col, Row, Overlay, Button } from 'react-bootstrap'
 
-import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTable/TableStudiesWithNestedSeries'
 import apis from '../../services/apis'
 import SendAetDropdown from "../Export/SendAetDropdown"
 import DownloadDropdown from "../Export/DownloadDropdown"
-import {emptyExportList, removeSeriesFromExportList, removeStudyFromExportList} from '../../actions/ExportList'
-import {toast} from 'react-toastify'
+import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
+import { toast } from 'react-toastify'
+import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudiesWithNestedSeries'
+import { seriesColumns, studyColumns } from '../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories'
 
-class ExportTool extends Component {
+export default ({ target, show, onHide }) => {
 
-    state = {
-        aets: []
-    }
+    const [aets, setAets] = useState([])
 
-    componentDidMount = async () => {
+    const store = useSelector(state => {
+        return {
+            seriesArray: state.ExportList.seriesArray,
+            studyArray: state.ExportList.studyArray
+        }
+    })
+
+    const dispatch = useDispatch()
+
+    const componentDidMount = async () => {
         try {
             let aets = await apis.aets.getAets()
-            this.setState({
-                aets: aets
-            })
+            this.setAets(aets)
         } catch (error) {
-            this.setState({
-                aets: []
-            })
-            toast.error(error.statusText)
+            this.setAets([])
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
 
     }
 
-    handleClickEmpty = () => {
-        this.props.emptyExportList()
+    const handleClickEmpty = () => {
+        dispatch(emptyExportList())
     }
 
-    onDeleteSeries = (serieID) => {
-        this.props.removeSeriesFromExportList(serieID)
+    const onRemoveSeries = (serieID) => {
+        dispatch(removeSeriesFromExportList(serieID))
     }
 
-    onDeleteStudy = (studyID) => {
-        this.props.removeStudyFromExportList(studyID)
+    const additionalColumnsSeries = [
+        seriesColumns.REMOVE(onRemoveSeries)
+    ]
+    const onRemoveStudy = (studyID) => {
+        dispatch(removeStudyFromExportList(studyID))
     }
 
-    getExportIDArray = () => {
+    const additionalColumnsStudies = [
+        studyColumns.REMOVE(onRemoveStudy)
+    ]
+
+    const getExportIDArray = () => {
         let ids = []
-        this.props.seriesArray.forEach(serie => {
-            ids.push(serie.ID)
+        store.seriesArray.forEach(serie => {
+            ids.push(serie.SeriesOrthancID)
         })
         return ids
     }
 
-    render = () => {
-        let idArray = this.getExportIDArray()
-        return (
-            <Overlay target={this.props.target} show={this.props.show} placement='bottom' onHide={this.props.onHide}
-                     rootClose style={{width: '33%'}}>
-                <Popover id='popover-export' style={{maxWidth: '100%'}}>
-                    <Popover.Header as='h3'>Export List</Popover.Header>
-                    <Popover.Body>
-                        <div className="row mb-3">
-                            <div className="col float-right">
-                                <button type="button" className="btn otjs-button otjs-button-orange p-2"
-                                        onClick={this.handleClickEmpty}>Empty List
-                                </button>
-                            </div>
+    let idArray = getExportIDArray()
+
+    return (
+        <Overlay target={target} show={show} placement='bottom' onHide={onHide}
+            rootClose style={{ width: '33%' }}>
+            <Popover id='popover-export' style={{ maxWidth: '100%' }}>
+                <Popover.Header as='h3'>Export List</Popover.Header>
+                <Popover.Body>
+                    <div className="row mb-3">
+                        <div className="col float-right">
+                            <Button className="btn otjs-button otjs-button-orange p-2"
+                                onClick={handleClickEmpty}>Empty List
+                            </Button>
                         </div>
-                        <TableStudiesWithNestedSeries
-                            series={this.props.seriesArray}
-                            studies={this.props.studyArray}
-                            hiddenRemoveRow={false}
-                            hiddenAccessionNumber={true}
-                            hiddenActionBouton={true}
-                            hiddenName={false}
-                            hiddenID={false}
-                            onDeleteStudy={this.onDeleteStudy}
-                            onDeleteSeries={this.onDeleteSeries}
-                            pagination={true}
-                            wrapperClasses="table-responsive"/>
-                        <Row className="text-center mt-5">
-                            <Col sm={6}>
-                                <DownloadDropdown exportIds={idArray}/>
-                            </Col>
-                            <Col sm={6}>
-                                <SendAetDropdown aets={this.state.aets} exportIds={idArray}/>
-                            </Col>
-                        </Row>
-                    </Popover.Body>
-                </Popover>
-            </Overlay>
-        )
-    }
-}
+                    </div>
 
-const mapStateToProps = state => {
-    return {
-        seriesArray: state.ExportList.seriesArray,
-        studyArray: state.ExportList.studyArray
-    }
-}
+                    <TableStudiesWithNestedSeries
+                        studies={store.studyArray}
+                        series={store.seriesArray}
+                        withPatientColums
+                        additionalColumnsStudies={additionalColumnsStudies}
+                        additionalColumnsSeries={additionalColumnsSeries}
+                    />
+                    <Row className="text-center mt-5">
+                        <Col sm={6}>
+                            <DownloadDropdown exportIds={idArray} />
+                        </Col>
+                        <Col sm={6}>
+                            <SendAetDropdown aets={aets} exportIds={idArray} />
+                        </Col>
+                    </Row>
+                </Popover.Body>
+            </Popover>
+        </Overlay>
+    )
 
-const mapDispatchToProps = {
-    emptyExportList,
-    removeStudyFromExportList,
-    removeSeriesFromExportList
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(ExportTool)

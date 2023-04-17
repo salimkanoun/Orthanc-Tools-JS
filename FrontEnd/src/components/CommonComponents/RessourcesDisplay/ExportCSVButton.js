@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import { Button } from "react-bootstrap";
 import {getCSVString} from "../../../tools/CSVExport";
 
 export default class ExportCSVButton extends Component {
@@ -19,7 +20,7 @@ export default class ExportCSVButton extends Component {
 
     render() {
         return (<>
-            <button type="button" className="otjs-button otjs-button-blue w-7" onClick={this.handleClick}>{'Export CSV'}</button>
+            <Button className="otjs-button otjs-button-blue w-7" onClick={this.handleClick}>{'Export CSV'}</Button>
             <a style={{display: "none"}}
                download={this.props.fileName || "spreadsheet.csv"}
                href={this.state.fileDownloadUrl}

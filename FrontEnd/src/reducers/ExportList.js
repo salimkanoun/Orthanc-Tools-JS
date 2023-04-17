@@ -11,21 +11,21 @@ export default function orthancExportReducer (state = initialState, action) {
             let seriesToAdd = action.payload.series
             //Make array of existing seriesID
             let existingSeriesIDArray = state.seriesArray.map(series => {
-                return series.ID
+                return series.SeriesOrthancID
             })
             //Make array of new series (not already in the current series ID list)
             let newSeries = seriesToAdd.filter((series => {
-                return  !(existingSeriesIDArray.includes(series.ID) )
+                return  !(existingSeriesIDArray.includes(series.SeriesOrthancID) )
             }))
 
             let studiesToAdd = action.payload.studies
             //Make array of existing studyID
             let existingStudyIDArray = state.studyArray.map(study => {
-                return study.ID
+                return study.StudyOrthancID
             })
             //Make array of new Studies (not already in the current Study ID list)
             let newStudies = studiesToAdd.filter((study => {
-                return  !(existingStudyIDArray.includes(study.ID) )
+                return  !(existingStudyIDArray.includes(study.StudyOrthancID) )
             }))
 
             return {
@@ -40,28 +40,25 @@ export default function orthancExportReducer (state = initialState, action) {
             }
 
         case REMOVE_STUDY_EXPORT_LIST:
-            let newSlipcedList = state.seriesArray.filter(series => series.ParentStudy !== action.payload)
-            let newStudyArray = state.studyArray.filter(study => study.ID !== action.payload)
+            let newSlipcedList = state.seriesArray.filter(series => series.StudyOrthancID !== action.payload) //parentStduy ??
+            let newStudyArray = state.studyArray.filter(study => study.StudyOrthancID !== action.payload)
             return {
                 seriesArray: newSlipcedList, 
                 studyArray: newStudyArray
             }
 
         case REMOVE_SERIES_EXPORT_LIST:
-            let newFilteredList = state.seriesArray.filter(series => series.ID !== action.payload)
-            let newFilteredStudy = [] //remove study of the list if no more series of the study
-            state.studyArray.forEach(study => {
-                let find = false
-                newFilteredList.forEach(series => {
-                    if (study.ID === series.ParentStudy)
-                        find = true
-                })
-                if (find)
-                    newFilteredStudy.push(study)
+            let newFilteredSeriesList = state.seriesArray.filter(series => series.SeriesOrthancID !== action.payload)
+            //Create list of remaining Series Orthanc ID
+            let remainingSeriesOrthancIds = newFilteredSeriesList.map(series=> series.SeriesOrthancID)
+            //Filter Study in which series are not remained in series list
+            let newFilteredStudyList = state.studyArray.filter(study => {
+                let seriesOrthancIds = study.SeriesOrthancIDs
+                return remainingSeriesOrthancIds.filter(value => seriesOrthancIds.includes(value)).length
             })
             return {
-                seriesArray: newFilteredList, 
-                studyArray: newFilteredStudy
+                seriesArray: newFilteredSeriesList, 
+                studyArray: newFilteredStudyList
             }
         default:
             return state

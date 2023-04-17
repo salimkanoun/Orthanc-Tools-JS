@@ -1,11 +1,16 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
+import { Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
 import Select from 'react-select'
-import { toast } from 'react-toastify'
-import apis from '../../../services/apis'
-import { Row, Col } from 'react-bootstrap'
-export default class BurnerOptions extends Component {
 
-    state = {
+import Spinner from '../../CommonComponents/Spinner'
+import apis from '../../../services/apis'
+import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
+import { errorMessage, successMessage } from '../../../tools/toastify'
+import { keys } from '../../../model/Constant'
+
+export default () => {
+
+    const [burner, setBurner] = useState({
         burner_monitored_path: '',
         burner_viewer_path: '',
         burner_label_path: '',
@@ -15,31 +20,30 @@ export default class BurnerOptions extends Component {
         burner_date_format: '',
         burner_delete_study_after_sent: false,
         burner_transfer_syntax: null
+    })
 
-    }
-
-    manufacturerOptions = [
+    const manufacturerOptions = [
         { value: 'Epson', label: 'Epson' },
         { value: 'Primera', label: 'Primera' }
     ]
 
-    levelOptions = [
+    const levelOptions = [
         { value: 'Study', label: 'Study' },
         { value: 'Patient', label: 'Patient' }
     ]
 
-    supportType = [
+    const supportType = [
         { value: 'Auto', label: 'Auto' },
         { value: 'CD', label: 'CD' },
         { value: 'DVD', label: 'DVD' }
     ]
 
-    dateFormatOptions = [
+    const dateFormatOptions = [
         { value: 'uk', label: 'MMDDYYYY' },
         { value: 'fr', label: "DDMMYYYY" }
     ]
 
-    transferSyntaxOptions = [
+    const transferSyntaxOptions = [
         { value: 'None', label: 'None (Original TS)' },
         { value: '1.2.840.10008.1.2', label: 'Implicit VR Endian' },
         { value: '1.2.840.10008.1.2.1', label: 'Explicit VR Little Endian' },
@@ -55,157 +59,142 @@ export default class BurnerOptions extends Component {
         { value: '1.2.840.10008.1.2.4.91', label: 'JPEG 2000 (91)' },
         { value: '1.2.840.10008.1.2.4.92', label: 'JPEG 2000 (92)' },
         { value: '1.2.840.10008.1.2.4.93', label: 'JPEG 2000 (93)' }
-
     ]
 
-
-    handleChange = (event) => {
-        const target = event.target
-        const name = target.name
-        const value = target.type === 'checkbox' ? target.checked : target.value
-
-        this.setState({
-            [name]: value
-        })
-
-    }
-
-    handleChangeSelect = (event, metadata) => {
-        this.setState({
-            [metadata.name]: event.value
-        })
-
-    }
-
-    onTSChange = (TSValue) => {
-        this.setState({
-            burner_transfer_syntax: TSValue
-        })
-    }
-
-    refreshData = async () => {
-        try {
-            let options = await apis.options.getOptions()
-            this.setState({
-                ...options
+    const { isLoading } = useCustomQuery(
+        [keys.BURNER_KEY],
+        () => apis.options.getOptions(),
+        undefined,
+        undefined,
+        (answer) => {
+            setBurner({
+                burner_monitored_path: answer.burner_monitored_path,
+                burner_viewer_path: answer.burner_viewer_path,
+                burner_label_path: answer.burner_label_path,
+                burner_manifacturer: answer.burner_manifacturer,
+                burner_monitoring_level: answer.burner_monitoring_level,
+                burner_support_type: answer.burner_support_type,
+                burner_date_format: answer.burner_date_format,
+                burner_delete_study_after_sent: answer.burner_delete_study_after_sent,
+                burner_transfer_syntax: answer.burner_transfer_syntax
             })
-        } catch (error) {
-            toast.error(error.statusText)
-        }
+        },
+    )
+
+    const sendForm = useCustomMutation(
+        ({ burner_monitored_path, burner_viewer_path, burner_label_path, burner_manifacturer,
+            burner_monitoring_level, burner_support_type, burner_date_format,
+            burner_delete_study_after_sent, burner_transfer_syntax }) => {
+            return apis.options.setBurnerOptions(
+                burner_monitored_path,
+                burner_viewer_path,
+                burner_label_path,
+                burner_manifacturer,
+                burner_monitoring_level,
+                burner_support_type,
+                burner_date_format,
+                burner_delete_study_after_sent,
+                burner_transfer_syntax
+            )
+        },
+        [[keys.BURNER_KEY]],
+        () => successMessage("Updated"),
+        () => errorMessage('Error')
+    )
 
 
-    }
-    componentDidMount = async () => {
-        await this.refreshData()
-
-    }
-
-    getSelectedObject = (objectArray, searchedValue) => {
-        let filteredArray = objectArray.filter(item => {
-            return item.value === searchedValue ? true : false
-        })
-
-        return filteredArray[0]
-    }
-
-    sendForm = async () => {
-        try {
-            await apis.options.setBurnerOptions(this.state.burner_monitored_path,
-                this.state.burner_viewer_path,
-                this.state.burner_label_path,
-                this.state.burner_manifacturer,
-                this.state.burner_monitoring_level,
-                this.state.burner_support_type,
-                this.state.burner_date_format,
-                this.state.burner_delete_study_after_sent,
-                this.state.burner_transfer_syntax)
-            await this.refreshData()
-            toast.success('Burner Settings updated')
-        } catch (error) {
-            toast.error(error.statusText)
-        }
-
+    const handleChange = (key, value) => {
+        setBurner((burner) => ({
+            ...burner,
+            [key]: value
+        }))
     }
 
-    render = () => {
-        return (
-            <div>
-                <h2 className="card-title">CD/DVD Burner Options</h2>
-                <Row className="mt-4 align-items-center">
-                    <Col sm={2}>
-                        <label htmlFor="burner_monitored_path">Monitored Folder :</label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='text' className="form-control" name='burner_monitored_path' value={this.state.burner_monitored_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Epson" />
-                    </Col>
-                    <Col sm={2}>
-                        <label htmlFor="burner_viewer_path">Viewer Folder : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='text' className="form-control" name='burner_viewer_path' value={this.state.burner_viewer_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Viewer" />
-                    </Col>
-
-                </Row>
-                <Row className="mt-4 align-items-center">
-                    <Col sm={2}>
-                        <label htmlFor="burner_label_path">Label Path : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='text' className="form-control" name='burner_label_path' value={this.state.burner_label_path} onChange={this.handleChange} placeholder="Example : C:\\myPath\Label" />
-                    </Col>
-                    <Col sm={2}>
-                        <label htmlFor="burner_transfer_syntax">Transfer Syntax : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <Select single options={this.transferSyntaxOptions} name='burner_transfer_syntax' value={this.getSelectedObject(this.transferSyntaxOptions, this.state.burner_transfer_syntax)} onChange={this.handleChangeSelect} />
-                    </Col>
-                </Row>
-                <Row className="mt-4 align-items-center">
-                    <Col sm={2}>
-                        <label htmlFor="burner_manifacturer">Manufacturer : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <Select single options={this.manufacturerOptions} value={this.getSelectedObject(this.manufacturerOptions, this.state.burner_manifacturer)} onChange={this.handleChangeSelect} name="burner_manifacturer" />
-                    </Col>
-                    <Col sm={2}>
-                        <label htmlFor="burner_monitoring_level">Monitoring Level : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <Select options={this.levelOptions} value={this.getSelectedObject(this.levelOptions, this.state.burner_monitoring_level)} onChange={this.handleChangeSelect} name="burner_monitoring_level" />
-                    </Col>
-
-                </Row>
-                <Row className="mt-4 align-items-center">
-                    <Col sm={2}>
-                        <label htmlFor="burner_date_format">Date Format : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <Select options={this.dateFormatOptions} value={this.getSelectedObject(this.dateFormatOptions, this.state.burner_date_format)} onChange={this.handleChangeSelect} name="burner_date_format" />
-                    </Col>
-                    <Col sm={2}>
-                        <label htmlFor="burner_support_type">Support Type : </label>
-                    </Col>
-                    <Col sm={4}>
-                        <Select single options={this.supportType} value={this.getSelectedObject(this.supportType, this.state.burner_support_type)} onChange={this.handleChangeSelect} name="burner_support_type" />
-                    </Col>
-
-                </Row>
-                <Row className="mt-4 align-items-center">
-                    <Col sm={5}>
-                        <label htmlFor="burner_delete_study_after_sent">Delete Original Images From Orthanc : </label>
-                    </Col>
-                    <Col sm={2}>
-                        <input type="checkbox" checked={this.state.burner_delete_study_after_sent} name="burner_delete_study_after_sent" value="Delete Original Study/Patient" onChange={this.handleChange} />
-                    </Col>
-
-                </Row>
-                <Row className="text-center mt-4">
-                    <Col>
-                        <input type="button" className="otjs-button otjs-button-blue" value="Send" onClick={this.sendForm} />
-                    </Col>
-                </Row>
-            </div>
-        )
+    const getSelectedObject = (objectArray, searchedValue) => {
+        return objectArray.find(option => option.value === searchedValue)
     }
+
+    if (isLoading) return <Spinner />
+
+    return (
+        <Form>
+            <h2 className="card-title">CD/DVD Burner Options</h2>
+
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Monitored Folder :</Form.Label>
+                        <Form.Control type="text" value={burner.burner_monitored_path} placeholder="Example : C:\\myPath\Epson" onChange={(event) => handleChange('burner_monitored_path', event.target.value)} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Viewer Folder :</Form.Label>
+                        <Form.Control type="text" value={burner.burner_viewer_path} placeholder="Example : C:\\myPath\Viewer" onChange={(event) => handleChange('burner_viewer_path', event.target.value)} />
+                    </FormGroup>
+                </Col>
+            </Row>
+
+            <Row >
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Label Path : </Form.Label>
+                        <Form.Control type="text" value={burner.burner_label_path} placeholder="Example : C:\\myPath\Label" onChange={(event) => handleChange('burner_label_path', event.target.value)} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Transfer Syntax :</Form.Label>
+                        <Select value={getSelectedObject(transferSyntaxOptions, burner.burner_transfer_syntax)} options={transferSyntaxOptions} onChange={(option) => handleChange('burner_transfer_syntax', option.value)} />
+                    </FormGroup>
+                </Col>
+            </Row>
+
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Manufacturer : </Form.Label>
+                        <Select value={getSelectedObject(manufacturerOptions, burner.burner_manifacturer)} options={manufacturerOptions} onChange={(option) => handleChange('burner_manifacturer', option.value)} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Monitoring Level : </Form.Label>
+                        <Select value={getSelectedObject(levelOptions, burner.burner_monitoring_level)} options={levelOptions} onChange={(option) => handleChange('burner_monitoring_level', option.value)} />
+                    </FormGroup>
+                </Col>
+            </Row>
+
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Date Format :</Form.Label>
+                        <Select value={getSelectedObject(dateFormatOptions, burner.burner_date_format)} options={dateFormatOptions} onChange={(option) => handleChange('burner_date_format', option.value)} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Support Type :</Form.Label>
+                        <Select value={getSelectedObject(supportType, burner.burner_support_type)} options={supportType} onChange={(option) => handleChange('burner_support_type', option.value)} />
+                    </FormGroup>
+                </Col>
+            </Row>
+
+            <Row>
+                <Col>
+                    <Form.Label>Delete Original Images From Orthanc :</Form.Label>
+                </Col>
+                <Col>
+                    <Form.Check checked={burner.burner_delete_study_after_sent} onChange={(event) => handleChange('burner_delete_study_after_sent', event.target.checked)} />
+                </Col>
+            </Row>
+
+            <FormGroup>
+                <Row className="d-flex justify-content-end">
+                    <Button onClick={() => sendForm.mutate({ ...burner })} className='otjs-button otjs-button-blue'> Send </Button>
+                </Row>
+            </FormGroup>
+        </Form>
+    )
 
 }

@@ -16,7 +16,7 @@ const createRoleLabel = async function (req, res) {
  * @param {*} res request result
  */
 const deleteRoleLabel = async function (req, res) {
-    await RoleLabel.deleteRoleLabel(req.body.role_name, req.params.name)
+    await RoleLabel.deleteRoleLabel(req.body.roleName, req.params.name)
     res.sendStatus(200)
 }
 
@@ -36,7 +36,7 @@ const getAllRolesLabels= async function (req, res) {
  * @param {*} res request result
  */
 const getRoleLabels = async function (req, res) {
-    let roleslabels = await RoleLabel.getLabelsFromRoleName(req.params.role_name)
+    let roleslabels = await RoleLabel.getLabelsFromRoleName(req.params.name)
     res.json(roleslabels)
 }
 
@@ -46,8 +46,9 @@ const getRoleLabels = async function (req, res) {
  * @param {*} res request result
  */
 const getLabelRoles = async function (req, res) {
-    let labelsroles = await RoleLabel.getRolesFromLabel(req.params.label);
-    res.json(labelsroles)
+    let labelsRoles = await RoleLabel.getRolesFromLabel(req.params.label);
+    const answer = labelsRoles.map(role => role.role_name)
+    res.json(answer)
 }
 
 module.exports = {createRoleLabel, deleteRoleLabel, getAllRolesLabels, getLabelRoles, getRoleLabels}

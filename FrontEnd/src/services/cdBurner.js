@@ -1,52 +1,26 @@
+import axios from "axios"
+
 const cdBurner = {
 
       startCdBurnerService() {
-            let options = {
-                  method: 'POST',
-                  headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json; charset=utf-8'
-                  },
-                  body: JSON.stringify([])
-            }
 
-            return fetch('/api/monitoring/burner/', options).then((answer) => {
-                  if (!answer.ok) { throw answer }
-                  return (answer.json())
-            }).catch(error => {
+            return axios.post('/api/monitoring/burner/',{}).then((answer) => answer.data
+            ).catch(error => {
                   throw error
             })
       },
 
       stopCdBurnerService() {
 
-            let options = {
-                  method: 'DELETE',
-                  headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json; charset=utf-8'
-                  }
-            }
-
-            return fetch('/api/monitoring/burner/', options).then((answer) => {
-                  if (!answer.ok) { throw answer }
-            }).catch((error) => { throw error })
+            return axios.delete('/api/monitoring/burner/').then((answer) => true 
+            ).catch((error) => { throw error })
 
       },
 
       getCdBuner() {
 
-            let options = {
-                  method: 'GET',
-                  headers: {
-                        Accept: 'application/json'
-                  }
-            }
-
-            return fetch('/api/monitoring/burner/', options).then((answer) => {
-                  if (!answer.ok) { throw answer }
-                  return (answer.json())
-            }).catch((error) => {
+            return axios.get('/api/monitoring/burner/').then((answer) => answer.data
+            ).catch((error) => {
                   throw error
             })
 
@@ -54,18 +28,8 @@ const cdBurner = {
 
       cancelCdBurner(jobBurnerID) {
 
-            let options = {
-                  method: 'POST',
-                  headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json; charset=utf-8'
-                  },
-                  body: JSON.stringify([])
-            }
-
-            return fetch('/api/monitoring/burner/jobs/' + jobBurnerID + '/cancel', options).then((answer) => {
-                  if (!answer.ok) { throw answer }
-            }).catch((error) => {
+            return axios.post('/api/monitoring/burner/jobs/' + jobBurnerID + '/cancel', []).then((answer) => answer)
+            .catch((error) => {
                   throw error
             })
 

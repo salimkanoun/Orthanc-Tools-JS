@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react'
+import React, { Component, Fragment, useState } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
 import apis from '../../../services/apis'
 
@@ -7,110 +7,111 @@ import StoneLink from '../../Viewers/StoneLink'
 import Modal from 'react-bootstrap/Modal'
 import Metadata from '../../Metadata/Metadata'
 import Modify from '../../Modify/Modify'
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
 import CreateDicom from '../../CreateDicom/CreateDicom'
+import { Button } from 'react-bootstrap'
+import ConstantLevel from '../../Modify/ConstantLevel'
+ 
+export default ({
+    level,
+    orthancID,
+    StudyInstanceUID,
+    dataDetails,
+    hiddenModify,
+    hiddenDelete,
+    hiddenMetadata,
+    onDelete,
+    openLabelModal }) => {
 
-export default class ActionBouton extends Component {
+    const [showMetadata, setShowMetadata] = useState(false);
 
-    state = {
-        showMetadata: false
+    const setMetadata = () => {
+        setShowMetadata(!showMetadata)
     }
 
-    static defaultProps = {
-        hiddenMetadata: true,
-        hiddenCreateDicom: false
-    }
 
-    setMetadata = () => {
-        this.setState({
-            showMetadata: !this.state.showMetadata
-        })
-    }
 
-    delete = async () => {
-        let orthancID = this.props.orthancID
-        switch (this.props.level) {
-            case 'patients':
+    const fdelete = async () => {
+        switch (level) {
+            case ConstantLevel.PATIENTS:
                 try {
                     await apis.content.deletePatient(orthancID)
-                    toast.success("Patient " + orthancID + " have been deleted")
-                    this.props.onDelete(orthancID, this.props.parentID)
+                    toast.success("Patient " + orthancID + " have been deleted", {data:{type:'notification'}})
+                    onDelete(orthancID)
                 } catch (error) {
-                    toast.error(error)
+                    toast.error(error, {data:{type:'notification'}})
                 }
                 break
-            case 'studies':
+            case ConstantLevel.STUDIES:
                 try {
                     await apis.content.deleteStudies(orthancID)
-                    toast.success("Studies " + orthancID + " have been deleted")
-                    this.props.onDelete(orthancID, this.props.parentID)
+                    toast.success("Studies " + orthancID + " have been deleted", {data:{type:'notification'}})
+                    onDelete(orthancID)
                 } catch (error) {
-                    toast.error(error)
+                    toast.error(error, {data:{type:'notification'}})
                 }
                 break
-            case 'series':
+            case ConstantLevel.SERIES:
                 try {
                     await apis.content.deleteSeries(orthancID)
-                    toast.success("Series " + orthancID + " have been deleted")
-                    this.props.onDelete(orthancID, this.props.parentID)
+                    toast.success("Series " + orthancID + " have been deleted", {data:{type:'notification'}})
+                    onDelete(orthancID)
                 } catch (error) {
-                    toast.error(error)
+                    toast.error(error, {data:{type:'notification'}})
                 }
                 break
             default:
-                toast.error("Wrong level")
+                toast.error("Wrong level", {data:{type:'notification'}})
         }
 
     }
 
-    handleClick = (e) => {
+    const handleClick = (e) => {
         e.stopPropagation()
     }
 
-    render = () => {
-        return (
-            <Fragment>
-                {/*modal pour metadata*/}
-                <Modal show={this.state.showMetadata} onHide={this.setMetadata} scrollable={true}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Metadata</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Metadata serieID={this.props.orthancID}/>
-                    </Modal.Body> 
-                </Modal>
 
-                <Dropdown onClick={this.handleClick} drop='left' className="text-center">
-                    <Dropdown.Toggle variant="button-dropdown-green" id="dropdown-basic" className="button-dropdown button-dropdown-green">
-                        Action
-                    </Dropdown.Toggle>
+    return (
+        <Fragment>
+            {/*modal pour metadata*/}
+            <Modal show={showMetadata} onHide={setMetadata} scrollable={true} >
+                <Modal.Header closeButton>
+                    <Modal.Title>Metadata</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Metadata seriesOrthancId={orthancID}/>
+                </Modal.Body>
+            </Modal>
 
-                    <Dropdown.Menu className="mt-2 border border-dark border-2">
-                        <OhifLink className='dropdown-item bg-green' {...this.props} />
-                        <StoneLink className='dropdown-item bg-green' {...this.props} />
-                        <button className='dropdown-item bg-green' type='button' onClick={this.setMetadata}
-                                hidden={this.props.hiddenMetadata}>View Metadata
-                        </button>
-                        {(["patients", "studies"].includes(this.props.level) ? <CreateDicom {...this.props}/> :
-                            null)}
-                        <Modify hidden={this.props.hiddenModify} {...this.props} />
-                        <button className='dropdown-item bg-red' type='button' hidden={this.props.hiddenDelete}
-                                onClick={this.delete}>Delete
-                        </button>
-                        {(this.props.level === "studies" && !!this.props.openLabelModal ?
-                            <button className='dropdown-item bg-blue' type='button' hidden={this.props.hiddenDelete}
-                                    onClick={() => {
-                                        apis.content.getStudiesDetails(this.props.orthancID).then((study) => {
-                                            this.props.openLabelModal(study)
-                                        })
-                                    }}>Labels
-                            </button> : null)}
+            <Dropdown onClick={handleClick} drop='left' className="text-center">
+                <Dropdown.Toggle variant="button-dropdown-green" id="dropdown-basic" className="button-dropdown button-dropdown-green">
+                    Action
+                </Dropdown.Toggle>
 
-                    </Dropdown.Menu>
-                </Dropdown>
-            </Fragment> 
-        )
-    }
+                <Dropdown.Menu className="mt-2 border border-dark border-2">
+                    <OhifLink className='dropdown-item bg-green' StudyInstanceUID={StudyInstanceUID} />
+                    <StoneLink className='dropdown-item bg-green' StudyInstanceUID={StudyInstanceUID} />
+                    <Button className='dropdown-item bg-green' onClick={setMetadata}
+                        hidden={hiddenMetadata}>View Metadata
+                    </Button>
+                    {([ConstantLevel.PATIENTS, ConstantLevel.STUDIES].includes(level) ? <CreateDicom orthancID={orthancID} level={level} /> :
+                        null)}
+                    <Modify hidden={hiddenModify} orthancID={orthancID} level={level} data={dataDetails} refresh={()=>{console.log('TODO REFRESH')}} />
+                    <Button className='dropdown-item bg-red' hidden={hiddenDelete}
+                        onClick={fdelete}>Delete
+                    </Button>
+                    {(level === ConstantLevel.STUDIES && !!openLabelModal ?
+                    //TODO a réinstancier
+                        <Button className='dropdown-item bg-blue' hidden={hiddenDelete}
+                            onClick={() => {
+                                apis.content.getStudiesDetails(orthancID).then((study) => {
+                                    openLabelModal(study)
+                                })
+                            }}>Labels
+                        </Button> : null)}
 
-
+                </Dropdown.Menu>
+            </Dropdown>
+        </Fragment>
+    )
 }

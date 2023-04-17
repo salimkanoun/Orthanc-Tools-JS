@@ -1,47 +1,30 @@
+import axios from "axios"
+
 const importDicom = {
 
     importDicom(dicomFile) {
-
-        let importDicomFile = {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/dicom'
-            },
-            body: dicomFile
-        }
-
-        return fetch('/api/instances', importDicomFile)
-            .then(async (answer) => {
-                if (!answer.ok) { throw answer }
-                return (answer.json())
-            })
+        return axios.post('/api/instances', dicomFile, {headers : {'Content-Type' : 'application/dicom'}})
+            .then(async (answer) => answer.data)
     },
 
-    createDicom( content, parentOrthancId, tags = {} ) {
-        
+    createDicom(content, parentOrthancId, tags = {}) {
+
         let payload = {
             "Content": content,
-            "Tags":  tags,
-            "Parent" : parentOrthancId
+            "Tags": tags,
+            "Parent": parentOrthancId
         }
 
         let createDicom = {
             method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
             body: JSON.stringify(payload)
         }
 
         console.log(createDicom)
 
-        return fetch('/api/tools/create-dicom', createDicom)
-            .then(async (answer) => {
-                if (!answer.ok) { throw await answer.json() }
-                return (answer.json())
-            }).catch(error => {
+        return axios.post('/api/tools/create-dicom', payload)
+            .then(async (answer) => answer.data
+            ).catch(error => {
                 console.error(error)
             })
 

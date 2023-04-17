@@ -1,49 +1,59 @@
-import React, {Fragment, useMemo} from "react";
-import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import React, { useMemo } from "react";
+import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
-export default function WebdavEndpoints({onDeleteEndpoint, endpointsData}) {
-
-    const columns = useMemo(() => [{
-        accessor: 'label',
-        Header: 'Label'
-    },
-        {
-            accessor: 'host',
-            Header: 'Host'
-        },
-        {
-            accessor: 'username',
-            Header: 'Username'
-        },
-        {
-            accessor: 'targetFolder',
-            Header: 'Target Folder'
-        },
-        {
-            accessor: 'digest',
-            Header: 'Use Digest?',
-            Cell: ({row}) => <p>{(row.values.digest ? '✓' : '✖')}</p>
-        },
-        {
-            accessor: 'delete',
-            Header: 'Delete endpoint',
-            Cell: ({row}) => {
-                return (
-                    <div className="text-center">
-                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
-                            await onDeleteEndpoint(row.values.id)
-                        }} value="Remove"/>
-                    </div>)
-            }
-        }], [onDeleteEndpoint]);
+export default ({ onDeleteEndpoint, endpointsData }) => {
 
     const data = useMemo(() => endpointsData, [endpointsData])
 
+    const columns = [
+        {
+            id : 'label',
+            accessorKey: 'label',
+            header: 'Label',
+        },
+        {
+            id : 'host', 
+            accessorKey: 'host',
+            header: 'Host',
+        },
+        {
+            id : 'username',
+            accessorKey: 'username',
+            header: 'Username',
+        },
+        {
+            id : 'targetFolder',
+            accessorKey: 'targetFolder',
+            header: 'Target Folder',
+        },
+        {
+            id  : 'digest', 
+            accessorKey: 'digest',
+            header: 'Use Digest?',
+            cell: ({ row }) => <p>{(row.values.digest ? '✓' : '✖')}</p>
+        },
+        {
+            id : 'delete',
+            accessorKey: 'delete',
+            header: 'Delete endpoint',
+            cell: ({ row }) => {
+                return (
+                    <div className="text-center">
+                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
+                            let id = row.values.id
+                            await onDeleteEndpoint.mutate(id)
+                        }} value="Remove" />
+                    </div>)
+            }
+        }
+    ]
+
+
     return (
-        <Fragment>
+        <>
             <h2 className="mt-5 card-title">Webdav Export Endpoints</h2>
-            <CommonTable columns={columns} tableData={data}/>
-        </Fragment>
+            <CommonTableV8 columns={columns} data={data} />
+        </>
     )
 }
 

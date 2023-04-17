@@ -1,6 +1,7 @@
 import { LOAD_AETS, LOG_IN } from '../actions/actions-types'
 
 const initialState = {
+  token : null,
   OrthancAets: [],
   roles: {},
   username: null
@@ -18,8 +19,9 @@ export default function orthancToolsReducer(state = initialState, action) {
     case LOG_IN:
       return {
         ...state,
-        username: action.payload.username,
-        roles: {...action.payload}
+        ...action.payload.backendData,
+        token : action.payload.token,
+        
       }
 
     default:

@@ -1,222 +1,141 @@
-import React, { Component, Fragment } from 'react'
-import apis from '../../../../services/apis'
-import Select from 'react-select'
+import React, { useState } from 'react'
 
-import { toast } from 'react-toastify'
-import {Row, Col, Modal} from 'react-bootstrap'
+import { Row, Modal, Form, FormGroup, Button } from 'react-bootstrap'
+
+import { useCustomMutation, useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks'
+
+import OrthancSettingsForms from './OrthancSettingsForms'
 import OrthancInfos from './OrthancInfos'
+import apis from '../../../../services/apis'
+import { keys } from '../../../../model/Constant'
+import { errorMessage, successMessage } from '../../../../tools/toastify'
 
-export default class OrthancSettings extends Component {
+export default () => {
 
-    /** Init State */
-    state = {
-        orthancAddress: '',
-        orthancPort: 0,
-        orthancUsername: '',
-        orthancPassword: '',
-        showRestart: false,
-        showShutdown: false,
-        showOrthancDetails : false,
-        verbositySelected: null
-    }
+    const [orthancSettings, setOrthancSettings] = useState({
+        address: '',
+        port: '',
+        username: '',
+        password: ''
+    })
 
-    
-    verbosities = [
-        { value: 'default', label: 'Default' },
-        { value: 'verbose', label: 'Verbose' },
-        { value: 'trace', label: 'Trace' }
-    ]
+    const [showRestart, setShowRestart] = useState(false)
+    const [showShutdown, setShowShutdown] = useState(false)
+    const [showOrthancDetails, setShowOrthancDetails] = useState(false)
 
-    /**
-     * Fetch value from BackEnd
-     */
-    componentDidMount = async () => {
-
-        try {
-            let answer = await apis.options.getOrthancServer()
-            this.setState({
-                ...answer
+    const { isLoading } = useCustomQuery(
+        [keys.ORTHANC_SETTINGS_KEY],
+        () => apis.options.getOrthancServer(),
+        undefined,
+        undefined,
+        (answer) => {
+            setOrthancSettings({
+                address: answer.orthancAddress,
+                port: answer.orthancPort,
+                username: answer.orthancUsername,
+                password: answer.orthancPassword
             })
-        } catch (error) {
-            toast.error(error.statusText)
         }
+    )
 
-        try {
-            let verbosity = await apis.options.getVerbosity()
-            let verbosityOption = this.getVerbosityOption(verbosity)
-            this.setState({
-                verbositySelected: verbosityOption
-            })
-
-        } catch (error) {
-            toast.error(error.statusText)
-        }
-
-
-    }
-
-    /**
-     * Store form values in state
-     * @param {*} event 
-     */
-    handleChange = (event) => {
-        const target = event.target
-        const name = target.name
-        const value = target.type === 'checkbox' ? target.checked : target.value
-
-        this.setState({
-            [name]: value
-        })
-
-    }
-
-    /**
-     * Send new value to BackEnd
-     */
-    submitOrthancSettings = async () => {
-        apis.options.setOrthancServer(this.state.orthancAddress, this.state.orthancPort,
-            this.state.orthancUsername, this.state.orthancPassword)
-            .then(() => { toast.warning('Updated, modify your environnement settings for the next start') })
-            .catch((error) => { toast.error(error.statusText) })
-    }
+    const submitOrthancSettings = useCustomMutation(
+        ({ address, port, username, password }) => {
+            apis.options.setOrthancServer(address, port, username, password)
+        },
+        [[keys.ORTHANC_SETTINGS_KEY]]
+    )
 
     /**
      * Try to connect to Orthanc System API, response is shown in an toastify
      */
-    testConnexion = () => {
+
+    const testConnexion = () => {
         apis.options.getOrthancSystem().then((answer) => {
-            toast.success('Orthanc Version: ' + answer.Version)
-        }).catch(error => { toast.error(error.statusText) })
+            successMessage("Orthanc Version: " + answer.Version)
+        }).catch(error => { errorMessage(error?.response?.data) })
     }
 
-    reset = () => {
+    const reset = () => {
         apis.options.resetOrthanc()
-            .then(() => { toast.success('Restart Done') ; this.setState({ showRestart: false }) })
-            .catch(error => { toast.error(error.statusText) })
-            
+            .then(() => { successMessage('Restart Done') })
+            .catch(error => { errorMessage(error.response?.data) })
+        setShowRestart(false)
     }
 
-    shutdown = () => {
+    const shutdown = () => {
         apis.options.shutdownOrthanc()
-            .then(() => { toast.success('Orthanc Stopped') ; this.setState({ showShutdown: false })})
+            .then(() => { successMessage('Orthanc Stopped') })
             .catch((error) => {
-                toast.error(error.statusText)
+                errorMessage(error.response?.data)
             })
+        setShowShutdown(false)
     }
 
-    changeListener = (event) => {
-        apis.options.setVerbosity(event.value).then(() => {
-            toast.success('Verbosity Updated')
-            this.setState({ verbositySelected: event })
-        }).catch((error) => {
-            toast.error(error.statusText)
-        })
-
+    const onSettingsChange = (key, value) => {
+        setOrthancSettings((orthancSettings) => ({
+            ...orthancSettings,
+            [key]: value
+        }))
     }
 
-
-    getVerbosityOption = (verbosity) => {
-        let index = -1
-        this.verbosities.forEach(element => {
-            if (element.value === verbosity) {
-                index = this.verbosities.indexOf(element)
-            }
-        })
-        return this.verbosities[index]
-    }
-
-    render = () => {
-        return (
-            <Fragment>
-                <div className="form-group">
-                    <Row>
-                        <Col>
-                            <h2 className="card-title">Orthanc Server</h2>
-                        </Col>
-                        <Col className="text-center">
-                            <input type='button' className='otjs-button otjs-button-blue w-10 me-2' onClick={this.testConnexion} value='Check Connexion' />
-                            <input type='button' className='otjs-button otjs-button-blue w-10 ms-2' onClick={() => this.setState({ showOrthancDetails: true })} value='Orthanc Details' />
-                            <Modal show={this.state.showOrthancDetails} onHide={() => this.setState({ showOrthancDetails: false })}>
-                                <Modal.Header closeButton>
-                                    <Modal.Title>Orthanc Details</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    <OrthancInfos/>
-                                </Modal.Body>
-                            </Modal>
-                        </Col>
-                    </Row>
-                    <Row className="align-items-center g-3 mt-5">
-                        <Col sm={2}>
-                            <label htmlFor="address" className="col-form-label">Address : </label>
-                        </Col>
-                        <Col sm={4}>
-                            <input type='text' name="orthancAddress" className="form-control" onChange={this.handleChange} value={this.state.orthancAddress} placeholder="http://" />
-                        </Col>
-                        <Col sm={2}>
-                            <label htmlFor="port" className="col-form-label">Port : </label>
-                        </Col>
-                        <Col sm={4}>
-                            <input type='number' min="0" max="999999" name="orthancPort" className="form-control" value={this.state.orthancPort} onChange={this.handleChange} />
-                        </Col>
-                    </Row>
-                    <Row className="align-items-center g-3 mt-2">
-                        <Col sm={2}>
-                            <label htmlFor="username" className="col-form-label">Username : </label>
-                        </Col>
-                        <Col sm={4}>
-                            <input type='text' name="orthancUsername" className="form-control" value={this.state.orthancUsername} onChange={this.handleChange} />
-                        </Col>
-                        <Col sm={2}>
-                            <label htmlFor="password"  className="col-form-label">Password : </label>
-                        </Col>
-                        <Col sm={4}>
-                            <input type='password' name="orthancPassword" className="form-control" value={this.state.orthancPassword} onChange={this.handleChange} />
-                        </Col>
-                    </Row> 
-                </div>
-                <Row className="mt-5 text-center">
-                    <Col sm={4}>
-                        <input type='button' className='otjs-button otjs-button-blue w-10' onClick={this.submitOrthancSettings} value='Update' />
-
-                    </Col>
-                    <Col sm={4}>
-                        <input type='button' className='otjs-button otjs-button-orange w-10' onClick={() => this.setState({ showRestart: true })} value='Restart' />
-                        <Modal show={this.state.showRestart} onHide={() => this.setState({ showRestart: false })}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Confirm restart</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>Are you sure to restart Orthanc system ?</Modal.Body>
-                            <Modal.Footer>
-                                <input type='button' className='btn btn-secondary' onClick={() => this.setState({ showRestart: false })} value="Close" />
-                                <input type='button' className='btn btn-warning' onClick={this.reset} value="Restart" />
-                            </Modal.Footer>
-                        </Modal>
-                    </Col>
-                    <Col sm={4}>
-                        <input type='button' className='otjs-button otjs-button-red w-10' onClick={() => this.setState({ showShutdown: true })} value='Shutdown' />
-                        <Modal show={this.state.showShutdown} onHide={() => this.setState({ showShutdown: false })}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Confirm Shutdown</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>Are you sure to shutdown Orthanc system ?</Modal.Body>
-                            <Modal.Footer>
-                                <input type='button' className='btn btn-secondary' onClick={() => this.setState({ showShutdown: false })} value="Close" />
-                                <input type='button' className='btn btn-danger' onClick={this.shutdown} value="Shutdown" />
-                            </Modal.Footer>
-                        </Modal>
-                    </Col>
-                </Row>
-                <Row className="mt-5 align-items-center">
-                    <Col sm={2}>
-                        <label htmlFor="verbosity">Verbosity : </label>
-                    </Col>
-                    <Col sm={10}>
-                        <Select name="verbosity" single options={this.verbosities} onChange={this.changeListener} value={this.state.verbositySelected} />
-                    </Col>
+    return (
+        <>
+            <h2 className="card-title">Orthanc Server</h2>
+            <Form>
+                <FormGroup>
+                    <Modal show={showOrthancDetails} onHide={() => setShowOrthancDetails(false)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Orthanc Details</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <OrthancInfos />
+                        </Modal.Body>
+                    </Modal>
+                    <Modal show={showRestart} onHide={() => setShowRestart(false)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Confirm restart</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>Are you sure to restart Orthanc system ?</Modal.Body>
+                        <Modal.Footer>
+                            <FormGroup>
+                                <Button className='btn btn-secondary' onClick={() => setShowRestart(false)}> Close </Button>
+                                <Button className='btn btn-warning' onClick={reset} >Restart</Button>
+                            </FormGroup>
+                        </Modal.Footer>
+                    </Modal>
+                    <Modal show={showShutdown} onHide={() => setShowShutdown(false)}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Confirm Shutdown</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>Are you sure to shutdown Orthanc system ?</Modal.Body>
+                        <Modal.Footer>
+                            <FormGroup>
+                                <Button className='btn btn-secondary' onClick={() => setShowShutdown(false)}> Close </Button>
+                                <Button className='btn btn-danger' onClick={shutdown}> Shutdown</Button>
+                            </FormGroup>
+                        </Modal.Footer>
+                    </Modal>
+                </FormGroup>
+                {
+                    !isLoading ?
+                        <Row className='mb-3'>
+                            <OrthancSettingsForms orthancAddress={orthancSettings.address} orthancPort={orthancSettings.port} orthancUsername={orthancSettings.username} orthancPassword={orthancSettings.password} onChange={onSettingsChange} />
+                            <Row className="d-flex justify-content-end">
+                                <Button className='otjs-button otjs-button-blue w-10' onClick={() => submitOrthancSettings.mutate({ ...orthancSettings })}> Update </Button>
+                            </Row>
+                        </Row>
+                        :
+                        null
+                }
+                <Row className='d-flex justify-content-between' >
+                    <Button className='otjs-button otjs-button-blue w-10 me-2' onClick={testConnexion}> Check Connexion </Button>
+                    <Button className='otjs-button otjs-button-blue w-10 me-2' onClick={() => setShowOrthancDetails(true)}> Orthanc Details </Button>
+                    <Button className='otjs-button otjs-button-orange w-10' onClick={() => setShowRestart(true)}> Restart </Button>
+                    <Button className='otjs-button otjs-button-red w-10' onClick={() => setShowShutdown(true)} > Shutdown </Button>
 
                 </Row>
-            </Fragment>
-        )
-    }
+
+            </Form>
+        </>
+    )
 }

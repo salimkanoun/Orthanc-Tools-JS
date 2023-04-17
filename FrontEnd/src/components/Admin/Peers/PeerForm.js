@@ -1,91 +1,71 @@
-import React, { Component, Fragment } from 'react'
-import { toast } from 'react-toastify'
+import React, { useState } from 'react'
 import apis from '../../../services/apis'
-import { Row, Col } from 'react-bootstrap'
+import { Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
+import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks'
+import { keys } from '../../../model/Constant'
 /**
  * Form to declare or modify an Orthanc Peer
  */
-export default class PeerForm extends Component {
+export default () => {
 
-    /**
-     * Fill input text of users in current state
-     * @param {*} event 
-     */
-    handleChange = (event) => {
-        const target = event.target
-        const name = target.name
-        const value = target.value
-
-        this.setState({
-            [name]: value
-        })
-
-    }
-
-    /**
-     * Listener on form submission
-     */
-    handleClick = async () => {
-        try {
-            await apis.peers.updatePeer(this.state.name, this.state.ip, this.state.port, this.state.username, this.state.password)
-            this.props.refreshPeerData()
-        } catch (error) {
-            toast.error(error.statusText)
-        }
-
-    }
+    const [name, setName] = useState()
+    const [ip, setIp] = useState()
+    const [port, setPort] = useState()
+    const [username, setUsername] = useState()
+    const [password, setPassword] = useState()
 
 
-    render = () => {
-        return (
-            <Fragment>
-                <Row className="mt-4">
-                    <Col>
-                        <h2 className="card-title">Add Peer</h2>
-                    </Col>
-                </Row>
-                <Row className="mt-4 forms-group align-items-center">
-                    <Col sm={3}>
-                        <label htmlFor="username">Peer Name : </label>
-                    </Col>
-                    <Col>  
-                        <input type='text' name="name" className="form-control" onChange={this.handleChange} />
-                    </Col>
-                </Row>
-                <Row className="mt-4 forms-group align-items-center">
-                    <Col>
-                        <label htmlFor="ip">Url : </label>
-                    </Col>
-                    <Col>  
-                        <input type='text' name="ip" className="form-control" placeholder="http://" onChange={this.handleChange} />
-                    </Col>
-                    <Col>
-                        <label htmlFor="port">Port : </label>
-                    </Col>
-                    <Col>
-                        <input type='number' name="port" className="form-control" onChange={this.handleChange} />
-                    </Col>
-                </Row>
-                <Row className="mt-4 forms-group align-items-center">
-                    <Col>
-                        <label htmlFor="name">Username : </label>
-                    </Col>
-                    <Col>
-                        <input type='text' name="username" className="form-control" onChange={this.handleChange} />
-                    </Col>
-                    <Col>
-                        <label htmlFor="password">Password : </label>
-                    </Col>
-                    <Col>
-                        <input type='password' name="password" className="form-control" onChange={this.handleChange} />
-                    </Col>
-                </Row>
-                <Row className="mt-4 forms-group align-items-center text-center">
-                    <Col>
-                        <input type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Send' />
-                    </Col>
-                </Row>
-            </Fragment>
-        )
-    }
+    const sendPeer = useCustomMutation(
+        ({ name, ip, port, username, password }) => {
+            apis.peers.updatePeer(name, ip, port, username, password)
+        },
+        [[keys.PEERS_KEY]]
+    )
+
+
+    return (
+        <Form autoComplete='off'>
+            <h2 className="card-title">Add Peer</h2>
+
+            <FormGroup>
+                <Form.Label> Peer Name : </Form.Label>
+                <Form.Control type="text" value={name} placeholder="Name" onChange={(event) => setName(event.target.value)} />
+            </FormGroup>
+
+
+            <Row>
+                <Col>
+                    <FormGroup>
+                        <Form.Label> Url : </Form.Label>
+                        <Form.Control type="text" value={ip} placeholder="http://" onChange={(event) => setIp(event.target.value)} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label> Port : </Form.Label>
+                        <Form.Control type="text" value={port} placeholder="port" onChange={(event) => setPort(event.target.value)} />
+                    </FormGroup>
+                </Col>
+            </Row>
+
+            <Row >
+                <Col>
+                    <FormGroup>
+                        <Form.Label>Username : </Form.Label>
+                        <Form.Control autoComplete='off' type="text" value={username} placeholder="username" onChange={(event) => setUsername(event.target.value)} />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Form.Label >Password : </Form.Label>
+                        <Form.Control autoComplete='off' type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+                    </FormGroup>
+                </Col>
+            </Row>
+
+            <FormGroup className='d-flex justify-content-end'>
+                <Button className='otjs-button otjs-button-blue' onClick={() => sendPeer.mutate({ name, ip, port, username, password })}> Send </Button>
+            </FormGroup>
+        </Form>
+    ) 
 }

@@ -1,116 +1,103 @@
-import React, { Component } from 'react'
-import { toast } from 'react-toastify';
+import React, { useState } from 'react'
 import apis from '../../../services/apis';
-import { Row, Col } from 'react-bootstrap';
-export default class AutoRetrieveSchedule extends Component {
+import { Row, Col, Form, FormGroup, Button } from 'react-bootstrap';
+import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
+import { keys } from '../../../model/Constant';
+import { errorMessage, successMessage } from '../../../tools/toastify';
 
-  /**Init state */
-  state = {
-    serverTime: '', 
-    hourStart: '00',
-    minStart: '00',
-    hourStop: '00',
-    minStop: '00'
-  }
+export default () => {
+
+  const [retrieveTime, setRetrieveTime] = useState({
+    hourStart: undefined,
+    minStart: undefined,
+    hourStop: undefined,
+    minStop: undefined
+  })
 
   /**
    * Get defined schedule hour and min from backend
    */
-  componentDidMount = async () => {
-    try {
-      const response = await apis.options.getOptions()
-      this.setState({
-        hourStart: response.hour_start,
-        minStart: response.min_start,
-        hourStop: response.hour_stop,
-        minStop: response.min_stop
+  useCustomQuery(
+    [keys.OPTIONS_KEY],
+    () => apis.options.getOptions(),
+    undefined,
+    undefined,
+    (answer) => {
+      setRetrieveTime({
+        hourStart: answer.hour_start,
+        hourStop: answer.hour_stop,
+        minStart: answer.min_start,
+        minStop: answer.min_stop
       })
-      await this.refreshServerTime()
-
-    } catch (error) {
-      toast.error(error.statusText)
     }
+  )
 
-  }
-
-  refreshServerTime = async () => {
-
-    let serverTime = await apis.options.getServerTime()
-    this.setState({
-      serverTime : serverTime
-    }) 
-
-  }
+  const { data: serverTime } = useCustomQuery(
+    [keys.TIME],
+    () => apis.options.getServerTime(),
+  )
 
   /**
    * Store written value in state
    * @param {*} event 
    */
-  handleChange = (event) => {
-    const target = event.target
-    const name = target.name
-    const value = target.type === 'checkbox' ? target.checked : target.value
-
-    this.setState({
-      [name]: value
+  const handleChange = (key, value) => {
+    setRetrieveTime((infoTime) => ({
+      ...infoTime,
+      [key]: value
     })
-  }
-
-  /**
-   * Submission of new values of schedule
-   */
-  handleClick = () => {
-    apis.options.setRobotScheduleHour(this.state.hourStart, this.state.minStart, this.state.hourStop, this.state.minStop)
-      .then( async () => { 
-        this.refreshServerTime()
-        toast.success('schedule updated')})
-      .catch(error => { toast.error(error.statusText) })
-    
-  }
-
-  render = () => {
-    return (
-      <div>
-        <h2 className="card-title">Retrieve Schedule Time : </h2>
-        <Row className="align-items-center mt-4">
-          <Col sm={3}>
-            <label htmlFor='hour_start'>Start Hour : </label>
-          </Col>
-          <Col sm={3}>
-            <input type='number' name='hourStart' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStart} />
-          </Col>
-          <Col sm={3}>
-            <label htmlFor='min_start'>Start Minutes : </label>
-          </Col>
-          <Col sm={3}>
-            <input type='number_start' name='minStart' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStart} />
-          </Col>
-        </Row>
-        <Row className="align-items-center mt-4">
-          <Col sm={3}>
-          <label htmlFor='hour_stop'>Stop Hour : </label>
-          </Col>
-          <Col sm={3}>
-            <input type='number' name='hourStop' min={0} max={23} className='form-control' onChange={this.handleChange} value={this.state.hourStop} />
-          </Col>
-          <Col sm={3}>
-            <label htmlFor='min_stop'>Stop Minutes : </label>
-          </Col>
-          <Col sm={3}>
-            <input type='number' name='minStop' min={0} max={59} className='form-control' onChange={this.handleChange} value={this.state.minStop} />
-          </Col>
-        </Row>
-        <Row className="mt-4">
-          <Col>
-            <p>Server time : {this.state.serverTime}</p>
-          </Col>
-          <Col>
-            <input type='button' className='otjs-button otjs-button-blue' onClick={this.handleClick} value='Send' />
-          </Col>
-        </Row>
-      </div>
-
     )
   }
 
+  const retrieveSchedulorMutator = useCustomMutation(
+    ({ retrieveTime }) => apis.options.setRobotScheduleHour(retrieveTime.hourStart, retrieveTime.minStart, retrieveTime.hourStop, retrieveTime.minStop),
+    [keys.OPTIONS_KEY],
+    () => successMessage('Updated'),
+    () => errorMessage('Failure')
+  )
+
+  return (
+    <Form>
+      <h2 className="card-title">Retrieve Schedule Time : </h2>
+
+      <Row>
+        <Col>
+          <FormGroup>
+            <Form.Label> Start Hour : </Form.Label>
+            <Form.Control type="number" value={retrieveTime?.hourStart} min={0} max={23} onChange={(event) => (handleChange('hourStart', event.target.value))} />
+          </FormGroup>
+        </Col>
+        <Col>
+          <FormGroup>
+            <Form.Label> Start Minutes :</Form.Label>
+            <Form.Control type="number" value={retrieveTime?.minStart} min={0} max={59} onChange={(event) => (handleChange('minStart', event.target.value))} />
+          </FormGroup>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col>
+          <FormGroup>
+            <Form.Label> Stop Hour : </Form.Label>
+            <Form.Control type="number" value={retrieveTime?.hourStop} min={0} max={23} onChange={(event) => (handleChange('hourStop', event.target.value))} />
+          </FormGroup>
+        </Col>
+        <Col>
+          <FormGroup>
+            <Form.Label> Stop Minutes : </Form.Label>
+            <Form.Control type="number" value={retrieveTime?.minStop} min={0} max={59} onChange={(event) => (handleChange('minStop', event.target.value))} />
+          </FormGroup>
+        </Col>
+      </Row>
+
+      <Row className="mt-4">
+        <Col>
+          <Form.Label>Server time : {serverTime}</Form.Label>
+        </Col>
+        <Col className='d-flex justify-content-end'>
+          <Button className='otjs-button otjs-button-blue' onClick={() => retrieveSchedulorMutator.mutate({ retrieveTime })}> Send </Button>
+        </Col>
+      </Row>
+    </Form>
+  )
 }

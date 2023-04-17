@@ -10,8 +10,8 @@ export default function deleteListReducer (state = initialState, action ) {
         case ADD_STUDY_DELETE_LIST:
           let deleteArray = action.payload
           //Add only id that are not already in the delete list
-          let knownOrthancStudyID = state.deleteList.map(study => study.ID)
-          let newStudies = deleteArray.filter(studyObject => !knownOrthancStudyID.includes(studyObject.ID) )
+          let knownOrthancStudyID = state.deleteList.map(study => study.StudyID)
+          let newStudies = deleteArray.filter(studyObject => !knownOrthancStudyID.includes(studyObject.StudyID) )
           let newIncresedList = [...state.deleteList, ...newStudies]
           return {
             deleteList : newIncresedList
@@ -20,7 +20,7 @@ export default function deleteListReducer (state = initialState, action ) {
         case REMOVE_PATIENT_DELETE_LIST:
           //Filter (remove) patient corresponding to payload ID
           let newSlipcedList = state.deleteList.filter(study =>{
-            return study.ParentPatient !== action.payload
+            return study.ParentPatient.PatientOrthancID !== action.payload
           })
           return {
             deleteList: newSlipcedList
@@ -29,7 +29,7 @@ export default function deleteListReducer (state = initialState, action ) {
         case REMOVE_STUDY_DELETE_LIST:
           //Filter study corresponding to studyID
           let newFilteredList = state.deleteList.filter(study =>{
-            return study.ID !== action.payload
+            return study.StudyOrthancID !== action.payload
           })
           return {
             deleteList: newFilteredList

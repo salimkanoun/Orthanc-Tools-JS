@@ -9,11 +9,13 @@ const userAuthMidelware = function (req, res, next) {
   }
   else{
     try {
-      let token = req.cookies.tokenOrthancJs
+      let authorizationHeaders = req.headers['authorization']
+      const token = authorizationHeaders && authorizationHeaders.split(' ')[1]
       let payload = jwt.verify(token, process.env.TOKEN_SECRET)
-      req.roles = payload
+      req.roles = payload.roles
       next()
     } catch (err) {
+      console.log(err)
       res.sendStatus(401);
       return
     }
@@ -82,18 +84,18 @@ const exportLocalMidelware = async function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
   }
-  else if (req.roles.export_local) {
+  else if (req.roles.exportLocal) {
     next()
   } else {
     res.sendStatus(403);
   }
 }
 
-const exportExternMidelware = async function (req, res, next) {
+const exportRemoteMidelware = async function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
   }
-  else if (req.roles.export_extern) {
+  else if (req.roles.exportRemote) {
     next()
   } else {
     res.sendStatus(403);
@@ -115,7 +117,7 @@ const autoQueryMidelware = async function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
   }
-  else if (req.roles.auto_query) {
+  else if (req.roles.autoQuery) {
     next()
   } else {
     res.sendStatus(403);
@@ -149,7 +151,7 @@ const cdBurnerMidelware = async function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
   }
-  else if (req.roles.cd_burner) {
+  else if (req.roles.cdBurner) {
     next()
   } else {
     res.sendStatus(403);
@@ -205,6 +207,6 @@ const roleAccessLabelMidelware = async function(req,res,next){
 
 module.exports = {
   userAuthMidelware, userAdminMidelware, importMidelware, contentMidelware, anonMidelware, exportLocalMidelware,
-  exportExternMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, cdBurnerMidelware, isCurrentUserOrAdminMidelWare,
+  exportRemoteMidelware, queryMidelware, autoQueryMidelware, deleteMidelware, modifyMidelware, cdBurnerMidelware, isCurrentUserOrAdminMidelWare,
   ownTaskOrIsAdminMidelware, roleAccessLabelMidelware, autoroutingMidelware
 }    

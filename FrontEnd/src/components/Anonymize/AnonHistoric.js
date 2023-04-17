@@ -1,15 +1,12 @@
-import React, {Component, useMemo} from 'react'
-import {toast} from 'react-toastify';
-import {connect} from 'react-redux'
+import React, { useEffect, useMemo, useState } from 'react'
+import { toast } from 'react-toastify';
 import apis from '../../services/apis';
 import AnonymizedResults from './AnonymizedResults';
 import task from '../../services/task';
-import {Modal} from "react-bootstrap";
-import {addStudiesToDeleteList} from "../../actions/DeleteList";
-import {addStudiesToExportList} from "../../actions/ExportList";
+import { Modal } from "react-bootstrap";
 import CommonTable from "../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-function HistoricTable({tasks, deleteJobHandler, setSelectedTask}) {
+function HistoricTable({ tasks, deleteJobHandler, setSelectedTask }) {
     const columns = useMemo(() => [{
         accessor: 'id',
         Header: 'id'
@@ -22,22 +19,22 @@ function HistoricTable({tasks, deleteJobHandler, setSelectedTask}) {
     }, {
         id: 'details',
         Header: 'Show Details',
-        Cell: ({row}) => {
+        Cell: ({ row }) => {
             return (<div className="text-center">
                 <input type="button" className='otjs-button otjs-button-green w-10'
-                       onClick={() => setSelectedTask(row.values.id)}
-                       value="Show Result"/>
+                    onClick={() => setSelectedTask(row.values.id)}
+                    value="Show Result" />
             </div>)
         }
     }, {
         id: 'remove',
         Header: 'Remove Robot',
-        Cell: ({row}) => {
+        Cell: ({ row }) => {
             return (
                 <div className="text-center">
                     <input type="button" className='otjs-button otjs-button-red w-10'
-                           onClick={() => deleteJobHandler(row.id)}
-                           value="Remove Job"/>
+                        onClick={() => deleteJobHandler(row.id)}
+                        value="Remove Job" />
                 </div>
             )
         }
@@ -45,96 +42,77 @@ function HistoricTable({tasks, deleteJobHandler, setSelectedTask}) {
 
     const data = useMemo(() => tasks, [tasks]);
 
-    return <CommonTable columns={columns} tableData={data}/>
+    return <CommonTable columns={columns} data={data} />
 }
 
-class AnonHistoric extends Component {
+export default ({ username }) => {
 
-    state = {
-        selectedTask: null,
-        rows: []
+    const [selectedTask, setSelectedTask] = useState(null)
+    const [rows, setRows] = useState([])
+
+    useEffect(() => {
+        refreshHandler()
+        startRefreshMonitoring()
+    }, [])
+
+    const componentWillUnmount = () => {
+        stopRefreshMonitoring()
     }
 
-    componentDidMount = () => {
-        this.refreshHandler()
-        this.startRefreshMonitoring()
+    const startRefreshMonitoring = () => {
+        this.intervalChcker = setInterval(refreshHandler, 2000)
     }
 
-    componentWillUnmount = () => {
-        this.stopRefreshMonitoring()
-    }
-
-    startRefreshMonitoring = () => {
-        this.intervalChcker = setInterval(this.refreshHandler, 2000)
-    }
-
-    stopRefreshMonitoring = () => {
+    const stopRefreshMonitoring = () => {
         clearInterval(this.intervalChcker)
     }
 
-    deleteJobHandler = async (id) => {
+    const deleteJobHandler = async (id) => {
         try {
             await apis.retrieveRobot.deleteRobot(id)
-            await this.refreshHandler()
+            await refreshHandler()
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
     }
 
-    refreshHandler = () => {
-        apis.task.getTaskOfUser(this.props.username, 'anonymize')
+    const refreshHandler = () => {
+        apis.task.getTaskOfUser(username, 'anonymize')
             .then(async taksIds => await Promise.all(taksIds.map(id => task.getTask(id))))
             .then((answerData) => {
-                this.setState({
-                    rows: answerData.map(robotJob => ({
-                        id: robotJob.id,
-                        username: robotJob.creator,
-                        state: robotJob.state,
-                        queriesNb: robotJob.details.items.length
-                    }))
-                })
+                setRows(answerData.map(robotJob => ({
+                    id: robotJob.id,
+                    username: robotJob.creator,
+                    state: robotJob.state,
+                    queriesNb: robotJob.details.items.length
+                })))
 
             }).catch(error => {
-            console.log(error)
-            if (error.status === 404) {
-                toast.error(error.statusMessage);
-            }
-        })
+                if (error.status === 404) {
+                    toast.error(error.statusMessage, { data: { type: 'notification' } });
+                }
+            })
     }
 
-    render = () => {
-        return (
-            <>
-                <Modal dialogClassName={"big-modal"} show={!!this.state.selectedTask}
-                       onHide={() => this.setState({selectedTask: null})} size="lg">
-                    <Modal.Header closeButton>
-                        <Modal.Title>Anonymize Result</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {this.state.selectedTask ?
-                            <AnonymizedResults anonTaskID={this.state.selectedTask}/> :
-                            null
-                        }
-                    </Modal.Body>
-                </Modal>
-                <HistoricTable tasks={this.state.rows} deleteJobHandler={this.deleteJobHandler}
-                               setSelectedTask={selectedTask => {
-                                   this.setState({selectedTask});
-                               }}/>
-            </>
-        )
-    }
+    return (
+        <>
+            <Modal dialogClassName={"big-modal"} show={!!selectedTask}
+                onHide={() => setSelectedTask(null)} size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Anonymize Result</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {selectedTask ?
+                        <AnonymizedResults anonTaskID={selectedTask} /> :
+                        null
+                    }
+                </Modal.Body>
+            </Modal>
+            <HistoricTable tasks={rows} deleteJobHandler={deleteJobHandler}
+                setSelectedTask={selectedTask => {
+                    setSelectedTask({ selectedTask });
+                }} />
+        </>
+    )
 }
 
-const mapStateToProps = (state) => {
-    return {
-        username: state.OrthancTools.username
-    }
-}
-
-const mapDispatchToProps = {
-    addStudiesToDeleteList,
-    addStudiesToExportList
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AnonHistoric)

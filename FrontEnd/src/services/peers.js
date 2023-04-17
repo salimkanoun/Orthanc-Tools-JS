@@ -1,22 +1,21 @@
+import axios from "axios"
+
 const peers = {
 
     getPeers() {
-        return fetch('/api/peers')
-            .then((answer) => {
-                if (!answer.ok) { throw answer }
-                return (answer.json())
-            })
+        return axios.get('/api/peers')
+            .then((answer) =>
+                answer.data
+            )
             .catch((error) => {
                 throw error
             })
     },
 
     getPeersExpand() {
-        return fetch('/api/peers?expand')
-            .then((answer) => {
-                if (!answer.ok) { throw answer }
-                return (answer.json())
-            })
+        return axios.get('/api/peers?expand')
+            .then((answer) => answer.data
+            )
             .catch((error) => {
                 throw error
             })
@@ -31,62 +30,34 @@ const peers = {
             Password: password
         }
 
-        const updatePeerOption = {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify(putData)
-        }
-
-        return fetch('/api/peers/' + name, updatePeerOption).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return (answer.json())
-        }).catch((error) => {
+        return axios.put('/api/peers/' + name, putData).then((answer) => answer.data
+        ).catch((error) => {
             throw error
         })
     },
 
     deletePeer(name) {
 
-        const deletePeerOption = {
-            method: 'DELETE'
-        }
-
-        return fetch('/api/peers/' + name, deletePeerOption).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return (answer.json())
-        }).catch((error) => {
+        return axios.delete('/api/peers/' + name).then((answer) => answer.jdata
+        ).catch((error) => {
             throw error
         })
     },
 
     echoPeer(peerName) {
-        return fetch('/api/peers/' + peerName + '/system').then(response => {
-            if (response.ok) return response.json()
-            else throw response
+        return axios.get('/api/peers/' + peerName + '/system').then(response => response.data
+        ).catch(error => {
+            throw error
         })
     },
 
     storePeer(name, orthancIDsArray) {
 
-        const storePeerOption = {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json; charset=utf-8'
-            },
-            body: JSON.stringify({
-                Synchronous: false,
-                Resources: orthancIDsArray
-            })
-        }
-
-        return fetch('/api/peers/' + name + '/store', storePeerOption).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return (answer.json())
-        }).catch(error => {
+        return axios.post('/api/peers/' + name + '/store', {
+            Synchronous: false,
+            Resources: orthancIDsArray
+        }).then((answer) => answer.data
+        ).catch(error => {
             throw error
         })
     }

@@ -3,23 +3,25 @@ import Papa from 'papaparse'
 import moment from 'moment'
 
 import Dropzone from 'react-dropzone'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { addQueryToList } from '../../../actions/TableQuery'
 
-class CsvLoader extends Component {
+export default ({ }) => {
 
-    readCsv = (files) => {
+    const dispatch = useDispatch()
+
+    const readCsv = (files) => {
         if (files.length === 1) {
 
             Papa.parse(files[0], {
                 header: true,
-                skipEmptyLines:true,
-                complete: this.completeFn// base config to use for each file
+                skipEmptyLines: true,
+                complete: completeFn// base config to use for each file
             })
         }
     }
 
-    completeFn = (result, file) => {
+    const completeFn = (result, file) => {
         let currentObject = this
         let csvData = result.data;
 
@@ -56,30 +58,23 @@ class CsvLoader extends Component {
                 Aet: query['AET']
             }
 
-            currentObject.props.addQueryToList(queryForList)
+            currentObject.dispatch.addQueryToList(queryForList)
 
         })
 
     }
 
-    render = () => {
-        return (
-            <Dropzone onDrop={acceptedFiles => this.readCsv(acceptedFiles)} >
-                {({ getRootProps, getInputProps }) => (
-                    <section>
-                        <div className={"dropzone"} {...getRootProps()} >
-                            <input {...getInputProps()} />
-                            <p>{"Drop CSV File"}</p>
-                        </div>
-                    </section>
-                )}
-            </Dropzone>
-        )
-    }
-}
+    return (
+        <Dropzone onDrop={acceptedFiles => readCsv(acceptedFiles)} >
+            {({ getRootProps, getInputProps }) => (
+                <section>
+                    <div className={"dropzone"} {...getRootProps()} >
+                        <input {...getInputProps()} />
+                        <p>{"Drop CSV File"}</p>
+                    </div>
+                </section>
+            )}
+        </Dropzone>
+    )
 
-const mapDispatchToProps = {
-    addQueryToList
 }
-
-export default connect(null, mapDispatchToProps)(CsvLoader)

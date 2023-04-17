@@ -1,39 +1,43 @@
-import React, {Fragment, useMemo} from "react";
+import React, { Fragment } from "react";
 import apis from '../../../../services/apis';
-import {toast} from "react-toastify";
-import CommonTable from "../../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
+import { useCustomMutation } from "../../../CommonComponents/ReactQuery/hooks";
+import { keys } from "../../../../model/Constant";
 
-export default function Certificates({refreshCertificatesData, certificatesData}) {
+export default ({certificatesData }) => {
 
-    const columns = useMemo(() => [{
-        accessor: 'label',
-        Header: 'Label'
-    },
+    const deleteCertificate = useCustomMutation(
+        ({id}) => {
+            apis.certificates.deleteCertificate(id);
+        },
+        [[keys.CERTIFICATES_KEY]]
+    )
+
+    const columns = [
         {
-            accessor: 'delete',
-            Header: 'Delete certificate',
-            Cell: ({row}) => {
+            id: 'label',
+            accessorKey: 'label',
+            header: 'Label'
+        },
+        {
+            id: 'delete',
+            accessorKey: 'delete',
+            header: 'Delete certificate',
+            cell: ({ row }) => {
                 return (
                     <div className="text-center">
-                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
-                            try {
-                                await apis.certificates.deleteCertificate(row.id);
-                                refreshCertificatesData()
-                            } catch (error) {
-                                toast.error(error.statusText)
-                            }
-
-                        }} value="Remove"/>
+                        <input type="button" className='otjs-button otjs-button-red' onClick={() => {deleteCertificate.mutate(row.id)}} value="Remove" />
                     </div>)
             },
             formatExtraData: this
-        }], [refreshCertificatesData]);
+        }
+    ]
 
 
     return (
-        <Fragment>
-            <CommonTable tableData={certificatesData} columns={columns}/>
-        </Fragment>
+        <>
+            <CommonTableV8 data={certificatesData} columns={columns} />
+        </>
     )
 
 }
