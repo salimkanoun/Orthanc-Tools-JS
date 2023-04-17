@@ -63,6 +63,8 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-transform-react-jsx-self": "^7.21.0",
+    "@babel/plugin-transform-react-jsx-source": "^7.19.6",
     "sass": "^1.62.0"
   }
 }
