@@ -9,11 +9,11 @@ export default ({
     patients,
     additionalColumnsPatients = [],
     additionalColumnsStudies = [],
-    onSelectPatient,
-    onSelectStudies,
+    onSelectPatient  = () => {},
+    onSelectStudies = () => {},
     selectablePatient = false,
     selectableStudy = false,
-    rowStyle,
+    rowStyle = undefined,
     onClickStudy = () => { },
 }) => {
     const [selectedStudies, setSelectedStudies] = useState([])
