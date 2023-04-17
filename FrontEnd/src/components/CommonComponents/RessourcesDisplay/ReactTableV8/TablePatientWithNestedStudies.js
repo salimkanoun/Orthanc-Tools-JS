@@ -9,8 +9,10 @@ export default ({
     patients,
     additionalColumnsPatients = [],
     additionalColumnsStudies = [],
+    onSelectPatient,
     onSelectStudies,
-    selectable = false,
+    selectablePatient = false,
+    selectableStudy = false,
     rowStyle,
     onClickStudy = () => { },
 }) => {
@@ -49,7 +51,7 @@ export default ({
             updateselectedIds(selectedStudiesOrthancId)
         }
 
-        return <TableStudies studies={studies} additionalColumns={additionalColumnsStudies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} selectable={selectable} onSelect={onSelectStudy} />
+        return <TableStudies studies={studies} additionalColumns={additionalColumnsStudies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} selectable={selectableStudy} onSelect={onSelectStudy} />
     }
 
     const updateselectedIds = (newIds) => {
@@ -62,6 +64,6 @@ export default ({
 
     }
 
-    return <CommonTableV8 id={patientColumns.ORTHANC_ID.id} canExpand columns={columnsPatients} data={patients} renderSubComponent={renderSubComponent} canSelect={selectable} />
+    return <CommonTableV8 id={patientColumns.ORTHANC_ID.id} canExpand columns={columnsPatients} data={patients} renderSubComponent={renderSubComponent} canSelect={selectablePatient} />
 
 }

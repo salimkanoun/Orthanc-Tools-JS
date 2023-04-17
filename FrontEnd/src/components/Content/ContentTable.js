@@ -74,7 +74,8 @@ export default ({ patients }) => {
                     patients={patients}
                     onClickStudy={onClickStudy}
                     rowStyle={rowStyle}
-                    selectable
+                    selectablePatient
+                    selectableStudy
                     onSelectStudies={(studiesSelected) => { setSelectedStudies(studiesSelected) }}
                     additionalColumnsPatients={additionalColumnsPatients}
                     additionalColumnsStudies={additionalColumnsStudies}
