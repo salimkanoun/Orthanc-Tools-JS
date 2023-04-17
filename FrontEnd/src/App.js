@@ -1,14 +1,17 @@
-import React, {Component} from 'react'
+import React from 'react'
 
-import {toast} from 'react-toastify'
-import fetchIntercept from 'fetch-intercept'
-
-import NavBar from './components/Main/NavBar'
 import Authentication from './components/Authentication'
 
-import {login, logout} from './actions/login'
-import {connect} from 'react-redux'
+import { login, logout } from './actions/login'
+import { useSelector, useDispatch } from 'react-redux'
 import apis from './services/apis'
+
+import {
+    QueryClient,
+    QueryClientProvider,
+    useQuery,
+} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 //CSS Boostrap
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -16,84 +19,62 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'react-toastify/dist/ReactToastify.css'
 //Custom CSS
 import './assets/styles/orthancToolsJs.scss'
-import {BrowserRouter} from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import { BrowserRouter } from 'react-router-dom'
+import MainRoot from './components/Main/MainRoot'
+import ConfirmGlobal from './components/CommonComponents/ConfirmGlobal'
 
 // Configuring Toastify params that will be used all over the app
-toast.configure({
-    position: 'top-right',
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true
-})
+const App = () => {
 
-class App extends Component {
+    const dispatch = useDispatch()
+    const username = useSelector((state) => state.OrthancTools.username)
+    const roles = useSelector((state) => state.OrthancTools.roles)
 
-    constructor(props) {
-        super(props)
 
-        fetchIntercept.register({
-            request: function (url, config) {
-                // Modify the url or config here
-                return [url, config];
-            },
-
-            requestError: function (error) {
-                // Called when an error occured during another 'request' interceptor call
-                return Promise.reject(error);
-            },
-
-            response: async (response) => {
-                if (response.status === 401 && !response.url.includes('authentication')) {
-                    toast.error('Session exprired, please re-identify')
-                    await this.logout()
-
-                }
-                return response;
-            },
-
-            responseError: function (error) {
-                return Promise.reject(error);
-            }
-        })
-
+    const onLogin = (token, backendData) => {
+        dispatch(login(token, backendData))
     }
 
-
-    login = (logInAnwser) => {
-        this.props.login(logInAnwser)
-    }
-
-    logout = async () => {
-        this.props.logout() //empty all reducer
+    const onLogout = async () => {
+        dispatch(logout()) //empty all reducer
         await apis.authentication.logOut() //ask backend to reset cookie http only
     }
 
 
-    render() {
-        return (
-            <BrowserRouter>
-                {this.props.username ?
-                    <NavBar onLogout={this.logout} username={this.props.username} roles={this.props.roles}/> :
-                    <Authentication onLogin={this.login}/>}
-            </BrowserRouter>
-        );
-    }
+    const queryClient = new QueryClient();
+
+    return (
+        <BrowserRouter>
+            <QueryClientProvider client={queryClient}>
+                <ConfirmGlobal/>
+                <div >
+                    <ToastContainer
+                        enableMultiContainer
+                        containerId={'message'}
+                        position={'bottom-right'}
+                        autoClose={5000}
+                        newestOnTop
+                        closeOnClick
+                    > </ToastContainer>
+                    <ToastContainer
+                        enableMultiContainer
+                        containerId={'jobs'}
+                        position={'bottom-left'}
+                        autoClose={5000}
+                        newestOnTop
+                        closeOnClick
+                    > </ToastContainer>
+                </div>
+                {username ?
+                    <MainRoot onLogout={onLogout} username={username} roles={roles} />
+                    :
+                    <Authentication onLogin={onLogin} />}
+                <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+        </BrowserRouter>
+    );
+
 }
 
-
-const mapsDispatchToProps = {
-    logout,
-    login
-}
-
-const mapStateToProps = (state) => {
-    return {
-        username: state.OrthancTools.username,
-        roles: state.OrthancTools.roles
-    }
-}
-
-export default connect(mapStateToProps, mapsDispatchToProps)(App)
-
+export default App;

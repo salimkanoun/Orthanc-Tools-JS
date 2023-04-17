@@ -54,7 +54,7 @@ function BurnerJobsTables({jobs}) {
                             try {
                                 await apis.cdBurner.cancelCdBurner(row.cdJobID)
                             } catch (error) {
-                                toast.error(error.statusText)
+                                toast.error(error.statusText, {data:{type:'notification'}})
                             }
 
                         }} value="Cancel" disabled={disable}/>
@@ -64,7 +64,7 @@ function BurnerJobsTables({jobs}) {
         }
     ], []);
 
-    return <CommonTable columns={columns} tableData={jobs}/>
+    return <CommonTable columns={columns} data={jobs}/>
 }
 
 export default class CDBurner extends Component {
@@ -85,7 +85,7 @@ export default class CDBurner extends Component {
         try {
             cdBurnerData = await apis.cdBurner.getCdBuner()
         } catch (error) {
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
             return
         }
 
@@ -150,7 +150,7 @@ export default class CDBurner extends Component {
 
         } catch (error) {
             let message = await error.json()
-            toast.error(message.errorMessage)
+            toast.error(message.errorMessage, {data:{type:'notification'}})
         }
 
 
@@ -179,7 +179,7 @@ export default class CDBurner extends Component {
 
     render = () => {
         return (
-            <div>
+            <>
                 <Row className="border-bottom border-2 pb-3 align-items-center">
                     <Col sm={8} className="d-flex justify-content-start align-items-center">
                         <i className="fas fa-compact-disc ico me-3"></i><h2 className="card-title">CD Burner Service</h2>
@@ -190,21 +190,21 @@ export default class CDBurner extends Component {
                     </Col>
                     <Col sm={2} className="d-flex justify-content-start align-items-center">
                         <h4>
-                            <i id="soundIcone" className={this.state.playSound === true ? "fas fa-volume-up me-2" : "fas fa-volume-mute me-2"}></i>
+                            <i id="soundIcon" className={this.state.playSound === true ? "fas fa-volume-up me-2" : "fas fa-volume-mute me-2"}></i>
                         </h4>
                         <Toggle checked={this.state.playSound} onChange={this.soundHandler}/>
                     </Col>
                 </Row>
-
-                <div className="mb-3 float-right">
+                
+                <Row className="mb-3 float-right">
                     <Badge variant="info"> Queuded Jobs : {this.state.queuededJobs} </Badge>
-                </div>
+                </Row>
                 <Row className="mt-5">
                     <Col>
                         <BurnerJobsTables jobs={this.state.burnerJobs}/>
                     </Col>
                 </Row>
-            </div>
+            </>
         )
     }
 

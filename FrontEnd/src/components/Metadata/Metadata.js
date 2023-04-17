@@ -1,147 +1,94 @@
-import React, { Component } from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import { TreeView, TreeItem } from '@material-ui/lab';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import NumericInput from 'react-numeric-input';
+import React, { useState, useEffect } from 'react'
 
 import apis from '../../services/apis'
-import { toast } from 'react-toastify';
+import { Container, Row } from 'react-bootstrap';
+import MetadataTable from './MetadataTable';
+import MetadataSelector from './MetadataSelector';
 
-export default class Metadata extends Component {
+export default ({seriesOrthancId}) => {
 
-    useStyles = makeStyles({
-        root: {
-            height: 110,
-            flexGrow: 1,
-            maxWidth: 400,
-        },
-    });
+    const [data, setData] = useState([])
+    const [instancesArray, setInstancesArray] = useState([])
+    const [currentKey, setCurrentKey] = useState(0)
+    const [sharedTags, setSharedTags] = useState(false)
 
-
-    state = {
-        data: [],
-        InstancesArray: [],
-        currentKey: 0,
-        InstancesTags: true,
-        text: 'disabled'
-    }
-
-    componentDidMount = async () => {
-        let instanceArray  = await this.getInstancesArray(this.props.serieID)
-        this.setState({
-            InstancesArray: instanceArray
+    useEffect(() => {
+        apis.content.getSeriesDetailsByID(seriesOrthancId).then((answer) => {
+            let instances = answer['Instances']
+            setInstancesArray(instances)
         })
-        this.updateData()
-    }
+    }, [])
 
-    getInstancesArray = async (serieID) => {
-        try{
-            let array = await apis.content.getSeriesInstances(serieID)
-            let idArray = array.map(element => (element.ID))
-            return idArray
-        } catch(error){
-            toast.error(error.statusText)
-            return []
+    useEffect(() => {
+
+        const prepareData = (data) => {
+            let answer = []
+            for (let dicomTag of Object.keys(data).sort()) {
+                let tagName = data[dicomTag]['Name']
+                let value = data[dicomTag]['Value']
+
+                let answerData = {
+                    dicomTag: dicomTag,
+                    name: tagName
+                }
+                if (Array.isArray(value)) {
+                    answerData['value'] = value.map(node => prepareData(node))
+                } else {
+                    answerData['value'] = value
+                }
+
+                answer.push(answerData)
+            }
+            return answer
         }
 
-    }
+        const fetchData = async () => {
+            if(instancesArray.length ===0) return
+            let currentInstanceId = instancesArray[currentKey]
+            let responsetags = []
 
-
-    updateData = async () => {
-        let data
-        try{
-            let instances = await apis.content.getInstances(this.state.InstancesArray[this.state.currentKey])
-            let header = await apis.content.getHeader(this.state.InstancesArray[this.state.currentKey])
-            data = { ...instances, ...header }
-
-        }catch(error){
-            toast.error(error.statusText)
-            return
-        }
-        let prepare = this.prepareData(data)
-        this.setState({ data: prepare, InstancesTags: true })
-    }
-
-    prepareData = (data) => {
-        let answer = []
-        for (let dicomTag of Object.keys(data).sort()) {
-            let tagName = data[dicomTag]['Name']
-            let value = data[dicomTag]['Value']
-
-            let answerData = { name: (dicomTag + ' - ' + tagName) }
-            if (Array.isArray(value)) {
-                answerData['value'] = value.map(node => this.prepareData(node))
-            } else {
-                answerData['value'] = value
+            if (sharedTags) {
+                responsetags = await apis.content.getSharedTags(seriesOrthancId)
+            }
+            else {
+                let instances = await apis.content.getInstances(currentInstanceId)
+                let header = await apis.content.getHeader(currentInstanceId)
+                responsetags = { ...instances, ...header }
             }
 
-            answer.push(answerData)
+
+            const formattedData = prepareData(responsetags)
+            setData(formattedData)
         }
 
-        return answer
+        fetchData()
+
+    }, [currentKey, sharedTags, instancesArray])
+
+    const onInstanceNumberChange = (instanceNumber) => {
+        setCurrentKey(instanceNumber)
     }
 
-    renderTree = (array) => {
-        let rows = []
-        if (Array.isArray(array)) {
-            array.forEach(nodes => {
-                rows.push(
-                    <TreeItem key={nodes.name} nodeId={nodes.name} label={nodes.name}>
-                        {Array.isArray(nodes.value) ? nodes.value.map((node) => this.renderTree(node)) : nodes.value}
-                    </TreeItem>
-                )
-            })
-
-        }
-        return rows
+    const onSharedTagsChange = ()=>{
+        setSharedTags((sharedTags)=> !sharedTags)
     }
 
-    setSharedTags = async () => {
-        if (this.state.text === 'disabled') {
-            try{
-                this.setState({ data: [], text: 'Fetching...' })
-                let data = await apis.content.getSharedTags(this.props.serieID)
-                this.setState({ data: this.prepareData(data), text: 'enabled' })
-            }catch (error) {
-                toast.error(error.statusText)
-            }
-        } else {
-            this.updateData()
-            this.setState({ text: 'disabled' })
-        }
-    }
 
-    handleChange = (num) => {
-        this.setState(prevState => ({
-            currentKey: num >= prevState.InstancesArray.length ? prevState.InstancesArray.length - 1 : num < 0 ? 0 : num
-        }), () => this.updateData())
-    }
+    return (
+        <Container>
+            <Row>
+                <MetadataSelector
+                    currentInstanceNumber={currentKey}
+                    numberOfInstances={instancesArray.length}
+                    useSharedTags={sharedTags}
+                    onInstanceNumberChange={onInstanceNumberChange}
+                    onSharedTagsChange={onSharedTagsChange}
+                />
+            </Row>
+            <Row>
+                <MetadataTable tags={data} />
+            </Row>
+        </Container>
+    );
 
-    render = () => {
-        return (
-            <div>
-                <div className='row mb-4'>
-                    <div className='col'>
-                        <button type='button' className='otjs-button otjs-button-blue w-12' onClick={() => this.setSharedTags()} disabled={!this.state.InstancesTags}>Shared Tags: {this.state.text}</button>
-                    </div>
-                    <div className='col ml-3'>
-                        <div className='row'>
-                            <label htmlFor='numberInstances' className='text-center'>Number of instances : {this.state.InstancesArray.length}</label>
-                        </div>
-                        <div className='row' hidden={this.state.text === 'enabled' || this.state.InstancesArray.length === 1}>
-                            <NumericInput min={1} max={this.state.InstancesArray.length} value={this.state.currentKey + 1} onChange={(num => this.handleChange(num - 1))} />
-                        </div>
-                    </div>
-                </div>
-                <TreeView
-                    className={this.useStyles.root}
-                    defaultExpanded={['root']}
-                    defaultCollapseIcon={<ExpandMoreIcon />}
-                    defaultExpandIcon={<ChevronRightIcon />}>
-                    {this.renderTree(this.state.data)}
-                </TreeView>
-            </div>
-        );
-    }
 }

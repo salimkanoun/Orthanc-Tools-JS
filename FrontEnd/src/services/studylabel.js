@@ -1,21 +1,16 @@
+import axios from "axios"
+
 const studylabel = {
   /**
    * Get all StudyLabels
    * @returns 
    */
-  getStudiesLabels(){ //get ALL
-    const getStudiesLabelsOptions={
-      method:'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-    return fetch('/api/studies/labels', getStudiesLabelsOptions).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return answer.json()
-    }).catch(error => {
-        throw error
+  getStudiesLabels() { //get ALL
+
+    return axios.get('/api/studies/labels').then((answer) => 
+      answer.data
+    ).catch(error => {
+      throw error
     })
   },
 
@@ -24,19 +19,11 @@ const studylabel = {
    * @param {String} name name of the label
    * @returns {Array.<JSON>}
    */
-  getStudiesLabel(name){ //get Studies for one particular Label
-    const getStudiesLabelOptions={
-      method:'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-    return fetch('/api/studies/labels/'+name, getStudiesLabelOptions).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return answer.json()
-    }).catch(error => {
-        throw error
+  getStudiesLabel(name) { //get Studies for one particular Label
+
+    return axios.get('/api/studies/labels/' + name).then((answer) => answer.data
+    ).catch(error => {
+      throw error
     })
   },
 
@@ -45,19 +32,11 @@ const studylabel = {
    * @param {String} study_instance_uid instance uid of the study
    * @returns {Array.<JSON>}
    */
-  getStudyLabels(study_instance_uid){ //get Labels for one particular study
-    const getStudyLabelsOptions={
-      method:'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-    return fetch('/api/studies/'+study_instance_uid+'/labels', getStudyLabelsOptions).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return answer.json()
-    }).catch(error => {
-        throw error
+  getStudyLabels(study_instance_uid) { //get Labels for one particular study
+
+    return axios.get('/api/studies/' + study_instance_uid + '/labels').then((answer) => answer.data
+    ).catch(error => {
+      throw error
     })
   },
 
@@ -66,19 +45,11 @@ const studylabel = {
    * @param {String} study_orthanc_id study orthanc id to search for
    * @returns {Array.<JSON>}
    */
-  getStudyLabelsByStudyOrthancID(study_orthanc_id){
-    const getStudyLabelsByStudyOrthancIDOptions={
-      method:'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-    return fetch('/api/studies/orthanc/'+study_orthanc_id+'/labels', getStudyLabelsByStudyOrthancIDOptions).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return answer.json()
-    }).catch(error => {
-        throw error
+  getStudyLabelsByStudyOrthancID(study_orthanc_id) {
+
+    return axios.get('/api/studies/orthanc/' + study_orthanc_id + '/labels').then((answer) => answer.data
+    ).catch(error => {
+      throw error
     })
   },
 
@@ -91,24 +62,16 @@ const studylabel = {
    * @param {String} patient_orthanc_id orthanc_id associate to the patient
    * @returns 
    */
-  createStudyLabel(study_instance_uid,label_name,patient_id,study_orthanc_id,patient_orthanc_id){
-    const createStudyLabelOptions={
-      method:'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body:JSON.stringify({
-        study_orthanc_id:study_orthanc_id,
-        patient_orthanc_id:patient_orthanc_id
-      })
-    }
+  createStudyLabel(study_instance_uid, label_name, patient_id, study_orthanc_id, patient_orthanc_id) {
 
-    return fetch('/api/patient/'+patient_id+'/studies/'+study_instance_uid+'/labels/'+label_name, createStudyLabelOptions).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return true
-    })
-    
+    return axios.post('/api/patient/' + patient_id + '/studies/' + study_instance_uid + '/labels/' + label_name, {
+      study_orthanc_id: study_orthanc_id,
+      patient_orthanc_id: patient_orthanc_id
+    }).then((answer) => true
+    ).catch(error => {
+      throw error
+  })
+
   },
 
   /**
@@ -117,19 +80,12 @@ const studylabel = {
    * @param {String} name name of the label
    * @returns 
    */
-  deleteStudyLabel(study_instance_uid,name){
-    const deleteStudyLabelOptions={
-      method:'DELETE',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-    }
+  deleteStudyLabel(study_instance_uid, name) {
 
-    return fetch('/api/studies/'+study_instance_uid+'/labels/'+name, deleteStudyLabelOptions).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return true
-    })
+    return axios.delete('/api/studies/' + study_instance_uid + '/labels/' + name).then((answer) => true
+    ).catch(error => {
+      throw error
+  })
   }
 
 }

@@ -1,3 +1,5 @@
+import axios from "axios"
+
 const retrieve = {
 
   retrieveByUID(aet, studyInstanceUID, seriesInstanceUID = null) {
@@ -11,23 +13,12 @@ const retrieve = {
       payload.SeriesInstanceUID = seriesInstanceUID
     }
 
-    var retrieveByUIDOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(payload)
-    }
-
-    return fetch('/api/retrieve', retrieveByUIDOption).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    }).catch(error => {
+    return axios.post('/api/retrieve', payload).then((answer) => answer.data
+    ).catch(error => {
       throw error
     })
   }
-  
+
 }
 
 export default retrieve

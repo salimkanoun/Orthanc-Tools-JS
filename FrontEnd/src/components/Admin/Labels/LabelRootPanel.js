@@ -1,89 +1,71 @@
-import React, {Component} from "react";
+import React, { useState } from "react";
+import { Button, Form, FormControl, InputGroup, Modal } from "react-bootstrap";
+
+import Spinner from "../../CommonComponents/Spinner";
 import LabelsTable from "./LabelsTable";
+
+import { useCustomMutation, useCustomQuery } from "../../CommonComponents/ReactQuery/hooks";
+import { keys } from "../../../model/Constant";
 import apis from "../../../services/apis";
-import {Button, Form, FormControl, InputGroup} from "react-bootstrap";
-import RoleManagementModal from "./RoleManagementModal";
+import RoleSelect from "./RoleSelect";
 
-class LabelRootPanel extends Component {
+export default () => {
 
-    state = {
-        roleManagement: null,
-        labels: [],
-        search: '',
-        createLabel: ''
+    const [editLabel, setEditLabel] = useState(null)
+    const [createLabel, setCreateLabel] = useState('')
+
+    const { data: labels, isLoading } = useCustomQuery(
+        [keys.LABELS_KEY],
+        () => apis.label.getAllLabels()
+    )
+
+    const handleManageRole = (label) => {
+        setEditLabel(label);
     }
 
-    componentDidMount() {
-        apis.label.getAllLabels().then(labels => {
-            this.setState({labels});
-        })
+    const createLabels = useCustomMutation(
+        ({ name }) => apis.label.createLabels(name),
+        [[keys.LABELS_KEY]],
+        () => setCreateLabel('')
+    )
+
+    const handleCreateSubmit = (event) => {
+        event.preventDefault();
+        if (createLabel.length < 1) return;
+        createLabels.mutate({ name: createLabel })
     }
 
-    handleManageRole = (label) => {
-        this.setState({roleManagement: label});
+    const handleCreateInput = (event) => {
+        setCreateLabel(event.target.value)
     }
 
-    handlerDelete = (label) => {
-        apis.label.deleteLabels(label).then(() => {
-            apis.label.getAllLabels().then(labels => {
-                this.setState({labels});
-            })
-        });
-    }
-
-    handleSearch = (event) => {
-        this.setState({search: event.target.value})
-    }
-
-    handleCreateSubmit = (e) => {
-        e.preventDefault();
-        if (this.state.createLabel.length < 1) return;
-        return apis.label.createLabels(this.state.createLabel).then(() => {
-            this.setState({
-                createLabel: ''
-            });
-            return apis.label.getAllLabels()
-        }).then(labels => {
-            this.setState({labels});
-        });
-    }
-
-    handleCreateInput = (event) => {
-        this.setState({
-            createLabel: event.target.value
-        })
-    }
-
-    render() {
-        let filteredLabel = this.state.labels.filter(label => label.label_name.includes(this.state.search));
-
-        return (
+    if (isLoading) return <Spinner />
+    
+    return (
         <>
             <h2 className="card-title">Labels</h2>
-
-            <Form onSubmitCapture={this.handleCreateSubmit} className="mt-4">
+            <Modal
+                show={editLabel != null}
+                onHide={() => setEditLabel(null)}
+                backdrop="static"
+                keyboard={true}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>{`${editLabel} label roles  `}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <RoleSelect labelName = {editLabel} />
+                </Modal.Body>
+            </Modal>
+            <Form onSubmitCapture={handleCreateSubmit} className="mt-4">
                 <InputGroup>
                     <InputGroup.Text>New</InputGroup.Text>
-                    <FormControl placeholder={"label"} type={'text'} onChange={this.handleCreateInput}
-                                 value={this.state.createLabel}/>
+                    <FormControl placeholder={"label"} type={'text'} onChange={handleCreateInput}
+                        value={createLabel} />
                     <Button variant={"outline-primary"} type={"submit"}> + </Button>
                 </InputGroup>
             </Form>
-            <RoleManagementModal label={this.state.roleManagement} handlerManageRole={this.handleManageRole}/>
-
-            
-            <InputGroup className="mt-4">
-                <InputGroup.Text>Search</InputGroup.Text>
-                <FormControl placeholder={"label"} type={'text'} onChange={this.handleSearch}
-                             value={this.state.search}/>
-                <InputGroup.Text>{filteredLabel.length}</InputGroup.Text>
-            </InputGroup>
-            <LabelsTable labels={filteredLabel} handlerManageRole={this.handleManageRole}
-                         handlerDelete={this.handlerDelete}/>
-                         
-            
-        </>)
-    }
+            <LabelsTable labels={labels} handlerManageRole={handleManageRole} />
+        </>
+    )
 }
-
-export default LabelRootPanel

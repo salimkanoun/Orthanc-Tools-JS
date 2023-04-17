@@ -1,88 +1,83 @@
 import Select from 'react-select';
-import {Component} from 'react';
+import Spinner from '../../CommonComponents/Spinner';
+
 import apis from "../../../services/apis";
+import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
+import { errorMessage, successMessage } from '../../../tools/toastify';
+import { keys } from '../../../model/Constant';
 
-export default class RoleSelect extends Component{
+export default ({ labelName }) => {
 
+    const { data: optionRoles, isLoading: isLoadingAllRoles } = useCustomQuery(
+        [keys.ROLES_KEY],
+        () => apis.role.getRoles(),
+        undefined,
+        (answer) => {
+            return answer.map((role) => {
+                return ({
+                    value: role.name,
+                    label: role.name
+                })
+            })
+        }
+    )
 
-    state = {
-        selected: [],
-        label:this.props.label,
-        options: [],
+    const { data: labelRoleOptions, isLoading: isLoadingRoles } = useCustomQuery(
+        [keys.LABELS_KEY, labelName],
+        () => apis.rolelabel.getLabelRoles(labelName),
+        undefined,
+        (data) => data.map(role => ({ label: role, value: role }))
+    )
+
+    const mutateDeleteRoleLabel = useCustomMutation(
+        ({ roleName, labelName }) => apis.rolelabel.deleteRoleLabel(roleName, labelName),
+        [[keys.LABELS_KEY, labelName]],
+        () => successMessage('Role Removed'),
+        (error) => errorMessage(error?.data?.errorMessage, 'Failed')
+    )
+
+    const createRoleLabel = useCustomMutation(
+        ({ roleName, labelName }) => apis.rolelabel.createRoleLabel(roleName, labelName),
+        [[keys.LABELS_KEY, labelName]],
+        () => successMessage('Role Added'),
+        (error) => errorMessage(error?.data?.errorMessage, 'Failed')
+    )
+
+    const handleOnChange = (value, metadata) => {
+        if(metadata.action === "remove-value"){
+            mutateDeleteRoleLabel.mutate({labelName : labelName, roleName : metadata.removedValue.value})
+        }
+        if(metadata.action ==="select-option"){
+            createRoleLabel.mutate({labelName : labelName, roleName : metadata.option.value})
+        }
     }
 
-    componentDidMount = async () => {
-        let roles = await apis.role.getRoles()
-        for(var i = 0; i < roles.length; i++){
-            roles[i].value=roles[i].name
-            roles[i].label=roles[i].value
-        }
-
-        let selectedRoles = await apis.rolelabel.getLabelRoles(this.props.label)
-        for(var j = 0; j < selectedRoles.length; j++){
-            selectedRoles[j].value=selectedRoles[j].role_name
-            selectedRoles[j].label=selectedRoles[j].value
-        }
-        this.setState({
-            options:roles,
-            selected:selectedRoles
-        })
-    }
-
-    handleOnChange = async (value) => {
-
-        var selected = this.state.selected
-        var difference = []
-        if(value.length<selected.length){
-            for(let i = 0;i<selected.length;i++){
-                if(!(value.includes(selected[i]))){
-                    difference.push(selected[i])
-                }
-            }
-            console.log('removed role: ',difference[0].value,' | to label: ',this.state.label)
-            await apis.rolelabel.deleteRoleLabel(this.props.username,difference[0].value,this.state.label)
-        }
-        else if(value.length>selected.length){
-            for(let i = 0;i<value.length;i++){
-                if(!(selected.includes(value[i]))){
-                    difference.push(value[i])
-                }
-            }
-            console.log('added role:',difference[0].value,' | to label: ',this.state.label)
-            await apis.rolelabel.createRoleLabel(this.props.username,difference[0].value,this.state.label)
-        }else{
-            console.error('Selector Change Error : Selected Values didn\'t change')
-        }
-        this.setState({ selected: value });
-    }
-
-    choiceStyle = {
+    const choiceStyle = {
         control: styles => ({ ...styles, backgroundColor: 'white' }),
         multiValue: (styles) => {
             return {
-              ...styles,
+                ...styles,
             };
-          },
-          multiValueLabel: (styles) => ({
+        },
+        multiValueLabel: (styles) => ({
             ...styles,
-          }),
-          multiValueRemove: (styles => ({
+        }),
+        multiValueRemove: (styles => ({
             ...styles,
-          }))
-        };
+        }))
+    };
 
-    render() {
-        return (
-            <div>
-            <Select
-                closeMenuOnSelect={false}
-                isMulti
-                options={this.state.options}
-                onChange={this.handleOnChange.bind(this)}
-                value={this.state.selected}
-                style={ this.choiceStyle}
-            />
-            </div>
-        );
-    }
+    if (isLoadingAllRoles || isLoadingRoles) return <Spinner />
+
+    return (
+        <Select
+            closeMenuOnSelect={false}
+            isMulti
+            options={optionRoles}
+            value={labelRoleOptions}
+            style={choiceStyle}
+            onChange = {handleOnChange}
+            isClearable = {false}
+        />
+    );
 }

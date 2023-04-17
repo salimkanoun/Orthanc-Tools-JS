@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react'
+import { Button } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
 import packageInfo from '../../../package.json'
 
@@ -11,9 +12,9 @@ export default class Footer extends Component {
       <Fragment>
         <div className="footer text-center mb-3">
               
-              <button type="button" className='link-button ms-3 footer-text' onClick={() => this.setState(prevState => ({ show: !prevState.show }))}>
+              <Button className='link-button ms-3 footer-text' onClick={() => this.setState(prevState => ({ show: !prevState.show }))}>
                   <span className="me-3">Orthanc Tools JS: {packageInfo.version}</span>About
-              </button>
+              </Button>
         </div>
 
         <Modal show={this.state.show} onHide={() => this.setState({ show: false })}>

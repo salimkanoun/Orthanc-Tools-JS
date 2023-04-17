@@ -1,31 +1,31 @@
-import React, {useMemo} from "react";
+import React, { useMemo } from "react";
 import NestedTable from "./NestedTable";
-import {commonColumns, patientColumns, seriesColumns, studyColumns} from "./ColumnFactories"
+import { commonColumns, patientColumns, seriesColumns, studyColumns } from "./ColumnFactories"
 
 
-function TablePatientsWithNestedStudiesAndSeries({
-                                                     patients,
-                                                     onDelete,
-                                                     onModify,
-                                                     refresh,
-                                                     hiddenAccessionNumber,
-                                                     hiddenActionBouton,
-                                                     hiddenRemoveRow,
-                                                 }) {
+export default ({
+    patients,
+    onDelete,
+    onModify,
+    refresh,
+    hiddenAccessionNumber,
+    hiddenActionBouton,
+    hiddenRemoveRow,
+}) => {
     if (hiddenActionBouton === undefined) hiddenActionBouton = true;
     if (hiddenRemoveRow === undefined) hiddenRemoveRow = true;
     const data = useMemo(() => patients.map(patient => {
         patient.studies = Object.entries(patient.studies)
-            .map(([key, val]) => ({StudyOrthancID: key, ...val}))
+            .map(([key, val]) => ({ StudyOrthancID: key, ...val }))
         patient.studies.forEach(study => {
             study.series = Object.entries(study.series)
                 .map(([key, val]) => ({
                     SeriesOrthancID: key, ...val,
-                    raw: {SeriesOrthancID: key, ...val}
+                    raw: { SeriesOrthancID: key, ...val }
                 }))
-            study.raw = {...study};
+            study.raw = { ...study };
         })
-        patient.raw = {...patient};
+        patient.raw = { ...patient };
         return patient;
     }), [patients]);
     const columns = useMemo(() => [
@@ -68,9 +68,6 @@ function TablePatientsWithNestedStudiesAndSeries({
         hiddenAccessionNumber,
         hiddenActionBouton,
         hiddenRemoveRow]);
-    return <NestedTable columns={columns} data={data} setSelected={() => {
-    }} hiddenSelect={true}/>
+    return <NestedTable columns={columns} data={data} />
 }
 
-
-export default TablePatientsWithNestedStudiesAndSeries;

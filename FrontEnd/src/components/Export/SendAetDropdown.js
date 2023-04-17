@@ -19,7 +19,7 @@ export default class SendAetDropdown extends Component {
         try{
             jobAnswer = await apis.aets.storeAET(destinationAet, this.props.exportIds)
         }catch(error){
-            toast.error(error.statusText)
+            toast.error(error.statusText, {data:{type:'notification'}})
             return;
         }
 
@@ -32,11 +32,11 @@ export default class SendAetDropdown extends Component {
         jobMonitoring.onFinish(async function (state) {
             if (state === MonitorJob.Success) {
                 self.resetProgress()
-                toast.success('DicomTransfer Done')
+                toast.success('DicomTransfer Done', {data:{type:'notification'}})
 
             } else if (state === MonitorJob.Failure) {
                 self.resetProgress()
-                toast.error('DicomTransfer Failed')
+                toast.error('DicomTransfer Failed', {data:{type:'notification'}})
 
             }
         })

@@ -1,31 +1,29 @@
-import React, {Component, Fragment} from 'react'
+import React, { Component, Fragment, useState } from 'react'
+import { Button } from 'react-bootstrap';
 import ModalCreateDicom from "./ModalCreateDicom";
 
 
-export default class CreateDicom extends Component {
+export default ({ orthancID, level }) => {
 
-    state = {
-        show: false
+    const [show, setShow] = useState(false)
+
+    const toogleOpen = () => {
+        setShow(!show)
     }
 
-    openModify = () => {
-        this.setState({show: true})
-    }
+    return (
+        <Fragment>
+            <Button className='dropdown-item bg-primary' type='button'
+                onClick={toogleOpen}>Create Dicom
+            </Button>
+            <ModalCreateDicom
+                show={show}
+                onHide={() => setShow(false)}
+                //modify={() => modify()}
+                OrthancID={orthancID}
+                level={level}
+            />
+        </Fragment>
+    )
 
-    render = () => {
-        return (
-            <Fragment>
-                <button className='dropdown-item bg-primary' type='button'
-                        onClick={this.openModify}>Create Dicom
-                </button>
-                <ModalCreateDicom
-                    show={this.state.show}
-                    onHide={() => this.setState({show: false})}
-                    modify={() => this.modify()}
-                    OrthancID={this.props.orthancID}
-                    level={this.props.level}
-                />
-            </Fragment>
-        )
-    }
 }

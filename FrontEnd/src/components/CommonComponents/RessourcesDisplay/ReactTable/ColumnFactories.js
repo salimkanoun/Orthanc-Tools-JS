@@ -1,9 +1,10 @@
 import ActionBouton from "../ActionBouton";
 import React from "react";
-import {InputCell as EditableCell} from "./EditableCells";
-import {dateFilter, DateFilter, invertableDataFilter, InvertableDataFilter} from "./ColumnFilters";
+import { dateFilter, DateFilter, invertableDataFilter, InvertableDataFilter } from "./ColumnFilters";
 import RetrieveButton from "../../../Query/Components/RetrieveButton";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
+import { Button } from "react-bootstrap";
+import ConstantLevel from "../../../Modify/ConstantLevel";
 
 const commonColumns = {
     RAW: {
@@ -29,7 +30,7 @@ const seriesColumns = {
         Filter: InvertableDataFilter('Series Description'),
         filter: invertableDataFilter,
         sort: true,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     },
     MODALITY: {
         accessor: 'Modality',
@@ -48,37 +49,46 @@ const seriesColumns = {
     ACTION: (onDelete, refresh) => ({
         id: 'Action',
         Header: 'Action',
-        Cell: ({row}) => <ActionBouton level='series' orthancID={row.values.SeriesOrthancID}
-                                       parentID={row.values.StudyID} onDelete={onDelete}
-                                       row={row.values.raw} refresh={refresh}
-                                       hiddenMetadata={false} hiddenCreateDicom={true}/>
+        Cell: ({ row }) => {
+            return (
+                <ActionBouton
+                    level={ConstantLevel.SERIES}
+                    orthancID={row.original.SeriesOrthancID}
+                    parentID={row.original.StudyOrthancID}
+                    onDelete={onDelete}
+                    dataDetails={row.original}
+                    refresh={refresh}
+                    hiddenMetadata={false}
+                    hiddenCreateDicom={true}
+                    hiddenModify={false} />)
+        }
     }),
-    REMOVE: (onDelete) => ({
+    REMOVE: (onRemove) => ({
         id: 'Remove',
         Header: 'Remove',
-        Cell: ({row}) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {
+        Cell: ({ row }) => {
+            return <Button className="btn btn-danger" onClick={(e) => {
                 try {
-                    onDelete(row.values.SeriesOrthancID);
+                    onRemove(row.values.SeriesOrthancID);
                 } catch (e) {
-                    toast.error("Remove error");
+                    toast.error("Remove error", {data:{type:'notification'}});
                 }
                 e.stopPropagation();
-            }}>Remove</button>
+            }}>Remove</Button>
         }
     }),
     NB_SERIES_INSTANCES: {
         accessor: 'NumberOfSeriesRelatedInstances',
-        Header: 'Instances'
+        Header: 'Number of instances'
     },
     RETRIEVE: {
         id: 'Retrieve',
         Header: 'Retrieve',
-        Cell: ({row}) => {
+        Cell: ({ row }) => {
             return (<RetrieveButton queryAet={row.values.raw.OriginAET}
-                                    studyInstanceUID={row.values.raw.StudyInstanceUID}
-                                    seriesInstanceUID={row.values.raw.SeriesInstanceUID}
-                                    level={RetrieveButton.Series}/>)
+                studyInstanceUID={row.values.raw.StudyInstanceUID}
+                seriesInstanceUID={row.values.raw.SeriesInstanceUID}
+                level={RetrieveButton.Series} />)
         }
     }
 }
@@ -87,6 +97,11 @@ const studyColumns = {
     ORTHANC_ID: {
         accessor: 'StudyOrthancID',
         Header: 'Study Orthanc ID',
+        show: false
+    },
+    STUDY_INSTANCE_UID: {
+        accessor: 'StudyInstanceUID',
+        Header: 'StudyInstanceUID',
         show: false
     },
     INSTANCE_UID: {
@@ -137,55 +152,47 @@ const studyColumns = {
         Header: 'Modalities',
         Filter: InvertableDataFilter('Modalities'),
         filter: invertableDataFilter,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     },
-    NEW_DESCRIPTION: {
-        accessor: 'newStudyDescription',
-        Header: 'New Description',
-        Cell: EditableCell,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    },
-    NEW_ACCESSION_NUMBER: {
-        accessor: 'newAccessionNumber',
-        Header: 'New Accession Number',
-        Cell: EditableCell,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    },
+
     ANONYMIZED: {
         accessor: 'Anonymized',
         Header: 'Anonymized ?',
         style: (row) => {
-            return {"color": row.values.AnonymizedFrom ? 'lightgreen' : 'orangered'}
+            return { "color": row.values.AnonymizedFrom ? 'lightgreen' : 'orangered' }
         },
         classes: 'text-center',
-        Cell: ({row}) => {
+        Cell: ({ row }) => {
             return row.values.AnonymizedFrom ? 'Yes' : 'No'
         },
     },
     ACTION: (onDelete, refresh, openLabelModal) => ({
         id: 'Action',
         Header: 'Action',
-        Cell: (({row}) =>
-                (<>
-                    <ActionBouton level='studies' orthancID={row.values.StudyOrthancID}
-                                  StudyInstanceUID={row.values.StudyInstanceUID} onDelete={onDelete}
-                                  row={row.values.raw}
-                                  refresh={refresh} openLabelModal={openLabelModal}/>
-                </>)
+        Cell: (({ row }) => {
+            return (
+
+                <ActionBouton level={ConstantLevel.STUDIES}
+                    orthancID={row.original.StudyOrthancID}
+                    StudyInstanceUID={row.values.StudyInstanceUID}
+                    onDelete={onDelete}
+                    dataDetails={row.original}
+                    refresh={refresh}
+                    openLabelModal={openLabelModal}
+                    hiddenModify={false}
+                    hiddenMetadata={true} />
+            )
+        }
+
         ),
     }),
-    REMOVE: (onDelete) => ({
+    REMOVE: (onRemoveStudy) => ({
         id: 'Remove',
         Header: 'Remove',
-        Cell: ({row}) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {
-                try {
-                    onDelete(row.values.StudyOrthancID);
-                } catch (e) {
-                    toast.error("Remove error");
-                }
-                e.stopPropagation();
-            }}>Remove</button>
+        Cell: ({ row }) => {
+            return <Button className="btn btn-danger" onClick={() => {
+                onRemoveStudy(row.values.StudyOrthancID);
+            }}>Remove</Button>
         },
     }),
     NB_STUDY_SERIES: {
@@ -195,9 +202,9 @@ const studyColumns = {
     RETRIEVE: {
         id: 'Retrieve',
         Header: 'Retrieve',
-        Cell: ({row}) => {
+        Cell: ({ row }) => {
             return (<RetrieveButton queryAet={row.values.OriginAET} studyInstanceUID={row.values.StudyInstanceUID}
-                                    level={RetrieveButton.Study}/>)
+                level={RetrieveButton.Study} />)
         }
     },
 }
@@ -214,48 +221,56 @@ const patientColumns = {
         Filter: InvertableDataFilter('Patient Name'),
         filter: invertableDataFilter,
         sort: true,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }),
+
+    PARENT_NAME: (textNameColumn = 'Patient Name') => ({
+        accessor: 'ParentPatient.PatientName',
+        Header: textNameColumn,
+        Filter: InvertableDataFilter('Patient Name'),
+        filter: invertableDataFilter,
+        sort: true,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+    }),
+
     ID: (textIDColumn = 'Patient ID') => ({
         accessor: 'PatientID',
         Header: textIDColumn,
         Filter: InvertableDataFilter('Patient ID'),
         filter: invertableDataFilter,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     }),
-    NEW_NAME: {
-        accessor: 'newPatientName',
-        Header: 'New Name',
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
-        Cell: EditableCell
-    },
-    NEW_ID: {
-        accessor: 'newPatientID',
-        Header: 'New ID',
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
-        Cell: EditableCell
-    },
+
+    PARENT_ID: (textIDColumn = 'Patient ID') => ({
+        accessor: 'ParentPatient.PatientID',
+        Header: textIDColumn,
+        Filter: InvertableDataFilter('Patient ID'),
+        filter: invertableDataFilter,
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+    }),
+
     ACTION: (onDelete, onModify, refresh) => ({
         id: 'Action',
         Header: 'Action',
-        Cell: ({row}) => {
-            return <ActionBouton level='patients' orthancID={row.values.PatientOrthancID} onDelete={onDelete}
-                                 onModify={onModify} row={row.values.raw} refresh={refresh}/>
+        Cell: ({ row }) => {
+            return <ActionBouton
+                level={ConstantLevel.PATIENTS}
+                orthancID={row.original.PatientOrthancID}
+                onDelete={onDelete}
+                onModify={onModify}
+                dataDetails={row.original}
+                refresh={refresh}
+                hiddenModify={false}
+                hiddenMetadata={true} />
         }
     }),
-    REMOVE: (onDelete) => ({
+    REMOVE: (onRemovePatient) => ({
         id: 'Remove',
         Header: 'Remove',
-        Cell: ({row}) => {
-            return <button type="button" className="btn btn-danger" onClick={(e) => {
-                try {
-                    onDelete(row.values.PatientOrthancID);
-                } catch (e) {
-                    toast.error("Remove error");
-                }
-                e.stopPropagation();
-            }}>Remove</button>
+        Cell: ({ row }) => {
+            return <Button className="btn btn-danger" onClick={() => {
+                onRemovePatient(row.values.PatientOrthancID);
+            }}>Remove</Button>
         },
         editable: false
     })
@@ -263,7 +278,6 @@ const patientColumns = {
 
 
 export {
-    EditableCell,
     patientColumns,
     studyColumns,
     seriesColumns,

@@ -1,16 +1,13 @@
-import React, { Fragment, Component } from 'react'
+import React from 'react'
 import AutoRetrieveSchedule from './AutoRetrieveSchedule'
 import RobotStatus from './RobotStatus'
 
-export default class AutoRetrieveRootPanel extends Component {
+export default () => {
 
-  render() {
-    return (
-      <Fragment>
-        <AutoRetrieveSchedule />
-        <RobotStatus />
-      </Fragment>
-    )
-  }
-  
+  return (
+    <>
+      <AutoRetrieveSchedule />
+      <RobotStatus />
+    </>
+  )
 }

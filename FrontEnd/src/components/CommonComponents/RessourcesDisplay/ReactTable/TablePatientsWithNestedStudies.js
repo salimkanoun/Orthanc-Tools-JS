@@ -1,114 +1,90 @@
-import React, {Component, useMemo} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import NestedTable from "./NestedTable";
-import {studyArrayToPatientArray} from "../../../../tools/processResponse";
-import {commonColumns, patientColumns, studyColumns} from "./ColumnFactories";
+import { commonColumns, patientColumns } from "./ColumnFactories";
+import TableStudies from "./TableStudies";
+
+export default ({
+    onClickStudy = () => { },
+    onClickPatient,
+    patients,
+    onRemovePatient,
+    onRemoveStudy,
+    onDeletePatient,
+    onDeleteStudy,
+    onSelectStudies,
+    onModify,
+    refresh,
+    actionButton,
+    removeRow,
+    selectable,
+    openLabelModal
+}) => {
 
 
-function isObject(item) {
-    return (item && typeof item === 'object' && !Array.isArray(item));
-}
+    const [selectedStudies, setSelectedStudies] = useState([])
+    const [focusedStudy, setFocusedStudy] = useState(null)
 
-function mergeDeep(target, ...sources) {
-    if (!sources.length) return target;
-    const source = sources.shift();
+    useEffect(() => {
+        onSelectStudies(selectedStudies)
+    }, [selectedStudies])
 
-    if (isObject(target) && isObject(source)) {
-        for (const key in source) {
-            if (isObject(source[key])) {
-                if (!target[key]) Object.assign(target, {[key]: {}});
-                mergeDeep(target[key], source[key]);
-            } else {
-                Object.assign(target, {[key]: source[key]});
-            }
-        }
+    const onClickStudyHandler = (StudyOrthancID) => {
+        setFocusedStudy(StudyOrthancID)
+        onClickStudy(StudyOrthancID)
     }
 
-    return mergeDeep(target, ...sources);
-}
+    const rowStyle = (StudyOrthancID) => {
+        if (StudyOrthancID === focusedStudy) return { background: 'peachPuff' }
+    }
 
-function TablePatientsWithNestedStudies({
-                                            rowStyle,
-                                            rowEventsStudies,
-                                            rowEventsPatients,
-                                            studies,
-                                            onDeletePatient,
-                                            onDeleteStudy,
-                                            onModify,
-                                            refresh,
-                                            hiddenAccessionNumber,
-                                            hiddenActionBouton,
-                                            hiddenRemoveRow,
-                                            setSelected,
-                                            hiddenSelect,
-                                            openLabelModal
-                                        }) {
-    const data = useMemo(() => studyArrayToPatientArray(studies).map(patient => {
-        patient.studies = Object.entries(patient.studies).map(([key, val]) => ({
-            StudyOrthancID: key, ...val,
-            raw: {StudyOrthancID: key, ...val}
-        }))
-        patient.raw = {...patient};
-        return patient;
-    }), [studies]);
     const columns = useMemo(() => [
         commonColumns.RAW,
         patientColumns.ORTHANC_ID,
         patientColumns.ID(),
         patientColumns.NAME(),
-        ...(!hiddenActionBouton ? [patientColumns.ACTION(onDeletePatient, onModify, refresh)] : []),
-        ...(!hiddenRemoveRow ? [patientColumns.REMOVE(onDeletePatient)] : []),
-        {
-            accessor: "studies",
-            table: [
-                commonColumns.RAW,
-                studyColumns.ORTHANC_ID,
-                studyColumns.INSTANCE_UID,
-                studyColumns.ANONYMIZED_FROM,
-                studyColumns.DATE,
-                studyColumns.DESCRIPTION,
-                ...(!hiddenAccessionNumber ? [studyColumns.ACCESSION_NUMBER] : []),
-                ...(!hiddenActionBouton ? [studyColumns.ACTION(onDeleteStudy, refresh, openLabelModal)] : []),
-                ...(!hiddenRemoveRow ? [studyColumns.REMOVE(onDeleteStudy)] : []),
-            ]
-        }
+        ...(actionButton ? [patientColumns.ACTION(onDeletePatient, onModify, refresh)] : []),
+        ...(removeRow ? [patientColumns.REMOVE(onRemovePatient)] : [])
     ], [
         onDeletePatient,
         onDeleteStudy,
         onModify,
         refresh,
-        hiddenAccessionNumber,
-        hiddenActionBouton,
-        hiddenRemoveRow,
         openLabelModal]);
 
-    return <NestedTable columns={columns} data={data} setSelected={setSelected} hiddenSelect={hiddenSelect}
-                        rowStyle={rowStyle}
-                        rowEvent={(row) => {
-                            if (row.PatientOrthancID && rowEventsPatients) rowEventsPatients(row);
-                            else if (row.StudyOrthancID && rowEventsStudies) rowEventsStudies(row);
-                        }}/>
+
+
+    const getExpandedRow = (rowId) => {
+        let patient = patients.filter((patient) => patient.PatientOrthancID === rowId)[0]
+        let studies = Object.values(patient['Studies'])
+
+        const onSelectStudy = (selectedStudies) => {
+            let selectedStudiesOrthancId = selectedStudies.map((study => {
+                return study.StudyOrthancID
+            }))
+            updateselectedIds(selectedStudiesOrthancId)
+        }
+        //SK Issue renvoie une nouvelle instance du composant qui perd son state
+        return <TableStudies key={rowId} studies={studies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} onSelectRow={onSelectStudy} selectable={selectable} removeRow={removeRow} onRemoveStudy={onRemoveStudy} actionButton={actionButton} />
+    }
+
+    const updateselectedIds = (newIds) => {
+        let sumArray = [
+            ...selectedStudies,
+            ...newIds
+        ]
+        let uniqueIds = [...new Set(sumArray)];
+        setSelectedStudies(uniqueIds)
+
+    }
+    const onSelectPatient = (selectedPatients) => {
+        let selectedStudiesOrthancId = []
+        selectedPatients.map((patient => {
+            let studyOrthancIds = Object.values(patient.Studies).map((study) => study.StudyOrthancID)
+            selectedStudiesOrthancId.push(...studyOrthancIds)
+        }))
+        updateselectedIds(selectedStudiesOrthancId)
+    }
+
+    return <NestedTable getRowId={(originalRow) => originalRow.PatientOrthancID} columns={columns} data={patients} getExpandedRow={getExpandedRow} onSelectRow={onSelectPatient} selectable={selectable}
+        rowStyle={rowStyle} rowEvent={onClickPatient} actionButton />
 }
-
-class TablePatientsWithNestedStudiesWrapper extends Component {
-    selected = {
-        root: [],
-        sub: []
-    }
-
-    getSelectedRessources() {
-        return {
-            selectedPatients: this.selected.root.map(x => x.PatientOrthancID),
-            selectedStudies: this.selected.sub.map(x => x.root).flat().map(x => x.StudyOrthancID)
-        };
-    }
-
-
-    render() {
-        return <TablePatientsWithNestedStudies {...this.props} setSelected={(s) => {
-            this.selected = mergeDeep(this.selected, s);
-            if (this.props.setSelectedStudies) this.props.setSelectedStudies(this.getSelectedRessources())
-        }}/>
-    }
-}
-
-export default TablePatientsWithNestedStudiesWrapper;

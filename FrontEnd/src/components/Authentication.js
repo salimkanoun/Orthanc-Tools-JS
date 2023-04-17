@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
+import jwt_decode from "jwt-decode";
 
 import apis from '../services/apis'
 import { CSSTransition } from "react-transition-group";
 
-import ReactTooltip from "react-tooltip";
-import HelpIcon from '@material-ui/icons/Info';
-import { toast } from 'react-toastify';
+import { Tooltip as ReactTooltip } from 'react-tooltip'
+import HelpIcon from '@mui/icons-material/Info';
+import { toast } from 'react-toastify'
+import { Button } from 'react-bootstrap';
 
 export default class Authentication extends Component {
 
@@ -25,19 +27,20 @@ export default class Authentication extends Component {
 
   handleClick = async () => {
 
-    let answer
+    let token
     try {
-      answer = await apis.authentication.logIn(this.state.username, this.state.password)
+      token= await apis.authentication.logIn(this.state.username, this.state.password)
+      var decoded = jwt_decode(token);
     } catch (error) {
-      toast.error(error)
+      toast.error(error, {containerId :'message'}, {data:{type:'notification'}})
     }
 
-    if (answer.errorMessage != null) {
+    if (token?.errorMessage != null) {
       this.setState({
-        errorMessage: answer.errorMessage
+        errorMessage: token.errorMessage
       })
     } else {
-      this.props.onLogin(answer)
+      this.props.onLogin(token, decoded)
     }
 
 
@@ -110,7 +113,7 @@ export default class Authentication extends Component {
                 </fieldset>
 
                 <fieldset className='text-right'>
-                  <button name='connexion' type='button' className='btn btn-dark' onClick={this.handleClick}> Connect </button>
+                  <Button name='connexion' className='btn btn-dark' onClick={this.handleClick}> Connect </Button>
                 </fieldset>
 
               </form>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import SelectModalities from '../SearchForm/SelectModalities'
-import {Row, Col} from 'react-bootstrap'
+import { Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
 import moment from 'moment'
 
@@ -12,28 +12,28 @@ import moment from 'moment'
  * title : title of the form
  * buttons : buttons to validate and treat the form 
  */
-export default class Search extends Component{
+export default class Search extends Component {
 
     state = {
         firstName: '',
-        lastName: '', 
+        lastName: '',
         patientID: '',
-        accessionNumber: '', 
-        studyDescription: '', 
-        dateFrom: '', 
+        accessionNumber: '',
+        studyDescription: '',
+        dateFrom: '',
         dateTo: '',
-        modalities: '', 
+        modalities: '',
         presetDate: 'none'
     }
 
     dates = [
-        {value: 'none', label: 'None'},
-        {value: 'today', label: 'Today'},
-        {value: 'yesterday', label: 'Yesterday'},
-        {value: 'lastWeek', label: 'Last Week'},
-        {value: 'lastMonth', label: 'Last Month'},
-        {value: 'last3Months', label: 'Last 3 months'},
-        {value: 'lastYear', label: 'Last Year'}
+        { value: 'none', label: 'None' },
+        { value: 'today', label: 'Today' },
+        { value: 'yesterday', label: 'Yesterday' },
+        { value: 'lastWeek', label: 'Last Week' },
+        { value: 'lastMonth', label: 'Last Month' },
+        { value: 'last3Months', label: 'Last 3 months' },
+        { value: 'lastYear', label: 'Last Year' }
     ]
 
     getState = () => {
@@ -46,7 +46,7 @@ export default class Search extends Component{
      */
     updateModalities = (modalityString) => {
         this.setState({
-            modalities : modalityString
+            modalities: modalityString
         })
     }
 
@@ -58,7 +58,7 @@ export default class Search extends Component{
         const target = event.target
         const name = target.name
         const value = target.value
-        
+
         this.setState({
             [name]: value
         })
@@ -68,15 +68,15 @@ export default class Search extends Component{
 
 
     changeListener = (event) => {
-        this.setState({presetDate: event.value})
+        this.setState({ presetDate: event.value })
         let dateFrom = ''
         let dateTo = moment().format('YYYY-MM-DD')
-        switch(event.value){
+        switch (event.value) {
             case 'none':
                 dateTo = ''
                 break
             case 'today':
-                dateFrom = moment().format('YYYY-MM-DD') 
+                dateFrom = moment().format('YYYY-MM-DD')
                 break;
             case 'yesterday':
                 dateFrom = moment().subtract(1, 'days').format("YYYY-MM-DD")
@@ -85,7 +85,7 @@ export default class Search extends Component{
                 dateFrom = moment().subtract(7, 'days').format('YYYY-MM-DD')
                 break
             case 'lastMonth':
-               dateFrom = moment().subtract(1, 'month').format('YYYY-MM-DD')
+                dateFrom = moment().subtract(1, 'month').format('YYYY-MM-DD')
                 break
             case 'last3Months':
                 dateFrom = moment().subtract(3, 'months').format('YYYY-MM-DD')
@@ -94,10 +94,10 @@ export default class Search extends Component{
                 dateFrom = moment().subtract(1, 'year').format('YYYY-MM-DD')
                 break
             default:
-                this.setState({dateFrom: '', dateTo: ''})
+                this.setState({ dateFrom: '', dateTo: '' })
                 break
         }
-        this.setState({'dateFrom': dateFrom, 'dateTo': dateTo})
+        this.setState({ 'dateFrom': dateFrom, 'dateTo': dateTo })
     }
 
     //form
@@ -106,31 +106,31 @@ export default class Search extends Component{
             <div>
                 <Row className="border-bottom border-2 pb-3">
                     <Col className="d-flex justify-content-start align-items-center">
-                        <i className={this.props.icone + " ico me-3"}></i><h2 className="card-title">{this.props.title}</h2>
+                        <i className={this.props.icon + " ico me-3"}></i><h2 className="card-title">{this.props.title}</h2>
                     </Col>
                 </Row>
                 <div className='row mt-5'>
                     <div className='col-sm'>
                         <label htmlFor='lastName' className="form-label">Last Name</label>
-                        <input type='text' name='lastName' id='lastName' className='form-control' placeholder='Last name' onChange={this.handleChange} value={this.state.lastName}/>
+                        <input type='text' name='lastName' id='lastName' className='form-control' placeholder='Last name' onChange={this.handleChange} value={this.state.lastName} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='firstName' className="form-label">First Name</label>
-                        <input type='text' name='firstName' id='firstName' className='form-control' placeholder='First name' onChange={this.handleChange} value={this.state.firstName}/>
+                        <input type='text' name='firstName' id='firstName' className='form-control' placeholder='First name' onChange={this.handleChange} value={this.state.firstName} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='patientID' className="form-label">Patient ID</label>
-                        <input type='text' name='patientID' id='patientID' className='form-control' placeholder='Patient ID' onChange={this.handleChange} value={this.state.patientID}/>
+                        <input type='text' name='patientID' id='patientID' className='form-control' placeholder='Patient ID' onChange={this.handleChange} value={this.state.patientID} />
                     </div>
                 </div>
                 <div className='row mt-4'>
                     <div className='col-sm'>
                         <label htmlFor='accessionNumber' className="form-label">Accession Number</label>
-                        <input type='text' name='accessionNumber' id='accessionNumber' className='form-control' placeholder='Accession Number' onChange={this.handleChange} value={this.state.accessionNumber}/>
+                        <input type='text' name='accessionNumber' id='accessionNumber' className='form-control' placeholder='Accession Number' onChange={this.handleChange} value={this.state.accessionNumber} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='studyDescription' className="form-label">Study Description</label>
-                        <input type='text' name='studyDescription' id='studyDescription' className='form-control' placeholder='Study Description' onChange={this.handleChange} value={this.state.studyDescription}/>
+                        <input type='text' name='studyDescription' id='studyDescription' className='form-control' placeholder='Study Description' onChange={this.handleChange} value={this.state.studyDescription} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='modalities' className="form-label">Modalities</label>
@@ -152,9 +152,11 @@ export default class Search extends Component{
                     </div>
                 </div>
                 <div className='mt-3 mb-3 text-center'>
-                    { React.cloneElement( this.props.children, { onClick: (event)=>{this.props.onFormValidate(this.state, event)} } ) }
+                    <div onClick={(event) => { this.props.onFormValidate(this.state, event) }}>
+                        {this.props.children}
+                    </div>
                 </div>
-                
+
             </div>
         )
     }

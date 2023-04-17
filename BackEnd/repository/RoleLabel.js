@@ -1,49 +1,50 @@
 const db = require('../database/models')
-const {OTJSDBEntityNotFoundException} = require('../Exceptions/OTJSErrors')
+const { OTJSDBEntityNotFoundException } = require('../Exceptions/OTJSErrors')
 
 class RoleLabel {
-    static getRoleLabel(role_name, label_name) {
+    static getRoleLabel(roleName, labelName) {
         return db.RoleLabel.findOne({
             where: {
-                role_name: role_name,
-                label_name: label_name
+                role_name: roleName,
+                label_name: labelName
             }
         })
     }
 
-    static getLabelsByRole(role_name) {
+    static getLabelsByRole(roleName) {
         return db.RoleLabel.findAll({
             where: {
-                role_name: role_name
-            },attributes:['label_name']
+                role_name: roleName
+            },
+            attributes: ['label_name']
         })
     }
 
-    static getRolesByLabel(label_name) {
+    static getRolesByLabel(labelName) {
         return db.RoleLabel.findAll({
             where: {
-                label_name
+                label_name: labelName
             }
         })
     }
 
-    static create(role_name, label_name) {
+    static create(role_name, labelName) {
         return db.RoleLabel.create({
             role_name: role_name,
-            label_name: label_name
+            label_name: labelName
         })
     }
 
-    static delete(role_name, label_name) {
-        const user_label = RoleLabel.getRoleLabel(role_name, label_name)
-        if (user_label == null) {
+    static delete(roleName, labelName) {
+        const roleLabel = RoleLabel.getRoleLabel(roleName, labelName)
+        if (roleLabel == null) {
             throw new OTJSDBEntityNotFoundException('This RoleLabel doesn\'t exist')
         }
 
         return db.RoleLabel.destroy({
             where: {
-                role_name: role_name,
-                label_name: label_name
+                role_name: roleName,
+                label_name: labelName
             }
         })
     }

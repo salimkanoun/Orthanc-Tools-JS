@@ -7,17 +7,17 @@ export function addStudiesToDeleteList(studiesArray){
     }
 }
 
-export function removePatientFromDeleteList(patientID){
+export function removePatientFromDeleteList(PatientID){
     return {
         type: REMOVE_PATIENT_DELETE_LIST, 
-        payload: patientID
+        payload: PatientID
     }
 }
 
-export function removeStudyFromDeleteList(studyID){
+export function removeStudyFromDeleteList(StudyID){
     return{
         type: REMOVE_STUDY_DELETE_LIST,
-        payload: studyID
+        payload: StudyID
     }
 }
 

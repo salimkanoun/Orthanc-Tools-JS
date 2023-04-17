@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Import from './Import'
 import CreateDicom from './CreateDicom'
-import {Row, Col} from 'react-bootstrap'
+import {Row, Col, Button} from 'react-bootstrap'
 /**
  * Root Panel of Admin route
  * Using React Hooks
@@ -38,14 +38,14 @@ const ImportRootPanel = () => {
         <nav className='otjs-navmenu container-fluid'>
           <div className="otjs-navmenu-nav">
             <li className='col-6 text-center'>
-              <button className={selectedOptionMenu === 'ImportDicom' ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'} value={'ImportDicom'} onClick={clickHandler}>
+              <Button className={selectedOptionMenu === 'ImportDicom' ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'} value={'ImportDicom'} onClick={clickHandler}>
                 Import Dicom
-              </button>
+              </Button>
             </li>
             <li className='col-6 text-center'>
-              <button className={selectedOptionMenu === 'CreateDicom' ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'} value={'CreateDicom'} onClick={clickHandler}>
+              <Button className={selectedOptionMenu === 'CreateDicom' ? 'otjs-navmenu-nav-link link-button-active link-button' : ' otjs-navmenu-nav-link link-button'} value={'CreateDicom'} onClick={clickHandler}>
                 Create Dicom
-              </button>
+              </Button>
             </li>
           </div>
         </nav>

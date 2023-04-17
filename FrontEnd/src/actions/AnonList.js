@@ -33,17 +33,17 @@ export function removePatientFromAnonList(patientOrthancID){
     }
 }
 
-export function removeStudyFromAnonList(studyOrhancID){
+export function removeStudyFromAnonList(studyOrthancID){
     return {
         type: REMOVE_STUDY_ANON_LIST, 
-        payload: studyOrhancID
+        payload: studyOrthancID
     }
 }
 
-export function removeStudyFromAnonymizedList(studyOrhancID){
+export function removeStudyFromAnonymizedList(studyOrthancID){
     return {
         type: REMOVE_STUDY_ANONYMIZED_LIST, 
-        payload: studyOrhancID
+        payload: studyOrthancID
     }
 }
 

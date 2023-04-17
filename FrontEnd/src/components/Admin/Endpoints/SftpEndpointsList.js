@@ -1,50 +1,61 @@
-import React, {Fragment, useMemo} from "react";
-import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import React, { useMemo } from "react";
+import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
-export default function SftpEndpoints({endpointsData, onDeleteEndpoint}) {
-
-    const columns = useMemo(() => [{
-        accessor: 'label',
-        Header: 'Label'
-    },
-        {
-            accessor: 'host',
-            Header: 'Host'
-        },
-        {
-            accessor: 'username',
-            Header: 'Username'
-        },
-        {
-            accessor: 'targetFolder',
-            Header: 'Target Folder'
-        },
-        {
-            accessor: 'sshKey',
-            Header: 'Ssh Private Key',
-            Cell: ({row}) => <p>{(row.sshKey ? row.sshKey.label : '✖')}</p>
-        },
-        {
-            accessor: 'delete',
-            Header: 'Delete endpoint',
-            Cell: ({row}) => {
-                return (
-                    <div className="text-center">
-                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
-                            await onDeleteEndpoint(row.id)
-                        }} value="Remove"/>
-                    </div>)
-            },
-            formatExtraData: this
-        }], [onDeleteEndpoint]);
+export default ({ endpointsData, onDeleteEndpoint }) => {
 
     const data = useMemo(() => endpointsData, [endpointsData]);
 
+    const columns = [
+        {
+            id :'label',
+            accessorKey: 'label',
+            header: 'Label',
+        },
+        {
+            id : 'host',
+            accessorKey: 'host',
+            header: 'Host',
+        },
+        {
+            id : 'username',
+            accessorKey: 'username',
+            header: 'Username',
+        },
+        {
+            id : 'targetFolder',
+            accessorKey: 'targetFolder',
+            header: 'Target Folder',
+        },
+        {
+            id : 'sshKey',
+            accessorKey: 'sshKey',
+            header: 'Ssh Private Key',
+            cell: ({ row }) => <p>{(row.sshKey ? row.sshKey.label : '✖')}</p>
+        },
+        {
+            id  :'delete',
+            accessorKey: 'delete',
+            header: 'Delete endpoint',
+            cell: ({ row }) => {
+                return (
+                    <div className="text-center">
+                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
+                            let id = row.id
+                            await onDeleteEndpoint.mutate({id})
+                        }} value="Remove" />
+                    </div>)
+            },
+            formatExtraData: this
+        }
+    ]
+
+
+
     return (
-        <Fragment>
+        <>
             <h2 className="card-title mt-5">SFTP Export Endpoints</h2>
-            <CommonTable tableData={data} columns={columns}/>
-        </Fragment>
+            <CommonTableV8 data={data} columns={columns} />
+        </>
     )
 }
 

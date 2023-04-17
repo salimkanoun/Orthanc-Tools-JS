@@ -1,67 +1,67 @@
 const db = require('../database/models')
-const {OTJSDBEntityNotFoundException} = require('../Exceptions/OTJSErrors')
+const { OTJSDBEntityNotFoundException } = require('../Exceptions/OTJSErrors')
 
-class StudyLabel{
-  static async getStudyLabel(study_instance_uid,label_name){
+class StudyLabel {
+  static async getStudyLabel(study_instance_uid, labelName) {
     return db.StudyLabel.findOne({
-      where:{
-        study_instance_uid:study_instance_uid,
-        label_name:label_name
+      where: {
+        study_instance_uid: study_instance_uid,
+        label_name: labelName
       }
     })
   }
 
-  static async create(study_instance_uid,label_name,patient_id,study_orthanc_id,patient_orthanc_id){
+  static async create(study_instance_uid, labelName, patient_id, study_orthanc_id, patient_orthanc_id) {
     return db.StudyLabel.create({
-      study_instance_uid:study_instance_uid,
-      label_name:label_name,
-      patient_id:patient_id,
-      study_orthanc_id:study_orthanc_id,
-      patient_orthanc_id:patient_orthanc_id
+      study_instance_uid: study_instance_uid,
+      label_name: labelName,
+      patient_id: patient_id,
+      study_orthanc_id: study_orthanc_id,
+      patient_orthanc_id: patient_orthanc_id
     })
   }
 
-  static async getAllStudyLabel(){
+  static async getAllStudyLabel() {
     return db.StudyLabel.findAll()
   }
-  
-  static async getStudiesByLabelName(label_name){
+
+  static async getStudiesByLabelName(labelName) {
     return db.StudyLabel.findAll({
-      where:{
-        label_name:label_name
+      where: {
+        label_name: labelName
       }
     })
   }
 
-  static async getLabelsbyStudyInstanceUID(study_instance_uid){
+  static async getLabelsbyStudyInstanceUID(study_instance_uid) {
     return db.StudyLabel.findAll({
-      where:{
-        study_instance_uid:study_instance_uid
+      where: {
+        study_instance_uid: study_instance_uid
       }
     })
   }
 
-  static async getStudyLabelsByStudyOrthancID (study_orthanc_id){
+  static async getStudyLabelsByStudyOrthancID(study_orthanc_id) {
     return db.StudyLabel.findAll({
-      where:{
-        study_orthanc_id:study_orthanc_id
+      where: {
+        study_orthanc_id: study_orthanc_id
       }
     })
   }
 
-  static async delete(study_instance_uid,label_name){
-    const study_label = await StudyLabel.getStudyLabel(study_instance_uid,label_name)
-    if(study_label==null){
+  static async delete(study_instance_uid, labelName) {
+    const study_label = await StudyLabel.getStudyLabel(study_instance_uid, labelName)
+    if (study_label == null) {
       throw new OTJSDBEntityNotFoundException('This StudyLabel doesn\'t exist')
     }
 
     return db.StudyLabel.destroy({
-      where:{
-        study_instance_uid:study_instance_uid,
-        label_name:label_name
+      where: {
+        study_instance_uid: study_instance_uid,
+        label_name: labelName
       }
     })
   }
 }
 
-module.exports=StudyLabel
+module.exports = StudyLabel

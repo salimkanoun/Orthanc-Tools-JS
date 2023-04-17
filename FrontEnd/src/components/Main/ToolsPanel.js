@@ -1,92 +1,65 @@
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import {Link} from 'react-router-dom'
-import {Col, Row} from 'react-bootstrap';
+import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import AnonTool from './AnonTool'
 import ExportTool from './ExportTool'
+import NotificationCenter from '../NotificationCenter/NotificationCenter'
 
-class ToolsPanel extends Component {
 
-    state = {
-        show: '',
-        confirmDelete: false
+export default ({roles, apercu}) => {
+
+    const [show, setShow] = useState('')
+
+    const store = useSelector(state => {
+        return {
+            deleteList: state.DeleteList.deleteList,
+            studyArray: state.ExportList.studyArray,
+            anonList: state.AnonList.anonList
+        }
+    })
+
+    const closePopovers = () => {
+        setShow('')
     }
-
-    closePopovers = () => {
-        this.setState({
-            show: ''
-        })
-    }
-
-    setConfirmDelete = () => {
-        this.setState(prevState => ({
-            confirmDelete: !prevState.confirmDelete
-        }))
-    }
-
-    render = () => {
-        const refExport = React.createRef()
-        const refAnon = React.createRef()
-        const refDelete = React.createRef()
-        return (
-            <div className="end">
-                <Row>
-                    <Col>
-                        <span className="mr-1" hidden={!this.props.roles.anon}>
-                            <Link id='anon' ref={refAnon} type="button" className="btn otjs-btn-tools otjs-btn-tools-blue w-12"
-                                onMouseOver={this.props.apercu ? () => this.setState({show: 'anon'}) : null} to='/anonymize'>
-                                <i class="fas fa-user-secret me-2"></i> Anonymize 
-                                <span className="ms-2 badge bg-light text-dark"
-                                    onMouseOver={this.props.apercu ? () => this.setState({show: 'anon'}) : null}>{this.props.anonList.length}</span>
-                            </Link>
-                            <AnonTool target={refAnon} show={this.state.show === 'anon' ? true : false}
-                                    onHide={this.closePopovers}/>
-                        </span>
-                    </Col>
-                    <Col>
-                        <span className="mr-1" hidden={!this.props.roles.export_extern || !this.props.roles.export_local}>
-                            <Link id='export' ref={refExport} type="button" className="btn otjs-btn-tools otjs-btn-tools-orange w-12"
-                                onMouseOver={this.props.apercu ? () => this.setState({show: 'export'}) : null} to='/export'>
-                                <i class="fas fa-file-export me-2"></i> Export 
-                                <span className="ms-2 badge bg-light text-dark"
-                                    onMouseOver={this.props.apercu ? () => this.setState({show: 'export'}) : null}>{this.props.studyArray.length}</span>
-                            </Link>
-                            <ExportTool target={refExport} show={this.state.show === 'export' ? true : false}
-                                        onHide={this.closePopovers}/>
-                        </span>
-                    </Col>
-                    <Col>
-                        <span className="mr-1" onMouseOver={this.props.apercu ? () => this.setState({show: ''}) : null}
-                            hidden={!this.props.roles.delete || !this.props.apercu}>
-                            <Link id='delete' ref={refDelete} type="button" className="btn otjs-btn-tools otjs-btn-tools-red w-12" to='/delete'>
-                                <i class="far fa-trash-alt me-2"></i> Delete 
-                                <span className="badge bg-light text-dark ms-2"
-                                    onMouseOver={this.props.apercu ? () => this.setState({show: 'delete'}) : null}>{this.props.deleteList.length}</span>
-                            </Link>
-                        </span>
-                    </Col>
-                    <Col>
-                        <span className='mr-1' hidden={this.props.apercu}>
-                            <Link id='delete' ref={refDelete} type='button' className='btn otjs-btn-tools otjs-btn-tools-red' to='/delete'>
-                                Delete <br/>
-                                <span className="badge bg-light text-dark">{this.props.deleteList.length}</span>
-                            </Link>
-                        </span>
-                    </Col>
-                </Row>
-            </div>
-        )
-    }
+    
+    const refExport = React.createRef()
+    const refAnon = React.createRef()
+    const refDelete = React.createRef()
+    return (
+        <div className='d-flex justify-content-end align-items-center'>
+            <span className="mr-1" hidden={!roles.anon}>
+                <Link id='anon' ref={refAnon} type="button" className="btn otjs-btn-tools otjs-btn-tools-blue w-12"
+                    onMouseOver={apercu ? () => setShow('anon') : null} to='/anonymize'>
+                    <i className="fas fa-user-secret me-2"></i> Anonymize
+                    <span className="ms-2 badge bg-light text-dark"
+                        onMouseOver={apercu ? () => setShow('anon') : null}>{store.anonList.length}</span>
+                </Link>
+                <AnonTool target={refAnon} show={show === 'anon' ? true : false}
+                    onHide={closePopovers} />
+            </span>
+            <span className="mr-1" hidden={!roles.exportRemote || !roles.exportLocal}>
+                <Link id='export' ref={refExport} type="button" className="btn otjs-btn-tools otjs-btn-tools-orange w-12"
+                    onMouseOver={apercu ? () => setShow('export') : null} to='/export'>
+                    <i class="fas fa-file-export me-2"></i> Export
+                    <span className="ms-2 badge bg-light text-dark"
+                        onMouseOver={apercu ? () => setShow('export') : null}>{store.studyArray.length}</span>
+                </Link>
+                <ExportTool target={refExport} show={ show === 'export' ? true : false}
+                    onHide={closePopovers} />
+            </span>
+            <span className='mr-1' hidden={!apercu}>
+                <Link id='delete' ref={refDelete} type='button' className='btn otjs-btn-tools otjs-btn-tools-red' to='/delete'>
+                    Delete <span className="badge bg-light text-dark">{store.deleteList.length}</span>
+                </Link>
+            </span>
+            <span>
+                <NotificationCenter />
+            </span>
+            
+        </div>
+    )
 }
 
-const mapStateToProps = state => {
-    return {
-        deleteList: state.DeleteList.deleteList,
-        studyArray: state.ExportList.studyArray,
-        anonList: state.AnonList.anonList
-    }
-}
 
-export default connect(mapStateToProps, null)(ToolsPanel)
 

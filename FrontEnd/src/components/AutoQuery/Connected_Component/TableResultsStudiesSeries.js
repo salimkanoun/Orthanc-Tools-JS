@@ -1,8 +1,7 @@
-import React, {Fragment, useEffect, useMemo, useState} from 'react';
-import {connect} from 'react-redux'
-import {toast} from 'react-toastify'
-import {Col, Row} from 'react-bootstrap'
-import {addSeriesDetails, addSeriesFiltered, emptyResultsTable, removeSeriesResult} from '../../../actions/TableResult'
+import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
+import { Col, Row } from 'react-bootstrap'
 import apis from '../../../services/apis';
 import {
     commonColumns,
@@ -16,15 +15,21 @@ import CommonSelectingSortingFilteringTable
 /**
  * Show Series details of studies results
  */
-function TableResultsStudiesSeries({
-                                       addSeriesDetails,
-                                       emptyResultsTable,
-                                       removeSeriesResult,
-                                       results,
-                                       resultsSeries,
-                                       addSeriesFiltered
-                                   }) {
+export default ({
+    results,
+    resultsSeries,
+}) => {
+
     const [selected, setSelected] = useState([]);
+
+    const dispatch = useDispatch()
+
+    const store = useSelector(state => {
+        return {
+            results: state.AutoRetrieveResultList.results,
+            resultsSeries: state.AutoRetrieveResultList.resultsSeries
+        }
+    })
 
     const getSeriesDetails = async (studyUID, aet) => {
         let queryData = {
@@ -41,29 +46,29 @@ function TableResultsStudiesSeries({
         }
         let queryAnswers = await apis.query.dicomQuery(aet, queryData);
         let seriesAnswers = await apis.query.retrieveAnswer(queryAnswers['ID'])
-        addSeriesDetails(seriesAnswers, studyUID)
+        dispatch.addSeriesDetails(seriesAnswers, studyUID)
     }
 
 
     useEffect(() => {
         //List studies for each series details are missing
         let emptyResultArray = []
-        let studyUIDToQuery = Object.keys(results)
+        let studyUIDToQuery = Object.keys(store.results)
         let availableStudyUID = []
-        for (let seriesUID of Object.keys(resultsSeries)) {
-            availableStudyUID.push(resultsSeries[seriesUID]['StudyInstanceUID'])
+        for (let seriesUID of Object.keys(store.resultsSeries)) {
+            availableStudyUID.push(store.resultsSeries[seriesUID]['StudyInstanceUID'])
         }
         studyUIDToQuery.forEach(studyUID => {
-            if (!availableStudyUID.includes(studyUID)) emptyResultArray.push(results[studyUID])
+            if (!availableStudyUID.includes(studyUID)) emptyResultArray.push(store.results[studyUID])
         })
         if (emptyResultArray.length > 0) {
-            const id = toast.info('Starting Series Fetching');
+            const id = toast.info('Starting Series Fetching', {data:{type:'jobs'}});
             emptyResultArray.reduce((prev, studyResults, i) => {
                 return prev.then(() => {
                     return getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET).then(() => {
                         toast.update(id, {
                             render: 'Queried series ' + (i + 1) + '/' + emptyResultArray.length
-                        });
+                        }, {data:{type:'notification'}});
                     })
                 })
             }, Promise.resolve()).catch(console.error);
@@ -75,8 +80,8 @@ function TableResultsStudiesSeries({
         commonColumns.RAW,
         studyColumns.ORTHANC_ID,
         studyColumns.INSTANCE_UID,
-        patientColumns.NAME(),
-        patientColumns.ID(),
+        patientColumns.PARENT_NAME(),
+        patientColumns.PARENT_ID(),
         studyColumns.DATE,
         studyColumns.DESCRIPTION,
         studyColumns.ACCESSION_NUMBER,
@@ -88,54 +93,39 @@ function TableResultsStudiesSeries({
 
     const data = useMemo(() => {
         let seriesLines = []
-        for (let seriesUID of Object.keys(resultsSeries)) {
+        for (let seriesUID of Object.keys(store.resultsSeries)) {
             seriesLines.push({
-                ...results[resultsSeries[seriesUID]['StudyInstanceUID']],
-                ...resultsSeries[seriesUID],
+                ...store.results[store.resultsSeries[seriesUID]['StudyInstanceUID']],
+                ...store.resultsSeries[seriesUID],
                 raw: {
-                    ...results[resultsSeries[seriesUID]['StudyInstanceUID']],
-                    ...resultsSeries[seriesUID],
+                    ...store.results[store.resultsSeries[seriesUID]['StudyInstanceUID']],
+                    ...store.resultsSeries[seriesUID],
                 }
             })
         }
         return seriesLines
-    }, [results, resultsSeries])
+    }, [store.results, store.resultsSeries])
 
     return (
         <Fragment>
             <Row className="text-center">
                 <Col>
                     <input type="button" className="otjs-button otjs-button-orange w-10 me-4" value="Delete Selected"
-                           onClick={() => {
-                               removeSeriesResult(selected.map(x => x.values.raw.SeriesInstanceUID));
-                           }}/>
+                        onClick={() => {
+                            dispatch.removeSeriesResult(selected.map(x => x.values.raw.SeriesInstanceUID));
+                        }} />
                     <input type="button" className="otjs-button otjs-button-red w-10 ms-4" value="Empty Table"
-                           onClick={emptyResultsTable}/>
+                        onClick={dispatch.emptyResultsTable} />
                 </Col>
             </Row>
             <Row className="mt-5 text-center">
                 <CommonSelectingSortingFilteringTable tableData={data} columns={columns} onSelect={setSelected}
-                                                      onFilter={(filtered => {
-                                                          let filteredSeriesUID = filtered.map(row => row.values.raw.SeriesInstanceUID)
-                                                          addSeriesFiltered(filteredSeriesUID)
-                                                      })} pagination/>
+                    onFilter={(filtered => {
+                        let filteredSeriesUID = filtered.map(row => row.values.raw.SeriesInstanceUID)
+                        dispatch.addSeriesFiltered(filteredSeriesUID)
+                    })} pagination />
             </Row>
         </Fragment>
     )
 }
 
-const mapStateToProps = (state) => {
-    return {
-        results: state.AutoRetrieveResultList.results,
-        resultsSeries: state.AutoRetrieveResultList.resultsSeries
-    }
-}
-
-const mapDispatchToProps = {
-    emptyResultsTable,
-    addSeriesDetails,
-    removeSeriesResult,
-    addSeriesFiltered
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TableResultsStudiesSeries);

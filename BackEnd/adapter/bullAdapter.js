@@ -24,6 +24,7 @@ class Queue extends event.EventEmitter {
                 backoff,
             }
         });
+
         this._invalidated = true;
         this._cachedJobs = [];
         if (typeof fn === "object") {
@@ -44,6 +45,7 @@ class Queue extends event.EventEmitter {
             this.emit('progress', job, progress);
         });
         this._queue.on('error', (err) => {
+            console.error(err)
             if (err.code === "ECONNREFUSED") {
                 console.error(`Could not connect to redis at ${err.address}:${err.port}. The feature requiring bull will respond 500`);
                 return;
@@ -53,7 +55,8 @@ class Queue extends event.EventEmitter {
                 return;
             }
             this._invalidated = true;
-            this.emit('error', err);
+            //this.emit('error', err);
+            
         });
         this._queue.on('failed', (job, err) => {
             console.log(err);
@@ -63,7 +66,7 @@ class Queue extends event.EventEmitter {
         this._queue.on('removed', (job) => {
             this._invalidated = true;
         });
-        queues.push(this);
+        //queues.push(this);
     }
 
     /**

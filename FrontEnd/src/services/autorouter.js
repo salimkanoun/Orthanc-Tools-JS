@@ -1,22 +1,14 @@
+import axios from "axios"
+
 const autorouter = {
       /**
        * Start the Dicom Router
        * @returns 
        */
       startAutorouterService(){
-      const startAutorouterServiceOptions={
-            method:'POST',
-            headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json; charset=utf-8'
-            },
-            body:JSON.stringify({})
-      }
 
-      return fetch('/api/monitoring/autorouter', startAutorouterServiceOptions).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return true
-      }).catch(error => {
+      return axios.post('/api/monitoring/autorouter', {}).then((answer) => true
+      ).catch(error => {
             throw error
             })
 
@@ -27,18 +19,9 @@ const autorouter = {
        * @returns 
        */
       stopAutorouterService(){
-      const stopAutorouterServiceOptions={
-            method:'DELETE',
-            headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json; charset=utf-8'
-            },
-      }
-
-      return fetch('/api/monitoring/autorouter', stopAutorouterServiceOptions).then((answer) => {
-            if (!answer.ok) { throw answer }
-            return true
-      }).catch(error => {
+      
+      return axios.delete('/api/monitoring/autorouter').then((answer) =>  true
+      ).catch(error => {
             throw error
             })
       },
@@ -48,17 +31,8 @@ const autorouter = {
        * @returns 
        */
   getAutorouter(){ 
-    const getAutorouterOptions={
-      method:'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    }
-    return fetch('/api/monitoring/autorouter', getAutorouterOptions).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return answer.json()
-    }).catch(error => {
+    return axios.get('/api/monitoring/autorouter').then((answer) => answer.data
+    ).catch((error) => {
         throw error
     })
   },

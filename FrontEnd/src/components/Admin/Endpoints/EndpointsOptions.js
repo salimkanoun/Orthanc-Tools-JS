@@ -1,8 +1,11 @@
-import React, { Component } from "react"
-import { Row, Col } from "react-bootstrap"
+import React, { useState } from "react"
+
+import { Row, Col, Form, Button, FormGroup } from "react-bootstrap"
 import Select from "react-select"
-import { toast } from 'react-toastify'
+import { keys } from "../../../model/Constant"
+
 import apis from "../../../services/apis"
+import { useCustomMutation, useCustomQuery } from "../../CommonComponents/ReactQuery/hooks"
 
 
 const TRANSCODING_OPTIONS = [
@@ -24,76 +27,52 @@ const TRANSCODING_OPTIONS = [
 
 ]
 
-export default class EndpointsOptions extends Component{
+export default () => {
 
-    state = {
-        export_transcoding : ''
+    const [export_transcoding, setExport_transcoding] = useState('')
+
+    const {isLoading} = useCustomQuery(
+        [keys.EXPORT_TRANSCODING],
+        () => apis.options.getOptions(),
+        undefined,
+        undefined,
+        (answer) => {
+            setExport_transcoding(answer.export_transcoding)
+        }
+    )
+
+    const handleChangeSelect = (event) => {
+        setExport_transcoding(event)
     }
 
-    handleChangeSelect = (event, metadata) => {
-        this.setState({
-            [metadata.name]: event.value
-        })
-
-    }
-
-    getSelectedObject = (objectArray, searchedValue) => {
+    const getSelectedObject = (objectArray, searchedValue) => {
         let filteredArray = objectArray.filter(item => {
             return item.value === searchedValue ? true : false
         })
-
         return filteredArray[0]
     }
 
-    sendForm = async () => {
-        try {
-            await apis.options.setExportOptions(this.state.export_transcoding)
-            await this.refreshData()
-            toast.success('Export Settings updated')
-        } catch (error) {
-            toast.error(error.statusText)
-        }
+    const sendForm = useCustomMutation(
+        (export_transcoding) => apis.options.setExportOptions(export_transcoding),
+        [[keys.EXPORT_TRANSCODING]]
+    )
 
-    }
+    return (
+        <Form>
+            <h2 className="card-title mt-5">Export Transcoding </h2>
 
-    refreshData = async () => {
-        try {
-            let options = await apis.options.getOptions()
-            this.setState({
-                ...options
-            })
-        } catch (error) {
-            toast.error(error.statusText)
-        }
+            <Row>
+                <FormGroup>
+                    <Form.Label> Transfer Syntax : </Form.Label>
+                    <Select single options={TRANSCODING_OPTIONS} value={getSelectedObject(TRANSCODING_OPTIONS, export_transcoding)} onChange={(event) => handleChangeSelect(event)} />
+                </FormGroup>
+            </Row>
+            <Row >
+                <Col>
+                    <Button className="otjs-button otjs-button-blue mt-3"  onClick={() => sendForm.mutate({export_transcoding})}> Send </Button>
+                </Col>
+            </Row>
 
-
-    }
-    componentDidMount = async () => {
-        await this.refreshData()
-
-    }
-
-    render = () => {
-        return (
-            <div>
-                <h2 className="card-title mt-5">Export Transcoding </h2>
-                
-                    <Row>
-                        <Col sm={3}>
-                            <label htmlFor="export_transcoding">Transfer Syntax : </label>
-                        </Col>
-                        <Col>
-                            <Select single options={TRANSCODING_OPTIONS} name='export_transcoding' value={this.getSelectedObject(TRANSCODING_OPTIONS, this.state.export_transcoding)} onChange={this.handleChangeSelect} />
-                        </Col>
-                    </Row>
-                    <Row className="text-center mt-3">
-                        <Col>
-                            <input type="button" className="otjs-button otjs-button-blue mt-3" value="Send" onClick={this.sendForm} />
-
-                        </Col>
-                    </Row>
-               
-            </div>
-        )
-    }
+        </Form>
+    )
 }

@@ -1,46 +1,52 @@
-import React, {Fragment, useMemo} from "react";
+import React, { useMemo } from "react";
 import apis from '../../../../services/apis';
-import {toast} from "react-toastify";
-import CommonTable from "../../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
+import { useCustomMutation } from "../../../CommonComponents/ReactQuery/hooks";
+import { keys } from "../../../../model/Constant";
+import { Button } from "react-bootstrap";
 
-export default function SshKeys({refreshSshKeysData, sshKeysData}) {
+export default ({ sshKeysData }) => {
 
-    const columns = useMemo(() => [{
-        accessor: 'label',
-        Header: 'Label'
-    },
+    const deleteKey = useCustomMutation(
+        ({id}) => {
+            apis.sshKeys.deleteKey(id)
+        },
+        [[keys.SSH_KEY]]
+    )
+
+    const columns = [
         {
-            accessor: 'pass',
-            Header: 'Has a passphrase',
-            Cell: ({row}) => <p>{(row.values.pass ? '✓' : '✖')}</p>
+            id: 'label',
+            accessorKey: 'label',
+            header: 'Label'
         },
         {
-            accessor: 'delete',
-            Header: 'Delete Key',
-            Cell: ({row}) => {
+            id: 'pass',
+            accessorKey: 'pass',
+            header: 'Has a passphrase',
+            cell: ({ row }) => <p>{(row.values.pass ? '✓' : '✖')}</p>
+        },
+        {
+            id: 'delete',
+            accessorKey: 'delete',
+            header: 'Delete Key',
+            cell: ({ row }) => {
                 return (
                     <div className="text-center">
-                        <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
-                            try {
-                                await apis.sshKeys.deleteKey(row.values.id);
-                                refreshSshKeysData()
-                            } catch (error) {
-                                toast.error(error.statusText)
-                            }
-
-                        }} value="Remove"/>
+                        <Button className='otjs-button otjs-button-red' onClick={() => deleteKey.mutate(row.value.id)}> Remove </Button> 
                     </div>
                 )
             },
             formatExtraData: this
-        }], [refreshSshKeysData]);
+        }
+    ]
 
     const data = useMemo(() => sshKeysData, [sshKeysData])
 
     return (
-        <Fragment>
-            <CommonTable tableData={data} columns={columns}/>
-        </Fragment>
+        <>
+            <CommonTableV8 data={data} columns={columns} />
+        </>
     )
 }
 

@@ -1,131 +1,111 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Dropdown from "react-bootstrap/Dropdown"
 import ButtonGroup from "react-bootstrap/ButtonGroup"
 import Button from "react-bootstrap/Button"
 
-import { addToExportList } from '../../../actions/ExportList'
-import { addStudiesToAnonList } from '../../../actions/AnonList'
-
 import MonitorJob from '../../../tools/MonitorJob'
 import apis from '../../../services/apis'
 import { toast } from 'react-toastify'
 
-class RetrieveButton extends Component {
+export default ({ level, studyInstanceUID, queryAet, seriesInstanceUID }) => {
 
-  state = {
-    status: 'Retrieve',
-    resultAnswer: {}
+  const [status, setStatus] = useState('Retrieve')
+  const [resultAnswer, setResultAnswer] = useState({})
+
+  const RetrieveButton = {
+    Study : 0,
+    Series : 1
   }
 
-  getVariant = () => {
-    if (this.state.status === 'Retrieve') return 'info'
-    else if (this.state.status === MonitorJob.Pending) return 'warning'
-    else if (this.state.status === MonitorJob.Success) return 'success'
-    else if (this.state.status === MonitorJob.Failure) return 'danger'
+  const dispatch = useDispatch()
+
+  const getVariant = () => {
+    if (status === 'Retrieve') return 'info'
+    else if (status === MonitorJob.Pending) return 'warning'
+    else if (status === MonitorJob.Success) return 'success'
+    else if (status === MonitorJob.Failure) return 'danger'
   }
 
-  toAnon = async () => {
+  const toAnon = async () => {
     let studyDetails = []
-    if (this.props.level === RetrieveButton.Study) {
-      studyDetails.push(this.state.resultAnswer)
-    } else if (this.props.level === RetrieveButton.Series) {
-      let retrievedStudy = await apis.content.getStudiesDetails(this.state.resultAnswer.ParentStudy)
+    if (level === RetrieveButton.Study) {
+      studyDetails.push(resultAnswer)
+    } else if (level === RetrieveButton.Series) {
+      let retrievedStudy = await apis.content.getStudiesDetails(resultAnswer.ParentStudy)
       studyDetails.push(retrievedStudy)
     }
-    this.props.addStudiesToAnonList(studyDetails)
+    dispatch.addStudiesToAnonList(studyDetails)
 
   }
 
-  toExport = async () => {
+  const toExport = async () => {
     let seriesDetails = []
     let studyDetails = []
-    if (this.props.level === RetrieveButton.Study) {
-      let retrievedSeries = await apis.content.getSeriesDetails(this.state.resultAnswer['ID'])
+    if (level === RetrieveButton.Study) {
+      let retrievedSeries = await apis.content.getSeriesDetails(resultAnswer['ID'])
       seriesDetails = retrievedSeries
-      studyDetails.push(this.state.resultAnswer)
-    } else if (this.props.level === RetrieveButton.Series) {
-      seriesDetails = [this.state.resultAnswer]
-      let retrievedStudy = await apis.content.getStudiesDetails(this.state.resultAnswer.ParentStudy)
+      studyDetails.push(resultAnswer)
+    } else if (level === RetrieveButton.Series) {
+      seriesDetails = [resultAnswer]
+      let retrievedStudy = await apis.content.getStudiesDetails(resultAnswer.ParentStudy)
       studyDetails.push(retrievedStudy)
     }
 
-    this.props.addToExportList(seriesDetails, studyDetails)
+    dispatch.addToExportList(seriesDetails, studyDetails)
 
   }
 
-  render = () => {
-    return (
-      <Dropdown as={ButtonGroup} onClick={this.handleDropdownClick} >
-        <Button variant={this.getVariant()} onClick={this.doRetrieve} >{this.state.status}</Button>
-
-        <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
-
-        <Dropdown.Menu>
-          <Dropdown.Item onClick={this.toExport} disabled={this.state.status !== MonitorJob.Success}>To Export</Dropdown.Item>
-          <Dropdown.Item onClick={this.toAnon} disabled={this.state.status !== MonitorJob.Success} >To Anon</Dropdown.Item>
-          <Link className={this.state.status === MonitorJob.Success ? "dropdown-item" : "dropdown-item disabled"} to={'viewer/' + this.props.studyInstanceUID} target='_blank'>View on OHIF</Link>
-        </Dropdown.Menu>
-      </Dropdown>
-    )
-  }
-
-  componentWillUnmount = () => {
+  const componentWillUnmount = () => {
     if (this.monitorJob !== undefined) this.monitorJob.stopMonitoringJob()
   }
 
-  doRetrieve = async (e) => {
+  const doRetrieve = async (e) => {
     e.stopPropagation()
 
-    let level = this.props.level
-    let queryAet = this.props.queryAet
 
     let jobID
 
-    try{
+    try {
 
       if (level === RetrieveButton.Study) {
-        jobID = await apis.retrieve.retrieveByUID(queryAet, this.props.studyInstanceUID, null)
+        jobID = await apis.retrieve.retrieveByUID(queryAet, studyInstanceUID, null)
       } else if (level === RetrieveButton.Series) {
-        jobID = await apis.retrieve.retrieveByUID(queryAet, this.props.studyInstanceUID, this.props.seriesInstanceUID)
+        jobID = await apis.retrieve.retrieveByUID(queryAet, studyInstanceUID, seriesInstanceUID)
       }
 
-    } catch (error){
-      toast.error(error.statusText)
+    } catch (error) {
+      toast.error(error.statusText, {data:{type:'notification'}})
       return
     }
 
 
-    let monitorJob = new MonitorJob(jobID)
+    let monitorJobLocal = new MonitorJob(jobID)
 
     let self = this
 
-    monitorJob.onUpdate(function (progress) {
-      self.setState({
-        status: MonitorJob.Pending
-      })
+    monitorJobLocal.onUpdate(function (progress) {
+      setStatus(MonitorJob.Pending)
     })
 
-    monitorJob.onFinish(function (status) {
-      self.setState({
-        status: status
-      })
+    monitorJobLocal.onFinish(function (status) {
+      setStatus(status)
       if (status === MonitorJob.Success) {
         self.getOrthancIDbyStudyUID()
       }
     })
 
-    monitorJob.startMonitoringJob()
-    this.monitorJob = monitorJob
+    monitorJobLocal.startMonitoringJob()
+    this.monitorJob = monitorJobLocal
 
   }
 
-  handleDropdownClick = (e) => {
+  const handleDropdownClick = (e) => {
     e.stopPropagation()
   }
 
-  getOrthancIDbyStudyUID = async () => {
+  const getOrthancIDbyStudyUID = async () => {
 
     let contentSearch = {
       CaseSensitive: false,
@@ -133,34 +113,37 @@ class RetrieveButton extends Component {
       Query: {}
     }
 
-    if (this.props.level === RetrieveButton.Study) {
-      contentSearch.Query.StudyInstanceUID = this.props.studyInstanceUID
+    if (level === RetrieveButton.Study) {
+      contentSearch.Query.StudyInstanceUID = studyInstanceUID
       contentSearch.Level = 'Study'
-    } else if (this.props.level === RetrieveButton.Series) {
+    } else if (level === RetrieveButton.Series) {
       contentSearch.Level = 'Series'
-      contentSearch.Query.SeriesInstanceUID = this.props.seriesInstanceUID
+      contentSearch.Query.SeriesInstanceUID = seriesInstanceUID
     }
     try {
       let searchContent = await apis.content.getOrthancFind(contentSearch)
-      this.setState({
-        resultAnswer: searchContent[0]
-      })
+      setResultAnswer(searchContent[0])
     } catch (error) {
-      toast.error(error.statusText)
+      toast.error(error.statusText, {data:{type:'notification'}})
     }
 
   }
 
+  return (
+    <Dropdown as={ButtonGroup} onClick={handleDropdownClick} >
+      <Button variant={getVariant()} onClick={doRetrieve} >{status}</Button>
+
+      <Dropdown.Toggle split variant="success" id="dropdown-split-basic" />
+
+      <Dropdown.Menu>
+        <Dropdown.Item onClick={toExport} disabled={status !== MonitorJob.Success}>To Export</Dropdown.Item>
+        <Dropdown.Item onClick={toAnon} disabled={status !== MonitorJob.Success} >To Anon</Dropdown.Item>
+        <Link className={status === MonitorJob.Success ? "dropdown-item" : "dropdown-item disabled"} to={'viewer/' + studyInstanceUID} target='_blank'>View on OHIF</Link>
+      </Dropdown.Menu>
+    </Dropdown>
+  )
+
 }
 
-const mapDispatchToProps = {
-  addStudiesToAnonList,
-  addToExportList
-}
-
-RetrieveButton.Study = 0
-RetrieveButton.Series = 1
-
-export default connect(null, mapDispatchToProps)(RetrieveButton)
 
 

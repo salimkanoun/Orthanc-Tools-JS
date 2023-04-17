@@ -1,25 +1,19 @@
+import axios from "axios"
+
 const aets = {
 
   getAets() {
-    return fetch('/api/modalities')
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return (answer.json())
-      })
-      .catch((error) => {
-        throw error
-      })
+    return axios.get('/api/modalities').then((answer) => answer.data)
+    .catch((error) => {
+      throw error
+    })
   },
 
   getAetsExpand() {
-    return fetch('/api/modalities?expand')
-      .then((answer) => {
-        if (!answer.ok) { throw answer }
-        return (answer.json())
-      })
-      .catch((error) => {
-        throw error
-      })
+    return axios.get('/api/modalities?expand').then((answer) => answer.data)
+    .catch((error) => {
+      throw error
+    })
   },
 
   updateAet(name, aetName, host, port, manufacturer) {
@@ -31,19 +25,8 @@ const aets = {
       Manufacturer: manufacturer
     }
 
-    const updateAetOption = {
-      method: 'PUT',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify(postData)
-    }
-
-    return fetch('/api/modalities/' + name, updateAetOption).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    }).catch((error) => {
+    return axios.put('/api/modalities/' + name, postData).then((answer) => true
+    ).catch((error) => {
       throw error
     })
 
@@ -51,14 +34,8 @@ const aets = {
 
   deleteAet(name) {
 
-    const deleteAetOption = {
-      method: 'DELETE'
-    }
-
-    return fetch('/api/modalities/' + name, deleteAetOption).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return true
-    }).catch((error) => {
+    return axios.delete('/api/modalities/' + name).then((answer) => true
+    ).catch((error) => {
       throw error
     })
 
@@ -66,40 +43,16 @@ const aets = {
 
   echoAet(aetName) {
 
-    const echoAetOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({})
-    }
-
-    return fetch('/api/modalities/' + aetName + '/echo', echoAetOption).then(response => {
-      if (response.ok) return true
-      else throw response
-    }).catch(error => { throw error });
+    return axios.post('/api/modalities/' + aetName + '/echo', {}).then( () => true).catch(error => { throw error });
 
   },
 
   storeAET(name, orthancIDsArray) {
 
-    const storeAETOption = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({
-        Synchronous: false,
-        Resources: orthancIDsArray
-      })
-    }
-
-    return fetch('/api/modalities/' + name + '/store', storeAETOption).then((answer) => {
-      if (!answer.ok) { throw answer }
-      return (answer.json())
-    }).catch(error => {
+    return axios.post('/api/modalities/' + name + '/store', {
+      Synchronous: false,
+      Resources: orthancIDsArray
+    }).then((answer) => answer.data).catch(error => {
       throw error
     })
   }

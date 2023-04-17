@@ -1,48 +1,48 @@
 const Label = require('../repository/Label')
-const {OTJSConflictException} = require('../Exceptions/OTJSErrors')
+const { OTJSConflictException } = require('../Exceptions/OTJSErrors')
 
-class Labels{
+class Labels {
 
   /**
    * Create a label
-   * @param {String} label_name name of the label
+   * @param {String} labelName name of the label
    * @returns 
    */
-  static async createLabels(label_name){
-    const labels = await Label.getLabel(label_name)
+  static async createLabels(labelName) {
+    const labels = await Label.getLabel(labelName)
 
-    if(labels){
+    if (labels) {
       throw new OTJSConflictException('This labels already exist');
     }
 
-    return Label.create(label_name)
+    return Label.create(labelName)
   }
 
   /**
    * Get all labels
    * @returns 
    */
-  static async getAllLabels(){
+  static async getAllLabels() {
     return Label.getAllLabel()
-  } 
+  }
 
   /**
    * Delete a label
-   * @param {String} label_name name of the label to delete
+   * @param {String} labelName name of the label to delete
    * @returns 
    */
-  static async deleteLabels(label_name){
-    return Label.delete(label_name)
+  static async deleteLabels(labelName) {
+    return Label.delete(labelName)
   }
 
   /**
    * Modify a label
-   * @param {String} label_name old label name to modify
-   * @param {String} new_label_name modified label name
+   * @param {String} labelName old label name to modify
+   * @param {String} newLabelName modified label name
    * @returns 
    */
-  static async modifyLabels(label_name,new_label_name){
-      return Label.update(label_name,new_label_name)
+  static async modifyLabels(labelName, newLabelName) {
+    return Label.update(labelName, newLabelName)
   }
 
 }

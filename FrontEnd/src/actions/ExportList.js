@@ -1,5 +1,6 @@
 import { ADD_EXPORT_CONTENT, EMPTY_EXPORT_LIST, REMOVE_SERIES_EXPORT_LIST, REMOVE_STUDY_EXPORT_LIST } from './actions-types'
 import apis from '../services/apis'
+import Series from '../model/Series'
 
 export function addToExportList(seriesArray, studiesArray){
     return {
@@ -19,7 +20,13 @@ export function addToExportList(seriesArray, studiesArray){
 export function addStudiesToExportList(studiesArray){
     return async function(dispatch) {
         for (const studyObject of studiesArray){
-            let series = await apis.content.getSeriesDetails(studyObject['ID'])       
+            let seriesInfo = await apis.content.getSeriesDetails(studyObject['StudyOrthancID'])   
+            let series = seriesInfo.map(series => {
+                let seriesObject = new Series()
+                seriesObject.fillFromOrthanc(series.ID, series.MainDicomTags, series.Instances, series.ParentStudy )
+                return seriesObject
+            })
+           
             dispatch( 
                 {
                     type : ADD_EXPORT_CONTENT,

@@ -1,44 +1,37 @@
-import React, { useState, useEffect, Fragment } from 'react'
-import PeerListTable from './PeerListTable'
+import React from 'react'
 import PeerForm from './PeerForm'
 import apis from '../../../services/apis'
-import { toast } from 'react-toastify'
+import PeerTable from './PeerTable'
+import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
+import { keys } from '../../../model/Constant'
+import Spinner from '../../CommonComponents/Spinner'
 
 /**
  * Root Panel of Peers options
  */
-const PeerRootPanel = () => {
-  const [peer, setPeers] = useState([])
+export default () => {
 
-  /**
-     * Replacement of ComponentDidMount
-     * See https://dev.to/trentyang/replace-lifecycle-with-hooks-in-react-3d4n
-     */
-  useEffect(() => {
-    refreshPeersData()
-  }, []
+  const { data: peers, isLoading: isLoadingPeers } = useCustomQuery(
+    [keys.PEERS_KEY],
+    () => apis.peers.getPeersExpand(),
+    undefined,
+    (answer) => {
+      return Object.entries(answer).map(([peerName, data]) => ({
+        name: peerName,
+        ...data
+      })
+      )
+    }
   )
 
-  /**
-     * Get Peer Data from backend
-     */
-  const refreshPeersData = async () => {
 
-    try{
-      const peersAnswer = await apis.peers.getPeersExpand()
-      setPeers(peersAnswer)
-    } catch (error){
-      toast.error(error.statusText)
-    }
-
-  }
+  if (isLoadingPeers) return <Spinner/>
 
   return (
-    <Fragment>
-      <PeerListTable peersData={peer} refreshPeerData={refreshPeersData} />
-      <PeerForm refreshPeerData={refreshPeersData} />
-    </Fragment>
+    <>
+      <PeerTable peersData={peers} />
+      <PeerForm />
+    </>
   )
 }
 
-export default PeerRootPanel

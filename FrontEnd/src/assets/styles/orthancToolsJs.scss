@@ -14,6 +14,12 @@ $color-orange-active: #BA7E25;
 $color-red: #E1325B;
 $color-red-active: #A02443;
 
+h1 {
+  color: $color-text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -74,8 +80,9 @@ body {
   height: 100%;
   width: 15%;
   top: 0;
+  margin-left: -12px;
   box-shadow: 2px 2px 3px $color-shadow;
-  z-index: 1039;
+  z-index: -1;
   transition: 1s;
 
   &-close {
@@ -225,7 +232,7 @@ body {
 
 .main {
   margin-top: 7%;
-  margin-left: 20%;
+  margin-left: auto;
   border: 2px solid white;
   background-color: white;
   padding: 3rem;
@@ -379,6 +386,12 @@ body {
       box-shadow: 0 0 0 .25rem rgba(76, 188, 41, 0.5);
     }
   }
+}
+
+ul {
+  list-style: none;
+  padding-left: 11px;
+  line-height : 185%
 }
 
 #showResult {
@@ -666,6 +679,14 @@ code {
   color: rgba(128, 128, 128, 1) !important;
 }
 
+.nav-link {
+  color :rgb(174, 174, 174)
+}
+
+.navbar-brand{
+  width: 0%;
+}
+
 .vertical-center {
   min-height: 100%; /* Fallback for browsers do NOT support vh unit */
   min-height: 100vh; /* These two lines are counted as one :-)       */
@@ -893,7 +914,7 @@ code {
   width: calc(100% + 2px);
   height: calc(100% + 2px);
   outline: none;
-  box-shadow: 0 0 0 0.2rem rgb(0, 123, 255 / 25%);
+  //box-shadow: 0 0 0 0.2rem rgb(0, 123, 255 / 25%);
 }
 
 .form-control.form-control-search-select > div {

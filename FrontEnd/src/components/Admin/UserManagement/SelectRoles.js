@@ -1,39 +1,30 @@
-import React, { Component } from 'react'
+import React from 'react'
 import Select from 'react-select'
-import { toast } from 'react-toastify'
+import { keys } from '../../../model/Constant'
 import apis from '../../../services/apis'
+import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
+import Spinner from '../../CommonComponents/Spinner'
 
+export default ({ onChange, value }) => {
 
-export default class SelectRoles extends Component {
-
-    state = {
-        optionRoles: {}
-    }
-
-    componentDidMount = async () => {
-        try {
-            let roles = await apis.role.getRoles()
-            let options = []
-            roles.forEach((role) => {
-                options.push({
+    const { data: optionRoles, isLoading } = useCustomQuery(
+        [keys.ROLES_KEY],
+        () => apis.role.getRoles(),
+        undefined,
+        (answer) => {
+            return answer.map((role) => {
+                return ({
                     value: role.name,
                     label: role.name
                 })
             })
-            this.setState({
-                optionRoles: options
-            })
-
-        } catch (error) {
-            toast.error(error.statusText)
         }
+    )
 
-    }
+    if (isLoading) return <Spinner />
 
-    render = () => {
-        return (
-            <Select single options={this.state.optionRoles} onChange={this.props.onChange} />
-        )
-    }
+    return (
+        <Select value={optionRoles.find((option) => option.value === value)} single options={optionRoles} onChange={onChange} />
+    )
 
 }

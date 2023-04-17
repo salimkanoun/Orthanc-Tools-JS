@@ -1,22 +1,14 @@
+import axios from "axios"
+
 const autorouting = {
     /**
      * Get all the autorouters
      * @returns {Array.<JSON>} Autorouters
      */
   getAutorouters() {
-      const getAutoroutersOptions = {
-          method: 'GET',
-          headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-          }
-      }
-      return fetch('/api/autorouting', getAutoroutersOptions).then((answer) => {
-          if (!answer.ok) {
-              throw answer
-          }
-          return answer.json()
-      }).catch(error => {
+      
+      return axios.get('/api/autorouting').then((answer) =>  answer.data
+      ).catch(error => {
           throw error
       })
   },
@@ -26,19 +18,9 @@ const autorouting = {
    * @returns {JSON} Autorouter
    */
   getAutorouterByID(id) {
-    const getAutorouterByIDOptions = {
-        method: 'GET',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        }
-    }
-    return fetch('/api/autorouting/'+id, getAutorouterByIDOptions).then((answer) => {
-        if (!answer.ok) {
-            throw answer
-        }
-        return answer.json()
-    }).catch(error => {
+    
+    return axios.get('/api/autorouting/'+id).then((answer) => answer.data
+    ).catch(error => {
         throw error
     })
   },
@@ -57,20 +39,10 @@ const autorouting = {
         rules:rules,
         destination:destination
     }
-    const createAutorouterOptions = {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(autorouter)
-    }
 
-    return fetch('/api/autorouting/' + name, createAutorouterOptions).then((answer) => {
-        if (!answer.ok) {
-            throw answer
-        }
-        return true
+    return axios.post('/api/autorouting/' + name, autorouter).then((answer) => true
+    ).catch(error => {
+        throw error
     })
 
   },
@@ -85,24 +57,17 @@ const autorouting = {
    * @returns 
    */
   modifyAutorouter(id,name,condition,rules,destination) {
+
     const autorouter = {
       name:name,
       condition:condition,
       rules:rules,
       destination:destination
     }
-    const modifyAutorouterOptions = {
-        method: 'PUT',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(autorouter)
-    }
 
-    return fetch('/api/autorouting/'+id, modifyAutorouterOptions).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return true
+    return axios.put('/api/autorouting/'+id, autorouter).then((answer) => true
+    ).catch(error => {
+        throw error
     })
   },
 
@@ -116,18 +81,10 @@ const autorouting = {
     const autorouter = {
       running:running
     }
-    const switchOnOffOptions = {
-        method: 'PUT',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(autorouter)
-    }
 
-    return fetch('/api/autorouting/'+id+'/running', switchOnOffOptions).then((answer) => {
-        if (!answer.ok) { throw answer }
-        return true
+    return axios.put('/api/autorouting/'+id+'/running', autorouter).then((answer) => true
+    ).catch(error => {
+        throw error
     })
   },
 
@@ -137,20 +94,11 @@ const autorouting = {
    * @returns 
    */
   deleteAutorouter(id) {
-      const deleteAutorouterOptions = {
-          method: 'DELETE',
-          headers: {
-              Accept: 'application/json',
-              'Content-Type': 'application/json'
-          },
-      }
 
-      return fetch('/api/autorouting/' + id, deleteAutorouterOptions).then((answer) => {
-          if (!answer.ok) {
-              throw answer
-          }
-          return true
-      })
+      return axios.delete('/api/autorouting/' + id).then((answer) => true
+      ).catch(error => {
+        throw error
+    })
   }
 }
 export default autorouting

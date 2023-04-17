@@ -3,15 +3,15 @@ const {OTJSDBEntityNotFoundException} = require('../Exceptions/OTJSErrors')
 
 class Label{
 
-  static async getLabel(label_name){
+  static async getLabel(labelName){
     return db.Label.findOne({
-      where: {label_name:label_name}
+      where: {label_name:labelName}
     })
   }
 
-  static async create(label_name){
+  static async create(labelName){
     return db.Label.create({
-      label_name:label_name
+      label_name:labelName
     })
   }
 
@@ -19,19 +19,19 @@ class Label{
     return db.Label.findAll({attributes:['label_name']})
   }
 
-  static async delete(label_name){
-    const label = await Label.getLabel(label_name)
+  static async delete(labelName){
+    const label = await Label.getLabel(labelName)
     if(label==null){
       throw new OTJSDBEntityNotFoundException('This label doesn\'t exist')
     }
 
     return db.Label.destroy({
-      where :{label_name : label_name}
+      where :{label_name : labelName}
     })
   }
 
-  static async update(label_name,new_label_name){
-    const label = await Label.getLabel(label_name)
+  static async update(labelName,newLabelName){
+    const label = await Label.getLabel(labelName)
     if(label==null){
       throw new OTJSDBEntityNotFoundException('This label doesn\'t exist')
     }    
@@ -39,10 +39,10 @@ class Label{
     //use bulk update when you need to update primary keys (.save() isn't working)
     //refers to https://github.com/sequelize/sequelize/issues/5827
     return db.Label.update({ 
-      label_name:new_label_name
+      label_name:newLabelName
     },
     {
-      where : {label_name:label_name}
+      where : {label_name:labelName}
     })
   }
 
