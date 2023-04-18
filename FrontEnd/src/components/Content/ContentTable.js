@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Row, Col } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 import { addStudiesToAnonList } from "../../actions/AnonList"
@@ -7,35 +7,41 @@ import { addStudiesToExportList } from "../../actions/ExportList"
 import apis from "../../services/apis"
 import SendToAnonExportDeleteDropdown from "../CommonComponents/RessourcesDisplay/SendToAnonExportDeleteDropdown"
 
-import TablePatientWithNestedStudies from "../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudies"
-import TableSeries from "../CommonComponents/RessourcesDisplay/ReactTableV8/TableSeries"
-
 import Series from '../../model/Series'
-import { patientColumns, seriesColumns, studyColumns } from "../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories"
+import ContentTableSeries from "./ContentTableSeries"
+import ContentTablePatientWithNestedStudies from "./ContentTablePatientWithNestedStudies"
 
-export default ({ patients }) => {
+export default ({patients}) => {
 
-    const [series, setSeries] = useState([])
     const [selectedStudies, setSelectedStudies] = useState([])
     const [currentStudy, setCurrentStudy] = useState('')
+    const [series, setSeries] = useState([])
 
     const dispatch = useDispatch()
 
-    const onClickStudy = (StudyOrthancID) => {
-        apis.content.getSeriesDetails(StudyOrthancID).then((series) => {
-            let seriesObjects = series.map(series => {
-                let seriesObject = new Series()
-                seriesObject.fillFromOrthanc(series.ID, series.MainDicomTags, series.Instances, series.ParentStudy)
-                return seriesObject
+    const refreshSeries = useCallback(() => {
+
+        const fetchSeries = async () => {
+            let series = await apis.content.getSeriesDetails(currentStudy).then((series) => {
+                let seriesObjects = series.map(series => {
+                    let seriesObject = new Series()
+                    seriesObject.fillFromOrthanc(series.ID, series.MainDicomTags, series.Instances, series.ParentStudy)
+                    return seriesObject
+                })
+                let seriesArray = seriesObjects.map(series => series.serialize())
+                return seriesArray
             })
-            let rows = seriesObjects.map(series => series.serialize())
-            setSeries(rows)
-        })
-        setCurrentStudy(StudyOrthancID)
-    }
+
+            setSeries(series)
+        }
+        fetchSeries()
+    }, [currentStudy])
+
+    useEffect(() => {
+        refreshSeries()
+    }, [currentStudy])
 
     const onSendTo = (type) => {
-        console.log(selectedStudies)
         let studies = []
         patients.forEach((patient) => {
             studies.push(...Object.values(patient.Studies))
@@ -48,18 +54,6 @@ export default ({ patients }) => {
         else if (type === "delete") dispatch(addStudiesToDeleteList(filteredSelectedStudies))
     }
 
-    const additionalColumnsPatients = [
-        patientColumns.ACTION()
-    ]
-
-    const additionalColumnsStudies = [
-        studyColumns.ACTION()
-    ]
-
-    const additionalColumnsSeries = [
-        seriesColumns.ACTION()
-    ]
-
     const rowStyle = (StudyOrthancID) => {
         if (StudyOrthancID === currentStudy) return { background: 'peachPuff' }
     }
@@ -70,19 +64,16 @@ export default ({ patients }) => {
             <Col sm>
                 <SendToAnonExportDeleteDropdown onSendTo={onSendTo} />
 
-                <TablePatientWithNestedStudies
+                <ContentTablePatientWithNestedStudies
                     patients={patients}
-                    onClickStudy={onClickStudy}
+                    onClickStudy={(studyInstanceUID) => setCurrentStudy(studyInstanceUID)}
                     rowStyle={rowStyle}
-                    selectablePatient
-                    selectableStudy
-                    onSelectStudies={(studiesSelected) => { setSelectedStudies(studiesSelected) }}
-                    additionalColumnsPatients={additionalColumnsPatients}
-                    additionalColumnsStudies={additionalColumnsStudies}
+                    onSelectStudies={(studiesSelected) => setSelectedStudies(studiesSelected)}
+                    //onDelete = {}
                 />
             </Col>
             <Col sm>
-                <TableSeries series={series} additionalColumns={additionalColumnsSeries} />
+                <ContentTableSeries series={series} onDelete={() => refreshSeries()} />
             </Col>
 
         </Row>

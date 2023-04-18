@@ -15,8 +15,8 @@ export default ({
     orthancID,
     refresh,
     data
-}
-) => {
+}) => {
+    console.log(data)
 
     const keysToKeep = (level) => {
         switch (level) {
@@ -54,7 +54,7 @@ export default ({
                     'SeriesNumber'
                 ]
             default:
-                toast.error("Wrong level", {data:{type:'notification'}})
+                toast.error("Wrong level", { data: { type: 'notification' } })
         }
     }
 
@@ -74,42 +74,42 @@ export default ({
     }
 
     const updateToast = useCallback((jobId, progress) => {
-        toast.update(toasts[jobId], {containerId :'jobs'},
-         {
-            type: toast.TYPE.INFO,
-            autoClose: false,
-            render: 'Modify progress : ' + Math.round(progress) + '%',
-            data:{type:'jobs'},
-        })
+        toast.update(toasts[jobId], { containerId: 'jobs' },
+            {
+                type: toast.TYPE.INFO,
+                autoClose: false,
+                render: 'Modify progress : ' + Math.round(progress) + '%',
+                data: { type: 'jobs' },
+            })
     }, [Math.random()])
 
 
 
     const successToast = (jobId) => {
-        toast.update(toasts[jobId], {containerId :'jobs'},
-        {
-            type: toast.TYPE.INFO,
-            autoClose: 5000,
-            render: 'Modify Done',
-            className: 'bg-success',
-            data:{type:'jobs'}
-        })
+        toast.update(toasts[jobId], { containerId: 'jobs' },
+            {
+                type: toast.TYPE.INFO,
+                autoClose: 5000,
+                render: 'Modify Done',
+                className: 'bg-success',
+                data: { type: 'jobs' }
+            })
     }
 
     const failToast = (jobId) => {
-        toast.update(toasts[jobId], {containerId :'jobs'},
-        {
-            type: toast.TYPE.INFO,
-            autoClose: 5000,
-            render: 'Modify fail',
-            className: 'bg-danger',
-            data:{type:'jobs'}
-        })
+        toast.update(toasts[jobId], { containerId: 'jobs' },
+            {
+                type: toast.TYPE.INFO,
+                autoClose: 5000,
+                render: 'Modify fail',
+                className: 'bg-danger',
+                data: { type: 'jobs' }
+            })
     }
 
     const createToast = (jobId) => {
-        const toastId = toast.info("Modify progress : 0%", {containerId :'jobs'},
-        { autoClose: false, data:{type:'jobs' }})
+        const toastId = toast.info("Modify progress : 0%", { containerId: 'jobs' },
+            { autoClose: false, data: { type: 'jobs' } })
         setToasts({
             ...toasts,
             [jobId]: toastId
@@ -161,7 +161,7 @@ export default ({
         checkRemember()
         //If no change done, simply return
         if (Object.keys(modifications).length === 0 && deletes.length === 0) {
-            toast.error('No Modification set', {data:{type:'notification'}})
+            toast.error('No Modification set', { data: { type: 'notification' } })
             return
         }
         let jobAnswer = ''
@@ -183,13 +183,13 @@ export default ({
                 setShow(false)
                 break
             default:
-                toast.error("Wrong level", {data:{type:'notification'}})
+                toast.error("Wrong level", { data: { type: 'notification' } })
         }
         if (jobAnswer !== '') {
             let jobId = jobAnswer.ID
             let jobMonitoring = new MonitorJob(jobId)
 
-            jobMonitoring.onUpdate( (progress)=> {
+            jobMonitoring.onUpdate((progress) => {
                 updateToast(jobId, progress)
             })
 
@@ -210,7 +210,7 @@ export default ({
 
     return (
         <Fragment>
-            <Button className='dropdown-item bg-orange' onClick={openModify}>Modify</Button>
+            <Button className='dropdown-item bg-orange' onClick={openModify} disabled>Modify</Button>
 
             <Modal show={show} onHide={() => setShow(false)} onClick={(e) => e.stopPropagation()} size='xl'>
                 <Modal.Header closeButton>

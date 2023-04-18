@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Button } from 'react-bootstrap';
 import ModalCreateDicom from "./ModalCreateDicom";
 
@@ -14,7 +14,9 @@ export default ({ orthancID, level }) => {
     return (
         <Fragment>
             <Button className='dropdown-item bg-primary' type='button'
-                onClick={toogleOpen}>Create Dicom
+                onClick={toogleOpen}
+                disabled
+                >Create Dicom
             </Button>
             <ModalCreateDicom
                 show={show}
