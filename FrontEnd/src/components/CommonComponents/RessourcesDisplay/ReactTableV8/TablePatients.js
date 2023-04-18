@@ -10,13 +10,13 @@ export default({patients}) => {
             id : 'raw',
             accessorrKey : 'raw' ,
             header: 'RAW',
-            hidden : true
+            enableHiding : true
         },
         {
             id : 'PatientOrthancID',
             accessorrKey : 'PatientOrthancID' ,
             header: 'PatientOrthancID',
-            hidden : true
+            enableHiding : true
         },
         {
             id : 'PatientName',

@@ -1,6 +1,5 @@
-import createPalette from "@mui/material/styles/createPalette";
 import React, { useEffect, useState } from "react";
-import { commonColumns, patientColumns } from "./ColomnFactories";
+import { patientColumns } from "./ColomnFactories";
 import CommonTableV8 from "./CommonTableV8";
 import TableStudies from "./TableStudies";
 

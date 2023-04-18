@@ -11,7 +11,7 @@ const commonColumns = {
         id: 'raw',
         accessorKey: 'raw',
         header: 'RAW',
-        hidden: true
+        enableHiding: true
     },
     AET: {
         id: 'OriginAET',
@@ -25,7 +25,7 @@ const patientColumns = {
         id: 'PatientOrthancID',
         accessorKey: 'PatientOrthancID',
         header: 'PatientOrthancID',
-        hidden: true
+        enableHiding: true
     },
     NAME: {
         id: 'PatientName',
@@ -84,25 +84,25 @@ const studyColumns = {
         id: 'StudyOrthancID',
         accessorKey: 'StudyOrthancID',
         header: 'Study Orthanc ID',
-        hidden: true,
+        enableHiding: true,
     },
     STUDY_INSTANCE_UID: {
         id: 'StudyInstanceUID',
         accessorKey: 'StudyInstanceUID',
         header: 'StudyInstanceUID',
-        hidden: true
+        enableHiding: true
     },
     INSTANCE_UID: {
         id: 'StudyInstanceUID',
         accessorKey: 'StudyInstanceUID',
         header: 'StudyInstanceUID',
-        hidden: true
+        enableHiding: true
     },
     ANONYMIZED_FROM: {
         id: 'AnonymizedFrom',
         accessorKey: 'AnonymizedFrom',
         header: 'AnonymizedFrom',
-        hidden: true
+        enableHiding: true
     },
     DATE: {
         id: 'StudyDate',
@@ -192,7 +192,7 @@ const seriesColumns = {
         id: 'SeriesOrthancID',
         accessorKey: 'SeriesOrthancID',
         header: 'SeriesOrthancID',
-        hidden: true
+        enableHiding: true
     },
     DESCRIPTION: {
         id: 'SeriesDescription',
