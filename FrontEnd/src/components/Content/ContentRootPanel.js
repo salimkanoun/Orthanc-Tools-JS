@@ -11,6 +11,7 @@ export default () => {
     const [patients, setPatients] = useState([]);
 
     const sendSearch = async (dataForm) => {
+        console.log("sendSearch")
         try {
             let answer = await apis.content.getOrthancFind(dataForm)
             let dicomRessources = fillPatientModelWithStudies(answer)

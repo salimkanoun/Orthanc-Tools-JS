@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
     useReactTable,
     getCoreRowModel,
@@ -27,6 +27,7 @@ export default ({
     canSelect = false,
     canExpand = false,
     paginated = false,
+    selectedRowsIds = undefined,
     customRowProps = (row) => { },
     sortBy = [],
     renderSubComponent = (rowId) => { },
@@ -77,6 +78,14 @@ export default ({
 
     }
 
+    const generateSelectedStateFromProps = useMemo(() => {
+        let state = {}
+        selectedRowsIds?.forEach(id => {
+            state[id] = true
+        });
+        return state
+    }, [JSON.stringify(selectedRowsIds)])
+
     const table = useReactTable({
         data,
         getRowId: (originalRow, index, parent) => originalRow?.[id] ?? index,
@@ -86,7 +95,7 @@ export default ({
         },
         enableRowSelection: true,
         state: {
-            rowSelection,
+            rowSelection : selectedRowsIds ? generateSelectedStateFromProps :  rowSelection,
             columnFilters,
             sorting
         },

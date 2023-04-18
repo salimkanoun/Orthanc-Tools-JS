@@ -8,8 +8,9 @@ export default ({
     rowStyle,
     onRowClick,
     withPatientColums = false,
-    selectable = false,
-    onSelect = undefined
+    canSelect = false,
+    onSelectRow = undefined,
+    selectedRowsIds = undefined
 }) => {
 
     const columns = [
@@ -23,6 +24,6 @@ export default ({
     ]
 
     return (
-        <CommonTableV8 id="StudyOrthancID" data={studies} columns={columns.concat(additionalColumns)} rowStyle={rowStyle} onRowClick={onRowClick} canSelect={selectable} onSelectRow={onSelect} />
+        <CommonTableV8 id="StudyOrthancID" selectedRowsIds={selectedRowsIds} data={studies} columns={columns.concat(additionalColumns)} rowStyle={rowStyle} onRowClick={onRowClick} canSelect={canSelect} onSelectRow={onSelectRow} />
     )
 }

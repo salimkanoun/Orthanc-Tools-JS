@@ -1,3 +1,4 @@
+import createPalette from "@mui/material/styles/createPalette";
 import React, { useEffect, useState } from "react";
 import { commonColumns, patientColumns } from "./ColomnFactories";
 import CommonTableV8 from "./CommonTableV8";
@@ -9,18 +10,16 @@ export default ({
     patients,
     additionalColumnsPatients = [],
     additionalColumnsStudies = [],
-    onSelectPatient  = () => {},
-    onSelectStudies = () => {},
+    onSelectStudies,
     selectablePatient = false,
     selectableStudy = false,
-    rowStyle = undefined,
+    rowStyle,
     onClickStudy = () => { },
 }) => {
     const [selectedStudies, setSelectedStudies] = useState([])
     const [focusedStudy, setFocusedStudy] = useState(null)
 
     useEffect(() => {
-        console.log(selectedStudies)
         onSelectStudies(selectedStudies)
     }, [selectedStudies])
 
@@ -38,6 +37,14 @@ export default ({
 
     const columnsPatients = columns.concat(additionalColumnsPatients)
 
+    const onSelectPatientHandle = (selectedPatientOrthancIds) => {
+        let selectedPatients = patients.filter((patient) => selectedPatientOrthancIds.includes(patient.PatientOrthancID))
+        let studies = []
+        selectedPatients.forEach(patient => studies.push(...patient.Studies))
+        let studiesOrthancIds = studies.map(study => study.StudyOrthancID)
+        setSelectedStudies(studiesOrthancIds)
+    }
+
     const renderSubComponent = ({ row }) => {
         let rowId = row.id
         let patient = patients.find((patient) => patient.PatientOrthancID === rowId)
@@ -45,25 +52,14 @@ export default ({
 
         const onSelectStudy = (selectedStudies) => {
             let selectedStudiesOrthancId = selectedStudies.map((StudyOrthancID => {
-                console.log(StudyOrthancID)
                 return StudyOrthancID
             }))
-            updateselectedIds(selectedStudiesOrthancId)
+            setSelectedStudies(selectedStudiesOrthancId)
         }
 
-        return <TableStudies studies={studies} additionalColumns={additionalColumnsStudies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} selectable={selectableStudy} onSelect={onSelectStudy} />
+        return <TableStudies studies={studies} selectedRowsIds={selectedStudies} additionalColumns={additionalColumnsStudies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} canSelect={selectableStudy} onSelectRow={onSelectStudy} />
     }
 
-    const updateselectedIds = (newIds) => {
-        let sumArray = [
-            ...selectedStudies,
-            ...newIds
-        ]
-        let uniqueIds = [...new Set(sumArray)];
-        setSelectedStudies(uniqueIds)
-
-    }
-
-    return <CommonTableV8 id={patientColumns.ORTHANC_ID.id} canExpand columns={columnsPatients} data={patients} renderSubComponent={renderSubComponent} canSelect={selectablePatient} />
+    return <CommonTableV8 id={patientColumns.ORTHANC_ID.id} canExpand columns={columnsPatients} data={patients} renderSubComponent={renderSubComponent} canSelect={selectablePatient} onSelectRow={onSelectPatientHandle} />
 
 }
