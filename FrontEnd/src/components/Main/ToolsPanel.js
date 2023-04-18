@@ -41,7 +41,7 @@ export default ({roles, apercu}) => {
             <span className="mr-1" hidden={!roles.exportRemote || !roles.exportLocal}>
                 <Link id='export' ref={refExport} type="button" className="btn otjs-btn-tools otjs-btn-tools-orange w-12"
                     onMouseOver={apercu ? () => setShow('export') : null} to='/export'>
-                    <i class="fas fa-file-export me-2"></i> Export
+                    <i className="fas fa-file-export me-2"></i> Export
                     <span className="ms-2 badge bg-light text-dark"
                         onMouseOver={apercu ? () => setShow('export') : null}>{store.studyArray.length}</span>
                 </Link>

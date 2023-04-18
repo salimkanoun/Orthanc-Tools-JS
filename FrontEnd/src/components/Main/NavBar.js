@@ -47,8 +47,7 @@ export default ({ onLogout, roles }) => {
 
                 <Navbar.Toggle />
                 <Navbar.Collapse>
-
-                    <Nav className="me-auto" class="menu">
+                    <Nav>
                         <ul>
                             <div className='otjs-navbar-border' hidden={!opened}></div>
 
