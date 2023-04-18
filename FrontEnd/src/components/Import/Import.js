@@ -113,7 +113,7 @@ export default () => {
 
     const addSeriesToState = (seriesDetails) => {
         setSeriesObjects(series => {
-            series[seriesDetails.StudyOrthancID] = {
+            series[seriesDetails.SeriesOrthancID] = {
                 ...seriesDetails,
                 NumberOfInstances: 1
             }
