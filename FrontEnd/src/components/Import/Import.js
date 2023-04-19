@@ -14,6 +14,8 @@ import { addStudiesToExportList } from '../../actions/ExportList'
 import { addStudiesToDeleteList } from '../../actions/DeleteList'
 import { addStudiesToAnonList } from '../../actions/AnonList'
 import apis from '../../services/apis'
+import Study from '../../model/Study'
+import Series from '../../model/Series'
 
 
 export default () => {
@@ -94,19 +96,24 @@ export default () => {
 
     const addStudyToState = (studyDetails) => {
         setStudiesObjects((studies) => {
-            studies[studyDetails.ID] = studyDetails
+            studies[studyDetails.StudyOrthancID] = studyDetails
             return studies
         })
 
         setPatientsObjects((patient) => {
-            patient[studyDetails.ParentPatient] = studyDetails.PatientMainDicomTags
+            patient[studyDetails.PatientOrthancID] = {
+                PatientID : studyDetails.ParentPatient.PatientID,
+                PatientName : studyDetails.ParentPatient.PatientName,
+                PatientOrthancID : studyDetails.ParentPatient.PatientOrthancID,
+                PatientSex : studyDetails.ParentPatient.PatientSex,
+            }
             return patient
         })
     }
 
     const addSeriesToState = (seriesDetails) => {
         setSeriesObjects(series => {
-            series[seriesDetails.ID] = {
+            series[seriesDetails.SeriesOrthancID] = {
                 ...seriesDetails,
                 NumberOfInstances: 1
             }
@@ -137,14 +144,18 @@ export default () => {
 
         if (!isExistingStudy) {
             let studyDetails = await apis.content.getStudiesDetails(orthancAnswer.ParentStudy)
-            addStudyToState(studyDetails)
+            let study = new Study()
+            study.fillFromOrthanc(orthancAnswer.ParentStudy, studyDetails.MainDicomTags, [])
+            study.fillParentPatient(studyDetails.ParentPatient, studyDetails.PatientMainDicomTags)
+            addStudyToState(study.serialize())
         }
 
         let seriesDetails = await apis.content.getSeriesDetailsByID(orthancAnswer.ParentSeries)
-        addSeriesToState(seriesDetails)
+        let series = new Series()
+        series.fillFromOrthanc(orthancAnswer.ParentSeries, seriesDetails.MainDicomTags, [], orthancAnswer.ParentStudy)
+        addSeriesToState(series.serialize())
 
     }
-    console.log(seriesObjects)
 
     const buildImportTree = () => {
         let importedTree = {}
@@ -159,26 +170,26 @@ export default () => {
             }
         }
 
-        const addNewStudy = (studyID, studyDetails) => {
-            if (!Object.keys(importedTree[studyDetails.ParentPatient]['Studies']).includes(studyID)) {
-                importedTree[studyDetails.ParentPatient]['Studies'][studyID] = {
-                    ...studyDetails["MainDicomTags"],
-                    StudyOrthancID: studyID,
+        const addNewStudy = (StudyOrthancID, studyDetails) => {
+            if (!Object.keys(importedTree[studyDetails.PatientOrthancID]['Studies']).includes(StudyOrthancID)) {
+                importedTree[studyDetails.PatientOrthancID]['Studies'][StudyOrthancID] = {
+                    ...studyDetails,
+                    StudyOrthancID: StudyOrthancID,
                     Series: {}
                 }
             }
 
         }
 
-        for (let seriesID of Object.keys(seriesObjects)) {
-            let series = seriesObjects[seriesID]
-            let studyDetails = studiesObjects[series.ParentStudy]
-            let patientDetails = patientsObjects[studyDetails.ParentPatient]
-            addNewPatient(studyDetails.ParentPatient, patientDetails)
-            addNewStudy(series.ParentStudy, studyDetails)
-            importedTree[studyDetails.ParentPatient]['Studies'][series.ParentStudy]['Series'][series.ID] = {
-                ...series["MainDicomTags"],
-                StudyOrthancID: series.ParentStudy,
+        for (let SeriesOrthancID of Object.keys(seriesObjects)) {
+            let series = seriesObjects[SeriesOrthancID]
+            let studyDetails = studiesObjects[series.StudyOrthancID]
+            let patientDetails = patientsObjects[studyDetails.PatientOrthancID]
+            addNewPatient(studyDetails.PatientOrthancID, patientDetails)
+            addNewStudy(series.StudyOrthancID, studyDetails)
+            importedTree[studyDetails.PatientOrthancID]['Studies'][series.StudyOrthancID]['Series'][series.SeriesOrthancID] = {
+                ...series,
+                StudyOrthancID: series.StudyOrthancID,
                 NumberOfInstances: series['NumberOfInstances']
             }
         }

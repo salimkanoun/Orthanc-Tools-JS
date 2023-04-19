@@ -7,7 +7,7 @@ export default ({ data }) => {
         {
             accessorKey: 'fileID',
             header: 'File',
-            hidden: true
+            enableHiding: true
         }, {
             accessorKey: 'filename',
             header: 'FileName',

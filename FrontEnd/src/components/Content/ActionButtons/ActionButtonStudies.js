@@ -6,7 +6,6 @@ import apis from '../../../services/apis'
 import OhifLink from '../../Viewers/OhifLink'
 import StoneLink from '../../Viewers/StoneLink'
 import Modify from '../../Modify/Modify'
-import CreateDicom from '../../CreateDicom/CreateDicom'
 import { errorMessage, successMessage } from '../../../tools/toastify'
 
 export default ({
@@ -47,7 +46,6 @@ export default ({
                 <Dropdown.Menu className="mt-2 border border-dark border-2">
                     <OhifLink className='dropdown-item bg-green' StudyInstanceUID={StudyInstanceUID} />
                     <StoneLink className='dropdown-item bg-green' StudyInstanceUID={StudyInstanceUID} />
-                    <CreateDicom orthancID={orthancID} />
                     <Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }}  data={dataDetails} />
                     <Button className='dropdown-item bg-red'
                         onClick={onDeleteHandle}>Delete

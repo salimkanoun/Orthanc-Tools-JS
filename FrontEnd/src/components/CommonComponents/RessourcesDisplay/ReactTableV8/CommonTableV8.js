@@ -34,7 +34,6 @@ export default ({
     onRowClick = () => { },
     rowStyle = () => { },
     onSelectRow = (state) => { },
-    selectedIds = null,
     onCellEdit = (rowIndex, columnId, value) => { },
 }) => {
 
@@ -47,28 +46,14 @@ export default ({
         onSelectRow(Object.keys(rowSelection))
     }, [Object.keys(rowSelection).length])
 
-    //TODO controlled behaviour for selection
-    /*
-    useEffect(()=> {
-        if(!selectedIds) return 
-        const generateSelectedState = (selectedIds) => {
-            let state = {}
-            selectedIds.forEach((id)=> state[id] = true)
-            return state
-        }
-
-        setRowSelection(generateSelectedState(selectedIds))
-    }, [selectedIds?.length])
-    */
-
-    const getHiddenState = () => {
+    const hiddenStateFromProps = useMemo(() => {
         const visibleColumns = {};
         columns.forEach(column => {
-            visibleColumns[column.id] = !(column?.hidden);
+            visibleColumns[column.id ?? column.accessorKey ?? column.header] = !(column?.enableHiding);
         });
 
         return visibleColumns
-    }
+    }, [])
 
     const getColumns = () => {
         let newColumns = columns
@@ -78,13 +63,14 @@ export default ({
 
     }
 
-    const generateSelectedStateFromProps = useMemo(() => {
+    const selectedStateFromProps = useMemo(() => {
         let state = {}
         selectedRowsIds?.forEach(id => {
             state[id] = true
         });
         return state
     }, [JSON.stringify(selectedRowsIds)])
+
 
     const table = useReactTable({
         data,
@@ -95,12 +81,12 @@ export default ({
         },
         enableRowSelection: true,
         state: {
-            rowSelection : selectedRowsIds ? generateSelectedStateFromProps :  rowSelection,
+            rowSelection: selectedRowsIds ? selectedStateFromProps : rowSelection,
             columnFilters,
             sorting
         },
         initialState: {
-            columnVisibility: getHiddenState()
+            columnVisibility: hiddenStateFromProps
         },
         onColumnFiltersChange: setColumnFilters,
         onSortingChange: setSorting,
