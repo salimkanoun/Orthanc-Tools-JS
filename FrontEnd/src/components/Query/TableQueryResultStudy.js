@@ -7,6 +7,9 @@ import TableQueryResultSeries from '../CommonComponents/RessourcesDisplay/ReactT
 
 export default ({ studiesData }) => {
 
+    const LEVEL_STUDY = 'Study'
+    const LEVEL_SERIES = 'Series'
+
     const [series, setSeries] = useState({})
 
     const queryMutation = useCustomMutation(
@@ -36,11 +39,24 @@ export default ({ studiesData }) => {
         }))
     }
 
-    const retriveColumn = {
-        id: 'Retrieve',
+    const retriveStudyColumn = {
         header: 'Retrieve',
-        cell: ({ row }) => <RetrieveButton queryAet={row.values.OriginAET} studyInstanceUID={row.values.StudyInstanceUID}
-            level={RetrieveButton.Study} />
+        cell: ({ row }) =>
+            <RetrieveButton
+                queryAet={row.original.OriginAET}
+                studyInstanceUID={row.original.StudyInstanceUID}
+                level={LEVEL_STUDY}
+            />
+    }
+
+    const retriveSeriesColumn = {
+        header: 'Retrieve',
+        cell: ({ row }) =>
+            <RetrieveButton
+                queryAet={row.original.OriginAET}
+                studyInstanceUID={row.original.StudyInstanceUID}
+                level={LEVEL_SERIES}
+            />
     }
 
     const onStudyRowClick = (rowId) => {
@@ -54,11 +70,17 @@ export default ({ studiesData }) => {
         const StudyInstanceUID = row.id
         let requestedSeries = series?.[StudyInstanceUID] ?? null
         return (
-            requestedSeries ? <TableQueryResultSeries series={requestedSeries} /> : null
+            requestedSeries ? <TableQueryResultSeries series={requestedSeries} additionalColumns={[retriveSeriesColumn]} /> : null
         )
     }
 
     return (
-        <TableQueryResultStudies onRowClick={onStudyRowClick} canExpand studies={studiesData} renderSubComponent={renderSubComponent} />
+        <TableQueryResultStudies
+            onRowClick={onStudyRowClick}
+            canExpand
+            studies={studiesData}
+            renderSubComponent={renderSubComponent}
+            additionalColumns={[retriveStudyColumn]}
+        />
     )
 }

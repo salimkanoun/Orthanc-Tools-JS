@@ -2,7 +2,7 @@ import React from "react";
 import CommonTableV8 from "./CommonTableV8";
 import { studyQueryColumns } from "./ColomnFactories";
 
-export default ({ studies, canExpand = false, renderSubComponent = undefined, onRowClick = undefined }) => {
+export default ({ studies, canExpand = false, renderSubComponent = undefined, onRowClick = undefined, additionalColumns = [] }) => {
 
     const columns = [
         studyQueryColumns.PATIENT_NAME,
@@ -17,6 +17,6 @@ export default ({ studies, canExpand = false, renderSubComponent = undefined, on
     ]
 
     return (
-        <CommonTableV8 onRowClick={onRowClick} renderSubComponent={renderSubComponent} canExpand={canExpand} id={studyQueryColumns.STUDY_INSTANCE_UID.accessorKey} columns={columns} data={studies} canSort />
+        <CommonTableV8 onRowClick={onRowClick} renderSubComponent={renderSubComponent} canExpand={canExpand} id={studyQueryColumns.STUDY_INSTANCE_UID.accessorKey} columns={[...columns, ...additionalColumns]} data={studies} canSort />
     )
 }

@@ -2,7 +2,7 @@ import React from "react"
 import CommonTableV8 from "./CommonTableV8"
 import { seriesQueryColumns } from "./ColomnFactories"
 
-export default ({series}) => {
+export default ({series, additionalColumns}) => {
 
     const columns = [
         seriesQueryColumns.SERIES_INSTANCE_UID,
@@ -13,6 +13,6 @@ export default ({series}) => {
     ]
 
     return (
-        <CommonTableV8 columns={columns} data={series} canSort />
+        <CommonTableV8 columns={[...columns, ...additionalColumns]} data={series} canSort />
     )
 }

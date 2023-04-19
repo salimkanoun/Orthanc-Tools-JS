@@ -57,7 +57,7 @@ export default ({ level, studyInstanceUID, queryAet, seriesInstanceUID }) => {
   }
 
   useEffect(() => {
-    return () => { if (this.monitorJob !== undefined) this.monitorJob.stopMonitoringJob() }
+    //return () => { if (this.monitorJob != null) this.monitorJob.stopMonitoringJob() }
   }, [])
 
 
