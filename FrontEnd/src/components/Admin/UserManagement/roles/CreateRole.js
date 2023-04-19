@@ -4,9 +4,9 @@ import { toast } from 'react-toastify'
 
 import apis from '../../../../services/apis'
 import RoleForm from './RoleForm'
-import { useCustomMutation } from '../../../CommonComponents/ReactQuery/hooks'
 import { keys } from '../../../../model/Constant'
 import { errorMessage, successMessage } from '../../../../tools/toastify'
+import { useCustomMutation } from '../../../../services/ReactQuery/hooks'
 
 export default ({ onClose }) => {
 

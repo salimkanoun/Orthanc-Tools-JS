@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import apis from '../../../../services/apis'
 import Dropzone from 'react-dropzone'
 import { Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
-import { useCustomMutation } from '../../../CommonComponents/ReactQuery/hooks'
 import { keys } from '../../../../model/Constant'
+import { useCustomMutation } from '../../../../services/ReactQuery/hooks'
 
 /**
  * Form to declare or modify an Ssh Keys

@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import Select from 'react-select'
 import apis from '../../../services/apis'
 import { Row, Col, Form, Button, FormGroup } from 'react-bootstrap'
-import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 import { keys } from '../../../model/Constant'
+import { useCustomQuery } from '../../../services/ReactQuery/hooks'
 /**
  * Form to declare or modify an Ssh Keys
  */

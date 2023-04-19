@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import apis from '../../../services/aets'
 import { Row, Col, FormGroup, Form, Button } from 'react-bootstrap'
 import Select from 'react-select'
-import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks'
 import { keys } from '../../../model/Constant'
+import { useCustomMutation } from '../../../services/ReactQuery/hooks'
 
 export default () => {
 
@@ -31,12 +31,9 @@ export default () => {
     }
 
     const sendAet = useCustomMutation(
-        ({ name, aetName, ip, port, manufacturer }) => {
-            apis.updateAet(name, aetName, ip, port, manufacturer)
-            //Empty form to allow a new AET definition
-            resetForm()
-        },
-        [[keys.AETS_KEY]]
+        ({ name, aetName, ip, port, manufacturer }) => apis.updateAet(name, aetName, ip, port, manufacturer),
+        [[keys.AETS_KEY]],
+        () => resetForm()
     )
 
     const onHandleSend = () => {

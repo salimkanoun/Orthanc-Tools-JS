@@ -1,11 +1,10 @@
 import React from 'react'
 import { Button } from 'react-bootstrap';
-import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
-import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks';
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
 import { keys } from '../../../model/Constant';
 import { errorMessage, successMessage } from '../../../tools/toastify';
+import { useCustomMutation } from '../../../services/ReactQuery/hooks';
 
 /**
  * Table with known Peers details with Echo and Remove butto

@@ -6,9 +6,9 @@ import UserForm from './UserForm';
 import Spinner from '../../../CommonComponents/Spinner';
 
 import { keys } from '../../../../model/Constant';
-import { useCustomMutation, useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks';
 import apis from '../../../../services/apis';
 import { errorMessage, successMessage } from '../../../../tools/toastify';
+import { useCustomMutation, useCustomQuery } from '../../../../services/ReactQuery/hooks';
 
 export default () => {
 

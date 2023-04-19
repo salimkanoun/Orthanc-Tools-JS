@@ -1,9 +1,9 @@
 import React from 'react'
 import { Form, FormGroup } from 'react-bootstrap'
 import apis from '../../../../services/apis'
-import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks'
 import { keys } from '../../../../model/Constant'
 import Spinner from '../../../CommonComponents/Spinner'
+import { useCustomQuery } from '../../../../services/ReactQuery/hooks'
 
 export default () => {
 
