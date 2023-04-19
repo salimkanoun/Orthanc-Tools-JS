@@ -1,12 +1,11 @@
-import React, { createRef, Fragment, useCallback, useMemo, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import apis from '../../services/apis';
 import { toast } from 'react-toastify';
 
 import MonitorJob from '../../tools/MonitorJob'
 import { Button, Container, Form, Modal, Row } from 'react-bootstrap';
-import { filterProperties } from '../../model/Utils';
-import TagTable2 from '../CommonComponents/RessourcesDisplay/ReactTable/TagTable2';
-import ConstantLevel from './ConstantLevel';
+import { filterProperties } from '../../model/Utils';import ConstantLevel from './ConstantLevel';
+import TagTable from '../CommonComponents/RessourcesDisplay/ReactTableV8/TagTable';
 
 
 export default ({
@@ -210,14 +209,14 @@ export default ({
 
     return (
         <Fragment>
-            <Button className='dropdown-item bg-orange' onClick={openModify} disabled>Modify</Button>
+            <Button className='dropdown-item bg-orange' onClick={openModify}>Modify</Button>
 
             <Modal show={show} onHide={() => setShow(false)} onClick={(e) => e.stopPropagation()} size='xl'>
                 <Modal.Header closeButton>
                     <Modal.Title> Modify {level}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <TagTable2 data={dataFilter} onDataUpdate={onDataUpdate} onDeleteTag={onDeleteTag} modifications={modifications} deleted={deletes} />
+                    <TagTable data={dataFilter} onDataUpdate={onDataUpdate} onDeleteTag={onDeleteTag} modifications={modifications} deleted={deletes} />
                     <Container>
                         <Row>
                             <Form.Group>

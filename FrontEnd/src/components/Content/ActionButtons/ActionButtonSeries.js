@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Dropdown } from 'react-bootstrap'
+import ConstantLevel from '../../Modify/ConstantLevel'
 import Modify from '../../Modify/Modify'
 
 export default ({
@@ -22,7 +23,7 @@ export default ({
                 <Button className='dropdown-item bg-green' onClick={() => onShowMetadata()}>
                     View Metadata
                 </Button>
-                <Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }} data={dataDetails} />
+                <Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }} data={dataDetails} level={ConstantLevel.SERIES}/>
                 <Button className='dropdown-item bg-red'
                     onClick={onDelete}>Delete
                 </Button>

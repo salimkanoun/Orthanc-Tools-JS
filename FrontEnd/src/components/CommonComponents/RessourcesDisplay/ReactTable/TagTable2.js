@@ -1,5 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
+
 import { Form } from "react-bootstrap";
+
 import CommonTable from "./CommonTable";
 
 export default ({ data, modifications, deleted, onDataUpdate, onDeleteTag }) => {
