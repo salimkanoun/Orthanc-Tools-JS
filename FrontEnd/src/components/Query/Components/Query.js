@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
-import QueryForm from '../Connected_Components/QueryForm'
+
+import { Container, Row } from 'react-bootstrap'
+
 import TableResultStudy from '../Connected_Components/TableResultStudy'
-import { Row } from 'react-bootstrap'
+import QueryForm from '../Connected_Components/QueryForm'
+import { errorMessage } from '../../../tools/toastify'
+
 import apis from '../../../services/apis'
-import { toast } from 'react-toastify'
 
 export default () => {
 
@@ -55,26 +58,24 @@ export default () => {
       }
     }
 
-
     try {
       let queryAnswer = await apis.query.dicomQuery(aet, queryPost)
       let answers = await apis.query.retrieveAnswer(queryAnswer['ID'])
       setStudies(answers)
-
     } catch (error) {
-      toast.error('Dicom Failure', {data:{type:'notification'}})
+      errorMessage(error?.data?.errorMessage ?? 'Dicom Failure')
     }
 
   }
 
   return (
-    <div>
+    <Container fluid>
       <Row>
         <QueryForm onQuery={onQuery} />
       </Row>
       <Row>
         <TableResultStudy studiesData={studies} />
       </Row>
-    </div>
+    </Container>
   )
 } 

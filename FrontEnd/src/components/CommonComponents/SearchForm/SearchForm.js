@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import SelectModalities from '../SearchForm/SelectModalities'
+import SelectModalities from './SelectModalities'
 import { Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
 import moment from 'moment'
+import AetButton from '../../Query/Components/AetButton'
 
 
 
@@ -152,8 +153,12 @@ export default class Search extends Component {
                     </div>
                 </div>
                 <div className='mt-3 mb-3 text-center'>
-                    <div onClick={(event) => { this.props.onFormValidate(this.state, event) }}>
-                        {this.props.children}
+                    <div>
+                        {this.props.buttonsName.map((aet) => <AetButton
+                            key={aet}
+                            aetName={aet}
+                            onClick={(event) => { this.props.onFormValidate(this.state, aet) }}
+                        />)}
                     </div>
                 </div>
 

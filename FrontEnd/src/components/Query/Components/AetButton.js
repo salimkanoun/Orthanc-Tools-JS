@@ -1,7 +1,14 @@
 import React from 'react'
+import { Button } from 'react-bootstrap'
 
-export default ({aetName, clickListner}) => {
-    return (
-      <input type='button' className='btn btn-info btn-large mt-3 mr-3' value={aetName} onClick={clickListner} />
-    )
+export default ({ aetName, onClick }) => {
+  return (
+    <Button
+      variant='info'
+      className='mt-3 mr-3'
+      onClick={onClick}
+    >
+      {aetName}
+    </Button>
+  )
 }
