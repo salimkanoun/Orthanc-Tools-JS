@@ -1,11 +1,10 @@
 import React from "react";
-import Dropdown from "react-bootstrap/Dropdown";
 
 import apis from "../../../services/apis";
-import { useCustomQuery } from "../../CommonComponents/ReactQuery/hooks";
 import JobsTableV8 from "./JobsTableV8";
 import { keys } from "../../../model/Constant";
 import Spinner from "../../CommonComponents/Spinner";
+import { useCustomQuery } from "../../../services/ReactQuery/hooks";
 
 
 export default () => {

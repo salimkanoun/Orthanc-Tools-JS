@@ -1,61 +1,33 @@
-import React, { Fragment, useState } from 'react'
-import { Button, Dropdown, Modal } from 'react-bootstrap'
-
-import apis from '../../../services/apis'
-import { errorMessage, successMessage } from '../../../tools/toastify'
-import Metadata from '../../Metadata/Metadata'
+import React from 'react'
+import { Button, Dropdown } from 'react-bootstrap'
+import ConstantLevel from '../../Modify/ConstantLevel'
 import Modify from '../../Modify/Modify'
 
 export default ({
     orthancID,
     onDelete,
-    dataDetails
+    dataDetails,
+    onShowMetadata
 }) => {
-
-    const [showMetadata, setShowMetadata] = useState(false);
-
-    const onDeleteHandle = async () => {
-        try {
-            await apis.content.deleteSeries(orthancID)
-            successMessage("Series " + orthancID + " have been deleted")
-            onDelete(orthancID)
-        } catch (error) {
-            errorMessage(error)
-        }
-    }
-
     const handleClick = (e) => {
         e.stopPropagation()
     }
 
-
     return (
-        <Fragment>
-            {/*modal pour metadata*/}
-            <Modal show={showMetadata} onHide={() => setShowMetadata(false)} scrollable={true} >
-                <Modal.Header closeButton>
-                    <Modal.Title>Metadata</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Metadata seriesOrthancId={orthancID} />
-                </Modal.Body>
-            </Modal>
+        <Dropdown onClick={handleClick} drop='left' className="text-center">
+            <Dropdown.Toggle variant="button-dropdown-green" id="dropdown-basic" className="button-dropdown button-dropdown-green">
+                Action
+            </Dropdown.Toggle>
 
-            <Dropdown onClick={handleClick} drop='left' className="text-center">
-                <Dropdown.Toggle variant="button-dropdown-green" id="dropdown-basic" className="button-dropdown button-dropdown-green">
-                    Action
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu className="mt-2 border border-dark border-2">
-                    <Button className='dropdown-item bg-green' onClick={() => setShowMetadata(true)}>
-                        View Metadata
-                    </Button>
-                    <Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }} data={dataDetails}/>
-                    <Button className='dropdown-item bg-red'
-                        onClick={onDeleteHandle}>Delete
-                    </Button>
-                </Dropdown.Menu>
-            </Dropdown>
-        </Fragment>
+            <Dropdown.Menu className="mt-2 border border-dark border-2">
+                <Button className='dropdown-item bg-green' onClick={() => onShowMetadata()}>
+                    View Metadata
+                </Button>
+                <Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }} data={dataDetails} level={ConstantLevel.SERIES}/>
+                <Button className='dropdown-item bg-red'
+                    onClick={onDelete}>Delete
+                </Button>
+            </Dropdown.Menu>
+        </Dropdown>
     )
 }

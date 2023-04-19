@@ -4,7 +4,7 @@ import Dropzone from 'react-dropzone'
 import { keys } from '../../../../model/Constant'
 
 import apis from '../../../../services/apis'
-import { useCustomMutation } from '../../../CommonComponents/ReactQuery/hooks'
+import { useCustomMutation } from '../../../../services/ReactQuery/hooks'
 
 /**
  * Form to declare or modify an AET

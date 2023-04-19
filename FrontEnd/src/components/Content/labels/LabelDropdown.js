@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, ButtonGroup, Dropdown, FormControl, InputGroup } from "react-bootstrap";
 import apis from "../../../services/apis";
 
@@ -9,11 +9,11 @@ export default ({ studiesProps }) => {
     const [studies, setStudies] = useState({})
     const [search, setSearch] = useState('')
 
-    const componentDidMount = () => {
+    useEffect(() => {
         apis.label.getAllLabels().then(labelsLocal => {
             setLabels(labelsLocal.map(label => label.label_name))
-        });
-    }
+        })
+    }, [])
 
     const handleCreateInput = (event) => {
         setCreateLabel(event.target.value)

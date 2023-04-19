@@ -2,9 +2,9 @@ import React from 'react'
 import PeerForm from './PeerForm'
 import apis from '../../../services/apis'
 import PeerTable from './PeerTable'
-import { useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 import { keys } from '../../../model/Constant'
 import Spinner from '../../CommonComponents/Spinner'
+import { useCustomQuery } from '../../../services/ReactQuery/hooks'
 
 /**
  * Root Panel of Peers options

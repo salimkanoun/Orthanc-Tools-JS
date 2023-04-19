@@ -16,7 +16,7 @@ export default ({
             id: 'id',
             accessorKey: 'id',
             header: 'id',
-            hidden: true,
+            enableHiding: true
         },
         {
             id: 'name',

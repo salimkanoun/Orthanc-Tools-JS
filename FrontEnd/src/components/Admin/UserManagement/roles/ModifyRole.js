@@ -4,8 +4,8 @@ import RoleForm from './RoleForm';
 import Spinner from '../../../CommonComponents/Spinner';
 
 import { keys } from '../../../../model/Constant';
-import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks';
 import apis from '../../../../services/apis';
+import { useCustomQuery } from '../../../../services/ReactQuery/hooks';
 
 export default ({ roleName, onUpdateRole }) => {
 

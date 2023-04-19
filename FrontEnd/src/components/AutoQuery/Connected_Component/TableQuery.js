@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 
@@ -139,14 +139,15 @@ export default ({ switchTab}) => {
         }
     })
 
-    const componentDidMount = async () => {
+    useEffect(() => {
+        const getAets = async () => {await apis.aets.getAets()}
         try {
-            let aets = await apis.aets.getAets()
+            let aets = getAets()
             dispatch.loadAvailableAETS(aets)
         } catch (error) {
             toast.error(error.statusText, {data:{type:'notification'}})
         }
-    }
+    }, [])
 
     const removeRow = () => {
         let selectedKeyRow = selected.map(x => x.key);

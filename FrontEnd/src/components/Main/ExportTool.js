@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Popover, Col, Row, Overlay, Button } from 'react-bootstrap'
 
@@ -23,16 +23,17 @@ export default ({ target, show, onHide }) => {
 
     const dispatch = useDispatch()
 
-    const componentDidMount = async () => {
+    useEffect(() => {
+        const getAets = async () => {await apis.aets.getAets()}
         try {
-            let aets = await apis.aets.getAets()
-            this.setAets(aets)
+            let aets = getAets()
+            setAets(aets)
         } catch (error) {
-            this.setAets([])
+            setAets([])
             toast.error(error.statusText, { data: { type: 'notification' } })
         }
+    }, [])
 
-    }
 
     const handleClickEmpty = () => {
         dispatch(emptyExportList())

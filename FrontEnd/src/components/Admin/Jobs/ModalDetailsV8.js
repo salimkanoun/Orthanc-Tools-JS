@@ -12,7 +12,7 @@ export default ({ data }) => {
             accessorKey: 'ID',
             header: 'ID',
             cell: row => <i>{row.getValue()}</i>,
-            hidden: true,
+            enableHiding: true,
         },
         {
             id: 'ErrorCode',

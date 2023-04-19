@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Dropdown from "react-bootstrap/Dropdown"
@@ -57,9 +57,10 @@ export default ({ level, studyInstanceUID, queryAet, seriesInstanceUID }) => {
 
   }
 
-  const componentWillUnmount = () => {
-    if (this.monitorJob !== undefined) this.monitorJob.stopMonitoringJob()
-  }
+  useEffect(() => {
+    return () => { if (this.monitorJob !== undefined) this.monitorJob.stopMonitoringJob()}
+  }, [])
+
 
   const doRetrieve = async (e) => {
     e.stopPropagation()

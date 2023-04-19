@@ -3,6 +3,7 @@ import { Button, Dropdown } from "react-bootstrap";
 
 import apis from "../../../services/apis";
 import { errorMessage, successMessage } from "../../../tools/toastify";
+import ConstantLevel from "../../Modify/ConstantLevel";
 import Modify from "../../Modify/Modify";
 
 export default ({
@@ -10,16 +11,6 @@ export default ({
     onDelete,
     dataDetails
 }) => {
-    const onDeleteHandle = async () => {
-        try {
-            await apis.content.deletePatient(orthancID)
-            successMessage("Patient " + orthancID + " have been deleted")
-            onDelete(orthancID)
-        } catch (error) {
-            errorMessage(error)
-        }
-    }
-
 
     const handleClick = (e) => {
         e.stopPropagation()
@@ -34,8 +25,8 @@ export default ({
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="mt-2 border border-dark border-2">
-                    <Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }} data={dataDetails} />
-                    <Button className='dropdown-item bg-red' onClick={onDeleteHandle}>
+                    <Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }} data={dataDetails} level={ConstantLevel.PATIENTS} />
+                    <Button className='dropdown-item bg-red' onClick={onDelete}>
                         Delete
                     </Button>
                 </Dropdown.Menu>

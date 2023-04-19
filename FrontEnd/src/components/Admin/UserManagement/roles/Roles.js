@@ -8,10 +8,10 @@ import ModifyRole from "./ModifyRole";
 import Spinner from "../../../CommonComponents/Spinner";
 import { confirm } from "../../../CommonComponents/ConfirmGlobal";
 
-import { useCustomMutation, useCustomQuery } from "../../../CommonComponents/ReactQuery/hooks";
 import { keys } from "../../../../model/Constant";
 import apis from "../../../../services/apis";
 import { errorMessage, successMessage } from "../../../../tools/toastify";
+import { useCustomMutation, useCustomQuery } from "../../../../services/ReactQuery/hooks";
 
 export default () => {
 

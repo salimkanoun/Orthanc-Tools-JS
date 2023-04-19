@@ -1,7 +1,7 @@
 import React from 'react'
 import { keys } from '../../../model/Constant';
 import apis from '../../../services/apis';
-import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
+import { useCustomMutation, useCustomQuery } from '../../../services/ReactQuery/hooks';
 import RobotTable from "../../CommonComponents/RessourcesDisplay/ReactTable/RobotTable";
 import Spinner from '../../CommonComponents/Spinner';
 

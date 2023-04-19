@@ -2,12 +2,12 @@ import React, { useState, Fragment } from 'react'
 import { Button } from 'react-bootstrap'
 import { keys } from '../../../../model/Constant'
 import apis from '../../../../services/apis'
-import { useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks'
 import CertificateForm from './CertificateForm'
 import Certificates from './CertificatesList'
 import SshKeyForm from './SshKeyForm'
 import SshKeys from './SshKeysList'
 import Spinner from '../../../CommonComponents/Spinner'
+import { useCustomQuery } from '../../../../services/ReactQuery/hooks'
 
 export default () => {
 

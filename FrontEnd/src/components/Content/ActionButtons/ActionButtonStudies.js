@@ -6,7 +6,7 @@ import apis from '../../../services/apis'
 import OhifLink from '../../Viewers/OhifLink'
 import StoneLink from '../../Viewers/StoneLink'
 import Modify from '../../Modify/Modify'
-import { errorMessage, successMessage } from '../../../tools/toastify'
+import ConstantLevel from '../../Modify/ConstantLevel'
 
 export default ({
     orthancID,
@@ -15,20 +15,6 @@ export default ({
     openLabelModal,
     dataDetails
 }) => {
-
-
-    const onDeleteHandle = async () => {
-
-        try {
-            await apis.content.deleteStudies(orthancID)
-            successMessage("Studies " + orthancID + " have been deleted")
-            onDelete(orthancID)
-        } catch (error) {
-            errorMessage(error)
-        }
-    }
-
-
 
     const handleClick = (e) => {
         e.stopPropagation()
@@ -46,9 +32,9 @@ export default ({
                 <Dropdown.Menu className="mt-2 border border-dark border-2">
                     <OhifLink className='dropdown-item bg-green' StudyInstanceUID={StudyInstanceUID} />
                     <StoneLink className='dropdown-item bg-green' StudyInstanceUID={StudyInstanceUID} />
-                    <Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }}  data={dataDetails} />
+                    <Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }}  data={dataDetails} level={ConstantLevel.STUDIES}/>
                     <Button className='dropdown-item bg-red'
-                        onClick={onDeleteHandle}>Delete
+                        onClick={() => onDelete()}>Delete
                     </Button>
                     {(!!openLabelModal ?
                         //TODO a réinstancier

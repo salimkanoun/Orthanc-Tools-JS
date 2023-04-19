@@ -4,10 +4,10 @@ import { Button, Form, FormControl, InputGroup, Modal } from "react-bootstrap";
 import Spinner from "../../CommonComponents/Spinner";
 import LabelsTable from "./LabelsTable";
 
-import { useCustomMutation, useCustomQuery } from "../../CommonComponents/ReactQuery/hooks";
 import { keys } from "../../../model/Constant";
 import apis from "../../../services/apis";
 import RoleSelect from "./RoleSelect";
+import { useCustomMutation, useCustomQuery } from "../../../services/ReactQuery/hooks";
 
 export default () => {
 

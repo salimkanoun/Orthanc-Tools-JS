@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import AnonymizedResults from "./AnonymizedResults";
 import AnonymizePanel from './AnonymizePanel';
@@ -22,19 +22,17 @@ export default ({ }) => {
         }
     })
 
-    const componentDidMount = async () => {
+    useEffect(()=> {
         //Sk / Voir si robot anoymisation de cet utilisateur est en cours
+        const getTaskOfUser = async () => { await apis.task.getTaskOfUser(store.username, 'anonymize')}
         try {
-            let answer = (await apis.task.getTaskOfUser(store.username, 'anonymize'))[0]
-
+            let answer = getTaskOfUser()[0]
             if (answer) {
                 setAnonTaskID(answer)
-            }
+            } 
         } catch (error) {
         }
-
-
-    }
+    }, [])
 
     const setAnonTaskId = (anonTaskID) => {
         setAnonTaskID(anonTaskID)

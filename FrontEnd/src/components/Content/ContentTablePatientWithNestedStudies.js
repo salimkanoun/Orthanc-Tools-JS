@@ -8,8 +8,9 @@ export default ({
     onClickStudy,
     rowStyle,
     onSelectStudies,
-    onDelete,
-    openLabelModal = undefined
+    onDeletePatient,
+    onDeleteStudy,
+    openLabelModal = () => { }
 }) => {
 
     const additionalColumnsPatients = [
@@ -20,8 +21,8 @@ export default ({
             cell: ({ row }) => {
                 return (<ActionButtonPatients
                     orthancID={row.original.PatientOrthancID}
-                    onDelete={onDelete}
-                    dataDetails = {row.original}
+                    onDelete={() => onDeletePatient(row.original.PatientOrthancID)}
+                    dataDetails={row.original}
                 />)
             }
         }
@@ -36,9 +37,9 @@ export default ({
                 return <ActionButtonStudies
                     orthancID={row.original.StudyOrthancID}
                     StudyInstanceUID={row.original.StudyInstanceUID}
-                    onDelete={onDelete}
-                    openLabelModal={openLabelModal} 
-                    dataDetails = {row.original}/>
+                    onDelete={() => onDeleteStudy(row.original.StudyOrthancID)}
+                    openLabelModal={openLabelModal}
+                    dataDetails={row.original} />
             }
         }
     ]
@@ -53,5 +54,6 @@ export default ({
             onSelectStudies={onSelectStudies}
             additionalColumnsPatients={additionalColumnsPatients}
             additionalColumnsStudies={additionalColumnsStudies} />
+
     )
 }

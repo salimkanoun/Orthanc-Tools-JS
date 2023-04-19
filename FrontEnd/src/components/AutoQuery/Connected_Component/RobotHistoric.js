@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
 import task from '../../../services/task';
@@ -9,14 +9,13 @@ export default ({ username }) => {
 
     const [rows, setRows] = useState([])
 
-    const componentDidMount = () => {
+    useEffect(()=> {
         refreshHandler()
         startRefreshMonitoring()
-    }
-
-    const componentWillUnmount = () => {
-        stopRefreshMonitoring()
-    }
+        return () => {
+            stopRefreshMonitoring()
+        }
+    }, [])
 
     const startRefreshMonitoring = () => {
         this.intervalChcker = setInterval(refreshHandler, 2000)
