@@ -10,16 +10,6 @@ export default ({
     onDelete,
     dataDetails
 }) => {
-    const onDeleteHandle = async () => {
-        try {
-            await apis.content.deletePatient(orthancID)
-            successMessage("Patient " + orthancID + " have been deleted")
-            onDelete(orthancID)
-        } catch (error) {
-            errorMessage(error)
-        }
-    }
-
 
     const handleClick = (e) => {
         e.stopPropagation()
@@ -35,7 +25,7 @@ export default ({
 
                 <Dropdown.Menu className="mt-2 border border-dark border-2">
                     <Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }} data={dataDetails} />
-                    <Button className='dropdown-item bg-red' onClick={onDeleteHandle}>
+                    <Button className='dropdown-item bg-red' onClick={onDelete}>
                         Delete
                     </Button>
                 </Dropdown.Menu>

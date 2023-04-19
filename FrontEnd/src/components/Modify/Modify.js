@@ -54,7 +54,7 @@ export default ({
                     'SeriesNumber'
                 ]
             default:
-                toast.error("Wrong level", { data: { type: 'notification' } })
+                return null
         }
     }
 
@@ -183,7 +183,7 @@ export default ({
                 setShow(false)
                 break
             default:
-                toast.error("Wrong level", { data: { type: 'notification' } })
+                return null
         }
         if (jobAnswer !== '') {
             let jobId = jobAnswer.ID
