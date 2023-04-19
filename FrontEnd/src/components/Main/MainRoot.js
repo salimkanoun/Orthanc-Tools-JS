@@ -19,27 +19,21 @@ import RobotView from '../AutoQuery/Connected_Component/RobotView';
 import Footer from './Footer';
 import { Row, Col, Container } from 'react-bootstrap';
 import ToolsPanel from './ToolsPanel';
+import Welcome from './Welcome';
 
 const MainRoot = ({ onLogout, username, roles }) => {
 
     return (
         <>
+            <NavBar onLogout={onLogout} username={username} roles={roles} />
             <Container fluid>
                 <Row>
-                    <Col xs={"auto"} sm={"auto"}>
-                        <NavBar onLogout={onLogout} username={username} roles={roles} />
-                    </Col>
-
-                    <Col >
-                        <Row>
-                            <ToolsPanel roles={roles} apercu />
-                        </Row>
-                        <Row>
-                            <AnimatedSwitch />
-                        </Row>
-                    </Col>
+                    <ToolsPanel roles={roles} apercu />
                 </Row>
-            </Container>
+                <Row>
+                    <AnimatedSwitch />
+                </Row>
+            </Container >
             <Footer />
         </>
     )
@@ -63,6 +57,7 @@ const AnimatedSwitch = withRouter(({ location, ...props }) => (
                     <Route exact path='/mydicom' component={MyDicom} />
                     <Route exact path='/delete' component={Delete} />
                     <Route exact path='/dicom-router' component={DicomRouterPanel} />
+                    <Route exact path='/' component={Welcome} />
                 </Switch>
             </div>
         </CSSTransition>
