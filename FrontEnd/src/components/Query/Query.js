@@ -76,7 +76,6 @@ export default () => {
       </Row>
       <Row>
         <TableQueryResultStudy studiesData={studies} />
-        <TableResultStudy studiesData={studies} />
       </Row>
     </Container>
   )

@@ -308,7 +308,8 @@ const studyQueryColumns = {
     },
     AET: {
         accessorKey: 'OriginAET',
-        header: 'AET'
+        header: 'AET',
+        enableHiding: true
     },
 }
 
