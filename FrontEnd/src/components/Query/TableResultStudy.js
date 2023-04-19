@@ -4,9 +4,9 @@ import {
     patientColumns,
     seriesColumns,
     studyColumns
-} from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
-import NestedTable from "../../CommonComponents/RessourcesDisplay/ReactTable/NestedTable";
-import apis from "../../../services/apis";
+} from "../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
+import NestedTable from "../CommonComponents/RessourcesDisplay/ReactTable/NestedTable";
+import apis from "../../services/apis";
 import TableResultSeries from './TableResultSeries';
 
 export default ({ studiesData, style = {} }) => {

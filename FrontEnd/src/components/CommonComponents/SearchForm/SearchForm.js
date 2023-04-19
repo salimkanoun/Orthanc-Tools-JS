@@ -3,7 +3,7 @@ import SelectModalities from './SelectModalities'
 import { Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
 import moment from 'moment'
-import AetButton from '../../Query/Components/AetButton'
+import AetButton from './AetButton'
 
 
 

@@ -1,8 +1,9 @@
 import React from 'react'
 
+import { Row, Container } from 'react-bootstrap';
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-
 import { Route, Switch, withRouter } from 'react-router-dom'
+
 import AdminRootPanel from '../Admin/AdminRootPanel'
 import AnonRootPanel from '../Anonymize/AnonRootPanel'
 import AutoQueryRoot from '../AutoQuery/Connected_Component/AutoQueryRoot'
@@ -13,11 +14,11 @@ import ExportPanel from '../Export/ExportPanel'
 import ImportRootPanel from '../Import/ImportRootPanel'
 import MyDicom from '../MyDicom/MyDicom'
 import ContentRootPanel from '../Content/ContentRootPanel'
-import Query from '../Query/Components/Query'
+import Query from '../Query/Query'
 import NavBar from './NavBar'
 import RobotView from '../AutoQuery/Connected_Component/RobotView';
 import Footer from './Footer';
-import { Row, Col, Container } from 'react-bootstrap';
+
 import ToolsPanel from './ToolsPanel';
 import Welcome from './Welcome';
 

@@ -3,8 +3,8 @@ import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { filter } from '../../../../model/Constant';
 import ConstantLevel from "../../../Modify/ConstantLevel";
-import RetrieveButton from "../../../Query/Components/RetrieveButton";
 import ActionBouton from "../ActionBouton";
+import RetrieveButton from "../../../Query/RetrieveButton";
 
 const commonColumns = {
     RAW: {

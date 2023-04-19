@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
-import CommonTable from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
-import { commonColumns, seriesColumns } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
+import CommonTable from "../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import { commonColumns, seriesColumns } from "../CommonComponents/RessourcesDisplay/ReactTable/ColumnFactories";
 
 export default ({
     series,
