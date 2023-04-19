@@ -44,7 +44,7 @@ export default ({
         setSelectedStudies(studiesOrthancIds)
     }
 
-    const renderSubComponent = ({ row }) => {
+    const renderSubComponent = (row) => {
         let rowId = row.id
         let patient = patients.find((patient) => patient.PatientOrthancID === rowId)
         let studies = Object.values(patient.Studies)

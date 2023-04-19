@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
+
 import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import Dropdown from "react-bootstrap/Dropdown"
-import ButtonGroup from "react-bootstrap/ButtonGroup"
-import Button from "react-bootstrap/Button"
+import { Dropdown, ButtonGroup, Button } from "react-bootstrap"
 
-import MonitorJob from '../../../tools/MonitorJob'
-import apis from '../../../services/apis'
 import { toast } from 'react-toastify'
+import MonitorJob from '../../tools/MonitorJob'
+import apis from '../../services/apis'
 
 export default ({ level, studyInstanceUID, queryAet, seriesInstanceUID }) => {
 
@@ -15,8 +14,8 @@ export default ({ level, studyInstanceUID, queryAet, seriesInstanceUID }) => {
   const [resultAnswer, setResultAnswer] = useState({})
 
   const RetrieveButton = {
-    Study : 0,
-    Series : 1
+    Study: 0,
+    Series: 1
   }
 
   const dispatch = useDispatch()
@@ -58,7 +57,7 @@ export default ({ level, studyInstanceUID, queryAet, seriesInstanceUID }) => {
   }
 
   useEffect(() => {
-    return () => { if (this.monitorJob !== undefined) this.monitorJob.stopMonitoringJob()}
+    //return () => { if (this.monitorJob != null) this.monitorJob.stopMonitoringJob() }
   }, [])
 
 
@@ -77,7 +76,7 @@ export default ({ level, studyInstanceUID, queryAet, seriesInstanceUID }) => {
       }
 
     } catch (error) {
-      toast.error(error.statusText, {data:{type:'notification'}})
+      toast.error(error.statusText, { data: { type: 'notification' } })
       return
     }
 
@@ -125,7 +124,7 @@ export default ({ level, studyInstanceUID, queryAet, seriesInstanceUID }) => {
       let searchContent = await apis.content.getOrthancFind(contentSearch)
       setResultAnswer(searchContent[0])
     } catch (error) {
-      toast.error(error.statusText, {data:{type:'notification'}})
+      toast.error(error.statusText, { data: { type: 'notification' } })
     }
 
   }

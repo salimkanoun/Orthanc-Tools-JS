@@ -22,6 +22,7 @@ const keys = {
     ASSOCIATIONS_KEY : 'associations',
     OPTIONS_KEY : 'options',
     TIME : 'time',
+    EXPAND : 'expand'
 }
 
 const filter = {

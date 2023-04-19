@@ -6,9 +6,9 @@ import apis from '../../services/apis'
 import SendAetDropdown from "../Export/SendAetDropdown"
 import DownloadDropdown from "../Export/DownloadDropdown"
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
-import { toast } from 'react-toastify'
 import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudiesWithNestedSeries'
 import { seriesColumns, studyColumns } from '../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories'
+import { errorMessage } from '../../tools/toastify'
 
 export default ({ target, show, onHide }) => {
 
@@ -24,14 +24,10 @@ export default ({ target, show, onHide }) => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        const getAets = async () => {await apis.aets.getAets()}
-        try {
-            let aets = getAets()
-            setAets(aets)
-        } catch (error) {
+        apis.aets.getAets().then(aets => setAets(aets)).catch((error) => {
             setAets([])
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        }
+            errorMessage(error?.data?.errorMessage ?? "Can't Retrieve AETS")
+        })
     }, [])
 
 

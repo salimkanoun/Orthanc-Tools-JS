@@ -84,7 +84,7 @@ export default ({ columnsTable,  data, renderSubComponent }) => {
                                     <tr>
                                         {/* 2nd row is a custom 1 cell row */}
                                         <td colSpan={row.getVisibleCells().length}>
-                                            {renderSubComponent({row})}
+                                            {renderSubComponent(row)}
                                         </td>
                                     </tr>
                                 )}
