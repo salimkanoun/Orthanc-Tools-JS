@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react'
 import apis from '../../../../services/apis';
-import { useCustomMutation, useCustomQuery } from '../../../CommonComponents/ReactQuery/hooks';
 import { keys } from '../../../../model/Constant';
 import Spinner from '../../../CommonComponents/Spinner';
 import Select from 'react-select';
 import { errorMessage, successMessage } from '../../../../tools/toastify';
+import { useCustomMutation, useCustomQuery } from '../../../../services/ReactQuery/hooks';
 
 export default () => {
 

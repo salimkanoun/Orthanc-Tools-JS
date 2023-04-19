@@ -2,9 +2,9 @@ import Select from 'react-select';
 import Spinner from '../../CommonComponents/Spinner';
 
 import apis from "../../../services/apis";
-import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
 import { errorMessage, successMessage } from '../../../tools/toastify';
 import { keys } from '../../../model/Constant';
+import { useCustomMutation, useCustomQuery } from '../../../services/ReactQuery/hooks';
 
 export default ({ labelName }) => {
 

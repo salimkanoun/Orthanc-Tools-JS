@@ -25,11 +25,11 @@ export const useCustomMutation = (mutationFn, invalidateQueryKeys = [], onSucces
         {
             cacheTime : 0,
             retry : false,
-            onSuccess : () => {
+            onSuccess : (data) => {
                 invalidateQueryKeys.forEach((keys) => {
                     queryClient.invalidateQueries(keys)
                 })
-                if (onSuccess) onSuccess()
+                if (onSuccess) onSuccess(data)
             },
             onError : onError
         }

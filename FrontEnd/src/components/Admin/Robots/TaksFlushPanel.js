@@ -3,9 +3,9 @@ import { Row, Col, Button, Form } from 'react-bootstrap'
 
 import apis from '../../../services/apis'
 import { confirm } from "../../CommonComponents/ConfirmGlobal"
-import { useCustomMutation } from "../../CommonComponents/ReactQuery/hooks"
 import { keys } from "../../../model/Constant"
 import { successMessage } from "../../../tools/toastify"
+import { useCustomMutation } from "../../../services/ReactQuery/hooks"
 
 export default () => {
 

@@ -2,9 +2,9 @@ import React from 'react'
 import { Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import apis from '../../../services/apis';
-import { useCustomMutation } from '../../CommonComponents/ReactQuery/hooks';
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
 import { keys } from '../../../model/Constant'
+import { useCustomMutation } from '../../../services/ReactQuery/hooks';
 
 /**
  * Table with known AETs details with Echo and Remove button

@@ -9,9 +9,9 @@ import FtpEndpoints from './FtpEndpointsList'
 import SecurityRootPanel from './Security/SecurityRootPanel'
 import EndpointsOptions from './EndpointsOptions'
 
-import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks'
 import { keys } from '../../../model/Constant'
 import Spinner from '../../CommonComponents/Spinner'
+import { useCustomMutation, useCustomQuery } from '../../../services/ReactQuery/hooks'
 
 export default () => {
 

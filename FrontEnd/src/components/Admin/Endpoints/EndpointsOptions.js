@@ -5,7 +5,7 @@ import Select from "react-select"
 import { keys } from "../../../model/Constant"
 
 import apis from "../../../services/apis"
-import { useCustomMutation, useCustomQuery } from "../../CommonComponents/ReactQuery/hooks"
+import { useCustomMutation, useCustomQuery } from "../../../services/ReactQuery/hooks"
 
 
 const TRANSCODING_OPTIONS = [

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
     useReactTable,
     getCoreRowModel,
@@ -27,13 +27,13 @@ export default ({
     canSelect = false,
     canExpand = false,
     paginated = false,
+    selectedRowsIds = undefined,
     customRowProps = (row) => { },
     sortBy = [],
     renderSubComponent = (rowId) => { },
     onRowClick = () => { },
     rowStyle = () => { },
     onSelectRow = (state) => { },
-    selectedIds = null,
     onCellEdit = (rowIndex, columnId, value) => { },
 }) => {
 
@@ -46,28 +46,14 @@ export default ({
         onSelectRow(Object.keys(rowSelection))
     }, [Object.keys(rowSelection).length])
 
-    //TODO controlled behaviour for selection
-    /*
-    useEffect(()=> {
-        if(!selectedIds) return 
-        const generateSelectedState = (selectedIds) => {
-            let state = {}
-            selectedIds.forEach((id)=> state[id] = true)
-            return state
-        }
-
-        setRowSelection(generateSelectedState(selectedIds))
-    }, [selectedIds?.length])
-    */
-
-    const getHiddenState = () => {
+    const hiddenStateFromProps = useMemo(() => {
         const visibleColumns = {};
         columns.forEach(column => {
-            visibleColumns[column.id] = !(column?.hidden);
+            visibleColumns[column.id ?? column.accessorKey ?? column.header] = !(column?.enableHiding);
         });
 
         return visibleColumns
-    }
+    }, [])
 
     const getColumns = () => {
         let newColumns = columns
@@ -76,6 +62,15 @@ export default ({
         return newColumns
 
     }
+
+    const selectedStateFromProps = useMemo(() => {
+        let state = {}
+        selectedRowsIds?.forEach(id => {
+            state[id] = true
+        });
+        return state
+    }, [JSON.stringify(selectedRowsIds)])
+
 
     const table = useReactTable({
         data,
@@ -86,14 +81,13 @@ export default ({
         },
         enableRowSelection: true,
         state: {
-            rowSelection,
+            rowSelection: selectedRowsIds ? selectedStateFromProps : rowSelection,
             columnFilters,
             sorting
         },
         initialState: {
-            columnVisibility: getHiddenState()
+            columnVisibility: hiddenStateFromProps
         },
-
         onColumnFiltersChange: setColumnFilters,
         onSortingChange: setSorting,
         onRowSelectionChange: setRowSelection,

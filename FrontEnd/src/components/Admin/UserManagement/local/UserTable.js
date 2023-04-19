@@ -2,8 +2,8 @@ import React, { useMemo, useState } from "react";
 import apis from "../../../../services/apis";
 import { Button } from "react-bootstrap";
 import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
-import { useCustomMutation } from "../../../CommonComponents/ReactQuery/hooks";
 import { keys } from "../../../../model/Constant";
+import { useCustomMutation } from "../../../../services/ReactQuery/hooks";
 
 
 export default ({ users, onEditClick }) => {

@@ -1,13 +1,13 @@
-import React, { useMemo } from "react";
-import { commonColumns, patientColumns, studyColumns } from "./ColomnFactories";
+import React from "react";
+
 import CommonTableV8 from "./CommonTableV8";
-import NestedTableV8 from "./NestedTableV8";
 import TableSeries from "./TableSeries";
+import { patientColumns, studyColumns } from "./ColomnFactories";
 
 export default ({
     studies,
     series,
-    withPatientColums, 
+    withPatientColums = false, 
     additionalColumnsStudies = [],
     additionalColumnsSeries  = []
 }) => {
@@ -26,8 +26,8 @@ export default ({
 
     const renderSubComponent = ({row}) => {
         let rowId = row.id
-        const seriesObject = series.filter(serie => serie.StudyOrthancID === rowId)
-        return <TableSeries series={seriesObject} additionalColumns={additionalColumnsSeries} />
+        const seriesArray = series.filter(serie => serie.StudyOrthancID === rowId)
+        return <TableSeries series={seriesArray} additionalColumns={additionalColumnsSeries} />
     }
 
 

@@ -15,6 +15,7 @@ export default ({
         seriesColumns.DESCRIPTION,
         seriesColumns.MODALITY,
         seriesColumns.SERIES_NUMBER,
+        seriesColumns.NUMBER_OF_INSTANCES
     ]
 
     return (

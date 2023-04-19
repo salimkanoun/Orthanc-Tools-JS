@@ -8,7 +8,6 @@ import Modal from 'react-bootstrap/Modal'
 import Metadata from '../../Metadata/Metadata'
 import Modify from '../../Modify/Modify'
 import { toast } from 'react-toastify'
-import CreateDicom from '../../CreateDicom/CreateDicom'
 import { Button } from 'react-bootstrap'
 import ConstantLevel from '../../Modify/ConstantLevel'
  
@@ -94,8 +93,6 @@ export default ({
                     <Button className='dropdown-item bg-green' onClick={setMetadata}
                         hidden={hiddenMetadata}>View Metadata
                     </Button>
-                    {([ConstantLevel.PATIENTS, ConstantLevel.STUDIES].includes(level) ? <CreateDicom orthancID={orthancID} level={level} /> :
-                        null)}
                     <Modify hidden={hiddenModify} orthancID={orthancID} level={level} data={dataDetails} refresh={()=>{console.log('TODO REFRESH')}} />
                     <Button className='dropdown-item bg-red' hidden={hiddenDelete}
                         onClick={fdelete}>Delete

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import apis from '../../../services/apis';
 import { Row, Col, Form, FormGroup, Button } from 'react-bootstrap';
-import { useCustomMutation, useCustomQuery } from '../../CommonComponents/ReactQuery/hooks';
 import { keys } from '../../../model/Constant';
 import { errorMessage, successMessage } from '../../../tools/toastify';
+import { useCustomMutation, useCustomQuery } from '../../../services/ReactQuery/hooks';
 
 export default () => {
 

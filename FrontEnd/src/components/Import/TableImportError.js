@@ -1,28 +1,25 @@
-import React, {useMemo} from 'react'
-import CommonTable from "../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import React from 'react'
+import CommonTableV8 from '../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
 
-export default function TableImportError({data, ...props}) {
+export default ({ data }) => {
 
-    const columns = [{
-        accessor: 'fileID',
-        hidden: true
-    }, {
-        accessor: 'filename',
-        Header: 'FileName',
-        sort: true,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    }, {
-        accessor: 'error',
-        Header: 'Error Message',
-        sort: true,
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'}
-    }]
-
-    const rows = useMemo(() => data, [data]);
+    const columns = [
+        {
+            accessorKey: 'fileID',
+            header: 'File',
+            enableHiding: true
+        }, {
+            accessorKey: 'filename',
+            header: 'FileName',
+            style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        }, {
+            accessorKey: 'error',
+            header: 'Error Message',
+            style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        }
+    ]
 
     return (
-        <CommonTable columns={columns} tableData={rows} {...props}/>
+        <CommonTableV8 columns={columns} data={data} canSort paginated />
     )
-
-
 }

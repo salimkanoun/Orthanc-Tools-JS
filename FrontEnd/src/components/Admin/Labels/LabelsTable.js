@@ -3,11 +3,11 @@ import React, { useMemo } from "react";
 import { Button } from "react-bootstrap";
 
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
-import { useCustomMutation } from "../../CommonComponents/ReactQuery/hooks";
 
 import { keys } from "../../../model/Constant";
 import apis from "../../../services/apis";
 import { errorMessage, successMessage } from "../../../tools/toastify";
+import { useCustomMutation } from "../../../services/ReactQuery/hooks";
 
 
 export default ({ labels = [], handlerManageRole }) => {
