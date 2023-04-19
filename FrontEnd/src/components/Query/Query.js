@@ -2,12 +2,11 @@ import React, { useState } from 'react'
 
 import { Container, Row } from 'react-bootstrap'
 
-import TableResultStudy from './TableResultStudy'
 import QueryForm from './QueryForm'
+import TableQueryResultStudy from './TableQueryResultStudy'
 
 import apis from '../../services/apis'
 import { errorMessage } from '../../tools/toastify'
-import TableQueryResultStudy from './TableQueryResultStudy'
 
 export default () => {
 
