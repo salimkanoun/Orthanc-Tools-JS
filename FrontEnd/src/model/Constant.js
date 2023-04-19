@@ -30,4 +30,10 @@ const filter = {
     NUMBER_FILTER : "NUMBER"
 }
 
-export {keys, filter}
+const send_type = {
+    ANON : "anon",
+    DELETE : "delete",
+    EXPORT : "export"
+}
+
+export {keys, filter, send_type}

@@ -53,11 +53,10 @@ export default ({ username }) => {
     useEffect(() => {
         refreshHandler()
         startRefreshMonitoring()
+        return () =>{
+            stopRefreshMonitoring()
+        }
     }, [])
-
-    const componentWillUnmount = () => {
-        stopRefreshMonitoring()
-    }
 
     const startRefreshMonitoring = () => {
         this.intervalChcker = setInterval(refreshHandler, 2000)

@@ -1,5 +1,5 @@
 import Select from 'react-select';
-import { Component, useState } from 'react';
+import { Component, useEffect, useState } from 'react';
 import apis from "../../services/apis";
 
 /**
@@ -11,9 +11,9 @@ export default ({ labelProps, aets, refresh }) => {
   const [label, setLabel] = useState(labelProps)
   const [options, setOptions] = useState([])
 
-  const componentDidMount = async () => {
-    //get AETs    
-    let aets = await apis.aets.getAets()
+  useEffect(() => {
+    const getAets = async () => {await apis.aets.getAets()}
+    let aets = getAets()
     for (var i = 0; i < aets.length; i++) {
       aets[i] = { value: aets[i], label: aets[i] }
     }
@@ -26,7 +26,8 @@ export default ({ labelProps, aets, refresh }) => {
       setSelected(selected)
     }
     setOptions(aets)
-  }
+  }, [])
+
 
   /**
    * When the value of the selector change

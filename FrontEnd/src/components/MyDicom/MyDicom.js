@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import apis from '../../services/apis'
 import { useSelector } from 'react-redux'
 import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
@@ -22,11 +22,12 @@ export default ({ roles, usernameProps }) => {
   const [currentLabel, setCurrentLabel] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
 
-  const componentDidMount = async () => {
+  useEffect(()=> {
+    const getRoleLabels = async () => {await getRoleLabels(role_name)}
     try {
-      await getRoleLabels(role_name)
+      getRoleLabels()
     } catch (err) { console.log(err) }
-  }
+  }, [])
 
   /**
    * Recuperate labels associate to User's role
