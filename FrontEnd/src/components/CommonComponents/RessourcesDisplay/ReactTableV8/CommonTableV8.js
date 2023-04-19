@@ -30,7 +30,7 @@ export default ({
     selectedRowsIds = undefined,
     customRowProps = (row) => { },
     sortBy = [],
-    renderSubComponent = (rowId) => { },
+    renderSubComponent = (row) => { },
     onRowClick = () => { },
     rowStyle = () => { },
     onSelectRow = (state) => { },
@@ -179,7 +179,7 @@ export default ({
                                 {row.getIsExpanded() && (
                                     <tr>
                                         <td colSpan={row.getVisibleCells().length}>
-                                            {renderSubComponent({ row })}
+                                            {renderSubComponent(row)}
                                         </td>
                                     </tr>
                                 )}

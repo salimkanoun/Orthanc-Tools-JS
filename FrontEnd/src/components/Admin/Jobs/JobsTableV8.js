@@ -92,7 +92,7 @@ export default ({ rows }) => {
         }
     ]
     
-    const renderSubComponent = ({row}) => {
+    const renderSubComponent = (row) => {
         return <ModalDetailsV8 data={[row.original]} />
     }
 

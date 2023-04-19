@@ -28,5 +28,4 @@ export default ({ onQuery }) => {
         title='Query' />
     </div>
   )
-
 }

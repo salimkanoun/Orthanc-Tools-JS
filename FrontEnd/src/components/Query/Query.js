@@ -7,6 +7,7 @@ import QueryForm from './QueryForm'
 
 import apis from '../../services/apis'
 import { errorMessage } from '../../tools/toastify'
+import TableQueryResultStudy from './TableQueryResultStudy'
 
 export default () => {
 
@@ -74,6 +75,7 @@ export default () => {
         <QueryForm onQuery={onQuery} />
       </Row>
       <Row>
+        <TableQueryResultStudy studiesData={studies} />
         <TableResultStudy studiesData={studies} />
       </Row>
     </Container>
