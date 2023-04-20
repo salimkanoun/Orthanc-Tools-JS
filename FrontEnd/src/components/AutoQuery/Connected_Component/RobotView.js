@@ -1,6 +1,6 @@
-import React, {Component, Fragment, useMemo} from 'react'
-import {connect} from "react-redux"
-import {buildStyles, CircularProgressbar, CircularProgressbarWithChildren} from 'react-circular-progressbar';
+import React, { Component, Fragment, useMemo } from 'react'
+import { connect } from "react-redux"
+import { buildStyles, CircularProgressbar, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 import AnonExportDeleteSendButton from '../../Import/AnonExportDeleteSendButton'
@@ -8,17 +8,17 @@ import OhifLink from '../../Viewers/OhifLink'
 import StoneLink from '../../Viewers/StoneLink'
 import apis from '../../../services/apis'
 
-import {ReactComponent as CheckedSVG} from '../../../assets/images/check-circle.svg'
-import {ReactComponent as XSVG} from '../../../assets/images/x-circle.svg'
-import {ReactComponent as PendingSVG} from '../../../assets/images/pending.svg'
-import {ReactComponent as RepeatSVG} from '../../../assets/images/arrow-repeat.svg'
+import { ReactComponent as CheckedSVG } from '../../../assets/images/check-circle.svg'
+import { ReactComponent as XSVG } from '../../../assets/images/x-circle.svg'
+import { ReactComponent as PendingSVG } from '../../../assets/images/pending.svg'
+import { ReactComponent as RepeatSVG } from '../../../assets/images/arrow-repeat.svg'
 
-import {addStudiesToExportList} from '../../../actions/ExportList'
-import {addStudiesToDeleteList} from '../../../actions/DeleteList'
-import {addStudiesToAnonList} from '../../../actions/AnonList'
+import { addStudiesToExportList } from '../../../actions/ExportList'
+import { addStudiesToDeleteList } from '../../../actions/DeleteList'
+import { addStudiesToAnonList } from '../../../actions/AnonList'
 
 import MonitorTask from '../../../tools/MonitorTask'
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 import Dropdown from 'react-bootstrap/esm/Dropdown'
 import {
     dateFilter,
@@ -29,17 +29,17 @@ import {
 } from "../../CommonComponents/RessourcesDisplay/ReactTable/ColumnFilters";
 import CommonSelectingAndFilteringTable
     from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonSelectingAndFilteringTable";
-import {Button} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 
 
-function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, retryQueryHandler, onSelect}) {
+function RobotTable({ rows, approved, refreshHandler, deleteQueryHandler, retryQueryHandler, onSelect }) {
     const columns = useMemo(() => [{
         accessor: 'id',
         show: false
     }, {
         accessor: 'Level',
         Header: 'Level',
-        Filter: SelectFilter('Level', [{value: 'study', label: 'Study'}, {value: 'series', label: 'Series'}]),
+        Filter: SelectFilter('Level', [{ value: 'study', label: 'Study' }, { value: 'series', label: 'Series' }]),
         filter: selectFilter
     }, {
         accessor: 'StudyInstanceUID',
@@ -47,12 +47,12 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, retryQu
     }, {
         accessor: 'PatientName',
         Header: 'Patient Name',
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
         Filter: InputFilter('Patient Name')
     }, {
         accessor: 'PatientID',
         Header: 'Patient ID',
-        style: {whiteSpace: 'normal', wordWrap: 'break-word'},
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
         Filter: InputFilter('Patient ID')
     }, {
         accessor: 'StudyDate',
@@ -91,50 +91,50 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, retryQu
     }, {
         accessor: 'Validated',
         Header: 'Validated',
-        Cell: ({value, row}) => {
-            if (value == null) return <div className="text-center"><PendingSVG/></div>
-            return value === true ? <div className="text-center"><CheckedSVG/></div> :
-                <div className="text-center"><XSVG/></div>
+        Cell: ({ value, row }) => {
+            if (value == null) return <div className="text-center"><PendingSVG /></div>
+            return value === true ? <div className="text-center"><CheckedSVG /></div> :
+                <div className="text-center"><XSVG /></div>
         },
         Filter: SelectFilter('Validated', [
-            {value: true, label: 'Validated'},
-            {value: false, label: 'Invalid'},
-            {value: null, label: 'Unvalidated'}
+            { value: true, label: 'Validated' },
+            { value: false, label: 'Invalid' },
+            { value: null, label: 'Unvalidated' }
         ]),
         filter: selectFilter
     }, {
         accessor: 'Status',
         Header: 'Status',
-        style: function callback({row}) {
+        style: function callback({ row }) {
             if (row.values.Status === 'completed') {
-                return ({backgroundColor: 'green'})
+                return ({ backgroundColor: 'green' })
             } else if (row.values.Status === 'failed') {
-                return ({backgroundColor: 'red'})
+                return ({ backgroundColor: 'red' })
             }
         },
         Filter: SelectFilter('Status', [
-            {value: 'completed', label: 'Completed'},
-            {value: 'paused', label: 'Paused'},
-            {value: 'failed', label: 'Failed'},
-            {value: 'waiting', label: 'Waiting'},
-            {value: 'validating', label: 'Validating'}
+            { value: 'completed', label: 'Completed' },
+            { value: 'paused', label: 'Paused' },
+            { value: 'failed', label: 'Failed' },
+            { value: 'waiting', label: 'Waiting' },
+            { value: 'validating', label: 'Validating' }
         ]),
         filter: selectFilter,
-        Cell: ({row: {index}, value}) => <div className={'d-flex'}>
+        Cell: ({ row: { index }, value }) => <div className={'d-flex'}>
             <p>{value}</p>
             {value === 'failed' ?
-                <Button type={"button"} onClick={() => retryQueryHandler(index)}><RepeatSVG/></Button> : null}
+                <Button type={"button"} onClick={() => retryQueryHandler(index)}><RepeatSVG /></Button> : null}
         </div>
     }, {
         id: 'Remove',
         Header: 'Remove Query',
         Cell:
-            ({row: {index}}) => {
+            ({ row: { index } }) => {
                 return approved === false ?
                     (<div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red'
-                               onClick={() => deleteQueryHandler(index)}
-                               value="Remove"/>
+                            onClick={() => deleteQueryHandler(index)}
+                            value="Remove" />
                     </div>)
                     : null
             },
@@ -144,19 +144,19 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, retryQu
         id: 'Viewers',
         Header: 'Viewers',
         Cell:
-            ({row: {values}}) => {
+            ({ row: { values } }) => {
                 return values.Status === RobotView.ITEM_SUCCESS ?
                     <Fragment>
                         <Dropdown drop='left'>
                             <Dropdown.Toggle variant="button-dropdown-green" id="dropdown-basic"
-                                             className="button-dropdown button-dropdown-green">
+                                className="button-dropdown button-dropdown-green">
                                 Viewers
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 <OhifLink className='dropdown-item bg-green'
-                                          StudyInstanceUID={values.StudyInstanceUID}/>
+                                    StudyInstanceUID={values.StudyInstanceUID} />
                                 <StoneLink className='dropdown-item bg-green'
-                                           StudyInstanceUID={values.StudyInstanceUID}/>
+                                    StudyInstanceUID={values.StudyInstanceUID} />
                             </Dropdown.Menu>
                         </Dropdown>
                     </Fragment>
@@ -170,8 +170,8 @@ function RobotTable({rows, approved, refreshHandler, deleteQueryHandler, retryQu
     ], [approved, refreshHandler, deleteQueryHandler]);
     const data = useMemo(() => rows, [rows]);
     return <CommonSelectingAndFilteringTable tableData={data} columns={columns}
-                                             onSelect={value => onSelect(value.map(v => v.values))}
-                                             skipAutoRefresh={true}/>
+        onSelect={value => onSelect(value.map(v => v.values))}
+        skipAutoRefresh={true} />
 }
 
 
@@ -220,7 +220,7 @@ class RobotView extends Component {
     }
 
     setSelect = (selected) => {
-        this.setState({selected});
+        this.setState({ selected });
     }
 
     sendToAnon = async () => {
@@ -318,7 +318,7 @@ class RobotView extends Component {
                 apis.task.getTask(this.state.id).then(this.refreshHandler)
             }
         } catch (error) {
-            toast.error(error, {data:{type:'notification'}})
+            toast.error(error, { data: { type: 'notification' } })
         }
     }
 
@@ -328,7 +328,7 @@ class RobotView extends Component {
             await apis.retrieveRobot.retryRobotItem(this.props.id, row.id)
             this.startProgressMonitoring();
         } catch (error) {
-            toast.error(error, {data:{type:'notification'}})
+            toast.error(error, { data: { type: 'notification' } })
         }
     }
 
@@ -366,12 +366,12 @@ class RobotView extends Component {
                     </div>
                 </div>
                 <input type='button' className="btn btn-danger" onClick={this.handleClickDeleteRobot}
-                       value="Delete Robot"/>
+                    value="Delete Robot" />
                 <RobotTable rows={this.state.rows} approved={this.state.approved} refreshHandler={this.refreshHandler}
-                            deleteQueryHandler={this.deleteQueryHandler} retryQueryHandler={this.retryQueryHandler}
-                            onSelect={this.setSelect}/>
+                    deleteQueryHandler={this.deleteQueryHandler} retryQueryHandler={this.retryQueryHandler}
+                    onSelect={this.setSelect} />
                 <AnonExportDeleteSendButton onAnonClick={this.sendToAnon} onExportClick={this.sendToExport}
-                                            onDeleteClick={this.sendToDelete}/>
+                    onDeleteClick={this.sendToDelete} />
             </div>
         )
     }
