@@ -17,7 +17,7 @@ export default () => {
 
     const [currentComponent, setcurrentComponent] = useState('endpoints')
 
-    const {data : endpoints, isLoading} = useCustomQuery(
+    const { data: endpoints, isLoading } = useCustomQuery(
         [keys.ENDPOINTS_KEY],
         () => apis.endpoints.getEndpoints(),
         undefined,
@@ -56,7 +56,7 @@ export default () => {
                         <FtpEndpoints endpointsData={endpoints.ftp} onDeleteEndpoint={onDeleteEndpoint} />
                         <SftpEndpoints endpointsData={endpoints.sftp} onDeleteEndpoint={onDeleteEndpoint} />
                         <WebdavEndpoints endpointsData={endpoints.webdav} onDeleteEndpoint={onDeleteEndpoint} />
-                        <EndpointsOptions/>
+                        <EndpointsOptions />
                     </Fragment>
                 break
             case 'add':
@@ -77,18 +77,20 @@ export default () => {
 
 
     const onDeleteEndpoint = useCustomMutation(
-        ({id}) => apis.endpoints.deleteEndpoints(id),
+        ({ id }) => apis.endpoints.deleteEndpoints(id),
         [[keys.ENDPOINTS_KEY]]
     )
 
     const onCreateEndpoint = useCustomMutation(
-        ({postData}) => {apis.endpoints.createEndpoint(postData)
-        switchTab('endpoints')},
+        ({ postData }) => {
+            apis.endpoints.createEndpoint(postData)
+            switchTab('endpoints')
+        },
         [[keys.ENDPOINTS_KEY]]
     )
 
 
-    if (isLoading) return <Spinner/>
+    if (isLoading) return <Spinner />
 
     return (
         <>
@@ -100,19 +102,19 @@ export default () => {
                                 <Button
                                     className={currentComponent === 'endpoints' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => switchTab('endpoints')}>Endpoints
-                                </Button> 
+                                </Button>
                             </li>
                             <li className='col-4 text-center'>
                                 <Button
                                     className={currentComponent === 'add' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => switchTab('add')}>Add Endpoints
-                                </Button> 
+                                </Button>
                             </li>
                             <li className='col-4 text-center'>
                                 <Button
                                     className={currentComponent === 'security' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => switchTab('security')}>Security
-                                </Button> 
+                                </Button>
                             </li>
                         </div>
                     </nav>

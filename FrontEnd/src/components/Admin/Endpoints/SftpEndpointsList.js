@@ -7,33 +7,33 @@ export default ({ endpointsData, onDeleteEndpoint }) => {
 
     const columns = [
         {
-            id :'label',
+            id: 'label',
             accessorKey: 'label',
             header: 'Label',
         },
         {
-            id : 'host',
+            id: 'host',
             accessorKey: 'host',
             header: 'Host',
         },
         {
-            id : 'username',
+            id: 'username',
             accessorKey: 'username',
             header: 'Username',
         },
         {
-            id : 'targetFolder',
+            id: 'targetFolder',
             accessorKey: 'targetFolder',
             header: 'Target Folder',
         },
         {
-            id : 'sshKey',
+            id: 'sshKey',
             accessorKey: 'sshKey',
             header: 'Ssh Private Key',
             cell: ({ row }) => <p>{(row.sshKey ? row.sshKey.label : '✖')}</p>
         },
         {
-            id  :'delete',
+            id: 'delete',
             accessorKey: 'delete',
             header: 'Delete endpoint',
             cell: ({ row }) => {
@@ -41,7 +41,7 @@ export default ({ endpointsData, onDeleteEndpoint }) => {
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                             let id = row.id
-                            await onDeleteEndpoint.mutate({id})
+                            await onDeleteEndpoint.mutate({ id })
                         }} value="Remove" />
                     </div>)
             },

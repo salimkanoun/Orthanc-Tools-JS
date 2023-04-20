@@ -1,8 +1,6 @@
-import React, { Component, Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Select from 'react-select'
-
-import { saveFilters } from '../../../actions/TableResult'
-import { connect, useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 export default ({ onFilter, ID, options, saveValues }) => {
 

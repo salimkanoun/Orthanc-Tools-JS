@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Row, Col, Button } from 'react-bootstrap'
+
 import TableQuery from './TableQuery'
 import Results from './Results'
 import RobotView from './RobotView'
@@ -11,7 +12,7 @@ import task from '../../../services/task'
  * Root Panel of AutoQuery module
  * Using Hooks
  */
-export default ({}) => {
+export default () => {
 
     const QUERRY = 'Query'
     const RESULT = 'Result'

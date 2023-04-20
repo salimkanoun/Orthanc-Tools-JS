@@ -5,7 +5,7 @@ import Select from 'react-select'
 
 import { saveProfile } from '../../actions/AnonList'
 
-export default ({}) => {
+export default () => {
 
     const store = useSelector(state => {
         return {
@@ -31,15 +31,15 @@ export default ({}) => {
         return option[index]
     }
 
-        return (
-            <Row className="align-items-center text-center">
-                <Col sm={3}>
-                    <label htmlFor='profile'>Anon Profile : </label>
-                </Col>
-                <Col sm={9}>
-                    <Select name='profile' single options={option} onChange={(e) => dispatch(saveProfile(e.value))} placeholder='Profile' value={getProfileSelected()} />
-                </Col>
-            </Row>
-        );
+    return (
+        <Row className="align-items-center text-center">
+            <Col sm={3}>
+                <label htmlFor='profile'>Anon Profile : </label>
+            </Col>
+            <Col sm={9}>
+                <Select name='profile' single options={option} onChange={(e) => dispatch(saveProfile(e.value))} placeholder='Profile' value={getProfileSelected()} />
+            </Col>
+        </Row>
+    );
 
 }

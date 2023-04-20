@@ -2,6 +2,8 @@ import React, { Component, Fragment, useMemo } from 'react'
 import { connect } from "react-redux"
 import { buildStyles, CircularProgressbar, CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { toast } from 'react-toastify';
+import Dropdown from 'react-bootstrap/esm/Dropdown'
 
 import AnonExportDeleteSendButton from '../../Import/AnonExportDeleteSendButton'
 import OhifLink from '../../Viewers/OhifLink'
@@ -18,8 +20,7 @@ import { addStudiesToDeleteList } from '../../../actions/DeleteList'
 import { addStudiesToAnonList } from '../../../actions/AnonList'
 
 import MonitorTask from '../../../tools/MonitorTask'
-import { toast } from 'react-toastify';
-import Dropdown from 'react-bootstrap/esm/Dropdown'
+
 import {
     dateFilter,
     DateFilter,

@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import { connect, useDispatch, useSelector } from 'react-redux'
-import { editColumnQuery } from '../../../actions/TableQuery'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
 /**
  * Column editor component, for global modification of column
  * (editor component of the table header modifier)
  */
-export default ({columnName }) => {
+export default ({ columnName }) => {
 
   const dispatch = useDispatch()
 
@@ -25,7 +25,7 @@ export default ({columnName }) => {
     dispatch.editColumnQuery(columnName, value)
   }
 
-    return (
-      <input type='text' placeholder='Modify' onKeyUp={editAllRow} className='form-control btn-warning' />
-    )
+  return (
+    <input type='text' placeholder='Modify' onKeyUp={editAllRow} className='form-control btn-warning' />
+  )
 }

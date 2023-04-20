@@ -1,15 +1,16 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify';
+import { Col, Row } from 'react-bootstrap'
+
 import apis from '../../../services/apis';
 import task from '../../../services/task';
 import RobotTable from "../../CommonComponents/RessourcesDisplay/ReactTable/RobotTable";
-import { Col, Row } from 'react-bootstrap'
 
 export default ({ username }) => {
 
     const [rows, setRows] = useState([])
 
-    useEffect(()=> {
+    useEffect(() => {
         refreshHandler()
         startRefreshMonitoring()
         return () => {
@@ -30,7 +31,7 @@ export default ({ username }) => {
             await apis.retrieveRobot.deleteRobot(id)
             refreshHandler()
         } catch (error) {
-            toast.error(error.statusText + ':' + error.message, {data:{type:'notification'}})
+            toast.error(error.statusText + ':' + error.message, { data: { type: 'notification' } })
         }
     }
 
@@ -55,7 +56,7 @@ export default ({ username }) => {
 
             }).catch(error => {
                 console.log(error)
-                if (error.status !== 404) toast.error(error.statusText + ' ' + error.message, {data:{type:'notification'}})
+                if (error.status !== 404) toast.error(error.statusText + ' ' + error.message, { data: { type: 'notification' } })
             }).finally(() => {
                 setRows(rows)
             })

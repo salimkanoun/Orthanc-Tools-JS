@@ -40,7 +40,7 @@ export default () => {
     }
 
     if (isLoading) return <Spinner />
-    
+
     return (
         <>
             <h2 className="card-title">Labels</h2>
@@ -54,7 +54,7 @@ export default () => {
                     <Modal.Title>{`${editLabel} label roles  `}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <RoleSelect labelName = {editLabel} />
+                    <RoleSelect labelName={editLabel} />
                 </Modal.Body>
             </Modal>
             <Form onSubmitCapture={handleCreateSubmit} className="mt-4">

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Button, Col, Container, Row } from 'react-bootstrap'
+
 import TablePatients from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatients'
 import apis from "../../services/apis"
 import AnonProfile from './AnonProfile'

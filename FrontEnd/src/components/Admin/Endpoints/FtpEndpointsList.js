@@ -5,34 +5,34 @@ export default ({ endpointsData, onDeleteEndpoint }) => {
 
     const columns = [
         {
-            id : 'id',
+            id: 'id',
             accessorKey: 'label',
             header: 'Label',
         },
         {
-            id : 'host',
+            id: 'host',
             accessorKey: 'host',
             header: 'Host',
         },
         {
-            id : 'username',
+            id: 'username',
             accessorkey: 'username',
             header: 'Username',
         },
         {
-            id : 'targetFolder',
+            id: 'targetFolder',
             accessorKey: 'targetFolder',
             header: 'Target Folder',
         },
         {
-            id : 'ssl',
+            id: 'ssl',
             accessorKey: 'ssl',
             header: 'Use ssl?',
             cell: ({ row }) => <p>{(row.values.ssl ? '✓' : '✖')}</p>
         },
         {
-            id : 'delete',
-            accessorKey : 'delete',
+            id: 'delete',
+            accessorKey: 'delete',
             dataField: 'delete',
             header: 'Delete endpoint',
             cell: ({ row }) => {
@@ -40,7 +40,7 @@ export default ({ endpointsData, onDeleteEndpoint }) => {
                     <div className="text-center">
                         <input type="button" className='otjs-button otjs-button-red' onClick={async () => {
                             let id = row.values.id
-                            await onDeleteEndpoint.mutate({id})
+                            await onDeleteEndpoint.mutate({ id })
                         }} value="Remove" />
                     </div>)
             },

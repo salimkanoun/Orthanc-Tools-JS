@@ -1,4 +1,5 @@
 import React from 'react'
+
 import PeerForm from './PeerForm'
 import apis from '../../../services/apis'
 import PeerTable from './PeerTable'
@@ -25,7 +26,7 @@ export default () => {
   )
 
 
-  if (isLoadingPeers) return <Spinner/>
+  if (isLoadingPeers) return <Spinner />
 
   return (
     <>

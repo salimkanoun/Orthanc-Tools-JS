@@ -7,33 +7,33 @@ export default ({ onDeleteEndpoint, endpointsData }) => {
 
     const columns = [
         {
-            id : 'label',
+            id: 'label',
             accessorKey: 'label',
             header: 'Label',
         },
         {
-            id : 'host', 
+            id: 'host',
             accessorKey: 'host',
             header: 'Host',
         },
         {
-            id : 'username',
+            id: 'username',
             accessorKey: 'username',
             header: 'Username',
         },
         {
-            id : 'targetFolder',
+            id: 'targetFolder',
             accessorKey: 'targetFolder',
             header: 'Target Folder',
         },
         {
-            id  : 'digest', 
+            id: 'digest',
             accessorKey: 'digest',
             header: 'Use Digest?',
             cell: ({ row }) => <p>{(row.values.digest ? '✓' : '✖')}</p>
         },
         {
-            id : 'delete',
+            id: 'delete',
             accessorKey: 'delete',
             header: 'Delete endpoint',
             cell: ({ row }) => {

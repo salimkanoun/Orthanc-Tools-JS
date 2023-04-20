@@ -74,50 +74,6 @@ export default ({
         setDataFiltered(dataFilters)
     }
 
-    /*const updateToast = useCallback((jobId, progress) => {
-        toast.update(toasts[jobId], { containerId: 'jobs' },
-            {
-                type: toast.TYPE.INFO,
-                autoClose: false,
-                render: 'Modify progress : ' + Math.round(progress) + '%',
-                data: { type: 'jobs' },
-            })
-    }, [Math.random()])
-
-
-
-    const successToast = (jobId) => {
-        toast.update(toasts[jobId], { containerId: 'jobs' },
-            {
-                type: toast.TYPE.INFO,
-                autoClose: 5000,
-                render: 'Modify Done',
-                className: 'bg-success',
-                data: { type: 'jobs' }
-            })
-    }
-
-    const failToast = (jobId) => {
-        toast.update(toasts[jobId], { containerId: 'jobs' },
-            {
-                type: toast.TYPE.INFO,
-                autoClose: 5000,
-                render: 'Modify fail',
-                className: 'bg-danger',
-                data: { type: 'jobs' }
-            })
-    }
-
-    const createToast = (jobId) => {
-        const toastId = toast.info("Modify progress : 0%", { containerId: 'jobs' },
-            { autoClose: false, data: { type: 'jobs' } })
-        setToasts({
-            ...toasts,
-            [jobId]: toastId
-        }
-        )
-    } */
-
     const checkRemember = () => {
         localStorage.setItem('keepSource', keepSource)
         localStorage.setItem('removePrivateTags', removePrivateTags)
@@ -180,6 +136,8 @@ export default ({
             default:
                 return null
         }
+
+
         /*if (jobAnswer !== '') {
             let jobId = jobAnswer.ID
             let jobMonitoring = new MonitorJob(jobId)
@@ -200,6 +158,51 @@ export default ({
             jobMonitoring.startMonitoringJob()
         }*/
     }
+
+    
+    /*const updateToast = useCallback((jobId, progress) => {
+        toast.update(toasts[jobId], { containerId: 'jobs' },
+            {
+                type: toast.TYPE.INFO,
+                autoClose: false,
+                render: 'Modify progress : ' + Math.round(progress) + '%',
+                data: { type: 'jobs' },
+            })
+    }, [Math.random()])
+
+
+
+    const successToast = (jobId) => {
+        toast.update(toasts[jobId], { containerId: 'jobs' },
+            {
+                type: toast.TYPE.INFO,
+                autoClose: 5000,
+                render: 'Modify Done',
+                className: 'bg-success',
+                data: { type: 'jobs' }
+            })
+    }
+
+    const failToast = (jobId) => {
+        toast.update(toasts[jobId], { containerId: 'jobs' },
+            {
+                type: toast.TYPE.INFO,
+                autoClose: 5000,
+                render: 'Modify fail',
+                className: 'bg-danger',
+                data: { type: 'jobs' }
+            })
+    }
+
+    const createToast = (jobId) => {
+        const toastId = toast.info("Modify progress : 0%", { containerId: 'jobs' },
+            { autoClose: false, data: { type: 'jobs' } })
+        setToasts({
+            ...toasts,
+            [jobId]: toastId
+        }
+        )
+    } */
 
     return (
         <Fragment>

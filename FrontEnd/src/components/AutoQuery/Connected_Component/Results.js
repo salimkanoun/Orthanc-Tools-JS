@@ -1,9 +1,8 @@
-import React, { Component, Fragment, useState, useSelector } from 'react';
-import { connect } from 'react-redux'
+import React, { Fragment, useState, useSelector } from 'react';
 import { Col, Row } from 'react-bootstrap';
+
 import TableResultsStudiesSeries from './TableResultsStudiesSeries'
 import TableResultStudy from './TableResultStudy'
-
 import CreateRobot from './CreateRobot'
 
 export default ({ switchTab, setTaskId }) => {

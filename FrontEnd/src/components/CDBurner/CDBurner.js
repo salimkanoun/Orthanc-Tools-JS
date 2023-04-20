@@ -1,14 +1,13 @@
-import React, {Component, useMemo} from 'react'
+import React, { Component, useMemo } from 'react'
 
-import {Row, Col, Badge} from 'react-bootstrap'
-
+import { Row, Col, Badge } from 'react-bootstrap'
 import Toggle from 'react-toggle'
+import { toast } from 'react-toastify';
 
 import apis from '../../services/apis'
-import {toast} from 'react-toastify';
 import CommonTable from "../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
-function BurnerJobsTables({jobs}) {
+function BurnerJobsTables({ jobs }) {
     const columns = useMemo(() => [
         {
             accessor: 'cdJobID',
@@ -46,7 +45,7 @@ function BurnerJobsTables({jobs}) {
         {
             id: 'cancelButton',
             Header: 'Cancel',
-            Cell: ({row}) => {
+            Cell: ({ row }) => {
                 let disable = (row.values.status === CDBurner.JOB_STATUS_BURNING_DONE || row.values.status === CDBurner.JOB_STATUS_BURNING_ERROR)
                 return (
                     <div className="text-center">
@@ -54,17 +53,17 @@ function BurnerJobsTables({jobs}) {
                             try {
                                 await apis.cdBurner.cancelCdBurner(row.cdJobID)
                             } catch (error) {
-                                toast.error(error.statusText, {data:{type:'notification'}})
+                                toast.error(error.statusText, { data: { type: 'notification' } })
                             }
 
-                        }} value="Cancel" disabled={disable}/>
+                        }} value="Cancel" disabled={disable} />
                     </div>
                 )
             }
         }
     ], []);
 
-    return <CommonTable columns={columns} data={jobs}/>
+    return <CommonTable columns={columns} data={jobs} />
 }
 
 export default class CDBurner extends Component {
@@ -85,7 +84,7 @@ export default class CDBurner extends Component {
         try {
             cdBurnerData = await apis.cdBurner.getCdBuner()
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
             return
         }
 
@@ -150,7 +149,7 @@ export default class CDBurner extends Component {
 
         } catch (error) {
             let message = await error.json()
-            toast.error(message.errorMessage, {data:{type:'notification'}})
+            toast.error(message.errorMessage, { data: { type: 'notification' } })
         }
 
 
@@ -161,7 +160,7 @@ export default class CDBurner extends Component {
         this.setState({
             playSound: (e.target.checked)
         })
-        
+
     }
 
     componentDidMount = async () => {
@@ -186,22 +185,22 @@ export default class CDBurner extends Component {
                     </Col>
                     <Col sm={2}>
                         <Toggle checked={this.state.robotStarted} onChange={this.toogleHandler}
-                                        disabled={!this.state.firstRefresh}/>
+                            disabled={!this.state.firstRefresh} />
                     </Col>
                     <Col sm={2} className="d-flex justify-content-start align-items-center">
                         <h4>
                             <i id="soundIcon" className={this.state.playSound === true ? "fas fa-volume-up me-2" : "fas fa-volume-mute me-2"}></i>
                         </h4>
-                        <Toggle checked={this.state.playSound} onChange={this.soundHandler}/>
+                        <Toggle checked={this.state.playSound} onChange={this.soundHandler} />
                     </Col>
                 </Row>
-                
+
                 <Row className="mb-3 float-right">
                     <Badge variant="info"> Queuded Jobs : {this.state.queuededJobs} </Badge>
                 </Row>
                 <Row className="mt-5">
                     <Col>
-                        <BurnerJobsTables jobs={this.state.burnerJobs}/>
+                        <BurnerJobsTables jobs={this.state.burnerJobs} />
                     </Col>
                 </Row>
             </>

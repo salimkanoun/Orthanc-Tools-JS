@@ -1,5 +1,6 @@
 import React from 'react'
 import { Form, FormGroup } from 'react-bootstrap'
+
 import apis from '../../../../services/apis'
 import { keys } from '../../../../model/Constant'
 import Spinner from '../../../CommonComponents/Spinner'
@@ -12,7 +13,7 @@ export default () => {
         () => apis.options.getRedisServer(),
     )
 
-    if (isLoadingRedisServer) return <Spinner/>
+    if (isLoadingRedisServer) return <Spinner />
 
     return (
         <Form>

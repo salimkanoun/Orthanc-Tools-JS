@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
+import Dropzone from 'react-dropzone'
+import { useDispatch } from 'react-redux'
+
 import Papa from 'papaparse'
 import moment from 'moment'
 
-import Dropzone from 'react-dropzone'
-import { connect, useDispatch } from 'react-redux'
-import { addQueryToList } from '../../../actions/TableQuery'
 
-export default ({ }) => {
-
-    const dispatch = useDispatch()
+export default () => {
 
     const readCsv = (files) => {
         if (files.length === 1) {

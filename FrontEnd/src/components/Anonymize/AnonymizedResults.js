@@ -1,11 +1,12 @@
-import React, { Component, Fragment, useEffect, useState } from "react"
-import { connect, useDispatch } from 'react-redux'
+import React, { Fragment, useEffect, useState } from "react"
+import { useDispatch } from 'react-redux'
+import { Row, Col, Button } from "react-bootstrap"
 
 import TableStudy from "../CommonComponents/RessourcesDisplay/ReactTable/TableStudy"
 import apis from "../../services/apis"
 import task from "../../services/task"
 import MonitorTask from "../../tools/MonitorTask"
-import { Row, Col, Button } from "react-bootstrap"
+
 
 import { addStudiesToDeleteList } from "../../actions/DeleteList"
 import { addStudiesToExportList } from "../../actions/ExportList"
