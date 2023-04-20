@@ -26,6 +26,10 @@ export default ({ data, modifications, deleted, onDataUpdate, onDeleteTag }) => 
             accessorKey: 'tagName',
             header: 'Tag Name',
         }, {
+            id: 'value',
+            accessorKey: 'value',
+            header: 'Value'
+        }, {
             id: 'newValue',
             accessorKey: 'newValue',
             header: 'New Value',
@@ -37,10 +41,6 @@ export default ({ data, modifications, deleted, onDataUpdate, onDeleteTag }) => 
             accessorKey: 'deletable', 
             header: 'Deletable',
             enableHiding: true
-        }, {
-            id: 'value',
-            accessorKey: 'value',
-            header: 'Value'
         }, {
             id: 'deleted',
             accessorKey: 'deleted',

@@ -1,21 +1,17 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 import apis from '../../services/apis';
 import { toast } from 'react-toastify';
 
-import MonitorJob from '../../tools/MonitorJob'
-import { Button, Container, Form, Modal, Row } from 'react-bootstrap';
-import { filterProperties } from '../../model/Utils';import ConstantLevel from './ConstantLevel';
+import { Container, Form, Row } from 'react-bootstrap';
+import { filterProperties } from '../../model/Utils';
+import ConstantLevel from './ConstantLevel';
 import TagTable from '../CommonComponents/RessourcesDisplay/ReactTableV8/TagTable';
 
 
 export default ({
-    hidden,
     level,
     orthancID,
-    refresh,
-    data
 }) => {
-    console.log(data)
 
     const keysToKeep = (level) => {
         switch (level) {
@@ -62,17 +58,23 @@ export default ({
     const [deletes, setDeletes] = useState([]); //[key]
     const [keepSource, setKeepSource] = useState(localStorage.getItem('keepSource') === 'true' ? true : false);
     const [removePrivateTags, setRemovePrivateTags] = useState(localStorage.getItem('removePrivateTags') === 'true' ? true : false);
+    const [dataFiltered, setDataFiltered] = useState([])
 
-    const [toasts, setToasts] = useState({});
+    useEffect(() => {
+        dataFilters()
+        setModifications({})
+    }, [])
 
-    const [dataFilter, setDataFilter] = useState([])
-
-    const filterData = () => {
-        let dataFilters = filterProperties(data, keysToKeep(level))
-        setDataFilter(dataFilters);
+    const dataFilters = async () => {
+        let data
+        if (level === ConstantLevel.PATIENTS) data = await apis.content.getPatientDetails(orthancID)
+        if (level === ConstantLevel.STUDIES) data = await apis.content.getStudiesDetails(orthancID)
+        if (level === ConstantLevel.SERIES) data = await apis.content.getSeriesDetails(orthancID)
+        let dataFilters = filterProperties(data.MainDicomTags, keysToKeep(level))
+        setDataFiltered(dataFilters)
     }
 
-    const updateToast = useCallback((jobId, progress) => {
+    /*const updateToast = useCallback((jobId, progress) => {
         toast.update(toasts[jobId], { containerId: 'jobs' },
             {
                 type: toast.TYPE.INFO,
@@ -114,13 +116,7 @@ export default ({
             [jobId]: toastId
         }
         )
-    }
-
-    const openModify = () => {
-        filterData()
-        setModifications({})
-        setShow(true)
-    }
+    } */
 
     const checkRemember = () => {
         localStorage.setItem('keepSource', keepSource)
@@ -184,7 +180,7 @@ export default ({
             default:
                 return null
         }
-        if (jobAnswer !== '') {
+        /*if (jobAnswer !== '') {
             let jobId = jobAnswer.ID
             let jobMonitoring = new MonitorJob(jobId)
 
@@ -202,51 +198,37 @@ export default ({
             })
             createToast(jobId)
             jobMonitoring.startMonitoringJob()
-        }
+        }*/
     }
-
-    if (hidden) return <></>
 
     return (
         <Fragment>
-            <Button className='dropdown-item bg-orange' onClick={openModify}>Modify</Button>
 
-            <Modal show={show} onHide={() => setShow(false)} onClick={(e) => e.stopPropagation()} size='xl'>
-                <Modal.Header closeButton>
-                    <Modal.Title> Modify {level}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <TagTable data={dataFilter} onDataUpdate={onDataUpdate} onDeleteTag={onDeleteTag} modifications={modifications} deleted={deletes} />
-                    <Container>
-                        <Row>
-                            <Form.Group>
-                                <Form.Label>
-                                    Removing private tags
-                                </Form.Label>
-                                <Form.Check
-                                    checked={removePrivateTags}
-                                    onClick={() => setRemovePrivateTags(!removePrivateTags)}
-                                />
-                            </Form.Group>
-                        </Row>
-                        <Row>
-                            <Form.Group>
-                                <Form.Label>
-                                    Keep Source
-                                </Form.Label>
-                                <Form.Check
-                                    checked={keepSource}
-                                    onClick={() => setKeepSource(!keepSource)}
-                                />
-                            </Form.Group>
-                        </Row>
-                    </Container>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className='otjs-button otjs-button-orange me-5' onClick={() => modify()}>Modify</Button>
-                    <Button className='otjs-button otjs-button-red' onClick={() => setShow(false)}>Cancel</Button>
-                </Modal.Footer>
-            </Modal>
+            <TagTable data={dataFiltered} onDataUpdate={onDataUpdate} onDeleteTag={onDeleteTag} modifications={modifications} deleted={deletes} />
+            <Container>
+                <Row>
+                    <Form.Group>
+                        <Form.Label>
+                            Removing private tags
+                        </Form.Label>
+                        <Form.Check
+                            checked={removePrivateTags}
+                            onClick={() => setRemovePrivateTags(!removePrivateTags)}
+                        />
+                    </Form.Group>
+                </Row>
+                <Row>
+                    <Form.Group>
+                        <Form.Label>
+                            Keep Source
+                        </Form.Label>
+                        <Form.Check
+                            checked={keepSource}
+                            onClick={() => setKeepSource(!keepSource)}
+                        />
+                    </Form.Group>
+                </Row>
+            </Container>
         </Fragment>
     )
 
