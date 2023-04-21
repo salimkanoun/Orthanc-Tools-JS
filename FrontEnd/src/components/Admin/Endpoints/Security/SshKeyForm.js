@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import apis from '../../../../services/apis'
 import Dropzone from 'react-dropzone'
 import { Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
+
+import apis from '../../../../services/apis'
 import { keys } from '../../../../model/Constant'
 import { useCustomMutation } from '../../../../services/ReactQuery/hooks'
 
@@ -66,7 +67,7 @@ export default () => {
             </Row>
             <Row className="mt-4 text-center">
                 <Col>
-                    <Button disabled={!file || !label} className='otjs-button otjs-button-blue' onClick={() => sendSsh.mutate({ label, pass, file })}> Send </Button> 
+                    <Button disabled={!file || !label} className='otjs-button otjs-button-blue' onClick={() => sendSsh.mutate({ label, pass, file })}> Send </Button>
                 </Col>
             </Row>
         </Form>

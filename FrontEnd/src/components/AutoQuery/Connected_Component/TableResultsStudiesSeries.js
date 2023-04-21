@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { Col, Row } from 'react-bootstrap'
+
 import apis from '../../../services/apis';
 import {
     commonColumns,
@@ -62,13 +63,13 @@ export default ({
             if (!availableStudyUID.includes(studyUID)) emptyResultArray.push(store.results[studyUID])
         })
         if (emptyResultArray.length > 0) {
-            const id = toast.info('Starting Series Fetching', {data:{type:'jobs'}});
+            const id = toast.info('Starting Series Fetching', { data: { type: 'jobs' } });
             emptyResultArray.reduce((prev, studyResults, i) => {
                 return prev.then(() => {
                     return getSeriesDetails(studyResults.StudyInstanceUID, studyResults.OriginAET).then(() => {
                         toast.update(id, {
                             render: 'Queried series ' + (i + 1) + '/' + emptyResultArray.length
-                        }, {data:{type:'notification'}});
+                        }, { data: { type: 'notification' } });
                     })
                 })
             }, Promise.resolve()).catch(console.error);

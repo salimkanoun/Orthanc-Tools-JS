@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+
 import apis from '../../../services/apis';
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
 import { keys } from '../../../model/Constant'
@@ -47,8 +48,8 @@ export default ({ aetsData = [] }) => {
                         onClick={() => {
                             const name = row.original.name
                             apis.aets.echoAet(name)
-                                .then(() => { toast.success(name + ' Success', {containerId :'message'}) })
-                                .catch(() => { toast.error(name + ' Echo Failure', {containerId :'message'}) })
+                                .then(() => { toast.success(name + ' Success', { containerId: 'message' }) })
+                                .catch(() => { toast.error(name + ' Echo Failure', { containerId: 'message' }) })
                         }} >
                         Echo
                     </Button>

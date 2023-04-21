@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { keys } from '../../../model/Constant';
 import apis from '../../../services/apis';
 import { useCustomMutation, useCustomQuery } from '../../../services/ReactQuery/hooks';
@@ -42,7 +43,7 @@ export default () => {
         [[keys.ROBOTS_KEY]]
     )
 
-    if (isLoading) return <Spinner/>
+    if (isLoading) return <Spinner />
 
     return (
         <>

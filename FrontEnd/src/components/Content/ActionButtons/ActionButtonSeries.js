@@ -1,13 +1,10 @@
 import React from 'react'
 import { Button, Dropdown } from 'react-bootstrap'
-import ConstantLevel from '../../Modify/ConstantLevel'
-import Modify from '../../Modify/Modify'
 
 export default ({
-    orthancID,
     onDelete,
-    dataDetails,
-    onShowMetadata
+    onShowMetadata,
+    onShowModify
 }) => {
     const handleClick = (e) => {
         e.stopPropagation()
@@ -23,7 +20,11 @@ export default ({
                 <Button className='dropdown-item bg-green' onClick={() => onShowMetadata()}>
                     View Metadata
                 </Button>
-                <Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }} data={dataDetails} level={ConstantLevel.SERIES}/>
+                <Button className='dropdown-item bg-orange' onClick={() => onShowModify()}>
+                    Modify
+                </Button>
+                {//<Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }} data={dataDetails} level={ConstantLevel.SERIES} onShowModify={() => onShowMetadata()}/>
+                }
                 <Button className='dropdown-item bg-red'
                     onClick={onDelete}>Delete
                 </Button>

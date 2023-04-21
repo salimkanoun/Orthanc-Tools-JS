@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Row, Col, Form, Button, FormGroup } from 'react-bootstrap'
 import Dropzone from 'react-dropzone'
-import { keys } from '../../../../model/Constant'
 
+import { keys } from '../../../../model/Constant'
 import apis from '../../../../services/apis'
 import { useCustomMutation } from '../../../../services/ReactQuery/hooks'
 
@@ -19,8 +19,8 @@ export default () => {
      * Listener on form submission
      */
 
-    const handleClick = useCustomMutation( 
-        ({label, file}) => {
+    const handleClick = useCustomMutation(
+        ({ label, file }) => {
             let response = apis.certificates.createCertificate(label)
             apis.certificates.uploadCertificate(response, file)
         },

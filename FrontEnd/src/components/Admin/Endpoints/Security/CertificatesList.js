@@ -1,13 +1,14 @@
-import React, { Fragment } from "react";
+import React from "react";
+
 import apis from '../../../../services/apis';
 import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 import { keys } from "../../../../model/Constant";
 import { useCustomMutation } from "../../../../services/ReactQuery/hooks";
 
-export default ({certificatesData }) => {
+export default ({ certificatesData }) => {
 
     const deleteCertificate = useCustomMutation(
-        ({id}) => {
+        ({ id }) => {
             apis.certificates.deleteCertificate(id);
         },
         [[keys.CERTIFICATES_KEY]]
@@ -26,7 +27,7 @@ export default ({certificatesData }) => {
             cell: ({ row }) => {
                 return (
                     <div className="text-center">
-                        <input type="button" className='otjs-button otjs-button-red' onClick={() => {deleteCertificate.mutate(row.id)}} value="Remove" />
+                        <input type="button" className='otjs-button otjs-button-red' onClick={() => { deleteCertificate.mutate(row.id) }} value="Remove" />
                     </div>)
             },
             formatExtraData: this

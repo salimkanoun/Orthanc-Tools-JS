@@ -1,4 +1,5 @@
 import React from "react";
+
 import CommonTableV8 from "./CommonTableV8";
 import { studyQueryColumns } from "./ColomnFactories";
 

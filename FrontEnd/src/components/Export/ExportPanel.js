@@ -116,7 +116,7 @@ export default () => {
         dispatch(removeStudyFromExportList(currentStudy))
     }
 
-    
+
 
     const emptyList = () => {
         dispatch(emptyExportList())
@@ -217,11 +217,11 @@ export default () => {
             </Row>
             <Row className="mt-5">
                 <Col sm>
-                    <TableStudies 
+                    <TableStudies
                         studies={store.exportList.studyArray}
                         onRowClick={onClickStudyHandler}
-                        rowStyle={rowStyle} 
-                        withPatientColums/>
+                        rowStyle={rowStyle}
+                        withPatientColums />
                 </Col>
 
 

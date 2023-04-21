@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { Col, FormControl, Row } from "react-bootstrap";
 
 import apis from '../../../services/apis';
-import { Col, FormControl, Row } from "react-bootstrap";
+
 import {
     DateFilter,
     dateFilter as dFilter,
@@ -125,7 +126,7 @@ function Table({ queries, aets, setOverride, overridesValues, onDataChange, onSe
         onDataChange={onDataChange} />
 }
 
-export default ({ switchTab}) => {
+export default ({ switchTab }) => {
     const [overrides, setOverrides] = useState({})
     const [selected, setSelected] = useState([])
     const [filtered, setFiltered] = useState([])
@@ -140,12 +141,12 @@ export default ({ switchTab}) => {
     })
 
     useEffect(() => {
-        const getAets = async () => {await apis.aets.getAets()}
+        const getAets = async () => { await apis.aets.getAets() }
         try {
             let aets = getAets()
             dispatch.loadAvailableAETS(aets)
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
     }, [])
 
@@ -165,7 +166,7 @@ export default ({ switchTab}) => {
     const handleOverride = (label, val) => {
         let overrides = overrides;
         overrides[label] = val;
-        setOverrides({...overrides})
+        setOverrides({ ...overrides })
     }
 
     const handleSelect = (selected) => {
@@ -178,20 +179,20 @@ export default ({ switchTab}) => {
 
     const query = async () => {
         const data = store.queries.filter(x => filtered.includes(x.key));
-        const toastId = toast.info('Starting Studies Queries', { autoClose: false }, {data:{type:'jobs'}});
+        const toastId = toast.info('Starting Studies Queries', { autoClose: false }, { data: { type: 'jobs' } });
         let i = 0
 
         for (const query of data) {
             i++
             toast.update(toastId, {
                 render: 'Query study ' + i + '/' + data.length
-            }, {data:{type:'jobs'}});
+            }, { data: { type: 'jobs' } });
             //For each line make dicom query and return results
             try {
                 let answeredResults = await makeDicomQuery({ ...query, ...overrides })
                 toast.update(toastId, {
                     render: 'Queried study ' + i + '/' + data.length
-                }, {data:{type:'jobs'}});
+                }, { data: { type: 'jobs' } });
                 //For each results, fill the result table through Redux
                 answeredResults.forEach((answer) => {
                     dispatch.addStudyResult(answer)
@@ -203,7 +204,7 @@ export default ({ switchTab}) => {
         }
 
         toast.dismiss(toastId)
-        toast.success('Queries completed', {data:{type:'notification'}})
+        toast.success('Queries completed', { data: { type: 'notification' } })
 
         switchTab('Result')
 

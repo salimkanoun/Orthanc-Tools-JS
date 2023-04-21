@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import apis from '../../services/apis'
 import { useSelector } from 'react-redux'
+import { Row, Col, Button } from 'react-bootstrap'
+
+import apis from '../../services/apis'
 import TableMyDicomPatientsStudies from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomPatientsStudies'
 import TableMyDicomSeriesFillFromParent from '../CommonComponents/RessourcesDisplay/ReactTable/TableMyDicomSeriesFillFromParent'
-import { Row, Col, Button } from 'react-bootstrap'
+
 
 export default ({ roles, usernameProps }) => {
 
@@ -22,8 +24,8 @@ export default ({ roles, usernameProps }) => {
   const [currentLabel, setCurrentLabel] = useState(null);
   const [selectedRows, setSelectedRows] = useState([]);
 
-  useEffect(()=> {
-    const getRoleLabels = async () => {await getRoleLabels(role_name)}
+  useEffect(() => {
+    const getRoleLabels = async () => { await getRoleLabels(role_name) }
     try {
       getRoleLabels()
     } catch (err) { console.log(err) }

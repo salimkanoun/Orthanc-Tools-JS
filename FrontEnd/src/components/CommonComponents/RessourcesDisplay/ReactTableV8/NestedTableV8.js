@@ -6,7 +6,7 @@ import {
     flexRender,
 } from '@tanstack/react-table'
 
-export default ({ columnsTable,  data, renderSubComponent }) => {
+export default ({ columnsTable, data, renderSubComponent }) => {
     //renderSubData : fonction qui à partir d'une row, renvoie les données à nester
 
     const columns = [
@@ -34,7 +34,7 @@ export default ({ columnsTable,  data, renderSubComponent }) => {
 
     const table = useReactTable({
         data,
-        columns : columnsConcat,
+        columns: columnsConcat,
         //getRowCanExpand ,
         getCoreRowModel: getCoreRowModel(),
         getExpandedRowModel: getExpandedRowModel(),

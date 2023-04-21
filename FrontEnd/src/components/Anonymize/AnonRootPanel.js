@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
+import { Row, Col, Button } from 'react-bootstrap';
 
 import AnonymizedResults from "./AnonymizedResults";
 import AnonymizePanel from './AnonymizePanel';
-import { useSelector } from 'react-redux';
 import AnonymizePanelProgress from './AnonymizePanelProgress';
 import apis from '../../services/apis';
 import AnonHistoric from './AnonHistoric';
-import { Row, Col, Button } from 'react-bootstrap';
+
 const ANON_TAB = "Anonymizassion"
 const PORG_TAB = "Progress"
 const HISTORIC_TAB = "Historic"
 
-export default ({ }) => {
+export default () => {
 
     const [anonTaskID, setAnonTaskID] = useState(null)
     const [currentMainTab, setCurrentMainTab] = useState(ANON_TAB)
@@ -22,14 +23,14 @@ export default ({ }) => {
         }
     })
 
-    useEffect(()=> {
+    useEffect(() => {
         //Sk / Voir si robot anoymisation de cet utilisateur est en cours
-        const getTaskOfUser = async () => { await apis.task.getTaskOfUser(store.username, 'anonymize')}
+        const getTaskOfUser = async () => { await apis.task.getTaskOfUser(store.username, 'anonymize') }
         try {
             let answer = getTaskOfUser()[0]
             if (answer) {
                 setAnonTaskID(answer)
-            } 
+            }
         } catch (error) {
         }
     }, [])

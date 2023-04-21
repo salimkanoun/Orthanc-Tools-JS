@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
-import SelectModalities from './SelectModalities'
+import React, { useState } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
+
 import moment from 'moment'
+
+import SelectModalities from './SelectModalities'
 import AetButton from './AetButton'
-
-
 
 /**
  * Abstract search form
@@ -13,9 +13,9 @@ import AetButton from './AetButton'
  * title : title of the form
  * buttons : buttons to validate and treat the form 
  */
-export default class Search extends Component {
+export default ({ icon , title, buttonsName, onFormValidate}) => {
 
-    state = {
+    const [state, setState] = useState({
         firstName: '',
         lastName: '',
         patientID: '',
@@ -25,9 +25,9 @@ export default class Search extends Component {
         dateTo: '',
         modalities: '',
         presetDate: 'none'
-    }
+    })
 
-    dates = [
+    const dates = [
         { value: 'none', label: 'None' },
         { value: 'today', label: 'Today' },
         { value: 'yesterday', label: 'Yesterday' },
@@ -37,39 +37,46 @@ export default class Search extends Component {
         { value: 'lastYear', label: 'Last Year' }
     ]
 
-    getState = () => {
-        return this.state
+    const getState = () => {
+        return state
     }
 
     /**
      * Store modality string comming from SelectModalities component in the current state
      * @param {String} modalityString 
      */
-    updateModalities = (modalityString) => {
-        this.setState({
-            modalities: modalityString
+    const updateModalities = (modalityString) => {
+        setState((state) => ({
+            ...state,
+            ['modalities']: modalityString
         })
+        )
     }
 
     /**
      * Fill input text of users in current state
      * @param {*} event 
      */
-    handleChange = (event) => {
+    const handleChange = (event) => {
         const target = event.target
         const name = target.name
         const value = target.value
 
-        this.setState({
+        setState((state) => ({
+            ...state,
             [name]: value
         })
-
+        )
     }
 
 
 
-    changeListener = (event) => {
-        this.setState({ presetDate: event.value })
+    const changeListener = (event) => {
+        setState((state) => ({
+            ...state,
+            ['presetDate']: event.value
+        })
+        )
         let dateFrom = ''
         let dateTo = moment().format('YYYY-MM-DD')
         switch (event.value) {
@@ -95,75 +102,82 @@ export default class Search extends Component {
                 dateFrom = moment().subtract(1, 'year').format('YYYY-MM-DD')
                 break
             default:
-                this.setState({ dateFrom: '', dateTo: '' })
+                setState((state) => ({
+                    ...state,
+                    [dateFrom]: '',
+                    [dateTo] : ''
+                }))
+
                 break
         }
-        this.setState({ 'dateFrom': dateFrom, 'dateTo': dateTo })
+        setState((state) => ({
+            ...state,
+            [dateFrom]: dateFrom,
+            [dateTo] : dateTo
+        }))
     }
 
     //form
-    render = () => {
         return (
             <div>
                 <Row className="border-bottom border-2 pb-3">
                     <Col className="d-flex justify-content-start align-items-center">
-                        <i className={this.props.icon + " ico me-3"}></i><h2 className="card-title">{this.props.title}</h2>
+                        <i className={icon + " ico me-3"}></i><h2 className="card-title">{title}</h2>
                     </Col>
                 </Row>
                 <div className='row mt-5'>
                     <div className='col-sm'>
                         <label htmlFor='lastName' className="form-label">Last Name</label>
-                        <input type='text' name='lastName' id='lastName' className='form-control' placeholder='Last name' onChange={this.handleChange} value={this.state.lastName} />
+                        <input type='text' name='lastName' id='lastName' className='form-control' placeholder='Last name' onChange={handleChange} value={state.lastName} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='firstName' className="form-label">First Name</label>
-                        <input type='text' name='firstName' id='firstName' className='form-control' placeholder='First name' onChange={this.handleChange} value={this.state.firstName} />
+                        <input type='text' name='firstName' id='firstName' className='form-control' placeholder='First name' onChange={handleChange} value={state.firstName} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='patientID' className="form-label">Patient ID</label>
-                        <input type='text' name='patientID' id='patientID' className='form-control' placeholder='Patient ID' onChange={this.handleChange} value={this.state.patientID} />
+                        <input type='text' name='patientID' id='patientID' className='form-control' placeholder='Patient ID' onChange={handleChange} value={state.patientID} />
                     </div>
                 </div>
                 <div className='row mt-4'>
                     <div className='col-sm'>
                         <label htmlFor='accessionNumber' className="form-label">Accession Number</label>
-                        <input type='text' name='accessionNumber' id='accessionNumber' className='form-control' placeholder='Accession Number' onChange={this.handleChange} value={this.state.accessionNumber} />
+                        <input type='text' name='accessionNumber' id='accessionNumber' className='form-control' placeholder='Accession Number' onChange={handleChange} value={state.accessionNumber} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='studyDescription' className="form-label">Study Description</label>
-                        <input type='text' name='studyDescription' id='studyDescription' className='form-control' placeholder='Study Description' onChange={this.handleChange} value={this.state.studyDescription} />
+                        <input type='text' name='studyDescription' id='studyDescription' className='form-control' placeholder='Study Description' onChange={handleChange} value={state.studyDescription} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='modalities' className="form-label">Modalities</label>
-                        <SelectModalities previousModalities={this.state.modalities} onUpdate={this.updateModalities} />
+                        <SelectModalities previousModalities={state.modalities} onUpdate={updateModalities} />
                     </div>
                 </div>
                 <div className='row mt-4'>
                     <div className='col-sm'>
                         <label htmlFor='date' className="form-label">Date Preset</label>
-                        <Select name="dates" single options={this.dates} onChange={this.changeListener} />
+                        <Select name="dates" single options={dates} onChange={changeListener} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='dateFrom' className="form-label">Date From</label>
-                        <input type='date' name='dateFrom' id='dateFrom' className='form-control' placeholder='Date From' onChange={this.handleChange} value={this.state.dateFrom} disabled={this.state.presetDate !== 'none'} />
+                        <input type='date' name='dateFrom' id='dateFrom' className='form-control' placeholder='Date From' onChange={handleChange} value={state.dateFrom} disabled={state.presetDate !== 'none'} />
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='dateTo' className="form-label">Date To</label>
-                        <input type='date' name='dateTo' id='dateTo' className='form-control' placeholder='Date To' onChange={this.handleChange} value={this.state.dateTo} disabled={this.state.presetDate !== 'none'} />
+                        <input type='date' name='dateTo' id='dateTo' className='form-control' placeholder='Date To' onChange={handleChange} value={state.dateTo} disabled={state.presetDate !== 'none'} />
                     </div>
                 </div>
                 <div className='mt-3 mb-3 text-center'>
                     <div>
-                        {this.props.buttonsName.map((aet) => <AetButton
+                        {buttonsName.map((aet) => <AetButton
                             key={aet}
                             aetName={aet}
-                            onClick={(event) => { this.props.onFormValidate(this.state, aet) }}
+                            onClick={(event) => { onFormValidate(state, aet) }}
                         />)}
                     </div>
                 </div>
 
             </div>
         )
-    }
 
 }

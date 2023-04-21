@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import Dropzone from 'react-dropzone'
-
 import { InputGroup, Button } from "react-bootstrap";
 
 import TagTable from "../CommonComponents/RessourcesDisplay/ReactTable/TagTable2";

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
-import apis from "../../../../services/apis";
 import { Button } from "react-bootstrap";
+
+import apis from "../../../../services/apis";
 import CommonTableV8 from "../../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 import { keys } from "../../../../model/Constant";
 import { useCustomMutation } from "../../../../services/ReactQuery/hooks";
@@ -43,7 +44,7 @@ export default ({ users, onEditClick }) => {
             id: 'superAdmin',
             accessorKey: 'superAdmin',
             header: "Super Admin",
-            cell : ({getValue}) => (
+            cell: ({ getValue }) => (
                 <input type="checkbox" disabled={true} checked={getValue()} />
             )
         },
@@ -62,7 +63,7 @@ export default ({ users, onEditClick }) => {
             header: "Delete",
             cell: ({ row }) => (
                 <Button name='delete' className='otjs-button otjs-button-red'
-                    onClick={() => deleteUser.mutate({username : row.original.username})}>Delete</Button>
+                    onClick={() => deleteUser.mutate({ username: row.original.username })}>Delete</Button>
             )
         }
     ];

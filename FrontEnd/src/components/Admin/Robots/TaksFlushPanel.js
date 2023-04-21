@@ -17,25 +17,25 @@ export default () => {
     const flushRetrieve = useCustomMutation(
         () => apis.retrieveRobot.flush(),
         [[keys.ROBOTS_KEY]],
-        () =>  successMessage('Flushed')
+        () => successMessage('Flushed')
     )
 
     const flushAnonymize = useCustomMutation(
         () => apis.anon.flush(),
         [[keys.ROBOTS_KEY]],
-        () =>  successMessage('Flushed')
+        () => successMessage('Flushed')
     )
 
     const flushDelete = useCustomMutation(
         () => apis.deleteRobot.flush(),
         [[keys.ROBOTS_KEY]],
-        () =>  successMessage('Flushed')
+        () => successMessage('Flushed')
     )
 
     const flushExport = useCustomMutation(
         () => apis.exportDicom.flushExternalExport(),
         [[keys.ROBOTS_KEY]],
-        () =>  successMessage('Flushed')
+        () => successMessage('Flushed')
     )
 
     const clickHandler = async (flushType) => {

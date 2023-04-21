@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import { Image, Nav, Navbar} from 'react-bootstrap'
+import { Image, Nav, Navbar } from 'react-bootstrap'
 
 import image from '../../assets/images/logo.png';
 
@@ -14,7 +14,7 @@ export default ({ onLogout, roles }) => {
     const MYDICOM = "mydicom"
     const DICOM_ROUTER = "dicom-router"
     const ADMINISTRATION = "administration"
-    
+
     const history = useHistory()
     const location = useLocation()
     const [opened, setOpened] = useState(false)
@@ -31,7 +31,7 @@ export default ({ onLogout, roles }) => {
 
     return (
         <>
-            <Navbar 
+            <Navbar
                 onMouseEnter={() => setOpened(true)}
                 onMouseLeave={() => setOpened(false)}
                 className={'otjs-navbar d-flex flex-row'}

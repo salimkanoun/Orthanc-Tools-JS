@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import { Row, Modal, Button, Form } from 'react-bootstrap'
-import { toast } from 'react-toastify'
-
+import { Row, Form } from 'react-bootstrap'
 import apis from '../../../../services/apis'
 import RoleForm from './RoleForm'
 import { keys } from '../../../../model/Constant'

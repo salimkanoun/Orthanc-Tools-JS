@@ -25,7 +25,7 @@ export default ({ notifications, clear, remove }) => {
                             >
                                 {notification.content}
                                 <Button onClick={() => remove(notification.id)}>remove</Button>
-                            </Alert>   
+                            </Alert>
                         )
                     })}
 

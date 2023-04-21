@@ -16,7 +16,7 @@ import ExportCSVButton from '../../CommonComponents/RessourcesDisplay/ExportCSVB
  * Result Table of Query for Study Level
  */
 
-export default ({ }) => {
+export default () => {
 
     const dispatch = useDispatch()
 

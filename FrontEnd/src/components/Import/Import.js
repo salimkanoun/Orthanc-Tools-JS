@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from "react-redux"
 import { Prompt } from 'react-router-dom'
-
 import Dropzone from 'react-dropzone'
 import { Modal, Row, Col, ProgressBar } from 'react-bootstrap'
 
@@ -102,10 +101,10 @@ export default () => {
 
         setPatientsObjects((patient) => {
             patient[studyDetails.PatientOrthancID] = {
-                PatientID : studyDetails.ParentPatient.PatientID,
-                PatientName : studyDetails.ParentPatient.PatientName,
-                PatientOrthancID : studyDetails.ParentPatient.PatientOrthancID,
-                PatientSex : studyDetails.ParentPatient.PatientSex,
+                PatientID: studyDetails.ParentPatient.PatientID,
+                PatientName: studyDetails.ParentPatient.PatientName,
+                PatientOrthancID: studyDetails.ParentPatient.PatientOrthancID,
+                PatientSex: studyDetails.ParentPatient.PatientSex,
             }
             return patient
         })

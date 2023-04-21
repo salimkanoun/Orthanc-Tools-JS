@@ -75,7 +75,7 @@ export default () => {
                     <h2 className='card-title'>Create new role</h2>
                 </Modal.Header>
                 <Modal.Body>
-                    <CreateRole onClose = {()=>setShowCreate(false)}/>
+                    <CreateRole onClose={() => setShowCreate(false)} />
                 </Modal.Body>
             </Modal>
 

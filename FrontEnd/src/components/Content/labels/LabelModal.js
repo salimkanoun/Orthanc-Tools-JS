@@ -1,6 +1,7 @@
-import React, {useState} from "react";
-import {Modal} from "react-bootstrap";
+import React, { useState } from "react";
+import { Modal } from "react-bootstrap";
 import Select from "react-select";
+
 import label from "../../../services/label";
 import studylabel from "../../../services/studylabel";
 
@@ -19,9 +20,9 @@ const LabelModal = (prop) => {
         Promise.all(
             added.map(label =>
                 studylabel.createStudyLabel(study.MainDicomTags.StudyInstanceUID, label.value, study.PatientMainDicomTags.PatientID, study.ID, study.ParentPatient)).concat(
-                removed.map(label =>
-                    studylabel.deleteStudyLabel(study.MainDicomTags.StudyInstanceUID, label.value)
-                ))
+                    removed.map(label =>
+                        studylabel.deleteStudyLabel(study.MainDicomTags.StudyInstanceUID, label.value)
+                    ))
         ).then(() => {
             setLabels(change)
         });

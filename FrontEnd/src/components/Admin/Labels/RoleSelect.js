@@ -44,11 +44,11 @@ export default ({ labelName }) => {
     )
 
     const handleOnChange = (value, metadata) => {
-        if(metadata.action === "remove-value"){
-            mutateDeleteRoleLabel.mutate({labelName : labelName, roleName : metadata.removedValue.value})
+        if (metadata.action === "remove-value") {
+            mutateDeleteRoleLabel.mutate({ labelName: labelName, roleName: metadata.removedValue.value })
         }
-        if(metadata.action ==="select-option"){
-            createRoleLabel.mutate({labelName : labelName, roleName : metadata.option.value})
+        if (metadata.action === "select-option") {
+            createRoleLabel.mutate({ labelName: labelName, roleName: metadata.option.value })
         }
     }
 
@@ -76,8 +76,8 @@ export default ({ labelName }) => {
             options={optionRoles}
             value={labelRoleOptions}
             style={choiceStyle}
-            onChange = {handleOnChange}
-            isClearable = {false}
+            onChange={handleOnChange}
+            isClearable={false}
         />
     );
 }

@@ -1,7 +1,7 @@
-import React, {Component, createRef} from "react"
+import React, { Component, createRef } from "react"
 import Dropdown from "react-bootstrap/Dropdown"
-import {Button, ButtonGroup, InputGroup} from "react-bootstrap"
-import {toast} from "react-toastify"
+import { Button, ButtonGroup, InputGroup } from "react-bootstrap"
+import { toast } from "react-toastify"
 
 import apis from "../../services/apis"
 import MonitorTask from "../../tools/MonitorTask"
@@ -51,11 +51,11 @@ export default class SendExternalDropdown extends Component {
 
     _toastContent = (fileName, finished = false) => <div>
         <p>Your DICOMs {finished ? 'has been' : 'will be'} exported as : </p>
-        <InputGroup className={'bg-light'} style={{'border-radius': '4px'}}>
-            <input className={'form-control'} onClick={(e) => e.stopPropagation()} disabled value={fileName}/>
+        <InputGroup className={'bg-light'} style={{ 'border-radius': '4px' }}>
+            <input className={'form-control'} onClick={(e) => e.stopPropagation()} disabled value={fileName} />
             <Button
-                    className={`btn btn-outline-${finished ? "success" : "primary"}  btn-otjs `}
-                    onClick={() => navigator.clipboard.writeText(fileName)}>copy
+                className={`btn btn-outline-${finished ? "success" : "primary"}  btn-otjs `}
+                onClick={() => navigator.clipboard.writeText(fileName)}>copy
             </Button>
         </InputGroup>
 
@@ -68,7 +68,7 @@ export default class SendExternalDropdown extends Component {
         try {
             taskAnswer = await apis.exportDicom.exportStudiesToExternal(this.props.username, this.props.exportIds, endpointId)
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
 
         let jobMonitoring = new MonitorTask(taskAnswer)
@@ -78,14 +78,14 @@ export default class SendExternalDropdown extends Component {
             toast.update(this.toastRef.current, {
                 render: this._toastContent(info.details.result),
                 progress: ((info.progress.archiving || 0) + (info.progress.sending || 0)) / 200,
-                data:{type:'jobs'}
+                data: { type: 'jobs' }
             })
         })
 
         jobMonitoring.onFinish(async (info) => {
             this.resetProgress()
-            if (info.state === "failed") toast.error("Export to endpoint failed", EXPORT_FAILED_TOAST, {data:{type:'notification'}});
-            else toast.success(this._toastContent(info.details.result, true), EXPORT_SUCCESS_TOAST, {data:{type:'notification'}})
+            if (info.state === "failed") toast.error("Export to endpoint failed", EXPORT_FAILED_TOAST, { data: { type: 'notification' } });
+            else toast.success(this._toastContent(info.details.result, true), EXPORT_SUCCESS_TOAST, { data: { type: 'notification' } })
         })
 
         this.toastRef.current = toast(this._toastContent(''), EXPORT_PROGRESS_TOAST);
@@ -117,13 +117,13 @@ export default class SendExternalDropdown extends Component {
         let dropDownItems = []
         this.props.endpoints.forEach(endpoint => {
             dropDownItems.push(<Dropdown.Item key={endpoint.id} id={endpoint.id}
-                                              onClick={this.handleClickDownload}>{endpoint.label}</Dropdown.Item>)
+                onClick={this.handleClickDownload}>{endpoint.label}</Dropdown.Item>)
         })
         return (<div>
             <Dropdown as={ButtonGroup}>
                 <Dropdown.Toggle variant="button-dropdown-orange"
-                                 className="button-dropdown button-dropdown-orange w-10" id="dropdown-basic"
-                                 disabled={this.state.disabled}>
+                    className="button-dropdown button-dropdown-orange w-10" id="dropdown-basic"
+                    disabled={this.state.disabled}>
                     {this.state.title}
                 </Dropdown.Toggle>
                 <Dropdown.Menu className="mt-2 border border-dark border-2">

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Button, Col, Container, Row } from 'react-bootstrap'
+
 import TablePatients from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatients'
 import apis from "../../services/apis"
 import AnonProfile from './AnonProfile'
@@ -85,10 +86,10 @@ export default (setTask) => {
                 let answer = await apis.anon.createAnonRobot(listToAnonymize, store.username) //wait for the robot's answer to know what do to next
                 setTask(answer)
             } catch (error) {
-                toast.error(error.statusText, {data:{type:'notification'}})
+                toast.error(error.statusText, { data: { type: 'notification' } })
             }
 
-        } else toast.error('Fill all patient ID', {data:{type:'notification'}})
+        } else toast.error('Fill all patient ID', { data: { type: 'notification' } })
     }
 
     const onRemovePatient = (PatientOrthancID) => {
@@ -152,7 +153,7 @@ export default (setTask) => {
                         removeRow={true}
                         onRemoveStudy={onRemoveStudy}
                         showEditable={true}
-                        onEdit = {onEditStudy}
+                        onEdit={onEditStudy}
                         anonymized={false}
                         pagination={true}
                     />
@@ -181,7 +182,7 @@ export default (setTask) => {
             </Row>
             <Row className="mt-4 border-top border-2 pt-4">
                 <Col className="text-center">
-                    <Button className='otjs-button otjs-button-blue w-7' 
+                    <Button className='otjs-button otjs-button-blue w-7'
                         onClick={anonymize}>
                         Anonymize
                     </Button>

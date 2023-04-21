@@ -12,8 +12,8 @@ const appReducer = combineReducers({
   ManualQuery,
   AutoRetrieveQueryList,
   AutoRetrieveResultList,
-  DeleteList, 
-  ExportList, 
+  DeleteList,
+  ExportList,
   AnonList
 })
 

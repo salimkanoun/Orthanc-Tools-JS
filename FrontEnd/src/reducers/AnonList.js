@@ -1,9 +1,21 @@
-import { ADD_ANON_LIST, EMPTY_ANON_LIST, REMOVE_STUDY_ANON_LIST, REMOVE_PATIENT_ANON_LIST, SAVE_NEW_VALUES, SAVE_ANON_PROFILE, AUTOFILL, ADD_ANONYMIZED_LIST, EMPTY_ANONYMIZED_LIST, REMOVE_STUDY_ANONYMIZED_LIST } from "../actions/actions-types"
+import {
+  ADD_ANON_LIST,
+  EMPTY_ANON_LIST,
+  REMOVE_STUDY_ANON_LIST,
+  REMOVE_PATIENT_ANON_LIST,
+  SAVE_NEW_VALUES,
+  SAVE_ANON_PROFILE,
+  AUTOFILL,
+  ADD_ANONYMIZED_LIST,
+  EMPTY_ANONYMIZED_LIST,
+  REMOVE_STUDY_ANONYMIZED_LIST
+} from "../actions/actions-types"
+
 const initialState = {
   anonList: [],
   anonymizedList: [],
   profile: 'Default'
-} 
+}
 /**
  * TODO
  * @param {*} action 
@@ -84,7 +96,7 @@ export default function anonListReducer(state = initialState, action) {
     case SAVE_NEW_VALUES:
       let { id, column, newValue } = action.payload
       let newList = [...state.anonList]
-      console.log('id : ', id, 'column : ', column, 'newValue : ',newValue)
+      console.log('id : ', id, 'column : ', column, 'newValue : ', newValue)
       if (column === 'newStudyDescription' || column === 'newAccessionNumber') {
         newList.forEach(element => {
           if (element.StudyOrthancID === id) {

@@ -9,7 +9,7 @@ import { useCustomQuery } from "../../../services/ReactQuery/hooks";
 
 export default () => {
 
-    const {data : jobs, isLoading : isLoadingJobs } = useCustomQuery(
+    const { data: jobs, isLoading: isLoadingJobs } = useCustomQuery(
         [keys.JOBS_KEY],
         () => apis.jobs.getJobs(),
         undefined,
@@ -18,7 +18,7 @@ export default () => {
         5000
     )
 
-    if (isLoadingJobs) return <Spinner/>
+    if (isLoadingJobs) return <Spinner />
 
 
     return (

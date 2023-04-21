@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import Select from 'react-select'
-import apis from '../../../services/apis'
 import { Row, Col, Form, Button, FormGroup } from 'react-bootstrap'
+
+import apis from '../../../services/apis'
 import { keys } from '../../../model/Constant'
 import { useCustomQuery } from '../../../services/ReactQuery/hooks'
 /**
@@ -79,7 +80,7 @@ export default ({ onCreateEndpoint }) => {
         } else if (endpoint.protocol === 'webdav') {
             postData.digest = endpoint.digest || false
         }
-        onCreateEndpoint.mutate({postData})
+        onCreateEndpoint.mutate({ postData })
     }
 
     const readyToSubmit = () => {
@@ -97,7 +98,7 @@ export default ({ onCreateEndpoint }) => {
     return (
         <Form>
             <h2 className="card-title">Add Export Endpoint</h2>
-            
+
             <Row>
                 <Col>
                     <FormGroup>

@@ -1,16 +1,16 @@
-import React, { Component, Fragment, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
-import apis from '../../../services/apis'
-
-import OhifLink from '../../Viewers/OhifLink'
-import StoneLink from '../../Viewers/StoneLink'
 import Modal from 'react-bootstrap/Modal'
-import Metadata from '../../Metadata/Metadata'
-import Modify from '../../Modify/Modify'
 import { toast } from 'react-toastify'
 import { Button } from 'react-bootstrap'
+
+import apis from '../../../services/apis'
+import OhifLink from '../../Viewers/OhifLink'
+import StoneLink from '../../Viewers/StoneLink'
+import Metadata from '../../Metadata/Metadata'
+import Modify from '../../Modify/Modify'
 import ConstantLevel from '../../Modify/ConstantLevel'
- 
+
 export default ({
     level,
     orthancID,
@@ -35,32 +35,32 @@ export default ({
             case ConstantLevel.PATIENTS:
                 try {
                     await apis.content.deletePatient(orthancID)
-                    toast.success("Patient " + orthancID + " have been deleted", {data:{type:'notification'}})
+                    toast.success("Patient " + orthancID + " have been deleted", { data: { type: 'notification' } })
                     onDelete(orthancID)
                 } catch (error) {
-                    toast.error(error, {data:{type:'notification'}})
+                    toast.error(error, { data: { type: 'notification' } })
                 }
                 break
             case ConstantLevel.STUDIES:
                 try {
                     await apis.content.deleteStudies(orthancID)
-                    toast.success("Studies " + orthancID + " have been deleted", {data:{type:'notification'}})
+                    toast.success("Studies " + orthancID + " have been deleted", { data: { type: 'notification' } })
                     onDelete(orthancID)
                 } catch (error) {
-                    toast.error(error, {data:{type:'notification'}})
+                    toast.error(error, { data: { type: 'notification' } })
                 }
                 break
             case ConstantLevel.SERIES:
                 try {
                     await apis.content.deleteSeries(orthancID)
-                    toast.success("Series " + orthancID + " have been deleted", {data:{type:'notification'}})
+                    toast.success("Series " + orthancID + " have been deleted", { data: { type: 'notification' } })
                     onDelete(orthancID)
                 } catch (error) {
-                    toast.error(error, {data:{type:'notification'}})
+                    toast.error(error, { data: { type: 'notification' } })
                 }
                 break
             default:
-                toast.error("Wrong level", {data:{type:'notification'}})
+                toast.error("Wrong level", { data: { type: 'notification' } })
         }
 
     }
@@ -72,13 +72,13 @@ export default ({
 
     return (
         <Fragment>
-            {/*modal pour metadata*/}
+
             <Modal show={showMetadata} onHide={setMetadata} scrollable={true} >
                 <Modal.Header closeButton>
                     <Modal.Title>Metadata</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Metadata seriesOrthancId={orthancID}/>
+                    <Metadata seriesOrthancId={orthancID} />
                 </Modal.Body>
             </Modal>
 
@@ -93,12 +93,12 @@ export default ({
                     <Button className='dropdown-item bg-green' onClick={setMetadata}
                         hidden={hiddenMetadata}>View Metadata
                     </Button>
-                    <Modify hidden={hiddenModify} orthancID={orthancID} level={level} data={dataDetails} refresh={()=>{console.log('TODO REFRESH')}} />
+                    <Modify hidden={hiddenModify} orthancID={orthancID} level={level} data={dataDetails} refresh={() => { console.log('TODO REFRESH') }} />
                     <Button className='dropdown-item bg-red' hidden={hiddenDelete}
                         onClick={fdelete}>Delete
                     </Button>
                     {(level === ConstantLevel.STUDIES && !!openLabelModal ?
-                    //TODO a réinstancier
+                        //TODO a réinstancier
                         <Button className='dropdown-item bg-blue' hidden={hiddenDelete}
                             onClick={() => {
                                 apis.content.getStudiesDetails(orthancID).then((study) => {
