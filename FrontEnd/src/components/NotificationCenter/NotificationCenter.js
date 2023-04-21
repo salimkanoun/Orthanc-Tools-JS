@@ -12,7 +12,8 @@ export default () => {
     const {
         notifications,
         remove,
-        unreadCount
+        unreadCount,
+        update
     } = useNotificationCenter();
 
     const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +26,6 @@ export default () => {
 
     return (
         <div>
-
             <IconButton size="large" onClick={toggleNotificationCenter} ref={target}>
                 <Badge color="primary">
                     <MailIcon color="action" />
@@ -41,8 +41,6 @@ export default () => {
                 <div >
                     <NotificationContent notifications={notifications} remove={remove} />
                 </div>
-
-
             </Overlay>
         </div>
     );
