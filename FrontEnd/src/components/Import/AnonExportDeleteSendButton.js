@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Col } from 'react-bootstrap'
 
-export default ({onAnonClick, onExportClick, onDeleteClick}) => {
+export default ({ onAnonClick, onExportClick, onDeleteClick }) => {
 
     return (
         <Row className="text-center mt-5">

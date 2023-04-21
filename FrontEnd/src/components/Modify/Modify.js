@@ -72,6 +72,7 @@ export default ({
         if (level === ConstantLevel.SERIES) data = await apis.content.getSeriesDetails(orthancID)
         let dataFilters = filterProperties(data.MainDicomTags, keysToKeep(level))
         setDataFiltered(dataFilters)
+        console.log(dataFiltered)
     }
 
     const checkRemember = () => {

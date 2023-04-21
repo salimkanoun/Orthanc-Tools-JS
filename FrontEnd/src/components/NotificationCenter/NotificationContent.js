@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react"
 import { Card } from "react-bootstrap"
+
 import CardJobs from "./CardJobs"
 import CardNotifications from "./CardNotifications"
 
@@ -45,8 +46,8 @@ export default ({ notifications, remove }) => {
         <Fragment >
             <Card >
                 <Card.Header>Notification Center</Card.Header>
-                <CardJobs jobs={jobsArray} clear={clearJobs} remove={remove}/>
-                <CardNotifications notifications={notificationsArray} clear={clearNotifications} remove={remove}/>
+                <CardJobs jobs={jobsArray} clear={clearJobs} remove={remove} />
+                <CardNotifications notifications={notificationsArray} clear={clearNotifications} remove={remove} />
             </Card>
         </Fragment>
     )

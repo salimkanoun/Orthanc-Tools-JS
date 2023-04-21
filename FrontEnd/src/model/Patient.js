@@ -65,7 +65,7 @@ export default class Patient {
 
     addStudy = (newStudy) => {
         let StudyOrthancID = newStudy.getStudyOrthancID()
-        if ( !this.isKnownStudy(StudyOrthancID)) this.Studies[StudyOrthancID] = newStudy
+        if (!this.isKnownStudy(StudyOrthancID)) this.Studies[StudyOrthancID] = newStudy
     }
 
     serialize = () => {

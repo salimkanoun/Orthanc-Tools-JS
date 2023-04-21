@@ -1,14 +1,14 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import { Button, Modal } from 'react-bootstrap'
+import Toggle from 'react-toggle'
+
 import apis from "../../services/apis";
 import Table from '../CommonComponents/RessourcesDisplay/ReactTable/CommonTable'
-import Toggle from 'react-toggle'
 
 export default ({ modify, refresh, showMessage, data }) => {
 
   const [deletes, setDeletes] = useState(false)
   const [id_delete, setId_delete] = useState(-1)
-
 
   const columns = [
     {

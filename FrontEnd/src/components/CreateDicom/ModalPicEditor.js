@@ -1,8 +1,11 @@
-import React, {Component, createRef} from "react";
+import React, { Component, createRef } from "react";
+
+import Modal from "react-bootstrap/Modal";
+import { Button } from "react-bootstrap";
+
 import 'tui-image-editor/dist/tui-image-editor.css';
 import ImageEditor from '@toast-ui/react-image-editor';
-import Modal from "react-bootstrap/Modal";
-import {Button} from "react-bootstrap";
+
 
 function dataURItoBlob(dataURI) {
     // convert base64 to raw binary data held in a string
@@ -24,7 +27,7 @@ function dataURItoBlob(dataURI) {
     }
 
     // write the ArrayBuffer to a blob, and you're done
-    let blob = new Blob([ab], {type: mimeString});
+    let blob = new Blob([ab], { type: mimeString });
     return blob;
 
 }
@@ -48,9 +51,9 @@ export class ModalPicEditor extends Component {
 
         return (
             <Modal fullscreen={'xl'}
-                   show={!!this.props.files && this.props.files.length}
-                   onHide={this.props.onHide}
-                   onClick={(e) => e.stopPropagation()} size={'xxl'} contentClassName={"w-100"}>
+                show={!!this.props.files && this.props.files.length}
+                onHide={this.props.onHide}
+                onClick={(e) => e.stopPropagation()} size={'xxl'} contentClassName={"w-100"}>
                 <Modal.Header closeButton>
                     <Modal.Title>Create Dicom</Modal.Title>
                 </Modal.Header>
@@ -61,13 +64,13 @@ export class ModalPicEditor extends Component {
                                 <ul className="list-group">
                                     {this.props.files.map((file, fileIdx) => (
                                         <Button className={"list-group-item"} variant={"outline-primary"}
-                                                onClick={() => {
-                                                    this.editor.current.getInstance().loadImageFromURL(URL.createObjectURL(file), file.name)
-                                                    this.setState({
-                                                        fileIdx
-                                                    })
-                                                }
-                                                }>{file.name}</Button>
+                                            onClick={() => {
+                                                this.editor.current.getInstance().loadImageFromURL(URL.createObjectURL(file), file.name)
+                                                this.setState({
+                                                    fileIdx
+                                                })
+                                            }
+                                            }>{file.name}</Button>
                                     ))}
                                 </ul>
                             </div>

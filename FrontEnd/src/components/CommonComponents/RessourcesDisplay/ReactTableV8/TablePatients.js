@@ -1,48 +1,49 @@
 import React from "react";
+
 import CommonTableV8 from "./CommonTableV8";
 
-export default({patients}) => {
+export default ({ patients }) => {
 
 
     const columns = [
         patientColumns.ID(textIDColumn),
         {
-            id : 'raw',
-            accessorrKey : 'raw' ,
+            id: 'raw',
+            accessorrKey: 'raw',
             header: 'RAW',
-            enableHiding : true
+            enableHiding: true
         },
         {
-            id : 'PatientOrthancID',
-            accessorrKey : 'PatientOrthancID' ,
+            id: 'PatientOrthancID',
+            accessorrKey: 'PatientOrthancID',
             header: 'PatientOrthancID',
-            enableHiding : true
+            enableHiding: true
         },
         {
-            id : 'PatientName',
-            accessorrKey : 'PatientName' ,
+            id: 'PatientName',
+            accessorrKey: 'PatientName',
             header: 'Patient Name',
-            filterType : "STRING"
+            filterType: "STRING"
         },
         {
-            id : 'PatientID',
-            accessorrKey : 'PatientID' ,
+            id: 'PatientID',
+            accessorrKey: 'PatientID',
             header: 'Patient ID',
-            filterType : "STRING"
+            filterType: "STRING"
         },
         {
-            id : 'newPatientID',
-            accessorrKey : 'newPatientID' ,
+            id: 'newPatientID',
+            accessorrKey: 'newPatientID',
             header: 'New Patient ID',
-            isEditable : true,
-            editionProperties : {}
+            isEditable: true,
+            editionProperties: {}
         },
         {
-            id : 'newPatientName',
-            accessorrKey : 'newPatientName' ,
+            id: 'newPatientName',
+            accessorrKey: 'newPatientName',
             header: 'New Patient Name',
-            isEditable : true,
-            editionProperties : {}
+            isEditable: true,
+            editionProperties: {}
         },
     ]
 
@@ -51,7 +52,7 @@ export default({patients}) => {
         ...x
     })), [patients]);
 
-    return(
+    return (
         <CommonTableV8 data={data} columns={columns} />
     )
 }

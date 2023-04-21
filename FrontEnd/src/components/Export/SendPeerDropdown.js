@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import {Dropdown, ButtonGroup, Button} from "react-bootstrap";
+import { Dropdown, ButtonGroup, Button } from "react-bootstrap";
 import { toast } from "react-toastify"
 
 import apis from "../../services/apis"
@@ -18,10 +18,10 @@ export default class SendPeerDropdown extends Component {
 
         let destinationPeer = event.currentTarget.id
         let jobAnswer
-        try{
+        try {
             jobAnswer = await apis.peers.storePeer(destinationPeer, this.props.exportIds)
-        }catch(error){
-            toast.error(error.statusText, {data:{type:'notification'}})
+        } catch (error) {
+            toast.error(error.statusText, { data: { type: 'notification' } })
             return
         }
 
@@ -35,11 +35,11 @@ export default class SendPeerDropdown extends Component {
         jobMonitoring.onFinish(async function (state) {
             if (state === MonitorJob.Success) {
                 self.resetProgress()
-                toast.success('Peer Trasnfer Success', {data:{type:'notification'}})
+                toast.success('Peer Trasnfer Success', { data: { type: 'notification' } })
 
             } else if (state === MonitorJob.Failure) {
                 self.resetProgress()
-                toast.error('Peer Transfer Error', {data:{type:'notification'}})
+                toast.error('Peer Transfer Error', { data: { type: 'notification' } })
 
             }
         })

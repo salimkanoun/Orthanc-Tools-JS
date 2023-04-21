@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
+
 import { filter } from '../../../../model/Constant';
 import ConstantLevel from "../../../Modify/ConstantLevel";
 import ActionBouton from "../ActionBouton";
@@ -315,8 +316,8 @@ const studyQueryColumns = {
 
 const seriesQueryColumns = {
     SERIES_INSTANCE_UID: {
-        accessorKey : 'SeriesInstanceUID',
-        header : 'Series Instance UID',
+        accessorKey: 'SeriesInstanceUID',
+        header: 'Series Instance UID',
         enableHiding: true
     },
     SERIES_DESCRIPTION: {

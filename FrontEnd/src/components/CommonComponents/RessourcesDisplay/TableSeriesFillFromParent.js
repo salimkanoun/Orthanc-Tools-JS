@@ -1,4 +1,5 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
+
 import apis from '../../../services/apis'
 import TableSeries from './ReactTable/TableSeries'
 

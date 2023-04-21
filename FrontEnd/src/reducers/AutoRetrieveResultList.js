@@ -1,12 +1,21 @@
 
-import { AQ_ADD_STUDY_RESULT, AQ_ADD_SERIES_DETAILS, AQ_REMOVE_STUDY_RESULT, AQ_REMOVE_SERIES_RESULT, AQ_EMPTY_RESULTS, AQ_ADD_STUDY_RESULT_FILTERED, AQ_ADD_SERIES_RESULT_FILTERED, AQ_SAVE_FILTERS } from '../actions/actions-types'
+import {
+  AQ_ADD_STUDY_RESULT,
+  AQ_ADD_SERIES_DETAILS,
+  AQ_REMOVE_STUDY_RESULT,
+  AQ_REMOVE_SERIES_RESULT,
+  AQ_EMPTY_RESULTS,
+  AQ_ADD_STUDY_RESULT_FILTERED,
+  AQ_ADD_SERIES_RESULT_FILTERED,
+  AQ_SAVE_FILTERS
+} from '../actions/actions-types'
 
 
 const initialState = {
   results: {},
   resultsSeries: {},
   resultsStudiesFiltered: [],
-  resultsSeriesFiltered: [], 
+  resultsSeriesFiltered: [],
   filters: {}
 }
 
@@ -114,13 +123,13 @@ export default function retrieveListReducer(state = initialState, action) {
         results: resultStudiesCopy,
         resultsSeries: resultSeriesCopy2
       }
-    
+
     case AQ_SAVE_FILTERS:
-      const {ID, array} = action.payload
+      const { ID, array } = action.payload
       return {
-        ...state, 
+        ...state,
         filters: {
-          ...state.filters, 
+          ...state.filters,
           [ID]: array
         }
       }

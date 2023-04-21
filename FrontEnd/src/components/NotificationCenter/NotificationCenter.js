@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
-import MailIcon from "@mui/icons-material/Mail";
-
 import { useNotificationCenter } from "react-toastify/addons/use-notification-center";
-import { Badge,Overlay } from "react-bootstrap";
+import { Badge, Overlay } from "react-bootstrap";
+
+import MailIcon from "@mui/icons-material/Mail";
 import { IconButton } from "@mui/material";
+
 import NotificationContent from "./NotificationContent";
 
 export default () => {
@@ -20,7 +21,7 @@ export default () => {
 
     const toggleNotificationCenter = (event) => {
         setIsOpen(!isOpen);
-    }; 
+    };
 
     return (
         <div>
@@ -36,11 +37,11 @@ export default () => {
                 show={isOpen}
                 placement="left"
             >
-                
-                    <div >
-                        <NotificationContent notifications={notifications} remove={remove} />
-                    </div>
-                
+
+                <div >
+                    <NotificationContent notifications={notifications} remove={remove} />
+                </div>
+
 
             </Overlay>
         </div>

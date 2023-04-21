@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
+
 import { patientColumns } from "./ColomnFactories";
 import CommonTableV8 from "./CommonTableV8";
 import TableStudies from "./TableStudies";
 
-//TODO : gerer deselection
-//gerer selection parent => selection study
 export default ({
     patients,
     additionalColumnsPatients = [],

@@ -7,7 +7,7 @@ import ExportTool from './ExportTool'
 import NotificationCenter from '../NotificationCenter/NotificationCenter'
 
 
-export default ({roles, apercu}) => {
+export default ({ roles, apercu }) => {
 
     const [show, setShow] = useState('')
 
@@ -22,7 +22,7 @@ export default ({roles, apercu}) => {
     const closePopovers = () => {
         setShow('')
     }
-    
+
     const refExport = React.createRef()
     const refAnon = React.createRef()
     const refDelete = React.createRef()
@@ -45,7 +45,7 @@ export default ({roles, apercu}) => {
                     <span className="ms-2 badge bg-light text-dark"
                         onMouseOver={apercu ? () => setShow('export') : null}>{store.studyArray.length}</span>
                 </Link>
-                <ExportTool target={refExport} show={ show === 'export' ? true : false}
+                <ExportTool target={refExport} show={show === 'export' ? true : false}
                     onHide={closePopovers} />
             </span>
             <span className='mr-1' hidden={!apercu}>
@@ -56,7 +56,7 @@ export default ({roles, apercu}) => {
             <span>
                 <NotificationCenter />
             </span>
-            
+
         </div>
     )
 }

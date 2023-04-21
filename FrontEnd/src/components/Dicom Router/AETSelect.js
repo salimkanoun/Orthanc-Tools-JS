@@ -1,14 +1,14 @@
 import Select from 'react-select';
-import { Component, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+
 import apis from "../../services/apis";
 
 /**
  * To use it to edit AETs choice, pass an Array of AETs Name through the props named 'aets'
  */
-export default ({ labelProps, aets, refresh }) => {
+export default ({ aets, refresh }) => {
 
   const [selected, setSelected] = useState([])
-  const [label, setLabel] = useState(labelProps)
   const [options, setOptions] = useState([])
 
   useEffect(() => {

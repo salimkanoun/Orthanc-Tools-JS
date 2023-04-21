@@ -1,4 +1,5 @@
 import React from 'react'
+
 import SearchForm from '../CommonComponents/SearchForm/SearchForm'
 
 export default ({ onSubmit }) => {

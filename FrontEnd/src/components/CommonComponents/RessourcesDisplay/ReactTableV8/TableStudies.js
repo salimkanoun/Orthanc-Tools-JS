@@ -1,4 +1,5 @@
 import React from "react";
+
 import { patientColumns, studyColumns } from "./ColomnFactories";
 import CommonTableV8 from "./CommonTableV8";
 

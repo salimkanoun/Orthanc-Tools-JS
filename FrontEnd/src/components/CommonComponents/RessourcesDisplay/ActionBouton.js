@@ -1,14 +1,14 @@
-import React, { Component, Fragment, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
-import apis from '../../../services/apis'
-
-import OhifLink from '../../Viewers/OhifLink'
-import StoneLink from '../../Viewers/StoneLink'
 import Modal from 'react-bootstrap/Modal'
-import Metadata from '../../Metadata/Metadata'
-import Modify from '../../Modify/Modify'
 import { toast } from 'react-toastify'
 import { Button } from 'react-bootstrap'
+
+import apis from '../../../services/apis'
+import OhifLink from '../../Viewers/OhifLink'
+import StoneLink from '../../Viewers/StoneLink'
+import Metadata from '../../Metadata/Metadata'
+import Modify from '../../Modify/Modify'
 import ConstantLevel from '../../Modify/ConstantLevel'
 
 export default ({

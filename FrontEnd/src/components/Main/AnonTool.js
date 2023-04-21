@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Button } from 'react-bootstrap'
 
 import Overlay from 'react-bootstrap/Overlay'
 import Popover from 'react-bootstrap/Popover'
 
 import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList } from '../../actions/AnonList'
 import { studyArrayToPatientArray } from '../../tools/processResponse'
-import { Button } from 'react-bootstrap'
 import { patientColumns } from '../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories'
 import TablePatientWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudies'
 

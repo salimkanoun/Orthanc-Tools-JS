@@ -38,7 +38,7 @@ export default ({ data, modifications, deleted, onDataUpdate, onDeleteTag }) => 
             })
         }, {
             id: 'deletable',
-            accessorKey: 'deletable', 
+            accessorKey: 'deletable',
             header: 'Deletable',
             enableHiding: true
         }, {
@@ -46,7 +46,7 @@ export default ({ data, modifications, deleted, onDataUpdate, onDeleteTag }) => 
             accessorKey: 'deleted',
             header: 'Deleted',
             cell: (({ value, row }) => {
-                return <Form.Check checked={value} onChange={(event)=> onDeleteTag(row.original.tagName, event.target.checked) } />
+                return <Form.Check checked={value} onChange={(event) => onDeleteTag(row.original.tagName, event.target.checked)} />
             })
         }
     ]

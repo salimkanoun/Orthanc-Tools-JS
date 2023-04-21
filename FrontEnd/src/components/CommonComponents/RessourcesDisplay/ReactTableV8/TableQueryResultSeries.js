@@ -1,8 +1,9 @@
 import React from "react"
+
 import CommonTableV8 from "./CommonTableV8"
 import { seriesQueryColumns } from "./ColomnFactories"
 
-export default ({series, additionalColumns}) => {
+export default ({ series, additionalColumns }) => {
 
     const columns = [
         seriesQueryColumns.SERIES_INSTANCE_UID,
