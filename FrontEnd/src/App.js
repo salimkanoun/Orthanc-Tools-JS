@@ -59,6 +59,7 @@ const App = () => {
                     > </ToastContainer>
                     <ToastContainer
                         enableMultiContainer
+                        style={{visibility : 'hidden'}}
                         containerId={'jobs'}
                         position={'bottom-left'}
                         autoClose={5000}

@@ -2,9 +2,7 @@ import React from "react";
 import { Button, Card } from "react-bootstrap";
 import JobsTable from "./JobsTable";
 
-export default ({ jobs, clear, onRemove }) => {
-
-    console.log(jobs)
+export default ({ jobs, clear }) => {
 
     return (
             <Card>

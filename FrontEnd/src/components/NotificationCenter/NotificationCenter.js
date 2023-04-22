@@ -11,24 +11,21 @@ export default () => {
 
     const {
         notifications,
-        remove,
-        unreadCount,
-        update
+        remove
     } = useNotificationCenter();
 
     const [isOpen, setIsOpen] = useState(false);
 
     const target = useRef(null)
 
-    const toggleNotificationCenter = (event) => {
-        setIsOpen(!isOpen);
-    };
-
     return (
         <div>
-            <IconButton size="large" onClick={toggleNotificationCenter} ref={target}>
-                <Badge color="primary">
+            <IconButton size="large" onClick={() => setIsOpen((opened) => !opened)} ref={target}>
+                <Badge>
                     <MailIcon color="action" />
+                    <span className='button-count'>
+                        {notifications.length}
+                    </span>
                 </Badge>
             </IconButton>
 
@@ -37,7 +34,6 @@ export default () => {
                 show={isOpen}
                 placement="left"
             >
-
                 <div >
                     <NotificationContent notifications={notifications} remove={remove} />
                 </div>
