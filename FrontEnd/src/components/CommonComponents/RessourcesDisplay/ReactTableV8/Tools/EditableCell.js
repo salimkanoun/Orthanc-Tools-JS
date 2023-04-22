@@ -114,7 +114,6 @@ export default ({ getValue, row: { index, id: idRow }, column: { columnDef: { id
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        onClick={e => { e.stopPropagation() }}
         onBlur={onBlur}
     />)
 }

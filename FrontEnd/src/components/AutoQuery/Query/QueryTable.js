@@ -1,16 +1,20 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
+import { useDispatch } from 'react-redux'
 
-import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities";
-import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
-import { editCellQuery } from '../../../actions/TableQuery';
-import { useDispatch } from 'react-redux';
+import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities"
+import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8"
+import { editCellQuery } from '../../../actions/TableQuery'
 
-export default ({ queries = [], aets = [] }) => {
+export default ({ queries = [], aets = [], onRowClick, currentRow }) => {
 
     const dispatch = useDispatch()
 
     const cellEditHandler = (rowIndex, columnId, value) => {
         dispatch(editCellQuery(rowIndex, columnId, value));
+    }
+
+    const rowStyle = (queryKey) => {
+        if (queryKey === currentRow) return { background: 'peachPuff' }
     }
 
     const columns = useMemo(() => [{
@@ -50,22 +54,11 @@ export default ({ queries = [], aets = [] }) => {
     }, {
         accessorKey: 'ModalitiesInStudy',
         header: 'Modalities',
-        cell: ({ getValue }) => {
-            const ModalityComponent = () => {
-                const [value, setValue] = useState(getValue());
-                const onChange = value => {
-                    //setValue(value);
-                    //if (onDataChange) onDataChange(initialValue, value, values, id || accessor);
-                }
-
-                return (
-                    <div>
-                        gffgfd
-                        <SelectModalities previousModalities={value} onUpdate={onChange} />
-                    </div>
-                )
-            }
-            return ModalityComponent
+        cell: ({ row, getValue }) => {
+            return <SelectModalities
+                previousModalities={getValue()}
+                onChange={(value) => cellEditHandler(row.original.key, 'ModalitiesInStudy', value)}
+            />
         }
     }, {
         accessorKey: 'Aet',
@@ -78,6 +71,13 @@ export default ({ queries = [], aets = [] }) => {
     }], []);
 
     return (
-        <CommonTableV8 id='key' columns={columns} data={queries} onCellEdit={cellEditHandler} />
+        <CommonTableV8
+            id='key'
+            onRowClick={onRowClick}
+            rowStyle={rowStyle}
+            columns={columns}
+            data={queries}
+            onCellEdit={cellEditHandler}
+        />
     )
 }
