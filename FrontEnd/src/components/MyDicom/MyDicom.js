@@ -16,7 +16,7 @@ export default ({ roles, usernameProps }) => {
     }
   })
 
-  const [role_name, setRole_name] = useState(roles.name);
+  const [role_name, setRole_name] = useState(roles?.name);
   const [labels, setLabels] = useState([]);
   const [username, setUsername] = useState(usernameProps);
   const [studies, setStudies] = useState([]);
@@ -25,9 +25,9 @@ export default ({ roles, usernameProps }) => {
   const [selectedRows, setSelectedRows] = useState([]);
 
   useEffect(() => {
-    const getRoleLabels = async () => { await getRoleLabels(role_name) }
+    const getRoleLabelsFn = async () => { await getRoleLabels(role_name) }
     try {
-      getRoleLabels()
+      getRoleLabelsFn()
     } catch (err) { console.log(err) }
   }, [])
 

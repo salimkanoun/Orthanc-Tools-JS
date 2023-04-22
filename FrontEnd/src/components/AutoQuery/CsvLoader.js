@@ -1,12 +1,15 @@
-import React from 'react';
-import Dropzone from 'react-dropzone'
+import React from 'react'
 import { useDispatch } from 'react-redux'
 
+import Dropzone from 'react-dropzone'
 import Papa from 'papaparse'
 import moment from 'moment'
 
+import { addQueryToList } from '../../actions/TableQuery'
 
 export default () => {
+
+    const dispatch = useDispatch()
 
     const readCsv = (files) => {
         if (files.length === 1) {
@@ -20,7 +23,6 @@ export default () => {
     }
 
     const completeFn = (result, file) => {
-        let currentObject = this
         let csvData = result.data;
 
         csvData.forEach((query) => {
@@ -56,7 +58,7 @@ export default () => {
                 Aet: query['AET']
             }
 
-            currentObject.dispatch.addQueryToList(queryForList)
+            dispatch(addQueryToList(queryForList))
 
         })
 

@@ -76,7 +76,7 @@ export default ({ onLogout, roles }) => {
                             </li>
 
                             <li>
-                                <Nav.Link className={getLinkClass('dicom-router')} onClick={() => selectTabHandler(DICOM_ROUTER)} name='dicom-router' hidden={!roles.autorouting} ><i className="fas fa-broadcast-tower icone"></i>{opened ? '  Dicom-Router' : ''}</Nav.Link>
+                                <Nav.Link className={getLinkClass('dicom-router')} disabled={true} onClick={() => selectTabHandler(DICOM_ROUTER)} name='dicom-router' hidden={!roles.autorouting} ><i className="fas fa-broadcast-tower icone"></i>{opened ? '  Dicom-Router' : ''}</Nav.Link>
                             </li>
 
                             <li>

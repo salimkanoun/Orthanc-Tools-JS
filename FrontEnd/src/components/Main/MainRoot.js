@@ -6,7 +6,7 @@ import { Route, Switch, withRouter } from 'react-router-dom'
 
 import AdminRootPanel from '../Admin/AdminRootPanel'
 import AnonRootPanel from '../Anonymize/AnonRootPanel'
-import AutoQueryRoot from '../AutoQuery/Connected_Component/AutoQueryRoot'
+import AutoQueryRoot from '../AutoQuery/AutoQueryRoot'
 import CDBurner from '../CDBurner/CDBurner'
 import Delete from '../Delete/Delete'
 import DicomRouterPanel from '../Dicom Router/DicomRouterPanel'
