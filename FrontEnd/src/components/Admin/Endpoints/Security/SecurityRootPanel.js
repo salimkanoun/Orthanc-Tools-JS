@@ -1,5 +1,6 @@
 import React, { useState, Fragment } from 'react'
 import { Button } from 'react-bootstrap'
+
 import { keys } from '../../../../model/Constant'
 import apis from '../../../../services/apis'
 import CertificateForm from './CertificateForm'
@@ -18,12 +19,12 @@ export default () => {
      * See https://dev.to/trentyang/replace-lifecycle-with-hooks-in-react-3d4n
      */
 
-    const {data : sshKeys, isLoading : isLoadingSsh} = useCustomQuery(
+    const { data: sshKeys, isLoading: isLoadingSsh } = useCustomQuery(
         [keys.SSH_KEY],
         () => apis.sshKeys.getKeysExpend()
     )
 
-    const {data : certificates, isLoading : isLoadingCertificates} = useCustomQuery(
+    const { data: certificates, isLoading: isLoadingCertificates } = useCustomQuery(
         [keys.CERTIFICATES_KEY],
         () => apis.certificates.getCertificatesExpend()
     )
@@ -59,7 +60,7 @@ export default () => {
         setCurrentComponent(tabName)
     }
 
-    if (isLoadingCertificates || isLoadingSsh) return <Spinner/>
+    if (isLoadingCertificates || isLoadingSsh) return <Spinner />
 
     return (
         <>
@@ -71,13 +72,13 @@ export default () => {
                                 <Button
                                     className={currentComponent === 'sshKeys' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => switchTab('sshKeys')}>Ssh Keys
-                                </Button> 
+                                </Button>
                             </li>
                             <li className='col-6 text-center'>
                                 <Button
                                     className={currentComponent === 'certificates' ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                     onClick={() => switchTab('certificates')}>Certificates
-                                </Button> 
+                                </Button>
                             </li>
                         </div>
                     </nav>

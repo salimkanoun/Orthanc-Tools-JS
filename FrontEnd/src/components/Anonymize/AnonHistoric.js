@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify';
+import { Modal } from "react-bootstrap";
+
 import apis from '../../services/apis';
 import AnonymizedResults from './AnonymizedResults';
 import task from '../../services/task';
-import { Modal } from "react-bootstrap";
 import CommonTable from "../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
 
 function HistoricTable({ tasks, deleteJobHandler, setSelectedTask }) {
@@ -53,11 +54,10 @@ export default ({ username }) => {
     useEffect(() => {
         refreshHandler()
         startRefreshMonitoring()
+        return () => {
+            stopRefreshMonitoring()
+        }
     }, [])
-
-    const componentWillUnmount = () => {
-        stopRefreshMonitoring()
-    }
 
     const startRefreshMonitoring = () => {
         this.intervalChcker = setInterval(refreshHandler, 2000)

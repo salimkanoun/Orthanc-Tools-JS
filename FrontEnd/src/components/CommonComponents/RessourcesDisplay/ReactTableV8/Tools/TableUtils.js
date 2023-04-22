@@ -1,4 +1,5 @@
 import React from "react";
+
 import SelectCheckBox from "./SelectCheckBox";
 
 export const selectColumn = {
@@ -34,10 +35,10 @@ export const expandColumn =
     id: 'expander',
     accessorKey: 'expand',
     header: '',
-    enableColumnFilter : false,
+    enableColumnFilter: false,
     cell: ({ row }) => (
         <div
-        className={'d-flex justify-content-center expand-cell align-content-center'}
+            className={'d-flex justify-content-center expand-cell align-content-center'}
             {...{
                 onClick: () => row.toggleExpanded(),
             }}

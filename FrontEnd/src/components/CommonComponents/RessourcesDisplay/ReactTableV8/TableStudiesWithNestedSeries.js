@@ -7,9 +7,9 @@ import { patientColumns, studyColumns } from "./ColomnFactories";
 export default ({
     studies,
     series,
-    withPatientColums = false, 
+    withPatientColums = false,
     additionalColumnsStudies = [],
-    additionalColumnsSeries  = []
+    additionalColumnsSeries = []
 }) => {
 
     const columns = [
@@ -24,7 +24,7 @@ export default ({
 
     const columnsStudies = columns.concat(additionalColumnsStudies)
 
-    const renderSubComponent = ({row}) => {
+    const renderSubComponent = (row) => {
         let rowId = row.id
         const seriesArray = series.filter(serie => serie.StudyOrthancID === rowId)
         return <TableSeries series={seriesArray} additionalColumns={additionalColumnsSeries} />

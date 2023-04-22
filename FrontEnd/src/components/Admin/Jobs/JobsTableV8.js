@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
 import { Button, Dropdown } from "react-bootstrap";
-import { toast } from "react-toastify";
 
 import apis from "../../../services/apis";
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
@@ -38,10 +37,10 @@ export default ({ rows }) => {
                     <Dropdown.Item className='bg-green' onClick={() => onResubmitJob(id)}>Resumbit</Dropdown.Item>
 
                     <Dropdown.Item className='bg-blue' onClick={() => onResumeJob(id)}>Resume</Dropdown.Item>
-    
+
                     <Dropdown.Item className='bg-orange' onClick={() => onPauseJob(id)}>Pause</Dropdown.Item>
-    
-                    <Dropdown.Item className='bg-red' onClick={() => onCancelJob(id) }>Cancel</Dropdown.Item>
+
+                    <Dropdown.Item className='bg-red' onClick={() => onCancelJob(id)}>Cancel</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         )
@@ -54,7 +53,7 @@ export default ({ rows }) => {
             header: "ID",
             cell: row => <i>{row.getValue()}</i>,
             filterType: "STRING",
-            isEditable : true,
+            isEditable: true,
         },
         {
             id: 'Progress',
@@ -74,10 +73,10 @@ export default ({ rows }) => {
         {
             id: 'Details',
             accessorKey: 'Details',
-            header: "Details" ,
+            header: "Details",
             cell: (({ row }) => {
                 return (<div className="text-center"><Button className='otjs-button otjs-button-blue'
-                    onClick={() => {row.toggleExpanded()}}>Details</Button></div>)
+                    onClick={() => { row.toggleExpanded() }}>Details</Button></div>)
             }),
             enableColumnFilter: false,
         },
@@ -91,14 +90,14 @@ export default ({ rows }) => {
             enableColumnFilter: false,
         }
     ]
-    
-    const renderSubComponent = ({row}) => {
+
+    const renderSubComponent = (row) => {
         return <ModalDetailsV8 data={[row.original]} />
     }
 
     return (
         <div >
-            <CommonTableV8 columns={columnsJobs} data={data} canSort paginated canExpand renderSubComponent={renderSubComponent}/>
+            <CommonTableV8 columns={columnsJobs} data={data} canSort paginated canExpand renderSubComponent={renderSubComponent} />
         </div>
     )
 }

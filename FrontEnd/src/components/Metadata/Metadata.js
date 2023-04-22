@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import { Container, Row } from 'react-bootstrap';
 
 import apis from '../../services/apis'
-import { Container, Row } from 'react-bootstrap';
+
 import MetadataTable from './MetadataTable';
 import MetadataSelector from './MetadataSelector';
 
-export default ({seriesOrthancId}) => {
+export default ({ seriesOrthancId }) => {
 
     const [data, setData] = useState([])
     const [instancesArray, setInstancesArray] = useState([])
@@ -43,7 +44,7 @@ export default ({seriesOrthancId}) => {
         }
 
         const fetchData = async () => {
-            if(instancesArray.length ===0) return
+            if (instancesArray.length === 0) return
             let currentInstanceId = instancesArray[currentKey]
             let responsetags = []
 
@@ -69,8 +70,8 @@ export default ({seriesOrthancId}) => {
         setCurrentKey(instanceNumber)
     }
 
-    const onSharedTagsChange = ()=>{
-        setSharedTags((sharedTags)=> !sharedTags)
+    const onSharedTagsChange = () => {
+        setSharedTags((sharedTags) => !sharedTags)
     }
 
 

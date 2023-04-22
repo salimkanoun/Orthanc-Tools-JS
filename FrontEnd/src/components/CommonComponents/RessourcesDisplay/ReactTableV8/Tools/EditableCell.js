@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Button, OverlayTrigger, Popover, Tooltip } from "react-bootstrap"
 import Select from "react-select"
+
 import CalendarUtc from "../../../CalendarUtc"
 
 export default ({ getValue, row: { index, id: rowId }, column: { columnDef: { id: columnId, style, editionProperties: { type, minLength, maxLength, min, max, placeholder, options, isClearable = true, disabled } = {}, isEditable = false } }, table }) => {

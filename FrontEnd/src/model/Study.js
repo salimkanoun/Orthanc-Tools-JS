@@ -21,7 +21,7 @@ export default class Study {
         this.StudyInstanceUID = mainDicomTags?.StudyInstanceUID ?? null
         this.AccessionNumber = mainDicomTags?.AccessionNumber ?? null
         this.StudyTime = mainDicomTags?.StudyTime ?? null
-        this.SeriesOrthancIDs = SeriesOrthancIDs 
+        this.SeriesOrthancIDs = SeriesOrthancIDs
         this.StudyOrthancID = orthancID
     }
 
@@ -102,10 +102,10 @@ export default class Study {
 
     addSeries = (newSeries) => {
         let SeriesOrthancID = newSeries.getSeriesOrthancID();
-        if( ! this.isKnownSeries(SeriesOrthancID)) this.Series[SeriesOrthancID] = newSeries
+        if (!this.isKnownSeries(SeriesOrthancID)) this.Series[SeriesOrthancID] = newSeries
     }
 
-    getSeriesOrthancID = () =>{
+    getSeriesOrthancID = () => {
         return Object.values(this.Series).map(series => series.getSeriesOrthancID())
     }
 
@@ -119,7 +119,7 @@ export default class Study {
             StudyInstanceUID: this.StudyInstanceUID,
             StudyOrthancID: this.StudyOrthancID,
             StudyTime: this.StudyTime,
-            SeriesOrthancIDs : this.SeriesOrthancIDs,
+            SeriesOrthancIDs: this.SeriesOrthancIDs,
             Series: Object.values(this.Series).map(series => series.serialize()),
             ParentPatient: this.ParentPatient
         }

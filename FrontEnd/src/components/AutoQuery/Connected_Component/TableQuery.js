@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { Col, FormControl, Row } from "react-bootstrap";
 
 import apis from '../../../services/apis';
-import { Col, FormControl, Row } from "react-bootstrap";
+
 import {
     DateFilter,
     dateFilter as dFilter,
@@ -13,8 +14,6 @@ import { InputCell as EditableCell, SelectCell } from "../../CommonComponents/Re
 import CommonSelectingAndFilteringTable
     from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonSelectingAndFilteringTable";
 
-import ExportCSVButton from "../../CommonComponents/RessourcesDisplay/ExportCSVButton";
-import CsvLoader from "./CsvLoader";
 import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities";
 
 function CustomHeader(setOverride, type = 'text') {
@@ -125,7 +124,7 @@ function Table({ queries, aets, setOverride, overridesValues, onDataChange, onSe
         onDataChange={onDataChange} />
 }
 
-export default ({ switchTab}) => {
+export default ({ switchTab }) => {
     const [overrides, setOverrides] = useState({})
     const [selected, setSelected] = useState([])
     const [filtered, setFiltered] = useState([])
@@ -139,23 +138,17 @@ export default ({ switchTab}) => {
         }
     })
 
-    const componentDidMount = async () => {
+    useEffect(() => {
+        const getAets = async () => { await apis.aets.getAets() }
         try {
-            let aets = await apis.aets.getAets()
+            let aets = getAets()
             dispatch.loadAvailableAETS(aets)
         } catch (error) {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            toast.error(error.statusText, { data: { type: 'notification' } })
         }
-    }
+    }, [])
 
-    const removeRow = () => {
-        let selectedKeyRow = selected.map(x => x.key);
-        dispatch.removeQuery(selectedKeyRow);
-    }
 
-    const emptyTable = () => {
-        dispatch.emptyQueryTable()
-    }
 
     const changeHandler = (initialValue, value, row, column) => {
         dispatch.editCellQuery(row.key, column, value);
@@ -164,7 +157,7 @@ export default ({ switchTab}) => {
     const handleOverride = (label, val) => {
         let overrides = overrides;
         overrides[label] = val;
-        setOverrides({...overrides})
+        setOverrides({ ...overrides })
     }
 
     const handleSelect = (selected) => {
@@ -177,20 +170,20 @@ export default ({ switchTab}) => {
 
     const query = async () => {
         const data = store.queries.filter(x => filtered.includes(x.key));
-        const toastId = toast.info('Starting Studies Queries', { autoClose: false }, {data:{type:'jobs'}});
+        const toastId = toast.info('Starting Studies Queries', { autoClose: false }, { data: { type: 'jobs' } });
         let i = 0
 
         for (const query of data) {
             i++
             toast.update(toastId, {
                 render: 'Query study ' + i + '/' + data.length
-            }, {data:{type:'jobs'}});
+            }, { data: { type: 'jobs' } });
             //For each line make dicom query and return results
             try {
                 let answeredResults = await makeDicomQuery({ ...query, ...overrides })
                 toast.update(toastId, {
                     render: 'Queried study ' + i + '/' + data.length
-                }, {data:{type:'jobs'}});
+                }, { data: { type: 'jobs' } });
                 //For each results, fill the result table through Redux
                 answeredResults.forEach((answer) => {
                     dispatch.addStudyResult(answer)
@@ -202,7 +195,7 @@ export default ({ switchTab}) => {
         }
 
         toast.dismiss(toastId)
-        toast.success('Queries completed', {data:{type:'notification'}})
+        toast.success('Queries completed', { data: { type: 'notification' } })
 
         switchTab('Result')
 
@@ -245,38 +238,6 @@ export default ({ switchTab}) => {
 
     return (
         <React.Fragment>
-            <Row>
-                <Col>
-                    <CsvLoader />
-                </Col>
-            </Row>
-            <Row className="text-center mt-5">
-                <Col sm={3}>
-                    <input type="button" className="otjs-button otjs-button-blue w-7" value="Add"
-                        onClick={dispatch.addRow} />
-                </Col>
-                <Col sm={3}>
-                    <ExportCSVButton data={store.queries.map(row => ({
-                        'Patient Name': row.PatientName,
-                        'Patient ID': row.PatientID,
-                        'Accession Number': row.AccessionNumber,
-                        'Date From': row.DateFrom,
-                        'Date To': row.DateTo,
-                        'Study Description': row.StudyDescription,
-                        'Modalities': row.ModalitiesInStudy,
-                        'AET': row.Aet
-                    }
-                    ))} />
-                </Col>
-                <Col sm={6}>
-                    <input type="button" className="otjs-button otjs-button-orange m-2 w-10" value="Delete Selected"
-                        onClick={removeRow} />
-
-
-                    <input type="button" className="otjs-button otjs-button-red m-2 w-10" value="Empty Table"
-                        onClick={emptyTable} />
-                </Col>
-            </Row>
             <Row className="text-center mt-5">
                 <Col>
                     <Table queries={store.queries} onDataChange={changeHandler} aets={store.aets}

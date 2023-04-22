@@ -12,7 +12,7 @@ export default ({ data }) => {
             accessorKey: 'ID',
             header: 'ID',
             cell: row => <i>{row.getValue()}</i>,
-            hidden: true,
+            enableHiding: true,
         },
         {
             id: 'ErrorCode',
@@ -50,7 +50,7 @@ export default ({ data }) => {
             header: "Details",
             cell: ({ row }) => {
                 return (
-                    <div style={{ maxWidth:'300px' }}>
+                    <div style={{ maxWidth: '300px' }}>
                         <pre >
                             {JSON.stringify(row.original.Content, null, 2)}
                         </pre>

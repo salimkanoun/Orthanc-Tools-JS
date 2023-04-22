@@ -5,14 +5,13 @@ import { Button } from 'react-bootstrap'
 import apis from '../../../services/apis'
 import OhifLink from '../../Viewers/OhifLink'
 import StoneLink from '../../Viewers/StoneLink'
-import Modify from '../../Modify/Modify'
 
 export default ({
     orthancID,
     StudyInstanceUID,
     onDelete,
     openLabelModal,
-    dataDetails
+    onShowModify
 }) => {
 
     const handleClick = (e) => {
@@ -31,7 +30,9 @@ export default ({
                 <Dropdown.Menu className="mt-2 border border-dark border-2">
                     <OhifLink className='dropdown-item bg-green' StudyInstanceUID={StudyInstanceUID} />
                     <StoneLink className='dropdown-item bg-green' StudyInstanceUID={StudyInstanceUID} />
-                    <Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }}  data={dataDetails} />
+                    <Button className='dropdown-item bg-orange' onClick={() => onShowModify()}>
+                        Modify
+                    </Button>
                     <Button className='dropdown-item bg-red'
                         onClick={() => onDelete()}>Delete
                     </Button>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Popover, Col, Row, Overlay, Button } from 'react-bootstrap'
 
@@ -6,9 +6,9 @@ import apis from '../../services/apis'
 import SendAetDropdown from "../Export/SendAetDropdown"
 import DownloadDropdown from "../Export/DownloadDropdown"
 import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList } from '../../actions/ExportList'
-import { toast } from 'react-toastify'
 import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudiesWithNestedSeries'
 import { seriesColumns, studyColumns } from '../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories'
+import { errorMessage } from '../../tools/toastify'
 
 export default ({ target, show, onHide }) => {
 
@@ -23,16 +23,13 @@ export default ({ target, show, onHide }) => {
 
     const dispatch = useDispatch()
 
-    const componentDidMount = async () => {
-        try {
-            let aets = await apis.aets.getAets()
-            this.setAets(aets)
-        } catch (error) {
-            this.setAets([])
-            toast.error(error.statusText, { data: { type: 'notification' } })
-        }
+    useEffect(() => {
+        apis.aets.getAets().then(aets => setAets(aets)).catch((error) => {
+            setAets([])
+            errorMessage(error?.data?.errorMessage ?? "Can't Retrieve AETS")
+        })
+    }, [])
 
-    }
 
     const handleClickEmpty = () => {
         dispatch(emptyExportList())

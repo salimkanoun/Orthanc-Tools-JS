@@ -14,14 +14,12 @@ import Series from '../../model/Series'
 import apis from "../../services/apis"
 import { useCustomMutation, useCustomQuery } from "../../services/ReactQuery/hooks"
 import { errorMessage } from "../../tools/toastify"
+import { send_type } from "../../model/Constant"
 
 export default ({
     patients,
     refreshSearch
 }) => {
-    const SEND_TYPE_ANON = "anon"
-    const SEND_TYPE_EXPORT = "export"
-    const SEND_TYPE_DELETE = "delete"
 
     const [selectedStudies, setSelectedStudies] = useState([])
     const [currentStudy, setCurrentStudy] = useState(null)
@@ -29,8 +27,8 @@ export default ({
     const dispatch = useDispatch()
 
     const { data: series, refetch } = useCustomQuery(
-        ['orthanc', 'series', [currentStudy]],
-        () => apis.content.getSeriesDetails(currentStudy),
+        ['orthanc', 'series', currentStudy],
+        () => currentStudy ? apis.content.getSeriesDetails(currentStudy) : [],
         undefined,
         (series) => {
             let seriesObjects = series.map(series => {
@@ -52,9 +50,9 @@ export default ({
 
         let filteredSelectedStudies = studies.filter(study => selectedStudies.includes(study.StudyOrthancID))
 
-        if (type === SEND_TYPE_ANON) dispatch(addStudiesToAnonList(filteredSelectedStudies))
-        else if (type === SEND_TYPE_EXPORT) dispatch(addStudiesToExportList(filteredSelectedStudies))
-        else if (type === SEND_TYPE_DELETE) dispatch(addStudiesToDeleteList(filteredSelectedStudies))
+        if (type === send_type.ANON) dispatch(addStudiesToAnonList(filteredSelectedStudies))
+        else if (type === send_type.EXPORT) dispatch(addStudiesToExportList(filteredSelectedStudies))
+        else if (type === send_type.DELETE) dispatch(addStudiesToDeleteList(filteredSelectedStudies))
     }
 
     const rowStyle = (StudyOrthancID) => {

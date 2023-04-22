@@ -1,4 +1,5 @@
 import React from 'react'
+
 import AetForm from './AetForm'
 import apis from '../../../services/apis'
 import AetsTable from './AetsTable'
@@ -12,7 +13,7 @@ import { useCustomQuery } from '../../../services/ReactQuery/hooks'
 export default () => {
 
     const { data: aets, isLoading: isLoadingAets } = useCustomQuery(
-        [keys.AETS_KEY],
+        [keys.AETS_KEY, { [keys.EXPAND]: true }],
         () => apis.aets.getAetsExpand(),
         undefined,
         (answer) => {
@@ -24,7 +25,7 @@ export default () => {
         }
     )
 
-    if (isLoadingAets) return <Spinner/>
+    if (isLoadingAets) return <Spinner />
 
     return (
         <>

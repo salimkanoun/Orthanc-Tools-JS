@@ -1,19 +1,19 @@
 import Select from 'react-select';
-import { Component, useState } from 'react';
+import { useEffect, useState } from 'react';
+
 import apis from "../../services/apis";
 
 /**
  * To use it to edit AETs choice, pass an Array of AETs Name through the props named 'aets'
  */
-export default ({ labelProps, aets, refresh }) => {
+export default ({ aets, refresh }) => {
 
   const [selected, setSelected] = useState([])
-  const [label, setLabel] = useState(labelProps)
   const [options, setOptions] = useState([])
 
-  const componentDidMount = async () => {
-    //get AETs    
-    let aets = await apis.aets.getAets()
+  useEffect(() => {
+    const getAets = async () => {await apis.aets.getAets()}
+    let aets = getAets()
     for (var i = 0; i < aets.length; i++) {
       aets[i] = { value: aets[i], label: aets[i] }
     }
@@ -26,7 +26,8 @@ export default ({ labelProps, aets, refresh }) => {
       setSelected(selected)
     }
     setOptions(aets)
-  }
+  }, [])
+
 
   /**
    * When the value of the selector change

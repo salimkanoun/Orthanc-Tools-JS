@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
     useReactTable,
     getCoreRowModel,
@@ -11,7 +11,6 @@ import {
     flexRender,
     getExpandedRowModel,
 } from "@tanstack/react-table";
-import { useState } from "react";
 
 import Paginate from "./Tools/Paginate";
 import Filter from "./Tools/Filter";
@@ -30,7 +29,7 @@ export default ({
     selectedRowsIds = undefined,
     customRowProps = (row) => { },
     sortBy = [],
-    renderSubComponent = (rowId) => { },
+    renderSubComponent = (row) => { },
     onRowClick = () => { },
     rowStyle = () => { },
     onSelectRow = (state) => { },
@@ -165,7 +164,11 @@ export default ({
                     {table.getRowModel().rows.map(row => {
                         return (
                             <>
-                                <tr key={row.id} {...customRowProps(row)} onClick={() => onRowClick(row.id)} style={rowStyle(row.id)}>
+                                <tr key={row.id} {...customRowProps(row)} onClick={() => {
+                                    row.toggleExpanded();
+                                    onRowClick(row.id)
+                                }} style={rowStyle(row.id)
+                                }>
                                     {row.getVisibleCells().map(cell => (
                                         <td key={cell.id}>
                                             {flexRender(
@@ -176,10 +179,10 @@ export default ({
                                     )
                                     )}
                                 </tr>
-                                {row.getIsExpanded() && (
+                                {row.getIsExpanded() && renderSubComponent(row) && (
                                     <tr>
                                         <td colSpan={row.getVisibleCells().length}>
-                                            {renderSubComponent({ row })}
+                                            {renderSubComponent(row)}
                                         </td>
                                     </tr>
                                 )}

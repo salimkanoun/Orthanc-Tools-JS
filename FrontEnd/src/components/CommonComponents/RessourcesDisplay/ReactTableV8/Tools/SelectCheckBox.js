@@ -1,16 +1,15 @@
 import React, { forwardRef, useEffect, useRef } from 'react'
 
 export default forwardRef(
-    ({ indeterminate, ...rest }, ref) => {
-      const defaultRef = useRef()
-      const resolvedRef = ref || defaultRef
+  ({ indeterminate, ...rest }, ref) => {
+    const defaultRef = useRef()
+    const resolvedRef = ref || defaultRef
 
-      useEffect(() => {
-        resolvedRef.current.indeterminate = indeterminate
-      }, [resolvedRef, indeterminate])
+    useEffect(() => {
+      resolvedRef.current.indeterminate = indeterminate
+    }, [resolvedRef, indeterminate])
 
-      return (<input type='checkbox' ref={resolvedRef} {...rest} />)
-    }
-  )
+    return (<input type='checkbox' ref={resolvedRef} {...rest} onClick={(e) => e.stopPropagation()} />)
+  }
+)
 
-  

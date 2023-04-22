@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
+
 import OrthancSettings from './OrthancSettings/OrthancSettings'
 import RedisSettings from './Redis/RedisSettings'
 
@@ -34,14 +35,14 @@ export default () => {
               <Button
                 className={selectedOptionMenu === ORTHANC_SETTINGS ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                 onClick={() => switchTab(ORTHANC_SETTINGS)}>
-                  Orthanc Settings
+                Orthanc Settings
               </Button>
             </li>
             <li className='col-6 text-center'>
               <Button
                 className={selectedOptionMenu === REDIS_SETTINGS ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                 onClick={() => switchTab(REDIS_SETTINGS)}>
-                  Redis Settings
+                Redis Settings
               </Button>
             </li>
           </div>

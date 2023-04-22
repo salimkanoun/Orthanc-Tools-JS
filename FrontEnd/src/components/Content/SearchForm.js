@@ -1,17 +1,17 @@
-import React, { Component } from 'react'
-import Form from '../CommonComponents/SearchForm/Form'
+import React from 'react'
 
-export default ({onSubmit}) => {
+import SearchForm from '../CommonComponents/SearchForm/SearchForm'
+
+export default ({ onSubmit }) => {
 
     const dataSearch = (formData) => {
-         
         //dateForm
         let date = ""
         if (formData.dateFrom !== "" || formData.dateTo !== "") //if dateFrom or dateTo isn't empty 
             date = formData.dateFrom.replace('-', '').replace('-', '') + '-' + formData.dateTo.replace('-', '').replace('-', '')
         //patient name
         let patientName = ""
-        if (formData.lastName !== '' && formData.firstName ==='')
+        if (formData.lastName !== '' && formData.firstName === '')
             patientName = formData.lastName
         else if (formData.lastName === '' && formData.firstName !== '')
             patientName = '^' + formData.firstName
@@ -21,12 +21,12 @@ export default ({onSubmit}) => {
         let contentSearch = {
             Level: 'Study',
             CaseSensitive: false,
-            Expand: true, 
+            Expand: true,
             Query: {
-                PatientName: patientName, 
+                PatientName: patientName,
                 PatientID: formData.patientID,
                 AccessionNumber: formData.accessionNumber,
-                StudyDate: date, 
+                StudyDate: date,
                 ModalitiesInStudy: formData.modalities,
                 StudyDescription: formData.studyDescription
             }
@@ -37,10 +37,7 @@ export default ({onSubmit}) => {
 
     }
 
-    //form
-        return (
-            <Form title="Search" icon="fas fa-search" onFormValidate={dataSearch} >
-                    <input type='button' className='btn otjs-button otjs-button-blue' value='Search' />
-            </Form>
-        )
+    return (
+        <SearchForm buttonsName={['Search']} title="Search" icon="fas fa-search" onFormValidate={dataSearch} />
+    )
 }

@@ -1,7 +1,7 @@
 import ActionBouton from "../ActionBouton";
 import React from "react";
 import { dateFilter, DateFilter, invertableDataFilter, InvertableDataFilter } from "./ColumnFilters";
-import RetrieveButton from "../../../Query/Components/RetrieveButton";
+import RetrieveButton from "../../../Query/RetrieveButton";
 import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 import ConstantLevel from "../../../Modify/ConstantLevel";

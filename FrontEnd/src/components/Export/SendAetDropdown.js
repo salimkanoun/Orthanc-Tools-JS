@@ -1,28 +1,26 @@
-import React, { Component } from "react"
-import {ButtonGroup, Dropdown } from "react-bootstrap"
-import { toast } from "react-toastify"
+import React, { useState } from "react"
+import { ButtonGroup, Dropdown } from "react-bootstrap"
 
 import apis from "../../services/apis"
-import MonitorJob from "../../tools/MonitorJob"
+import { errorMessage, successMessage } from "../../tools/toastify"
 
-export default class SendAetDropdown extends Component {
+export default ({ aets = [], exportIds }) => {
 
-    state = {
-        disabled: false,
-        title: "Send To Modality"
-    }
+    const [disabled, setDisabled] = useState(false)
+    const [title, setTitle] = useState("Send To Modality")
 
-    handleClickDownload = async (event) => {
+    const handleClickDownload = async (event) => {
         let destinationAet = event.currentTarget.id
-        let jobAnswer
-        
-        try{
-            jobAnswer = await apis.aets.storeAET(destinationAet, this.props.exportIds)
-        }catch(error){
-            toast.error(error.statusText, {data:{type:'notification'}})
+
+        try {
+            await apis.aets.storeAET(destinationAet, exportIds)
+            successMessage('Transfert Started')
+        } catch (error) {
+            errorMessage(error?.data?.errorMessage ?? 'Failed')
             return;
         }
 
+        /*
         let jobMonitoring = new MonitorJob(jobAnswer.ID)
         let self = this
         jobMonitoring.onUpdate(function (progress) {
@@ -32,19 +30,21 @@ export default class SendAetDropdown extends Component {
         jobMonitoring.onFinish(async function (state) {
             if (state === MonitorJob.Success) {
                 self.resetProgress()
-                toast.success('DicomTransfer Done', {data:{type:'notification'}})
+                successMessage('DicomTransfer Done')
 
             } else if (state === MonitorJob.Failure) {
                 self.resetProgress()
-                toast.error('DicomTransfer Failed', {data:{type:'notification'}})
+                errorMessage('DicomTransfer Failed')
 
             }
         })
 
         jobMonitoring.startMonitoringJob()
         this.job = jobMonitoring
+        */
     }
 
+    /*
     updateProgress = (progress) => {
         this.setState({
             disabled: true,
@@ -62,26 +62,20 @@ export default class SendAetDropdown extends Component {
     componentWillUnmount = () => {
         if (this.job !== undefined) this.job.stopMonitoringJob()
     }
+    */
 
-    render = () => {
+    return (
+        <Dropdown as={ButtonGroup}>
+            <Dropdown.Toggle variant="button-dropdown-orange" className="button-dropdown button-dropdown-orange w-10" id="dropdown-basic" disabled={disabled}>
+                {title}
+            </Dropdown.Toggle>
 
-        let dropDownItems = []
-        this.props.aets.forEach(aet => {
-            dropDownItems.push(<Dropdown.Item key={aet} id={aet} onClick={this.handleClickDownload} >{aet}</Dropdown.Item>)
-        })
+            <Dropdown.Menu className="mt-2 border border-dark border-2">
+                {aets.map(aet => (<Dropdown.Item key={aet} id={aet} onClick={handleClickDownload} >{aet}</Dropdown.Item>))}
+            </Dropdown.Menu>
+        </Dropdown>
 
-        return (
-            <Dropdown as={ButtonGroup}>
-                <Dropdown.Toggle variant="button-dropdown-orange" className="button-dropdown button-dropdown-orange w-10" id="dropdown-basic" disabled={this.state.disabled}>
-                    {this.state.title}
-                </Dropdown.Toggle>
-                
-                <Dropdown.Menu className="mt-2 border border-dark border-2">
-                    {dropDownItems}
-                </Dropdown.Menu>
-            </Dropdown>
-           
-        )
-    }
+    )
+
 
 }

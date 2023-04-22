@@ -1,10 +1,11 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
+
 import { filter } from '../../../../model/Constant';
 import ConstantLevel from "../../../Modify/ConstantLevel";
-import RetrieveButton from "../../../Query/Components/RetrieveButton";
 import ActionBouton from "../ActionBouton";
+import RetrieveButton from "../../../Query/RetrieveButton";
 
 const commonColumns = {
     RAW: {
@@ -268,9 +269,80 @@ const seriesColumns = {
         }
     }
 }
+
+const studyQueryColumns = {
+    PATIENT_NAME: {
+        accessorKey: 'PatientName',
+        header: "Patient Name",
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+    },
+    PATIENT_ID: {
+        accessorKey: 'PatientID',
+        header: "Patient ID",
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+    },
+    STUDY_INSTANCE_UID: {
+        accessorKey: 'StudyInstanceUID',
+        header: 'StudyInstanceUID',
+        enableHiding: true
+    },
+    STUDY_DATE: {
+        accessorKey: 'StudyDate',
+        header: 'Acquisition Date',
+    },
+    STUDY_DESCRIPTION: {
+        accessorKey: 'StudyDescription',
+        header: 'Study Description',
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+    },
+    REQUESTED_PROCEDURE: {
+        accessorKey: 'RequestedProcedureDescription',
+        header: 'Requested Procedure Description'
+    },
+    NB_STUDY_SERIES: {
+        accessorKey: 'NumberOfStudyRelatedSeries',
+        header: 'Series'
+    },
+    NB_SERIES_INSTANCES: {
+        accessorKey: 'NumberOfSeriesRelatedInstances',
+        header: 'Number of instances'
+    },
+    AET: {
+        accessorKey: 'OriginAET',
+        header: 'AET',
+        enableHiding: true
+    },
+}
+
+const seriesQueryColumns = {
+    SERIES_INSTANCE_UID: {
+        accessorKey: 'SeriesInstanceUID',
+        header: 'Series Instance UID',
+        enableHiding: true
+    },
+    SERIES_DESCRIPTION: {
+        accessorKey: 'SeriesDescription',
+        header: 'Series Description',
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+    },
+    MODALITY: {
+        accessorKey: 'Modality',
+        header: 'Modality',
+    },
+    SERIES_NUMBER: {
+        accessorKey: 'SeriesNumber',
+        header: 'Series Number',
+    },
+    NB_SERIES_INSTANCES: {
+        accessorKey: 'NumberOfSeriesRelatedInstances',
+        header: 'Number of instances'
+    }
+}
 export {
     patientColumns,
     studyColumns,
     seriesColumns,
-    commonColumns
+    commonColumns,
+    studyQueryColumns,
+    seriesQueryColumns
 }

@@ -1,11 +1,12 @@
 import React from 'react'
 
+import { Row, Container } from 'react-bootstrap';
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-
 import { Route, Switch, withRouter } from 'react-router-dom'
+
 import AdminRootPanel from '../Admin/AdminRootPanel'
 import AnonRootPanel from '../Anonymize/AnonRootPanel'
-import AutoQueryRoot from '../AutoQuery/Connected_Component/AutoQueryRoot'
+import AutoQueryRoot from '../AutoQuery/AutoQueryRoot'
 import CDBurner from '../CDBurner/CDBurner'
 import Delete from '../Delete/Delete'
 import DicomRouterPanel from '../Dicom Router/DicomRouterPanel'
@@ -13,33 +14,27 @@ import ExportPanel from '../Export/ExportPanel'
 import ImportRootPanel from '../Import/ImportRootPanel'
 import MyDicom from '../MyDicom/MyDicom'
 import ContentRootPanel from '../Content/ContentRootPanel'
-import Query from '../Query/Components/Query'
+import Query from '../Query/Query'
 import NavBar from './NavBar'
 import RobotView from '../AutoQuery/Connected_Component/RobotView';
 import Footer from './Footer';
-import { Row, Col, Container } from 'react-bootstrap';
+
 import ToolsPanel from './ToolsPanel';
+import Welcome from './Welcome';
 
 const MainRoot = ({ onLogout, username, roles }) => {
 
     return (
         <>
+            <NavBar onLogout={onLogout} username={username} roles={roles} />
             <Container fluid>
                 <Row>
-                    <Col xs={"auto"} sm={"auto"}>
-                        <NavBar onLogout={onLogout} username={username} roles={roles} />
-                    </Col>
-
-                    <Col >
-                        <Row>
-                            <ToolsPanel roles={roles} apercu />
-                        </Row>
-                        <Row>
-                            <AnimatedSwitch />
-                        </Row>
-                    </Col>
+                    <ToolsPanel roles={roles} apercu />
                 </Row>
-            </Container>
+                <Row>
+                    <AnimatedSwitch />
+                </Row>
+            </Container >
             <Footer />
         </>
     )
@@ -63,6 +58,7 @@ const AnimatedSwitch = withRouter(({ location, ...props }) => (
                     <Route exact path='/mydicom' component={MyDicom} />
                     <Route exact path='/delete' component={Delete} />
                     <Route exact path='/dicom-router' component={DicomRouterPanel} />
+                    <Route exact path='/' component={Welcome} />
                 </Switch>
             </div>
         </CSSTransition>

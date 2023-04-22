@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { Button, Col, Container, Nav, Navbar, Row } from 'react-bootstrap'
+
 import AetRootPanel from './AET/AetRootPanel'
 import PeerRootPanel from './Peers/PeerRootPanel'
 import JobsRootPanel from './Jobs/JobsRootPanel'
@@ -8,7 +10,6 @@ import EndpointsRootPanel from './Endpoints/EndpointsRootPanel'
 import GeneralRoot from './General/GeneralRoot'
 import TaskRootPanel from './Robots/TaskRootPanel'
 import LabelRootPanel from "./Labels/LabelRootPanel"
-import { Button, Col, Container, Nav, Navbar, Row } from 'react-bootstrap'
 
 /**
  * Root Panel of Admin route
