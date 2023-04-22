@@ -46,7 +46,7 @@ export default () => {
 
     const onCSVDownload = () => {
         let data = store.queries.map(row => {
-            let formattedDateFrom =  row.DateFrom instanceof Date ? moment(row.DateFrom).format('YYYYMMDD') : ''
+            let formattedDateFrom = row.DateFrom instanceof Date ? moment(row.DateFrom).format('YYYYMMDD') : ''
             let formattedDateTo = row.DateTo instanceof Date ? moment(row.DateTo).format('YYYYMMDD') : ''
             return {
                 'Patient Name': row.PatientName,
@@ -69,6 +69,7 @@ export default () => {
     if (isLoading) return <Spinner />
     return (
         <Container fluid>
+
             <Row>
                 <CsvLoader />
             </Row>

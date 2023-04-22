@@ -25,6 +25,7 @@ export default () => {
 
     return (
         <div>
+            <h2>Auto Retrieve</h2>
             <div className='mb-5'>
                 <nav className="otjs-navmenu container-fluid">
                     <div className="otjs-navmenu-nav">
