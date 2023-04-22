@@ -3,6 +3,7 @@ import { Button, Col, Container, Row } from 'react-bootstrap'
 import CsvLoader from '../CsvLoader'
 import { useDispatch } from 'react-redux'
 import { addRow, emptyQueryTable } from '../../../actions/TableQuery'
+import QueryTable from './QueryTable'
 
 
 export default () => {
@@ -43,6 +44,9 @@ export default () => {
                     onClick={removeRow} />
                 <input type="button" className="otjs-button otjs-button-red m-2 w-10" value="Empty Table"
                     onClick={emptyTable} />
+            </Row>
+            <Row>
+                <QueryTable />
             </Row>
         </Container>
     )

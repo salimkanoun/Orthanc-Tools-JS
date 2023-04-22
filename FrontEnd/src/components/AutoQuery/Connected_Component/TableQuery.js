@@ -14,7 +14,6 @@ import { InputCell as EditableCell, SelectCell } from "../../CommonComponents/Re
 import CommonSelectingAndFilteringTable
     from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonSelectingAndFilteringTable";
 
-import ExportCSVButton from "../../CommonComponents/RessourcesDisplay/ExportCSVButton";
 import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities";
 
 function CustomHeader(setOverride, type = 'text') {
