@@ -1,5 +1,7 @@
 import React from "react";
+
 import { Button, Card } from "react-bootstrap";
+
 import JobsTable from "./JobsTable";
 
 export default ({ jobs, clear }) => {

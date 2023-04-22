@@ -1,11 +1,12 @@
 import { useRef, useState } from "react";
+
 import { useNotificationCenter } from "react-toastify/addons/use-notification-center";
 import { Badge, Overlay } from "react-bootstrap";
 
 import MailIcon from "@mui/icons-material/Mail";
 import { IconButton } from "@mui/material";
 
-import NotificationContent from "./NotificationContent";
+import JobsRoot from "./Jobs/JobsRoot";
 
 export default () => {
 
@@ -13,6 +14,10 @@ export default () => {
         notifications,
         remove
     } = useNotificationCenter();
+    
+    const getJobsNotifications = () => {
+        return notifications.filter((notification) => notification.type === 'jobs')
+    }
 
     const [isOpen, setIsOpen] = useState(false);
 
@@ -35,7 +40,7 @@ export default () => {
                 placement="left"
             >
                 <div >
-                    <NotificationContent notifications={notifications} remove={remove} />
+                    <JobsRoot notifications={getJobsNotifications()} remove={remove} />
                 </div>
             </Overlay>
         </div>

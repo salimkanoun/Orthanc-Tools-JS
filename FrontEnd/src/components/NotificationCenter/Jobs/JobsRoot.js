@@ -4,12 +4,12 @@ import { toast } from 'react-toastify'
 import { Card } from "react-bootstrap"
 
 import CardJobs from "./CardJobs"
-import apis from "../../services/apis";
+import apis from "../../../services/apis";
 
 export default ({ notifications, remove }) => {
 
     const monitorJobs = async (notifications) => {
-        let jobsNotifications = notifications.filter((notification) => notification.type === 'jobs' && notification.data?.State !== 'Success' && notification.data?.State !== 'Failure')
+        let jobsNotifications = notifications.filter((notification) => notification.data?.State !== 'Success' && notification.data?.State !== 'Failure')
         for (let i = 0; i < Math.min(6, jobsNotifications.length); i++) {
             let updatedData = JSON.parse(JSON.stringify(jobsNotifications[i].data))
             const jobId = jobsNotifications[i]?.data?.ID
