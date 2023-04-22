@@ -15,7 +15,6 @@ import CommonSelectingAndFilteringTable
     from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonSelectingAndFilteringTable";
 
 import ExportCSVButton from "../../CommonComponents/RessourcesDisplay/ExportCSVButton";
-import CsvLoader from "./CsvLoader";
 import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities";
 
 function CustomHeader(setOverride, type = 'text') {
@@ -150,14 +149,7 @@ export default ({ switchTab }) => {
         }
     }, [])
 
-    const removeRow = () => {
-        let selectedKeyRow = selected.map(x => x.key);
-        dispatch.removeQuery(selectedKeyRow);
-    }
 
-    const emptyTable = () => {
-        dispatch.emptyQueryTable()
-    }
 
     const changeHandler = (initialValue, value, row, column) => {
         dispatch.editCellQuery(row.key, column, value);
@@ -247,38 +239,6 @@ export default ({ switchTab }) => {
 
     return (
         <React.Fragment>
-            <Row>
-                <Col>
-                    <CsvLoader />
-                </Col>
-            </Row>
-            <Row className="text-center mt-5">
-                <Col sm={3}>
-                    <input type="button" className="otjs-button otjs-button-blue w-7" value="Add"
-                        onClick={dispatch.addRow} />
-                </Col>
-                <Col sm={3}>
-                    <ExportCSVButton data={store.queries.map(row => ({
-                        'Patient Name': row.PatientName,
-                        'Patient ID': row.PatientID,
-                        'Accession Number': row.AccessionNumber,
-                        'Date From': row.DateFrom,
-                        'Date To': row.DateTo,
-                        'Study Description': row.StudyDescription,
-                        'Modalities': row.ModalitiesInStudy,
-                        'AET': row.Aet
-                    }
-                    ))} />
-                </Col>
-                <Col sm={6}>
-                    <input type="button" className="otjs-button otjs-button-orange m-2 w-10" value="Delete Selected"
-                        onClick={removeRow} />
-
-
-                    <input type="button" className="otjs-button otjs-button-red m-2 w-10" value="Empty Table"
-                        onClick={emptyTable} />
-                </Col>
-            </Row>
             <Row className="text-center mt-5">
                 <Col>
                     <Table queries={store.queries} onDataChange={changeHandler} aets={store.aets}

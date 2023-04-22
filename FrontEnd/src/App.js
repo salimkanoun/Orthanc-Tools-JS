@@ -1,17 +1,20 @@
 import React from 'react'
 
-import Authentication from './components/Authentication'
-
-import { login, logout } from './actions/login'
 import { useSelector, useDispatch } from 'react-redux'
-import apis from './services/apis'
-
+import { BrowserRouter } from 'react-router-dom'
 import {
     QueryClient,
     QueryClientProvider,
-    useQuery,
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ToastContainer } from 'react-toastify'
+
+import Authentication from './components/Authentication'
+import MainRoot from './components/Main/MainRoot'
+import ConfirmGlobal from './components/CommonComponents/ConfirmGlobal'
+
+import { login, logout } from './actions/login'
+import apis from './services/apis'
 
 //CSS Boostrap
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -19,10 +22,6 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'react-toastify/dist/ReactToastify.css'
 //Custom CSS
 import './assets/styles/orthancToolsJs.scss'
-import { ToastContainer } from 'react-toastify'
-import { BrowserRouter } from 'react-router-dom'
-import MainRoot from './components/Main/MainRoot'
-import ConfirmGlobal from './components/CommonComponents/ConfirmGlobal'
 
 // Configuring Toastify params that will be used all over the app
 const App = () => {
