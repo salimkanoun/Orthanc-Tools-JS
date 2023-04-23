@@ -1,11 +1,10 @@
 import React, { Component, Fragment, useMemo } from 'react'
 import { connect } from "react-redux"
 import { buildStyles, CircularProgressbar, CircularProgressbarWithChildren } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
-import { toast } from 'react-toastify';
+
+
 import Dropdown from 'react-bootstrap/esm/Dropdown'
 
-import AnonExportDeleteSendButton from '../../Import/AnonExportDeleteSendButton'
 import OhifLink from '../../Viewers/OhifLink'
 import StoneLink from '../../Viewers/StoneLink'
 import apis from '../../../services/apis'
@@ -15,11 +14,6 @@ import { ReactComponent as XSVG } from '../../../assets/images/x-circle.svg'
 import { ReactComponent as PendingSVG } from '../../../assets/images/pending.svg'
 import { ReactComponent as RepeatSVG } from '../../../assets/images/arrow-repeat.svg'
 
-import { addStudiesToExportList } from '../../../actions/ExportList'
-import { addStudiesToDeleteList } from '../../../actions/DeleteList'
-import { addStudiesToAnonList } from '../../../actions/AnonList'
-
-import MonitorTask from '../../../tools/MonitorTask'
 
 import {
     dateFilter,
@@ -146,7 +140,7 @@ function RobotTable({ rows, approved, refreshHandler, deleteQueryHandler, retryQ
         Header: 'Viewers',
         Cell:
             ({ row: { values } }) => {
-                return values.Status === RobotView.ITEM_SUCCESS ?
+                return values.Status === 'Success' ?
                     <Fragment>
                         <Dropdown drop='left'>
                             <Dropdown.Toggle variant="button-dropdown-green" id="dropdown-basic"
@@ -175,226 +169,4 @@ function RobotTable({ rows, approved, refreshHandler, deleteQueryHandler, retryQ
         skipAutoRefresh={true} />
 }
 
-
-/**
- * View page of a sigle Retrieve Robot content
- * With progress monitoring and delete item action
- */
-class RobotView extends Component {
-
-    state = {
-        id: null,
-        valid: null,
-        approved: null,
-        rows: [],
-        selected: [],
-        totalPercentageProgress: 0,
-        percentageFailure: 0
-    }
-
-    componentDidMount = () => {
-        //this.startProgressMonitoring()
-        apis.task.getTask(this.props.id).then(this.refreshHandler)
-    }
-
-    componentWillUnmount = () => {
-        this.stopProgressMonitoring()
-    }
-
-    getSelectedItemsStudiesDetails = async () => {
-
-        //get array of selected rows
-        let seletectedRows = this.state.selected
-
-        let studyDataRetrieved = []
-        //Loop each item to retrieve study level
-        for (let row of seletectedRows) {
-            await apis.content.getStudiesDetails(row.RetrievedOrthancId).then((studyDetails) => {
-                studyDataRetrieved.push(studyDetails)
-            }).catch((error) => {
-                console.error(error)
-            })
-        }
-
-        return studyDataRetrieved
-
-    }
-
-    setSelect = (selected) => {
-        this.setState({ selected });
-    }
-
-    sendToAnon = async () => {
-        let studyArray = await this.getSelectedItemsStudiesDetails()
-        this.props.addStudiesToAnonList(studyArray)
-    }
-
-    sendToExport = async () => {
-        let studyArray = await this.getSelectedItemsStudiesDetails()
-        this.props.addStudiesToExportList(studyArray)
-    }
-
-    sendToDelete = async () => {
-        let studyArray = await this.getSelectedItemsStudiesDetails()
-        this.props.addStudiesToDeleteList(studyArray)
-    }
-
-    startProgressMonitoring = async () => {
-        let response = await apis.task.getTask(this.props.id);
-        this.setState({
-            id: response.id,
-            creator: response.creator
-        });
-        this.task = new MonitorTask(this.props.id);
-        this.task.onUpdate(this.refreshHandler.bind(this));
-        this.task.startMonitoringJob();
-        this.refreshHandler(response);
-    }
-
-    stopProgressMonitoring = () => {
-        if (this.task !== undefined) this.task.stopMonitoringJob();
-    }
-
-    refreshHandler = (response) => {
-        if (!response) {
-            this.setState({
-                valid: null,
-                approved: null,
-                projectName: '',
-                rows: [],
-                totalPercentageProgress: 0,
-                percentageFailure: 0
-            })
-            this.stopProgressMonitoring()
-            return;
-        }
-
-        let rowsRetrieveList = []
-
-        let newPercentageFailure = 0
-
-        response.details.items.forEach(item => {
-
-            rowsRetrieveList.push({
-                //Merge Modalities (study level) to modality column
-                Modality: item.ModalitiesInStudy,
-                id: item.AnswerNumber + ":" + item.AnswerId,
-                ...item
-            })
-
-            if (item.Status === RobotView.ITEM_FAILED) {
-                ++newPercentageFailure;
-            }
-        });
-
-
-        //SK CALCULER EN INSTANCE ET PAS EN STUDY (1 si pas d'info)
-        newPercentageFailure = (newPercentageFailure / response.details.items.length) * 100
-
-        let newTotalPercentageProgress = Math.round((newPercentageFailure + response.progress.retrieve + Number.EPSILON) * 10) / 10
-
-        this.setState({
-            valid: response.details.valid,
-            approved: response.details.approved,
-            projectName: response.details.projectName,
-            rows: rowsRetrieveList,
-            totalPercentageProgress: newTotalPercentageProgress,
-            percentageFailure: newPercentageFailure
-        })
-    }
-
-    deleteQueryHandler = async (rowIndex) => {
-        try {
-            let row = this.state.rows[rowIndex];
-            await apis.retrieveRobot.deleteRobotItem(this.state.id, row.id)
-
-            if (this.state.rows.length <= 1) {
-                this.setState({
-                    ...this.state,
-                    rows: [],
-                    id: null
-                })
-                this.task.stopMonitoringJob();
-            } else {
-                apis.task.getTask(this.state.id).then(this.refreshHandler)
-            }
-        } catch (error) {
-            toast.error(error, { data: { type: 'notification' } })
-        }
-    }
-
-    retryQueryHandler = async (rowIndex) => {
-        try {
-            let row = this.state.rows[rowIndex];
-            await apis.retrieveRobot.retryRobotItem(this.props.id, row.id)
-            this.startProgressMonitoring();
-        } catch (error) {
-            toast.error(error, { data: { type: 'notification' } })
-        }
-    }
-
-    handleClickDeleteRobot = async () => {
-        await apis.retrieveRobot.deleteRobot(this.state.id);
-        await this.refreshHandler(null);
-        await this.setState({
-            id: null
-        })
-        if (this.props.onDelete instanceof Function) this.props.onDelete()
-    }
-
-    render = () => {
-        return (
-            <div>
-                <div className="row mb-5">
-                    <h1 className="col"> Robot for user {this.state.creator}, project : {this.state.projectName} </h1>
-                    <div className="col-md-2 text-right">
-                        <CircularProgressbarWithChildren
-                            value={this.state.totalPercentageProgress}
-                            text={`Progress : ${this.state.totalPercentageProgress}%`}
-                            styles={buildStyles({
-                                textSize: '10px'
-                            })}
-                        >
-                            {/* Foreground path */}
-                            <CircularProgressbar
-                                value={this.state.percentageFailure}
-                                styles={buildStyles({
-                                    trailColor: "transparent",
-                                    pathColor: "#f00"
-                                })}
-                            />
-                        </CircularProgressbarWithChildren>
-                    </div>
-                </div>
-                <input type='button' className="btn btn-danger" onClick={this.handleClickDeleteRobot}
-                    value="Delete Robot" />
-                <RobotTable rows={this.state.rows} approved={this.state.approved} refreshHandler={this.refreshHandler}
-                    deleteQueryHandler={this.deleteQueryHandler} retryQueryHandler={this.retryQueryHandler}
-                    onSelect={this.setSelect} />
-                <AnonExportDeleteSendButton onAnonClick={this.sendToAnon} onExportClick={this.sendToExport}
-                    onDeleteClick={this.sendToDelete} />
-            </div>
-        )
-    }
-}
-
-const mapDispatchToProps = {
-    addStudiesToExportList,
-    addStudiesToDeleteList,
-    addStudiesToAnonList
-
-}
-
-RobotView.ITEM_SUCCESS = 'completed'
-RobotView.ITEM_AWAITING = 'wait'
-RobotView.ITEM_PENDING = 'active'
-RobotView.ITEM_FAILED = 'failed'
-RobotView.ITEM_DELAYED = 'delayed'
-
-RobotView.ROBOT_WAITING_VALIDATION = 'waiting validation'
-RobotView.ROBOT_VALIDATING = 'validation'
-RobotView.ROBOT_WAITING_RETRIEVE = 'waiting retireve'
-RobotView.ROBOT_RETRIEVING = 'retrieve'
-RobotView.ROBOT_COMPLETED = 'completed'
-
-export default connect(null, mapDispatchToProps)(RobotView)
+export default RobotTable

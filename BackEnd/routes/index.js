@@ -39,7 +39,7 @@ const {
 } = require('../midelwares/authentication')
 
 const {
-    checkForOrthancQueueReady,
+    //checkForOrthancQueueReady,
     getTask,
     getTasks,
     getTasksIds,
@@ -131,7 +131,7 @@ router.get('/options/export-transcoding', [userAuthMidelware], getExportTranscod
 ** TASKS
 */
 
-router.use('/tasks', checkForOrthancQueueReady);
+//router.use('/tasks', checkForOrthancQueueReady);
 
 //OrthancToolsJS Robot routes
 //Retrieve Robot

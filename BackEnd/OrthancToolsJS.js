@@ -37,7 +37,7 @@ var unless = function (path, middleware) {
 
 
 morgan.token('username', function (req, res) {
-  return req.roles == null ? 'Not Authentified' : req.roles.username
+  return req.roles == null ? 'Not Authentified' : req.username
 })
 
 morgan.token('remote-addr', (req, res) => {

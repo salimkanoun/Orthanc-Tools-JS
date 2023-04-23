@@ -48,6 +48,7 @@ class RetrieveTask {
      * @returns {string} the uuid of the task
      */
     static async createTask(creator, projectName, answers) {
+        console.log(creator, projectName, answers)
         let task = await RetrieveTask.getUserTask(creator).then(ids => (ids ? RetrieveTask.getTask(ids[0]) : null));
         // Checking for existing task of the user 
         if (!!task && !['completed', 'failed'].includes(task.state)) {

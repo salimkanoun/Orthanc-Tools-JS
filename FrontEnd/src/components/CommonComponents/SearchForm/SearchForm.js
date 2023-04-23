@@ -150,7 +150,7 @@ export default ({ icon , title, buttonsName, onFormValidate}) => {
                     </div>
                     <div className='col-sm'>
                         <label htmlFor='modalities' className="form-label">Modalities</label>
-                        <SelectModalities previousModalities={state.modalities} onUpdate={updateModalities} />
+                        <SelectModalities previousModalities={state.modalities} onChange={updateModalities} />
                     </div>
                 </div>
                 <div className='row mt-4'>
