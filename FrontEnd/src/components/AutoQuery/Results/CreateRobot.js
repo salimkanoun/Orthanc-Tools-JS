@@ -22,13 +22,8 @@ export default ({ onRobotCreated }) => {
 
         //If series details have been loaded robot will be defined at series level
         if (Object.keys(store.resultsSeries).length > 0) {
-            let seriesUIDArray = []
-            //If exist filtered item send them, if no filtered item all series items are sent
-            if (store.seriesFiltered.length > 0) {
-                seriesUIDArray = store.seriesFiltered
-            } else {
-                seriesUIDArray = Object.keys(store.resultsSeries)
-            }
+            let seriesUIDArray = Object.keys(store.resultsSeries)
+            
             for (let seriesUID of seriesUIDArray) {
                 let seriesObject = store.resultsSeries[seriesUID]
                 retrieveArray.push({
@@ -39,12 +34,7 @@ export default ({ onRobotCreated }) => {
         //Else only use the study results
         } else {
 
-            let studiesUIDArray = []
-            if (store.studiesFiltered.length > 0) {
-                studiesUIDArray = store.studiesFiltered
-            } else {
-                studiesUIDArray = Object.keys(store.results)
-            }
+            let studiesUIDArray =  Object.keys(store.results)
 
             for (let studyInstanceUID of studiesUIDArray) {
                 retrieveArray.push({ ...store.results[studyInstanceUID] })
@@ -66,6 +56,7 @@ export default ({ onRobotCreated }) => {
             onRobotCreated()
             successMessage('sent to robot')
         } catch (error) {
+            console.log(error)
             errorMessage(error?.data?.errorMessage)
         }
 
