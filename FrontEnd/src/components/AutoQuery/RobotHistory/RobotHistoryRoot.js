@@ -1,37 +1,35 @@
 import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify';
-import { Col, Row } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
 
-import apis from '../../../services/apis';
-import task from '../../../services/task';
-import RobotTable from "../../CommonComponents/RessourcesDisplay/ReactTableV8/RobotTable";
+import { Container, Row, Col } from 'react-bootstrap'
 
-export default ({ username }) => {
+import RobotTable from '../../CommonComponents/RessourcesDisplay/ReactTableV8/RobotTable'
+import { errorMessage } from '../../../tools/toastify'
+import apis from '../../../services/apis'
 
+export default () => {
+
+    const store = useSelector(state => {
+        return {
+            username: state.OrthancTools.username,
+        }
+    })
     const [rows, setRows] = useState([])
 
     useEffect(() => {
         refreshHandler()
-        startRefreshMonitoring()
+        const intervalChcker = setInterval(refreshHandler, 2000)
         return () => {
-            stopRefreshMonitoring()
+            clearInterval(intervalChcker)
         }
     }, [])
-
-    const startRefreshMonitoring = () => {
-        this.intervalChcker = setInterval(refreshHandler, 2000)
-    }
-
-    const stopRefreshMonitoring = () => {
-        clearInterval(this.intervalChcker)
-    }
 
     const deleteJobHandler = async (id, refreshHandler) => {
         try {
             await apis.retrieveRobot.deleteRobot(id)
             refreshHandler()
         } catch (error) {
-            toast.error(error.statusText + ':' + error.message, { data: { type: 'notification' } })
+            errorMessage(error.data?.errorMessage ?? 'Robot Deletion Error')
         }
     }
 
@@ -39,8 +37,8 @@ export default ({ username }) => {
 
         let rows = []
 
-        apis.task.getTaskOfUser(username, 'retrieve')
-            .then(async taksIds => await Promise.all(taksIds.map(id => (!!id ? task.getTask(id) : null))))
+        apis.task.getTaskOfUser(store.username, 'retrieve')
+            .then(async taksIds => await Promise.all(taksIds.map(id => (!!id ? apis.task.getTask(id) : null))))
             .then((answerData) => {
                 answerData.forEach(robotJob => {
                     if (!!robotJob) rows.push({
@@ -53,17 +51,20 @@ export default ({ username }) => {
                         queriesNb: robotJob.details.items.length
                     })
                 });
-
             }).catch(error => {
                 console.log(error)
-                if (error.status !== 404) toast.error(error.statusText + ' ' + error.message, { data: { type: 'notification' } })
+                if (error.status !== 404) errorMessage(error.statusText + ' ' + error.message)
             }).finally(() => {
                 setRows(rows)
             })
     }
 
+    const validationRobotHandler = () => {
+
+    }
+
     return (
-        <>
+        <Container fluid>
             <Row className="mt-5">
                 <Col>
                     <h2 className="card-title">Retrieve Robots : </h2>
@@ -71,14 +72,14 @@ export default ({ username }) => {
             </Row>
             <Row className="mt-5">
                 <Col>
-                    <RobotTable robots={rows} deleteJobHandler={deleteJobHandler}
+                    <RobotTable
+                        robots={rows}
+                        deleteJobHandler={deleteJobHandler}
                         refreshHandler={refreshHandler}
-                        validationRobotHandler={this.validationRobotHandler}
-                        hideValidationButton={true} />
+                        hideValidationButton={true}
+                    />
                 </Col>
             </Row>
-
-
-        </>
+        </Container>
     )
 }

@@ -41,7 +41,6 @@ export default () => {
 
 
     useEffect(() => {
-
         const startFetchingSeriesDetails = async () => {
             //List studies for each series details are missing
             let emptyResultArray = []
@@ -59,9 +58,8 @@ export default () => {
                 }
                 updateToast(toastId, 'Queried series Finihsed');
             }
-            
-        }
 
+        }
         startFetchingSeriesDetails()
     }, [])
 

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
 
-import CommonTableV8 from "../ReactTableV8/CommonTableV8";
+import CommonTableV8 from "./CommonTableV8";
 
 export default ({
     robots,

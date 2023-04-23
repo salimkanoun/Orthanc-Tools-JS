@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { Button } from 'react-bootstrap'
+import { Button, Container, Row } from 'react-bootstrap'
 
 import ResultsSeries from './ResultsSeries'
 import ResultsStudies from './ResultsStudies'
+import CreateRobot from './CreateRobot'
 
-export default () => {
+export default ({onRobotCreated}) => {
 
     const RESULTS_STUDIES = 'studies'
     const RESULTS_SERIES = 'series'
@@ -21,8 +22,8 @@ export default () => {
     }
 
     return (
-        <div>
-            <div className='mb-5'>
+        <Container fluid>
+            <Row className='mb-5'>
                 <nav className="otjs-navmenu container-fluid">
                     <div className="otjs-navmenu-nav">
                         <li className='col-4 text-center'>
@@ -39,11 +40,14 @@ export default () => {
                         </li>
                     </div>
                 </nav>
-            </div>
-            <div>
+            </Row>
+            <Row>
                 {getComponentToDisplay()}
-            </div>
-        </div>
+            </Row>
+            <Row className='mt-3'>
+                <CreateRobot onRobotCreated={onRobotCreated}/>
+            </Row>
+        </Container>
     )
 
 }

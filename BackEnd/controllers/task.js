@@ -7,11 +7,14 @@ const Options = require("../model/Options");
 const Queue = require("../adapter/bullAdapter");
 
 
+/*
 const checkForOrthancQueueReady = async (req, res, next) => {
-    Queue.isAllReady().then(() => next()).catch(() => {
+    Queue.isAllReady().then(() => next()).catch((error) => {
+        console.error(error)
         res.status(500).send("Cant connect to redis");
     })
 }
+*/
 
 /**
  * Creating anonymisation task based on the request
@@ -127,8 +130,12 @@ const getTasksIds = async (req, res) => {
  * @param {*} res request result
  */
 const getTaskWithUser = async (req, res) => {
-
-    res.json(await Task.getUserTask(req.params.username, req.params.type));
+    try {
+        let tasks = await Task.getUserTask(req.params.username, req.params.type)
+        res.json(tasks);
+    } catch (error) {
+        res.json([]);
+    }
 }
 
 /**
@@ -171,7 +178,7 @@ const flushTasks = async (req, res) => {
 
 module.exports = {
     flushTasks,
-    checkForOrthancQueueReady,
+    //checkForOrthancQueueReady,
     getTask,
     getTasks,
     getTasksIds,
