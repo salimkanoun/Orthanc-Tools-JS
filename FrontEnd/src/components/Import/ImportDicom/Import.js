@@ -70,13 +70,13 @@ export default () => {
                 try {
                     let response = await apis.importDicom.importDicom(stringBuffer)
                     if (Array.isArray(response)) {
+                        //Case of zip file, multiple response
                         for (let singleResponse of response) {
                             await addUploadedFileToState(singleResponse)
                         }
                     } else {
                         await addUploadedFileToState(response)
                     }
-                    console.log(response)
                 } catch (error) {
                     addErrorToState(file.name, error.statusText)
                 }
