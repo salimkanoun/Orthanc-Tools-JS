@@ -25,6 +25,6 @@ export default ({
         return <TableStudiesWithNestedSeries canExpand studies={studies} series={series} />
     }
 
-    return <CommonTableV8 id={patientColumns.ORTHANC_ID.id} canExpand columns={columns} data={patients} renderSubComponent={renderSubComponent} />
+    return <CommonTableV8 id={patientColumns.ORTHANC_ID.id} canExpand columns={columns} data={patients} renderSubComponent={renderSubComponent} paginated />
 
 }

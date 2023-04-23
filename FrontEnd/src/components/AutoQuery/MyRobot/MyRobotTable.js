@@ -144,7 +144,7 @@ export default ({ robotId, rows }) => {
 
     return (
         <>
-            <CommonTableV8 columns={columns} data={rows} />
+            <CommonTableV8 columns={columns} data={rows} paginated />
         </>
     )
 }

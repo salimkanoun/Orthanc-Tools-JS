@@ -45,6 +45,7 @@ export default () => {
     const [percentageFailure, setPercentageFailure] = useState(0)
 
     useEffect(() => {
+        refreshInfo()
         let interval = setInterval(refreshInfo, 2000)
         return () => {
             clearInterval(interval)

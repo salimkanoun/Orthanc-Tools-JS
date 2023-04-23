@@ -98,8 +98,5 @@ export default ({
         }
     ]
 
-    console.log(robots, columns)
-
-
-    return <CommonTableV8 id="id" columns={[...columns, ...additionalColumns]} data={robots} pagination />
+    return <CommonTableV8 id="id" columns={[...columns, ...additionalColumns]} data={robots} paginated />
 }
