@@ -63,7 +63,7 @@ export default () => {
         <Container fluid>
             <Row className="mt-5">
                 <Col>
-                    <h2 className="card-title">Retrieve Robots : </h2>
+                    <h2 className="card-title">Robots History : </h2>
                 </Col>
             </Row>
             <Row className="mt-5">
