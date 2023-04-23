@@ -176,7 +176,7 @@ export default () => {
                 </div>
             </Row>
             <Row className='mt-5'>
-                <MyRobotTable rows={rows} />
+                <MyRobotTable robotId={id} rows={rows} />
             </Row>
             <Row>
                 <ExportDeleteSendButton

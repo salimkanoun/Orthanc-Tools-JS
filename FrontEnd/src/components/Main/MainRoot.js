@@ -16,7 +16,6 @@ import MyDicom from '../MyDicom/MyDicom'
 import ContentRootPanel from '../Content/ContentRootPanel'
 import Query from '../Query/Query'
 import NavBar from './NavBar'
-import RobotView from '../AutoQuery/Connected_Component/RobotView';
 import Footer from './Footer';
 
 import ToolsPanel from './ToolsPanel';
@@ -51,7 +50,7 @@ const AnimatedSwitch = withRouter(({ location, ...props }) => (
                     <Route exact path='/auto-query' component={AutoQueryRoot} />
                     <Route exact path='/administration' component={AdminRootPanel} />
                     <Route exact path='/orthanc-content' component={ContentRootPanel} />
-                    <Route exact path='/robot/:id' render={(props) => <RobotView id={props.match.params.id} />} />
+                    
                     <Route exact path='/export' component={ExportPanel} />
                     <Route exact path='/anonymize' component={AnonRootPanel} />
                     <Route exact path='/cd-burner' component={CDBurner} />
@@ -64,6 +63,8 @@ const AnimatedSwitch = withRouter(({ location, ...props }) => (
         </CSSTransition>
     </TransitionGroup>
 ))
+//TODO restorer cette vue pour consulter un robot depuis admin
+//<Route exact path='/robot/:id' render={(props) => <Robo id={props.match.params.id} />} />
 
 
 export default MainRoot
