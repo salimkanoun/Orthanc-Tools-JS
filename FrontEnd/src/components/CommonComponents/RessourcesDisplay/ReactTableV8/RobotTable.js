@@ -30,19 +30,19 @@ export default ({
         }, {
             id: 'quesriesNb',
             accessorFn: ( row ) => {
-                return row.details.items.length
+                return row.details?.items.length
             },
             header: 'Number of Queries'
         }, {
             id: 'validation',
             accessorFn: ( row ) => {
-                return row.progress.validation
+                return row?.progress?.validation
             },
             header: 'Progress Validation'
         }, {
             id: 'retrieve',
             accessorFn: ( row ) => {
-                return row.progress.retrieve
+                return row?.progress?.retrieve
             },
             header: 'Progress Retrieve'
         }, {
@@ -60,7 +60,7 @@ export default ({
             id: 'approved',
             accessorKey: "approved",
             accessorFn: ( row ) => {
-                return row.details.approved
+                return row?.details?.approved
             }
         }, {
             id: 'valid',

@@ -75,11 +75,12 @@ export default () => {
 
         let newTotalPercentageProgress = Math.round((newPercentageFailure + response.progress.retrieve + Number.EPSILON) * 10) / 10
 
+        console.log(rowsRetrieveList)
         setValid(response.details.valid)
         setApproved(response.details.approved)
         setProjectName(response.details.projectName)
         setRows(rowsRetrieveList)
-        setCreator(response.details.creator)
+        setCreator(response.creator)
         setTotalPercentageProgress(newTotalPercentageProgress)
         setPercentageFailure(newPercentageFailure)
     }

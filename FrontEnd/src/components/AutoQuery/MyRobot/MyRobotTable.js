@@ -1,12 +1,17 @@
 import React from 'react'
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
 
-export default () => {
+export default ({ rows }) => {
 
     const columns = [{
         accessorKey: 'key',
-        enableHiding :true
-    }, {
+        enableHiding: true
+    },
+    {
+        accessorKey: 'Level',
+        header: 'Level'
+    },
+    {
         accessorKey: 'PatientName',
         header: 'Patient Name'
     }, {
@@ -25,16 +30,23 @@ export default () => {
         accessorKey: 'StudyDescription',
         header: 'Study Description'
     }, {
+        accessorKey: 'SeriesDescription',
+        header: 'Series Description'
+    },
+    {
         accessorKey: 'ModalitiesInStudy',
         header: 'Modalities',
     }, {
-        accessorKey: 'Aet',
+        accessorKey: 'OriginAET',
         header: 'AET',
+    }, {
+        accessorKey: 'Status',
+        header: 'Status',
     }];
 
     return (
         <>
-            <CommonTableV8 columns={columns} data={[]} />
+            <CommonTableV8 columns={columns} data={rows} />
         </>
     )
 }
