@@ -14,7 +14,7 @@ export default () => {
     const getComponentToDisplay = () => {
         switch (currentComponent) {
             case TAB_QUERIES:
-                return <QueryRoot />
+                return <QueryRoot onQueryFinished={() => setCurrentComponent(TAB_RESULTS)} />
             case TAB_RESULTS:
                 return <ResultsRoot/>
             case TAB_MYROBOT:
