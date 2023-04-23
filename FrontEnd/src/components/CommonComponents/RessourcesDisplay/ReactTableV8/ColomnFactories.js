@@ -281,6 +281,11 @@ const studyQueryColumns = {
         header: "Patient ID",
         style: { whiteSpace: 'normal', wordWrap: 'break-word' }
     },
+    ACCESSION_NUMBER: {
+        id: 'AccessionNumber',
+        accessorKey: 'AccessionNumber',
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+    },
     STUDY_INSTANCE_UID: {
         accessorKey: 'StudyInstanceUID',
         header: 'StudyInstanceUID',
@@ -299,6 +304,12 @@ const studyQueryColumns = {
         accessorKey: 'RequestedProcedureDescription',
         header: 'Requested Procedure Description'
     },
+    MODALITY: {
+        id: 'ModalitiesInStudy',
+        accessorKey: 'ModalitiesInStudy',
+        header: 'Modalities',
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+    },
     NB_STUDY_SERIES: {
         accessorKey: 'NumberOfStudyRelatedSeries',
         header: 'Series'
@@ -309,8 +320,7 @@ const studyQueryColumns = {
     },
     AET: {
         accessorKey: 'OriginAET',
-        header: 'AET',
-        enableHiding: true
+        header: 'AET'
     },
 }
 

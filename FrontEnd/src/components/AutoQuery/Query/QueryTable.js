@@ -1,9 +1,21 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
+import { useDispatch } from 'react-redux'
 
-import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities";
-import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
+import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities"
+import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8"
+import { editCellQuery } from '../../../actions/TableQuery'
 
-export default () => {
+export default ({ queries = [], aets = [], onRowClick, currentRow }) => {
+
+    const dispatch = useDispatch()
+
+    const cellEditHandler = (rowIndex, columnId, value) => {
+        dispatch(editCellQuery(rowIndex, columnId, value));
+    }
+
+    const rowStyle = (queryKey) => {
+        if (queryKey === currentRow) return { background: 'peachPuff' }
+    }
 
     const columns = useMemo(() => [{
         id: 'key',
@@ -12,46 +24,60 @@ export default () => {
     }, {
         accessorKey: 'PatientName',
         header: 'Patient Name',
+        isEditable: true
     }, {
         accessorKey: 'PatientID',
-        header: 'Patient ID'
+        header: 'Patient ID',
+        isEditable: true
     }, {
         accessorKey: 'AccessionNumber',
-        header: 'Accession Number'
+        header: 'Accession Number',
+        isEditable: true
     }, {
         accessorKey: 'DateFrom',
         header: 'Date From',
+        isEditable: true,
+        editionProperties: {
+            type: 'CALENDAR'
+        }
     }, {
         accessorKey: 'DateTo',
         header: 'Date To',
+        isEditable: true,
+        editionProperties: {
+            type: 'CALENDAR'
+        }
     }, {
         accessorKey: 'StudyDescription',
-        header: 'Study Description'
+        header: 'Study Description',
+        isEditable: true
     }, {
         accessorKey: 'ModalitiesInStudy',
         header: 'Modalities',
-        cell: ({ getValue }) => {
-            return () => {
-                const [value, setValue] = useState(getValue());
-                const onChange = value => {
-                    //setValue(value);
-                    //if (onDataChange) onDataChange(initialValue, value, values, id || accessor);
-                }
-
-                return (
-                    <div>
-                        <SelectModalities previousModalities={value} onUpdate={onChange} />
-                    </div>
-                )
-            }
+        cell: ({ row, getValue }) => {
+            return <SelectModalities
+                previousModalities={getValue()}
+                onChange={(value) => cellEditHandler(row.original.key, 'ModalitiesInStudy', value)}
+            />
         }
     }, {
         accessorKey: 'Aet',
         header: 'AET',
-        //options: async () => aets.map(aet => ({ value: aet, label: aet })),
+        isEditable: true,
+        editionProperties: {
+            type: 'SELECT',
+            options: aets.map(aet => ({ value: aet, label: aet }))
+        }
     }], []);
 
     return (
-        <CommonTableV8 columns={columns} data={[]} />
+        <CommonTableV8
+            id='key'
+            onRowClick={onRowClick}
+            rowStyle={rowStyle}
+            columns={columns}
+            data={queries}
+            onCellEdit={cellEditHandler}
+        />
     )
 }

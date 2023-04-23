@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react"
-import { Button, OverlayTrigger, Popover, Tooltip } from "react-bootstrap"
+import { Button, Form, OverlayTrigger, Popover, Tooltip } from "react-bootstrap"
 import Select from "react-select"
 
 import CalendarUtc from "../../../CalendarUtc"
 
-export default ({ getValue, row: { index, id: rowId }, column: { columnDef: { id: columnId, style, editionProperties: { type, minLength, maxLength, min, max, placeholder, options, isClearable = true, disabled } = {}, isEditable = false } }, table }) => {
+export default ({ getValue, row: { index, id: idRow }, column: { columnDef: { id, accessorKey, header, style, editionProperties: { type, minLength, maxLength, min, max, placeholder, options, isClearable = true, disabled } = {}, isEditable = false } }, table }) => {
+
+    const columnId = id ?? accessorKey ?? header
+    const rowId = idRow ?? index
 
     if (!isEditable) return getValue()
 
@@ -54,16 +57,22 @@ export default ({ getValue, row: { index, id: rowId }, column: { columnDef: { id
 
         const myCalendar = (
             <Popover>
-                <CalendarUtc
-                    onChange={(date) => {
-                        setVisible(false)
-                        if (date.getTime() === calendarDate?.getTime()) date = null
-                        table.options.meta?.updateData(rowId, columnId, date?.getTime())
-                    }}
-                    required
-                    maxDate={new Date()}
-                    value={calendarDate}
-                />
+                <Popover.Header>
+                    Choose Date
+                </Popover.Header>
+                <Popover.Body>
+                    <CalendarUtc
+                        onChange={(date) => {
+                            setVisible(false)
+                            if (date.getTime() === calendarDate?.getTime()) date = null
+                            table.options.meta?.updateData(rowId, columnId, date)
+                        }}
+                        required
+                        maxDate={new Date()}
+                        value={calendarDate}
+                    />
+                </Popover.Body>
+
             </Popover>
         )
         return (
@@ -73,9 +82,9 @@ export default ({ getValue, row: { index, id: rowId }, column: { columnDef: { id
                 show={visible}
                 onToggle={(show) => { setVisible(show) }}
                 overlay={
-                    <Tooltip>
+                    <div>
                         {myCalendar}
-                    </Tooltip>
+                    </div>
                 }
             >
                 {myButton}
@@ -85,16 +94,15 @@ export default ({ getValue, row: { index, id: rowId }, column: { columnDef: { id
 
     if (type === 'CHECKBOX') {
         return (
-            <input
-                type='CHECKBOX'
-                defaultChecked={value}
+            <Form.Check
+                checked={value}
                 disabled={disabled}
                 onChange={(event) => table.options.meta?.updateData(rowId, columnId, event.target.checked)}
             />
         )
     }
 
-    return (<input
+    return (<Form.Control
         className='editable-cell'
         style={style}
         disabled={disabled}
@@ -106,7 +114,6 @@ export default ({ getValue, row: { index, id: rowId }, column: { columnDef: { id
         placeholder={placeholder}
         value={value}
         onChange={onChange}
-        onClick={e => { e.stopPropagation() }}
         onBlur={onBlur}
     />)
 }

@@ -5,7 +5,7 @@ import Select from 'react-select/creatable'
  * Component for a Select modality input
  * Used in manual and AutoQuery
  */
-export default ({ previousModalities, onUpdate }) => {
+export default ({ previousModalities, onChange }) => {
 
   const [selectedModalities, setSelectedModalities] = useState([])
 
@@ -108,7 +108,7 @@ export default ({ previousModalities, onUpdate }) => {
    * On exiting component (on blur), return the string value of modalities
    */
   const saveListener = () => {
-    onUpdate(getValue());
+    onChange(getValue());
   }
 
   /**

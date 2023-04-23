@@ -133,7 +133,9 @@ class Queue extends event.EventEmitter {
      * Returns a promise completed when the queue is ready
      * @returns {Promise}
      */
-    static isAllReady() {
+    static async isAllReady() {
+        let readyStatuses = await Promise.all(queues.map(queue => queue.isReady()))
+        console.log(readyStatuses)
         return Promise.all(queues.map(queue => queue.isReady())).then(readies => readies.reduce((previousValue, currentValue) => previousValue && currentValue));
     }
 

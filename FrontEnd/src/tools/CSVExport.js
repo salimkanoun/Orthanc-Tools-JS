@@ -1,3 +1,7 @@
+import Papa from 'papaparse'
+import { exportFileThroughFilesystemAPI } from './download';
+import { errorMessage } from './toastify';
+
 function getCSVCell(cell) {
     return (cell !== undefined && cell !== null ? cell.toString() : '');
 }
@@ -41,4 +45,20 @@ export function getCSVString(data) {
     result += body;
     return result;
 
+}
+
+export const exportCsv = (data, fileType, filename) => {
+    if (data.length === 0) {
+        errorMessage('No data to export')
+        return
+    }
+
+    // Parse object data to CSV format with Papaparse
+    const csvString = Papa.unparse(data, { quotes: true })
+
+    // Create Blob from data and prefered fileType
+    const blob = new Blob([csvString], { type: fileType })
+
+    // Export file to stream
+    exportFileThroughFilesystemAPI(blob.stream(), 'text/csv', filename, false)
 }
