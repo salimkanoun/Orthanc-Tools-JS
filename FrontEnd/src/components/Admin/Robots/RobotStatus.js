@@ -5,6 +5,7 @@ import apis from '../../../services/apis';
 import { useCustomMutation, useCustomQuery } from '../../../services/ReactQuery/hooks';
 import Spinner from '../../CommonComponents/Spinner';
 import RobotTable from '../../CommonComponents/RessourcesDisplay/ReactTableV8/RobotTable';
+import { Button } from 'react-bootstrap';
 
 
 export default () => {
@@ -43,12 +44,31 @@ export default () => {
         [[keys.ROBOTS_KEY]]
     )
 
+    const validateJobHandler = useCustomMutation(
+        ({ id }) => apis.retrieveRobot.validateRobot(id),
+        [[keys.ROBOTS_KEY]]
+    )
+
+    const validateColumn = [{
+        id: 'validate',
+        header: 'Validate',
+        cell: ({ row }) => {
+            return (
+                <Button className='otjs-button otjs-button-blue w-10'
+                    onClick={() => validateJobHandler.mutate({id : row.original.id})}
+                >
+                    Validate
+                </Button>
+            )
+        }
+    }]
+
     if (isLoading) return <Spinner />
 
     return (
         <>
             <h2 className="card-title mt-4">Retrieve Robots : </h2>
-            <RobotTable robots={rows} deleteJobHandler={deleteJobHandler} validationRobotHandler={validationRobotHandler} />
+            <RobotTable robots={rows} additionalColumns={validateColumn} deleteJobHandler={(id) => deleteJobHandler.mutate({ id })} validationRobotHandler={(id) => validationRobotHandler.mutate({ id })} />
         </>
     )
 }

@@ -1,15 +1,16 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 import CommonTableV8 from "./CommonTableV8";
+import { Button } from "react-bootstrap";
 
 export default ({
     robots,
     validationRobotHandler,
     deleteJobHandler,
-    hideValidationButton
+    hideValidationButton,
+    additionalColumns = []
 }) => {
-
 
     const columns = [
         {
@@ -20,7 +21,7 @@ export default ({
         },
         {
             id: 'name',
-            accessorKey: 'name',
+            accessorKey: 'details.projectName',
             header: 'Name'
         }, {
             id: 'username',
@@ -28,15 +29,21 @@ export default ({
             header: 'Username'
         }, {
             id: 'quesriesNb',
-            accessorKey: 'queriesNb',
+            accessorFn: ( row ) => {
+                return row.details.items.length
+            },
             header: 'Number of Queries'
         }, {
             id: 'validation',
-            accessorKey: 'validation',
+            accessorFn: ( row ) => {
+                return row.progress.validation
+            },
             header: 'Progress Validation'
         }, {
             id: 'retrieve',
-            accessorKey: 'retrieve',
+            accessorFn: ( row ) => {
+                return row.progress.retrieve
+            },
             header: 'Progress Retrieve'
         }, {
             id: 'state',
@@ -47,13 +54,14 @@ export default ({
             header: 'Show Details',
             cell: ({ row }) => {
                 return <Link className='nav-link otjs-button otjs-button-blue'
-                    to={'/robot/' + row.values.id}> Details </Link>
+                    to={'/robot/' + row.original.id}> Details </Link>
             }
         }, {
             id: 'approved',
             accessorKey: "approved",
-            header: 'approved',
-            hidden: true
+            accessorFn: ( row ) => {
+                return row.details.approved
+            }
         }, {
             id: 'valid',
             accessorKey: 'valid',
@@ -63,11 +71,10 @@ export default ({
                 if (row.original.valid) {
                     if (!row.original.approved) {
                         return (
-                            <div className="text-center">
-                                <input type="button" className='otjs-button otjs-button-green w-7'
-                                    onClick={() => validationRobotHandler(row.original.id)}
-                                    value="Validate" />
-                            </div>
+                            <Button className='otjs-button otjs-button-green w-7'
+                                onClick={() => validationRobotHandler(row.original.id)}>
+                                Robots
+                            </Button>
                         )
                     } else {
                         return (<p> Validated & approved </p>)
@@ -76,22 +83,23 @@ export default ({
                     return (<p> Analysing project </p>)
                 }
             }
-        }, {
+        },
+        {
             id: 'remove',
             header: 'Remove Robot',
             cell: ({ row }) => {
                 return (
-                    <div className="text-center">
-                        <input type="button" className='otjs-button otjs-button-red w-10'
-                            onClick={() => deleteJobHandler(row.original.id)}
-                            value="Remove Job" />
-                    </div>
+                    <Button className='otjs-button otjs-button-red w-10'
+                        onClick={() => deleteJobHandler(row.original.id)}
+                        value="Remove Job" >Remove Job
+                    </Button>
                 )
             }
         }
     ]
 
-    const data = useMemo(() => robots, [robots]);
+    console.log(robots, columns)
 
-    return <CommonTableV8 columns={columns} data={data} pagination />
+
+    return <CommonTableV8 id="id" columns={[...columns, ...additionalColumns]} data={robots} pagination />
 }
