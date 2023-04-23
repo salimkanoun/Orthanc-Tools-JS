@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Row, Col, Button } from 'react-bootstrap'
 
-import Import from './Import'
-import CreateDicom from './CreateDicom'
+import Import from './ImportDicom/Import'
+import CreateDicomRoot from './CreateDicom/CreateDicomRoot'
 
 export default () => {
 
@@ -16,7 +16,7 @@ export default () => {
       case IMPORT_TAB:
         return (<Import />)
       case CREATE_TAB:
-        return (<CreateDicom />)
+        return (<CreateDicomRoot />)
     }
   }
 

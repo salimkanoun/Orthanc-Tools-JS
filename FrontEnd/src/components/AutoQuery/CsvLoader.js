@@ -1,10 +1,10 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 
-import Dropzone from 'react-dropzone'
 import Papa from 'papaparse'
 import moment from 'moment'
 
+import MyDropzone from '../CommonComponents/MyDropzone'
 import { addQueryToList } from '../../actions/TableQuery'
 
 export default () => {
@@ -65,16 +65,11 @@ export default () => {
     }
 
     return (
-        <Dropzone onDrop={acceptedFiles => readCsv(acceptedFiles)} >
-            {({ getRootProps, getInputProps }) => (
-                <section>
-                    <div className={"dropzone"} {...getRootProps()} >
-                        <input {...getInputProps()} />
-                        <p>{"Drop CSV File"}</p>
-                    </div>
-                </section>
-            )}
-        </Dropzone>
+        <MyDropzone
+            onDrop={acceptedFiles => readCsv(acceptedFiles)}
+            message={"Drop CSV File"}
+            acceptedFiles={['csv']}
+        />
     )
 
 }

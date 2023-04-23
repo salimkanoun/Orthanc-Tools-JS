@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Row, Col, Form, Button, FormGroup } from 'react-bootstrap'
-import Dropzone from 'react-dropzone'
 
+import MyDropzone from '../../../CommonComponents/MyDropzone'
 import { keys } from '../../../../model/Constant'
 import apis from '../../../../services/apis'
 import { useCustomMutation } from '../../../../services/ReactQuery/hooks'
@@ -36,17 +36,10 @@ export default () => {
         <Form>
             <h3 className="card-title">Add Certificate Authority</h3>
 
-            <Dropzone onDrop={acceptedFile => setFile0(acceptedFile)} >
-                {({ getRootProps, getInputProps }) => (
-                    <section>
-                        <div className={inProgress ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
-                            <input {...getInputProps()} />
-                            <p>{!!file ? file.name : "Drop Certificate file"}</p>
-                        </div>
-                    </section>
-                )}
-            </Dropzone>
-
+            <MyDropzone
+                onDrop={acceptedFile => setFile0(acceptedFile)}
+                message={!!file ? file.name : "Drop Certificate file"}
+            />
 
             <Row>
                 <Col>

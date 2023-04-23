@@ -45,6 +45,7 @@ export default () => {
     const [percentageFailure, setPercentageFailure] = useState(0)
 
     useEffect(() => {
+        refreshInfo()
         let interval = setInterval(refreshInfo, 2000)
         return () => {
             clearInterval(interval)
@@ -176,7 +177,7 @@ export default () => {
                 </div>
             </Row>
             <Row className='mt-5'>
-                <MyRobotTable rows={rows} />
+                <MyRobotTable robotId={id} rows={rows} />
             </Row>
             <Row>
                 <ExportDeleteSendButton

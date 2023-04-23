@@ -92,6 +92,6 @@ export default () => {
     }, [store.results, store.resultsSeries])
 
     return (
-        <CommonTableV8 data={data} columns={columns} />
+        <CommonTableV8 data={data} columns={columns} paginated />
     )
 }

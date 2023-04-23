@@ -58,6 +58,6 @@ export default ({
         return <TableStudies studies={studies} selectedRowsIds={selectedStudies} additionalColumns={additionalColumnsStudies} onRowClick={onClickStudyHandler} rowStyle={rowStyle} canSelect={selectableStudy} onSelectRow={onSelectStudy} />
     }
 
-    return <CommonTableV8 id={patientColumns.ORTHANC_ID.id} canExpand columns={columnsPatients} data={patients} renderSubComponent={renderSubComponent} canSelect={selectablePatient} onSelectRow={onSelectPatientHandle} />
+    return <CommonTableV8 id={patientColumns.ORTHANC_ID.id} canExpand columns={columnsPatients} data={patients} renderSubComponent={renderSubComponent} canSelect={selectablePatient} onSelectRow={onSelectPatientHandle} paginated />
 
 }
