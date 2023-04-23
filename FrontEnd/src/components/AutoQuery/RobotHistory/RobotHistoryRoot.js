@@ -59,10 +59,6 @@ export default () => {
             })
     }
 
-    const validationRobotHandler = () => {
-
-    }
-
     return (
         <Container fluid>
             <Row className="mt-5">
