@@ -5,16 +5,16 @@ import Dropzone from 'react-dropzone'
 import { Modal, Row, Col, ProgressBar } from 'react-bootstrap'
 
 import TableImportError from './TableImportError'
-import TablePatientWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudiesAndSeries'
+import TablePatientWithNestedStudiesAndSeries from '../../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudiesAndSeries'
 
-import { treeToPatientArray, treeToStudyArray } from '../../tools/processResponse'
-import { addStudiesToExportList } from '../../actions/ExportList'
-import { addStudiesToDeleteList } from '../../actions/DeleteList'
-import { addStudiesToAnonList } from '../../actions/AnonList'
-import apis from '../../services/apis'
-import Study from '../../model/Study'
-import Series from '../../model/Series'
-import ExportDeleteSendButton from '../CommonComponents/RessourcesDisplay/ExportDeleteSendButton'
+import { treeToPatientArray, treeToStudyArray } from '../../../tools/processResponse'
+import { addStudiesToExportList } from '../../../actions/ExportList'
+import { addStudiesToDeleteList } from '../../../actions/DeleteList'
+import { addStudiesToAnonList } from '../../../actions/AnonList'
+import apis from '../../../services/apis'
+import Study from '../../../model/Study'
+import Series from '../../../model/Series'
+import ExportDeleteSendButton from '../../CommonComponents/RessourcesDisplay/ExportDeleteSendButton'
 
 
 export default () => {

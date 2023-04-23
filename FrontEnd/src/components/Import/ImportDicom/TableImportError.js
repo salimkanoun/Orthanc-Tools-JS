@@ -1,6 +1,6 @@
 import React from 'react'
 
-import CommonTableV8 from '../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
+import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
 
 export default ({ data }) => {
 

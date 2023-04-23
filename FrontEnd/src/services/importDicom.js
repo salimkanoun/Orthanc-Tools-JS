@@ -3,7 +3,7 @@ import axios from "axios"
 const importDicom = {
 
     importDicom(dicomFile) {
-        return axios.post('/api/instances', dicomFile, {headers : {'Content-Type' : 'application/dicom'}})
+        return axios.post('/api/instances', dicomFile, { headers: { 'Content-Type': 'application/dicom' } })
             .then(async (answer) => answer.data)
     },
 
@@ -12,7 +12,10 @@ const importDicom = {
         let payload = {
             "Content": content,
             "Tags": tags,
-            "Parent": parentOrthancId
+
+        }
+        if (parentOrthancId) {
+            payload.Parent = parentOrthancId
         }
 
         let createDicom = {
