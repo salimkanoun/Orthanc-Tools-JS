@@ -13,8 +13,10 @@ import { useCustomQuery } from '../../../services/ReactQuery/hooks'
 import apis from '../../../services/apis'
 import { keys } from '../../../model/Constant'
 import { exportCsv } from '../../../tools/CSVExport'
+import { dissmissToast, infoMessage, successMessage, updateToast } from '../../../tools/toastify'
+import { addStudyResult } from '../../../actions/TableResult'
 
-export default () => {
+export default ({ onQueryFinished }) => {
 
 
     const [currentRow, setCurrentRow] = useState(null)
@@ -62,14 +64,73 @@ export default () => {
         exportCsv(data, 'csv', 'queries.csv')
     }
 
-    const onQueryHandle = () => {
+    const makeDicomQuery = async (queryParams) => {
+        //Prepare Date string for post data
+        let DateString = '';
+        queryParams.DateFrom = queryParams.DateFrom.split('-').join('')
+        queryParams.DateTo = queryParams.DateTo.split('-').join('')
 
+        if (queryParams.DateFrom !== '' && queryParams.DateTo !== '') {
+            DateString = queryParams.DateFrom + '-' + queryParams.DateTo
+        } else if (queryParams.DateFrom === '' && queryParams.DateTo !== '') {
+            DateString = '-' + queryParams.DateTo
+        } else if (queryParams.DateFrom !== '' && queryParams.DateTo === '') {
+            DateString = queryParams.DateFrom + '-'
+        }
+
+        //Prepare POST payload for query (follow Orthanc APIs)
+        let queryPost = {
+            Level: 'Study',
+            Query: {
+                PatientName: queryParams.PatientName,
+                PatientID: queryParams.PatientID,
+                StudyDate: DateString,
+                ModalitiesInStudy: queryParams.ModalitiesInStudy,
+                StudyDescription: queryParams.StudyDescription,
+                AccessionNumber: queryParams.AccessionNumber,
+                NumberOfStudyRelatedInstances: '',
+                NumberOfStudyRelatedSeries: ''
+            }
+        }
+
+        //Call Orthanc API to make Query
+        let createQueryRessource = await apis.query.dicomQuery(queryParams.Aet, queryPost)
+        //Call OrthancToolsJS API to get a parsed answer of the results
+        return await apis.query.retrieveAnswer(createQueryRessource.ID)
+    }
+
+
+    const onQueryHandle = async () => {
+
+        const data = store.queries;
+        const toastId = infoMessage('Starting Studies Queries')
+        let i = 0
+
+        for (const query of data) {
+            i++
+            updateToast(toastId, 'Query study ' + i + '/' + data.length)
+            //For each line make dicom query and return results
+            try {
+                let answeredResults = await makeDicomQuery(query)
+                //For each results, fill the result table through Redux
+                answeredResults.forEach((answer) => {
+                    dispatch(addStudyResult(answer))
+                })
+            } catch (err) {
+                console.error(err)
+            }
+
+        }
+
+        dissmissToast(toastId)
+        successMessage('Queries completed')
+        onQueryFinished()
     }
 
     if (isLoading) return <Spinner />
+
     return (
         <Container fluid>
-
             <Row>
                 <CsvLoader />
             </Row>
