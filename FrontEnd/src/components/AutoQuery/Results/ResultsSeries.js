@@ -66,6 +66,7 @@ export default () => {
     const columns = [
         studyQueryColumns.PATIENT_NAME,
         studyQueryColumns.PATIENT_ID,
+        studyQueryColumns.ACCESSION_NUMBER,
         studyQueryColumns.STUDY_DATE,
         studyQueryColumns.STUDY_DESCRIPTION,
         studyQueryColumns.REQUESTED_PROCEDURE,
@@ -73,6 +74,10 @@ export default () => {
         seriesQueryColumns.SERIES_DESCRIPTION,
         seriesQueryColumns.MODALITY,
         seriesQueryColumns.NB_SERIES_INSTANCES,
+        {
+            accessorKey : 'OriginAET',
+            header : 'AET'
+        }
     ]
 
     const data = useMemo(() => {
