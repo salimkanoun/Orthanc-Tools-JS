@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from 'react'
-import apis from '../../../services/apis'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+
+import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
+import { Container, Row } from 'react-bootstrap'
+
+import MyRobotTable from './MyRobotTable'
+
 import { addStudiesToAnonList } from '../../../actions/AnonList'
 import { addStudiesToExportList } from '../../../actions/ExportList'
 import { addStudiesToDeleteList } from '../../../actions/DeleteList'
 import { errorMessage } from '../../../tools/toastify'
-import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
-import { Container, Row } from 'react-bootstrap'
-import MyRobotTable from './MyRobotTable'
+import apis from '../../../services/apis'
 
 export default () => {
 
     const ITEM_FAILED = 'failed'
+
+    const store = useSelector(state => {
+        return {
+            username: state.OrthancTools.username,
+        }
+    })
+
     const dispatch = useDispatch()
 
     const [id, setId] = useState(null)
@@ -32,8 +42,11 @@ export default () => {
     }, [])
 
     const refreshInfo = async () => {
-        let response = await apis.task.getTask(id);
-        refreshHandler(response)
+        let retrieveIds = await apis.task.getTaskOfUser(store.username, 'retrieve')
+        if (retrieveIds.length > 0) {
+            let response = await apis.task.getTask(retrieveIds[0]);
+            refreshHandler(response)
+        }
     }
 
     const refreshHandler = (response) => {
