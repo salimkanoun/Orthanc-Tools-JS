@@ -69,7 +69,14 @@ export default () => {
 
                 try {
                     let response = await apis.importDicom.importDicom(stringBuffer)
-                    await addUploadedFileToState(response)
+                    if (Array.isArray(response)) {
+                        for (let singleResponse of response) {
+                            await addUploadedFileToState(singleResponse)
+                        }
+                    } else {
+                        await addUploadedFileToState(response)
+                    }
+                    console.log(response)
                 } catch (error) {
                     addErrorToState(file.name, error.statusText)
                 }
@@ -231,7 +238,7 @@ export default () => {
                                 <div
                                     className={(isDragging || inProgress) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
                                     <input directory="" webkitdirectory="" {...getInputProps()} />
-                                    <p>{inProgress ? "Uploading" : "Drop Dicom Folder"}</p>
+                                    <p>{inProgress ? "Uploading" : "Drop Dicom Folder or ZIP"}</p>
                                 </div>
                             </section>
                         )}
