@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react'
-import Dropzone from 'react-dropzone'
 import { Button } from 'react-bootstrap'
 import Select from 'react-select/creatable'
 
+import MyDropzone from '../../CommonComponents/MyDropzone'
 import TagTable from './TagTable'
 
 import { errorMessage, successMessage } from '../../../tools/toastify'
@@ -12,7 +12,6 @@ export default () => {
 
     const REQUIRED_TAGS = ['PatientID', 'PatientName', 'SeriesDescription', 'StudyDescription']
 
-    const [isDragging, setIsDragging] = useState(false)
     const [tags, setTags] = useState([])
     const [files, setFiles] = useState([])
     const [uploadState, setUploadState] = useState('Selected')
@@ -73,14 +72,14 @@ export default () => {
     }
 
     const handleDrop = (files) => {
-        setFiles(files)
+        setFiles((file)=> [...file, ...files])
         setUploadState('Selected')
     }
 
     const handleDataChange = (TagName, columnId, value) => {
         let newTags = [...tags];
         newTags.forEach(tag => {
-            if(tag.TagName === TagName){
+            if (tag.TagName === TagName) {
                 tag.Value = value
             }
         });
@@ -105,22 +104,11 @@ export default () => {
 
     return (
         <div>
-            <Dropzone accept={"application/pdf, image/jpeg, image/png"}
-                onDragEnter={() => setIsDragging(true)}
-                onDragLeave={() => setIsDragging(false)}
-                onDrop={handleDrop} multiple>
-                {({ getRootProps, getInputProps }) => (
-                    <section>
-                        <div
-                            className={(isDragging || !!files.length) ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
-                            <input {...getInputProps()} />
-                            <div className={"d-flex flex-column justify-content-center align-items-center h-100"}>
-                                <p style={{ "line-height": "normal" }}>{files.length ? `${uploadState} ${files.length > 1 ? files.length + ' files' : 'one file'} ` : "Drop png, jpeg or pdf"}</p>
-                            </div>
-                        </div>
-                    </section>
-                )}
-            </Dropzone>
+            <MyDropzone fileTypes={["pdf", "jpeg", "image"]}
+                onDrop={handleDrop}
+                message={files.length ? `${uploadState} ${files.length > 1 ? files.length + ' files' : 'one file'} ` : "Drop png, jpeg or pdf"}
+                multiple
+            />
             <TagTable data={tags} onDataUpdate={handleDataChange} onDeleteTag={(tagName) => handleDeleteTag(tagName)} />
             <div>
                 New Tag :
