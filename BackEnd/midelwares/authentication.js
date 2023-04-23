@@ -13,6 +13,7 @@ const userAuthMidelware = function (req, res, next) {
       const token = authorizationHeaders && authorizationHeaders.split(' ')[1]
       let payload = jwt.verify(token, process.env.TOKEN_SECRET)
       req.roles = payload.roles
+      req.username = payload.username
       next()
     } catch (err) {
       console.log(err)
@@ -28,7 +29,7 @@ const isCurrentUserOrAdminMidelWare = function (req, res, next) {
   if(process.env.NODE_ENV=='test'){
     next()
   }
-  else if (req.roles.admin || req.roles.username === req.params.username) {
+  else if (req.roles.admin || req.username === req.params.username) {
     next()
   } else {
     res.sendStatus(403);
@@ -175,7 +176,7 @@ const ownTaskOrIsAdminMidelware = async function (req,res,next){
   }
   else{
     let task = await Task.getTask(req.params.id);
-    if(task.creator !== req.roles.username && !req.roles.admin) throw new OTJSForbiddenException("Task not owned");
+    if(task.creator !== req.username && !req.roles.admin) throw new OTJSForbiddenException("Task not owned");
     next();
   }
 }

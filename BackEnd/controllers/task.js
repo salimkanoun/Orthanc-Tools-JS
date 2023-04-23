@@ -23,7 +23,7 @@ const checkForOrthancQueueReady = async (req, res, next) => {
  */
 const addAnonTask = async (req, res) => {
     let orthancIds = req.body;
-    let id = await AnonTask.createTask(req.roles.username, orthancIds);
+    let id = await AnonTask.createTask(req.username, orthancIds);
     res.send(id);
 }
 
@@ -35,7 +35,7 @@ const addAnonTask = async (req, res) => {
 const addDeleteTask = async (req, res) => {
 
     let orthancIds = req.body;
-    let id = await DeleteTask.createTask(req.roles.username, orthancIds);
+    let id = await DeleteTask.createTask(req.username, orthancIds);
     res.send(id)
 }
 
@@ -47,7 +47,7 @@ const addDeleteTask = async (req, res) => {
 const addRetrieveTask = async (req, res) => {
 
     let retrieveArray = req.body.retrieveArray
-    let id = await RetrieveTask.createTask(req.roles.username, req.body.projectName, retrieveArray);
+    let id = await RetrieveTask.createTask(req.username, req.body.projectName, retrieveArray);
     res.send(id)
 }
 
@@ -60,7 +60,7 @@ const addExportTask = async function (req, res) {
     let studies = req.body.Resources;
     let endpoint = req.body.endpoint;
     let transcoding = Options.getOptions().export_transcoding;
-    let id = await ExportTask.createTask(req.roles.username, studies, endpoint, transcoding);
+    let id = await ExportTask.createTask(req.username, studies, endpoint, transcoding);
     res.send(id);
 }
 

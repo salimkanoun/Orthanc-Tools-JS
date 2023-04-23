@@ -43,6 +43,7 @@ export default () => {
 
     const refreshInfo = async () => {
         let retrieveIds = await apis.task.getTaskOfUser(store.username, 'retrieve')
+        console.log(retrieveIds)
         if (retrieveIds.length > 0) {
             let response = await apis.task.getTask(retrieveIds[0]);
             refreshHandler(response)
