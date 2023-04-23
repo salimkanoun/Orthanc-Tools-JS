@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import Dropzone from 'react-dropzone'
 import { Row, Col, Form, FormGroup, Button } from 'react-bootstrap'
 
+import MyDropzone from '../../../CommonComponents/MyDropzone'
 import apis from '../../../../services/apis'
 import { keys } from '../../../../model/Constant'
 import { useCustomMutation } from '../../../../services/ReactQuery/hooks'
@@ -40,17 +40,10 @@ export default () => {
     return (
         <Form>
             <h3 className="card-title mt-4">Add Ssh Private Key</h3>
-            <Dropzone onDrop={acceptedFile => setFile0(acceptedFile)} >
-                {({ getRootProps, getInputProps }) => (
-                    <section>
-                        <div className={inProgress ? "dropzone dz-parsing" : "dropzone"} {...getRootProps()} >
-                            <input {...getInputProps()} />
-                            <p>{!!file ? file.name : "Drop Private Key"}</p>
-                        </div>
-                    </section>
-                )}
-            </Dropzone>
-
+            <MyDropzone
+                onDrop={acceptedFile => setFile0(acceptedFile)}
+                message={!!file ? file.name : "Drop Private Key"}
+            />
             <Row>
                 <Col>
                     <FormGroup>

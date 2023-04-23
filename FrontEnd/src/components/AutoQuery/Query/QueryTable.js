@@ -78,6 +78,7 @@ export default ({ queries = [], aets = [], onRowClick, currentRow }) => {
             columns={columns}
             data={queries}
             onCellEdit={cellEditHandler}
+            paginated
         />
     )
 }

@@ -101,6 +101,7 @@ export default ({
         enableHiding: true,
         enableFilters: canFilter,
         enableExpanding: canExpand,
+        manualPagination : !paginated,
         //getRowCanExpand : () => canExpand,
         enableSorting: canSort,
         enableSortingRemoval: true,
@@ -193,7 +194,7 @@ export default ({
 
             </table>
             {
-                paginated ?
+                paginated && table.getPageCount() > 1 ?
                     <div className="d-flex justify-content-end">
                         <Paginate
                             gotoPage={table.setPageIndex}

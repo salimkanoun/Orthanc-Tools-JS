@@ -31,10 +31,13 @@ export default () => {
 
     return (
         <div>
-            <h2>Auto Retrieve</h2>
             <div className='mb-5'>
+                <div className="d-flex justify-content-start align-items-center pb-3">
+                        <i className={"fas fa-recycle icone ico me-3"}></i><h2 className="card-title">Auto Retrieve</h2>
+                </div>
                 <nav className="otjs-navmenu container-fluid">
                     <div className="otjs-navmenu-nav">
+                        
                         <li>
                             <Button
                                 className={currentComponent === TAB_QUERIES ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
