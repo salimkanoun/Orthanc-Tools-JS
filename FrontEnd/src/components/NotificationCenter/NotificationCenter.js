@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { useNotificationCenter } from "react-toastify/addons/use-notification-center";
 import { Badge, Overlay } from "react-bootstrap";
@@ -14,11 +14,11 @@ export default () => {
         notifications,
         remove
     } = useNotificationCenter();
-    
-    const getJobsNotifications = () => {
-        return notifications.filter((notification) => notification.type === 'jobs')
-    }
 
+    const jobNotifications = useMemo(() => {
+            return notifications.filter((notification) => notification.type === 'jobs')
+    }, [notifications.length])
+    
     const [isOpen, setIsOpen] = useState(false);
 
     const target = useRef(null)
@@ -29,7 +29,7 @@ export default () => {
                 <Badge>
                     <MailIcon color="action" />
                     <span className='button-count'>
-                        {notifications.length}
+                        {jobNotifications.length}
                     </span>
                 </Badge>
             </IconButton>
@@ -40,7 +40,7 @@ export default () => {
                 placement="left"
             >
                 <div >
-                    <JobsRoot notifications={getJobsNotifications()} remove={remove} />
+                    <JobsRoot notifications={jobNotifications} remove={remove} />
                 </div>
             </Overlay>
         </div>
