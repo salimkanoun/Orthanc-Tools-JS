@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
 import QueryRoot from './Query/QueryRoot'
+import ResultsRoot from './Results/ResultsRoot'
 
 export default () => {
 
@@ -15,7 +16,7 @@ export default () => {
             case TAB_QUERIES:
                 return <QueryRoot />
             case TAB_RESULTS:
-                return null
+                return <ResultsRoot/>
             case TAB_MYROBOT:
                 return null
             default:
