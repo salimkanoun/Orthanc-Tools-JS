@@ -5,7 +5,6 @@ import Dropzone from 'react-dropzone'
 import { Modal, Row, Col, ProgressBar } from 'react-bootstrap'
 
 import TableImportError from './TableImportError'
-import AnonExportDeleteSendButton from './AnonExportDeleteSendButton'
 import TablePatientWithNestedStudiesAndSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudiesAndSeries'
 
 import { treeToPatientArray, treeToStudyArray } from '../../tools/processResponse'
@@ -15,6 +14,7 @@ import { addStudiesToAnonList } from '../../actions/AnonList'
 import apis from '../../services/apis'
 import Study from '../../model/Study'
 import Series from '../../model/Series'
+import ExportDeleteSendButton from '../CommonComponents/RessourcesDisplay/ExportDeleteSendButton'
 
 
 export default () => {
@@ -257,10 +257,13 @@ export default () => {
                     <TablePatientWithNestedStudiesAndSeries patients={buildImportTree()} />
                 </Col>
             </Row>
-            <AnonExportDeleteSendButton onAnonClick={sendImportedToAnon}
-                onExportClick={sendImportedToExport}
-                onDeleteClick={sendImportedToDelete}
-            />
+            <Row>
+                <ExportDeleteSendButton onAnonClick={sendImportedToAnon}
+                    onExportClick={sendImportedToExport}
+                    onDeleteClick={sendImportedToDelete}
+                />
+            </Row>
+
         </div>
     )
 }

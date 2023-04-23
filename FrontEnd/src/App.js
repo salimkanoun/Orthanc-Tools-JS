@@ -20,6 +20,8 @@ import apis from './services/apis'
 import 'bootstrap/dist/css/bootstrap.min.css'
 //CSS Toastify
 import 'react-toastify/dist/ReactToastify.css'
+//progress bar
+import 'react-circular-progressbar/dist/styles.css';
 //React Calendar
 import 'react-calendar/dist/Calendar.css';
 //Custom CSS

@@ -11,10 +11,20 @@ import { addStudiesToExportList } from '../../../actions/ExportList'
 import { addStudiesToDeleteList } from '../../../actions/DeleteList'
 import { errorMessage } from '../../../tools/toastify'
 import apis from '../../../services/apis'
+import ExportDeleteSendButton from '../../CommonComponents/RessourcesDisplay/ExportDeleteSendButton'
 
 export default () => {
 
+    const ITEM_SUCCESS = 'completed'
+    const ITEM_AWAITING = 'wait'
+    const ITEM_PENDING = 'active'
     const ITEM_FAILED = 'failed'
+    const ITEM_DELAYED = 'delayed'
+    const ROBOT_WAITING_VALIDATION = 'waiting validation'
+    const ROBOT_VALIDATING = 'validation'
+    const ROBOT_WAITING_RETRIEVE = 'waiting retireve'
+    const ROBOT_RETRIEVING = 'retrieve'
+    const ROBOT_COMPLETED = 'completed'
 
     const store = useSelector(state => {
         return {
@@ -168,9 +178,12 @@ export default () => {
             <Row className='mt-5'>
                 <MyRobotTable rows={rows} />
             </Row>
+            <Row>
+                <ExportDeleteSendButton
+                    onAnonClick={sendToAnon} onExportClick={sendToExport}
+                    onDeleteClick={sendToDelete}
+                />
+            </Row>
         </Container>
     )
 }
-
-/*                <AnonExportDeleteSendButton onAnonClick={this.sendToAnon} onExportClick={this.sendToExport}
-                    onDeleteClick={this.sendToDelete} />*/
