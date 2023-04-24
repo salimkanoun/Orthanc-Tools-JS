@@ -2,9 +2,9 @@ import React from "react";
 
 import { Form } from "react-bootstrap";
 
-import CommonTableV8 from "./CommonTableV8";
+import CommonTableV8 from "../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
-export default ({ data, modifications, deleted, onDataUpdate, onDeleteTag }) => {
+export default ({ data, modifications, deleted, onCellEdit, onDeleteTag }) => {
 
     const prepareData = () => {
         let dataPrepare = []
@@ -33,9 +33,7 @@ export default ({ data, modifications, deleted, onDataUpdate, onDeleteTag }) => 
             id: 'newValue',
             accessorKey: 'newValue',
             header: 'New Value',
-            cell: (({ value, row }) => {
-                return (<Form.Control disabled={!row.original.editable} value={value ?? ''} onChange={(event) => onDataUpdate(row.original.tagName, event.target.value)} />)
-            })
+            isEditable: true
         }, {
             id: 'deletable',
             accessorKey: 'deletable',
@@ -45,11 +43,11 @@ export default ({ data, modifications, deleted, onDataUpdate, onDeleteTag }) => 
             id: 'deleted',
             accessorKey: 'deleted',
             header: 'Deleted',
-            cell: (({ value, row }) => {
-                return <Form.Check checked={value} onChange={(event) => onDeleteTag(row.original.tagName, event.target.checked)} />
+            cell: (({ getValue, row }) => {
+                return <Form.Check checked={getValue()} onChange={(event) => onDeleteTag(row.original.tagName, event.target.checked)} />
             })
         }
     ]
 
-    return <CommonTableV8 id={(originalRow) => originalRow.tagName} columns={columns} data={prepareData(data)} />
+    return <CommonTableV8 onCellEdit={onCellEdit} id='tagName' columns={columns} data={prepareData(data)} />
 }

@@ -2,8 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
-
-import { saveProfile } from '../../actions/AnonList'
+import { saveProfile } from '../../../actions/AnonList'
 
 export default () => {
 

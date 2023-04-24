@@ -61,12 +61,8 @@ export default ({
                     <Modal.Title> Modify {modifyOrthancID.level}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Modify orthancID={modifyOrthancID.orthancID} level={modifyOrthancID.level} />
+                    <Modify orthancID={modifyOrthancID.orthancID} level={modifyOrthancID.level} onClose={() => setModifyOrthancID({ orthancID: null, level: null })}/>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button className='otjs-button otjs-button-orange me-5' /*onClick={() => modify()}*/>Modify</Button>
-                    <Button className='otjs-button otjs-button-red' onClick={() => setModifyOrthancID({ orthancID: null, level: null })}>Cancel</Button>
-                </Modal.Footer>
             </Modal>
 
             <TablePatientWithNestedStudies

@@ -28,7 +28,7 @@ export default ({
 
     const { data: series, refetch } = useCustomQuery(
         ['orthanc', 'series', currentStudy],
-        () => currentStudy ? apis.content.getSeriesDetails(currentStudy) : [],
+        () => currentStudy ? apis.content.getSeriesDetailsOfStudy(currentStudy) : [],
         undefined,
         (series) => {
             let seriesObjects = series.map(series => {

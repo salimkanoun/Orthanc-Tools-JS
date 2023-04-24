@@ -23,8 +23,6 @@ export default ({
                 <Button className='dropdown-item bg-orange' onClick={() => onShowModify()}>
                     Modify
                 </Button>
-                {//<Modify orthancID={orthancID} refresh={() => { console.log('TODO REFRESH') }} data={dataDetails} level={ConstantLevel.SERIES} onShowModify={() => onShowMetadata()}/>
-                }
                 <Button className='dropdown-item bg-red'
                     onClick={onDelete}>Delete
                 </Button>
