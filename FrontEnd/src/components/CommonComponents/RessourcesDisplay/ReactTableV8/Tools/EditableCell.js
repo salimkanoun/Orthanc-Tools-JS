@@ -112,7 +112,7 @@ export default ({ getValue, row: { index, id: idRow }, column: { columnDef: { id
         min={min}
         max={max}
         placeholder={placeholder}
-        value={value}
+        value={value ?? ''}
         onChange={onChange}
         onBlur={onBlur}
     />)

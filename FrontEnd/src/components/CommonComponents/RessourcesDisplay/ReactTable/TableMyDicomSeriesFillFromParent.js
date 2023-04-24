@@ -19,7 +19,7 @@ export default ({ studyID, columns }) => {
   }
 
   const loadSeriesInState = async (studyID) => {
-    let seriesAnswer = await apis.content.getSeriesDetails(studyID)
+    let seriesAnswer = await apis.content.getSeriesDetailsOfStudy(studyID)
     let seriesData = []
     if (seriesAnswer !== undefined) {
       for (var i = 0; i < seriesAnswer.length; i++) {

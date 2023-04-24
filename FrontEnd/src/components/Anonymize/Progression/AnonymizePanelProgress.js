@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
 
-import MonitorTask from '../../tools/MonitorTask';
+import MonitorTask from '../../../tools/MonitorTask';
 
 
 class AnonymizePanelProgress extends Component {

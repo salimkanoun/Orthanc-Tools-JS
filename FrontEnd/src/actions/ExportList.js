@@ -1,12 +1,13 @@
 import { ADD_EXPORT_CONTENT, EMPTY_EXPORT_LIST, REMOVE_SERIES_EXPORT_LIST, REMOVE_STUDY_EXPORT_LIST } from './actions-types'
 import apis from '../services/apis'
 import Series from '../model/Series'
+import { errorMessage } from '../tools/toastify'
 
-export function addToExportList(seriesArray, studiesArray){
+export function addToExportList(seriesArray, studiesArray) {
     return {
-        type : ADD_EXPORT_CONTENT,
+        type: ADD_EXPORT_CONTENT,
         payload: {
-            series: seriesArray, 
+            series: seriesArray,
             studies: studiesArray
         }
     }
@@ -17,45 +18,50 @@ export function addToExportList(seriesArray, studiesArray){
  * send the exported study ressource
  * @param {*} studiesArray 
  */
-export function addStudiesToExportList(studiesArray){
-    return async function(dispatch) {
-        for (const studyObject of studiesArray){
-            let seriesInfo = await apis.content.getSeriesDetails(studyObject['StudyOrthancID'])   
-            let series = seriesInfo.map(series => {
-                let seriesObject = new Series()
-                seriesObject.fillFromOrthanc(series.ID, series.MainDicomTags, series.Instances, series.ParentStudy )
-                return seriesObject
-            })
-           
-            dispatch( 
-                {
-                    type : ADD_EXPORT_CONTENT,
-                    payload: {
-                        series: series, 
-                        studies: [studyObject]
+export function addStudiesToExportList(studiesArray) {
+    return async function (dispatch) {
+        for (const studyObject of studiesArray) {
+            try {
+                let seriesInfo = await apis.content.getSeriesDetailsOfStudy(studyObject['StudyOrthancID'])
+                let series = seriesInfo.map(series => {
+                    let seriesObject = new Series()
+                    seriesObject.fillFromOrthanc(series.ID, series.MainDicomTags, series.Instances, series.ParentStudy)
+                    return seriesObject
+                })
+
+                dispatch(
+                    {
+                        type: ADD_EXPORT_CONTENT,
+                        payload: {
+                            series: series,
+                            studies: [studyObject]
+                        }
                     }
-                }
-            )
+                )
+            } catch (error) {
+                errorMessage(error?.data?.errorMessage ?? "Series Details Fetching Failed")
+            }
+
         }
     }
 }
 
-export function emptyExportList(){
+export function emptyExportList() {
     return {
         type: EMPTY_EXPORT_LIST
     }
 }
 
-export function removeStudyFromExportList (studyID){
- return {
-     type: REMOVE_STUDY_EXPORT_LIST,
-     payload: studyID
- }
+export function removeStudyFromExportList(studyID) {
+    return {
+        type: REMOVE_STUDY_EXPORT_LIST,
+        payload: studyID
+    }
 }
 
-export function removeSeriesFromExportList (serieID){
+export function removeSeriesFromExportList(serieID) {
     return {
-        type: REMOVE_SERIES_EXPORT_LIST, 
+        type: REMOVE_SERIES_EXPORT_LIST,
         payload: serieID
     }
 }

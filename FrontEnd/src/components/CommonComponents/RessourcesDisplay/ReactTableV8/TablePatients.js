@@ -1,50 +1,15 @@
-import React from "react";
+import React, { useMemo } from "react";
+import { commonColumns, patientColumns } from "./ColomnFactories";
 
 import CommonTableV8 from "./CommonTableV8";
 
-export default ({ patients }) => {
-
+export default ({ patients, additionalColumns = [], onRowClick, rowStyle }) => {
 
     const columns = [
-        patientColumns.ID(textIDColumn),
-        {
-            id: 'raw',
-            accessorrKey: 'raw',
-            header: 'RAW',
-            enableHiding: true
-        },
-        {
-            id: 'PatientOrthancID',
-            accessorrKey: 'PatientOrthancID',
-            header: 'PatientOrthancID',
-            enableHiding: true
-        },
-        {
-            id: 'PatientName',
-            accessorrKey: 'PatientName',
-            header: 'Patient Name',
-            filterType: "STRING"
-        },
-        {
-            id: 'PatientID',
-            accessorrKey: 'PatientID',
-            header: 'Patient ID',
-            filterType: "STRING"
-        },
-        {
-            id: 'newPatientID',
-            accessorrKey: 'newPatientID',
-            header: 'New Patient ID',
-            isEditable: true,
-            editionProperties: {}
-        },
-        {
-            id: 'newPatientName',
-            accessorrKey: 'newPatientName',
-            header: 'New Patient Name',
-            isEditable: true,
-            editionProperties: {}
-        },
+        commonColumns.RAW,
+        patientColumns.ORTHANC_ID,
+        patientColumns.NAME,
+        patientColumns.ID,
     ]
 
     const data = useMemo(() => patients.map(x => ({
@@ -53,6 +18,6 @@ export default ({ patients }) => {
     })), [patients]);
 
     return (
-        <CommonTableV8 data={data} columns={columns} />
+        <CommonTableV8 data={data} columns={[...columns, ...additionalColumns]} rowStyle={rowStyle} onRowClick={onRowClick}/*onCellEdit={}*/ />
     )
 }

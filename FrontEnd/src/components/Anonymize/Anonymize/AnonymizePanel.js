@@ -1,9 +1,10 @@
 import React, { useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Button, Col, Container, Row } from 'react-bootstrap'
+import { toast } from "react-toastify"
 
-import TablePatients from '../CommonComponents/RessourcesDisplay/ReactTable/TablePatients'
-import apis from "../../services/apis"
+import TablePatients from '../../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatients'
+import apis from "../../../services/apis"
 import AnonProfile from './AnonProfile'
 
 import {
@@ -12,11 +13,9 @@ import {
     removePatientFromAnonList,
     removeStudyFromAnonList,
     saveNewValues
-} from '../../actions/AnonList'
-import { studyArrayToPatientArray } from '../../tools/processResponse'
-
-import { toast } from "react-toastify"
-import TableStudyAnon from "../CommonComponents/RessourcesDisplay/ReactTable/TableStudyAnon"
+} from '../../../actions/AnonList'
+import { studyArrayToPatientArray } from '../../../tools/processResponse'
+import TableStudyAnon from "../../CommonComponents/RessourcesDisplay/ReactTable/TableStudyAnon"
 
 /**
  * This componnent wrapper allows to optimise the table by memoizing data
@@ -27,7 +26,7 @@ import TableStudyAnon from "../CommonComponents/RessourcesDisplay/ReactTable/Tab
  * @returns {JSX.Element} The table
  */
 
-export default (setTask) => {
+export default ({ setTask }) => {
 
     const [currentPatient, setCurrentPatient] = useState('')
     const [prefix, setPrefix] = useState('')
@@ -48,6 +47,7 @@ export default (setTask) => {
         newPatientID: patient.newPatientID ? patient.newPatientID : ''
     })), [store.anonList])
 
+    //A revoir
     const studiesData = useMemo(() => store.anonList
         .filter(study => study.PatientOrthancID === currentPatient)
         .map(study => ({
@@ -56,6 +56,8 @@ export default (setTask) => {
             newAccessionNumber: study.newAccessionNumber ? study.newAccessionNumber : 'OrthancToolsJS'
         }))
         , [store.anonList, currentPatient])
+
+    console.log(studiesData)
 
     const testAllId = () => {
         let answer = true
@@ -125,11 +127,42 @@ export default (setTask) => {
 
     const onClickEmpty = () => dispatch(emptyAnonymizeList)
 
+    const additionalColumns = [
+        {
+            id: 'newPatientID',
+            accessorrKey: 'newPatientID',
+            header: 'New Patient ID',
+            isEditable: true,
+            editionProperties: {}
+        },
+        {
+            id: 'newPatientName',
+            accessorrKey: 'newPatientName',
+            header: 'New Patient Name',
+            isEditable: true,
+            editionProperties: {}
+        },
+        {
+            id: 'Remove',
+            accessorrKey: 'Remove',
+            header: 'Remove',
+            cell: ({ row }) => {
+                console.log(row)
+                return <Button className="btn btn-danger" onClick={() => {
+                    onRemovePatient(row.original.PatientOrthancID);
+                }}>Remove</Button>
+            }
+        }
+    ]
+
     return (
         <Container>
             <Row className="mt-5">
                 <Col xxl={6}>
-                    <TablePatients
+
+                    <TablePatients patients={patients} additionalColumns={additionalColumns} onRowClick={onClickPatientHandler} rowStyle={rowStyle} />
+
+                    {/*<TablePatients
                         patients={patients}
                         onRemovePatient={onRemovePatient}
                         actionBouton={false}
@@ -140,7 +173,8 @@ export default (setTask) => {
                         showEditable={true}
                         onEdit={onEditPatient}
                         rowStyle={rowStyle}
-                        pagination={true} />
+    pagination={true} />*/}
+
                     <Button className='otjs-button otjs-button-red mt-2 w-7'
                         onClick={onClickEmpty}>
                         Empty List
