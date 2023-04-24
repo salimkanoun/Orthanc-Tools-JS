@@ -73,6 +73,7 @@ router.post('/instances', [userAuthMidelware, importMidelware], reverseProxyPost
 
 //Orthanc export routes
 router.post('/tools/create-archive', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
+router.post('/tools/create-media', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
 router.post('/tools/create-media-extended', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
 
 //Orthanc Create Dicom Route

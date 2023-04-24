@@ -20,7 +20,7 @@ services:
         restart: unless-stopped
 
     orthanc:
-        image: osimis/orthanc:21.1.7
+        image: osimis/orthanc:23.4.0
         container_name: orthanc
         restart: unless-stopped
         ports: ["8042:8042"]

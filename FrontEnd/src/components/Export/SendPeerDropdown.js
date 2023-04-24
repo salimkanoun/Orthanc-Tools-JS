@@ -1,91 +1,36 @@
-import React, { Component } from "react"
-import { Dropdown, ButtonGroup, Button } from "react-bootstrap";
-import { toast } from "react-toastify"
+import React from "react"
+import { Dropdown } from "react-bootstrap";
 
+import { errorMessage, jobMessageToNotificationCenter } from "../../tools/toastify";
 import apis from "../../services/apis"
-import MonitorJob from "../../tools/MonitorJob"
 
-export default class SendPeerDropdown extends Component {
+export default ({ peers, exportIds }) => {
 
-    state = {
-        disabled: false,
-        title: "Send To Peer"
-    }
-
-    handleClickDownload = async (event) => {
-
-        if (this.props.needConfirm) { this.props.setModal() }
-
-        let destinationPeer = event.currentTarget.id
-        let jobAnswer
+    const handleClickDownload = async (destinationPeer) => {
         try {
-            jobAnswer = await apis.peers.storePeer(destinationPeer, this.props.exportIds)
+            let answer = await apis.peers.storePeer(destinationPeer, exportIds)
+            jobMessageToNotificationCenter('Send to Peer', { ID: answer.ID, Peer: destinationPeer })
         } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
+            errorMessage(error?.data?.errorMessage)
             return
         }
-
-
-        let jobMonitoring = new MonitorJob(jobAnswer.ID)
-        let self = this
-        jobMonitoring.onUpdate(function (progress) {
-            self.updateProgress(progress)
-        })
-
-        jobMonitoring.onFinish(async function (state) {
-            if (state === MonitorJob.Success) {
-                self.resetProgress()
-                toast.success('Peer Trasnfer Success', { data: { type: 'notification' } })
-
-            } else if (state === MonitorJob.Failure) {
-                self.resetProgress()
-                toast.error('Peer Transfer Error', { data: { type: 'notification' } })
-
-            }
-        })
-
-        jobMonitoring.startMonitoringJob()
-        this.job = jobMonitoring
     }
 
-    updateProgress = (progress) => {
-        this.setState({
-            disabled: true,
-            title: 'Sending ' + progress + ' %'
-        })
-    }
+    return (
+        <Dropdown>
+            <Dropdown.Toggle variant="button-dropdown-orange" className="button-dropdown button-dropdown-orange w-10" id="dropdown-basic">
+                Send To Peer
+            </Dropdown.Toggle>
 
-    resetProgress = () => {
-        this.setState({
-            disabled: false,
-            title: "Send To Peer"
-        })
-
-    }
-
-    componentWillUnmount = () => {
-        if (this.job !== undefined) this.job.cancel()
-    }
-
-    render = () => {
-
-        let dropDownItems = []
-        this.props.peers.forEach(peer => {
-            let button = <Button id={peer} className='btn btn-primary' onClick={this.handleClickDownload}>Continue Anyway</Button>
-            dropDownItems.push(<Dropdown.Item key={peer} id={peer} onClick={this.props.needConfirm ? () => { this.props.setModal(); this.props.setButton(button) } : this.handleClickDownload} >{peer}</Dropdown.Item>)
-        })
-
-        return (
-            <Dropdown as={ButtonGroup}>
-                <Dropdown.Toggle variant="button-dropdown-orange" className="button-dropdown button-dropdown-orange w-10" id="dropdown-basic" disabled={this.state.disabled}>
-                    {this.state.title}
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu className="mt-2 border border-dark border-2">
-                    {dropDownItems}
-                </Dropdown.Menu>
-            </Dropdown>
-        )
-    }
-
+            <Dropdown.Menu className="mt-2 border border-dark border-2">
+                {peers.map(peer => (
+                    <Dropdown.Item
+                        key={peer}
+                        onClick={() => handleClickDownload(peer)} >
+                        {peer}
+                    </Dropdown.Item>))
+                }
+            </Dropdown.Menu>
+        </Dropdown>
+    )
 }

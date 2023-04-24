@@ -26,7 +26,7 @@ export function addStudiesToExportList(studiesArray) {
                 let series = seriesInfo.map(series => {
                     let seriesObject = new Series()
                     seriesObject.fillFromOrthanc(series.ID, series.MainDicomTags, series.Instances, series.ParentStudy)
-                    return seriesObject
+                    return seriesObject.serialize()
                 })
 
                 dispatch(
