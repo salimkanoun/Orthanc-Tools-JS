@@ -43,7 +43,7 @@ export default class TableSeriesFillFromParent extends Component {
     }
 
     loadSeriesInState = async (studyID) => {
-        let seriesAnswer = await apis.content.getSeriesDetails(studyID)
+        let seriesAnswer = await apis.content.getSeriesDetailsOfStudy(studyID)
         let seriesData = []
         seriesAnswer.forEach((serie) => {
             seriesData.push({

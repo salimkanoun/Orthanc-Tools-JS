@@ -20,6 +20,7 @@ export default ({ notifications, remove }) => {
     }
 
     useEffect(() => {
+        monitorJobs()
         const intervalID = setInterval(() => {
             monitorJobs(notifications)
         }, 2000)
