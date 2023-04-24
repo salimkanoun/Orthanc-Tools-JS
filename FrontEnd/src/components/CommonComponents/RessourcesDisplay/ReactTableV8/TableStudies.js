@@ -11,7 +11,8 @@ export default ({
     withPatientColums = false,
     canSelect = false,
     onSelectRow = undefined,
-    selectedRowsIds = undefined
+    selectedRowsIds = undefined,
+    paginated = false
 }) => {
 
     const columns = [
@@ -25,6 +26,6 @@ export default ({
     ]
 
     return (
-        <CommonTableV8 id="StudyOrthancID" selectedRowsIds={selectedRowsIds} data={studies} columns={columns.concat(additionalColumns)} rowStyle={rowStyle} onRowClick={onRowClick} canSelect={canSelect} onSelectRow={onSelectRow} />
+        <CommonTableV8 id="StudyOrthancID" selectedRowsIds={selectedRowsIds} data={studies} columns={columns.concat(additionalColumns)} rowStyle={rowStyle} onRowClick={onRowClick} canSelect={canSelect} onSelectRow={onSelectRow} paginated={paginated} />
     )
 }

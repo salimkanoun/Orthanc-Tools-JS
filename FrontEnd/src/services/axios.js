@@ -24,7 +24,7 @@ axios.interceptors.response.use(
     }
 )
 
-const getToken = () => {
+export const getToken = () => {
     return store?.getState().OrthancTools.token
 }
 

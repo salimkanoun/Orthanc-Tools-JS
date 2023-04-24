@@ -73,13 +73,13 @@ export default ({ target, show, onHide }) => {
                             </Button>
                         </div>
                     </div>
-
                     <TableStudiesWithNestedSeries
                         studies={store.studyArray}
                         series={store.seriesArray}
                         withPatientColums
                         additionalColumnsStudies={additionalColumnsStudies}
                         additionalColumnsSeries={additionalColumnsSeries}
+                        studyTablePaginated={true}
                     />
                     <Row className="text-center mt-5">
                         <Col sm={6}>

@@ -9,7 +9,8 @@ export default ({
     series,
     withPatientColums = false,
     additionalColumnsStudies = [],
-    additionalColumnsSeries = []
+    additionalColumnsSeries = [],
+    studyTablePaginated = false
 }) => {
 
     const columns = [
@@ -31,5 +32,5 @@ export default ({
     }
 
 
-    return <CommonTableV8 id={studyColumns.ORTHANC_ID.id} canExpand columns={columnsStudies} data={studies} renderSubComponent={renderSubComponent} />
+    return <CommonTableV8 id={studyColumns.ORTHANC_ID.id} canExpand columns={columnsStudies} data={studies} renderSubComponent={renderSubComponent} paginated={studyTablePaginated} />
 }
