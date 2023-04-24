@@ -22,7 +22,8 @@ const keys = {
     ASSOCIATIONS_KEY: 'associations',
     OPTIONS_KEY: 'options',
     TIME: 'time',
-    EXPAND: 'expand'
+    EXPAND: 'expand',
+    EXPORT_OPTION_KEYS : 'exportOptions'
 }
 
 const filter = {

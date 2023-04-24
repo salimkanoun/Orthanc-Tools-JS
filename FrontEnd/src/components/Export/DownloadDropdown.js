@@ -1,59 +1,34 @@
-import React, { useState } from "react"
-import { Dropdown, ButtonGroup } from "react-bootstrap"
-import { toast } from "react-toastify"
+import React from "react"
+import { Dropdown } from "react-bootstrap"
 
+import { errorMessage } from "../../tools/toastify"
 import apis from '../../services/apis'
 
 export default ({ exportIds, TS }) => {
 
-    const [buttonText, setButtonText] = useState("Download")
-    const [disabled, setDisabled] = useState(false)
-
-    const updateProgress = (progress) => {
-        setButtonText("Preparing Zip " + progress + "%")
-        setDisabled(true)
-    }
-
-    const setStatusDownloading = () => {
-        setButtonText("Downloading")
-        setDisabled(true)
-    }
-
-    const resetProgress = () => {
-        setButtonText("Download")
-        setDisabled(false)
-    }
-
-    const handleRootClick = (e) => {
-        e.stopPropagation()
-    }
-
-    const handleClickDownload = async (e) => {
-        e.stopPropagation()
-
+    const handleClickDownload = async (hirarchical) => {
         try {
-            if (e.currentTarget.id === 'hirarchical') {
-                apis.exportDicom.downloadZipSync(exportIds, TS, false)
+            if (hirarchical) {
+                apis.exportDicom.exportHirachicalDicoms(exportIds, TS)
             } else {
-                apis.exportDicom.downloadZipSync(exportIds, TS, true)
+                apis.exportDicom.exportDicomDirDicoms(exportIds, TS)
             }
         } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
+            errorMessage(error?.data?.errorMessage)
         }
     }
 
-
     return (
-        <Dropdown as={ButtonGroup} onClick={handleRootClick}>
-            <Dropdown.Toggle variant="button-dropdown-blue" className="button-dropdown button-dropdown-blue w-7" id="dropdown-basic" disabled={disabled}>
-                {buttonText}
+        <Dropdown >
+            <Dropdown.Toggle variant="button-dropdown-blue" className="button-dropdown button-dropdown-blue w-7">
+                Download
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="mt-2 border border-dark border-2">
-                <Dropdown.Item id='hirarchical' onClick={handleClickDownload}>
+                <Dropdown.Item id='hirarchical' onClick={() => handleClickDownload(true)}>
                     Hirarchical
                 </Dropdown.Item>
-                <Dropdown.Item id='dicomdir' onClick={handleClickDownload}>
+                <Dropdown.Item id='dicomdir' onClick={() => handleClickDownload(false)}>
                     Dicomdir
                 </Dropdown.Item>
             </Dropdown.Menu>
