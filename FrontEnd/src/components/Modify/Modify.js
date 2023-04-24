@@ -94,7 +94,6 @@ export default ({
                 }
             })
         }
-
     }
 
     const onDeleteTag = (tagName, deleted) => {

@@ -5,7 +5,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { Route, Switch, withRouter } from 'react-router-dom'
 
 import AdminRootPanel from '../Admin/AdminRootPanel'
-import AnonRootPanel from '../Anonymize/AnonRootPanel'
+import AnonRoot from '../Anonymize/AnonRoot'
 import AutoQueryRoot from '../AutoQuery/AutoQueryRoot'
 import CDBurner from '../CDBurner/CDBurner'
 import Delete from '../Delete/Delete'
@@ -51,7 +51,7 @@ const AnimatedSwitch = withRouter(({ location, ...props }) => (
                     <Route exact path='/administration' component={AdminRootPanel} />
                     <Route exact path='/orthanc-content' component={ContentRootPanel} />
                     <Route exact path='/export' component={ExportPanel} />
-                    <Route exact path='/anonymize' component={AnonRootPanel} />
+                    <Route exact path='/anonymize' component={AnonRoot} />
                     <Route exact path='/cd-burner' component={CDBurner} />
                     <Route exact path='/mydicom' component={MyDicom} />
                     <Route exact path='/delete' component={Delete} />

@@ -6,7 +6,6 @@ import CommonTableV8 from "../CommonComponents/RessourcesDisplay/ReactTableV8/Co
 
 export default ({ data, modifications, deleted, onCellEdit, onDeleteTag }) => {
 
-    console.log(data)
     const prepareData = () => {
         let dataPrepare = []
         for (let [key, value] of Object.entries(data)) {
@@ -49,8 +48,6 @@ export default ({ data, modifications, deleted, onCellEdit, onDeleteTag }) => {
             })
         }
     ]
-
-    console.log(prepareData(data))
 
     return <CommonTableV8 onCellEdit={onCellEdit} id='tagName' columns={columns} data={prepareData(data)} />
 }
