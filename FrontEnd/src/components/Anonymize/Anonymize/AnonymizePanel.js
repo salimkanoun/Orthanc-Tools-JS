@@ -15,7 +15,7 @@ import {
     saveNewValues
 } from '../../../actions/AnonList'
 import { studyArrayToPatientArray } from '../../../tools/processResponse'
-import TableStudyAnon from "../../CommonComponents/RessourcesDisplay/ReactTable/TableStudyAnon"
+import TableStudyAnon from "./TableStudyAnon"
 
 /**
  * This componnent wrapper allows to optimise the table by memoizing data
@@ -47,7 +47,6 @@ export default ({ setTask }) => {
         newPatientID: patient.newPatientID ? patient.newPatientID : ''
     })), [store.anonList])
 
-    //A revoir
     const studiesData = useMemo(() => store.anonList
         .filter(study => study.PatientOrthancID === currentPatient)
         .map(study => ({
@@ -56,8 +55,6 @@ export default ({ setTask }) => {
             newAccessionNumber: study.newAccessionNumber ? study.newAccessionNumber : 'OrthancToolsJS'
         }))
         , [store.anonList, currentPatient])
-
-    console.log(studiesData)
 
     const testAllId = () => {
         let answer = true
@@ -69,6 +66,7 @@ export default ({ setTask }) => {
     }
 
     const anonymize = async () => {
+        console.log("click")
         if (testAllId()) { //check all id 
             let listToAnonymize = []
             store.anonList.forEach(element => {
@@ -114,18 +112,25 @@ export default ({ setTask }) => {
 
 
     const onEditPatient = (PatientOrthancID, column, newValue) => {
+        console.log("edit patient")
         dispatch(saveNewValues(PatientOrthancID, column, newValue))
     }
 
     const onEditStudy = (StudyOrthancID, column, newValue) => {
+        console.log("edit study")
         dispatch(saveNewValues(StudyOrthancID, column, newValue))
     }
 
-    const onChange = (e) => setPrefix(e.target.value)
+    const onChange = (e) => {
+        setPrefix(e.target.value)
+    }
 
-    const onClickAutoFill = () => dispatch(autoFill(prefix))
+    const onClickAutoFill = () =>{
+        dispatch(autoFill(prefix))
+    }
 
-    const onClickEmpty = () => dispatch(emptyAnonymizeList)
+    const onClickEmpty = () => {
+        dispatch(emptyAnonymizeList())}
 
     const additionalColumns = [
         {
@@ -133,21 +138,18 @@ export default ({ setTask }) => {
             accessorrKey: 'newPatientID',
             header: 'New Patient ID',
             isEditable: true,
-            editionProperties: {}
         },
         {
             id: 'newPatientName',
             accessorrKey: 'newPatientName',
             header: 'New Patient Name',
-            isEditable: true,
-            editionProperties: {}
+            isEditable: true
         },
         {
             id: 'Remove',
             accessorrKey: 'Remove',
             header: 'Remove',
             cell: ({ row }) => {
-                console.log(row)
                 return <Button className="btn btn-danger" onClick={() => {
                     onRemovePatient(row.original.PatientOrthancID);
                 }}>Remove</Button>
@@ -160,20 +162,7 @@ export default ({ setTask }) => {
             <Row className="mt-5">
                 <Col xxl={6}>
 
-                    <TablePatients patients={patients} additionalColumns={additionalColumns} onRowClick={onClickPatientHandler} rowStyle={rowStyle} />
-
-                    {/*<TablePatients
-                        patients={patients}
-                        onRemovePatient={onRemovePatient}
-                        actionBouton={false}
-                        removeRow={true}
-                        onRowClick={onClickPatientHandler}
-                        textNameColumn={'Original Name'}
-                        textIDColumn={'Original ID'}
-                        showEditable={true}
-                        onEdit={onEditPatient}
-                        rowStyle={rowStyle}
-    pagination={true} />*/}
+                    <TablePatients patients={patients} additionalColumns={additionalColumns} onRowClick={onClickPatientHandler} rowStyle={rowStyle} onCellEdit={onEditPatient} />
 
                     <Button className='otjs-button otjs-button-red mt-2 w-7'
                         onClick={onClickEmpty}>
@@ -181,16 +170,7 @@ export default ({ setTask }) => {
                     </Button>
                 </Col>
                 <Col xxl={6}>
-                    <TableStudyAnon
-                        studies={studiesData}
-                        actionBouton={false}
-                        removeRow={true}
-                        onRemoveStudy={onRemoveStudy}
-                        showEditable={true}
-                        onEdit={onEditStudy}
-                        anonymized={false}
-                        pagination={true}
-                    />
+                    <TableStudyAnon studies={studiesData} onRemoveStudy={onRemoveStudy} onCellEdit={onEditStudy}/>
                 </Col>
             </Row>
 
@@ -217,7 +197,7 @@ export default ({ setTask }) => {
             <Row className="mt-4 border-top border-2 pt-4">
                 <Col className="text-center">
                     <Button className='otjs-button otjs-button-blue w-7'
-                        onClick={anonymize}>
+                        onClick={()=> anonymize()}>
                         Anonymize
                     </Button>
                 </Col>
@@ -225,6 +205,5 @@ export default ({ setTask }) => {
 
         </Container>
     )
-
 }
 
