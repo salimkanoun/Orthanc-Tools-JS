@@ -1,12 +1,13 @@
 import { useMemo, useRef, useState } from "react";
 
 import { useNotificationCenter } from "react-toastify/addons/use-notification-center";
-import { Badge, Overlay } from "react-bootstrap";
+import { Badge, Card, Overlay } from "react-bootstrap";
 
 import MailIcon from "@mui/icons-material/Mail";
 import { IconButton } from "@mui/material";
 
 import JobsRoot from "./Jobs/JobsRoot";
+import TasksRoot from "./Tasks/TasksRoot";
 
 export default () => {
 
@@ -16,9 +17,13 @@ export default () => {
     } = useNotificationCenter();
 
     const jobNotifications = useMemo(() => {
-            return notifications.filter((notification) => notification.type === 'jobs')
+        return notifications.filter((notification) => notification.type === 'jobs')
     }, [notifications.length])
-    
+
+    const tasksNotifications = useMemo(() => {
+        return notifications.filter((notification) => notification.type === 'tasks')
+    }, [notifications.length])
+
     const [isOpen, setIsOpen] = useState(false);
 
     const target = useRef(null)
@@ -39,10 +44,14 @@ export default () => {
                 show={isOpen}
                 placement="left"
             >
-                <div >
-                    <JobsRoot notifications={jobNotifications} remove={remove} />
-                </div>
-            </Overlay>
-        </div>
+                <Card >
+                    <Card.Header>Notifications</Card.Header>
+                    <Card.Body>
+                        <JobsRoot jobNotifications={jobNotifications} remove={remove} />
+                        <TasksRoot tasksNotifications={tasksNotifications} remove={remove} />
+                    </Card.Body>
+                </Card>
+            </Overlay >
+        </div >
     );
 }

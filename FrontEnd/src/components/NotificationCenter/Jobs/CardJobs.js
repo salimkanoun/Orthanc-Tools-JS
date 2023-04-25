@@ -4,22 +4,22 @@ import { Button, Card } from "react-bootstrap";
 
 import JobsTable from "./JobsTable";
 
-export default ({ jobs, clear }) => {
+export default ({ title, jobs, clear }) => {
 
     return (
-            <Card>
-                <Card.Title>Jobs</Card.Title>
-                <Card.Body>
-                    {
-                        jobs.length > 0 ?
-                            <JobsTable jobs={jobs} />
-                            :
-                            null
-                    }
-                </Card.Body>
-                <Button variant="primary" onClick={clear}>
-                    Clear All
-                </Button>
-            </Card>
+        <Card>
+            <Card.Title>{title}</Card.Title>
+            <Card.Body>
+                {
+                    jobs.length > 0 ?
+                        <JobsTable jobs={jobs} />
+                        :
+                        null
+                }
+            </Card.Body>
+            <Button variant="primary" onClick={clear}>
+                Clear All
+            </Button>
+        </Card>
     )
 }
