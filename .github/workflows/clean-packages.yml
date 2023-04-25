@@ -24,7 +24,7 @@ jobs:
           
       - uses: actions/delete-package-versions@v4
         with: 
-          package-name: 'gaelo-frontend'
+          package-name: 'orthanc-tools-js'
           package-type: 'container'
           min-versions-to-keep: 10
           delete-only-untagged-versions: 'true'
