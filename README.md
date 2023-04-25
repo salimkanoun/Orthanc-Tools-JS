@@ -20,9 +20,6 @@ Current Features :
   - Manual Query and Retrieve
   - Dicom Tag Edition
   - Automatic Retrieve : Define a list of studies /Series to retrieve and schedule a robot for automatic retrieval
-
-
-
   - Administration panel : Declaration and echo of AETs, Orthanc Peers, Jobs management
   
 Documentation : https://github.com/salimkanoun/Orthanc-Tools-JS/blob/master/Documentation/Orthanc-Tools-JS-Documentation.pdf
