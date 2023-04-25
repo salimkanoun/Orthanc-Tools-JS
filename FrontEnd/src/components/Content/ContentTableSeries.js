@@ -23,7 +23,7 @@ export default ({
                 return (
                     <ActionButtonSeries
                         orthancID={row.original.SeriesOrthancID}
-                        onDelete={onDelete}
+                        onDelete={() => onDelete(row.original.SeriesOrthancID)}
                         dataDetails={row.original}
                         onShowMetadata={() => setMetadataOrthancID(row.original.SeriesOrthancID)}
                         onShowModify={() => setModifyOrthancID({ orthancID: row.original.SeriesOrthancID, level: ConstantLevel.SERIES })}
