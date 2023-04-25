@@ -1,0 +1,30 @@
+name: 'clean-packages'
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+
+jobs:
+  build:
+    name: 'Remove old untagged containers'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Build checkout'
+        uses: actions/checkout@v3
+        
+      - name: Login to github registery
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: 'salimkanoun'
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - uses: actions/delete-package-versions@v4
+        with: 
+          package-name: 'gaelo-frontend'
+          package-type: 'container'
+          min-versions-to-keep: 10
+          delete-only-untagged-versions: 'true'
