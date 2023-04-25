@@ -19,6 +19,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+        CI: false
     - name: Install FrontEnd
       run: yarn install
       working-directory: FrontEnd
