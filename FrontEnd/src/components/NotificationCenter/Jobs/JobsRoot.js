@@ -1,12 +1,11 @@
 import React, { useEffect } from "react"
 
 import { toast } from 'react-toastify'
-import { Card } from "react-bootstrap"
 
 import CardJobs from "./CardJobs"
 import apis from "../../../services/apis";
 
-export default ({ notifications, remove }) => {
+export default ({ jobNotifications, remove }) => {
 
     const monitorJobs = async (notifications) => {
         let jobsNotifications = notifications.filter((notification) => notification.data?.State !== 'Success' && notification.data?.State !== 'Failure')
@@ -22,27 +21,20 @@ export default ({ notifications, remove }) => {
     useEffect(() => {
         monitorJobs()
         const intervalID = setInterval(() => {
-            monitorJobs(notifications)
+            monitorJobs(jobNotifications)
         }, 2000)
         return () => {
             clearInterval(intervalID)
         }
-    }, [notifications])
+    }, [jobNotifications])
 
     const clearJobs = () => {
-        notifications.map(notification => {
-            if (notification.type == 'jobs') {
-                remove(notification.id)
-            }
+        jobNotifications.map(notification => {
+            remove(notification.id)
         })
     }
 
     return (
-        <Card >
-            <Card.Header>Notification Center</Card.Header>
-            <Card.Body>
-                <CardJobs jobs={notifications} clear={clearJobs} />
-            </Card.Body>
-        </Card>
+        <CardJobs title={"Orthanc Jobs"} jobs={jobNotifications} clear={clearJobs} />
     )
 }
