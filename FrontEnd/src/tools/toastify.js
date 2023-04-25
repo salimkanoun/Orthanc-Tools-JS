@@ -26,5 +26,5 @@ export const jobMessageToNotificationCenter = (jobType, data) => {
 }
 
 export const robotMessageToNotificationCenter = (jobType, data) => {
-    toast.info(jobType, { data: data, containerId: 'tasks', type: 'tasks' })
+    toast.info(jobType, { data: data, containerId: 'jobs', type: 'tasks' })
 }

@@ -16,16 +16,7 @@ export default () => {
         remove
     } = useNotificationCenter();
 
-    const jobNotifications = useMemo(() => {
-        return notifications.filter((notification) => notification.type === 'jobs')
-    }, [notifications.length])
-
-    const tasksNotifications = useMemo(() => {
-        return notifications.filter((notification) => notification.type === 'tasks')
-    }, [notifications.length])
-
     const [isOpen, setIsOpen] = useState(false);
-
     const target = useRef(null)
 
     return (
@@ -34,7 +25,7 @@ export default () => {
                 <Badge>
                     <MailIcon color="action" />
                     <span className='button-count'>
-                        {jobNotifications.length}
+                        {notifications.length}
                     </span>
                 </Badge>
             </IconButton>
@@ -47,8 +38,8 @@ export default () => {
                 <Card >
                     <Card.Header>Notifications</Card.Header>
                     <Card.Body>
-                        <JobsRoot jobNotifications={jobNotifications} remove={remove} />
-                        <TasksRoot tasksNotifications={tasksNotifications} remove={remove} />
+                        <JobsRoot jobNotifications={notifications.filter((notification) => notification.type === 'jobs')} remove={remove} />
+                        <TasksRoot tasksNotifications={notifications.filter((notification) => notification.type === 'tasks')} remove={remove} />
                     </Card.Body>
                 </Card>
             </Overlay >
