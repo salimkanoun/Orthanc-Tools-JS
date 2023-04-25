@@ -25,9 +25,9 @@ Current Features :
 Documentation : https://github.com/salimkanoun/Orthanc-Tools-JS/blob/master/Documentation/Orthanc-Tools-JS-Documentation.pdf
 
 Roadmap : 
-CD Burner Management (Epson and Primera) => To Be restaured
-Auto Routing => To Be Restaured
-Dicom ressource labelling => To Be Restaured using Orthanc labelling features
-Tag collection (in Elastic Search)
-Prefecthing
-Remote AET Monitoring
+- CD Burner Management (Epson and Primera) => To Be restaured
+- Auto Routing => To Be Restaured
+- Dicom ressource labelling => To Be Restaured using Orthanc labelling features
+- Tag collection (in Elastic Search)
+- Prefecthing
+- Remote AET Monitoring
