@@ -3,7 +3,7 @@ import { commonColumns, patientColumns } from "./ColomnFactories";
 
 import CommonTableV8 from "./CommonTableV8";
 
-export default ({ patients, additionalColumns = [], onRowClick, rowStyle }) => {
+export default ({ patients, additionalColumns = [], onRowClick, rowStyle, onCellEdit }) => {
 
     const columns = [
         commonColumns.RAW,
@@ -18,6 +18,6 @@ export default ({ patients, additionalColumns = [], onRowClick, rowStyle }) => {
     })), [patients]);
 
     return (
-        <CommonTableV8 data={data} columns={[...columns, ...additionalColumns]} rowStyle={rowStyle} onRowClick={onRowClick}/*onCellEdit={}*/ />
+        <CommonTableV8 id="PatientOrthancID" data={data} columns={[...columns, ...additionalColumns]} rowStyle={rowStyle} onRowClick={onRowClick} onCellEdit={onCellEdit} />
     )
 }
