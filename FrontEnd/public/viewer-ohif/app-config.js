@@ -1,11 +1,15 @@
 window.config = {
   routerBasename: '/viewer-ohif',
   extensions: [],
+  modes: [],
   showStudyList: true,
   filterQueryParam: false,
-  servers: {
-    dicomWeb: [
-      {
+  dataSources: [
+    {
+      friendlyName: 'orthanc',
+      namespace: '@ohif/extension-default.dataSourcesModule.dicomweb',
+      sourceName: 'dicomweb',
+      configuration: {
         name: "Orthanc",
         wadoUriRoot:
           "/api/wado",
@@ -14,16 +18,19 @@ window.config = {
         wadoRoot:
           "/api/dicom-web",
         qidoSupportsIncludeField: true,
-        imageRendering: "wadors",
-        thumbnailRendering: "wadors",
-        enableStudyLazyLoad: true
+        supportsReject: true,
+        imageRendering: 'wadors',
+        thumbnailRendering: 'wadors',
+        enableStudyLazyLoad: true,
+        supportsFuzzyMatching: true,
+        supportsWildcard: true,
       }
-    ]
-  },
+    }
+  ], 
+  defaultDataSourceName: 'dicomweb',
   // Extensions should be able to suggest default values for these?
   // Or we can require that these be explicitly set
   hotkeys: [
-    // ~ Global
     {
       commandName: 'incrementActiveViewport',
       label: 'Next Viewport',
@@ -34,18 +41,16 @@ window.config = {
       label: 'Previous Viewport',
       keys: ['left'],
     },
-    // Supported Keys: https://craig.is/killing/mice
-    // ~ Cornerstone Extension
     { commandName: 'rotateViewportCW', label: 'Rotate Right', keys: ['r'] },
     { commandName: 'rotateViewportCCW', label: 'Rotate Left', keys: ['l'] },
     { commandName: 'invertViewport', label: 'Invert', keys: ['i'] },
     {
-      commandName: 'flipViewportVertical',
+      commandName: 'flipViewportHorizontal',
       label: 'Flip Horizontally',
       keys: ['h'],
     },
     {
-      commandName: 'flipViewportHorizontal',
+      commandName: 'flipViewportVertical',
       label: 'Flip Vertically',
       keys: ['v'],
     },
@@ -53,11 +58,8 @@ window.config = {
     { commandName: 'scaleDownViewport', label: 'Zoom Out', keys: ['-'] },
     { commandName: 'fitViewportToWindow', label: 'Zoom to Fit', keys: ['='] },
     { commandName: 'resetViewport', label: 'Reset', keys: ['space'] },
-    // clearAnnotations
     { commandName: 'nextImage', label: 'Next Image', keys: ['down'] },
     { commandName: 'previousImage', label: 'Previous Image', keys: ['up'] },
-    // firstImage
-    // lastImage
     {
       commandName: 'previousViewportDisplaySet',
       label: 'Previous Series',
@@ -68,7 +70,6 @@ window.config = {
       label: 'Next Series',
       keys: ['pageup'],
     },
-    // ~ Cornerstone Tools
     { commandName: 'setZoomTool', label: 'Zoom', keys: ['z'] },
     // ~ Window level presets
     {

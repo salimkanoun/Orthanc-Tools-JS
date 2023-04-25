@@ -8,7 +8,7 @@ export default ({
     patients,
     additionalColumnsPatients = [],
     additionalColumnsStudies = [],
-    onSelectStudies,
+    onSelectStudies = () => {},
     selectablePatient = false,
     selectableStudy = false,
     rowStyle,

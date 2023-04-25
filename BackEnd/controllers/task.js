@@ -5,6 +5,7 @@ const RetrieveTask = require("../model/tasks/RetrieveTask");
 const ExportTask = require("../model/tasks/ExportTask");
 const Options = require("../model/Options");
 const Queue = require("../adapter/bullAdapter");
+const { OTJSBadRequestException } = require("../Exceptions/OTJSErrors");
 
 
 /*
@@ -35,6 +36,9 @@ const addAnonTask = async (req, res) => {
 const addDeleteTask = async (req, res) => {
 
     let orthancIds = req.body;
+    if(orthancIds.length == 0){
+        throw new OTJSBadRequestException('Empty List of deletion')
+    }
     let id = await DeleteTask.createTask(req.username, orthancIds);
     res.send(id)
 }

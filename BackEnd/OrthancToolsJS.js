@@ -6,6 +6,7 @@ var createError = require('http-errors')
 var express = require('express')
 var morgan = require('morgan')
 var path = require('path')
+var cors = require('cors')
 var cookieParser = require('cookie-parser')
 
 var apisRouter = require('./routes/index')
@@ -22,7 +23,13 @@ const OTJSError = require('./Exceptions/OTJSError')
 app.use(express.raw({ limit: '500mb', type: ['application/dicom', 'text/plain'] }))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json({ limit: '10mb' }))
-
+app.use(cors())
+app.use(function (req, res, next) {
+  res.header("Cross-Origin-Embedder-Policy", "require-corp");
+  res.header("Cross-Origin-Resource-Policy", "cross-origin");
+  res.header("Cross-Origin-Opener-Policy", "same-origin");
+  next();
+});
 app.use(cookieParser())
 
 var unless = function (path, middleware) {
