@@ -11,7 +11,7 @@ networks:
 services:
 
     orthanctoolsjs:
-        image: salimkanoun/orthanctoolsjs
+        image: ghcr.io/salimkanoun/orthanc-tools-js:latest
         container_name: orthanctoolsjs
         restart: unless-stopped
         volumes: ["orthanctoolsjs:/OrthancToolsJs/data:Z"]
@@ -60,7 +60,7 @@ services:
         restart: unless-stopped
 
     orthanc:
-        image: osimis/orthanc:21.1.7
+        image: osimis/orthanc:23.4.0
         container_name: orthanc
         restart: unless-stopped
         ports: ["8042:8042"]
@@ -89,7 +89,7 @@ services:
             ORTHANC__DICOM_WEB__SERIESMETADATA: "Full"
 
     orthanctoolsjspacs:
-        image: osimis/orthanc:21.1.7
+        image: osimis/orthanc:23.4.0
         ports: ["8043:8042"]
         container_name: orthanctoolsjspacs
         restart: unless-stopped
