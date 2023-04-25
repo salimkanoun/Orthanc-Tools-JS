@@ -73,6 +73,13 @@ export default ({
         (error) => errorMessage(error?.data?.errorMessage ?? 'Failed')
     )
 
+    const deleteSerieMutation = useCustomMutation(
+        ({serieOrthancID}) => apis.content.deleteSeries(serieOrthancID),
+        [],
+        () => refetch(),
+        (error) => errorMessage(error?.data?.errorMessage ?? 'Failed')
+    )
+
     return (
 
         <Row>
@@ -89,7 +96,7 @@ export default ({
                 />
             </Col>
             <Col sm>
-                <ContentTableSeries series={series} onDelete={() => refetch()} />
+                <ContentTableSeries series={series} onDelete={(serieOrthancID) => deleteSerieMutation.mutate({serieOrthancID})} />
             </Col>
 
         </Row>
