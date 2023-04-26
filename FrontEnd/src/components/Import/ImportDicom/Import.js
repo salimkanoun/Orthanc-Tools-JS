@@ -7,7 +7,6 @@ import MyDropzone from '../../CommonComponents/MyDropzone'
 import TableImportError from './TableImportError'
 import TablePatientWithNestedStudiesAndSeries from '../../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudiesAndSeries'
 
-import { treeToPatientArray, treeToStudyArray } from '../../../tools/processResponse'
 import { addStudiesToExportList } from '../../../actions/ExportList'
 import { addStudiesToDeleteList } from '../../../actions/DeleteList'
 import { addStudiesToAnonList } from '../../../actions/AnonList'
@@ -200,22 +199,20 @@ export default () => {
             }
         }
 
-        let resultArray = treeToPatientArray(importedTree)
-
-        return resultArray
+        return Object.values(importedTree)
 
     }
 
     const sendImportedToExport = () => {
-        dispatch(addStudiesToExportList(treeToStudyArray(studiesObjects)))
+        dispatch(addStudiesToExportList(studiesObjects))
     }
 
     const sendImportedToAnon = () => {
-        dispatch(addStudiesToAnonList(treeToStudyArray(studiesObjects)))
+        dispatch(addStudiesToAnonList(studiesObjects))
     }
 
     const sendImportedToDelete = () => {
-        dispatch(addStudiesToDeleteList(treeToStudyArray(studiesObjects)))
+        dispatch(addStudiesToDeleteList(studiesObjects))
     }
 
     return (
