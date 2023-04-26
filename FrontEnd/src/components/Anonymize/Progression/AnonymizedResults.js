@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useState } from "react"
 import { useDispatch } from 'react-redux'
 import { Row, Col, Button } from "react-bootstrap"
 
-import TableStudy from "../../CommonComponents/RessourcesDisplay/ReactTable/TableStudy"
 import apis from "../../../services/apis"
 import task from "../../../services/task"
 import MonitorTask from "../../../tools/MonitorTask"
@@ -10,6 +9,8 @@ import MonitorTask from "../../../tools/MonitorTask"
 
 import { addStudiesToDeleteList } from "../../../actions/DeleteList"
 import { addStudiesToExportList } from "../../../actions/ExportList"
+import TableStudies from "../../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudies"
+import { studyColumns } from "../../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories"
 
 
 export default ({ anonTaskID }) => {
@@ -87,20 +88,25 @@ export default ({ anonTaskID }) => {
         dispatch(addStudiesToDeleteList(studies))
     }
 
+    const additionalColumns = [
+        studyColumns.ANONYMIZED_FROM,
+        {
+            id: 'Remove',
+            accessorKey: 'Remove',
+            header: 'Remove',
+            cell: ({ row }) => {
+                return <Button className="btn btn-danger" onClick={() => {
+                    removeStudyAnonymized(row.original.StudyOrthancID);
+                }}>Remove</Button>
+            }
+        }
+    ]
+
     return (
         <Fragment>
             <Row>
                 <Col>
-                    <TableStudy
-                        studies={studies}
-                        hiddenActionBouton={true}
-                        hiddenRemoveRow={false}
-                        onDelete={removeStudyAnonymized}
-                        hiddenName={false}
-                        hiddenID={false}
-                        pagination={true}
-                        hiddenCSV={false}
-                    />
+                    <TableStudies studies={studies} additionalColumns={additionalColumns} />
                 </Col>
             </Row>
             <Row>

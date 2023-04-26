@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react'
 import { Row, Col, Button } from 'react-bootstrap';
 
-import apis from '../../services/apis';
 import AnonymizePanel from './Anonymize/AnonymizePanel';
-import ResultRoot from './Progression/ResultRoot';
+import ResultRoot from './Progression/ProgressionRoot';
 import AnonHistory from './History/AnonHistory';
 
 const ANON_TAB = "Anonymizassion"
@@ -13,36 +11,12 @@ const HISTORY_TAB = "Historic"
 
 export default () => {
 
-    const [anonTaskID, setAnonTaskID] = useState(null)
     const [currentMainTab, setCurrentMainTab] = useState(ANON_TAB)
-
-    const store = useSelector(state => {
-        return {
-            username: state.OrthancTools.username
-        }
-    })
-
-    useEffect(() => {
-        //Sk / Voir si robot anoymisation de cet utilisateur est en cours
-        const getTaskOfUser = async () => { await apis.task.getTaskOfUser(store.username, 'anonymize') }
-        try {
-            let answer = getTaskOfUser()[0]
-            if (answer) {
-                setAnonTaskID(answer)
-            }
-        } catch (error) {
-        }
-    }, [])
-
-    const setAnonTaskId = (anonTaskID) => {
-        setAnonTaskID(anonTaskID)
-        setCurrentMainTab(RESULTS_TAB)
-    }
 
     const getComponentToDisplay = () => {
         switch (currentMainTab) {
             case ANON_TAB:
-                return (<AnonymizePanel setTask={setAnonTaskId} />);
+                return (<AnonymizePanel />);
             case RESULTS_TAB:
                 return (<ResultRoot />)
             case HISTORY_TAB:
@@ -51,7 +25,6 @@ export default () => {
                 break;
         }
     }
-
 
     return (
         <div>
@@ -72,9 +45,9 @@ export default () => {
 
                         <li className='col-4 text-center'>
                             <Button
-                                className={currentMainTab === RESULTS_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button' + (!anonTaskID ? ' disabled' : '')}
+                                className={currentMainTab === RESULTS_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                 onClick={() => {
-                                    if (anonTaskID) setCurrentMainTab(RESULTS_TAB)
+                                    setCurrentMainTab(RESULTS_TAB)
                                 }}>Progress
                             </Button>
                         </li>

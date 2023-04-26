@@ -7,6 +7,7 @@ import MonitorTask from '../../../tools/MonitorTask';
 
 class AnonymizePanelProgress extends Component {
 
+
     state = {
         success: 0,
         failures: 0,

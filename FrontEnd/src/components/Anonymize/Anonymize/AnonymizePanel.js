@@ -10,7 +10,7 @@ import {
     emptyAnonymizeList,
 } from '../../../actions/AnonList'
 import TableStudyAnonymize from "./TableStudyAnonymize"
-import { errorMessage } from "../../../tools/toastify"
+import { errorMessage, successMessage } from "../../../tools/toastify"
 import TablePatientAnonymize from "./TablePatientAnonymize"
 
 /**
@@ -22,7 +22,7 @@ import TablePatientAnonymize from "./TablePatientAnonymize"
  * @returns {JSX.Element} The table
  */
 
-export default ({ setTask }) => {
+export default () => {
 
     const [currentPatient, setCurrentPatient] = useState('')
     const [prefix, setPrefix] = useState('')
@@ -49,7 +49,7 @@ export default ({ setTask }) => {
     const testAllId = () => {
         let answer = true
         store.anonList.forEach((item) => {
-            if (item.newPatientID === undefined)
+            if (item.ParentPatient.newPatientID === undefined)
                 answer = false
         })
         return answer
@@ -73,34 +73,38 @@ export default ({ setTask }) => {
 
             try {
                 let answer = await apis.anon.createAnonRobot(listToAnonymize, store.username) //wait for the robot's answer to know what do to next
-                setTask(answer)
+                successMessage('Anonymization started')
+                console.log(answer)
             } catch (error) {
                 errorMessage(error.statusText)
             }
 
-        } else errorMessage('Fill all patient ID')
+        } else {
+            errorMessage('Fill all patient ID')
+        }
     }
 
     const rowStyle = (PatientOrthancID) => {
         if (PatientOrthancID === currentPatient) return { background: 'peachPuff' }
     }
 
-    const onChange = (e) => {
+    const onChangePrefixHandler = (e) => {
         setPrefix(e.target.value)
     }
 
-    const onClickAutoFill = () =>{
+    const onClickAutoFill = () => {
         dispatch(autoFill(prefix))
     }
 
     const onClickEmpty = () => {
-        dispatch(emptyAnonymizeList())}
+        dispatch(emptyAnonymizeList())
+    }
 
     return (
         <Container fluid>
             <Row className="mt-5">
                 <Col>
-                    <TablePatientAnonymize rowStyle={rowStyle} setCurrentPatient={(PatientOrthancID) => setCurrentPatient(PatientOrthancID)}/>
+                    <TablePatientAnonymize rowStyle={rowStyle} setCurrentPatient={(PatientOrthancID) => setCurrentPatient(PatientOrthancID)} />
 
                     <Button className='otjs-button otjs-button-red mt-2 w-7'
                         onClick={onClickEmpty}>
@@ -108,7 +112,7 @@ export default ({ setTask }) => {
                     </Button>
                 </Col>
                 <Col>
-                    <TableStudyAnonymize studies={studiesData}/>
+                    <TableStudyAnonymize studies={studiesData} />
                 </Col>
             </Row>
 
@@ -118,7 +122,7 @@ export default ({ setTask }) => {
                         <Col sm={8}>
                             <input type='text' name='prefix' id='prefix' className='form-control'
                                 placeholder='prefix'
-                                onChange={onChange} />
+                                onChange={onChangePrefixHandler} />
                         </Col>
                         <Col sm>
                             <Button variant='warning' className='otjs-button'
@@ -135,7 +139,7 @@ export default ({ setTask }) => {
             <Row className="mt-4 border-top border-2 pt-4">
                 <Col className="text-center">
                     <Button className='otjs-button otjs-button-blue w-7'
-                        onClick={()=> anonymize()}>
+                        onClick={() => anonymize()}>
                         Anonymize
                     </Button>
                 </Col>

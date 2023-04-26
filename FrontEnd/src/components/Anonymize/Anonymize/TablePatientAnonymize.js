@@ -6,7 +6,7 @@ import { removePatientFromAnonList, saveNewValues } from "../../../actions/AnonL
 import { studyArrayToPatientArray } from "../../../tools/processResponse";
 import TablePatients from "../../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatients";
 
-export default ({rowStyle, setCurrentPatient}) => {
+export default ({ rowStyle, setCurrentPatient }) => {
 
     const dispatch = useDispatch()
 
@@ -16,7 +16,7 @@ export default ({rowStyle, setCurrentPatient}) => {
         }
     })
 
-    const patients = useMemo(() => studyArrayToPatientArray(store.anonList) , [store.anonList])
+    const patients = useMemo(() => studyArrayToPatientArray(store.anonList), [store.anonList])
 
     const onRemovePatient = (PatientOrthancID) => {
         dispatch(removePatientFromAnonList(PatientOrthancID))
@@ -56,6 +56,6 @@ export default ({rowStyle, setCurrentPatient}) => {
     ]
 
     return (
-    <TablePatients patients={patients} additionalColumns={additionalColumns} onRowClick={onClickPatientHandler} rowStyle={rowStyle} onCellEdit={onEditPatient} />
+        <TablePatients patients={patients} additionalColumns={additionalColumns} onRowClick={onClickPatientHandler} rowStyle={rowStyle} onCellEdit={onEditPatient} />
     )
 }

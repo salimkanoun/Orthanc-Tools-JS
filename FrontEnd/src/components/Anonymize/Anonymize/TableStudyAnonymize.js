@@ -14,7 +14,7 @@ export default ({ studies }) => {
         dispatch(saveNewValues(StudyOrthancID, column, newValue))
     }
 
-    
+
     const onRemoveStudy = (StudyOrthancID) => {
         dispatch(removeStudyFromAnonList(StudyOrthancID))
     }
