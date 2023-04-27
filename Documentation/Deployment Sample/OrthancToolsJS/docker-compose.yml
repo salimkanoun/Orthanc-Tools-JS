@@ -14,6 +14,8 @@ services:
         image: ghcr.io/salimkanoun/orthanc-tools-js:latest
         container_name: orthanctoolsjs
         restart: unless-stopped
+        ports: ["8080:4000"]
+        depends_on: [ postgres ]
         volumes: ["orthanctoolsjs:/OrthancToolsJs/data:Z"]
         environment:
             TZ: "Europe/Paris"
@@ -26,8 +28,8 @@ services:
             REDIS_HOST: "redis"
             REDIS_PORT: "6379"
             REDIS_PASSWORD: ""
-            DB_USERNAME: "root"
-            DB_PASSWORD: "admin"
+            DB_USERNAME: "postgres"
+            DB_PASSWORD: "postgres"
             DB_HOST: "postgres"
             DB_PORT: 5432
             DB_NAME: orthanctoolsjs
@@ -48,7 +50,7 @@ services:
 
 
     postgres:
-        container_name: postgres
+        container_name: postgresorthanctoolsjs
         image: postgres:13.1
         networks:
           - internal
@@ -61,7 +63,7 @@ services:
 
     orthanc:
         image: osimis/orthanc:23.4.0
-        container_name: orthanc
+        container_name: orthanctoolsjsorthanc
         restart: unless-stopped
         ports: ["8042:8042"]
         volumes: ["orthanc:/var/lib/orthanc/db:Z"]
