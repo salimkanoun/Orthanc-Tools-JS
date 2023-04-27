@@ -9,10 +9,10 @@ import { emptyExportList, removeSeriesFromExportList, removeStudyFromExportList 
 import TableStudiesWithNestedSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudiesWithNestedSeries'
 import { seriesColumns, studyColumns } from '../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories'
 import { errorMessage } from '../../tools/toastify'
+import { useCustomQuery } from '../../services/ReactQuery/hooks'
+import { keys } from '../../model/Constant'
 
 export default ({ target, show, onHide }) => {
-
-    const [aets, setAets] = useState([])
 
     const store = useSelector(state => {
         return {
@@ -23,13 +23,12 @@ export default ({ target, show, onHide }) => {
 
     const dispatch = useDispatch()
 
-    useEffect(() => {
-        apis.aets.getAets().then(aets => setAets(aets)).catch((error) => {
-            setAets([])
-            errorMessage(error?.data?.errorMessage ?? "Can't Retrieve AETS")
-        })
-    }, [])
+    const { data: aets, isLoading: isLoadingAET } = useCustomQuery(
+        [keys.AETS_KEY],
+        () => apis.aets.getAets(),
+        (error) => errorMessage(error?.data?.errorMessage ?? "Can't Retrieve AETS")
 
+    )
 
     const handleClickEmpty = () => {
         dispatch(emptyExportList())
