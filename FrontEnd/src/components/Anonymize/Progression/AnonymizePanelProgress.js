@@ -104,6 +104,4 @@ class AnonymizePanelProgress extends Component {
     }
 }
 
-
-
 export default AnonymizePanelProgress

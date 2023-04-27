@@ -6,6 +6,7 @@ import Select from 'react-select'
 import { keys } from '../../../../model/Constant';
 import apis from '../../../../services/apis';
 import { useCustomMutation, useCustomQuery } from '../../../../services/ReactQuery/hooks';
+import { errorMessage } from '../../../../tools/toastify';
 import Spinner from '../../../CommonComponents/Spinner';
 import AssociationTable from './AssociationTable';
 
@@ -58,7 +59,7 @@ export default () => {
             setShow(false)
         },
         ()=> {
-            //toast.error('error')
+            //errorMessage('error')
         }
     )
 

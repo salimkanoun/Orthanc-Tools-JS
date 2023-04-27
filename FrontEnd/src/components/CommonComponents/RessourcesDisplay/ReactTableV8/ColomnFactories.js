@@ -1,11 +1,11 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { toast } from "react-toastify";
 
 import { filter } from '../../../../model/Constant';
 import ConstantLevel from "../../../Modify/ConstantLevel";
 import ActionBouton from "../ActionBouton";
 import RetrieveButton from "../../../Query/RetrieveButton";
+import { errorMessage } from "../../../../tools/toastify";
 
 const commonColumns = {
     RAW: {
@@ -246,7 +246,7 @@ const seriesColumns = {
                 try {
                     onRemove(row.original.SeriesOrthancID);
                 } catch (e) {
-                    toast.error("Remove error", { data: { type: 'notification' } });
+                    errorMessage("Remove error");
                 }
                 e.stopPropagation();
             }}>Remove</Button>

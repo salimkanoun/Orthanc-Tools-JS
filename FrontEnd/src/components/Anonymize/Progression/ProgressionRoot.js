@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import apis from '../../../services/apis'
+import task from '../../../services/task'
 import AnonymizedResults from './AnonymizedResults'
 import AnonymizePanelProgress from './AnonymizePanelProgress'
 
@@ -16,10 +17,10 @@ export default () => {
     const getAnonTaskId = async () => {
         const taskID = await apis.task.getTaskOfUser(store.username, 'anonymize')
         console.log(taskID[0])
-        return taskID[0]
+        const anonTask = await task.getTask(taskID[0]) 
+        console.log(anonTask)
+        return anonTask
     }
-
-    console.log(getAnonTaskId())
 
 
     //const anonTask = await apis.task.getTask(jobUuid)
@@ -50,8 +51,8 @@ export default () => {
     }, [])
     */
 
-    return (
-        <Row className="align-items-center justify-content-center">
+    return ( console.log("Progression root"))
+        /*<Row className="align-items-center justify-content-center">
             <Col md={12} className="text-center mb-4" style={{ "max-width": '20%' }}>
                 <AnonymizePanelProgress />
             </Col>
@@ -59,5 +60,5 @@ export default () => {
                 <AnonymizedResults />
             </Col>
         </Row>
-    )
+    )*/
 }

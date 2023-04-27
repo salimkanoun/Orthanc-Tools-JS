@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify';
 import { Modal } from "react-bootstrap";
 
 import apis from '../../../services/apis';
 import AnonymizedResults from '../Progression/AnonymizedResults';
 import task from '../../../services/task';
 import AnonHistoryTable from './AnonHistoryTable';
+import { errorMessage } from '../../../tools/toastify';
 
 export default ({ username }) => {
 
@@ -33,7 +33,7 @@ export default ({ username }) => {
             await apis.retrieveRobot.deleteRobot(id)
             await refreshHandler()
         } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
+            errorMessage(error.statusText)
         }
     }
 
@@ -50,7 +50,7 @@ export default ({ username }) => {
 
             }).catch(error => {
                 if (error.status === 404) {
-                    toast.error(error.statusMessage, { data: { type: 'notification' } });
+                    errorMessage(error.statusMessage);
                 }
             })
     }

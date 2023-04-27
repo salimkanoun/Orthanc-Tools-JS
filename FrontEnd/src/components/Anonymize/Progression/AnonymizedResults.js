@@ -36,9 +36,6 @@ export default ({ anonTaskID }) => {
         }
     }, [])
 
-    useEffect(() => {
-        if (this.monitor) this.monitor.stopMonitoringJob();
-    }, [])
 
 
     const handleTask = async anonTask => {

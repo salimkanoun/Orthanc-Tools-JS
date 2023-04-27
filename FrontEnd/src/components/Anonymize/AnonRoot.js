@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import { Row, Col, Button } from 'react-bootstrap';
 
 import AnonymizePanel from './Anonymize/AnonymizePanel';
-import ResultRoot from './Progression/ProgressionRoot';
 import AnonHistory from './History/AnonHistory';
+import ProgressionRoot from './Progression/ProgressionRoot';
 
 const ANON_TAB = "Anonymizassion"
-const RESULTS_TAB = "Progress"
+const PROGRESSION_TAB = "Progress"
 const HISTORY_TAB = "Historic"
 
 export default () => {
@@ -17,8 +17,8 @@ export default () => {
         switch (currentMainTab) {
             case ANON_TAB:
                 return (<AnonymizePanel />);
-            case RESULTS_TAB:
-                return (<ResultRoot />)
+            case PROGRESSION_TAB:
+                return (<ProgressionRoot />)
             case HISTORY_TAB:
                 return (<AnonHistory />);
             default:
@@ -45,9 +45,9 @@ export default () => {
 
                         <li className='col-4 text-center'>
                             <Button
-                                className={currentMainTab === RESULTS_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
+                                className={currentMainTab === PROGRESSION_TAB ? 'otjs-navmenu-nav-link link-button-active link-button' : 'otjs-navmenu-nav-link link-button'}
                                 onClick={() => {
-                                    setCurrentMainTab(RESULTS_TAB)
+                                    setCurrentMainTab(PROGRESSION_TAB)
                                 }}>Progress
                             </Button>
                         </li>

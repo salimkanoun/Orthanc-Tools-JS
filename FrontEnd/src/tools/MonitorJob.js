@@ -1,5 +1,6 @@
-import { toast } from 'react-toastify'
+
 import apis from '../services/apis'
+import { errorMessage, successMessage } from './toastify'
 
 export default class MonitorJob {
 
@@ -35,9 +36,9 @@ export default class MonitorJob {
 
     cancelJob = async () => {
         await apis.jobs.cancelJob(this.jobID).catch(error => {
-            toast.error(error.statusText, {data:{type:'notification'}})
+            errorMessage(error.statusText)
         })
-        toast.success('Job Cancelled', {data:{type:'notification'}})
+        successMessage('Job Cancelled')
         this.stopMonitoringJob()
     }
 
@@ -50,7 +51,7 @@ export default class MonitorJob {
         } catch (error) {
             console.error(error)
             this.stopMonitoringJob()
-            toast.error('Monitoring Failed', {data:{type:'notification'}})
+            errorMessage('Monitoring Failed')
             return
         }
 
