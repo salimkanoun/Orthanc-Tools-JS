@@ -8,6 +8,7 @@ var morgan = require('morgan')
 var path = require('path')
 var cors = require('cors')
 var cookieParser = require('cookie-parser')
+const compression = require('compression')
 
 var apisRouter = require('./routes/index')
 var adminRouter = require('./routes/admin')
@@ -31,6 +32,7 @@ app.use(function (req, res, next) {
   next();
 });
 app.use(cookieParser())
+app.use(compression())
 
 var unless = function (path, middleware) {
   return function (req, res, next) {
