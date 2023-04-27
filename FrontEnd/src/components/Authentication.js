@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import jwt_decode from "jwt-decode";
 
 import apis from '../services/apis'
@@ -6,8 +6,8 @@ import { CSSTransition } from "react-transition-group";
 
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import HelpIcon from '@mui/icons-material/Info';
-import { toast } from 'react-toastify'
 import { Button } from 'react-bootstrap';
+import { errorMessage } from '../tools/toastify';
 
 export default ({onLogin}) =>{
 
@@ -31,7 +31,7 @@ export default ({onLogin}) =>{
       token = await apis.authentication.logIn(state.username, state.password)
       var decoded = jwt_decode(token);
     } catch (error) {
-      toast.error(error, { containerId: 'message' }, { data: { type: 'notification' } })
+      errorMessage(error)
     }
 
     if (token?.errorMessage != null) {

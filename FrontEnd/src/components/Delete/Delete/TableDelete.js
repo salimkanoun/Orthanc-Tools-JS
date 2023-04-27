@@ -1,9 +1,9 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 
-import TablePatientWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudies'
-import { patientColumns, studyColumns } from '../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories'
-import { removePatientFromDeleteList, removeStudyFromDeleteList } from '../../actions/DeleteList'
+import TablePatientWithNestedStudies from '../../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudies'
+import { patientColumns, studyColumns } from '../../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories'
+import { removePatientFromDeleteList, removeStudyFromDeleteList } from '../../../actions/DeleteList'
 
 export default ({ patientRows }) => {
 

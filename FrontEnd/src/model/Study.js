@@ -29,7 +29,7 @@ export default class Study {
         let patient = new Patient()
         patient.fillFromOrthanc(PatientOrthancID, PatientMainDicomTags)
         this.PatientOrthancID = PatientOrthancID
-        this.ParentPatient = patient
+        this.ParentPatient = patient.serialize()
     }
 
     setPatientOrthancID = (orthancID) => {

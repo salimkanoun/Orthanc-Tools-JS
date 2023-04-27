@@ -1,7 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Modal from 'react-bootstrap/Modal'
-import { toast } from 'react-toastify'
 import { Button } from 'react-bootstrap'
 
 import apis from '../../../services/apis'
@@ -10,6 +9,7 @@ import StoneLink from '../../Viewers/StoneLink'
 import Metadata from '../../Metadata/Metadata'
 import Modify from '../../Modify/Modify'
 import ConstantLevel from '../../Modify/ConstantLevel'
+import { errorMessage, successMessage } from '../../../tools/toastify'
 
 export default ({
     level,
@@ -35,32 +35,32 @@ export default ({
             case ConstantLevel.PATIENTS:
                 try {
                     await apis.content.deletePatient(orthancID)
-                    toast.success("Patient " + orthancID + " have been deleted", { data: { type: 'notification' } })
+                    successMessage("Patient " + orthancID + " have been deleted")
                     onDelete(orthancID)
                 } catch (error) {
-                    toast.error(error, { data: { type: 'notification' } })
+                    errorMessage(error)
                 }
                 break
             case ConstantLevel.STUDIES:
                 try {
                     await apis.content.deleteStudies(orthancID)
-                    toast.success("Studies " + orthancID + " have been deleted", { data: { type: 'notification' } })
+                    successMessage("Studies " + orthancID + " have been deleted")
                     onDelete(orthancID)
                 } catch (error) {
-                    toast.error(error, { data: { type: 'notification' } })
+                    errorMessage(error)
                 }
                 break
             case ConstantLevel.SERIES:
                 try {
                     await apis.content.deleteSeries(orthancID)
-                    toast.success("Series " + orthancID + " have been deleted", { data: { type: 'notification' } })
+                    successMessage("Series " + orthancID + " have been deleted")
                     onDelete(orthancID)
                 } catch (error) {
-                    toast.error(error, { data: { type: 'notification' } })
+                    errorMessage(error)
                 }
                 break
             default:
-                toast.error("Wrong level", { data: { type: 'notification' } })
+                errorMessage("Wrong level")
         }
 
     }

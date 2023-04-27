@@ -15,6 +15,7 @@ import CommonSelectingAndFilteringTable
     from "../../CommonComponents/RessourcesDisplay/ReactTable/CommonSelectingAndFilteringTable";
 
 import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities";
+import { errorMessage, successMessage } from '../../../tools/toastify';
 
 function CustomHeader(setOverride, type = 'text') {
     return ({ column }) => {
@@ -144,7 +145,7 @@ export default ({ switchTab }) => {
             let aets = getAets()
             dispatch.loadAvailableAETS(aets)
         } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
+            errorMessage(error.statusText)
         }
     }, [])
 
@@ -195,7 +196,7 @@ export default ({ switchTab }) => {
         }
 
         toast.dismiss(toastId)
-        toast.success('Queries completed', { data: { type: 'notification' } })
+        successMessage('Queries completed')
 
         switchTab('Result')
 

@@ -37,12 +37,7 @@ export const expandColumn =
     header: '',
     enableColumnFilter: false,
     cell: ({ row }) => (
-        <div
-            className={'d-flex justify-content-center expand-cell align-content-center'}
-            {...{
-                onClick: () => row.toggleExpanded(),
-            }}
-        >
+        <div className={'d-flex justify-content-center expand-cell align-content-center'} >
             {row.getIsExpanded() ? '⬇' : '➡'}
         </div>
     )

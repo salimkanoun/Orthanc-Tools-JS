@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Alert } from "react-bootstrap";
-import { toast } from 'react-toastify'
 import Select from 'react-select'
 
 import apis from "../../services/apis";
 
 import AETSelect from './AETSelect'
 import RuleRow from './RuleRow'
+import { errorMessage } from "../../tools/toastify";
 
 export default ({ data, refresh, close, showMessage, showModal }) => {
 
@@ -115,11 +115,11 @@ export default ({ data, refresh, close, showMessage, showModal }) => {
    */
   const handleSave = async () => {
     if (state.name === "" || state.rules.length === 0 || state.destination.length === 0 || state.condition === "") {
-      toast.error('Arguments missing to create a router', { data: { type: 'notification' } })
+      errorMessage('Arguments missing to create a router')
     } else if (state.rules.length !== state.ruleList.length) {
-      toast.error('Invalid rule, arguments missing', { data: { type: 'notification' } })
+      errorMessage('Invalid rule, arguments missing')
     } else if (state.message) {
-      toast.error("Rule conflict!", { data: { type: 'notification' } })
+      errorMessage("Rule conflict!")
     }
     else {
       if (state.id) {

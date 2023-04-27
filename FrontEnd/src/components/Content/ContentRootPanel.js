@@ -17,8 +17,7 @@ export default () => {
         ({ dataForm }) => apis.content.getOrthancFind(dataForm),
         [],
         (data) => {
-            let dicomRessources = fillPatientModelWithStudies(data)
-            let rows = dicomRessources.serialize()
+            let rows = fillPatientModelWithStudies(data)
             setPatients(rows)
         },
         (error) => errorMessage(error?.data.errorMessage ?? 'Failed')

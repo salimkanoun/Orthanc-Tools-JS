@@ -6,6 +6,7 @@ import apis from '../../../services/apis';
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
 import { keys } from '../../../model/Constant'
 import { useCustomMutation } from '../../../services/ReactQuery/hooks';
+import { errorMessage, successMessage } from '../../../tools/toastify';
 
 /**
  * Table with known AETs details with Echo and Remove button
@@ -48,8 +49,8 @@ export default ({ aetsData = [] }) => {
                         onClick={() => {
                             const name = row.original.name
                             apis.aets.echoAet(name)
-                                .then(() => { toast.success(name + ' Success', { containerId: 'message' }) })
-                                .catch(() => { toast.error(name + ' Echo Failure', { containerId: 'message' }) })
+                                .then(() => { successMessage(name + ' Success') })
+                                .catch(() => { errorMessage(name + ' Echo Failure') })
                         }} >
                         Echo
                     </Button>

@@ -1,21 +1,17 @@
 import React, { useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Button, Col, Container, Row } from 'react-bootstrap'
-import { toast } from "react-toastify"
 
-import TablePatients from '../../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatients'
 import apis from "../../../services/apis"
 import AnonProfile from './AnonProfile'
 
 import {
     autoFill,
     emptyAnonymizeList,
-    removePatientFromAnonList,
-    removeStudyFromAnonList,
-    saveNewValues
 } from '../../../actions/AnonList'
-import { studyArrayToPatientArray } from '../../../tools/processResponse'
-import TableStudyAnon from "./TableStudyAnon"
+import TableStudyAnonymize from "./TableStudyAnonymize"
+import { errorMessage, successMessage } from "../../../tools/toastify"
+import TablePatientAnonymize from "./TablePatientAnonymize"
 
 /**
  * This componnent wrapper allows to optimise the table by memoizing data
@@ -26,7 +22,7 @@ import TableStudyAnon from "./TableStudyAnon"
  * @returns {JSX.Element} The table
  */
 
-export default ({ setTask }) => {
+export default () => {
 
     const [currentPatient, setCurrentPatient] = useState('')
     const [prefix, setPrefix] = useState('')
@@ -41,12 +37,6 @@ export default ({ setTask }) => {
         }
     })
 
-    const patients = useMemo(() => studyArrayToPatientArray(store.anonList).map(patient => ({
-        ...patient,
-        newPatientName: patient.newPatientName ? patient.newPatientName : '',
-        newPatientID: patient.newPatientID ? patient.newPatientID : ''
-    })), [store.anonList])
-
     const studiesData = useMemo(() => store.anonList
         .filter(study => study.PatientOrthancID === currentPatient)
         .map(study => ({
@@ -59,22 +49,21 @@ export default ({ setTask }) => {
     const testAllId = () => {
         let answer = true
         store.anonList.forEach((item) => {
-            if (item.newPatientID === undefined)
+            if (item.ParentPatient.newPatientID === undefined)
                 answer = false
         })
         return answer
     }
 
     const anonymize = async () => {
-        console.log("click")
         if (testAllId()) { //check all id 
             let listToAnonymize = []
             store.anonList.forEach(element => {
                 let anonItem = {
                     orthancStudyID: element.StudyOrthancID,
                     profile: store.profile,
-                    newPatientName: element.newPatientName,
-                    newPatientID: element.newPatientID,
+                    newPatientName: element.ParentPatient.newPatientName,
+                    newPatientID: element.ParentPatient.newPatientID,
                     newStudyDescription: element.newStudyDescription ? element.newStudyDescription : element.StudyDescription,
                     newAccessionNumber: element.newAccessionNumber ? element.newAccessionNumber : 'OrthancToolsJS'
                 }
@@ -84,103 +73,56 @@ export default ({ setTask }) => {
 
             try {
                 let answer = await apis.anon.createAnonRobot(listToAnonymize, store.username) //wait for the robot's answer to know what do to next
-                setTask(answer)
+                successMessage('Anonymization started')
+                console.log(answer)
             } catch (error) {
-                toast.error(error.statusText, { data: { type: 'notification' } })
+                errorMessage(error.statusText)
             }
 
-        } else toast.error('Fill all patient ID', { data: { type: 'notification' } })
-    }
-
-    const onRemovePatient = (PatientOrthancID) => {
-        dispatch(removePatientFromAnonList(PatientOrthancID))
-    }
-
-    const onRemoveStudy = (StudyOrthancID) => {
-        console.log('onRemoveStudy studyOrthancID : ', StudyOrthancID)
-        dispatch(removeStudyFromAnonList(StudyOrthancID))
+        } else {
+            errorMessage('Fill all patient ID')
+        }
     }
 
     const rowStyle = (PatientOrthancID) => {
         if (PatientOrthancID === currentPatient) return { background: 'peachPuff' }
     }
 
-
-    const onClickPatientHandler = (PatientOrthancID) => {
-        setCurrentPatient(PatientOrthancID)
-    }
-
-
-    const onEditPatient = (PatientOrthancID, column, newValue) => {
-        console.log("edit patient")
-        dispatch(saveNewValues(PatientOrthancID, column, newValue))
-    }
-
-    const onEditStudy = (StudyOrthancID, column, newValue) => {
-        console.log("edit study")
-        dispatch(saveNewValues(StudyOrthancID, column, newValue))
-    }
-
-    const onChange = (e) => {
+    const onChangePrefixHandler = (e) => {
         setPrefix(e.target.value)
     }
 
-    const onClickAutoFill = () =>{
+    const onClickAutoFill = () => {
         dispatch(autoFill(prefix))
     }
 
     const onClickEmpty = () => {
-        dispatch(emptyAnonymizeList())}
-
-    const additionalColumns = [
-        {
-            id: 'newPatientID',
-            accessorrKey: 'newPatientID',
-            header: 'New Patient ID',
-            isEditable: true,
-        },
-        {
-            id: 'newPatientName',
-            accessorrKey: 'newPatientName',
-            header: 'New Patient Name',
-            isEditable: true
-        },
-        {
-            id: 'Remove',
-            accessorrKey: 'Remove',
-            header: 'Remove',
-            cell: ({ row }) => {
-                return <Button className="btn btn-danger" onClick={() => {
-                    onRemovePatient(row.original.PatientOrthancID);
-                }}>Remove</Button>
-            }
-        }
-    ]
+        dispatch(emptyAnonymizeList())
+    }
 
     return (
-        <Container>
+        <Container fluid>
             <Row className="mt-5">
-                <Col xxl={6}>
-
-                    <TablePatients patients={patients} additionalColumns={additionalColumns} onRowClick={onClickPatientHandler} rowStyle={rowStyle} onCellEdit={onEditPatient} />
+                <Col>
+                    <TablePatientAnonymize rowStyle={rowStyle} setCurrentPatient={(PatientOrthancID) => setCurrentPatient(PatientOrthancID)} />
 
                     <Button className='otjs-button otjs-button-red mt-2 w-7'
                         onClick={onClickEmpty}>
                         Empty List
                     </Button>
                 </Col>
-                <Col xxl={6}>
-                    <TableStudyAnon studies={studiesData} onRemoveStudy={onRemoveStudy} onCellEdit={onEditStudy}/>
+                <Col>
+                    <TableStudyAnonymize studies={studiesData} />
                 </Col>
             </Row>
 
             <Row className="mt-5">
-                <Col sm={6}>
+                <Col>
                     <Row className="align-items-center">
                         <Col sm={8}>
                             <input type='text' name='prefix' id='prefix' className='form-control'
                                 placeholder='prefix'
-                                onChange={onChange} />
+                                onChange={onChangePrefixHandler} />
                         </Col>
                         <Col sm>
                             <Button variant='warning' className='otjs-button'
@@ -190,19 +132,18 @@ export default ({ setTask }) => {
                         </Col>
                     </Row>
                 </Col>
-                <Col sm={6}>
+                <Col>
                     <AnonProfile />
                 </Col>
             </Row>
             <Row className="mt-4 border-top border-2 pt-4">
                 <Col className="text-center">
                     <Button className='otjs-button otjs-button-blue w-7'
-                        onClick={()=> anonymize()}>
+                        onClick={() => anonymize()}>
                         Anonymize
                     </Button>
                 </Col>
             </Row>
-
         </Container>
     )
 }

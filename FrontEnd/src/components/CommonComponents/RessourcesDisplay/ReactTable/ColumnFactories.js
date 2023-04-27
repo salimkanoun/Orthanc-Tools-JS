@@ -1,10 +1,12 @@
-import ActionBouton from "../ActionBouton";
 import React from "react";
+import { Button } from "react-bootstrap";
+
+import ActionBouton from "../ActionBouton";
 import { dateFilter, DateFilter, invertableDataFilter, InvertableDataFilter } from "./ColumnFilters";
 import RetrieveButton from "../../../Query/RetrieveButton";
-import { toast } from "react-toastify";
-import { Button } from "react-bootstrap";
+
 import ConstantLevel from "../../../Modify/ConstantLevel";
+import { errorMessage } from "../../../../tools/toastify";
 
 const commonColumns = {
     RAW: {
@@ -71,7 +73,7 @@ const seriesColumns = {
                 try {
                     onRemove(row.values.SeriesOrthancID);
                 } catch (e) {
-                    toast.error("Remove error", {data:{type:'notification'}});
+                    errorMessage("Remove error");
                 }
                 e.stopPropagation();
             }}>Remove</Button>
