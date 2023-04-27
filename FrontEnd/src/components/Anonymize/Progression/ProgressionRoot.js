@@ -1,8 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
+
+import { keys } from '../../../model/Constant'
 import apis from '../../../services/apis'
+import { useCustomQuery } from '../../../services/ReactQuery/hooks'
 import task from '../../../services/task'
+import Spinner from '../../CommonComponents/Spinner'
 import AnonymizedResults from './AnonymizedResults'
 import AnonymizePanelProgress from './AnonymizePanelProgress'
 
@@ -14,51 +18,60 @@ export default () => {
         }
     })
 
-    const getAnonTaskId = async () => {
+    const [state, setState] = useState({
+        success: 0,
+        failures: 0,
+        numberOfItem: 0,
+        details: {}
+    })
+
+    const getAnonTask = async () => {
         const taskID = await apis.task.getTaskOfUser(store.username, 'anonymize')
-        console.log(taskID[0])
-        const anonTask = await task.getTask(taskID[0]) 
-        console.log(anonTask)
+        const anonTask = await task.getTask(taskID[0])
         return anonTask
     }
 
-
-    //const anonTask = await apis.task.getTask(jobUuid)
-    /*
-    useEffect(() => {
-        //Sk / Voir si robot anoymisation de cet utilisateur est en cours
-        const getTaskOfUser = async () => { await apis.task.getTaskOfUser(store.username, 'anonymize') }
-    }, [])
-
-    */
-
-    /*
-    
-    useEffect(() => {
-        if (anonTaskID) {
-            
-            if (!!anonTask) {
-                handleTask(anonTask);
-                if (!["completed", "failed"].includes(anonTask.state)) {
-                    this.monitor = new MonitorTask(anonTaskID, 4000);
-                    this.monitor.onUpdate(handleTask.bind(this));
-                    this.monitor.onFinish(() => {
-                    });
-                    this.monitor.startMonitoringJob();
+    const { isLoading } = useCustomQuery(
+        [keys.PROGRESSION_KEYS],
+        () => getAnonTask(),
+        undefined,
+        undefined,
+        (answer) => {
+            let success = 0
+            let failures = 0
+            answer.details.items.forEach(async item => {
+                switch (item.state) {
+                    case 'completed':
+                        success++
+                        break
+                    case 'failed':
+                        failures++
+                        break
+                    default:
+                        break
                 }
-            }
-        }
-    }, [])
-    */
+            })
+            setState((state) => ({
+                ...state,
+                ['success']: success,
+                ['failures']: failures,
+                ['numberOfItem']: answer.details.items.length,
+                ['details']: answer.details
+            }))
+        },
+        1000
+    )
 
-    return ( console.log("Progression root"))
-        /*<Row className="align-items-center justify-content-center">
+    if (isLoading) return <Spinner />
+
+    return (
+        <Row className="align-items-center justify-content-center">
             <Col md={12} className="text-center mb-4" style={{ "max-width": '20%' }}>
-                <AnonymizePanelProgress />
+                <AnonymizePanelProgress success={state.success} failures={state.failures} numberOfItems={state.numberOfItem} />
             </Col>
             <Col md={12}>
-                <AnonymizedResults />
+                <AnonymizedResults details={state.details} />
             </Col>
         </Row>
-    )*/
+    )
 }

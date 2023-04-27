@@ -3,9 +3,6 @@ import { useDispatch } from 'react-redux'
 import { Row, Col, Button } from "react-bootstrap"
 
 import apis from "../../../services/apis"
-import task from "../../../services/task"
-import MonitorTask from "../../../tools/MonitorTask"
-
 
 import { addStudiesToDeleteList } from "../../../actions/DeleteList"
 import { addStudiesToExportList } from "../../../actions/ExportList"
@@ -13,56 +10,43 @@ import TableStudies from "../../CommonComponents/RessourcesDisplay/ReactTableV8/
 import { studyColumns } from "../../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories"
 
 
-export default ({ anonTaskID }) => {
+export default ({ details }) => {
 
     const [studies, setStudies] = useState([])
 
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (anonTaskID) {
-            const getAnonTask = async () => { await task.getTask(anonTaskID) }
-            let anonTask = getAnonTask()
-            if (!!anonTask) {
-                handleTask(anonTask);
-                if (!["completed", "failed"].includes(anonTask.state)) {
-                    this.monitor = new MonitorTask(anonTaskID, 4000);
-                    this.monitor.onUpdate(handleTask.bind(this));
-                    this.monitor.onFinish(() => {
-                    });
-                    this.monitor.startMonitoringJob();
-                }
-            }
-        }
-    }, [])
+        handleTask()
+    }, [details])
 
-
-
-    const handleTask = async anonTask => {
+    const handleTask = async () => {
         let studies = []
-        for (const item of anonTask.details.items) {
-            if (item.state === "completed") {
-                try {
-                    let study = await apis.content.getStudiesDetails(item.result)
-                    let originalStudy = await apis.content.getStudiesDetails(study.AnonymizedFrom)
-                    studies.push({
-                        ...study,
-                        ...study.MainDicomTags,
-                        ...study.PatientMainDicomTags,
-                        StudyOrthancID: study.ID,
-                        AnonymizedFrom: study.AnonymizedFrom,
-                        OriginalPatientName: originalStudy.PatientMainDicomTags.PatientName,
-                        OriginalPatientID: originalStudy.PatientMainDicomTags.PatientID,
-                        OriginalAccessionNumber: originalStudy.MainDicomTags.AccessionNumber,
-                        OriginalStudyDate: originalStudy.MainDicomTags.StudyDate,
-                        OriginalStudyInstanceUID: originalStudy.MainDicomTags.StudyInstanceUID,
-                        OriginalStudyDescription: originalStudy.MainDicomTags.StudyDescription,
-                        newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
-                        newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
-                    })
-                } catch (err) {
-                }
+        if (details.items == undefined) { } else {
+            for (const item of details.items) {
+                if (item.state === "completed") {
+                    try {
+                        let study = await apis.content.getStudiesDetails(item.result)
+                        let originalStudy = await apis.content.getStudiesDetails(study.AnonymizedFrom)
+                        studies.push({
+                            ...study,
+                            ...study.MainDicomTags,
+                            ...study.PatientMainDicomTags,
+                            StudyOrthancID: study.ID,
+                            AnonymizedFrom: study.AnonymizedFrom,
+                            OriginalPatientName: originalStudy.PatientMainDicomTags.PatientName,
+                            OriginalPatientID: originalStudy.PatientMainDicomTags.PatientID,
+                            OriginalAccessionNumber: originalStudy.MainDicomTags.AccessionNumber,
+                            OriginalStudyDate: originalStudy.MainDicomTags.StudyDate,
+                            OriginalStudyInstanceUID: originalStudy.MainDicomTags.StudyInstanceUID,
+                            OriginalStudyDescription: originalStudy.MainDicomTags.StudyDescription,
+                            newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
+                            newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
+                        })
+                    } catch (err) {
+                    }
 
+                }
             }
         }
         setStudies(studies)
