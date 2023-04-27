@@ -101,7 +101,7 @@ export default ({
         enableHiding: true,
         enableFilters: canFilter,
         enableExpanding: canExpand,
-        manualPagination : !paginated,
+        manualPagination: !paginated,
         //getRowCanExpand : () => canExpand,
         enableSorting: canSort,
         enableSortingRemoval: true,
