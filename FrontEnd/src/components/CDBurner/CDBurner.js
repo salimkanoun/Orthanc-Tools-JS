@@ -2,10 +2,10 @@ import React, { Component, useMemo } from 'react'
 
 import { Row, Col, Badge } from 'react-bootstrap'
 import Toggle from 'react-toggle'
-import { toast } from 'react-toastify';
 
 import apis from '../../services/apis'
 import CommonTable from "../CommonComponents/RessourcesDisplay/ReactTable/CommonTable";
+import { errorMessage } from '../../tools/toastify';
 
 function BurnerJobsTables({ jobs }) {
     const columns = useMemo(() => [
@@ -53,7 +53,7 @@ function BurnerJobsTables({ jobs }) {
                             try {
                                 await apis.cdBurner.cancelCdBurner(row.cdJobID)
                             } catch (error) {
-                                toast.error(error.statusText, { data: { type: 'notification' } })
+                                errorMessage(error.statusText)
                             }
 
                         }} value="Cancel" disabled={disable} />
@@ -84,7 +84,7 @@ export default class CDBurner extends Component {
         try {
             cdBurnerData = await apis.cdBurner.getCdBuner()
         } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
+            errorMessage(error.statusText)
             return
         }
 
@@ -149,7 +149,7 @@ export default class CDBurner extends Component {
 
         } catch (error) {
             let message = await error.json()
-            toast.error(message.errorMessage, { data: { type: 'notification' } })
+            errorMessage(message.errorMessage)
         }
 
 

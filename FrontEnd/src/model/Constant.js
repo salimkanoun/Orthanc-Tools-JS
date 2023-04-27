@@ -23,7 +23,8 @@ const keys = {
     OPTIONS_KEY: 'options',
     TIME: 'time',
     EXPAND: 'expand',
-    EXPORT_OPTION_KEYS : 'exportOptions'
+    EXPORT_OPTION_KEYS : 'exportOptions',
+    PROGRESSION_KEYS : 'progression'
 }
 
 const filter = {

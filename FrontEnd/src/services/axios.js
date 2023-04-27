@@ -1,7 +1,8 @@
 import axios from 'axios'
-import { toast } from 'react-toastify'
+
 import { logout } from '../actions/login'
 import store from '../myStore'
+import { errorMessage } from '../tools/toastify'
 
 axios.interceptors.request.use((req) => {
     req.headers.Authorization = 'Bearer ' + getToken()
@@ -17,7 +18,7 @@ axios.interceptors.response.use(
         const urlString = error?.response?.config?.url
         if (status === 401 && urlString && !urlString.startsWith('/api/authentication')) {
             // Singleton toast using fixed id to avoid multiple toast if multiple api call are 401
-            toast.error('Session expired. Please reauthenticate.', {data:{type:'notification'}})
+            errorMessage('Session expired. Please reauthenticate.')
             store.dispatch(logout())
         }
         return Promise.reject(error.response ?? error)

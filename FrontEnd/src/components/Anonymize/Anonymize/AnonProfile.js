@@ -14,7 +14,6 @@ export default () => {
 
     const dispatch = useDispatch()
 
-
     const option = [
         { value: 'Default', label: 'Default' },
         { value: 'Full', label: 'Full' }

@@ -2,69 +2,51 @@ import React, { Fragment, useEffect, useState } from "react"
 import { useDispatch } from 'react-redux'
 import { Row, Col, Button } from "react-bootstrap"
 
-import TableStudy from "../../CommonComponents/RessourcesDisplay/ReactTable/TableStudy"
 import apis from "../../../services/apis"
-import task from "../../../services/task"
-import MonitorTask from "../../../tools/MonitorTask"
-
 
 import { addStudiesToDeleteList } from "../../../actions/DeleteList"
 import { addStudiesToExportList } from "../../../actions/ExportList"
+import TableStudies from "../../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudies"
+import { studyColumns } from "../../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories"
 
 
-export default ({ anonTaskID }) => {
+export default ({ details }) => {
 
     const [studies, setStudies] = useState([])
 
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (anonTaskID) {
-            const getAnonTask = async () => { await task.getTask(anonTaskID) }
-            let anonTask = getAnonTask()
-            if (!!anonTask) {
-                handleTask(anonTask);
-                if (!["completed", "failed"].includes(anonTask.state)) {
-                    this.monitor = new MonitorTask(anonTaskID, 4000);
-                    this.monitor.onUpdate(handleTask.bind(this));
-                    this.monitor.onFinish(() => {
-                    });
-                    this.monitor.startMonitoringJob();
-                }
-            }
-        }
-    }, [])
+        handleTask()
+    }, [details])
 
-    useEffect(() => {
-        if (this.monitor) this.monitor.stopMonitoringJob();
-    }, [])
-
-
-    const handleTask = async anonTask => {
+    const handleTask = async () => {
         let studies = []
-        for (const item of anonTask.details.items) {
-            if (item.state === "completed") {
-                try {
-                    let study = await apis.content.getStudiesDetails(item.result)
-                    let originalStudy = await apis.content.getStudiesDetails(study.AnonymizedFrom)
-                    studies.push({
-                        ...study,
-                        ...study.MainDicomTags,
-                        ...study.PatientMainDicomTags,
-                        StudyOrthancID: study.ID,
-                        AnonymizedFrom: study.AnonymizedFrom,
-                        OriginalPatientName: originalStudy.PatientMainDicomTags.PatientName,
-                        OriginalPatientID: originalStudy.PatientMainDicomTags.PatientID,
-                        OriginalAccessionNumber: originalStudy.MainDicomTags.AccessionNumber,
-                        OriginalStudyDate: originalStudy.MainDicomTags.StudyDate,
-                        OriginalStudyInstanceUID: originalStudy.MainDicomTags.StudyInstanceUID,
-                        OriginalStudyDescription: originalStudy.MainDicomTags.StudyDescription,
-                        newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
-                        newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
-                    })
-                } catch (err) {
-                }
+        if (details.items == undefined) { } else {
+            for (const item of details.items) {
+                if (item.state === "completed") {
+                    try {
+                        let study = await apis.content.getStudiesDetails(item.result)
+                        let originalStudy = await apis.content.getStudiesDetails(study.AnonymizedFrom)
+                        studies.push({
+                            ...study,
+                            ...study.MainDicomTags,
+                            ...study.PatientMainDicomTags,
+                            StudyOrthancID: study.ID,
+                            AnonymizedFrom: study.AnonymizedFrom,
+                            OriginalPatientName: originalStudy.PatientMainDicomTags.PatientName,
+                            OriginalPatientID: originalStudy.PatientMainDicomTags.PatientID,
+                            OriginalAccessionNumber: originalStudy.MainDicomTags.AccessionNumber,
+                            OriginalStudyDate: originalStudy.MainDicomTags.StudyDate,
+                            OriginalStudyInstanceUID: originalStudy.MainDicomTags.StudyInstanceUID,
+                            OriginalStudyDescription: originalStudy.MainDicomTags.StudyDescription,
+                            newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
+                            newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
+                        })
+                    } catch (err) {
+                    }
 
+                }
             }
         }
         setStudies(studies)
@@ -87,20 +69,25 @@ export default ({ anonTaskID }) => {
         dispatch(addStudiesToDeleteList(studies))
     }
 
+    const additionalColumns = [
+        studyColumns.ANONYMIZED_FROM,
+        {
+            id: 'Remove',
+            accessorKey: 'Remove',
+            header: 'Remove',
+            cell: ({ row }) => {
+                return <Button className="btn btn-danger" onClick={() => {
+                    removeStudyAnonymized(row.original.StudyOrthancID);
+                }}>Remove</Button>
+            }
+        }
+    ]
+
     return (
         <Fragment>
             <Row>
                 <Col>
-                    <TableStudy
-                        studies={studies}
-                        hiddenActionBouton={true}
-                        hiddenRemoveRow={false}
-                        onDelete={removeStudyAnonymized}
-                        hiddenName={false}
-                        hiddenID={false}
-                        pagination={true}
-                        hiddenCSV={false}
-                    />
+                    <TableStudies studies={studies} additionalColumns={additionalColumns} />
                 </Col>
             </Row>
             <Row>

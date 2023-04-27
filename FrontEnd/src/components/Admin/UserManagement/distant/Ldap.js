@@ -3,11 +3,11 @@ import Toggle from 'react-toggle'
 import Select from 'react-select'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 import HelpIcon from '@mui/icons-material/HelpSharp';
-import { toast } from "react-toastify";
 import { Col, Row } from 'react-bootstrap'
 
 import apis from "../../../../services/apis";
 import CreateMatch from "./CreateMatch";
+import { errorMessage, successMessage } from "../../../../tools/toastify";
 
 
 export default () => {
@@ -38,20 +38,20 @@ export default () => {
             base,
             group,
             user)
-            .then(() => { toast.success('LDAP Settings updated', { data: { type: 'notification' } }) })
-            .catch((error) => { toast.error(error.statusText, { data: { type: 'notification' } }) })
+            .then(() => { successMessage ('LDAP Settings updated') })
+            .catch((error) => { errorMessage(error.statusText) })
     }
 
     const testLdapSettings = () => {
 
         apis.ldap.testLdapSettings().then(answer => {
             if (answer) {
-                toast.success('Connexion established', { data: { type: 'notification' } })
+                successMessage('Connexion established')
             } else {
-                toast.error('connexion failed', { data: { type: 'notification' } })
+                errorMessage('connexion failed')
             }
         }).catch((error) => {
-            toast.error(error.statusText, { data: { type: 'notification' } })
+            errorMessage(error.statusText)
         })
     }
 
@@ -68,7 +68,7 @@ export default () => {
             //Ldap
             options = getOptions()
         } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
+            errorMessage(error.statusText)
             return
         }
 
@@ -100,7 +100,7 @@ export default () => {
             await apis.options.changeMode(!activated)
             setActivated(!activated)
         } catch (error) {
-            toast.error(error.statusText, { data: { type: 'notification' } })
+            errorMessage(error.statusText)
         }
     }
 
