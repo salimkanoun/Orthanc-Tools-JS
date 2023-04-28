@@ -26,6 +26,7 @@ import 'react-circular-progressbar/dist/styles.css';
 import 'react-calendar/dist/Calendar.css';
 //Custom CSS
 import './assets/styles/orthancToolsJs.scss'
+import ErrorBoundary from './ErrorBoundary';
 
 
 
@@ -51,33 +52,35 @@ const App = () => {
 
     return (
         <BrowserRouter>
-            <QueryClientProvider client={queryClient}>
-                <ConfirmGlobal/>
-                <div >
-                    <ToastContainer
-                        enableMultiContainer
-                        containerId={'message'}
-                        position={'bottom-right'}
-                        autoClose={5000}
-                        newestOnTop
-                        closeOnClick
-                    > </ToastContainer>
-                    <ToastContainer
-                        enableMultiContainer
-                        style={{visibility : 'hidden'}}
-                        containerId={'jobs'}
-                        position={'bottom-left'}
-                        autoClose={5000}
-                        newestOnTop
-                        closeOnClick
-                    > </ToastContainer>
-                </div>
-                {username ?
-                    <MainRoot onLogout={onLogout} username={username} roles={roles} />
-                    :
-                    <Authentication onLogin={onLogin} />}
-                <ReactQueryDevtools initialIsOpen={false} />
-            </QueryClientProvider>
+            <ErrorBoundary>
+                <QueryClientProvider client={queryClient}>
+                    <ConfirmGlobal />
+                    <div >
+                        <ToastContainer
+                            enableMultiContainer
+                            containerId={'message'}
+                            position={'bottom-right'}
+                            autoClose={5000}
+                            newestOnTop
+                            closeOnClick
+                        > </ToastContainer>
+                        <ToastContainer
+                            enableMultiContainer
+                            style={{ visibility: 'hidden' }}
+                            containerId={'jobs'}
+                            position={'bottom-left'}
+                            autoClose={5000}
+                            newestOnTop
+                            closeOnClick
+                        > </ToastContainer>
+                    </div>
+                    {username ?
+                        <MainRoot onLogout={onLogout} username={username} roles={roles} />
+                        :
+                        <Authentication onLogin={onLogin} />}
+                    <ReactQueryDevtools initialIsOpen={false} />
+                </QueryClientProvider>
+            </ErrorBoundary>
         </BrowserRouter>
     );
 
