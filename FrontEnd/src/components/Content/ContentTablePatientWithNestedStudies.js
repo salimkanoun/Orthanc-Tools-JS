@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 
 import TablePatientWithNestedStudies from "../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudies";
 import ConstantLevel from "../Modify/ConstantLevel";
