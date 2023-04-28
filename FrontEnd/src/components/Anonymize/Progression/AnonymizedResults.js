@@ -7,7 +7,6 @@ import apis from "../../../services/apis"
 import { addStudiesToDeleteList } from "../../../actions/DeleteList"
 import { addStudiesToExportList } from "../../../actions/ExportList"
 import TableStudies from "../../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudies"
-import { studyColumns } from "../../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories"
 import { errorMessage } from "../../../tools/toastify"
 import { exportCsv } from "../../../tools/CSVExport"
 
@@ -23,62 +22,80 @@ export default ({ details }) => {
     }, [details])
 
     const handleTask = async () => {
-        let studies = []
-        if (details.items == undefined) { } else {
+        let studiesData = studies
+        if (details.items == undefined) { }
+        else {
             for (const item of details.items) {
                 if (item.state === "completed") {
-                    try {
-                        let study = await apis.content.getStudiesDetails(item.result)
-                        let originalStudy = await apis.content.getStudiesDetails(study.AnonymizedFrom)
-                        studies.push({
-                            ...study,
-                            ...study.MainDicomTags,
-                            ...study.PatientMainDicomTags,
-                            StudyOrthancID: study.ID,
-                            AnonymizedFrom: study.AnonymizedFrom,
-                            OriginalPatientName: originalStudy.PatientMainDicomTags.PatientName,
-                            OriginalPatientID: originalStudy.PatientMainDicomTags.PatientID,
-                            OriginalAccessionNumber: originalStudy.MainDicomTags.AccessionNumber,
-                            OriginalStudyDate: originalStudy.MainDicomTags.StudyDate,
-                            OriginalStudyInstanceUID: originalStudy.MainDicomTags.StudyInstanceUID,
-                            OriginalStudyDescription: originalStudy.MainDicomTags.StudyDescription,
-                            newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
-                            newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
-                        })
-                    } catch (err) {
+                    if (!containsStudy(item.result)) {
+                        try {
+                            let study = await apis.content.getStudiesDetails(item.result)
+                            console.log(item.result)
+                            console.log(study)
+                            studiesData.push({
+                                StudyOrthancID: study.ID,
+                                StudyInstanceUID: study.MainDicomTags.StudyInstanceUID,
+                                AnonymizedFrom: study.AnonymizedFrom,
+                                PatientID: study.PatientMainDicomTags.PatientID,
+                                PatientName: study.PatientMainDicomTags.PatientName,
+                                StudyDate: study.MainDicomTags.StudyDate,
+                                StudyDescription: study.MainDicomTags.StudyDescription,
+                                newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
+                                newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : '',
+                                Series: study.Series
+                            })
+                        } catch (err) {
+                        }
                     }
-
                 }
             }
         }
-        setStudies(studies)
+        setStudies(studiesData)
+    }
+
+    const containsStudy = (studyID) => {
+        let r = false
+        for (var i = 0; i < studies.length; i++) {
+            if (studies[i].StudyOrthancID == studyID) {
+                r = true
+                break
+            }
+        }
+        return r
     }
 
     const getCSV = () => {
+        let csvData = []
         if (studies.length === 0) {
             errorMessage('Empty List')
             return
         }
-        console.log(studies)
+        studies.map(async (study) => {
+            try {
+                let originalStudy = await apis.content.getStudiesDetails(study.AnonymizedFrom)
+                console.log(originalStudy)
 
-        let csvData = studies.map((study) => {
-            return ({
-                AnonymizedFrom: study.AnonymizedFrom,
-                OriginalPatientID: study.OriginalPatientID,
-                OriginalPatientName: study.OriginalPatientName,
-                StudyID: study.StudyID,
-                StudyDate: study.StudyDate,
-                StudyDescription: study.StudyDescription,
-                NewStudyDescription: study.newStudyDescription,
-                StudyInstanceUID: study.StudyInstanceUID,
-                StudyOrthancID: study.StudyOrthancID,
-                StudyTime: study.StudyTime,
-                AccessionNumber: study.AccessionNumber,
-                NewAccessionNumber: study.newAccessionNumber,
-                Series: study.Series
-            })
+                csvData.push({
+                    AnonymizedFrom: study.AnonymizedFrom,
+                    OriginalPatientID: originalStudy.PatientMainDicomTags.PatientID,
+                    NewPatientID: study.PatientID,
+                    OriginalPatientName: originalStudy.PatientMainDicomTags.PatientName,
+                    NewPatientName: study.PatientName,
+                    StudyID: study.StudyID,
+                    StudyDate: originalStudy.MainDicomTags.StudyDate,
+                    OriginalStudyDescription: originalStudy.MainDicomTags.StudyDescription,
+                    NewStudyDescription: study.newStudyDescription,
+                    StudyInstanceUID: originalStudy.MainDicomTags.StudyInstanceUID,
+                    StudyOrthancID: study.StudyOrthancID,
+                    StudyTime: study.StudyTime,
+                    OriginalAccessionNumber: originalStudy.MainDicomTags.AccessionNumber,
+                    NewAccessionNumber: study.newAccessionNumber,
+                    Series: study.Series
+                })
+            } catch (err) {
+                errorMessage(err.statusText)
+            }
         })
-
         exportCsv(csvData, '.csv', 'AnonDicomDetails.csv')
     }
 
