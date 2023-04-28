@@ -63,27 +63,23 @@ export default ({ details }) => {
 
         let csvData = studies.map((study) => {
             return ({
-                AnonymizedFrom : study.AnonymizedFrom,
-                OriginalPatientID : study.OriginalPatientID,
-                OriginalPatientName : study.OriginalPatientName,
-                StudyID : study.StudyID,
-                StudyDate : study.StudyDate,
-                StudyDescription : study.StudyDescription,
-                NewStudyDescription : study.newStudyDescription,
-                StudyInstanceUID : study.StudyInstanceUID,
-                StudyOrthancID : study.StudyOrthancID,
-                StudyTime : study.StudyTime,
-                AccessionNumber : study.AccessionNumber,
-                NewAccessionNumber : study.newAccessionNumber,
-                Series : study.Series
+                AnonymizedFrom: study.AnonymizedFrom,
+                OriginalPatientID: study.OriginalPatientID,
+                OriginalPatientName: study.OriginalPatientName,
+                StudyID: study.StudyID,
+                StudyDate: study.StudyDate,
+                StudyDescription: study.StudyDescription,
+                NewStudyDescription: study.newStudyDescription,
+                StudyInstanceUID: study.StudyInstanceUID,
+                StudyOrthancID: study.StudyOrthancID,
+                StudyTime: study.StudyTime,
+                AccessionNumber: study.AccessionNumber,
+                NewAccessionNumber: study.newAccessionNumber,
+                Series: study.Series
             })
         })
 
         exportCsv(csvData, '.csv', 'AnonDicomDetails.csv')
-    }
-
-    const removeStudyAnonymized = (studyID) => {
-        apis.content.deleteStudies(studyID)
     }
 
     const exportList = () => {
@@ -94,25 +90,11 @@ export default ({ details }) => {
         dispatch(addStudiesToDeleteList(studies))
     }
 
-    const additionalColumns = [
-        studyColumns.ANONYMIZED_FROM,
-        {
-            id: 'Remove',
-            accessorKey: 'Remove',
-            header: 'Remove',
-            cell: ({ row }) => {
-                return <Button className="btn btn-danger" onClick={() => {
-                    removeStudyAnonymized(row.original.StudyOrthancID);
-                }}>Remove</Button>
-            }
-        }
-    ]
-
     return (
         <Fragment>
             <Row>
                 <Col>
-                    <TableStudies studies={studies} additionalColumns={additionalColumns} />
+                    <TableStudies studies={studies} />
                 </Col>
             </Row>
             <Row>
