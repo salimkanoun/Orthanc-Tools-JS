@@ -100,8 +100,8 @@ router.get('/patients/*', [userAuthMidelware], reverseProxyGet)
 router.get('/studies/*', [userAuthMidelware], reverseProxyGet)
 router.get('/series/*', [userAuthMidelware], reverseProxyGet)
 router.get('/instances/*', [userAuthMidelware], reverseProxyGet)
-router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet)
-router.get('/wado/*', [userAuthMidelware], reverseProxyGet)
+router.get('/dicom-web/*', [/*userAuthMidelware*/], reverseProxyGet)
+router.get('/wado/*', [/*userAuthMidelware*/], reverseProxyGet)
 
 //Delete Orthanc ressource API
 router.delete('/patients/*', [userAuthMidelware, deleteMidelware], reverseProxyDelete)
