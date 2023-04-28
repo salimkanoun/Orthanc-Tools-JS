@@ -7,7 +7,8 @@ import apis from "../../../services/apis"
 import { addStudiesToDeleteList } from "../../../actions/DeleteList"
 import { addStudiesToExportList } from "../../../actions/ExportList"
 import TableStudies from "../../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudies"
-import { studyColumns } from "../../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories"
+import { errorMessage } from "../../../tools/toastify"
+import { exportCsv } from "../../../tools/CSVExport"
 
 
 export default ({ details }) => {
@@ -21,44 +22,81 @@ export default ({ details }) => {
     }, [details])
 
     const handleTask = async () => {
-        let studies = []
-        if (details.items == undefined) { } else {
+        let studiesData = studies
+        if (details.items == undefined) { }
+        else {
             for (const item of details.items) {
                 if (item.state === "completed") {
-                    try {
-                        let study = await apis.content.getStudiesDetails(item.result)
-                        let originalStudy = await apis.content.getStudiesDetails(study.AnonymizedFrom)
-                        studies.push({
-                            ...study,
-                            ...study.MainDicomTags,
-                            ...study.PatientMainDicomTags,
-                            StudyOrthancID: study.ID,
-                            AnonymizedFrom: study.AnonymizedFrom,
-                            OriginalPatientName: originalStudy.PatientMainDicomTags.PatientName,
-                            OriginalPatientID: originalStudy.PatientMainDicomTags.PatientID,
-                            OriginalAccessionNumber: originalStudy.MainDicomTags.AccessionNumber,
-                            OriginalStudyDate: originalStudy.MainDicomTags.StudyDate,
-                            OriginalStudyInstanceUID: originalStudy.MainDicomTags.StudyInstanceUID,
-                            OriginalStudyDescription: originalStudy.MainDicomTags.StudyDescription,
-                            newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
-                            newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : ''
-                        })
-                    } catch (err) {
+                    if (!containsStudy(item.result)) {
+                        try {
+                            let study = await apis.content.getStudiesDetails(item.result)
+                            console.log(item.result)
+                            console.log(study)
+                            studiesData.push({
+                                StudyOrthancID: study.ID,
+                                StudyInstanceUID: study.MainDicomTags.StudyInstanceUID,
+                                AnonymizedFrom: study.AnonymizedFrom,
+                                PatientID: study.PatientMainDicomTags.PatientID,
+                                PatientName: study.PatientMainDicomTags.PatientName,
+                                StudyDate: study.MainDicomTags.StudyDate,
+                                StudyDescription: study.MainDicomTags.StudyDescription,
+                                newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
+                                newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : '',
+                                Series: study.Series
+                            })
+                        } catch (err) {
+                        }
                     }
-
                 }
             }
         }
-        setStudies(studies)
+        setStudies(studiesData)
+    }
+
+    const containsStudy = (studyID) => {
+        let r = false
+        for (var i = 0; i < studies.length; i++) {
+            if (studies[i].StudyOrthancID == studyID) {
+                r = true
+                break
+            }
+        }
+        return r
     }
 
     const getCSV = () => {
-        //Level study ou series
-        //Get le anonymized from pour le level study
-    }
+        let csvData = []
+        if (studies.length === 0) {
+            errorMessage('Empty List')
+            return
+        }
+        studies.map(async (study) => {
+            try {
+                let originalStudy = await apis.content.getStudiesDetails(study.AnonymizedFrom)
+                console.log(originalStudy)
 
-    const removeStudyAnonymized = (studyID) => {
-        apis.content.deleteStudies(studyID)
+                csvData.push({
+                    AnonymizedFrom: study.AnonymizedFrom,
+                    OriginalPatientID: originalStudy.PatientMainDicomTags.PatientID,
+                    NewPatientID: study.PatientID,
+                    OriginalPatientName: originalStudy.PatientMainDicomTags.PatientName,
+                    NewPatientName: study.PatientName,
+                    StudyID: study.StudyID,
+                    StudyDate: originalStudy.MainDicomTags.StudyDate,
+                    OriginalStudyDescription: originalStudy.MainDicomTags.StudyDescription,
+                    NewStudyDescription: study.newStudyDescription,
+                    StudyInstanceUID: originalStudy.MainDicomTags.StudyInstanceUID,
+                    StudyOrthancID: study.StudyOrthancID,
+                    StudyTime: study.StudyTime,
+                    OriginalAccessionNumber: originalStudy.MainDicomTags.AccessionNumber,
+                    NewAccessionNumber: study.newAccessionNumber,
+                    Series: study.Series
+                })
+            } catch (err) {
+                errorMessage(err.statusText)
+            }
+        })
+        exportCsv(csvData, '.csv', 'AnonDicomDetails.csv')
     }
 
     const exportList = () => {
@@ -69,25 +107,11 @@ export default ({ details }) => {
         dispatch(addStudiesToDeleteList(studies))
     }
 
-    const additionalColumns = [
-        studyColumns.ANONYMIZED_FROM,
-        {
-            id: 'Remove',
-            accessorKey: 'Remove',
-            header: 'Remove',
-            cell: ({ row }) => {
-                return <Button className="btn btn-danger" onClick={() => {
-                    removeStudyAnonymized(row.original.StudyOrthancID);
-                }}>Remove</Button>
-            }
-        }
-    ]
-
     return (
         <Fragment>
             <Row>
                 <Col>
-                    <TableStudies studies={studies} additionalColumns={additionalColumns} />
+                    <TableStudies studies={studies} />
                 </Col>
             </Row>
             <Row>
@@ -97,6 +121,9 @@ export default ({ details }) => {
                     </Button>
                     <Button className='otjs-button otjs-button-red w-10 ms-4' onClick={deleteList}>
                         To Delete List
+                    </Button>
+                    <Button className="otjs-button otjs-button-blue w-12" onClick={getCSV}>
+                        Download list as CSV
                     </Button>
                 </Col>
             </Row>
