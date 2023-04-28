@@ -87,7 +87,7 @@ const orthancContent = {
 
     deletePatient(ID) {
 
-        return axios.delete('/api/patients/' + ID).then((answer) => true
+        return axios.delete('/api/patients/' + ID).then(() => true
         ).catch((error) => {
             throw error
         })
@@ -96,7 +96,7 @@ const orthancContent = {
 
     deleteStudies(ID) {
 
-        return axios.delete('/api/studies/' + ID).then((answer) => true
+        return axios.delete('/api/studies/' + ID).then(() => true
         ).catch((error) => {
             throw error
         })
@@ -105,7 +105,7 @@ const orthancContent = {
 
     deleteSeries(ID) {
 
-        return axios.delete('/api/series/' + ID).then((answer) => true
+        return axios.delete('/api/series/' + ID).then(() => true
         ).catch((error) => {
             throw error
         })

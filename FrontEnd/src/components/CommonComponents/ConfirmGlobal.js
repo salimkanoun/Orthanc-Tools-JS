@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react"
 import { Button, Modal } from "react-bootstrap"
 
 const confirmAction = {
-    current: (props) => Promise.resolve(true)
+    current: () => Promise.resolve(true)
 }
 
 export function confirm(props) {

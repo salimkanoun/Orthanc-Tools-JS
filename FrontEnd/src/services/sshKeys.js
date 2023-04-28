@@ -14,7 +14,7 @@ const sshKeys = {
 
   deleteKey(id) {
     return axios.delete('api/keys/', { id: id })
-      .then((answer) =>  true
+      .then(() =>  true
       ).catch((error) => {
         throw error
       })
@@ -37,7 +37,7 @@ const sshKeys = {
   async uploadKey(id, file) {
     let fileText = await file.text()
     return axios.post('api/keys/upload/' + id, fileText)
-      .then((answer) => true
+      .then(() => true
       ).catch((error) => {
         throw error
       })

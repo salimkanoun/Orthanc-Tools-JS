@@ -4,7 +4,7 @@ import { showSaveFilePicker } from 'native-file-system-adapter'
 
 import { getToken } from './axios';
 
-const exportFileThroughFilesystemAPI = async (
+export const exportFileThroughFilesystemAPI = async (
   readableStream,
   mimeType,
   suggestedName,

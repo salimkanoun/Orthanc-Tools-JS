@@ -17,7 +17,7 @@ const role = {
     },
 
     createRole(payload) {
-        return axios.post('/api/roles', payload).then((answer) =>
+        return axios.post('/api/roles', payload).then(() =>
             true
         ).catch(error => {
             throw error
@@ -25,14 +25,14 @@ const role = {
     },
 
     modifyRole(roleName, payload) {
-        return axios.put('/api/roles/'+roleName, payload).then((answer) => true
+        return axios.put('/api/roles/'+roleName, payload).then(() => true
         ).catch(error => {
             throw error
         })
     },
 
     deleteRole(roleName) {
-        return axios.delete('/api/roles/'+roleName).then((answer) =>
+        return axios.delete('/api/roles/'+roleName).then(() =>
             true
         ).catch(error => {
             throw error

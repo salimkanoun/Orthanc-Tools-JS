@@ -24,7 +24,7 @@ const options = {
       orthancPassword: password
     }
 
-    return axios.put('/api/options/orthanc', postData).then((answser) =>
+    return axios.put('/api/options/orthanc', postData).then(() =>
       true
     )
   },
@@ -123,7 +123,7 @@ const options = {
       export_transcoding
     }
 
-    return axios.put('/api/options/export', payload).then(response => true
+    return axios.put('/api/options/export', payload).then(() => true
     ).catch(error => {
       throw error
     })

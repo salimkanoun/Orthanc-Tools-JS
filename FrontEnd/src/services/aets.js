@@ -25,7 +25,7 @@ const aets = {
       Manufacturer: manufacturer
     }
 
-    return axios.put('/api/modalities/' + name, postData).then((answer) => true
+    return axios.put('/api/modalities/' + name, postData).then(() => true
     ).catch((error) => {
       throw error
     })
@@ -34,7 +34,7 @@ const aets = {
 
   deleteAet(name) {
 
-    return axios.delete('/api/modalities/' + name).then((answer) => true
+    return axios.delete('/api/modalities/' + name).then(() => true
     ).catch((error) => {
       throw error
     })
