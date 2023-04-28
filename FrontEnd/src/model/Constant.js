@@ -24,7 +24,8 @@ const keys = {
     TIME: 'time',
     EXPAND: 'expand',
     EXPORT_OPTION_KEYS : 'exportOptions',
-    PROGRESSION_KEYS : 'progression'
+    PROGRESSION_KEYS : 'progression',
+    ANONYMIZE_KEYS : 'anonymize'
 }
 
 const filter = {

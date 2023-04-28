@@ -24,7 +24,3 @@ export const dissmissToast = (toastId) => {
 export const jobMessageToNotificationCenter = (jobType, data) => {
     toast.info(jobType, { data: data, containerId: 'jobs', type: 'jobs' })
 }
-
-export const robotMessageToNotificationCenter = (jobType, data) => {
-    toast.info(jobType, { data: data, containerId: 'jobs', type: 'tasks' })
-}

@@ -11,6 +11,7 @@ export default class Study {
     StudyTime = null
     Series = {}
     ParentPatient = {}
+    
 
     fillFromOrthanc = (orthancID, mainDicomTags, SeriesOrthancIDs) => {
         this.StudyID = mainDicomTags?.StudyID ?? null

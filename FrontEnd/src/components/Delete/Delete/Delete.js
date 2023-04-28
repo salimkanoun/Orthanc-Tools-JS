@@ -6,7 +6,7 @@ import TableDelete from './TableDelete'
 
 import { emptyDeleteList } from '../../../actions/DeleteList'
 import { confirm } from '../../CommonComponents/ConfirmGlobal'
-import { errorMessage, robotMessageToNotificationCenter, successMessage } from '../../../tools/toastify'
+import { errorMessage, successMessage } from '../../../tools/toastify'
 import { studyArrayToPatientArray } from '../../../tools/processResponse';
 import apis from '../../../services/apis'
 
