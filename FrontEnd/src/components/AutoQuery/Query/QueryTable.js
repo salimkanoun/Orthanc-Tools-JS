@@ -79,6 +79,7 @@ export default ({ queries = [], aets = [], onRowClick, currentRow }) => {
             data={queries}
             onCellEdit={cellEditHandler}
             paginated
+            canFilter
         />
     )
 }

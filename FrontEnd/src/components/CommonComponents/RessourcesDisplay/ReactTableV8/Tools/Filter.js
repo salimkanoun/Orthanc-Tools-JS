@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Form } from "react-bootstrap";
+import { Button, Container, Form, Row } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
+import { filter } from "../../../../../model/Constant";
 
 export default ({
     column,
@@ -15,7 +16,7 @@ export default ({
         [column.getFacetedUniqueValues()]
     )
 
-    if (columnDef.filterType === "DATE") {
+    if (columnDef.filterType === filter.DATE_FILTER) {
 
         //Get Min and Max available date (excluding null)
         let dateArray = sortedUniqueValues.filter(date => date !== null);
@@ -63,7 +64,7 @@ export default ({
     }
 
 
-    if (columnDef.filterType === "NUMBER") {
+    if (columnDef.filterType === filter.NUMBER_FILTER) {
         const FacetedMinValues = column.getFacetedMinMaxValues();
         return (
             <div>
@@ -99,34 +100,83 @@ export default ({
         )
     }
 
-    if (columnDef.filterType === "SELECT") {
-
-        const customStyles = {
-            control: (styles) => ({
-                ...styles,
-                color: 'red',
-                backgroundColor: 'white!important'
-            })
-        }
+    if (columnDef.filterType === filter.SELECT_FILTER) {
 
         return (
             <>
                 <div className='c_select__wrapper' >
                     <Select
                         menuPosition='absolute'
-                        styles={customStyles}
                         classNamePrefix='c_select'
                         className='c_select w-100'
                         isSearchable
                         isClearable
-                        options={sortedUniqueValues.slice(0, 5000).map((value) => (
-                            { value: value, label: value }
-                        ))}
+                        options={sortedUniqueValues
+                            .slice(0, 5000)
+                            .map((value) => ({
+                                value: value,
+                                label: value
+                            }))}
                         value={(columnFilterValue ? { value: columnFilterValue, label: columnFilterValue } : null)}
                         placeholder='Filter...'
                         onChange={(option) => column.setFilterValue(option?.value)}
                     />
                 </div>
+            </>
+        )
+    }
+
+    if (columnDef.filterType === filter.MULTI_SELECT_FILTER) {
+
+        const [inverted, setInverted] = useState(false)
+        const [selectedOptions, setSelectedOptions] = useState([])
+
+        const options = useMemo(() => {
+            return sortedUniqueValues
+                .slice(0, 5000)
+                .map((value) => ({
+                    value: value,
+                    label: value
+                }))
+        }, [sortedUniqueValues])
+
+        const refreshFilter = () => {
+            const selectedValues = selectedOptions.map((option) => option.value);
+            if (inverted) {
+                column.setFilterValue(
+                    options.filter(option => !selectedValues.includes(option.value)).map(option => option.value)
+                )
+            } else {
+                column.setFilterValue(selectedValues)
+            }
+        }
+
+        useEffect(() => {
+            refreshFilter()
+        }, [selectedOptions.length, inverted])
+
+        return (
+            <>
+                <Container fluid >
+                    <Row fluid>
+                        <Select
+                            menuPosition='absolute'
+                            className='w-100'
+                            isSearchable
+                            isClearable
+                            isMulti
+                            options={options}
+                            value={selectedOptions}
+                            placeholder='Filter...'
+                            onChange={(options) => {
+                                setSelectedOptions(options)
+                            }}
+                        />
+                    </Row>
+                    <Row fluid>
+                        <Button variant={inverted ? 'warning' : 'primary'} onClick={() => setInverted(inverted => !inverted)}>Invert</Button>
+                    </Row>
+                </Container>
             </>
         )
     }

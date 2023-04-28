@@ -31,7 +31,10 @@ const keys = {
 const filter = {
     STRING_FILTER: "STRING",
     DATE_FILTER: "DATE",
-    NUMBER_FILTER: "NUMBER"
+    NUMBER_FILTER: "NUMBER",
+    SELECT_FILTER : "SELECT",
+    MULTI_SELECT_FILTER : "MULTISELECT"
+
 }
 
 const send_type = {

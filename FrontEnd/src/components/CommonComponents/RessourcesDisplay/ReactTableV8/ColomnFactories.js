@@ -298,7 +298,9 @@ const studyQueryColumns = {
     STUDY_DESCRIPTION: {
         accessorKey: 'StudyDescription',
         header: 'Study Description',
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
+        filterType: filter.MULTI_SELECT_FILTER,
+        filterFn: 'inFilterArray'
     },
     REQUESTED_PROCEDURE: {
         accessorKey: 'RequestedProcedureDescription',
@@ -308,7 +310,9 @@ const studyQueryColumns = {
         id: 'ModalitiesInStudy',
         accessorKey: 'ModalitiesInStudy',
         header: 'Modalities',
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
+        filterType: filter.MULTI_SELECT_FILTER,
+        filterFn: 'inFilterArray'
     },
     NB_STUDY_SERIES: {
         accessorKey: 'NumberOfStudyRelatedSeries',

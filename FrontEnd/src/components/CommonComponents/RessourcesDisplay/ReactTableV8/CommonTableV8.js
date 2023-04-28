@@ -15,7 +15,8 @@ import {
 import Paginate from "./Tools/Paginate";
 import Filter from "./Tools/Filter";
 import EditableCell from "./Tools/EditableCell";
-import { expandColumn, selectColumn } from "./Tools/TableUtils";
+import { expandColumn, selectColumn } from "./Tools/TableUtils"
+import { inFilterArray } from './Tools/FilterFns'
 
 export default ({
     columns,
@@ -99,6 +100,9 @@ export default ({
         getFacetedUniqueValues: getFacetedUniqueValues(),
         getFacetedMinMaxValues: getFacetedMinMaxValues(),
         enableHiding: true,
+        filterFns: {
+            inFilterArray
+        },
         enableFilters: canFilter,
         enableExpanding: canExpand,
         manualPagination: !paginated,
