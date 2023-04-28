@@ -8,6 +8,8 @@ import { addStudiesToDeleteList } from "../../../actions/DeleteList"
 import { addStudiesToExportList } from "../../../actions/ExportList"
 import TableStudies from "../../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudies"
 import { studyColumns } from "../../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories"
+import { errorMessage } from "../../../tools/toastify"
+import { exportCsv } from "../../../tools/CSVExport"
 
 
 export default ({ details }) => {
@@ -53,8 +55,31 @@ export default ({ details }) => {
     }
 
     const getCSV = () => {
-        //Level study ou series
-        //Get le anonymized from pour le level study
+        if (studies.length === 0) {
+            errorMessage('Empty List')
+            return
+        }
+        console.log(studies)
+
+        let csvData = studies.map((study) => {
+            return ({
+                AnonymizedFrom : study.AnonymizedFrom,
+                OriginalPatientID : study.OriginalPatientID,
+                OriginalPatientName : study.OriginalPatientName,
+                StudyID : study.StudyID,
+                StudyDate : study.StudyDate,
+                StudyDescription : study.StudyDescription,
+                NewStudyDescription : study.newStudyDescription,
+                StudyInstanceUID : study.StudyInstanceUID,
+                StudyOrthancID : study.StudyOrthancID,
+                StudyTime : study.StudyTime,
+                AccessionNumber : study.AccessionNumber,
+                NewAccessionNumber : study.newAccessionNumber,
+                Series : study.Series
+            })
+        })
+
+        exportCsv(csvData, '.csv', 'AnonDicomDetails.csv')
     }
 
     const removeStudyAnonymized = (studyID) => {
@@ -97,6 +122,9 @@ export default ({ details }) => {
                     </Button>
                     <Button className='otjs-button otjs-button-red w-10 ms-4' onClick={deleteList}>
                         To Delete List
+                    </Button>
+                    <Button className="otjs-button otjs-button-blue w-12" onClick={getCSV}>
+                        Download list as CSV
                     </Button>
                 </Col>
             </Row>
