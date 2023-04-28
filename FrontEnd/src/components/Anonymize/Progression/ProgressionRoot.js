@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Row } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 
-import { keys } from '../../../model/Constant'
-import apis from '../../../services/apis'
-import { useCustomQuery } from '../../../services/ReactQuery/hooks'
-import task from '../../../services/task'
-import Spinner from '../../CommonComponents/Spinner'
 import AnonymizedResults from './AnonymizedResults'
 import AnonymizePanelProgress from './AnonymizePanelProgress'
+
+import { useCustomQuery } from '../../../services/ReactQuery/hooks'
+
+import task from '../../../services/task'
+import apis from '../../../services/apis'
+import { keys } from '../../../model/Constant'
 
 export default () => {
 
@@ -18,25 +19,27 @@ export default () => {
         }
     })
 
-    const [state, setState] = useState({
-        success: 0,
-        failures: 0,
-        numberOfItem: 0,
-        details: {}
-    })
+    const [currentTaskId, setCurrentTaskId] = useState(null)
+    const [successCount, setSuccesCount] = useState(0)
+    const [failuresCount, setFailuresCount] = useState(0)
+    const [numberOfItems, setNumberOfItems] = useState(0)
+    const [items, setItems] = useState([])
 
-    const getAnonTask = async () => {
-        const taskID = await apis.task.getTaskOfUser(store.username, 'anonymize')
-        const anonTask = await task.getTask(taskID[0])
-        return anonTask
-    }
+    useEffect(() => {
+        apis.task.getTaskOfUser(store.username, 'anonymize').then(tasks => {
+            if (Array.isArray(tasks) && tasks.length > 0) {
+                setCurrentTaskId(tasks[0])
+            }
+        })
+    }, [])
 
-    const { isLoading } = useCustomQuery(
-        [keys.PROGRESSION_KEYS],
-        () => getAnonTask(),
+    useCustomQuery(
+        [keys.PROGRESSION_KEYS, keys.ANONYMIZE_KEYS , currentTaskId],
+        () => task.getTask(currentTaskId),
         undefined,
         undefined,
         (answer) => {
+            if (answer == null) return
             let success = 0
             let failures = 0
             answer.details.items.forEach(async item => {
@@ -51,26 +54,23 @@ export default () => {
                         break
                 }
             })
-            setState((state) => ({
-                ...state,
-                ['success']: success,
-                ['failures']: failures,
-                ['numberOfItem']: answer.details.items.length,
-                ['details']: answer.details
-            }))
+            setSuccesCount(success)
+            setFailuresCount(failures)
+            setNumberOfItems(answer?.details?.items.length ?? 0)
+            setItems(answer?.details?.items ?? [])
         },
-        1000
+        2000,
+        undefined,
+        (currentTaskId != null)
     )
-
-    if (isLoading) return <Spinner />
 
     return (
         <Row className="align-items-center justify-content-center">
             <Col md={12} className="text-center mb-4" style={{ "max-width": '20%' }}>
-                <AnonymizePanelProgress success={state.success} failures={state.failures} numberOfItems={state.numberOfItem} />
+                <AnonymizePanelProgress success={successCount} failures={failuresCount} numberOfItems={numberOfItems} />
             </Col>
             <Col md={12}>
-                <AnonymizedResults details={state.details} />
+                <AnonymizedResults items={items} />
             </Col>
         </Row>
     )

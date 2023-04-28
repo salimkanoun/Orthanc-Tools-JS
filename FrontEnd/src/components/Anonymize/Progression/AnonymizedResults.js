@@ -9,9 +9,10 @@ import { addStudiesToExportList } from "../../../actions/ExportList"
 import TableStudies from "../../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudies"
 import { errorMessage } from "../../../tools/toastify"
 import { exportCsv } from "../../../tools/CSVExport"
+import Study from "../../../model/Study"
 
 
-export default ({ details }) => {
+export default ({ items }) => {
 
     const [studies, setStudies] = useState([])
 
@@ -19,84 +20,69 @@ export default ({ details }) => {
 
     useEffect(() => {
         handleTask()
-    }, [details])
+    }, [items])
 
     const handleTask = async () => {
-        let studiesData = studies
-        if (details.items == undefined) { }
-        else {
-            for (const item of details.items) {
-                if (item.state === "completed") {
-                    if (!containsStudy(item.result)) {
-                        try {
-                            let study = await apis.content.getStudiesDetails(item.result)
-                            console.log(item.result)
-                            console.log(study)
-                            studiesData.push({
-                                StudyOrthancID: study.ID,
-                                StudyInstanceUID: study.MainDicomTags.StudyInstanceUID,
-                                AnonymizedFrom: study.AnonymizedFrom,
-                                PatientID: study.PatientMainDicomTags.PatientID,
-                                PatientName: study.PatientMainDicomTags.PatientName,
-                                StudyDate: study.MainDicomTags.StudyDate,
-                                StudyDescription: study.MainDicomTags.StudyDescription,
-                                newStudyDescription: study.MainDicomTags.newStudyDescription ? study.MainDicomTags.newStudyDescription : '',
-                                newAccessionNumber: study.MainDicomTags.newAccessionNumber ? study.MainDicomTags.newAccessionNumber : '',
-                                Series: study.Series
-                            })
-                        } catch (err) {
-                        }
+        if (items == null) return
+        let studiesData = [...studies]
+
+        for (const item of items) {
+            if (item.state === "completed") {
+                if (!containsStudy(item.result)) {
+                    try {
+                        let studyOrthancID = item.result
+                        let study = await apis.content.getStudiesDetails(studyOrthancID)
+                        let studyInstance = new Study()
+                        studyInstance.fillFromOrthanc(studyOrthancID, study.MainDicomTags, study.Series)
+                        studyInstance.fillParentPatient(study.PatientPatient, study.PatientMainDicomTags)
+                        studiesData.push({
+                            ...studyInstance.serialize(),
+                            AnonymizedFrom: study.AnonymizedFrom
+                        })
+                    } catch (err) {
+                        console.error(err)
                     }
                 }
             }
         }
+
         setStudies(studiesData)
     }
 
     const containsStudy = (studyID) => {
-        let r = false
-        for (var i = 0; i < studies.length; i++) {
-            if (studies[i].StudyOrthancID == studyID) {
-                r = true
-                break
-            }
-        }
-        return r
+        return studies.filter(study => study.StudyOrthancID === studyID).length > 0
     }
 
-    const getCSV = () => {
+    const generateCsvData = async () => {
         let csvData = []
         if (studies.length === 0) {
             errorMessage('Empty List')
             return
         }
-        studies.map(async (study) => {
+        for (let study of studies) {
             try {
                 let originalStudy = await apis.content.getStudiesDetails(study.AnonymizedFrom)
-                console.log(originalStudy)
 
                 csvData.push({
-                    AnonymizedFrom: study.AnonymizedFrom,
-                    OriginalPatientID: originalStudy.PatientMainDicomTags.PatientID,
-                    NewPatientID: study.PatientID,
-                    OriginalPatientName: originalStudy.PatientMainDicomTags.PatientName,
-                    NewPatientName: study.PatientName,
-                    StudyID: study.StudyID,
-                    StudyDate: originalStudy.MainDicomTags.StudyDate,
-                    OriginalStudyDescription: originalStudy.MainDicomTags.StudyDescription,
-                    NewStudyDescription: study.newStudyDescription,
-                    StudyInstanceUID: originalStudy.MainDicomTags.StudyInstanceUID,
+                    PatientName: study.ParentPatient.PatientName,
+                    PatientID: study.ParentPatient.PatientID,
+                    StudyDate: study.StudyDate,
+                    StudyInstanceUID: study.StudyInstanceUID,
                     StudyOrthancID: study.StudyOrthancID,
-                    StudyTime: study.StudyTime,
+                    AccessionNumber: study.AccessionNumber,
+                    StudyDescription: study.StudyDescription,
+                    OriginalPatientID: originalStudy.PatientMainDicomTags.PatientID,
+                    OriginalPatientName: originalStudy.PatientMainDicomTags.PatientName,
                     OriginalAccessionNumber: originalStudy.MainDicomTags.AccessionNumber,
-                    NewAccessionNumber: study.newAccessionNumber,
-                    Series: study.Series
+                    originalStudyDescription: originalStudy.MainDicomTags.StudyDescription,
+                    OriginalStudyInstanceUID: originalStudy.MainDicomTags.StudyInstanceUID,
                 })
             } catch (err) {
                 errorMessage(err.statusText)
             }
-        })
-        exportCsv(csvData, '.csv', 'AnonDicomDetails.csv')
+        }
+        return csvData
+
     }
 
     const exportList = () => {
@@ -107,22 +93,27 @@ export default ({ details }) => {
         dispatch(addStudiesToDeleteList(studies))
     }
 
+    const downloadCsv = async () => {
+        let csvData = await generateCsvData()
+        exportCsv(csvData, '.csv', 'AnonDicomDetails.csv')
+    }
+
     return (
         <Fragment>
             <Row>
                 <Col>
-                    <TableStudies studies={studies} />
+                    <TableStudies withPatientColums studies={studies} />
                 </Col>
             </Row>
             <Row>
-                <Col className="text-center">
-                    <Button className='otjs-button otjs-button-blue w-10 me-4' onClick={exportList}>
+                <Col className="d-flex justify-content-around">
+                    <Button className='otjs-button otjs-button-blue w-10 me-4' disabled={studies.length === 0} onClick={exportList}>
                         To Export List
                     </Button>
-                    <Button className='otjs-button otjs-button-red w-10 ms-4' onClick={deleteList}>
+                    <Button className='otjs-button otjs-button-red w-10 ms-4' disabled={studies.length === 0} onClick={deleteList}>
                         To Delete List
                     </Button>
-                    <Button className="otjs-button otjs-button-blue w-12" onClick={getCSV}>
+                    <Button className="otjs-button otjs-button-blue w-12" onClick={downloadCsv}>
                         Download list as CSV
                     </Button>
                 </Col>
