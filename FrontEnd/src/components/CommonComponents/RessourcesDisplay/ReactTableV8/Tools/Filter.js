@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import { filter } from "../../../../../model/Constant";
@@ -39,24 +39,23 @@ export default ({
                 <div>
                     <DatePicker
                         isClearable
-                        className={'m-1 c_calendar'}
                         dateFormat="MM/dd/yyyy"
                         minDate={min ? min : new Date(1990, 1, 1)}
                         maxDate={max ? max : new Date()}
                         selected={filterMinimum}
                         onChange={(date) => setFilterMinimum(date)}
+                        customInput={<CustomInput/>}
                     />
                 </div>
                 <div>
                     <DatePicker
                         isClearable
-                        data-gaelo-front={'column-filter-' + columnDef.id + '-date-max'}
-                        className={'m-1 c_calendar'}
                         dateFormat="MM/dd/yyyy"
                         minDate={min ? new Date(min) : new Date(1990, 1, 1)}
                         maxDate={max ? new Date(max) : new Date()}
                         selected={filterMaximum}
                         onChange={(date) => setFilterMaximum(date?.setHours(23, 59, 59, 999))}
+                        customInput={<CustomInput/>}
                     />
                 </div>
             </div>
@@ -205,3 +204,15 @@ const DebouncedInput = ({
         <Form.Control {...props} value={value} onChange={e => setValue(e.target.value)} />
     )
 }
+
+const CustomInput = React.forwardRef(
+    ({ value, onClick }, ref) => (
+        <Form.Control
+            type='text'
+            className='form-control m-1'
+            ref={ref}
+            defaultValue={value}
+            onClick={onClick}
+        />
+    )
+)

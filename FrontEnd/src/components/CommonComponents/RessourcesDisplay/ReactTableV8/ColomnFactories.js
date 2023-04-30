@@ -109,7 +109,7 @@ const studyColumns = {
         id: 'StudyDate',
         accessorKey: 'StudyDate',
         header: 'Acquisition Date',
-        filterType: filter.DATE_FILTER
+        //filterType: filter.DATE_FILTER
     },
     DESCRIPTION: {
         id: 'StudyDescription',
@@ -301,6 +301,7 @@ const studyQueryColumns = {
     STUDY_DATE: {
         accessorKey: 'StudyDate',
         header: 'Acquisition Date',
+        //filterType: filter.DATE_FILTER
     },
     STUDY_DESCRIPTION: {
         accessorKey: 'StudyDescription',
