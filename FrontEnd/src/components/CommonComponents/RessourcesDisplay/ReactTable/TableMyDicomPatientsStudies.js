@@ -1,4 +1,4 @@
-import React,{Component} from 'react'
+import React from 'react'
 import ConstantLevel from '../../../Modify/ConstantLevel'
 import ActionBouton from '../ActionBouton'
 import Table from './CommonSelectingAndFilteringTable'

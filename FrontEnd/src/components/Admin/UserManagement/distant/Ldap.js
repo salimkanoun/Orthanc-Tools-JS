@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react"
+
+import { Col, OverlayTrigger, Row, Tooltip } from 'react-bootstrap'
 import Toggle from 'react-toggle'
 import Select from 'react-select'
-import { Tooltip as ReactTooltip } from 'react-tooltip'
 import HelpIcon from '@mui/icons-material/HelpSharp';
-import { Col, Row } from 'react-bootstrap'
 
 import apis from "../../../../services/apis";
 import CreateMatch from "./CreateMatch";
@@ -38,7 +38,7 @@ export default () => {
             base,
             group,
             user)
-            .then(() => { successMessage ('LDAP Settings updated') })
+            .then(() => { successMessage('LDAP Settings updated') })
             .catch((error) => { errorMessage(error.statusText) })
     }
 
@@ -124,131 +124,142 @@ export default () => {
                     <Toggle checked={activated} onChange={changeMode} />
                 </Col>
             </Row>
-            <div className="form-group mr-3">
-                <Row className="mt-3 align-items-center">
-                    <Col sm={3}>
-                        <label className="pe-2" htmlFor="typeGroup">Connexion type : </label>
+
+            <Row className="mt-3 align-items-center">
+                <Col sm={3}>
+                    <label className="pe-2" htmlFor="typeGroup">Connexion type : </label>
+                    <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={connexionTooltip}
+                    >
                         <HelpIcon data-tip data-for='info1' fontSize="small" color="action" />
-                    </Col>
-                    <Col sm={3}>
-                        <ReactTooltip place="right" effect="solid" id='info1' type='dark'>
-                            <span>Choix du type de connexion (en fonction de la nature de votre annuaire): </span>
-                            <br></br>
-                            <span>1. Active Directory (Microsft's software)</span>
-                            <br></br>
-                            <span>2. Ldap (Open Souce Softaware)</span>
-                        </ReactTooltip>
-                        <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={optionsTypeGroup} onChange={changeListener} value={changeType} />
-                    </Col>
-                    <Col sm={3}>
-                        <label className="pe-2" htmlFor="protocol">Protocol : </label>
-                        <HelpIcon data-tip data-for='info2' fontSize="small" color="action" />
-                    </Col>
-                    <Col sm={3}>
-                        <ReactTooltip place="right" effect="solid" id='info2' type='dark'>
-                            <span><i>ldap//:</i> no secure connexion </span>
-                            <br></br>
-                            <span><i>ldaps//:</i> secure connexion </span>
-                        </ReactTooltip>
-                        <input type='text' name="protocol" className="form-control" onChange={(event) => setProtocol(event.target.value)} value={protocol} placeholder="ldap(s)://" />
-                    </Col>
-                </Row>
-                <Row className="mt-3 align-items-center">
-                    <Col sm={3}>
-                        <label className="pe-2" htmlFor="address">Address : </label>
+                    </OverlayTrigger>
+                </Col>
+                <Col sm={3}>
+                    <Select name="typeGroup" controlShouldRenderValue={true} closeMenuOnSelect={true} single options={optionsTypeGroup} onChange={changeListener} value={changeType} />
+                </Col>
+                <Col sm={3}>
+                    <label className="pe-2" htmlFor="protocol">Protocol : </label>
+                    <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={protocolTooltip}
+                    >
+                        <HelpIcon data-tip data-for='info1' fontSize="small" color="action" />
+                    </OverlayTrigger>
+                </Col>
+                <Col sm={3}>
+                    <input type='text' name="protocol" className="form-control" onChange={(event) => setProtocol(event.target.value)} value={protocol} placeholder="ldap(s)://" />
+                </Col>
+            </Row>
+            <Row className="mt-3 align-items-center">
+                <Col sm={3}>
+                    <label className="pe-2" htmlFor="address">Address : </label>
+                    <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={addressTooltip}
+                    >
                         <HelpIcon data-tip data-for='info3' fontSize="small" color="action" />
-                    </Col>
-                    <Col sm={3}>
-                        <ReactTooltip place="right" effect="solid" id='info3' type='dark'>
-                            <span>Domain name or IP of the online directory</span>
-                            <br></br>
-                            <span>example : <i>127.0.0.1</i> or <i>chu.exemple.fr</i></span>
-                        </ReactTooltip>
-                        <input type='text' name="address" className="form-control" onChange={(event) => setAddress(event.target.value)} value={address} />
-                    </Col>
-                    <Col sm={3}>
-                        <label className="pe-2" htmlFor="port">Port : </label>
-                        <HelpIcon data-tip data-for='info4' fontSize="small" color="action" />
-                    </Col>
-                    <Col sm={3}>
-                        <ReactTooltip place="right" effect="solid" id='info4' type='dark'>
-                            <span><i>389</i> no secure connexion </span>
-                            <br></br>
-                            <span><i>636</i> secure connexion </span>
-                        </ReactTooltip>
-                        <input type='number' min='0' max='1000' name='port' className='form-control' onChange={(event) => setPort(event.target.value)} value={port} />
-                    </Col>
-                </Row>
-                <Row className="mt-3 align-items-center">
-                    <Col sm={3}>
-                        <label className="pe-2" htmlFor="base" >Base DN : </label>
-                        <HelpIcon data-tip data-for='info9' fontSize="small" color="action" />
-                    </Col>
-                    <Col sm={9}>
-                        <ReactTooltip place="right" effect="solid" id='info9' type='dark'>
-                            <span>Base DN of the directoy from witch connexion will be established</span>
-                            <br></br>
-                            <span>example : <i>dc=chu,dc=exemple,dc=fr</i></span>
-                        </ReactTooltip>
-                        <input type='text' name="base" className="form-control" value={base} onChange={(event) => setBase(event.target.value)} />
-                    </Col>
-                </Row>
-                <Row className="mt-3 align-items-center">
-                    <Col sm={3}>
-                        <label className="pe-2" htmlFor="DN" >Bind DN :</label>
-                        <HelpIcon data-tip data-for='info5' fontSize="small" color="action" />
-                    </Col>
-                    <Col sm={3}>
-                        <ReactTooltip place="right" effect="solid" id='info5' type='dark'>
-                            <span>DN from witch user researchs will be made</span>
-                        </ReactTooltip>
-                        <input type='text' name="DN" className="form-control" value={DN} onChange={(event) => setDN(event.target.value)} />
-                    </Col>
-                    <Col sm={3}>
-                        <label className="pe-2" htmlFor="password">Bind DN password : </label>
-                        <HelpIcon data-tip data-for='info6' fontSize="small" color="action" />
-                    </Col>
-                    <Col sm={3}>
-                        <ReactTooltip place="right" effect="solid" id='info6' type='dark'>
-                            <span>Password of the user from witch researchs will be made</span>
-                        </ReactTooltip>
-                        <input type='password' name="password" className="form-control" value={password} onChange={(event) => setPassword(event.target.value)} />
-                    </Col>
-                </Row>
-                <Row className="mt-3 align-items-center">
-                    <Col sm={3}>
-                        <label className="pe-2" htmlFor="group">Group Filter : </label>
-                        <HelpIcon data-tip data-for='info7' fontSize="small" color="action" />
-                    </Col>
-                    <Col sm={3}>
-                        <ReactTooltip place="right" effect="solid" id='info7' type='dark'>
-                            <span>DN for groups researchs</span>
-                        </ReactTooltip>
-                        <input type='text' name="group" className="form-control" onChange={(event) => setGroup(event.target.value)} value={group} />
-                    </Col>
-                    <Col sm={3}>
-                        <label className="pe-2" htmlFor="user">User filter </label>
-                        <HelpIcon data-tip data-for='info8' fontSize="small" color="action" />
-                    </Col>
-                    <Col sm={3}>
-                        <ReactTooltip place="right" effect="solid" id='info8' type='dark'>
-                            <span>DN for users researchs</span>
-                        </ReactTooltip>
-                        <input type='text' name="user" className="form-control" onChange={(event) => setUser(event.target.value)} value={user} />
-                    </Col>
-                </Row>
-                <Row className="text-center align-items-center mt-3">
-                    <Col className="">
-                        <input type='button' className='otjs-button otjs-button-blue w-10' onClick={setLdapSetting} value='Update' />
-                    </Col>
-                    <Col className="">
-                        <input type='button' className='otjs-button otjs-button-blue w-10' onClick={testLdapSettings} value='Check Connexion' />
-                    </Col>
-                </Row>
-
-            </div>
-
-
+                    </OverlayTrigger>
+                </Col>
+                <Col sm={3}>
+                    <input type='text' name="address" className="form-control" onChange={(event) => setAddress(event.target.value)} value={address} />
+                </Col>
+                <Col sm={3}>
+                    <label className="pe-2" htmlFor="port">Port : </label>
+                    <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={portTooltip}
+                    >
+                        <HelpIcon data-tip data-for='info3' fontSize="small" color="action" />
+                    </OverlayTrigger>
+                </Col>
+                <Col sm={3}>
+                    <input type='number' min='0' max='1000' name='port' className='form-control' onChange={(event) => setPort(event.target.value)} value={port} />
+                </Col>
+            </Row>
+            <Row className="mt-3 align-items-center">
+                <Col sm={3}>
+                    <label className="pe-2" htmlFor="base" >Base DN : </label>
+                    <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={baseDNTooltip}
+                    >
+                        <HelpIcon data-tip data-for='info3' fontSize="small" color="action" />
+                    </OverlayTrigger>
+                </Col>
+                <Col sm={9}>
+                    <input type='text' name="base" className="form-control" value={base} onChange={(event) => setBase(event.target.value)} />
+                </Col>
+            </Row>
+            <Row className="mt-3 align-items-center">
+                <Col sm={3}>
+                    <label className="pe-2" htmlFor="DN" >Bind DN :</label>
+                    <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={bindDNTooltip}
+                    >
+                        <HelpIcon data-tip data-for='info3' fontSize="small" color="action" />
+                    </OverlayTrigger>
+                </Col>
+                <Col sm={3}>
+                    <input type='text' name="DN" className="form-control" value={DN} onChange={(event) => setDN(event.target.value)} />
+                </Col>
+                <Col sm={3}>
+                    <label className="pe-2" htmlFor="password">Bind DN password : </label>
+                    <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={passwordTooltip}
+                    >
+                        <HelpIcon data-tip data-for='info3' fontSize="small" color="action" />
+                    </OverlayTrigger>
+                </Col>
+                <Col sm={3}>
+                    <input type='password' name="password" className="form-control" value={password} onChange={(event) => setPassword(event.target.value)} />
+                </Col>
+            </Row>
+            <Row className="mt-3 align-items-center">
+                <Col sm={3}>
+                    <label className="pe-2" htmlFor="group">Group Filter : </label>
+                    <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={groupFilterTooltip}
+                    >
+                        <HelpIcon data-tip data-for='info3' fontSize="small" color="action" />
+                    </OverlayTrigger>
+                </Col>
+                <Col sm={3}>
+                    <input type='text' name="group" className="form-control" onChange={(event) => setGroup(event.target.value)} value={group} />
+                </Col>
+                <Col sm={3}>
+                    <label className="pe-2" htmlFor="user">User filter </label>
+                    <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={userFilterTooltip}
+                    >
+                        <HelpIcon data-tip data-for='info3' fontSize="small" color="action" />
+                    </OverlayTrigger>
+                </Col>
+                <Col sm={3}>
+                    <input type='text' name="user" className="form-control" onChange={(event) => setUser(event.target.value)} value={user} />
+                </Col>
+            </Row>
+            <Row className="text-center align-items-center mt-3">
+                <Col className="">
+                    <input type='button' className='otjs-button otjs-button-blue w-10' onClick={setLdapSetting} value='Update' />
+                </Col>
+                <Col className="">
+                    <input type='button' className='otjs-button otjs-button-blue w-10' onClick={testLdapSettings} value='Check Connexion' />
+                </Col>
+            </Row>
             {activated ?
                 <CreateMatch />
                 : null
@@ -256,4 +267,80 @@ export default () => {
 
         </Fragment>
     )
-} 
+}
+
+const connexionTooltip = (props) => {
+    return (
+        <Tooltip  {...props}>
+            <span>Choix du type de connexion (en fonction de la nature de votre annuaire): </span>
+            <br></br>
+            <span>1. Active Directory (Microsft's software)</span>
+            <br></br>
+            <span>2. Ldap (Open Souce Softaware)</span>
+        </Tooltip>
+    )
+}
+
+const protocolTooltip = (props) => {
+    return (
+        <Tooltip  {...props}>
+            <span><i>ldap//:</i> no secure connexion </span>
+            <br></br>
+            <span><i>ldaps//:</i> secure connexion </span>
+        </Tooltip>)
+}
+
+const addressTooltip = (props) => {
+    return (
+        <Tooltip  {...props}>
+            <span>Domain name or IP of the online directory</span>
+            <br></br>
+            <span>example : <i>127.0.0.1</i> or <i>chu.exemple.fr</i></span>
+        </Tooltip>)
+}
+
+const portTooltip = (props) => {
+    return (
+        <Tooltip  {...props}>
+            <span><i>389</i> no secure connexion </span>
+            <br></br>
+            <span><i>636</i> secure connexion </span>
+        </Tooltip>)
+}
+
+const baseDNTooltip = (props) => {
+    return (
+        <Tooltip  {...props}>
+            <span>Base DN of the directoy from witch connexion will be established</span>
+            <br></br>
+            <span>example : <i>dc=chu,dc=exemple,dc=fr</i></span>
+        </Tooltip>)
+}
+
+const bindDNTooltip = (props) => {
+    return (
+        <Tooltip  {...props}>
+            <span>DN from witch user researchs will be made</span>
+        </Tooltip>)
+}
+
+const passwordTooltip = (props) => {
+    return (
+        <Tooltip  {...props}>
+            <span>Password of the user from witch researchs will be made</span>
+        </Tooltip>)
+}
+
+const groupFilterTooltip = (props) => {
+    return (
+        <Tooltip  {...props}>
+            <span>DN for groups researchs</span>
+        </Tooltip>)
+}
+
+const userFilterTooltip = (props) => {
+    return (
+        <Tooltip  {...props}>
+            <span>DN for users researchs</span>
+        </Tooltip>)
+}

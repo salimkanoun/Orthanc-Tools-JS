@@ -7,7 +7,7 @@ const autorouter = {
        */
       startAutorouterService(){
 
-      return axios.post('/api/monitoring/autorouter', {}).then((answer) => true
+      return axios.post('/api/monitoring/autorouter', {}).then(() => true
       ).catch(error => {
             throw error
             })
@@ -20,7 +20,7 @@ const autorouter = {
        */
       stopAutorouterService(){
       
-      return axios.delete('/api/monitoring/autorouter').then((answer) =>  true
+      return axios.delete('/api/monitoring/autorouter').then(() =>  true
       ).catch(error => {
             throw error
             })

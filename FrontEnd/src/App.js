@@ -22,6 +22,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'react-toastify/dist/ReactToastify.css'
 //progress bar
 import 'react-circular-progressbar/dist/styles.css';
+//Date Picker
+import 'react-datepicker/dist/react-datepicker.css'
 //React Calendar
 import 'react-calendar/dist/Calendar.css';
 //Custom CSS

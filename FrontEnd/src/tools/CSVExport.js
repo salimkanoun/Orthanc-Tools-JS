@@ -1,6 +1,6 @@
 import Papa from 'papaparse'
-import { exportFileThroughFilesystemAPI } from './download';
 import { errorMessage } from './toastify';
+import { exportFileThroughFilesystemAPI } from '../services/exportDicom';
 
 function getCSVCell(cell) {
     return (cell !== undefined && cell !== null ? cell.toString() : '');

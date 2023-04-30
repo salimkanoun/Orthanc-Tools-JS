@@ -195,32 +195,32 @@ class Orthanc {
 
             const queryLevel = element['0008,0052'].Value
 
-            let Modality = '*'
+            let Modality = null
             if (element.hasOwnProperty('0008,0060')) {
                 Modality = element['0008,0060'].Value
             }
 
-            let SeriesDescription = '*'
+            let SeriesDescription = null
             if (element.hasOwnProperty('0008,103e')) {
                 SeriesDescription = element['0008,103e'].Value
             }
 
-            let StudyInstanceUID = '*'
+            let StudyInstanceUID = null
             if (element.hasOwnProperty('0020,000d')) {
                 StudyInstanceUID = element['0020,000d'].Value
             }
 
-            let SeriesInstanceUID = '*'
+            let SeriesInstanceUID = null
             if (element.hasOwnProperty('0020,000e')) {
                 SeriesInstanceUID = element['0020,000e'].Value
             }
 
-            let SeriesNumber = 0
+            let SeriesNumber = null
             if (element.hasOwnProperty('0020,0011')) {
                 SeriesNumber = element['0020,0011'].Value
             }
 
-            let numberOfSeriesRelatedInstances = 'N/A'
+            let numberOfSeriesRelatedInstances = null
             if (element.hasOwnProperty('0020,1209')) {
                 numberOfSeriesRelatedInstances = element['0020,1209'].Value
             }
@@ -235,60 +235,59 @@ class Orthanc {
 
     async getStudyAnswerDetails(answerId, aet) {
         const studyAnswers = await this._getAnswerDetails(answerId)
-
         const answersObjects = []
 
         for (let i = 0; i < studyAnswers.length; i++) {
             const element = studyAnswers[i]
             const queryLevel = element['0008,0052'].Value
 
-            let accessionNb = '*'
+            let accessionNb = null
             if (element.hasOwnProperty('0008,0050')) {
                 accessionNb = element['0008,0050'].Value
             }
 
-            let studyDate = '*'
+            let studyDate = null
             if (element.hasOwnProperty('0008,0020')) {
                 studyDate = element['0008,0020'].Value
             }
 
-            let studyDescription = '*'
+            let studyDescription = null
             if (element.hasOwnProperty('0008,1030')) {
                 studyDescription = element['0008,1030'].Value
             }
 
-            let patientName = '*'
+            let patientName = null
             if (element.hasOwnProperty('0010,0010')) {
                 patientName = element['0010,0010'].Value
             }
 
-            let patientID = '*'
+            let patientID = null
             if (element.hasOwnProperty('0010,0020')) {
                 patientID = element['0010,0020'].Value
             }
 
-            let studyUID = '*'
+            let studyUID = null
             if (element.hasOwnProperty('0020,000d')) {
                 studyUID = element['0020,000d'].Value
             }
 
-            let numberOfStudyRelatedSeries = 'N/A'
+            let numberOfStudyRelatedSeries = null
             if (element.hasOwnProperty('0020,1206')) {
                 numberOfStudyRelatedSeries = element['0020,1206'].Value
             }
 
-            let numberOfStudyRelatedInstances = 'N/A'
+            let numberOfStudyRelatedInstances = null
             if (element.hasOwnProperty('0020,1208')) {
                 numberOfStudyRelatedInstances = element['0020,1208'].Value
             }
 
-            let modalitiesInStudy = '*'
+            let modalitiesInStudy = null
             // Modalities in studies not always present
             if (element.hasOwnProperty('0008,0061')) {
                 modalitiesInStudy = element['0008,0061'].Value
             }
 
-            let requestedProcedureDescription = 'N/A'
+            let requestedProcedureDescription = null
             if (element.hasOwnProperty('0032,1060')) {
                 requestedProcedureDescription = element['0032,1060'].Value
             }

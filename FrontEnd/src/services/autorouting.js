@@ -40,7 +40,7 @@ const autorouting = {
         destination:destination
     }
 
-    return axios.post('/api/autorouting/' + name, autorouter).then((answer) => true
+    return axios.post('/api/autorouting/' + name, autorouter).then(() => true
     ).catch(error => {
         throw error
     })
@@ -65,7 +65,7 @@ const autorouting = {
       destination:destination
     }
 
-    return axios.put('/api/autorouting/'+id, autorouter).then((answer) => true
+    return axios.put('/api/autorouting/'+id, autorouter).then(() => true
     ).catch(error => {
         throw error
     })
@@ -82,7 +82,7 @@ const autorouting = {
       running:running
     }
 
-    return axios.put('/api/autorouting/'+id+'/running', autorouter).then((answer) => true
+    return axios.put('/api/autorouting/'+id+'/running', autorouter).then(() => true
     ).catch(error => {
         throw error
     })
@@ -95,7 +95,7 @@ const autorouting = {
    */
   deleteAutorouter(id) {
 
-      return axios.delete('/api/autorouting/' + id).then((answer) => true
+      return axios.delete('/api/autorouting/' + id).then(() => true
       ).catch(error => {
         throw error
     })

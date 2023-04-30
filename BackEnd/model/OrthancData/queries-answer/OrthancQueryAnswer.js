@@ -1,10 +1,9 @@
 class OrthancQueryAnswer {
-  constructor (answerId, answerNumber, level, originAET, numberOfSeriesRelatedInstances) {
+  constructor (answerId, answerNumber, level, originAET) {
     this.AnswerId = answerId
     this.AnswerNumber = answerNumber
     this.Level = level
     this.OriginAET = originAET
-    this.NumberOfSeriesRelatedInstances = parseInt(numberOfSeriesRelatedInstances)
   }
 }
 

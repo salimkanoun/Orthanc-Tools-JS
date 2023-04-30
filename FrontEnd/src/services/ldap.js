@@ -16,7 +16,7 @@ const ldap = {
       user: user
     }
 
-    return axios.put("/api/ldap/settings/", options).then((answer) => true
+    return axios.put("/api/ldap/settings/", options).then(() => true
     ).catch(error => { throw error })
   },
 
@@ -39,7 +39,7 @@ const ldap = {
       associedRole: role
     }
 
-    return axios.post("/api/ldap/matches/", payload).then((answer) => true
+    return axios.post("/api/ldap/matches/", payload).then(() => true
     ).catch(error => {
       throw error
   })
@@ -48,7 +48,7 @@ const ldap = {
   deleteMatch(Match) {
 
     //SK SYNTAXE FAUSSE FAUDRAIT PASSER LA CLE DANS URI ET FAIRE JUSTE UN DELETE DESSUS
-    return axios.delete("/api/ldap/matches/", { correspodence: Match }).then((answer) => true
+    return axios.delete("/api/ldap/matches/", { correspodence: Match }).then(() => true
     ).catch(error => {
       throw error
   })
