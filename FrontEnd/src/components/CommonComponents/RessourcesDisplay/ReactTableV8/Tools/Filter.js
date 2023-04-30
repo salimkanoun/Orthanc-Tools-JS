@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Button, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import Select from "react-select";
 import { filter } from "../../../../../model/Constant";
@@ -65,36 +65,32 @@ export default ({
 
 
     if (columnDef.filterType === filter.NUMBER_FILTER) {
-        const FacetedMinValues = column.getFacetedMinMaxValues();
+        const facetedMinMaxValues = column.getFacetedMinMaxValues();
         return (
             <div>
-                <DebouncedInput
+                <Form.Control
                     type="number"
-                    data-gaelo-front={'column-filter-' + columnDef.id + '-number'}
-                    min={Number(FacetedMinValues?.[0] ?? '')}
-                    max={Number(FacetedMinValues?.[1] ?? '')}
+                    min={Number(facetedMinMaxValues?.[0] ?? undefined)}
+                    max={Number(facetedMinMaxValues?.[1] ?? undefined)}
                     value={(columnFilterValue)?.[0] ?? ''}
-                    onChange={value =>
+                    onChange={event => {
+                        let value = event.target.valueAsNumber
                         column.setFilterValue((old) => [value, old?.[1]])
                     }
-                    placeholder={`Min ${FacetedMinValues?.[0]
-                        ? `(${FacetedMinValues?.[0]})`
-                        : ''
-                        }`}
+                    }
+                    placeholder={`Min`}
                 />
-                <DebouncedInput
+                <Form.Control
                     type="number"
-                    data-gaelo-front={'column-filter-' + columnDef.id + '-number'}
-                    min={Number(FacetedMinValues?.[0] ?? '')}
-                    max={Number(FacetedMinValues?.[1] ?? '')}
+                    min={Number(facetedMinMaxValues?.[0] ?? undefined)}
+                    max={Number(facetedMinMaxValues?.[1] ?? undefined)}
                     value={(columnFilterValue)?.[1] ?? ''}
-                    onChange={value =>
+                    onChange={event => {
+                        let value = event.target.valueAsNumber
                         column.setFilterValue((old) => [old?.[0], value])
                     }
-                    placeholder={`Max ${FacetedMinValues?.[1]
-                        ? `(${FacetedMinValues?.[1]})`
-                        : ''
-                        }`}
+                    }
+                    placeholder={`Max`}
                 />
             </div>
         )
@@ -156,28 +152,21 @@ export default ({
         }, [selectedOptions.length, inverted])
 
         return (
-            <>
-                <Container fluid >
-                    <Row fluid>
-                        <Select
-                            menuPosition='absolute'
-                            className='w-100'
-                            isSearchable
-                            isClearable
-                            isMulti
-                            options={options}
-                            value={selectedOptions}
-                            placeholder='Filter...'
-                            onChange={(options) => {
-                                setSelectedOptions(options)
-                            }}
-                        />
-                    </Row>
-                    <Row fluid>
-                        <Button variant={inverted ? 'warning' : 'primary'} onClick={() => setInverted(inverted => !inverted)}>Invert</Button>
-                    </Row>
-                </Container>
-            </>
+            <div>
+                <Select
+                    menuPosition='absolute'
+                    isSearchable
+                    isClearable
+                    isMulti
+                    options={options}
+                    value={selectedOptions}
+                    placeholder='Filter...'
+                    onChange={(options) => {
+                        setSelectedOptions(options)
+                    }}
+                />
+                <Button className="w-100" variant={inverted ? 'warning' : 'primary'} onClick={() => setInverted(inverted => !inverted)}>Invert</Button>
+            </div>
         )
     }
 
