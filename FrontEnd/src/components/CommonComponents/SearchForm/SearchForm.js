@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
-
 import moment from 'moment'
 
 import SelectModalities from './SelectModalities'

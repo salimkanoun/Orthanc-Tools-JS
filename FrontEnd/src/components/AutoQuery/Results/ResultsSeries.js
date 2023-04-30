@@ -74,10 +74,7 @@ export default () => {
         seriesQueryColumns.SERIES_DESCRIPTION,
         seriesQueryColumns.MODALITY,
         seriesQueryColumns.NB_SERIES_INSTANCES,
-        {
-            accessorKey : 'OriginAET',
-            header : 'AET'
-        }
+        seriesQueryColumns.AET
     ]
 
     const data = useMemo(() => {
@@ -92,6 +89,6 @@ export default () => {
     }, [store.results, store.resultsSeries])
 
     return (
-        <CommonTableV8 data={data} columns={columns} paginated />
+        <CommonTableV8 canSort data={data} columns={columns} paginated canFilter />
     )
 }

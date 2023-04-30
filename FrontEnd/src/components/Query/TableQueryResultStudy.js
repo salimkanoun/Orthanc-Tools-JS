@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 
+import TableQueryResultStudies from '../CommonComponents/RessourcesDisplay/ReactTableV8/TableQueryResultStudies'
+import TableQueryResultSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TableQueryResultSeries'
+import RetrieveButton from './RetrieveButton'
+
 import { useCustomMutation } from '../../services/ReactQuery/hooks'
 import apis from '../../services/apis'
-
-import TableQueryResultStudies from '../CommonComponents/RessourcesDisplay/ReactTableV8/TableQueryResultStudies'
-import RetrieveButton from './RetrieveButton'
-import TableQueryResultSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TableQueryResultSeries'
 
 export default ({ studiesData }) => {
 

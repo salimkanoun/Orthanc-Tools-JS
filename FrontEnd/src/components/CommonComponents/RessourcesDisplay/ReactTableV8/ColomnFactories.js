@@ -109,7 +109,7 @@ const studyColumns = {
         id: 'StudyDate',
         accessorKey: 'StudyDate',
         header: 'Acquisition Date',
-        filterType: filter.DATE_FILTER
+        //filterType: filter.DATE_FILTER
     },
     DESCRIPTION: {
         id: 'StudyDescription',
@@ -256,6 +256,7 @@ const seriesColumns = {
         id: 'NumberOfSeriesRelatedInstances',
         accessorKey: 'NumberOfSeriesRelatedInstances',
         header: 'Number of instances',
+        filterType: filter.NUMBER_FILTER
     },
     RETRIEVE: {
         id: 'Retrieve',
@@ -274,17 +275,23 @@ const studyQueryColumns = {
     PATIENT_NAME: {
         accessorKey: 'PatientName',
         header: "Patient Name",
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
+        filterType: filter.MULTI_SELECT_FILTER,
+        filterFn: 'inFilterArray'
     },
     PATIENT_ID: {
         accessorKey: 'PatientID',
         header: "Patient ID",
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
+        filterType: filter.MULTI_SELECT_FILTER,
+        filterFn: 'inFilterArray'
     },
     ACCESSION_NUMBER: {
         id: 'AccessionNumber',
         accessorKey: 'AccessionNumber',
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
+        filterType: filter.MULTI_SELECT_FILTER,
+        filterFn: 'inFilterArray'
     },
     STUDY_INSTANCE_UID: {
         accessorKey: 'StudyInstanceUID',
@@ -294,33 +301,44 @@ const studyQueryColumns = {
     STUDY_DATE: {
         accessorKey: 'StudyDate',
         header: 'Acquisition Date',
+        //filterType: filter.DATE_FILTER
     },
     STUDY_DESCRIPTION: {
         accessorKey: 'StudyDescription',
         header: 'Study Description',
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
+        filterType: filter.MULTI_SELECT_FILTER,
+        filterFn: 'inFilterArray'
     },
     REQUESTED_PROCEDURE: {
         accessorKey: 'RequestedProcedureDescription',
-        header: 'Requested Procedure Description'
+        header: 'Requested Procedure Description',
+        filterType: filter.MULTI_SELECT_FILTER,
+        filterFn: 'inFilterArray'
     },
     MODALITY: {
         id: 'ModalitiesInStudy',
         accessorKey: 'ModalitiesInStudy',
         header: 'Modalities',
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
+        filterType: filter.MULTI_SELECT_FILTER,
+        filterFn: 'inFilterArray'
     },
     NB_STUDY_SERIES: {
         accessorKey: 'NumberOfStudyRelatedSeries',
-        header: 'Series'
+        header: 'Number of series',
+        filterType: filter.NUMBER_FILTER,
     },
     NB_SERIES_INSTANCES: {
-        accessorKey: 'NumberOfSeriesRelatedInstances',
-        header: 'Number of instances'
+        accessorKey: 'NumberOfStudyRelatedInstances',
+        header: 'Number of instances',
+        filterType: filter.NUMBER_FILTER,
     },
     AET: {
         accessorKey: 'OriginAET',
-        header: 'AET'
+        header: 'AET',
+        filterType: filter.MULTI_SELECT_FILTER,
+        filterFn: 'inFilterArray'
     },
 }
 
@@ -333,11 +351,15 @@ const seriesQueryColumns = {
     SERIES_DESCRIPTION: {
         accessorKey: 'SeriesDescription',
         header: 'Series Description',
-        style: { whiteSpace: 'normal', wordWrap: 'break-word' }
+        style: { whiteSpace: 'normal', wordWrap: 'break-word' },
+        filterType: filter.MULTI_SELECT_FILTER,
+        filterFn: 'inFilterArray'
     },
     MODALITY: {
         accessorKey: 'Modality',
         header: 'Modality',
+        filterType: filter.MULTI_SELECT_FILTER,
+        filterFn: 'inFilterArray'
     },
     SERIES_NUMBER: {
         accessorKey: 'SeriesNumber',
@@ -345,8 +367,15 @@ const seriesQueryColumns = {
     },
     NB_SERIES_INSTANCES: {
         accessorKey: 'NumberOfSeriesRelatedInstances',
-        header: 'Number of instances'
-    }
+        header: 'Number of instances',
+        filterType: filter.NUMBER_FILTER
+    },
+    AET: {
+        accessorKey: 'OriginAET',
+        header: 'AET',
+        filterType: filter.MULTI_SELECT_FILTER,
+        filterFn: 'inFilterArray'
+    },
 }
 export {
     patientColumns,

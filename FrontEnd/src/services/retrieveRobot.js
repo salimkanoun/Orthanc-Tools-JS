@@ -50,7 +50,7 @@ const retrieveRobot = {
 
     deleteRobotItem(id, item) {
 
-        return axios.delete("/api/tasks/retrieve/" + id + "/" + item).then((answer) => true).catch((error) => {
+        return axios.delete("/api/tasks/retrieve/" + id + "/" + item).then(() => true).catch((error) => {
             throw error
         })
 
@@ -58,7 +58,7 @@ const retrieveRobot = {
 
     retryRobotItem(id, item) {
 
-        return axios.put(`/api/tasks/retrieve/${id}/${item}/retry`).then((answer) => true
+        return axios.put(`/api/tasks/retrieve/${id}/${item}/retry`).then(() => true
         ).catch((error) => {
             throw error
         })
@@ -68,7 +68,7 @@ const retrieveRobot = {
 
     flush() {
 
-        return axios.delete('/api/tasks/type/retrieve/flush').then(answer => true
+        return axios.delete('/api/tasks/type/retrieve/flush').then(() => true
         ).catch(error => {
             throw error
         })
