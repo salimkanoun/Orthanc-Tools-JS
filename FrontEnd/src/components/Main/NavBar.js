@@ -68,15 +68,15 @@ export default ({ onLogout, roles }) => {
                             </li>
 
                             <li>
-                                <Nav.Link className={getLinkClass('cd-burner')} onClick={() => selectTabHandler(BURNER)} name='burner' hidden={!roles.cdBurner} ><i className="fas fa-compact-disc icone"></i>{opened ? '  CD-Burner' : ''}</Nav.Link>
+                                <Nav.Link className={getLinkClass('cd-burner')} onClick={() => selectTabHandler(BURNER)} name='burner' hidden={!roles.cdBurner} ><i className="fas fa-compact-disc icone"></i>{opened ? '  CD Burner' : ''}</Nav.Link>
                             </li>
 
                             <li>
-                                <Nav.Link className={getLinkClass('mydicom')} onClick={() => selectTabHandler(MYDICOM)} name='mydicom'><i className="far fa-images icone"></i>{opened ? '  MyDicom' : ''}</Nav.Link>
+                                <Nav.Link className={getLinkClass('mydicom')} onClick={() => selectTabHandler(MYDICOM)} name='mydicom'><i className="far fa-images icone"></i>{opened ? '  My Dicom' : ''}</Nav.Link>
                             </li>
 
                             <li>
-                                <Nav.Link className={getLinkClass('dicom-router')} disabled={true} onClick={() => selectTabHandler(DICOM_ROUTER)} name='dicom-router' hidden={!roles.autorouting} ><i className="fas fa-broadcast-tower icone"></i>{opened ? '  Dicom-Router' : ''}</Nav.Link>
+                                <Nav.Link className={getLinkClass('dicom-router')} disabled={true} onClick={() => selectTabHandler(DICOM_ROUTER)} name='dicom-router' hidden={!roles.autorouting} ><i className="fas fa-broadcast-tower icone"></i>{opened ? '  Dicom Router' : ''}</Nav.Link>
                             </li>
 
                             <li>

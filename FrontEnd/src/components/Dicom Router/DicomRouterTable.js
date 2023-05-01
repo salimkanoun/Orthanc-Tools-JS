@@ -3,7 +3,7 @@ import { Button, Modal } from 'react-bootstrap'
 import Toggle from 'react-toggle'
 
 import apis from "../../services/apis";
-import Table from '../CommonComponents/RessourcesDisplay/ReactTable/CommonTable'
+import CommonTableV8 from "../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8";
 
 export default ({ modify, refresh, showMessage, data }) => {
 
@@ -12,23 +12,24 @@ export default ({ modify, refresh, showMessage, data }) => {
 
   const columns = [
     {
-      Header: 'ID',
-      accessor: 'id',
-      hidden: true
+      header: 'ID',
+      accessorKey: 'id',
+      enableHidding: true
     },
     {
-      Header: 'Router\'s Name',
-      accessor: 'name',
+      header: 'Router\'s Name',
+      accessorKey: 'name',
+      enableHidding:true
     },
     {
-      Header: 'Condition',
-      accessor: 'condition',
+      header: 'Condition',
+      accessorKey: 'condition',
     },
     {
-      Header: 'Rules',
-      accessor: 'rules',
-      Cell: (row) => {
-        let rules = row.row.values.rules
+      header: 'Rules',
+      accessorKey: 'rules',
+      cell: (row) => {
+        let rules = row.original.rules
         return (
           <div className='container'>
             {rules.map(rule => (<div key={rule.id} className='row m-1 p-2 border border-dark rounded justify-content-center' style={{ 'backgroundColor': 'rgb(88,220,124)' }}>
@@ -41,33 +42,33 @@ export default ({ modify, refresh, showMessage, data }) => {
       },
     },
     {
-      Header: 'Target',
-      accessor: 'target',
-      hidden: true
+      header: 'Target',
+      accessorKey: 'target',
+      enableHidding: true
     },
     {
-      Header: 'AET Destination',
-      accessor: 'destination',
+      header: 'AET Destination',
+      accessorKey: 'destination',
     },
     {
-      Header: 'Running ?',
-      accessor: 'running',
-      Cell: (row) => {
+      header: 'Running ?',
+      accessorKey: 'running',
+      cell: (row) => {
         return (
           <span>
-            <Toggle key={row.row.values.id} checked={row.row.values.running} onChange={() => { handleSwitch(row.row.original.id, row.row.values.running) }} />
+            <Toggle key={row.original.id} checked={row.original.running} onChange={() => { handleSwitch(row.original.id, row.original.running) }} />
           </span>
         )
       }
     },
     {
-      Header: '',
-      accessor: 'modify and delete',
-      Cell: (row) => {
+      header: '',
+      accessorKey: 'modify and delete',
+      cell: (row) => {
         return (
           <span>
-            <Button className='otjs-button otjs-button-orange me-1' onClick={() => { modify(row.row.values) }}>Modify</Button>
-            <Button className='otjs-button otjs-button-red' onClick={() => { showDeleteConfirmation(row.row.values.id) }}>Delete</Button>
+            <Button className='otjs-button otjs-button-orange me-1' onClick={() => { modify(row.original.id) }}>Modify</Button>
+            <Button className='otjs-button otjs-button-red' onClick={() => { showDeleteConfirmation(row.original.id) }}>Delete</Button>
           </span>
         )
       }
@@ -129,7 +130,7 @@ export default ({ modify, refresh, showMessage, data }) => {
         <Button className='otjs-button otjs-button-red' onClick={() => { removeRouter() }}>Delete</Button>
       </Modal.Footer>
     </Modal>
-    <Table columns={columns} tableData={data} />
+    <CommonTableV8 columns={columns} tableData={data} />
   </>
   )
 }
