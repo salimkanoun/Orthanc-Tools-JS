@@ -65,11 +65,8 @@ export default ({ getValue, row: { index, id: idRow }, column: { columnDef: { id
                     <CalendarUtc
                         onChange={(date) => {
                             setVisible(false)
-                            console.log(date, value)
                             if (date.getTime() === value?.getTime()) {
                                 date = null
-                            } else {
-                                date = moment(date).format('YYYYMMDD')
                             }
                             table.options.meta?.updateData(rowId, columnId, date)
                         }}

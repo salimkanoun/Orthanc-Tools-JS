@@ -7,7 +7,7 @@ import ActionBouton from "../ActionBouton";
 import RetrieveButton from "../../../Query/RetrieveButton";
 import { errorMessage } from "../../../../tools/toastify";
 import moment from "moment";
-import { isWithinDateRange } from "./Tools/Filter";
+import { isWithinDateRange } from "./Tools/FilterFns";
 
 const commonColumns = {
     RAW: {
