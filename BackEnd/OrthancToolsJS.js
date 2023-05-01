@@ -69,7 +69,6 @@ app.use('/viewer-ohif/*', function (req, res) {
 })
 
 app.use('/viewer-stone/', express.static(path.join(__dirname, 'build', 'viewer-stone')));
-app.use('/streamSaver/', express.static(path.join(__dirname, 'build', 'streamSaver')));
 
 app.use('/api/authentication', authenticationRouter)
 app.use('/api/users', usersRouter)
