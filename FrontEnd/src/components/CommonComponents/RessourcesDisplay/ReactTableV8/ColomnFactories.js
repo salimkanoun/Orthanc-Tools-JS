@@ -111,7 +111,7 @@ const studyColumns = {
         id: 'StudyDate',
         accessorKey: 'StudyDate',
         header: 'Acquisition Date',
-        //filterType: filter.DATE_FILTER
+        filterType: filter.DATE_FILTER
     },
     DESCRIPTION: {
         id: 'StudyDescription',
@@ -301,13 +301,17 @@ const studyQueryColumns = {
         enableHiding: true
     },
     STUDY_DATE: {
-        accessorFn : (row) => {
-            return row.StudyDate ? new Date(row.StudyDate) : null
+        accessorFn: (row) => {
+            if (row.studyDate != null && row.studyDate != ""){
+                return moment(answer.StudyDate, 'YYYYMMDD', true)
+            }else{
+                return null
+            }         
         },
         header: 'Acquisition Date',
-        cell : ({getValue})=> {
+        cell: ({ getValue }) => {
             let value = getValue()
-            if(value) value = moment(value).format('YYYYMMDD')
+            if (value) value = moment(value).format('YYYYMMDD')
             return value
         },
         filterType: filter.DATE_FILTER,

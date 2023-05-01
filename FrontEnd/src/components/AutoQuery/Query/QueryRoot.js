@@ -125,10 +125,6 @@ export default ({ onQueryFinished }) => {
             try {
 
                 let answeredResults = await makeDicomQuery(query)
-                answeredResults = answeredResults.map(answer => ({
-                    ...answer,
-                    StudyDate: moment(answer.StudyDate, 'YYYYMMDD', true)?.toISOString()
-                }))
                 //For each results, fill the result table through Redux
                 answeredResults.forEach((answer) => {
                     dispatch(addStudyResult(answer))

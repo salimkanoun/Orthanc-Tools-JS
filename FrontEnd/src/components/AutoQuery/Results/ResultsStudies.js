@@ -25,8 +25,8 @@ export default () => {
                 'Patient Name': row.PatientName,
                 'Patient ID': row.PatientID,
                 'Accession Number': row.AccessionNumber,
-                'DateFrom': row.StudyDate ? moment(row.StudyDate).format('YYYYMMDD') : '',
-                'DateTo': row.StudyDate ? moment(row.StudyDate).format('YYYYMMDD') : '',
+                'DateFrom': row.StudyDate,
+                'DateTo': row.StudyDate,
                 'Study Description': row.StudyDescription,
                 'Modalities': row.ModalitiesInStudy,
                 'AET': row.OriginAET

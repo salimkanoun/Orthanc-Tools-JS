@@ -7,12 +7,14 @@ import { isWithinDateRange } from '../../CommonComponents/RessourcesDisplay/Reac
 import { editCellQuery } from '../../../actions/TableQuery'
 
 import { filter } from '../../../model/Constant'
+import moment from 'moment'
 
 export default ({ queries = [], aets = [], onRowClick, currentRow }) => {
 
     const dispatch = useDispatch()
 
     const cellEditHandler = (rowIndex, columnId, value) => {
+        console.log(value)
         dispatch(editCellQuery(rowIndex, columnId, value));
     }
 
@@ -38,7 +40,8 @@ export default ({ queries = [], aets = [], onRowClick, currentRow }) => {
         isEditable: true
     }, {
         accessorFn : (row) => {
-            return row.DateFrom ? new Date(row.DateFrom) : null
+            if(row.DateFrom == "" || row.DateFrom ==null) return null
+            return moment(row.DateFrom, 'YYYYMMDD', true)?.toDate()
         },
         id: 'DateFrom',
         header: 'Date From',
@@ -50,7 +53,8 @@ export default ({ queries = [], aets = [], onRowClick, currentRow }) => {
         filterFn: isWithinDateRange
     }, {
         accessorFn : (row) => {
-            return row.DateTo ? new Date(row.DateTo) : null
+            if(row.DateTo == "" || row.DateTo ==null) return null
+            return moment(row.DateTo, 'YYYYMMDD', true)?.toDate()
         },
         id: 'DateTo',
         header: 'Date To',

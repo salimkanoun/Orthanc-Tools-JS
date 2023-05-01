@@ -53,8 +53,8 @@ export default ({ getValue, row: { index, id: idRow }, column: { columnDef: { id
     if (type == 'CALENDAR') {
 
         const [visible, setVisible] = useState(false)
-        let calendarDate = value ? new Date(value) : null
-        const myButton = <Button variant='light' style={style}>{calendarDate ? moment(calendarDate).format('YYYYMMDD') : 'N/A'}</Button>
+
+        const myButton = <Button variant='light' style={style}>{value ? moment(value).format('YYYYMMDD') : "N/A"}</Button>
 
         const myCalendar = (
             <Popover>
@@ -65,12 +65,17 @@ export default ({ getValue, row: { index, id: idRow }, column: { columnDef: { id
                     <CalendarUtc
                         onChange={(date) => {
                             setVisible(false)
-                            if (date.getTime() === calendarDate?.getTime()) date = null
-                            table.options.meta?.updateData(rowId, columnId, date?.toISOString())
+                            console.log(date, value)
+                            if (date.getTime() === value?.getTime()) {
+                                date = null
+                            } else {
+                                date = moment(date).format('YYYYMMDD')
+                            }
+                            table.options.meta?.updateData(rowId, columnId, date)
                         }}
                         required
                         maxDate={new Date()}
-                        value={calendarDate}
+                        value={value}
                     />
                 </Popover.Body>
 
