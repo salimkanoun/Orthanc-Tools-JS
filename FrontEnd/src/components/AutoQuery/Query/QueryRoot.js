@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Button, Container, Row } from 'react-bootstrap'
+import moment from 'moment'
 
 import Spinner from '../../CommonComponents/Spinner'
 import CsvLoader from '../CsvLoader'
@@ -13,7 +13,7 @@ import { useCustomQuery } from '../../../services/ReactQuery/hooks'
 import apis from '../../../services/apis'
 import { keys } from '../../../model/Constant'
 import { exportCsv } from '../../../tools/CSVExport'
-import { dissmissToast, infoMessage, successMessage, updateToast } from '../../../tools/toastify'
+import { dissmissToast, errorMessage, infoMessage, successMessage, updateToast } from '../../../tools/toastify'
 import { addStudyResult } from '../../../actions/TableResult'
 
 export default ({ onQueryFinished }) => {
@@ -48,14 +48,14 @@ export default ({ onQueryFinished }) => {
 
     const onCSVDownload = () => {
         let data = store.queries.map(row => {
-            let formattedDateFrom = row.DateFrom instanceof Date ? moment(row.DateFrom).format('YYYYMMDD') : ''
-            let formattedDateTo = row.DateTo instanceof Date ? moment(row.DateTo).format('YYYYMMDD') : ''
+            let formattedDateFrom = typeof row.DateFrom === 'string' ? moment(new Date(row.DateFrom)).format('YYYYMMDD') : ''
+            let formattedDateTo = typeof row.DateTo === 'string' ? moment(new Date(row.DateTo)).format('YYYYMMDD') : ''
             return {
                 'Patient Name': row.PatientName,
                 'Patient ID': row.PatientID,
                 'Accession Number': row.AccessionNumber,
-                'Date From': formattedDateFrom,
-                'Date To': formattedDateTo,
+                'DateFrom': formattedDateFrom,
+                'DateTo': formattedDateTo,
                 'Study Description': row.StudyDescription,
                 'Modalities': row.ModalitiesInStudy,
                 'AET': row.Aet
@@ -65,17 +65,18 @@ export default ({ onQueryFinished }) => {
     }
 
     const makeDicomQuery = async (queryParams) => {
+
+        let DateFrom = queryParams.DateFrom ? queryParams.DateFrom : null
+        let DateTo = queryParams.DateTo ? queryParams.DateTo : null
+
         //Prepare Date string for post data
         let DateString = '';
-        queryParams.DateFrom = queryParams.DateFrom.split('-').join('')
-        queryParams.DateTo = queryParams.DateTo.split('-').join('')
-
-        if (queryParams.DateFrom !== '' && queryParams.DateTo !== '') {
-            DateString = queryParams.DateFrom + '-' + queryParams.DateTo
-        } else if (queryParams.DateFrom === '' && queryParams.DateTo !== '') {
-            DateString = '-' + queryParams.DateTo
-        } else if (queryParams.DateFrom !== '' && queryParams.DateTo === '') {
-            DateString = queryParams.DateFrom + '-'
+        if (DateFrom !== null && DateTo !== null) {
+            DateString = DateFrom + '-' + DateTo
+        } else if (DateFrom === null && DateTo !== null) {
+            DateString = '-' + DateTo
+        } else if (DateFrom !== null && DateTo === null) {
+            DateString = DateFrom + '-'
         }
 
         //Prepare POST payload for query (follow Orthanc APIs)
@@ -99,13 +100,25 @@ export default ({ onQueryFinished }) => {
         return await apis.query.retrieveAnswer(createQueryRessource.ID)
     }
 
+    const areAllRowsAetDefined = (data) => {
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].Aet == null || data[i].Aet == "") {
+                errorMessage('Missing AET in row ' + i + ' fill it before querying')
+                return false
+            }
+        }
+        return true
+    }
 
     const onQueryHandle = async () => {
 
         const data = store.queries;
-        const toastId = infoMessage('Starting Studies Queries')
-        let i = 0
 
+        if (!areAllRowsAetDefined(data)) return
+
+        const toastId = infoMessage('Starting Studies Queries')
+
+        let i = 0
         for (const query of data) {
             i++
             updateToast(toastId, 'Query study ' + i + '/' + data.length)

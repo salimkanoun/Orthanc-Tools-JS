@@ -25,34 +25,13 @@ export default () => {
     const completeFn = (result, file) => {
         let csvData = result.data;
 
-        csvData.forEach((query) => {
-            let dateFrom, dateTo
-            if (query['Acquisition Date'] === undefined) {
-
-                if (query['Date From'] === '') {
-                    dateFrom = ''
-                } else {
-                    dateFrom = moment(query['Date From'], 'YYYYMMDD').format("YYYY-MM-DD")
-                }
-
-                if (query['Date To'] === '') {
-                    dateTo = ''
-                } else {
-                    dateTo = moment(query['Date To'], 'YYYYMMDD').format("YYYY-MM-DD")
-                }
-
-            } else {
-                //Case CSV comming from result list
-                dateFrom = moment(query['Acquisition Date'], 'YYYYMMDD').format("YYYY-MM-DD")
-                dateTo = moment(query['Acquisition Date'], 'YYYYMMDD').format("YYYY-MM-DD")
-
-            }
+        csvData.forEach((query) => {           
             let queryForList = {
                 PatientName: query['Patient Name'],
                 PatientID: query['Patient ID'],
                 AccessionNumber: query['Accession Number'],
-                DateFrom: dateFrom,
-                DateTo: dateTo,
+                DateFrom: query.dateFrom,
+                DateTo: query.dateTo,
                 StudyDescription: query['Study Description'],
                 ModalitiesInStudy: query['Modalities'],
                 Aet: query['AET']

@@ -18,13 +18,15 @@ export default () => {
     const [isOpen, setIsOpen] = useState(false);
     const target = useRef(null)
 
+    const jobNotifications = notifications.filter((notification) => notification.type === 'jobs')
+
     return (
         <div>
             <IconButton size="large" onClick={() => setIsOpen((opened) => !opened)} ref={target}>
                 <Badge>
                     <MailIcon color="action" />
                     <span className='button-count'>
-                        {notifications.length}
+                        {jobNotifications.length}
                     </span>
                 </Badge>
             </IconButton>
@@ -37,7 +39,7 @@ export default () => {
                 <Card >
                     <Card.Header>Notifications</Card.Header>
                     <Card.Body>
-                        <JobsRoot jobNotifications={notifications.filter((notification) => notification.type === 'jobs')} remove={remove} />
+                        <JobsRoot jobNotifications={jobNotifications} remove={remove} />
                     </Card.Body>
                 </Card>
             </Overlay >

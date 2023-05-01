@@ -19,8 +19,7 @@ export default function PaginitionButton({
         if (i === 5) break
     }
     paginationArray.push('All')
-
-    console.log(gotoPage)
+    
     return (
         <div>
             <ButtonGroup className='mr-3'>

@@ -16,7 +16,7 @@ export default () => {
             results: state.AutoRetrieveResultList.results,
         }
     })
-    
+
     const onCSVDownload = () => {
 
         let data = Object.values(store.results).map(row => {
@@ -24,8 +24,8 @@ export default () => {
                 'Patient Name': row.PatientName,
                 'Patient ID': row.PatientID,
                 'Accession Number': row.AccessionNumber,
-                'Date From': row.StudyDate,
-                'Date To': row.StudyDate,
+                'DateFrom': row.StudyDate,
+                'DateTo': row.StudyDate,
                 'Study Description': row.StudyDescription,
                 'Modalities': row.ModalitiesInStudy,
                 'AET': row.OriginAET
@@ -37,10 +37,7 @@ export default () => {
     const selected = []
     return (
         <Container fluid>
-            <Row className='mb-3'>
-                < TableQueryResultStudies studies={Object.values(store.results)} />
-            </Row>
-            <Row className='d-flex justify-content-end mb-3'>
+            <Row className='d-flex justify-content-around mb-3'>
                 <Button onClick={onCSVDownload} className="otjs-button otjs-button-blue w-10">Export CSV</Button>
                 <Button className="otjs-button otjs-button-orange w-10"
                     onClick={() => {
@@ -52,6 +49,9 @@ export default () => {
                     onClick={() => dispatch(emptyResultsTable())} >
                     Empty Table
                 </Button>
+            </Row>
+            <Row className='mb-3'>
+                < TableQueryResultStudies studies={Object.values(store.results)} />
             </Row>
         </Container>
     )

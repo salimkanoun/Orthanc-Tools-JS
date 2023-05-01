@@ -76,6 +76,7 @@ export default ({ studiesData }) => {
         )
     }
 
+    console.log(studiesData)
     return (
         <TableQueryResultStudies
             onRowClick={onStudyRowClick}

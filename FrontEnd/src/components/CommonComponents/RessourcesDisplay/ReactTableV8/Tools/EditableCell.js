@@ -3,6 +3,7 @@ import { Button, Form, OverlayTrigger, Popover } from "react-bootstrap"
 import Select from "react-select"
 
 import CalendarUtc from "../../../CalendarUtc"
+import moment from "moment"
 
 export default ({ getValue, row: { index, id: idRow }, column: { columnDef: { id, accessorKey, header, style, editionProperties: { type, minLength, maxLength, min, max, placeholder, options, isClearable = true, disabled } = {}, isEditable = false } }, table }) => {
 
@@ -52,8 +53,8 @@ export default ({ getValue, row: { index, id: idRow }, column: { columnDef: { id
     if (type == 'CALENDAR') {
 
         const [visible, setVisible] = useState(false)
-        let calendarDate = value ? new Date(value) : null
-        const myButton = <Button variant='light' style={style}>{calendarDate ? calendarDate.toLocaleDateString("en-US") : 'N/A'}</Button>
+
+        const myButton = <Button variant='light' style={style}>{value ? moment(value).format('YYYYMMDD') : "N/A"}</Button>
 
         const myCalendar = (
             <Popover>
@@ -64,12 +65,14 @@ export default ({ getValue, row: { index, id: idRow }, column: { columnDef: { id
                     <CalendarUtc
                         onChange={(date) => {
                             setVisible(false)
-                            if (date.getTime() === calendarDate?.getTime()) date = null
+                            if (date.getTime() === value?.getTime()) {
+                                date = null
+                            }
                             table.options.meta?.updateData(rowId, columnId, date)
                         }}
                         required
                         maxDate={new Date()}
-                        value={calendarDate}
+                        value={value}
                     />
                 </Popover.Body>
 

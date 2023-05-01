@@ -27,7 +27,6 @@ export default () => {
 
     const refreshInfo = async () => {
         let retrieveIds = await apis.task.getTaskOfUser(store.username, 'delete')
-        console.log(retrieveIds)
         if (retrieveIds.length > 0) {
             try {
                 let response = await apis.task.getTask(retrieveIds[0]);

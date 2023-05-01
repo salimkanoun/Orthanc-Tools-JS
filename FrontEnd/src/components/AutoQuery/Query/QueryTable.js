@@ -5,11 +5,16 @@ import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8"
 import { editCellQuery } from '../../../actions/TableQuery'
 
+import { filter } from '../../../model/Constant'
+import moment from 'moment'
+import { isWithinDateRange } from '../../CommonComponents/RessourcesDisplay/ReactTableV8/Tools/FilterFns'
+
 export default ({ queries = [], aets = [], onRowClick, currentRow }) => {
 
     const dispatch = useDispatch()
 
     const cellEditHandler = (rowIndex, columnId, value) => {
+        if(value instanceof Date) value = moment(value).format('YYYYMMDD')
         dispatch(editCellQuery(rowIndex, columnId, value));
     }
 
@@ -34,19 +39,31 @@ export default ({ queries = [], aets = [], onRowClick, currentRow }) => {
         header: 'Accession Number',
         isEditable: true
     }, {
-        accessorKey: 'DateFrom',
+        accessorFn : (row) => {
+            if(row.DateFrom == "" || row.DateFrom ==null) return null
+            return moment(row.DateFrom, 'YYYYMMDD', true)?.toDate()
+        },
+        id: 'DateFrom',
         header: 'Date From',
         isEditable: true,
         editionProperties: {
             type: 'CALENDAR'
-        }
+        },
+        filterType: filter.DATE_FILTER,
+        filterFn: isWithinDateRange
     }, {
-        accessorKey: 'DateTo',
+        accessorFn : (row) => {
+            if(row.DateTo == "" || row.DateTo ==null) return null
+            return moment(row.DateTo, 'YYYYMMDD', true)?.toDate()
+        },
+        id: 'DateTo',
         header: 'Date To',
         isEditable: true,
         editionProperties: {
             type: 'CALENDAR'
-        }
+        },
+        filterType: filter.DATE_FILTER,
+        filterFn: isWithinDateRange
     }, {
         accessorKey: 'StudyDescription',
         header: 'Study Description',
