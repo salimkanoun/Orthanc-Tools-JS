@@ -48,8 +48,8 @@ export default ({ onQueryFinished }) => {
 
     const onCSVDownload = () => {
         let data = store.queries.map(row => {
-            let formattedDateFrom = row.DateFrom instanceof Date ? moment(row.DateFrom).format('YYYYMMDD') : ''
-            let formattedDateTo = row.DateTo instanceof Date ? moment(row.DateTo).format('YYYYMMDD') : ''
+            let formattedDateFrom = typeof row.DateFrom === 'string' ? moment(new Date(row.DateFrom)).format('YYYYMMDD') : ''
+            let formattedDateTo = typeof row.DateTo === 'string' ? moment(new Date(row.DateTo)).format('YYYYMMDD') : ''
             return {
                 'Patient Name': row.PatientName,
                 'Patient ID': row.PatientID,
@@ -127,7 +127,7 @@ export default ({ onQueryFinished }) => {
                 let answeredResults = await makeDicomQuery(query)
                 answeredResults = answeredResults.map(answer => ({
                     ...answer,
-                    StudyDate: moment(answer.StudyDate, 'YYYYMMDD', true).toISOString()
+                    StudyDate: moment(answer.StudyDate, 'YYYYMMDD', true)?.toISOString()
                 }))
                 //For each results, fill the result table through Redux
                 answeredResults.forEach((answer) => {

@@ -66,7 +66,7 @@ export default ({ getValue, row: { index, id: idRow }, column: { columnDef: { id
                         onChange={(date) => {
                             setVisible(false)
                             if (date.getTime() === calendarDate?.getTime()) date = null
-                            table.options.meta?.updateData(rowId, columnId, date.toISOString())
+                            table.options.meta?.updateData(rowId, columnId, date?.toISOString())
                         }}
                         required
                         maxDate={new Date()}
