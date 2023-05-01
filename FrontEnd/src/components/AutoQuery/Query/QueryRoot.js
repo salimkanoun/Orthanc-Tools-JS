@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Button, Container, Row } from 'react-bootstrap'
+import moment from 'moment'
 
 import Spinner from '../../CommonComponents/Spinner'
 import CsvLoader from '../CsvLoader'
@@ -65,11 +65,12 @@ export default ({ onQueryFinished }) => {
     }
 
     const makeDicomQuery = async (queryParams) => {
+
+        let DateFrom = queryParams.DateFrom ? queryParams.DateFrom : null
+        let DateTo = queryParams.DateTo ? queryParams.DateTo : null
+
         //Prepare Date string for post data
         let DateString = '';
-        let DateFrom = queryParams.DateFrom ? moment(new Date(queryParams.DateFrom)).format('YYYYMMDD') : null
-        let DateTo = queryParams.DateTo ? moment(new Date(queryParams.DateTo)).format('YYYYMMDD') : null
-
         if (DateFrom !== null && DateTo !== null) {
             DateString = DateFrom + '-' + DateTo
         } else if (DateFrom === null && DateTo !== null) {
@@ -123,7 +124,6 @@ export default ({ onQueryFinished }) => {
             updateToast(toastId, 'Query study ' + i + '/' + data.length)
             //For each line make dicom query and return results
             try {
-
                 let answeredResults = await makeDicomQuery(query)
                 //For each results, fill the result table through Redux
                 answeredResults.forEach((answer) => {

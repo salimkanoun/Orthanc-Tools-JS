@@ -302,8 +302,8 @@ const studyQueryColumns = {
     },
     STUDY_DATE: {
         accessorFn: (row) => {
-            if (row.studyDate != null && row.studyDate != ""){
-                return moment(answer.StudyDate, 'YYYYMMDD', true)
+            if (row.StudyDate != null && row.StudyDate != ""){
+                return moment(row.StudyDate, 'YYYYMMDD', true).toDate()
             }else{
                 return null
             }         
