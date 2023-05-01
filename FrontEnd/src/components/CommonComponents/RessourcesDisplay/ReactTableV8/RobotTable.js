@@ -48,7 +48,7 @@ export default ({
         }, {
             id: 'state',
             accessorKey: 'state',
-            Header: 'State'
+            header: 'State'
         }, {
             id: 'details',
             header: 'Show Details',
@@ -58,6 +58,7 @@ export default ({
             }
         }, {
             id: 'approved',
+            header : 'Approved',
             accessorKey: "approved",
             accessorFn: ( row ) => {
                 return row?.details?.approved
