@@ -1,8 +1,12 @@
 import React from "react";
-import moment from "moment";
+import { Button } from "react-bootstrap";
 
 import { filter } from '../../../../model/Constant';
+import ConstantLevel from "../../../Modify/ConstantLevel";
+import ActionBouton from "../ActionBouton";
 import RetrieveButton from "../../../Query/RetrieveButton";
+import { errorMessage } from "../../../../tools/toastify";
+import moment from "moment";
 import { isWithinDateRange } from "./Tools/FilterFns";
 
 const commonColumns = {
@@ -49,7 +53,33 @@ const patientColumns = {
         accessorKey: 'ParentPatient.PatientID',
         header: 'Patient ID',
         filterType: filter.STRING_FILTER
-    }
+    },
+    ACTION: (onDelete, onModify, refresh) => ({
+        id: 'Action',
+        accessorKey: 'Action',
+        header: 'Action',
+        cell: (({ row }) => {
+            return <ActionBouton
+                level={ConstantLevel.PATIENTS}
+                orthancID={row.original.PatientOrthancID}
+                onDelete={onDelete}
+                onModify={onModify}
+                dataDetails={row.original}
+                refresh={refresh}
+                hiddenModify={false}
+                hiddenMetadata={true} />
+        })
+    }),
+    REMOVE: (onRemovePatient) => ({
+        id: 'Remove',
+        accessorKey: 'Remove',
+        header: 'Remove',
+        cell: (({ row }) => {
+            return <Button className="btn btn-danger" onClick={() => {
+                onRemovePatient(row.original.PatientOrthancID);
+            }}>Remove</Button>
+        })
+    }),
 }
 
 const studyColumns = {
@@ -118,6 +148,16 @@ const studyColumns = {
             return row.original.AnonymizedFrom ? 'Yes' : 'No'
         })
     },
+    REMOVE: (onRemoveStudy) => ({
+        id: 'Remove',
+        accessorKey: 'Remove',
+        header: 'Remove',
+        cell: ({ row }) => {
+            return <Button className="btn btn-danger" onClick={() => {
+                onRemoveStudy(row.original.StudyOrthancID);
+            }}>Remove</Button>
+        }
+    }),
     NB_STUDY_SERIES: {
         id: 'NumberOfStudyRelatedSeries',
         accessorKey: 'NumberOfStudyRelatedSeries',
@@ -131,7 +171,7 @@ const studyColumns = {
             return <RetrieveButton queryAet={row.original.OriginAET} studyInstanceUID={row.original.StudyInstanceUID}
                 level={RetrieveButton.Study} />
         }
-    }
+    },
 }
 
 const seriesColumns = {
@@ -165,6 +205,39 @@ const seriesColumns = {
         header: 'Instances',
         filterType: filter.NUMBER_FILTER
     },
+    ACTION: (onDelete, refresh) => ({
+        id: 'Action',
+        accessorKey: 'Action',
+        header: 'Action',
+        cell: ({ row }) => {
+            return (
+                <ActionBouton
+                    level={ConstantLevel.SERIES}
+                    orthancID={row.original.SeriesOrthancID}
+                    parentID={row.original.StudyOrthancID}
+                    onDelete={onDelete}
+                    dataDetails={row.original}
+                    refresh={refresh}
+                    hiddenMetadata={false}
+                    hiddenCreateDicom={true}
+                    hiddenModify={false} />)
+        }
+    }),
+    REMOVE: (onRemove) => ({
+        id: 'Remove',
+        accessorKey: 'Remove',
+        header: 'Remove',
+        cell: ({ row }) => {
+            return <Button className="btn btn-danger" onClick={(e) => {
+                try {
+                    onRemove(row.original.SeriesOrthancID);
+                } catch (e) {
+                    errorMessage("Remove error");
+                }
+                e.stopPropagation();
+            }}>Remove</Button>
+        }
+    }),
     NB_SERIES_INSTANCES: {
         id: 'NumberOfSeriesRelatedInstances',
         accessorKey: 'NumberOfSeriesRelatedInstances',
