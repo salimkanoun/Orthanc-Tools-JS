@@ -6,6 +6,8 @@ import ConstantLevel from "../../../Modify/ConstantLevel";
 import ActionBouton from "../ActionBouton";
 import RetrieveButton from "../../../Query/RetrieveButton";
 import { errorMessage } from "../../../../tools/toastify";
+import moment from "moment";
+import { isWithinDateRange } from "./Tools/Filter";
 
 const commonColumns = {
     RAW: {
@@ -299,9 +301,17 @@ const studyQueryColumns = {
         enableHiding: true
     },
     STUDY_DATE: {
-        accessorKey: 'StudyDate',
+        accessorFn : (row) => {
+            return row.StudyDate ? new Date(row.StudyDate) : null
+        },
         header: 'Acquisition Date',
-        //filterType: filter.DATE_FILTER
+        cell : ({getValue})=> {
+            let value = getValue()
+            if(value) value = moment(value).format('YYYYMMDD')
+            return value
+        },
+        filterType: filter.DATE_FILTER,
+        filterFn: isWithinDateRange
     },
     STUDY_DESCRIPTION: {
         accessorKey: 'StudyDescription',

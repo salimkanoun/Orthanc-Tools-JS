@@ -13,7 +13,7 @@ import { useCustomQuery } from '../../../services/ReactQuery/hooks'
 import apis from '../../../services/apis'
 import { keys } from '../../../model/Constant'
 import { exportCsv } from '../../../tools/CSVExport'
-import { dissmissToast, infoMessage, successMessage, updateToast } from '../../../tools/toastify'
+import { dissmissToast, errorMessage, infoMessage, successMessage, updateToast } from '../../../tools/toastify'
 import { addStudyResult } from '../../../actions/TableResult'
 
 export default ({ onQueryFinished }) => {
@@ -54,8 +54,8 @@ export default ({ onQueryFinished }) => {
                 'Patient Name': row.PatientName,
                 'Patient ID': row.PatientID,
                 'Accession Number': row.AccessionNumber,
-                'Date From': formattedDateFrom,
-                'Date To': formattedDateTo,
+                'DateFrom': formattedDateFrom,
+                'DateTo': formattedDateTo,
                 'Study Description': row.StudyDescription,
                 'Modalities': row.ModalitiesInStudy,
                 'AET': row.Aet
@@ -67,15 +67,15 @@ export default ({ onQueryFinished }) => {
     const makeDicomQuery = async (queryParams) => {
         //Prepare Date string for post data
         let DateString = '';
-        queryParams.DateFrom = queryParams.DateFrom.split('-').join('')
-        queryParams.DateTo = queryParams.DateTo.split('-').join('')
+        let DateFrom = queryParams.DateFrom ? moment(new Date(queryParams.DateFrom)).format('YYYYMMDD') : null
+        let DateTo = queryParams.DateTo ? moment(new Date(queryParams.DateTo)).format('YYYYMMDD') : null
 
-        if (queryParams.DateFrom !== '' && queryParams.DateTo !== '') {
-            DateString = queryParams.DateFrom + '-' + queryParams.DateTo
-        } else if (queryParams.DateFrom === '' && queryParams.DateTo !== '') {
-            DateString = '-' + queryParams.DateTo
-        } else if (queryParams.DateFrom !== '' && queryParams.DateTo === '') {
-            DateString = queryParams.DateFrom + '-'
+        if (DateFrom !== null && DateTo !== null) {
+            DateString = DateFrom + '-' + DateTo
+        } else if (DateFrom === null && DateTo !== null) {
+            DateString = '-' + DateTo
+        } else if (DateFrom !== null && DateTo === null) {
+            DateString = DateFrom + '-'
         }
 
         //Prepare POST payload for query (follow Orthanc APIs)
@@ -99,19 +99,36 @@ export default ({ onQueryFinished }) => {
         return await apis.query.retrieveAnswer(createQueryRessource.ID)
     }
 
+    const areAllRowsAetDefined = (data) => {
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].Aet == null || data[i].Aet == "") {
+                errorMessage('Missing AET in row ' + i + ' fill it before querying')
+                return false
+            }
+        }
+        return true
+    }
 
     const onQueryHandle = async () => {
 
         const data = store.queries;
-        const toastId = infoMessage('Starting Studies Queries')
-        let i = 0
 
+        if (!areAllRowsAetDefined(data)) return
+
+        const toastId = infoMessage('Starting Studies Queries')
+
+        let i = 0
         for (const query of data) {
             i++
             updateToast(toastId, 'Query study ' + i + '/' + data.length)
             //For each line make dicom query and return results
             try {
+
                 let answeredResults = await makeDicomQuery(query)
+                answeredResults = answeredResults.map(answer => ({
+                    ...answer,
+                    StudyDate: moment(answer.StudyDate, 'YYYYMMDD', true).toISOString()
+                }))
                 //For each results, fill the result table through Redux
                 answeredResults.forEach((answer) => {
                     dispatch(addStudyResult(answer))

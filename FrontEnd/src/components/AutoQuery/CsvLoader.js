@@ -27,26 +27,18 @@ export default () => {
 
         csvData.forEach((query) => {
             let dateFrom, dateTo
-            if (query['Acquisition Date'] === undefined) {
-
-                if (query['Date From'] === '') {
-                    dateFrom = ''
-                } else {
-                    dateFrom = moment(query['Date From'], 'YYYYMMDD').format("YYYY-MM-DD")
-                }
-
-                if (query['Date To'] === '') {
-                    dateTo = ''
-                } else {
-                    dateTo = moment(query['Date To'], 'YYYYMMDD').format("YYYY-MM-DD")
-                }
-
+            if (query.DateFrom === '') {
+                dateFrom = ''
             } else {
-                //Case CSV comming from result list
-                dateFrom = moment(query['Acquisition Date'], 'YYYYMMDD').format("YYYY-MM-DD")
-                dateTo = moment(query['Acquisition Date'], 'YYYYMMDD').format("YYYY-MM-DD")
-
+                dateFrom = moment(query.DateFrom, 'YYYYMMDD').format("YYYY-MM-DD")
             }
+
+            if (query.DateTo === '') {
+                dateTo = ''
+            } else {
+                dateTo = moment(query.DateTo, 'YYYYMMDD').format("YYYY-MM-DD")
+            }
+            
             let queryForList = {
                 PatientName: query['Patient Name'],
                 PatientID: query['Patient ID'],

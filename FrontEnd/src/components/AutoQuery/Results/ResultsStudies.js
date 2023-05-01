@@ -6,6 +6,7 @@ import TableQueryResultStudies from '../../CommonComponents/RessourcesDisplay/Re
 
 import { exportCsv } from '../../../tools/CSVExport'
 import { emptyResultsTable, removeResult } from '../../../actions/TableResult'
+import moment from 'moment'
 
 export default () => {
 
@@ -24,8 +25,8 @@ export default () => {
                 'Patient Name': row.PatientName,
                 'Patient ID': row.PatientID,
                 'Accession Number': row.AccessionNumber,
-                'Date From': row.StudyDate,
-                'Date To': row.StudyDate,
+                'DateFrom': row.StudyDate ? moment(row.StudyDate).format('YYYYMMDD') : '',
+                'DateTo': row.StudyDate ? moment(row.StudyDate).format('YYYYMMDD') : '',
                 'Study Description': row.StudyDescription,
                 'Modalities': row.ModalitiesInStudy,
                 'AET': row.OriginAET
