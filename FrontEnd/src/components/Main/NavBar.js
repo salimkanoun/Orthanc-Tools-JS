@@ -68,7 +68,7 @@ export default ({ onLogout, roles }) => {
                             </li>
 
                             <li>
-                                <Nav.Link className={getLinkClass('cd-burner')} disabled={true} onClick={() => selectTabHandler(BURNER)} name='burner' /*hidden={!roles.cdBurner}*/><i className="fas fa-compact-disc icone"></i>{opened ? '  CD-Burner' : ''}</Nav.Link>
+                                <Nav.Link className={getLinkClass('cd-burner')} onClick={() => selectTabHandler(BURNER)} name='burner' hidden={!roles.cdBurner} ><i className="fas fa-compact-disc icone"></i>{opened ? '  CD-Burner' : ''}</Nav.Link>
                             </li>
 
                             <li>
