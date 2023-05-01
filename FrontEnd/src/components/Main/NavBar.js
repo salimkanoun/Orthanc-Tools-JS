@@ -72,7 +72,7 @@ export default ({ onLogout, roles }) => {
                             </li>
 
                             <li>
-                                <Nav.Link className={getLinkClass('mydicom')} disabled={true} onClick={() => selectTabHandler(MYDICOM)} name='mydicom'><i className="far fa-images icone"></i>{opened ? '  MyDicom' : ''}</Nav.Link>
+                                <Nav.Link className={getLinkClass('mydicom')} onClick={() => selectTabHandler(MYDICOM)} name='mydicom'><i className="far fa-images icone"></i>{opened ? '  MyDicom' : ''}</Nav.Link>
                             </li>
 
                             <li>

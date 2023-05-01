@@ -9,7 +9,6 @@ import AnonRoot from '../Anonymize/AnonRoot'
 import AutoQueryRoot from '../AutoQuery/AutoQueryRoot'
 import DicomRouterPanel from '../Dicom Router/DicomRouterPanel'
 import ImportRootPanel from '../Import/ImportRootPanel'
-import MyDicom from '../MyDicom/MyDicom'
 import ContentRootPanel from '../Content/ContentRootPanel'
 import Query from '../Query/Query'
 import NavBar from './NavBar'
@@ -20,6 +19,7 @@ import Welcome from './Welcome';
 import ExportRoot from '../Export/ExportRoot';
 import DeleteRoot from '../Delete/DeleteRoot';
 import CDBurnerRoot from '../CDBurner/CDBurnerRoot';
+import MyDicomRoot from '../MyDicom/MyDicomRoot';
 
 const MainRoot = ({ onLogout, username, roles }) => {
 
@@ -53,7 +53,7 @@ const AnimatedSwitch = withRouter(({ location, ...props }) => (
                     <Route exact path='/export' component={ExportRoot} />
                     <Route exact path='/anonymize' component={AnonRoot} />
                     <Route exact path='/cd-burner' component={CDBurnerRoot} />
-                    <Route exact path='/mydicom' component={MyDicom} />
+                    <Route exact path='/mydicom' component={MyDicomRoot} />
                     <Route exact path='/delete' component={DeleteRoot} />
                     <Route exact path='/dicom-router' component={DicomRouterPanel} />
                     <Route exact path='/' component={Welcome} />

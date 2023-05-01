@@ -37,7 +37,8 @@ const getAllRolesLabels= async function (req, res) {
  */
 const getRoleLabels = async function (req, res) {
     let roleslabels = await RoleLabel.getLabelsFromRoleName(req.params.name)
-    res.json(roleslabels)
+    let labels = roleslabels.map(label => label.label_name)
+    res.json(labels)
 }
 
 /**

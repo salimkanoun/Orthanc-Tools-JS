@@ -27,7 +27,7 @@ export default () => {
         try {
             cdBurnerData = await apis.cdBurner.getCdBuner()
         } catch (error) {
-            errorMessage(error.statusText)
+            errorMessage(error?.data?.errorMessage ?? "Error fetching CDBurner service")
             return
         }
 
@@ -87,8 +87,6 @@ export default () => {
         } catch (error) {
             errorMessage(error?.data?.errorMessage ?? "Failed updating burner service")
         }
-
-
     }
 
     const soundHandler = (e) => {

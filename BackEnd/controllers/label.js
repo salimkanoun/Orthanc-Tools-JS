@@ -17,7 +17,7 @@ const createLabel = async function (req, res) {
  */
 const getLabels = async function (req, res) {
   let labels = await Labels.getAllLabels()
-  answer = labels.map(label => LabelEntity.createRolefromDB(label))
+  answer = labels.map(label => label.label_name)
   res.json(answer)
 }
 
