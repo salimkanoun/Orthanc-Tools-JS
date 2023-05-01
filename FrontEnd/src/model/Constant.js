@@ -25,7 +25,9 @@ const keys = {
     EXPAND: 'expand',
     EXPORT_OPTION_KEYS : 'exportOptions',
     PROGRESSION_KEYS : 'progression',
-    ANONYMIZE_KEYS : 'anonymize'
+    ANONYMIZE_KEYS : 'anonymize',
+    LABELS_KEY : 'labels',
+    STUDY_KEY : 'studies'
 }
 
 const filter = {

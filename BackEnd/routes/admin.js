@@ -40,14 +40,6 @@ const {getLabels, createLabel, modifyLabel, deleteLabel} = require('../controlle
 const {
     createRoleLabel, deleteRoleLabel, getAllRolesLabels, getLabelRoles, getRoleLabels
 } = require('../controllers/roleLabel')
-const {
-    getStudiesLabels,
-    createStudyLabel,
-    deleteStudyLabel,
-    getStudiesLabel,
-    getStudyLabels,
-    getStudyLabelsByStudyOrthancID
-} = require('../controllers/studyLabel')
 
 const{
     createAutorouter,
@@ -170,14 +162,6 @@ adminRouter.get('/labels/:label/roles', [userAuthMidelware,userAdminMidelware], 
 adminRouter.get('/roles/:name/labels', [userAuthMidelware], getRoleLabels)
 adminRouter.post('/labels/:name/roles', [userAuthMidelware, userAdminMidelware], createRoleLabel)
 adminRouter.delete('/labels/:name/roles', [userAuthMidelware, userAdminMidelware], deleteRoleLabel)
-
-//StudyLabel
-adminRouter.get('/studies/labels', [userAuthMidelware,userAdminMidelware], getStudiesLabels)
-adminRouter.get('/studies/labels/:name', [userAuthMidelware,roleAccessLabelMidelware], getStudiesLabel)
-adminRouter.get('/studies/orthanc/:id/labels',[userAuthMidelware,userAdminMidelware], getStudyLabelsByStudyOrthancID)
-adminRouter.get('/studies/:uid/labels/', [userAuthMidelware,userAdminMidelware], getStudyLabels)
-adminRouter.post('/patient/:id/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], createStudyLabel)
-adminRouter.delete('/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], deleteStudyLabel)
 
 /*
 **AUTO ROUTING

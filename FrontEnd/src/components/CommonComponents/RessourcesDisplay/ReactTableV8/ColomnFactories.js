@@ -148,22 +148,6 @@ const studyColumns = {
             return row.original.AnonymizedFrom ? 'Yes' : 'No'
         })
     },
-    ACTION: (onDelete, refresh, openLabelModal) => ({
-        id: 'Action',
-        accessorKey: 'Action',
-        header: 'Action',
-        cell: (({ row }) => {
-            return <ActionBouton level={ConstantLevel.STUDIES}
-                orthancID={row.original.StudyOrthancID}
-                StudyInstanceUID={row.original.StudyInstanceUID}
-                onDelete={onDelete}
-                dataDetails={row.original}
-                refresh={refresh}
-                openLabelModal={openLabelModal}
-                hiddenModify={false}
-                hiddenMetadata={true} />
-        })
-    }),
     REMOVE: (onRemoveStudy) => ({
         id: 'Remove',
         accessorKey: 'Remove',

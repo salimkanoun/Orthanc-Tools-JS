@@ -6,6 +6,7 @@ import ConstantLevel from "../Modify/ConstantLevel";
 import Modify from "../Modify/Modify";
 import ActionButtonPatients from "./ActionButtons/ActionButtonPatients";
 import ActionButtonStudies from "./ActionButtons/ActionButtonStudies";
+import Labels from "../Labels/Labels";
 
 export default ({
     patients = [],
@@ -14,10 +15,10 @@ export default ({
     onSelectStudies,
     onDeletePatient,
     onDeleteStudy,
-    openLabelModal = () => { }
 }) => {
 
     const [modifyOrthancID, setModifyOrthancID] = useState({ orthancID: null, level: null })
+    const [labelStudyOrthancID, setLabelStudyOrthancId] = useState(null)
 
     const additionalColumnsPatients = [
         {
@@ -43,10 +44,9 @@ export default ({
             header: 'Action',
             cell: ({ row }) => {
                 return <ActionButtonStudies
-                    orthancID={row.original.StudyOrthancID}
                     StudyInstanceUID={row.original.StudyInstanceUID}
                     onDelete={() => onDeleteStudy(row.original.StudyOrthancID)}
-                    openLabelModal={openLabelModal}
+                    onShowLabels={() => setLabelStudyOrthancId(row.original.StudyOrthancID)}
                     dataDetails={row.original}
                     onShowModify={() => setModifyOrthancID({ orthancID: row.original.StudyOrthancID, level: ConstantLevel.STUDIES })}
                 />
@@ -61,7 +61,16 @@ export default ({
                     <Modal.Title> Modify {modifyOrthancID.level}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Modify orthancID={modifyOrthancID.orthancID} level={modifyOrthancID.level} onClose={() => setModifyOrthancID({ orthancID: null, level: null })}/>
+                    <Modify orthancID={modifyOrthancID.orthancID} level={modifyOrthancID.level} onClose={() => setModifyOrthancID({ orthancID: null, level: null })} />
+                </Modal.Body>
+            </Modal>
+
+            <Modal show={labelStudyOrthancID != null} onHide={() => setLabelStudyOrthancId(null)} onClick={(e) => e.stopPropagation()} size='xl'>
+                <Modal.Header closeButton>
+                    <Modal.Title> Label Study</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {labelStudyOrthancID ? <Labels studyOrthancID={labelStudyOrthancID} /> : null}
                 </Modal.Body>
             </Modal>
 

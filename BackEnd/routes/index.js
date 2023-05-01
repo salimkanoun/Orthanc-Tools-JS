@@ -8,7 +8,8 @@ const {
     reverseProxyGet,
     reverseProxyPost,
     reverseProxyPostUploadDicom,
-    reverseProxyDelete
+    reverseProxyDelete,
+    reverseProxyPut
 } = require('../controllers/reverseProxy')
 const {
     startBurner,
@@ -93,6 +94,10 @@ router.post('/series/*/modify', [userAuthMidelware, modifyMidelware], reversePro
 
 //Tools Find API for Orthanc Content Role
 router.post('/tools/find', [userAuthMidelware, contentMidelware], reverseProxyPost)
+
+//SK Voir role pour la modification des labels
+router.put('/studies/*/labels/*', [userAuthMidelware], reverseProxyPut)
+router.delete('/studies/*/labels/*', [userAuthMidelware], reverseProxyDelete)
 
 //Reverse Proxy Routes for orthanc content => Warning non RBAC Protected
 //SK A VERIFIER QUE LES RACINES SONT BIEN VEROUILLEES
