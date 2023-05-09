@@ -6,7 +6,7 @@ import apis from "../../services/apis";
 /**
  * To use it to edit AETs choice, pass an Array of AETs Name through the props named 'aets'
  */
-export default ({ aets, refresh }) => {
+export default ({ refresh }) => {
 
   const [selected, setSelected] = useState([])
   const [options, setOptions] = useState([])
