@@ -2,8 +2,6 @@ import React from "react";
 import { Button } from "react-bootstrap";
 
 import { filter } from '../../../../model/Constant';
-import ConstantLevel from "../../../Modify/ConstantLevel";
-import ActionBouton from "../ActionBouton";
 import RetrieveButton from "../../../Query/RetrieveButton";
 import { errorMessage } from "../../../../tools/toastify";
 import moment from "moment";
@@ -54,22 +52,6 @@ const patientColumns = {
         header: 'Patient ID',
         filterType: filter.STRING_FILTER
     },
-    ACTION: (onDelete, onModify, refresh) => ({
-        id: 'Action',
-        accessorKey: 'Action',
-        header: 'Action',
-        cell: (({ row }) => {
-            return <ActionBouton
-                level={ConstantLevel.PATIENTS}
-                orthancID={row.original.PatientOrthancID}
-                onDelete={onDelete}
-                onModify={onModify}
-                dataDetails={row.original}
-                refresh={refresh}
-                hiddenModify={false}
-                hiddenMetadata={true} />
-        })
-    }),
     REMOVE: (onRemovePatient) => ({
         id: 'Remove',
         accessorKey: 'Remove',
@@ -205,24 +187,6 @@ const seriesColumns = {
         header: 'Instances',
         filterType: filter.NUMBER_FILTER
     },
-    ACTION: (onDelete, refresh) => ({
-        id: 'Action',
-        accessorKey: 'Action',
-        header: 'Action',
-        cell: ({ row }) => {
-            return (
-                <ActionBouton
-                    level={ConstantLevel.SERIES}
-                    orthancID={row.original.SeriesOrthancID}
-                    parentID={row.original.StudyOrthancID}
-                    onDelete={onDelete}
-                    dataDetails={row.original}
-                    refresh={refresh}
-                    hiddenMetadata={false}
-                    hiddenCreateDicom={true}
-                    hiddenModify={false} />)
-        }
-    }),
     REMOVE: (onRemove) => ({
         id: 'Remove',
         accessorKey: 'Remove',
