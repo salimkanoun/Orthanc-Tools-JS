@@ -2,7 +2,6 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 
 import Papa from 'papaparse'
-import moment from 'moment'
 
 import MyDropzone from '../CommonComponents/MyDropzone'
 import { addQueryToList } from '../../actions/TableQuery'

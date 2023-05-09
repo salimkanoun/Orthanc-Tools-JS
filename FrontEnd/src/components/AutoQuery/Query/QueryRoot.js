@@ -20,6 +20,7 @@ export default ({ onQueryFinished }) => {
 
 
     const [currentRow, setCurrentRow] = useState(null)
+    const [selectedRowsIds, setSelectedRowsIds] = useState([])
 
     const dispatch = useDispatch()
 
@@ -38,12 +39,17 @@ export default ({ onQueryFinished }) => {
         setCurrentRow(rowId)
     }
 
-    const removeRow = () => {
-        dispatch(removeQuery([currentRow]));
+    const removeRows = () => {
+        console.log(selectedRowsIds)
+        dispatch(removeQuery(selectedRowsIds));
     }
 
     const emptyTable = () => {
         dispatch(emptyQueryTable())
+    }
+
+    const onSelectRowsChange = (rowIds) => {
+        setSelectedRowsIds(rowIds)
     }
 
     const onCSVDownload = () => {
@@ -152,7 +158,7 @@ export default ({ onQueryFinished }) => {
                     onClick={() => dispatch(addRow())} />
                 <Button onClick={onCSVDownload} className="otjs-button otjs-button-blue w-10">Export CSV</Button>
                 <input type="button" className="otjs-button otjs-button-orange w-10" value="Delete Selected"
-                    onClick={removeRow} />
+                    onClick={removeRows} />
                 <input type="button" className="otjs-button otjs-button-red w-10" value="Empty Table"
                     onClick={emptyTable} />
             </Row>
@@ -162,6 +168,8 @@ export default ({ onQueryFinished }) => {
                     aets={aets}
                     currentRow={currentRow}
                     onRowClick={onRowClick}
+                    onSelectRowsChange={onSelectRowsChange}
+                    selectedRowIds={selectedRowsIds}
                 />
             </Row>
             <Row className="d-flex justify-content-center mt-5">
