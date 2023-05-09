@@ -1,17 +1,22 @@
 import React, { useMemo } from 'react'
 import { useDispatch } from 'react-redux'
 
+import moment from 'moment'
+
 import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities"
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8"
 import { editCellQuery } from '../../../actions/TableQuery'
 
 import { filter } from '../../../model/Constant'
-import moment from 'moment'
 import { isWithinDateRange } from '../../CommonComponents/RessourcesDisplay/ReactTableV8/Tools/FilterFns'
 
-export default ({ queries = [], aets = [], onRowClick, currentRow }) => {
+export default ({ queries = [], aets = [], onRowClick, currentRow, onSelectRowsChange, selectedRowIds }) => {
 
     const dispatch = useDispatch()
+
+    const selectRowHandle = (rowIds) => {
+        onSelectRowsChange(rowIds)
+    }
 
     const cellEditHandler = (rowIndex, columnId, value) => {
         if(value instanceof Date) value = moment(value).format('YYYYMMDD')
@@ -90,6 +95,7 @@ export default ({ queries = [], aets = [], onRowClick, currentRow }) => {
     return (
         <CommonTableV8
             id='key'
+            onSelectRow={selectRowHandle}
             onRowClick={onRowClick}
             rowStyle={rowStyle}
             columns={columns}
@@ -97,6 +103,8 @@ export default ({ queries = [], aets = [], onRowClick, currentRow }) => {
             onCellEdit={cellEditHandler}
             paginated
             canFilter
+            canSelect
+            selectedRowsIds={selectedRowIds}
         />
     )
 }

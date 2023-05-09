@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 import CommonTableV8 from "./CommonTableV8";
 import { Button } from "react-bootstrap";
@@ -9,7 +8,8 @@ export default ({
     validationRobotHandler,
     deleteJobHandler,
     hideValidationButton,
-    additionalColumns = []
+    additionalColumns = [],
+    onShowDetails = () => { }
 }) => {
 
     const columns = [
@@ -29,19 +29,19 @@ export default ({
             header: 'Username'
         }, {
             id: 'quesriesNb',
-            accessorFn: ( row ) => {
+            accessorFn: (row) => {
                 return row.details?.items.length
             },
             header: 'Number of Queries'
         }, {
             id: 'validation',
-            accessorFn: ( row ) => {
+            accessorFn: (row) => {
                 return row?.progress?.validation
             },
             header: 'Progress Validation'
         }, {
             id: 'retrieve',
-            accessorFn: ( row ) => {
+            accessorFn: (row) => {
                 return row?.progress?.retrieve
             },
             header: 'Progress Retrieve'
@@ -52,15 +52,17 @@ export default ({
         }, {
             id: 'details',
             header: 'Show Details',
-            cell: ({ row }) => {
-                return <Link className='nav-link otjs-button otjs-button-blue'
-                    to={'/robot/' + row.original.id}> Details </Link>
+            cell: ({row}) => {
+                return <Button
+                    className='nav-link otjs-button otjs-button-blue'
+                    onClick={() => onShowDetails(row.original.id)}
+                > Details </Button>
             }
         }, {
             id: 'approved',
-            header : 'Approved',
+            header: 'Approved',
             accessorKey: "approved",
-            accessorFn: ( row ) => {
+            accessorFn: (row) => {
                 return row?.details?.approved
             }
         }, {

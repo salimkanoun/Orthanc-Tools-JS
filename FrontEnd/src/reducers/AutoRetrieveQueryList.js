@@ -17,7 +17,7 @@ export default function queryListReducer(state = initialState, action) {
         case AQ_ADD_QUERY_TO_LIST:
             let queriesListCopy = [...state.queries]
             queriesListCopy.push({
-                key: Math.random(),
+                key: Math.random().toString(),
                 ...action.payload
             })
             return {
@@ -28,7 +28,7 @@ export default function queryListReducer(state = initialState, action) {
         case AQ_ADD_EMPTY_QUERY:
             let queriesCopy = [...state.queries]
             queriesCopy.push({
-                key: Math.random(),
+                key: Math.random().toString(),
                 PatientName: '',
                 PatientID: '',
                 AccessionNumber: '',
@@ -64,7 +64,7 @@ export default function queryListReducer(state = initialState, action) {
             // Edit all column value
             // Need to change key to force update
             const newState = state.queries.map((query) => {
-                query.key = Math.random()
+                query.key = Math.random().toString()
                 query[action.payload.columnName] = action.payload.text
                 return query
             })

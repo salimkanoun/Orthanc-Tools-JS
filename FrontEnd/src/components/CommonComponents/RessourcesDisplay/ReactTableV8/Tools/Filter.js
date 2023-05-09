@@ -44,7 +44,7 @@ export default ({
                         maxDate={max ? max : new Date()}
                         selected={filterMinimum}
                         onChange={(date) => setFilterMinimum(date)}
-                        customInput={<CustomInput/>}
+                        customInput={<CustomInput />}
                     />
                 </div>
                 <div>
@@ -55,7 +55,7 @@ export default ({
                         maxDate={max ? new Date(max) : new Date()}
                         selected={filterMaximum}
                         onChange={(date) => setFilterMaximum(date?.setHours(23, 59, 59, 999))}
-                        customInput={<CustomInput/>}
+                        customInput={<CustomInput />}
                     />
                 </div>
             </div>
@@ -69,8 +69,8 @@ export default ({
             <div>
                 <Form.Control
                     type="number"
-                    min={Number(facetedMinMaxValues?.[0] ?? undefined)}
-                    max={Number(facetedMinMaxValues?.[1] ?? undefined)}
+                    min={facetedMinMaxValues?.[0] != null ? Number(facetedMinMaxValues?.[0]) : undefined}
+                    max={facetedMinMaxValues?.[1] != null ? Number(facetedMinMaxValues?.[1]) : undefined}
                     value={(columnFilterValue)?.[0] ?? ''}
                     onChange={event => {
                         let value = event.target.valueAsNumber

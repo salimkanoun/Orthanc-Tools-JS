@@ -42,7 +42,7 @@ export default ({ getValue, row: { index, id: idRow }, column: { columnDef: { id
                     placeholder='Select...'
                     value={options.filter((option) => option.value === value)}
                     options={options}
-                    onChange={(option, actionMeta) => {
+                    onChange={(option) => {
                         table.options.meta?.updateData(rowId, columnId, option?.value)
                     }}
                 />
