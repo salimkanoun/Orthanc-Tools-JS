@@ -3,8 +3,8 @@ import { useDispatch } from 'react-redux'
 
 import Papa from 'papaparse'
 
-import MyDropzone from '../CommonComponents/MyDropzone'
-import { addQueryToList } from '../../actions/TableQuery'
+import MyDropzone from '../../CommonComponents/MyDropzone'
+import { addQueryToList } from '../../../actions/TableQuery'
 
 export default () => {
 
@@ -21,7 +21,7 @@ export default () => {
         }
     }
 
-    const completeFn = (result, file) => {
+    const completeFn = (result) => {
         let csvData = result.data;
 
         csvData.forEach((query) => {           

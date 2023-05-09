@@ -5,7 +5,7 @@ import { Button, Container, Row } from 'react-bootstrap'
 import moment from 'moment'
 
 import Spinner from '../../CommonComponents/Spinner'
-import CsvLoader from '../CsvLoader'
+import CsvLoader from './CsvLoader'
 import QueryTable from './QueryTable'
 
 import { addRow, emptyQueryTable, removeQuery } from '../../../actions/TableQuery'
