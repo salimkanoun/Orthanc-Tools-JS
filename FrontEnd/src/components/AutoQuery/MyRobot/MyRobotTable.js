@@ -70,10 +70,6 @@ export default ({ robotId, rows }) => {
         header: 'AET',
     },
     {
-        accessorKey: 'Status',
-        header: 'Status',
-    },
-    {
         accessorKey: 'Validated',
         header: 'Validated',
         cell: ({ getValue }) => {
