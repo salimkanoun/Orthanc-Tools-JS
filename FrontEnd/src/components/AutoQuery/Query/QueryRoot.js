@@ -40,7 +40,6 @@ export default ({ onQueryFinished }) => {
     }
 
     const removeRows = () => {
-        console.log(selectedRowsIds)
         dispatch(removeQuery(selectedRowsIds));
     }
 
