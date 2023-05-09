@@ -13,7 +13,7 @@ import { ReactComponent as RepeatSVG } from '../../../assets/images/arrow-repeat
 import apis from '../../../services/apis';
 import { errorMessage } from '../../../tools/toastify';
 
-export default ({ robotId, rows = [] }) => {
+export default ({ robotId, rows = [], selectedRowsIds, onSelectRow }) => {
 
     //SK ICI CHECKER LE ITEMID dans le backend (eviter position et remplacer par un ID (actuelement aswerId mais mauvaise idee car existe qu'une fois executee))
     const retryQueryHandler = async (itemId) => {
@@ -50,11 +50,8 @@ export default ({ robotId, rows = [] }) => {
         accessorKey: 'AccessionNumber',
         header: 'Accession Number'
     }, {
-        accessorKey: 'DateFrom',
-        header: 'Date From'
-    }, {
-        accessorKey: 'DateTo',
-        header: 'Date To'
+        accessorKey: 'StudyDate',
+        header: 'Study Date'
     }, {
         accessorKey: 'StudyDescription',
         header: 'Study Description'
@@ -140,7 +137,7 @@ export default ({ robotId, rows = [] }) => {
 
     return (
         <>
-            <CommonTableV8 columns={columns} data={rows} paginated />
+            <CommonTableV8 canSelect selectedRowsIds={selectedRowsIds} columns={columns} data={rows} onSelectRow={onSelectRow} paginated />
         </>
     )
 }

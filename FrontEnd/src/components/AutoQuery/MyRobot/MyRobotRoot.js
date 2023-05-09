@@ -34,13 +34,15 @@ export default () => {
 
     const dispatch = useDispatch()
 
+    const [selectedRowIds, setSelectedRowIds] = useState([])
+
     const [id, setId] = useState(null)
     const [projectName, setProjectName] = useState(null)
     const [creator, setCreator] = useState(null)
     const [valid, setValid] = useState(null)
     const [approved, setApproved] = useState(null)
     const [rows, setRows] = useState([])
-    const [selected, setSelected] = useState([])
+
     const [totalPercentageProgress, setTotalPercentageProgress] = useState(0)
     const [percentageFailure, setPercentageFailure] = useState(0)
 
@@ -97,14 +99,10 @@ export default () => {
     }
 
     const getSelectedItemsStudiesDetails = async () => {
-
-        //get array of selected rows
-        let seletectedRows = selected
-
         let studyDataRetrieved = []
         //Loop each item to retrieve study level
-        for (let row of seletectedRows) {
-            await apis.content.getStudiesDetails(row.RetrievedOrthancId).then((studyDetails) => {
+        for (let orthancId of selectedRowIds) {
+            await apis.content.getStudiesDetails(orthancId).then((studyDetails) => {
                 studyDataRetrieved.push(studyDetails)
             }).catch((error) => {
                 console.error(error)
@@ -115,8 +113,8 @@ export default () => {
 
     }
 
-    const setSelect = (selected) => {
-        setSelected({ selected })
+    const selectRowHandler = (selectedRowIds) => {
+        setSelectedRowIds(selectedRowIds)
     }
 
     const sendToAnon = async () => {
@@ -177,9 +175,10 @@ export default () => {
                 </div>
             </Row>
             <Row className='mt-5'>
-                <MyRobotTable robotId={id} rows={rows} />
+                <MyRobotTable selectedRowsIds={selectedRowIds} onSelectRow={selectRowHandler} robotId={id} rows={rows} />
             </Row>
             <Row>
+                
                 <ExportDeleteSendButton
                     onAnonClick={sendToAnon} onExportClick={sendToExport}
                     onDeleteClick={sendToDelete}
