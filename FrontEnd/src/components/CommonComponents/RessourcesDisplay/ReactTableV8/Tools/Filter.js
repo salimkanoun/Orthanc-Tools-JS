@@ -69,8 +69,8 @@ export default ({
             <div>
                 <Form.Control
                     type="number"
-                    min={facetedMinMaxValues?.[0] ? Number(facetedMinMaxValues?.[0]) : undefined}
-                    max={facetedMinMaxValues?.[1] ? Number(facetedMinMaxValues?.[1]) : undefined}
+                    min={facetedMinMaxValues?.[0] != null ? Number(facetedMinMaxValues?.[0]) : undefined}
+                    max={facetedMinMaxValues?.[1] != null ? Number(facetedMinMaxValues?.[1]) : undefined}
                     value={(columnFilterValue)?.[0] ?? ''}
                     onChange={event => {
                         let value = event.target.valueAsNumber
