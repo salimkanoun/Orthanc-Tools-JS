@@ -13,7 +13,7 @@ import { ReactComponent as RepeatSVG } from '../../../assets/images/arrow-repeat
 import apis from '../../../services/apis';
 import { errorMessage } from '../../../tools/toastify';
 
-export default ({ robotId, rows }) => {
+export default ({ robotId, rows = [] }) => {
 
     //SK ICI CHECKER LE ITEMID dans le backend (eviter position et remplacer par un ID (actuelement aswerId mais mauvaise idee car existe qu'une fois executee))
     const retryQueryHandler = async (itemId) => {

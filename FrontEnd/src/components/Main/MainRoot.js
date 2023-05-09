@@ -62,8 +62,6 @@ const AnimatedSwitch = withRouter(({ location, ...props }) => (
         </CSSTransition>
     </TransitionGroup>
 ))
-//TODO restorer cette vue pour consulter un robot depuis admin
-//<Route exact path='/robot/:id' render={(props) => <Robo id={props.match.params.id} />} />
 
 
 export default MainRoot
