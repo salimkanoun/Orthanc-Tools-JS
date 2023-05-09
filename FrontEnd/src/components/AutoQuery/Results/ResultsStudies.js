@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Container, Row } from 'react-bootstrap'
 
-import TableQueryResultStudies from '../../CommonComponents/RessourcesDisplay/ReactTableV8/TableQueryResultStudies'
-
-import { exportCsv } from '../../../tools/CSVExport'
 import { emptyResultsTable, removeResult } from '../../../actions/TableResult'
+import ResultsStudiesTable from './ResultsStudiesTable'
+import { exportCsv } from '../../../tools/CSVExport'
 
 export default () => {
 
@@ -16,6 +15,8 @@ export default () => {
             results: state.AutoRetrieveResultList.results,
         }
     })
+
+    const [selectedRowIds, setSelectedRowIds] = useState([])
 
     const onCSVDownload = () => {
 
@@ -33,25 +34,34 @@ export default () => {
         })
         exportCsv(data, 'csv', 'queries.csv')
     }
-    //SK TODO SELECTION DES RESSOURCE A REMOVE
-    const selected = []
+
+    const selectRowHandle = (rowIds) => {
+        setSelectedRowIds(rowIds)
+    }
+
+    const deleteRowsHandle = () => {
+        dispatch(removeResult(selectedRowIds))
+    }
+
+    const emptyRowsHandle = () => {
+        dispatch(emptyResultsTable())
+    }
+
     return (
         <Container fluid>
             <Row className='d-flex justify-content-around mb-3'>
                 <Button onClick={onCSVDownload} className="otjs-button otjs-button-blue w-10">Export CSV</Button>
                 <Button className="otjs-button otjs-button-orange w-10"
-                    onClick={() => {
-                        dispatch(removeResult(selected.map(x => x.values.StudyInstanceUID)))
-                    }} >
+                    onClick={deleteRowsHandle} >
                     Delete Selected
                 </Button>
                 <Button className="otjs-button otjs-button-red w-10"
-                    onClick={() => dispatch(emptyResultsTable())} >
+                    onClick={emptyRowsHandle} >
                     Empty Table
                 </Button>
             </Row>
             <Row className='mb-3'>
-                < TableQueryResultStudies studies={Object.values(store.results)} />
+                <ResultsStudiesTable onSelectRow={selectRowHandle} studies={Object.values(store.results)} selectedRowIds={selectedRowIds} />
             </Row>
         </Container>
     )
