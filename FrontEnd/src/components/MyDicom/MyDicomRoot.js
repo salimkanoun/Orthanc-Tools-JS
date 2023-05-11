@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import apis from '../../services/apis'
 import { useSelector } from 'react-redux'
 import { useCustomQuery } from '../../services/ReactQuery/hooks'
