@@ -1,5 +1,5 @@
 import React from "react"
-import MyRobotTable from "../../AutoQuery/MyRobot/MyRobotTable"
+import MyRobotTableStudies from "../../AutoQuery/MyRobot/MyRobotTableStudies"
 import { useCustomQuery } from "../../../services/ReactQuery/hooks"
 import { errorMessage } from "../../../tools/toastify"
 import { keys } from "../../../model/Constant"
@@ -23,6 +23,6 @@ export default ({ robotId }) => {
     if (isLoading) return <Spinner />
 
     return (
-        <MyRobotTable robotId={robotId} rows={data} />
+        <MyRobotTableStudies robotId={robotId} rows={data} />
     )
 }

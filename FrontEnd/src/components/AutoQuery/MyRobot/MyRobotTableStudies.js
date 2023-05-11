@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
 
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
@@ -9,31 +9,13 @@ import { ReactComponent as CheckedSVG } from '../../../assets/images/check-circl
 import { ReactComponent as XSVG } from '../../../assets/images/x-circle.svg'
 import { ReactComponent as PendingSVG } from '../../../assets/images/pending.svg'
 import { ReactComponent as RepeatSVG } from '../../../assets/images/arrow-repeat.svg'
+import { ITEM_SUCCESS } from './MyRobotRoot';
 
-import apis from '../../../services/apis';
-import { errorMessage } from '../../../tools/toastify';
+export default ({ rows = [], selectedRowsIds, onSelectRow, onRetryItem, onDeleteItem }) => {
 
-export default ({ robotId, rows = [], selectedRowsIds, onSelectRow }) => {
-
-    //SK ICI CHECKER LE ITEMID dans le backend (eviter position et remplacer par un ID (actuelement aswerId mais mauvaise idee car existe qu'une fois executee))
-    const retryQueryHandler = async (itemId) => {
-        try {
-            await apis.retrieveRobot.deleteRobotItem(robotId, itemId)
-        } catch (error) {
-            errorMessage(error?.data?.errorMessage ?? 'Delete Failed')
-        }
-    }
-
-    const deleteQueryHandler = async (itemId) => {
-        try {
-            await apis.retrieveRobot.retryRobotItem(robotId, itemId)
-        } catch (error) {
-            errorMessage(error?.data?.errorMessage ?? 'Retry Failed')
-        }
-    }
 
     const columns = [{
-        accessorKey: 'key',
+        accessorKey: 'id',
         enableHiding: true
     },
     {
@@ -55,9 +37,6 @@ export default ({ robotId, rows = [], selectedRowsIds, onSelectRow }) => {
     }, {
         accessorKey: 'StudyDescription',
         header: 'Study Description'
-    }, {
-        accessorKey: 'SeriesDescription',
-        header: 'Series Description'
     },
     {
         accessorKey: 'ModalitiesInStudy',
@@ -86,7 +65,7 @@ export default ({ robotId, rows = [], selectedRowsIds, onSelectRow }) => {
                     <p>{value}</p>
                     {value === 'failed' ?
                         <Button type={"button"}
-                            onClick={() => retryQueryHandler(row.original.AnswerId)}>
+                            onClick={() => onRetryItem(row.original.AnswerId)}>
                             <RepeatSVG />
                         </Button>
                         :
@@ -102,7 +81,7 @@ export default ({ robotId, rows = [], selectedRowsIds, onSelectRow }) => {
             return row.original.approved === false ?
                 (
                     <Button className='otjs-button otjs-button-red'
-                        onClick={() => deleteQueryHandler(row.original.AnswerId)} >
+                        onClick={() => onDeleteItem(row.original.AnswerId)} >
                         Remove
                     </Button>
                 )
@@ -113,7 +92,7 @@ export default ({ robotId, rows = [], selectedRowsIds, onSelectRow }) => {
         accessorKey: 'Viewers',
         header: 'Viewers',
         cell: ({ row }) => {
-            return row.original.Status === 'Success' ?
+            return row.original.Status === ITEM_SUCCESS ?
                 <>
                     <Dropdown drop='left'>
                         <Dropdown.Toggle variant="button-dropdown-green" id="dropdown-basic"
@@ -135,9 +114,26 @@ export default ({ robotId, rows = [], selectedRowsIds, onSelectRow }) => {
         enableHiding: true
     }];
 
+    const onSelectRowHandler = (rowIds) => {
+        let selectedRows = rows.filter(row => rowIds.includes(row.id))
+        let retrievedOrthancIds = []
+        for (const row of selectedRows) {
+            if (row?.RetrievedOrthancId && row.Level === "study") {
+                retrievedOrthancIds.push(row.RetrievedOrthancId)
+            }
+        }
+        onSelectRow(retrievedOrthancIds)
+    }
+
+
+    const selectedRowKey = useMemo(() => {
+        let selectedRows = rows.filter((row) => selectedRowsIds.includes(row.RetrievedOrthancId))
+        return selectedRows.map(selectedRow => selectedRow.id)
+    }, [selectedRowsIds.length])
+
     return (
         <>
-            <CommonTableV8 canSelect selectedRowsIds={selectedRowsIds} columns={columns} data={rows} onSelectRow={onSelectRow} paginated />
+            <CommonTableV8 id={'id'} canSelect selectedRowsIds={selectedRowKey} columns={columns} data={rows} onSelectRow={onSelectRowHandler} paginated />
         </>
     )
 }

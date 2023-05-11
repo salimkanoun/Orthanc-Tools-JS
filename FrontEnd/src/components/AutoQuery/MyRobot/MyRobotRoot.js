@@ -1,30 +1,33 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
 import { Container, Row } from 'react-bootstrap'
 
-import MyRobotTable from './MyRobotTable'
-
 import { addStudiesToAnonList } from '../../../actions/AnonList'
 import { addStudiesToExportList } from '../../../actions/ExportList'
 import { addStudiesToDeleteList } from '../../../actions/DeleteList'
-import { errorMessage } from '../../../tools/toastify'
+
 import apis from '../../../services/apis'
 import ExportDeleteSendButton from '../../CommonComponents/RessourcesDisplay/ExportDeleteSendButton'
+import Study from '../../../model/Study'
+import MyRobotTableStudies from './MyRobotTableStudies'
+import MyRobotTableSeries from './MyRobotTableSeries'
+
+export const ITEM_SUCCESS = 'completed'
+export const ITEM_AWAITING = 'wait'
+export const ITEM_PENDING = 'active'
+export const ITEM_FAILED = 'failed'
+export const ITEM_DELAYED = 'delayed'
+export const ROBOT_WAITING_VALIDATION = 'waiting validation'
+export const ROBOT_VALIDATING = 'validation'
+export const ROBOT_WAITING_RETRIEVE = 'waiting retireve'
+export const ROBOT_RETRIEVING = 'retrieve'
+export const ROBOT_COMPLETED = 'completed'
+export const LEVEL_STUDY = 'study'
+export const LEVEL_SERIES = 'series'
 
 export default () => {
-
-    const ITEM_SUCCESS = 'completed'
-    const ITEM_AWAITING = 'wait'
-    const ITEM_PENDING = 'active'
-    const ITEM_FAILED = 'failed'
-    const ITEM_DELAYED = 'delayed'
-    const ROBOT_WAITING_VALIDATION = 'waiting validation'
-    const ROBOT_VALIDATING = 'validation'
-    const ROBOT_WAITING_RETRIEVE = 'waiting retireve'
-    const ROBOT_RETRIEVING = 'retrieve'
-    const ROBOT_COMPLETED = 'completed'
 
     const store = useSelector(state => {
         return {
@@ -56,7 +59,6 @@ export default () => {
 
     const refreshInfo = async () => {
         let retrieveIds = await apis.task.getTaskOfUser(store.username, 'retrieve')
-        console.log(retrieveIds)
         if (retrieveIds.length > 0) {
             let response = await apis.task.getTask(retrieveIds[0]);
             refreshHandler(response)
@@ -88,7 +90,6 @@ export default () => {
 
         let newTotalPercentageProgress = Math.round((newPercentageFailure + response.progress.retrieve + Number.EPSILON) * 10) / 10
 
-        console.log(rowsRetrieveList)
         setValid(response.details.valid)
         setApproved(response.details.approved)
         setProjectName(response.details.projectName)
@@ -103,7 +104,10 @@ export default () => {
         //Loop each item to retrieve study level
         for (let orthancId of selectedRowIds) {
             await apis.content.getStudiesDetails(orthancId).then((studyDetails) => {
-                studyDataRetrieved.push(studyDetails)
+                let study = new Study()
+                study.fillFromOrthanc(studyDetails.ID, studyDetails.MainDicomTags, studyDetails.Series)
+                study.fillParentPatient(studyDetails.ParentPatient, studyDetails.PatientMainDicomTags)
+                studyDataRetrieved.push(study.serialize())
             }).catch((error) => {
                 console.error(error)
             })
@@ -132,24 +136,30 @@ export default () => {
         dispatch(addStudiesToDeleteList(studyArray))
     }
 
-    const deleteQueryHandler = async (rowIndex) => {
+    //SK ICI CHECKER LE ITEMID dans le backend (eviter position et remplacer par un ID (actuelement aswerId mais mauvaise idee car existe qu'une fois executee))
+    const retryQueryHandler = async (itemId) => {
         try {
-            let row = rows[rowIndex];
-            await apis.retrieveRobot.deleteRobotItem(id, row.id)
+            await apis.retrieveRobot.deleteRobotItem(robotId, itemId)
         } catch (error) {
             errorMessage(error?.data?.errorMessage ?? 'Delete Failed')
         }
     }
 
-    const retryQueryHandler = async (rowIndex) => {
+    const deleteQueryHandler = async (itemId) => {
         try {
-            let row = rows[rowIndex];
-            await apis.retrieveRobot.retryRobotItem(id, row.id)
+            await apis.retrieveRobot.retryRobotItem(robotId, itemId)
         } catch (error) {
             errorMessage(error?.data?.errorMessage ?? 'Retry Failed')
         }
     }
 
+    const seriesRows = useMemo(() => {
+        return rows.filter(row => row.Level === LEVEL_SERIES)
+    }, [rows.length])
+
+    const studiesRows = useMemo(() => {
+        return rows.filter(row => row.Level === LEVEL_STUDY)
+    }, [rows.length])
 
     return (
         <Container fluid>
@@ -174,11 +184,23 @@ export default () => {
                     </CircularProgressbarWithChildren>
                 </div>
             </Row>
-            <Row className='mt-5'>
-                <MyRobotTable selectedRowsIds={selectedRowIds} onSelectRow={selectRowHandler} robotId={id} rows={rows} />
-            </Row>
+            {
+                studiesRows.length > 0 ?
+                    <Row className='mt-5'>
+                        <MyRobotTableStudies selectedRowsIds={selectedRowIds} onSelectRow={selectRowHandler} robotId={id} rows={studiesRows} />
+                    </Row>
+                    :
+                    null
+            }
+            {
+                seriesRows.length > 0 ?
+                    <Row className='mt-5'>
+                        <MyRobotTableSeries selectedRowsIds={selectedRowIds} onSelectRow={selectRowHandler} robotId={id} rows={seriesRows} />
+                    </Row>
+                    :
+                    null
+            }
             <Row>
-                
                 <ExportDeleteSendButton
                     onAnonClick={sendToAnon} onExportClick={sendToExport}
                     onDeleteClick={sendToDelete}
