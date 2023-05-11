@@ -89,6 +89,7 @@ services:
             ORTHANC__DICOM_WEB__SSL: "true"
             ORTHANC__DICOM_WEB__STUDIESMETADATA: "MainDicomTags"
             ORTHANC__DICOM_WEB__SERIESMETADATA: "Full"
+            ORTHANC__BUILTIN__DECODER__TRANSCODER__ORDER: "Before"
 
     orthanctoolsjspacs:
         image: osimis/orthanc:23.4.0
