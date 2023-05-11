@@ -27,10 +27,6 @@ export default ({ target, show, onHide }) => {
         dispatch(removePatientFromAnonList(patientOrthancID))
     }
 
-    const onRemoveStudy = (studyOrthancID) => {
-        dispatch(removeStudyFromAnonList(studyOrthancID))
-    }
-
     const handleClickEmpty = () => {
         dispatch(emptyAnonymizeList())
     }

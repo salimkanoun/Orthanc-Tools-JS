@@ -5,6 +5,7 @@ import { Row, Col, Form, Button, FormGroup } from 'react-bootstrap'
 import apis from '../../../services/apis'
 import { keys } from '../../../model/Constant'
 import { useCustomQuery } from '../../../services/ReactQuery/hooks'
+import Spinner from '../../CommonComponents/Spinner'
 /**
  * Form to declare or modify an Ssh Keys
  */
@@ -94,7 +95,7 @@ export default ({ onCreateEndpoint }) => {
         return ready
     }
 
-
+    if (isLoading) return <Spinner />
     return (
         <Form>
             <h2 className="card-title">Add Export Endpoint</h2>
