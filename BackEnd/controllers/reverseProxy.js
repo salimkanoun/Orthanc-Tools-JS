@@ -6,6 +6,14 @@ const reverseProxyGet = async function (req, res) {
   await ReverseProxy.streamToRes(orthancCalledApi, 'GET', undefined, res)
 }
 
+
+const reverseProxyGet2 = async function (req, res) {
+  const apiAdress = req.originalUrl
+  const orthancCalledApi = apiAdress.replace('/api', '')
+  await ReverseProxy.streamToResGet(orthancCalledApi, res)
+}
+
+
 const reverseProxyPost = async function (req, res) {
   const apiAdress = req.originalUrl
   const orthancCalledApi = apiAdress.replace('/api', '')
@@ -36,4 +44,4 @@ const reverseProxyPutPlainText = async function (req, res) {
   await ReverseProxy.streamToResPlainText(orthancCalledApi, 'PUT', req.body, res)
 }
 
-module.exports = { reverseProxyGet, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete }
+module.exports = { reverseProxyGet, reverseProxyGet2, reverseProxyPost, reverseProxyPostUploadDicom, reverseProxyPut, reverseProxyPutPlainText, reverseProxyDelete }

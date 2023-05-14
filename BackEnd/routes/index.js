@@ -6,6 +6,7 @@ require('express-async-errors')
 const {getParsedAnswer, postRetrieve} = require('../controllers/queryRetrieve')
 const {
     reverseProxyGet,
+    reverseProxyGet2,
     reverseProxyPost,
     reverseProxyPostUploadDicom,
     reverseProxyDelete,
@@ -105,7 +106,7 @@ router.get('/patients/*', [userAuthMidelware], reverseProxyGet)
 router.get('/studies/*', [userAuthMidelware], reverseProxyGet)
 router.get('/series/*', [userAuthMidelware], reverseProxyGet)
 router.get('/instances/*', [userAuthMidelware], reverseProxyGet)
-router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet)
+router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet2)
 router.get('/wado/*', [userAuthMidelware], reverseProxyGet)
 
 //Delete Orthanc ressource API
