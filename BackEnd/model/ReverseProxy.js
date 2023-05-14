@@ -81,19 +81,31 @@ const ReverseProxy = {
     },
 
     streamToRes(api, method, data, res) {
-        
-        return got(this.makeOptions(method, api, data))
-            .on('response', function (response) {
-                if (response.statusCode === 200) {
-                    response.pipe(res)
-                } else if (response.statusCode === 401) {
-                    res.status(403).send("Bad orthanc credentials")
-                } else {
-                    res.status(response.statusCode).send(response.statusMessage)
-                }
-            }).catch((error) => {
-                console.error(error)
-            })
+        const readStream = got(this.makeOptions(method, api, data))
+        return readStream.on('response', response => {
+            
+            if (response.statusCode === 200) {
+                const headers = response.headers
+                res.set({
+                    'content-type': headers['content-type'],
+                    'content-length': headers['content-length'],
+                    'content-encoding': headers['content-encoding']
+                })
+                
+                console.log(response)
+                console.log(response.rawBody.toString())
+                console.log(response.retryCount)
+                
+                //res.send(Buffer.from(response.rawBody, 'base64'));
+                response.pipe(res)
+
+                //response.pipe(res)
+            } else if (response.statusCode === 401) {
+                res.status(403).send("Bad orthanc credentials")
+            } else {
+                res.status(response.statusCode).send(response.statusMessage)
+            }
+        })
     },
 
     streamToResPlainText(api, method, data, res) {
