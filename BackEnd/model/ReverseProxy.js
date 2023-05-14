@@ -114,9 +114,7 @@ const ReverseProxy = {
 
     streamToResGet(api, res) {
         return new Promise((resolve, reject) => {
-            console.log(this.makeOptions2('GET', api))
             const req = http.get(this.makeOptions2('GET', api), (response) => {
-                console.log(response)
                 // write status
                 if (response.statusCode === 200) {
                     res.status = response.statusCode
