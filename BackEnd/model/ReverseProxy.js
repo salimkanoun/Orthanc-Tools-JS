@@ -1,6 +1,7 @@
 const { OTJSInternalServerError } = require('../Exceptions/OTJSErrors')
 const Options = require('./Options')
 const got = require('got')
+const http = require('node:http')
 
 const ReverseProxy = {
 
@@ -11,6 +12,37 @@ const ReverseProxy = {
         this.username = orthancSettings.orthancUsername
         this.password = orthancSettings.orthancPassword
         return this.address + ':' + this.port
+    },
+
+    makeOptions2(method, api) {
+        const orthancSettings = Options.getOrthancConnexionSettings()
+        const address = orthancSettings.orthancAddress
+        const port = orthancSettings.orthancPort
+        const username = orthancSettings.orthancUsername
+        const password = orthancSettings.orthancPassword
+
+        const protocolAndHostname = address.split('//')
+
+        let options = {}
+        options.method = method
+        options.protocol = protocolAndHostname[0]
+        options.hostname = protocolAndHostname[1]
+        options.port = port
+        options.path = api
+        options.auth = username + ':' + password
+
+        if (method === 'GET' || method === 'DELETE') {
+            options.headers = {
+                'Forwarded': 'by=localhost;for=localhost;host=' + process.env.DOMAIN_ADDRESS + '/api;proto=' + process.env.DOMAIN_PROTOCOL
+            }
+
+        } else {
+            options.headers = {
+                'Content-Type': 'application/json'
+            }
+        }
+
+        return options
     },
 
     makeOptions(method, api, data) {
@@ -80,22 +112,42 @@ const ReverseProxy = {
         return options
     },
 
+    streamToResGet(api, res) {
+        return new Promise((resolve, reject) => {
+            console.log(this.makeOptions2('GET', api))
+            const req = http.get(this.makeOptions2('GET', api), (response) => {
+                console.log(response)
+                // write status
+                if (response.statusCode === 200) {
+                    res.status = response.statusCode
+                    // write headers
+                    Object.keys(response.headers).forEach((headerName) => {
+                        res.setHeader(headerName, response.headers[headerName])
+                    })
+                    //Pipe data to response stream
+                    response.pipe(res)
+                } else if (response.statusCode === 401) {
+                    res.status(403).send("Bad orthanc credentials")
+                } else {
+                    res.status(response.statusCode).send(response.statusMessage)
+                }
+            })
+
+            req.on('error', (e) => {
+                reject(`problem with request: ${e.message}`);
+            });
+
+            resolve()
+
+        })
+
+    },
+
     streamToRes(api, method, data, res) {
         const readStream = got(this.makeOptions(method, api, data))
         return readStream.on('response', response => {
-            
+
             if (response.statusCode === 200) {
-                const headers = response.headers
-                res.set({
-                    'content-type': headers['content-type'],
-                    'content-length': headers['content-length'],
-                    'content-encoding': headers['content-encoding']
-                })
-                
-                console.log(response)
-                console.log(response.rawBody.toString())
-                console.log(response.retryCount)
-                
                 //res.send(Buffer.from(response.rawBody, 'base64'));
                 response.pipe(res)
 
