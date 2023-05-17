@@ -40,6 +40,7 @@ const filter = {
 }
 
 const send_type = {
+    LABEL: "label",
     ANON: "anon",
     DELETE: "delete",
     EXPORT: "export"

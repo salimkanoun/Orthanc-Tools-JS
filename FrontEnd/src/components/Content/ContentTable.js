@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 
-import { Row, Col } from "react-bootstrap"
+import { Row, Col, Modal } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 
 import { addStudiesToAnonList } from "../../actions/AnonList"
@@ -15,12 +15,14 @@ import apis from "../../services/apis"
 import { useCustomMutation, useCustomQuery } from "../../services/ReactQuery/hooks"
 import { errorMessage } from "../../tools/toastify"
 import { send_type } from "../../model/Constant"
+import LabelManagementRoot from "./LabelManagement/LabelManagementRoot"
 
 export default ({
     patients,
     refreshSearch
 }) => {
 
+    const [showLabelAssignement, setShowLabelAssignement] = useState(false)
     const [selectedStudies, setSelectedStudies] = useState([])
     const [currentStudy, setCurrentStudy] = useState(null)
 
@@ -58,6 +60,7 @@ export default ({
         if (type === send_type.ANON) dispatch(addStudiesToAnonList(filteredSelectedStudies))
         else if (type === send_type.EXPORT) dispatch(addStudiesToExportList(filteredSelectedStudies))
         else if (type === send_type.DELETE) dispatch(addStudiesToDeleteList(filteredSelectedStudies))
+        else if (type === send_type.LABEL) setShowLabelAssignement(true)
     }
 
     const rowStyle = (StudyOrthancID) => {
@@ -88,6 +91,14 @@ export default ({
     return (
 
         <Row>
+            <Modal show={showLabelAssignement} onHide={() => setShowLabelAssignement(false)} size='xl'>
+                <Modal.Header closeButton>
+                    <Modal.Title>Labels Management</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <LabelManagementRoot selectedOrthancStudyIds={selectedStudies} />
+                </Modal.Body>
+            </Modal>
             <Col sm>
                 <SendToAnonExportDeleteDropdown onSendTo={onSendTo} />
 

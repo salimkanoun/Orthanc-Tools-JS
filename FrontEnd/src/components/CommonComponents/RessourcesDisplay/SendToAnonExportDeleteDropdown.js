@@ -18,10 +18,9 @@ export default ({ onSendTo }) => {
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="mt-2 border border-dark border-2">
+                <Dropdown.Item className='bg-primary' onClick={() => onSendTo(send_type.LABEL)}>Label Assignement</Dropdown.Item>
                 <Dropdown.Item className='bg-blue' onClick={() => onSendTo(send_type.ANON)}>Anonymize List</Dropdown.Item>
-                <Dropdown.Divider />
                 <Dropdown.Item className='bg-orange' onClick={() => onSendTo(send_type.EXPORT)}>Export List</Dropdown.Item>
-                <Dropdown.Divider />
                 <Dropdown.Item className='bg-red' onClick={() => onSendTo(send_type.DELETE)}>Delete List</Dropdown.Item>
             </Dropdown.Menu>
         </Dropdown>

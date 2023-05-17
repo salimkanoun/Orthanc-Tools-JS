@@ -40,7 +40,7 @@ export default ({ studyOrthancID }) => {
             {availableLabels.map((labelName) => {
                 return (
                     <Button
-                        variant={isActivatedLabel(labelName) ? 'info' : 'success'}
+                        variant={isActivatedLabel(labelName) ? 'success' : 'danger'}
                         onClick={() => {
                             if (isActivatedLabel(labelName)) {
                                 removeLabelMutation.mutate({ labelName })
