@@ -8,9 +8,9 @@ import TagTable from './TagTable'
 import { errorMessage, successMessage } from '../../../tools/toastify'
 import apis from '../../../services/apis'
 
-export default () => {
+export default ({ parentStudy = null, onCreatedDicom = ()=>{} }) => {
 
-    const REQUIRED_TAGS = ['PatientID', 'PatientName', 'SeriesDescription', 'StudyDescription']
+    const REQUIRED_TAGS = parentStudy == null ? ['PatientID', 'PatientName', 'SeriesDescription', 'StudyDescription'] : ['SeriesDescription']
 
     const [tags, setTags] = useState([])
     const [files, setFiles] = useState([])
@@ -38,7 +38,7 @@ export default () => {
     }
 
     const readFileAsDataURL = (file) => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             var fr = new FileReader()
             fr.readAsDataURL(file)
             fr.onload = () => {
@@ -62,9 +62,10 @@ export default () => {
 
         try {
             setUploadState("Uploading")
-            await apis.importDicom.createDicom(images, null, getTags());
+            await apis.importDicom.createDicom(images, parentStudy, getTags());
             setUploadState("Uploaded")
             successMessage(`Dicoms successfully created`)
+            onCreatedDicom()
         } catch (error) {
             setUploadState('Failed To Upload')
             errorMessage(error?.data?.errorMessage ?? 'Dicoms creation failed')
@@ -72,7 +73,7 @@ export default () => {
     }
 
     const handleDrop = (files) => {
-        setFiles((file)=> [...file, ...files])
+        setFiles((file) => [...file, ...files])
         setUploadState('Selected')
     }
 

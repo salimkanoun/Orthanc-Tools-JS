@@ -114,9 +114,7 @@ const ReverseProxy = {
 
     streamToResGet(api, res) {
         return new Promise((resolve, reject) => {
-            console.log(this.makeOptions2('GET', api))
             const req = http.get(this.makeOptions2('GET', api), (response) => {
-                console.log(response)
                 // write status
                 if (response.statusCode === 200) {
                     res.status = response.statusCode
@@ -148,10 +146,7 @@ const ReverseProxy = {
         return readStream.on('response', response => {
 
             if (response.statusCode === 200) {
-                //res.send(Buffer.from(response.rawBody, 'base64'));
                 response.pipe(res)
-
-                //response.pipe(res)
             } else if (response.statusCode === 401) {
                 res.status(403).send("Bad orthanc credentials")
             } else {
