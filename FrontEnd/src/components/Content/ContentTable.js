@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { Row, Col } from "react-bootstrap"
 import { useDispatch } from "react-redux"
@@ -25,6 +25,11 @@ export default ({
     const [currentStudy, setCurrentStudy] = useState(null)
 
     const dispatch = useDispatch()
+
+    useEffect(() => {
+        //Empty series list if a new patients list has come
+        setCurrentStudy(null)
+    }, [patients])
 
     const { data: series, refetch } = useCustomQuery(
         ['orthanc', 'series', currentStudy],
@@ -74,7 +79,7 @@ export default ({
     )
 
     const deleteSerieMutation = useCustomMutation(
-        ({serieOrthancID}) => apis.content.deleteSeries(serieOrthancID),
+        ({ serieOrthancID }) => apis.content.deleteSeries(serieOrthancID),
         [],
         () => refetch(),
         (error) => errorMessage(error?.data?.errorMessage ?? 'Failed')
@@ -93,11 +98,11 @@ export default ({
                     onSelectStudies={(studiesSelected) => setSelectedStudies(studiesSelected)}
                     onDeletePatient={(patientOrthancID) => deletePatientMutation.mutate({ patientOrthancID })}
                     onDeleteStudy={(studyOrthancID) => deleteStudyMutation.mutate({ studyOrthancID })}
-                    onCreatedSeries={()=> refetch()}
+                    onCreatedSeries={() => refetch()}
                 />
             </Col>
             <Col sm>
-                <ContentTableSeries series={series} onDelete={(serieOrthancID) => deleteSerieMutation.mutate({serieOrthancID})} />
+                <ContentTableSeries series={series} onDelete={(serieOrthancID) => deleteSerieMutation.mutate({ serieOrthancID })} />
             </Col>
 
         </Row>
