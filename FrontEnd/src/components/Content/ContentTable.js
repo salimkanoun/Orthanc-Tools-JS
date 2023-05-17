@@ -93,6 +93,7 @@ export default ({
                     onSelectStudies={(studiesSelected) => setSelectedStudies(studiesSelected)}
                     onDeletePatient={(patientOrthancID) => deletePatientMutation.mutate({ patientOrthancID })}
                     onDeleteStudy={(studyOrthancID) => deleteStudyMutation.mutate({ studyOrthancID })}
+                    onCreatedSeries={()=> refetch()}
                 />
             </Col>
             <Col sm>

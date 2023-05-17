@@ -9,7 +9,8 @@ export default ({
     StudyInstanceUID,
     onDelete,
     onShowLabels,
-    onShowModify
+    onShowModify,
+    onShowCreate,
 }) => {
 
     const handleClick = (e) => {
@@ -33,6 +34,9 @@ export default ({
                     </Button>
                     <Button className='dropdown-item bg-blue' onClick={() => onShowLabels()}>
                         Labels
+                    </Button>
+                    <Button className='dropdown-item bg-blue' onClick={() => onShowCreate()}>
+                        Create Series
                     </Button>
                     <Button className='dropdown-item bg-red'
                         onClick={() => onDelete()}>Delete
