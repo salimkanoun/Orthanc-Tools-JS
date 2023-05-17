@@ -19,15 +19,15 @@ Current Features :
   - Batch Delete
   - Manual Query and Retrieve
   - Dicom Tag Edition
+  - Dicom ressource labelling
   - Automatic Retrieve : Define a list of studies /Series to retrieve and schedule a robot for automatic retrieval
+  - CD Burner Management (Epson and Primera)
   - Administration panel : Declaration and echo of AETs, Orthanc Peers, Jobs management
   
 Documentation : https://github.com/salimkanoun/Orthanc-Tools-JS/blob/master/Documentation/Orthanc-Tools-JS-Documentation.pdf
 
 Roadmap : 
-- CD Burner Management (Epson and Primera) => To Be restaured
 - Auto Routing => To Be Restaured
-- Dicom ressource labelling => To Be Restaured using Orthanc labelling features
 - Tag collection (in Elastic Search)
 - Prefecthing
 - Remote AET Monitoring
