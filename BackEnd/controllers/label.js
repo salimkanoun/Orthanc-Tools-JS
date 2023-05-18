@@ -1,5 +1,4 @@
-const LabelEntity = require('../model/Entities/LabelEntity')
-var Labels = require('../model/Labels')
+const Labels = require('../model/Labels')
 /**
  * Create a Label
  * @param {*} req express request

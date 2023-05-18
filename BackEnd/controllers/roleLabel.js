@@ -1,4 +1,4 @@
-var RoleLabel = require('../model/RoleLabel')
+const RoleLabel = require('../model/RoleLabel')
 
 /**
  * Create a RoleLabel
