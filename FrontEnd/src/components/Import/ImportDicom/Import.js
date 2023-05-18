@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from "react-redux"
-import { Prompt } from 'react-router-dom'
+import { unstable_usePrompt as Prompt } from 'react-router-dom'
 import { Modal, Row, Col, ProgressBar } from 'react-bootstrap'
 
 import MyDropzone from '../../CommonComponents/MyDropzone'
@@ -215,9 +215,11 @@ export default () => {
         dispatch(addStudiesToDeleteList(studiesObjects))
     }
 
+    /*
+    <Prompt when={inProgress} message='Import in progress. Quit this page will stop the import' />*/
     return (
         <div>
-            <Prompt when={inProgress} message='Import in progress. Quit this page will stop the import' />
+            
             <Modal show={showErrors} onHide={() => setShowErrors(false)} size='xl'>
                 <Modal.Header closeButton>
                     <Modal.Title>Errors</Modal.Title>
@@ -228,11 +230,11 @@ export default () => {
             </Modal>
             <Row className="mt-5">
                 <Col>
-                    <MyDropzone 
+                    <MyDropzone
                         disabled={inProgress}
                         onDrop={acceptedFiles => addFile(acceptedFiles)}
                         message={inProgress ? "Uploading" : "Drop Dicom Folder or ZIP"}
-                        />
+                    />
                     <ProgressBar
                         variant='info'
                         now={processedFiles}

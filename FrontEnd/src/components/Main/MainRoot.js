@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { Row, Container } from 'react-bootstrap';
+import { Row, Container, Col } from 'react-bootstrap';
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import { Route, Switch, withRouter } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 
 import AdminRootPanel from '../Admin/AdminRootPanel'
 import AnonRoot from '../Anonymize/AnonRoot'
@@ -25,14 +25,23 @@ const MainRoot = ({ onLogout, username, roles }) => {
 
     return (
         <>
-            <NavBar onLogout={onLogout} username={username} roles={roles} />
             <Container fluid>
                 <Row>
-                    <ToolsPanel roles={roles} apercu />
+                    <Col sm={1}>
+                        <NavBar onLogout={onLogout} username={username} roles={roles} />
+                    </Col>
+                    <Col sm={11}>
+                        <Row>
+                            <ToolsPanel roles={roles} apercu />
+                        </Row>
+                        <Row className='m-5'>
+                            <div className='main'>
+                                <AnimatedSwitch />
+                            </div>
+                        </Row>
+                    </Col>
                 </Row>
-                <Row>
-                    <AnimatedSwitch />
-                </Row>
+
             </Container >
             <Footer />
         </>
@@ -40,28 +49,29 @@ const MainRoot = ({ onLogout, username, roles }) => {
 
 }
 
-const AnimatedSwitch = withRouter(({ location, ...props }) => (
-    <TransitionGroup>
-        <CSSTransition key={location.key} timeout={500} unmountOnExit classNames={"alert"}>
-            <div id={"main"} className={"main" + (props.opened ? '' : ' main-nav-close')}>
-                <Switch location={location}>
-                    <Route exact path='/import' component={ImportRootPanel} />
-                    <Route exact path='/query' component={Query} />
-                    <Route exact path='/auto-query' component={AutoQueryRoot} />
-                    <Route exact path='/administration' component={AdminRootPanel} />
-                    <Route exact path='/orthanc-content' component={ContentRootPanel} />
-                    <Route exact path='/export' component={ExportRoot} />
-                    <Route exact path='/anonymize' component={AnonRoot} />
-                    <Route exact path='/cd-burner' component={CDBurnerRoot} />
-                    <Route exact path='/mydicom' component={MyDicomRoot} />
-                    <Route exact path='/delete' component={DeleteRoot} />
-                    <Route exact path='/dicom-router' component={DicomRouterPanel} />
-                    <Route exact path='/' component={Welcome} />
-                </Switch>
-            </div>
-        </CSSTransition>
-    </TransitionGroup>
-))
+const AnimatedSwitch = () => {
+    const location = useLocation()
+    return (
+        <TransitionGroup>
+            <CSSTransition key={location.key} timeout={500} unmountOnExit classNames={"alert"}>
+                <Routes location={location}>
+                    <Route path='/import' element={<ImportRootPanel />} />
+                    <Route path='/query' element={<Query />} />
+                    <Route path='/auto-query' element={<AutoQueryRoot />} />
+                    <Route path='/administration' element={<AdminRootPanel />} />
+                    <Route path='/orthanc-content' element={<ContentRootPanel />} />
+                    <Route path='/export' element={<ExportRoot />} />
+                    <Route path='/anonymize' element={<AnonRoot />} />
+                    <Route path='/cd-burner' element={<CDBurnerRoot />} />
+                    <Route path='/mydicom' element={<MyDicomRoot />} />
+                    <Route path='/delete' element={<DeleteRoot />} />
+                    <Route path='/dicom-router' element={<DicomRouterPanel />} />
+                    <Route path='/' element={<Welcome />} />
+                </Routes>
+            </CSSTransition>
+        </TransitionGroup>
+    )
+}
 
 
 export default MainRoot

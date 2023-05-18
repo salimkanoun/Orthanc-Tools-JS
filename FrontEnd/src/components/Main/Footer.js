@@ -23,11 +23,13 @@ export default () => {
           </pre>
         </Modal.Body>
       </Modal>
-      <div className="footer text-center mb-3">
-        <Button className='link-button ms-3 footer-text' onClick={() => setShow(show => !show)}>
-          <span className="me-3">Orthanc Tools JS: {packageInfo.version}</span>About
-        </Button>
-      </div>
+      <footer className='mt-5'>
+        <div className='d-flex justify-content-center'>
+          <Button className='link-button ms-3 footer-text' onClick={() => setShow(show => !show)}>
+            <span className="me-3">Orthanc Tools JS: {packageInfo.version}</span>About
+          </Button>
+        </div>
+      </footer>
     </>
   )
 }

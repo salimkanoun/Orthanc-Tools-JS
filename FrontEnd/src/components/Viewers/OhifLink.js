@@ -12,6 +12,6 @@ export default ({ StudyInstanceUID, className }) => {
     StudyInstanceUID === undefined ?
       null
       :
-      <Link className={className} to={'/viewer-ohif/viewer?StudyInstanceUIDs=' + StudyInstanceUID + '&token=' + token} target='_blank'>View in OHIF</Link>
+      <Link className={className} to={'viewer-ohif/viewer?StudyInstanceUIDs=' + StudyInstanceUID + '&token=' + token} target='_blank'>View in OHIF</Link>
   )
 }

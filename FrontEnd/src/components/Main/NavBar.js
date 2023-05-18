@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Image, Nav, Navbar } from 'react-bootstrap'
 
 import image from '../../assets/images/logo.png';
@@ -15,7 +15,7 @@ export default ({ onLogout, roles }) => {
     const DICOM_ROUTER = "dicom-router"
     const ADMINISTRATION = "administration"
 
-    const history = useHistory()
+    const navigate = useNavigate()
     const location = useLocation()
     const [opened, setOpened] = useState(false)
 
@@ -25,9 +25,8 @@ export default ({ onLogout, roles }) => {
     }
 
     const selectTabHandler = (name) => {
-        history.push("/" + name)
+        navigate("/" + name)
     }
-
 
     return (
         <>
