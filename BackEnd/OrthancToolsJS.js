@@ -7,7 +7,6 @@ var express = require('express')
 var morgan = require('morgan')
 var path = require('path')
 var cors = require('cors')
-var cookieParser = require('cookie-parser')
 
 var apisRouter = require('./routes/index')
 var adminRouter = require('./routes/admin')
@@ -30,7 +29,6 @@ app.use(function (req, res, next) {
   res.header("Cross-Origin-Opener-Policy", "same-origin");
   next();
 });
-app.use(cookieParser())
 
 
 var unless = function (path, middleware) {

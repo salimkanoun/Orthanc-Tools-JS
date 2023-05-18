@@ -3,8 +3,6 @@ const express = require('express')
 const app = express()
 const route = require('../../routes/admin')
 const bodyParser = require('body-parser')
-var cookieParser = require('cookie-parser')
-
 //models required
 const Label = require('../../model/Labels')
 const RoleLabel = require('../../model/RoleLabel')
@@ -16,7 +14,6 @@ const Certificate = require('../../model/export/Certificate')
 
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-app.use(cookieParser())
 app.use('/api',route)
 
 describe('GET/',()=>{
