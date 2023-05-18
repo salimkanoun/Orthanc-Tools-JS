@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from "react-redux"
-import { Prompt } from 'react-router-dom'
+import { unstable_usePrompt as Prompt } from 'react-router-dom'
 import { Modal, Row, Col, ProgressBar } from 'react-bootstrap'
 
 import MyDropzone from '../../CommonComponents/MyDropzone'
@@ -228,11 +228,11 @@ export default () => {
             </Modal>
             <Row className="mt-5">
                 <Col>
-                    <MyDropzone 
+                    <MyDropzone
                         disabled={inProgress}
                         onDrop={acceptedFiles => addFile(acceptedFiles)}
                         message={inProgress ? "Uploading" : "Drop Dicom Folder or ZIP"}
-                        />
+                    />
                     <ProgressBar
                         variant='info'
                         now={processedFiles}

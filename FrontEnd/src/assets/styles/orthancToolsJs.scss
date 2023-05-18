@@ -37,25 +37,22 @@ body {
   color: #636A6E;
 }
 
-.alert-enter {
+.main-enter {
   opacity: 0;
-  transform: scale(0.9);
 }
 
-.alert-enter-active {
-  opacity: 1;
-  transform: translateX(0);
-  transition: opacity 300ms, transform 300ms;
+.main-enter-active {
+  opacity: 0.5;
+  transition: opacity 1000ms
 }
 
-.alert-exit {
+.main-exit {
   opacity: 1;
 }
 
-.alert-exit-active {
+.main-exit-active {
   opacity: 0;
-  transform: scale(0.9);
-  transition: opacity 300ms, transform 300ms;
+  transition: opacity 1500ms
 }
 
 .bg-green {
@@ -75,19 +72,7 @@ body {
 }
 
 .bg-navbar {
-  position: fixed;
   background-color: $color-navbar;
-  height: 100%;
-  width: 15%;
-  top: 0;
-  margin-left: -12px;
-  box-shadow: 2px 2px 3px $color-shadow;
-  z-index: -1;
-  transition: 1s;
-
-  &-close {
-    width: 7%;
-  }
 }
 
 .otjs-navbar {
@@ -142,15 +127,10 @@ body {
 
 .navbar-image {
   position: fixed;
-  left: 4.5rem;
   top: 1rem;
   z-index: 1041;
-  width: 5%;
+  width: 6%;
   transition: 1s;
-
-  &-close {
-    left: 1rem;
-  }
 
 }
 
@@ -232,12 +212,9 @@ body {
 }
 
 .main {
-  margin-top: 7%;
-  margin-left: auto;
   border: 2px solid white;
   background-color: white;
   padding: 3rem;
-  width: 75%;
   border-radius: 8px;
   box-shadow: 4px 4px 4px $color-shadow;
   transition: 1s;
@@ -554,7 +531,7 @@ ul {
 }
 
 
-.authentification {
+.bg-authentification {
   background-image: url(./../images/wallpaperAuth.jpg);
   /* Background image is centered vertically and horizontally at all times */
   background-position: center center;
@@ -681,16 +658,6 @@ code {
 
 .navbar-brand {
   width: 0%;
-}
-
-.vertical-center {
-  min-height: 100%;
-  /* Fallback for browsers do NOT support vh unit */
-  min-height: 100vh;
-  /* These two lines are counted as one :-)       */
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .react-toggle {

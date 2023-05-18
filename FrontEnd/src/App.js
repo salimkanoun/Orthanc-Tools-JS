@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { BrowserRouter } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
     QueryClient,
     QueryClientProvider,
@@ -12,6 +12,7 @@ import { ToastContainer } from 'react-toastify'
 import Authentication from './components/Authentication'
 import MainRoot from './components/Main/MainRoot'
 import ConfirmGlobal from './components/CommonComponents/ConfirmGlobal'
+import ErrorBoundary from './ErrorBoundary';
 
 import { login, logout } from './actions/login'
 
@@ -27,7 +28,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 import 'react-calendar/dist/Calendar.css';
 //Custom CSS
 import './assets/styles/orthancToolsJs.scss'
-import ErrorBoundary from './ErrorBoundary';
 
 
 
@@ -35,6 +35,7 @@ import ErrorBoundary from './ErrorBoundary';
 const App = () => {
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const username = useSelector((state) => state.OrthancTools.username)
     const roles = useSelector((state) => state.OrthancTools.roles)
 
@@ -51,9 +52,9 @@ const App = () => {
     const queryClient = new QueryClient();
 
     return (
-        <BrowserRouter>
-            <ErrorBoundary>
-                <QueryClientProvider client={queryClient}>
+        <ErrorBoundary onClickGoMainPage={() => navigate('/')}>
+            <QueryClientProvider client={queryClient}>
+                <div className='min-vh-100'>
                     <ConfirmGlobal />
                     <div >
                         <ToastContainer
@@ -74,14 +75,15 @@ const App = () => {
                             closeOnClick
                         > </ToastContainer>
                     </div>
+
                     {username ?
                         <MainRoot onLogout={onLogout} username={username} roles={roles} />
                         :
                         <Authentication onLogin={onLogin} />}
-                    <ReactQueryDevtools initialIsOpen={false} />
-                </QueryClientProvider>
-            </ErrorBoundary>
-        </BrowserRouter>
+                </div>
+                <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+        </ErrorBoundary>
     );
 
 }

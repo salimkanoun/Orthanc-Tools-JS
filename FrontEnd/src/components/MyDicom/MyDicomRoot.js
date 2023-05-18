@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { useCustomQuery } from '../../services/ReactQuery/hooks'
 import { keys } from '../../model/Constant'
 import Spinner from '../CommonComponents/Spinner'
+import { Container } from 'react-bootstrap'
 
 export default () => {
 
@@ -20,11 +21,10 @@ export default () => {
     )
 
     if (isLoading) return <Spinner/>
-
-    console.log(labels)
+    
     return (
-        <>
+        <Container fluid>
             In construction
-        </>
+        </Container>
     )
 }
