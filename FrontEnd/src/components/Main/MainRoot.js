@@ -52,7 +52,7 @@ const AnimatedSwitch = () => {
     const location = useLocation()
     return (
         <TransitionGroup>
-            <CSSTransition key={location.key} timeout={500} unmountOnExit classNames={"alert"}>
+            <CSSTransition key={location.pathname} unmountOnExit classNames={"main"}>
                 <Routes location={location}>
                     <Route path='/import' element={<ImportRootPanel />} />
                     <Route path='/query' element={<Query />} />
