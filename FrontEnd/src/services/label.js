@@ -20,7 +20,7 @@ const label = {
    */
   createLabels(name) {
 
-    return axios.post('/api/labels/' + name).then((answer) => true
+    return axios.post('/api/labels/' + name).then(() => true
     )
   },
 
@@ -32,7 +32,7 @@ const label = {
    */
   modifyLabels(name, payload) {
 
-    return axios.put('/api/labels/' + name, payload).then((answer) => true
+    return axios.put('/api/labels/' + name, payload).then(() => true
     )
   },
 
@@ -43,7 +43,7 @@ const label = {
    */
   deleteLabels(name) {
 
-    return axios.delete('/api/labels/' + name).then((answer) => true
+    return axios.delete('/api/labels/' + name).then(() => true
     ).catch(error => {
       throw error
     })

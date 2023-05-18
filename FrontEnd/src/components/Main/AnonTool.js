@@ -5,7 +5,7 @@ import { Button } from 'react-bootstrap'
 import Overlay from 'react-bootstrap/Overlay'
 import Popover from 'react-bootstrap/Popover'
 
-import { emptyAnonymizeList, removePatientFromAnonList, removeStudyFromAnonList } from '../../actions/AnonList'
+import { emptyAnonymizeList, removePatientFromAnonList } from '../../actions/AnonList'
 import { studyArrayToPatientArray } from '../../tools/processResponse'
 import { patientColumns } from '../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories'
 import TablePatientWithNestedStudies from '../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudies'

@@ -12,7 +12,7 @@ const cdBurner = {
 
       stopCdBurnerService() {
 
-            return axios.delete('/api/monitoring/burner/').then((answer) => true 
+            return axios.delete('/api/monitoring/burner/').then(() => true 
             ).catch((error) => { throw error })
 
       },

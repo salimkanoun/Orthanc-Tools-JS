@@ -20,14 +20,14 @@ const user = {
       superAdmin: isSuperAdmin
     }
 
-    return axios.put('/api/users/' + username, payload).then((answer) => {
+    return axios.put('/api/users/' + username, payload).then(() => {
     }).catch(async error => {
       throw error
     })
   },
 
   deleteUser(username) {
-    return axios.delete('/api/users/' + username).then((answer) => {
+    return axios.delete('/api/users/' + username).then(() => {
     })
   },
 
@@ -43,7 +43,7 @@ const user = {
       superAdmin: isSuperAdmin
     }
 
-    return axios.post('/api/users', payload).then((answer) => {
+    return axios.post('/api/users', payload).then(() => {
     }).catch(error => {
       throw error
     })
