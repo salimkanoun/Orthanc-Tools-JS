@@ -6,9 +6,7 @@ require('express-async-errors')
 const {getParsedAnswer, postRetrieve} = require('../controllers/queryRetrieve')
 const {
     reverseProxyGet,
-    reverseProxyGet2,
     reverseProxyPost,
-    reverseProxyPostUploadDicom,
     reverseProxyDelete,
     reverseProxyPut
 } = require('../controllers/reverseProxy')
@@ -71,7 +69,7 @@ router.post('/retrieve', [userAuthMidelware, queryMidelware], postRetrieve)
 router.get('/queries/:orthancIdQuery/parsedAnswers', [userAuthMidelware, queryMidelware], getParsedAnswer)
 
 // Orthanc Dicom Import Route
-router.post('/instances', [userAuthMidelware, importMidelware], reverseProxyPostUploadDicom)
+router.post('/instances', [userAuthMidelware, importMidelware], reverseProxyPost)
 
 //Orthanc export routes
 router.post('/tools/create-archive', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
@@ -106,7 +104,7 @@ router.get('/patients/*', [userAuthMidelware], reverseProxyGet)
 router.get('/studies/*', [userAuthMidelware], reverseProxyGet)
 router.get('/series/*', [userAuthMidelware], reverseProxyGet)
 router.get('/instances/*', [userAuthMidelware], reverseProxyGet)
-router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet2)
+router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet)
 router.get('/wado/*', [userAuthMidelware], reverseProxyGet)
 
 //Delete Orthanc ressource API

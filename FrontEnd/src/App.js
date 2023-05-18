@@ -14,7 +14,6 @@ import MainRoot from './components/Main/MainRoot'
 import ConfirmGlobal from './components/CommonComponents/ConfirmGlobal'
 
 import { login, logout } from './actions/login'
-import apis from './services/apis'
 
 //CSS Boostrap
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -44,9 +43,8 @@ const App = () => {
         dispatch(login(token, backendData))
     }
 
-    const onLogout = async () => {
+    const onLogout = () => {
         dispatch(logout()) //empty all reducer
-        await apis.authentication.logOut() //ask backend to reset cookie http only
     }
 
 

@@ -25,13 +25,5 @@ describe('Test Authentication routes',()=>{
       expect(response.statusCode).toBe(200)
     })
   })
-
-  it('logout',async ()=>{
-    const res = await request(app)
-    .delete('/api/authentication/')
-    .set('Accept', 'application/json')
-    .then((response)=>{
-      expect(response.statusCode).toBe(200)
-    })
-  })
+  
 })  

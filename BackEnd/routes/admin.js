@@ -19,7 +19,6 @@ const {
     reverseProxyGet,
     reverseProxyPost,
     reverseProxyPut,
-    reverseProxyPutPlainText,
     reverseProxyDelete
 } = require('../controllers/reverseProxy')
 const {getRoles, createRole, modifyRole, deleteRole, getRole} = require('../controllers/role')
@@ -88,7 +87,7 @@ adminRouter.post('/tools/shutdown', [userAuthMidelware, userAdminMidelware], rev
 
 //Orthanc get and set Verbosity
 adminRouter.get('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
-adminRouter.put('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseProxyPutPlainText)
+adminRouter.put('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
 
 //Orthanc Get plugins
 adminRouter.get('/plugins', [userAuthMidelware, userAdminMidelware], reverseProxyGet)

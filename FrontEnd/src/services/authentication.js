@@ -11,12 +11,6 @@ const authentication = {
       .then((answer) => {
         return (answer.data)
       }).catch((error) => { throw error })
-  },
-
-  logOut() {
-
-    return axios.delete('/api/authentication/')
-      .catch((error) => { console.error(error) })
   }
 
 }

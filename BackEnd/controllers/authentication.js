@@ -36,7 +36,6 @@ const login = async function (req, res) {
     }
     if (process.env.NODE_ENV != 'test') {
       var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
-      //res.cookie("tokenOrthancJs", TOKEN, { httpOnly: true })
     }
     res.send(TOKEN)
 
@@ -46,12 +45,4 @@ const login = async function (req, res) {
 
 }
 
-const logOut = function (req, res) {
-  //Invalid the frontend cookie
-  if (process.env.NODE_ENV != 'test') {
-    res.cookie("tokenOrthancJs", '', { httpOnly: true })
-  }
-  res.sendStatus(200)
-}
-
-module.exports = { login, logOut }
+module.exports = { login }

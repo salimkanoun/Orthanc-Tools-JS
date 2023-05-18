@@ -1,8 +1,3 @@
-/**
-MIT License
-Copyright (c) 2021 KANOUN Salim - OLIVIE Emilie
- */
-
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = function(app) {
