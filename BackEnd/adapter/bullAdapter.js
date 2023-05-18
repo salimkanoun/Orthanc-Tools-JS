@@ -19,7 +19,8 @@ class Queue extends event.EventEmitter {
     constructor(queueName, fn, attempts = 1, backoff = 2000, workerCount = 1) {
         super();
         this._queue = new BullQueue(queueName, {
-            redis: REDIS_OPTIONS, defaultJobOptions: {
+            redis: REDIS_OPTIONS,
+            defaultJobOptions: {
                 attempts,
                 backoff,
             }
@@ -56,7 +57,7 @@ class Queue extends event.EventEmitter {
             }
             this._invalidated = true;
             //this.emit('error', err);
-            
+
         });
         this._queue.on('failed', (job, err) => {
             console.log(err);
