@@ -215,11 +215,9 @@ export default () => {
         dispatch(addStudiesToDeleteList(studiesObjects))
     }
 
-    /*
-    <Prompt when={inProgress} message='Import in progress. Quit this page will stop the import' />*/
     return (
         <div>
-            
+            <Prompt when={inProgress} message='Import in progress. Quit this page will stop the import' />
             <Modal show={showErrors} onHide={() => setShowErrors(false)} size='xl'>
                 <Modal.Header closeButton>
                     <Modal.Title>Errors</Modal.Title>
