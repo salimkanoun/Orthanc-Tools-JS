@@ -4,10 +4,10 @@ const Task = require("../model/Task")
 
 
 const userAuthMidelware = function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
-  else{
+  else {
     try {
       let authorizationHeaders = req.headers['authorization']
       const token = authorizationHeaders && authorizationHeaders.split(' ')[1]
@@ -21,12 +21,12 @@ const userAuthMidelware = function (req, res, next) {
       return
     }
   }
-  
+
 
 }
 
 const isCurrentUserOrAdminMidelWare = function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
   else if (req.roles.admin || req.username === req.params.username) {
@@ -38,7 +38,7 @@ const isCurrentUserOrAdminMidelWare = function (req, res, next) {
 }
 
 const userAdminMidelware = async function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
   else if (req.roles.admin) {
@@ -49,7 +49,7 @@ const userAdminMidelware = async function (req, res, next) {
 }
 
 const importMidelware = async function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
   else if (req.roles.import) {
@@ -60,7 +60,7 @@ const importMidelware = async function (req, res, next) {
 }
 
 const contentMidelware = async function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   } else if (req.roles.content) {
     next()
@@ -70,7 +70,7 @@ const contentMidelware = async function (req, res, next) {
 }
 
 const anonMidelware = async function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
   else if (req.roles.anon) {
@@ -82,7 +82,7 @@ const anonMidelware = async function (req, res, next) {
 }
 
 const exportLocalMidelware = async function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
   else if (req.roles.exportLocal) {
@@ -93,7 +93,7 @@ const exportLocalMidelware = async function (req, res, next) {
 }
 
 const exportRemoteMidelware = async function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
   else if (req.roles.exportRemote) {
@@ -104,7 +104,7 @@ const exportRemoteMidelware = async function (req, res, next) {
 }
 
 const queryMidelware = async function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
   else if (req.roles.query) {
@@ -115,7 +115,7 @@ const queryMidelware = async function (req, res, next) {
 }
 
 const autoQueryMidelware = async function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
   else if (req.roles.autoQuery) {
@@ -127,7 +127,7 @@ const autoQueryMidelware = async function (req, res, next) {
 }
 
 const deleteMidelware = async function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
   else if (req.roles.delete) {
@@ -138,7 +138,7 @@ const deleteMidelware = async function (req, res, next) {
 }
 
 const modifyMidelware = async function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
   else if (req.roles.modify) {
@@ -149,7 +149,7 @@ const modifyMidelware = async function (req, res, next) {
 }
 
 const cdBurnerMidelware = async function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
   else if (req.roles.cdBurner) {
@@ -160,7 +160,7 @@ const cdBurnerMidelware = async function (req, res, next) {
 }
 
 const autoroutingMidelware = async function (req, res, next) {
-  if(process.env.NODE_ENV=='test'){
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
   else if (req.roles.autorouting) {
@@ -170,37 +170,37 @@ const autoroutingMidelware = async function (req, res, next) {
   }
 }
 
-const ownTaskOrIsAdminMidelware = async function (req,res,next){
-  if(process.env.NODE_ENV=='test'){
+const ownTaskOrIsAdminMidelware = async function (req, res, next) {
+  if (process.env.NODE_ENV == 'test') {
     next()
   }
-  else{
+  else {
     let task = await Task.getTask(req.params.id);
-    if(task.creator !== req.username && !req.roles.admin) throw new OTJSForbiddenException("Task not owned");
+    if (task.creator !== req.username && !req.roles.admin) throw new OTJSForbiddenException("Task not owned");
     next();
   }
 }
 
-const roleAccessLabelMidelware = async function(req,res,next){
-  if(process.env.NODE_ENV==='test'){
+const roleAccessLabelMidelware = async function (req, res, next) {
+  if (process.env.NODE_ENV === 'test') {
     next()
   }
-  else{
+  else {
     const RoleLabel = require('../model/RoleLabel')
     const role_label = await RoleLabel.getLabelsFromRoleName(req.roles.name)
     let access = false
 
-    for(var i = 0;i<role_label.length;i++){
-      if(req.params.name===role_label[i].label_name){
-        access=true
+    for (var i = 0; i < role_label.length; i++) {
+      if (req.params.name === role_label[i].label_name) {
+        access = true
         break
-      } 
+      }
     }
 
-    if(access){
+    if (access) {
       next()
-    }else{
-      userAdminMidelware(req,res,next)
+    } else {
+      userAdminMidelware(req, res, next)
     }
   }
 }

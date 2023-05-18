@@ -4,8 +4,8 @@ const TaskType = require("../TaskType");
 const Queue = require("../../adapter/bullAdapter");
 const {v4: uuid} = require('uuid');
 const Endpoint = require('../export/Endpoint');
-const ReverseProxy = require('../ReverseProxy');
 const fs = require('fs');
+const OrthancReverseProxyService = require("../OrthancReverseProxyService");
 
 let orthanc = new Orthanc();
 let exporter = new Exporter();
@@ -137,7 +137,7 @@ class ExportTask {
         }
 
         //Request the creation of an archive
-        let r = await ReverseProxy.getAnswer('/tools/create-archive', 'POST', payload)
+        let r = await OrthancReverseProxyService.reverseProxyGetAnswer('/tools/create-archive', 'POST', payload)
         let jobPath = r.Path
 
         //Monitor the orthanc job
@@ -147,7 +147,7 @@ class ExportTask {
             const destination = './data/export_dicom/' + Math.random()
                 .toString(36).substr(2, 5) + '.zip';
             const streamWriter = fs.createWriteStream(destination);
-            ReverseProxy.streamToFileWithCallBack(jobPath + '/archive', 'GET', {}, streamWriter, () => {
+            OrthancReverseProxyService.streamToFileWithCallBack(jobPath + '/archive', 'GET', {}, streamWriter, () => {
                 done(null, {path: destination});
             }).catch((error) => {
                 console.err(error)

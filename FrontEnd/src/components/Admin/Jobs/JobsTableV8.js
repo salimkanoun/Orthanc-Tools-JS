@@ -71,16 +71,6 @@ export default ({ rows }) => {
             enableColumnFilter: false,
         },
         {
-            id: 'Details',
-            accessorKey: 'Details',
-            header: "Details",
-            cell: (({ row }) => {
-                return (<div className="text-center"><Button className='otjs-button otjs-button-blue'
-                    onClick={() => { row.toggleExpanded() }}>Details</Button></div>)
-            }),
-            enableColumnFilter: false,
-        },
-        {
             id: 'Actions',
             accessorKey: 'Actions',
             header: "Actions",
@@ -97,7 +87,7 @@ export default ({ rows }) => {
 
     return (
         <div >
-            <CommonTableV8 columns={columnsJobs} data={data} canSort paginated canExpand renderSubComponent={renderSubComponent} />
+            <CommonTableV8  columns={columnsJobs} data={data} canSort paginated canExpand renderSubComponent={renderSubComponent} />
         </div>
     )
 }

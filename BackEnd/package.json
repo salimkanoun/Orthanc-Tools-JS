@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "activedirectory2": "^2.1.0",
+    "axios": "^1.4.0",
     "basic-ftp": "^4.6.6",
     "bcryptjs": "^2.4.3",
     "bull": "^3.22.11",

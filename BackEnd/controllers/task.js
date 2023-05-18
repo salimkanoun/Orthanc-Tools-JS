@@ -4,18 +4,7 @@ const DeleteTask = require("../model/tasks/DeleteTask");
 const RetrieveTask = require("../model/tasks/RetrieveTask");
 const ExportTask = require("../model/tasks/ExportTask");
 const Options = require("../model/Options");
-const Queue = require("../adapter/bullAdapter");
 const { OTJSBadRequestException } = require("../Exceptions/OTJSErrors");
-
-
-/*
-const checkForOrthancQueueReady = async (req, res, next) => {
-    Queue.isAllReady().then(() => next()).catch((error) => {
-        console.error(error)
-        res.status(500).send("Cant connect to redis");
-    })
-}
-*/
 
 /**
  * Creating anonymisation task based on the request

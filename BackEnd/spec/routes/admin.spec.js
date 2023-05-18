@@ -7,7 +7,6 @@ var cookieParser = require('cookie-parser')
 
 //models required
 const Label = require('../../model/Labels')
-const StudyLabel = require('../../model/StudyLabel')
 const RoleLabel = require('../../model/RoleLabel')
 const Autorouter = require('../../repository/Autorouter')
 const Role = require('../../model/Roles')
@@ -27,39 +26,6 @@ describe('GET/',()=>{
     .get('/api/labels')
     .then((response)=>{
       expect(response.statusCode).toBe(200)
-    })
-  })
-
-  it('StudyLabels',async ()=>{
-    const res = await request(app)
-    .get('/api/studies/labels')
-    .then((response)=>{
-      expect(response.statusCode).toBe(200)
-    })
-  })
-
-  it('StudyLabels by label',async ()=>{
-    const res = await request(app)
-    .get('/api/studies/labels/test')
-    .then((response)=>{
-      expect(response.statusCode).toBe(200)
-    })
-  })
-
-  it('StudyLabels by Study',async ()=>{
-    const res = await request(app)
-    .get('/api/studies/ABCDEFGH/labels/')
-    .then((response)=>{
-      expect(response.statusCode).toBe(200)
-    })
-  })
-
-  it('StudyLabels by StudyOrthancID',async()=>{
-    const res = await request(app)
-    .get('/api/studies/orthanc/a/labels')
-    .set('Accept', 'application/json')
-    .then((response)=>{
-      expect(response.statusCode).toBe(201)
     })
   })
 
@@ -210,29 +176,6 @@ describe('POST/',()=>{
     await Role.deleteRole('test')
   })
   
-  it('StudyLabels',async()=>{
-    const Label = require ('../../repository/Label.js')
-    const label = await Label.getLabel('test')
-    if(label==null){
-      await Label.create('test')
-    }
-    const payload= {
-      study_orthanc_id:'a',
-      patient_orthanc_id:'a'
-    }
-
-    const res = await request(app)
-    .post('/api/patient/patient_test/studies/ABCDEFGH/labels/test')
-    .set('Accept', 'application/json')
-    .send(payload)
-    .then((response)=>{
-      expect(response.statusCode).toBe(201)
-    })
-
-    await StudyLabel.deleteStudyLabel('ABCDEFGH','test')
-    await Label.deleteLabels('test')
-  })
-
   it('RoleLabels',async()=>{
     await Label.createLabels('test')
     const rolelabel={
@@ -531,18 +474,6 @@ describe('DELETE/',()=>{
     .delete('/api/users/test/labels/test2')
     .set('Accept', 'application/json')
     .send(rolelabel)
-    .then((response)=>{
-      expect(response.statusCode).toBe(200)
-    })
-    await Label.deleteLabels('test2')
-  })
-
-  it('StudyLabels',async()=>{
-    await Label.createLabels('test2')
-    await StudyLabel.createStudyLabel('ABCDEFGH','test2','a')
-    const res = await request(app)
-    .delete('/api/studies/ABCDEFGH/labels/test2')
-    .set('Accept','application/json')
     .then((response)=>{
       expect(response.statusCode).toBe(200)
     })
