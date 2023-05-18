@@ -68,17 +68,15 @@
   "devDependencies": {
     "cors": "^2.8.5",
     "electron-prebuilt": "^1.4.13",
-    "electron-rebuild": "^2.3.5",
-    "jasmine": "^3.8.0",
+    "jasmine": "^5.0.0",
     "jasmine-console-reporter": "^3.1.0",
-    "jest": "^26.6.3",
-    "mocha": "^8.4.0",
+    "jest": "^29.5.0",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.22",
-    "standard": "^16.0.3",
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
     "webpack": "^5.83.1",
-    "webpack-cli": "^4.7.2"
+    "webpack-cli": "^5.1.1"
   }
 }
