@@ -13,7 +13,7 @@ const certificates = {
 
   deleteCertificate(id) {
     return axios.delete('api/certificates/' + id)
-      .then((answer) => true
+      .then(() => true
       ).catch((error) => {
         throw error
       })

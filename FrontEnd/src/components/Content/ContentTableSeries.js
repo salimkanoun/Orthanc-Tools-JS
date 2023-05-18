@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Button, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 
 import TableSeries from "../CommonComponents/RessourcesDisplay/ReactTableV8/TableSeries"
 import Metadata from "../Metadata/Metadata";

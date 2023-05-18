@@ -28,13 +28,13 @@ export default ({
     canExpand = false,
     paginated = false,
     selectedRowsIds = undefined,
-    customRowProps = (row) => { },
+    customRowProps = () => { },
     sortBy = [],
-    renderSubComponent = (row) => { },
+    renderSubComponent = () => { },
     onRowClick = () => { },
     rowStyle = () => { },
-    onSelectRow = (state) => { },
-    onCellEdit = (rowIndex, columnId, value) => { },
+    onSelectRow = () => { },
+    onCellEdit = () => { },
 }) => {
 
     const [sorting, setSorting] = useState(sortBy);

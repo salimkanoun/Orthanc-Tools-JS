@@ -4,7 +4,7 @@ const options = {
 
   setRobotScheduleHour(hour_start, min_start, hour_stop, min_stop) {
 
-    return axios.put('/api/options', { hour_start, min_start, hour_stop, min_stop }).then((answer) =>
+    return axios.put('/api/options', { hour_start, min_start, hour_stop, min_stop }).then(() =>
       true
     )
   },
