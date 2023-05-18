@@ -54,30 +54,33 @@ const App = () => {
     return (
         <ErrorBoundary onClickGoMainPage={() => navigate('/')}>
             <QueryClientProvider client={queryClient}>
-                <ConfirmGlobal />
-                <div >
-                    <ToastContainer
-                        enableMultiContainer
-                        containerId={'message'}
-                        position={'bottom-right'}
-                        autoClose={5000}
-                        newestOnTop
-                        closeOnClick
-                    > </ToastContainer>
-                    <ToastContainer
-                        enableMultiContainer
-                        style={{ visibility: 'hidden' }}
-                        containerId={'jobs'}
-                        position={'bottom-left'}
-                        autoClose={5000}
-                        newestOnTop
-                        closeOnClick
-                    > </ToastContainer>
+                <div className='min-vh-100'>
+                    <ConfirmGlobal />
+                    <div >
+                        <ToastContainer
+                            enableMultiContainer
+                            containerId={'message'}
+                            position={'bottom-right'}
+                            autoClose={5000}
+                            newestOnTop
+                            closeOnClick
+                        > </ToastContainer>
+                        <ToastContainer
+                            enableMultiContainer
+                            style={{ visibility: 'hidden' }}
+                            containerId={'jobs'}
+                            position={'bottom-left'}
+                            autoClose={5000}
+                            newestOnTop
+                            closeOnClick
+                        > </ToastContainer>
+                    </div>
+
+                    {username ?
+                        <MainRoot onLogout={onLogout} username={username} roles={roles} />
+                        :
+                        <Authentication onLogin={onLogin} />}
                 </div>
-                {username ?
-                    <MainRoot onLogout={onLogout} username={username} roles={roles} />
-                    :
-                    <Authentication onLogin={onLogin} />}
                 <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
         </ErrorBoundary>

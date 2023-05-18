@@ -28,7 +28,7 @@ export default ({ roles, apercu }) => {
     const refDelete = React.createRef()
     return (
         <div className='d-flex justify-content-end align-items-center'>
-            <span className="mr-1" hidden={!roles.anon}>
+            <div className="mr-1" hidden={!roles.anon}>
                 <Link id='anon' ref={refAnon} type="button" className="btn otjs-btn-tools otjs-btn-tools-blue w-12"
                     onMouseOver={apercu ? () => setShow('anon') : null} to='anonymize'>
                     <i className="fas fa-user-secret me-2"></i> Anonymize
@@ -37,8 +37,8 @@ export default ({ roles, apercu }) => {
                 </Link>
                 <AnonTool target={refAnon} show={show === 'anon' ? true : false}
                     onHide={closePopovers} />
-            </span>
-            <span className="mr-1" hidden={!roles.exportRemote || !roles.exportLocal}>
+            </div>
+            <div className="mr-1" hidden={!roles.exportRemote || !roles.exportLocal}>
                 <Link id='export' ref={refExport} type="button" className="btn otjs-btn-tools otjs-btn-tools-orange w-12"
                     onMouseOver={apercu ? () => setShow('export') : null} to='export'>
                     <i className="fas fa-file-export me-2"></i> Export
@@ -47,15 +47,15 @@ export default ({ roles, apercu }) => {
                 </Link>
                 <ExportTool target={refExport} show={show === 'export' ? true : false}
                     onHide={closePopovers} />
-            </span>
-            <span className='mr-1' hidden={!apercu}>
+            </div>
+            <div className='mr-1' hidden={!apercu}>
                 <Link id='delete' ref={refDelete} type='button' className='btn otjs-btn-tools otjs-btn-tools-red' to='delete'>
                     Delete <span className="badge bg-light text-dark">{store.deleteList.length}</span>
                 </Link>
-            </span>
-            <span>
+            </div>
+            <div>
                 <NotificationCenter />
-            </span>
+            </div>
 
         </div>
     )
