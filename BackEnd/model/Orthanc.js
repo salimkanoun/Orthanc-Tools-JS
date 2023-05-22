@@ -301,7 +301,7 @@ class Orthanc {
         return answer
     }
 
-    async findInOrthanc(level = 'Study', patientName = '', patientID = '', accessionNb = '', date = '', studyDescription = '', modality = '', studyInstanceUID = '') {
+    async findInOrthanc(level = 'Study', patientName = '', patientID = '', accessionNb = '', date = '', studyDescription = '', modality = '', studyInstanceUID = '', labels = []) {
 
         const queryParameter = {
             Level: level,
@@ -316,7 +316,8 @@ class Orthanc {
                 AccessionNumber: accessionNb,
                 StudyInstanceUID: studyInstanceUID
 
-            }
+            },
+            Labels: labels
         }
 
         const answer = await OrthancReverseProxyService.reverseProxyGetAnswer('/tools/find', 'post', queryParameter)
@@ -507,10 +508,10 @@ class Orthanc {
      * @param {String} aet name of the target AET
      * @param {Array.<String>} orthancIds array of orthanc IDS
      */
-    async sendToAET(aet,orthancIds){
+    async sendToAET(aet, orthancIds) {
         const payload = {
-            "Asynchronous":true,
-            "Ressources":orthancIds
+            "Asynchronous": true,
+            "Ressources": orthancIds
         }
         const answer = await OrthancReverseProxyService.reverseProxyGetAnswer('/modalities/' + aet + '/store', 'POST', payload)
         return answer

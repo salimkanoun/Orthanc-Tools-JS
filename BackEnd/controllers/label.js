@@ -1,4 +1,5 @@
 const Labels = require('../model/Labels')
+const Orthanc = require('../model/Orthanc')
 /**
  * Create a Label
  * @param {*} req express request
@@ -41,4 +42,11 @@ const deleteLabel = async function (req, res) {
   res.sendStatus(200)
 }
 
-module.exports = { createLabel, getLabels, modifyLabel, deleteLabel }
+const getStudiesWithLabel = async function (req, res) {
+  const labelName = req.params.name
+  const orthanc = new Orthanc()
+  const studies = await orthanc.findInOrthanc('Study', undefined, undefined, undefined, undefined, undefined, undefined, undefined, [labelName])
+  res.json(studies)
+}
+
+module.exports = { createLabel, getLabels, modifyLabel, deleteLabel, getStudiesWithLabel }
