@@ -3,11 +3,17 @@ import axios from "axios"
 const orthancContent = {
 
     getOrthancFind(contentSerch) {
-
         return axios.post('/api/tools/find', contentSerch).then((response) => response.data
         ).catch((error) => {
             throw (error)
         })
+    },
+
+    getStudiesWithLabel(labelName) {
+        return axios.get('/api/labels/' + labelName + '/studies').then((response) => response.data
+            ).catch((error) => {
+                throw (error)
+            })
     },
 
     getPatientDetails(ID) {
