@@ -1,16 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
 import { Container, Row } from 'react-bootstrap'
 
-import { addStudiesToAnonList } from '../../../actions/AnonList'
-import { addStudiesToExportList } from '../../../actions/ExportList'
-import { addStudiesToDeleteList } from '../../../actions/DeleteList'
-
 import apis from '../../../services/apis'
-import ExportDeleteSendButton from '../../CommonComponents/RessourcesDisplay/ExportDeleteSendButton'
-import Study from '../../../model/Study'
 import MyRobotTableStudies from './MyRobotTableStudies'
 import MyRobotTableSeries from './MyRobotTableSeries'
 
@@ -34,10 +28,6 @@ export default () => {
             username: state.OrthancTools.username,
         }
     })
-
-    const dispatch = useDispatch()
-
-    const [selectedRowIds, setSelectedRowIds] = useState([])
 
     const [id, setId] = useState(null)
     const [projectName, setProjectName] = useState(null)
@@ -99,43 +89,6 @@ export default () => {
         setPercentageFailure(newPercentageFailure)
     }
 
-    const getSelectedItemsStudiesDetails = async () => {
-        let studyDataRetrieved = []
-        //Loop each item to retrieve study level
-        for (let orthancId of selectedRowIds) {
-            await apis.content.getStudiesDetails(orthancId).then((studyDetails) => {
-                let study = new Study()
-                study.fillFromOrthanc(studyDetails.ID, studyDetails.MainDicomTags, studyDetails.Series)
-                study.fillParentPatient(studyDetails.ParentPatient, studyDetails.PatientMainDicomTags)
-                studyDataRetrieved.push(study.serialize())
-            }).catch((error) => {
-                console.error(error)
-            })
-        }
-
-        return studyDataRetrieved
-
-    }
-
-    const selectRowHandler = (selectedRowIds) => {
-        setSelectedRowIds(selectedRowIds)
-    }
-
-    const sendToAnon = async () => {
-        let studyArray = await getSelectedItemsStudiesDetails()
-        dispatch(addStudiesToAnonList(studyArray))
-    }
-
-    const sendToExport = async () => {
-        let studyArray = await getSelectedItemsStudiesDetails()
-        dispatch(addStudiesToExportList(studyArray))
-    }
-
-    const sendToDelete = async () => {
-        let studyArray = await getSelectedItemsStudiesDetails()
-        dispatch(addStudiesToDeleteList(studyArray))
-    }
-
     //SK ICI CHECKER LE ITEMID dans le backend (eviter position et remplacer par un ID (actuelement aswerId mais mauvaise idee car existe qu'une fois executee))
     const retryQueryHandler = async (itemId) => {
         try {
@@ -155,11 +108,11 @@ export default () => {
 
     const seriesRows = useMemo(() => {
         return rows.filter(row => row.Level === LEVEL_SERIES)
-    }, [rows.length])
+    }, [rows])
 
     const studiesRows = useMemo(() => {
         return rows.filter(row => row.Level === LEVEL_STUDY)
-    }, [rows.length])
+    }, [rows])
 
     return (
         <Container fluid>
@@ -187,7 +140,7 @@ export default () => {
             {
                 studiesRows.length > 0 ?
                     <Row className='mt-5'>
-                        <MyRobotTableStudies selectedRowsIds={selectedRowIds} onSelectRow={selectRowHandler} robotId={id} rows={studiesRows} />
+                        <MyRobotTableStudies robotId={id} rows={studiesRows} />
                     </Row>
                     :
                     null
@@ -195,17 +148,11 @@ export default () => {
             {
                 seriesRows.length > 0 ?
                     <Row className='mt-5'>
-                        <MyRobotTableSeries selectedRowsIds={selectedRowIds} onSelectRow={selectRowHandler} robotId={id} rows={seriesRows} />
+                        <MyRobotTableSeries robotId={id} rows={seriesRows} />
                     </Row>
                     :
                     null
             }
-            <Row>
-                <ExportDeleteSendButton
-                    onAnonClick={sendToAnon} onExportClick={sendToExport}
-                    onDeleteClick={sendToDelete}
-                />
-            </Row>
         </Container>
     )
 }

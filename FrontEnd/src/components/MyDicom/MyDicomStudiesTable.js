@@ -33,12 +33,6 @@ export default ({ studies = [], onClickStudy }) => {
             cell: ({ row }) => {
                 return <ActionButtonStudies
                     StudyInstanceUID={row.original.StudyInstanceUID}
-                    onDelete={() => onDeleteStudy(row.original.StudyOrthancID)}
-                    onShowLabels={() => setLabelStudyOrthancId(row.original.StudyOrthancID)}
-                    dataDetails={row.original}
-                    onShowModify={() => setModifyOrthancID({ orthancID: row.original.StudyOrthancID, level: ConstantLevel.STUDIES })}
-                    onShowCreate={() => setCreateOrthancID({ orthancID: row.original.StudyOrthancID, level: ConstantLevel.STUDIES })}
-
                 />
             }
         }

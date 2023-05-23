@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
 
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
@@ -11,7 +11,9 @@ import { ReactComponent as PendingSVG } from '../../../assets/images/pending.svg
 import { ReactComponent as RepeatSVG } from '../../../assets/images/arrow-repeat.svg'
 import { ITEM_SUCCESS } from './MyRobotRoot';
 
-export default ({ rows = [], selectedRowsIds, onSelectRow, onRetryItem, onDeleteItem }) => {
+export default ({ rows = [], onSelectRow, onRetryItem, onDeleteItem }) => {
+
+    const [selectedRowsIds, setSelectedRowsIds] = useState([])
 
     const columns = [{
         accessorKey: 'id',
@@ -120,7 +122,7 @@ export default ({ rows = [], selectedRowsIds, onSelectRow, onRetryItem, onDelete
                 retrievedOrthancIds.push(row.RetrievedOrthancId)
             }
         }
-        onSelectRow(retrievedOrthancIds)
+        setSelectedRowsIds(retrievedOrthancIds)
     }
 
 
@@ -131,7 +133,7 @@ export default ({ rows = [], selectedRowsIds, onSelectRow, onRetryItem, onDelete
 
     return (
         <>
-            <CommonTableV8 id={'id'} canSelect={false} selectedRowsIds={selectedRowKey} columns={columns} data={rows} onSelectRow={onSelectRowHandler} paginated />
+            <CommonTableV8 id={'id'} canSelect={false} canSort selectedRowsIds={selectedRowKey} columns={columns} data={rows} onSelectRow={onSelectRowHandler} paginated />
         </>
     )
 }
