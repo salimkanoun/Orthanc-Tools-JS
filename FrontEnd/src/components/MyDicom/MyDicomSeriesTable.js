@@ -4,10 +4,16 @@ import { Modal } from 'react-bootstrap'
 import TableSeries from '../CommonComponents/RessourcesDisplay/ReactTableV8/TableSeries'
 import ActionButtonSeries from './ActionButtons/ActionButtonSeries'
 import Metadata from '../Metadata/Metadata'
+import apis from '../../services/apis'
+import { errorMessage } from '../../tools/toastify'
 
 export default ({ series = [] }) => {
 
     const [metadataOrthancID, setMetadataOrthancID] = useState(null)
+
+    const handleDownloadNifti = (seriesOrthancId, compressed) => {
+        apis.exportDicom.exportToNifti(seriesOrthancId, compressed).catch(() => errorMessage('Uncreatable Nifti'))
+    }
 
     const additionalColumns = [
         {
@@ -15,13 +21,15 @@ export default ({ series = [] }) => {
             accessorKey: 'Action',
             header: 'Action',
             cell: ({ row }) => {
+                const seriesOrthancID = row.original.SeriesOrthancID
                 return (
                     <ActionButtonSeries
-                        orthancID={row.original.SeriesOrthancID}
+                        orthancID={seriesOrthancID}
                         onDelete={() => { }}
                         dataDetails={row.original}
-                        onShowMetadata={() => setMetadataOrthancID(row.original.SeriesOrthancID)}
+                        onShowMetadata={() => setMetadataOrthancID(seriesOrthancID)}
                         onShowModify={() => { }}
+                        onDownloadNifti={(compressed)=> handleDownloadNifti(seriesOrthancID, compressed)}
                     />)
             }
         }]

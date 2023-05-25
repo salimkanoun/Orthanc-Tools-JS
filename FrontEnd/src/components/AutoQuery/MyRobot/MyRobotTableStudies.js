@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
 
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
@@ -11,8 +11,11 @@ import { ReactComponent as PendingSVG } from '../../../assets/images/pending.svg
 import { ReactComponent as RepeatSVG } from '../../../assets/images/arrow-repeat.svg'
 import { ITEM_SUCCESS } from './MyRobotRoot';
 
-export default ({ rows = [], selectedRowsIds, onSelectRow, onRetryItem, onDeleteItem }) => {
+export default ({ rows = [], onRetryItem, onDeleteItem }) => {
 
+    const dispatch = useDispatch()
+
+    const [selectedRowIds, setSelectedRowIds] = useState([])
 
     const columns = [{
         accessorKey: 'id',
@@ -114,6 +117,39 @@ export default ({ rows = [], selectedRowsIds, onSelectRow, onRetryItem, onDelete
         enableHiding: true
     }];
 
+    const sendToAnon = async () => {
+        let studyArray = await getSelectedItemsStudiesDetails()
+        dispatch(addStudiesToAnonList(studyArray))
+    }
+
+    const sendToExport = async () => {
+        let studyArray = await getSelectedItemsStudiesDetails()
+        dispatch(addStudiesToExportList(studyArray))
+    }
+
+    const sendToDelete = async () => {
+        let studyArray = await getSelectedItemsStudiesDetails()
+        dispatch(addStudiesToDeleteList(studyArray))
+    }
+
+    const getSelectedItemsStudiesDetails = async () => {
+        let studyDataRetrieved = []
+        //Loop each item to retrieve study level
+        for (let orthancId of selectedRowIds) {
+            await apis.content.getStudiesDetails(orthancId).then((studyDetails) => {
+                let study = new Study()
+                study.fillFromOrthanc(studyDetails.ID, studyDetails.MainDicomTags, studyDetails.Series)
+                study.fillParentPatient(studyDetails.ParentPatient, studyDetails.PatientMainDicomTags)
+                studyDataRetrieved.push(study.serialize())
+            }).catch((error) => {
+                console.error(error)
+            })
+        }
+
+        return studyDataRetrieved
+
+    }
+
     const onSelectRowHandler = (rowIds) => {
         let selectedRows = rows.filter(row => rowIds.includes(row.id))
         let retrievedOrthancIds = []
@@ -122,18 +158,24 @@ export default ({ rows = [], selectedRowsIds, onSelectRow, onRetryItem, onDelete
                 retrievedOrthancIds.push(row.RetrievedOrthancId)
             }
         }
-        onSelectRow(retrievedOrthancIds)
+        setSelectedRowIds(retrievedOrthancIds)
     }
 
 
     const selectedRowKey = useMemo(() => {
         let selectedRows = rows.filter((row) => selectedRowsIds.includes(row.RetrievedOrthancId))
         return selectedRows.map(selectedRow => selectedRow.id)
-    }, [selectedRowsIds.length])
+    }, [selectedRowIds.length])
 
     return (
         <>
-            <CommonTableV8 id={'id'} canSelect selectedRowsIds={selectedRowKey} columns={columns} data={rows} onSelectRow={onSelectRowHandler} paginated />
+            <CommonTableV8 id={'id'} canSelect canSort selectedRowsIds={selectedRowKey} columns={columns} data={rows} onSelectRow={onSelectRowHandler} paginated />
+            <div>
+                <ExportDeleteSendButton
+                    onAnonClick={sendToAnon} onExportClick={sendToExport}
+                    onDeleteClick={sendToDelete}
+                />
+            </div>
         </>
     )
 }

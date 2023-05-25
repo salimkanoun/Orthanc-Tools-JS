@@ -70,6 +70,7 @@ services:
         networks:
           - internal
         environment:
+            NEURO_PLUGIN_ENABLED : "true"
             ORTHANC__NAME: "OrthancToolsJS"
             ORTHANC__DICOM_SERVER_ENABLED: "true"
             ORTHANC__DICOM_MODALITIES_IN_DATABASE: "true"

@@ -6,6 +6,8 @@ import Metadata from "../Metadata/Metadata";
 import ActionButtonSeries from "./ActionButtons/ActionButtonSeries"
 import Modify from '../Modify/Modify'
 import ConstantLevel from "../Modify/ConstantLevel";
+import apis from "../../services/apis";
+import { errorMessage } from "../../tools/toastify";
 
 export default ({
     series = [],
@@ -14,19 +16,25 @@ export default ({
     const [metadataOrthancID, setMetadataOrthancID] = useState(null);
     const [modifyOrthancID, setModifyOrthancID] = useState({ orthancID: null, level: null })
 
+    const handleDownloadNifti = (seriesOrthancId, compressed) => {
+        apis.exportDicom.exportToNifti(seriesOrthancId, compressed).catch(() => errorMessage('Uncreatable Nifti'))
+    }
+
     const additionalColumns = [
         {
             id: 'Action',
             accessorKey: 'Action',
             header: 'Action',
             cell: ({ row }) => {
+                const SeriesOrthancID = row.original.SeriesOrthancID
                 return (
                     <ActionButtonSeries
-                        orthancID={row.original.SeriesOrthancID}
-                        onDelete={() => onDelete(row.original.SeriesOrthancID)}
+                        orthancID={SeriesOrthancID}
+                        onDelete={() => onDelete(SeriesOrthancID)}
                         dataDetails={row.original}
-                        onShowMetadata={() => setMetadataOrthancID(row.original.SeriesOrthancID)}
-                        onShowModify={() => setModifyOrthancID({ orthancID: row.original.SeriesOrthancID, level: ConstantLevel.SERIES })}
+                        onShowMetadata={() => setMetadataOrthancID(SeriesOrthancID)}
+                        onShowModify={() => setModifyOrthancID({ orthancID: SeriesOrthancID, level: ConstantLevel.SERIES })}
+                        onDownloadNifti={(compressed) => handleDownloadNifti(SeriesOrthancID, compressed)}
                     />)
             }
         }]
