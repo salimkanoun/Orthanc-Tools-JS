@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { Button, Dropdown } from 'react-bootstrap';
+import { useDispatch } from 'react-redux';
 
 import CommonTableV8 from '../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8';
 import OhifLink from '../../Viewers/OhifLink';
@@ -10,6 +11,7 @@ import { ReactComponent as XSVG } from '../../../assets/images/x-circle.svg'
 import { ReactComponent as PendingSVG } from '../../../assets/images/pending.svg'
 import { ReactComponent as RepeatSVG } from '../../../assets/images/arrow-repeat.svg'
 import { ITEM_SUCCESS } from './MyRobotRoot';
+import ExportDeleteSendButton from '../../CommonComponents/RessourcesDisplay/ExportDeleteSendButton';
 
 export default ({ rows = [], onRetryItem, onDeleteItem }) => {
 
@@ -60,35 +62,28 @@ export default ({ rows = [], onRetryItem, onDeleteItem }) => {
     },
     {
         accessorKey: 'Status',
-        header: 'Status',
-        cell: ({ row, getValue }) => {
-            const value = getValue()
-            return (
-                <div className={'d-flex'}>
-                    <p>{value}</p>
-                    {value === 'failed' ?
-                        <Button type={"button"}
-                            onClick={() => onRetryItem(row.original.AnswerId)}>
-                            <RepeatSVG />
-                        </Button>
-                        :
-                        null}
-                </div>
-            )
-        }
+        header: 'Status'
     },
     {
-        accessorKey: 'Remove',
-        header: 'Remove Query',
+        accessorKey: 'Actions',
+        header: 'Actions',
         cell: ({ row }) => {
-            return row.original.approved === false ?
-                (
-                    <Button className='otjs-button otjs-button-red'
-                        onClick={() => onDeleteItem(row.original.AnswerId)} >
+            const status = row.original.Status
+            return (
+                <>
+                    <Button
+                        disabled={status !== 'failed'}
+                        onClick={() => onRetryItem(row.original.id)}>
+                        <RepeatSVG />
+                    </Button>
+                    <Button
+                        className='otjs-button otjs-button-red'
+                        disabled={status !== 'waiting'}
+                        onClick={() => onDeleteItem(row.original.id)} >
                         Remove
                     </Button>
-                )
-                : null
+                </>
+            )
         }
     },
     {
@@ -163,7 +158,7 @@ export default ({ rows = [], onRetryItem, onDeleteItem }) => {
 
 
     const selectedRowKey = useMemo(() => {
-        let selectedRows = rows.filter((row) => selectedRowsIds.includes(row.RetrievedOrthancId))
+        let selectedRows = rows.filter((row) => selectedRowIds.includes(row.RetrievedOrthancId))
         return selectedRows.map(selectedRow => selectedRow.id)
     }, [selectedRowIds.length])
 

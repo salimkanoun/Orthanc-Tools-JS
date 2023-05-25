@@ -21,7 +21,6 @@ export function addToExportList(seriesArray, studiesArray) {
 export function addStudiesToExportList(studiesArray) {
     return async function (dispatch) {
         for (const studyObject of studiesArray) {
-            console.log(studyObject)
             try {
                 let seriesInfo = await apis.content.getSeriesDetailsOfStudy(studyObject.StudyOrthancID)
                 let series = seriesInfo.map(series => {

@@ -2,14 +2,15 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useSelector } from 'react-redux'
 
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
-import { Container, Row } from 'react-bootstrap'
+import { Col, Container, ListGroup, Row } from 'react-bootstrap'
 
 import apis from '../../../services/apis'
 import MyRobotTableStudies from './MyRobotTableStudies'
 import MyRobotTableSeries from './MyRobotTableSeries'
+import { errorMessage } from '../../../tools/toastify'
 
 export const ITEM_SUCCESS = 'completed'
-export const ITEM_AWAITING = 'wait'
+export const ITEM_AWAITING = 'waiting'
 export const ITEM_PENDING = 'active'
 export const ITEM_FAILED = 'failed'
 export const ITEM_DELAYED = 'delayed'
@@ -21,21 +22,14 @@ export const ROBOT_COMPLETED = 'completed'
 export const LEVEL_STUDY = 'study'
 export const LEVEL_SERIES = 'series'
 
-export default () => {
+export default ({ robotId }) => {
 
-    const store = useSelector(state => {
-        return {
-            username: state.OrthancTools.username,
-        }
-    })
 
-    const [id, setId] = useState(null)
     const [projectName, setProjectName] = useState(null)
     const [creator, setCreator] = useState(null)
-    const [valid, setValid] = useState(null)
-    const [approved, setApproved] = useState(null)
+    const [valid, setValid] = useState(false)
+    const [approved, setApproved] = useState(false)
     const [rows, setRows] = useState([])
-
     const [totalPercentageProgress, setTotalPercentageProgress] = useState(0)
     const [percentageFailure, setPercentageFailure] = useState(0)
 
@@ -48,11 +42,8 @@ export default () => {
     }, [])
 
     const refreshInfo = async () => {
-        let retrieveIds = await apis.task.getTaskOfUser(store.username, 'retrieve')
-        if (retrieveIds.length > 0) {
-            let response = await apis.task.getTask(retrieveIds[0]);
-            refreshHandler(response)
-        }
+        let response = await apis.task.getTask(robotId);
+        refreshHandler(response)
     }
 
     const refreshHandler = (response) => {
@@ -62,7 +53,6 @@ export default () => {
         let newPercentageFailure = 0
 
         response.details.items.forEach(item => {
-
             rowsRetrieveList.push({
                 //Merge Modalities (study level) to modality column
                 Modality: item.ModalitiesInStudy,
@@ -92,17 +82,17 @@ export default () => {
     //SK ICI CHECKER LE ITEMID dans le backend (eviter position et remplacer par un ID (actuelement aswerId mais mauvaise idee car existe qu'une fois executee))
     const retryQueryHandler = async (itemId) => {
         try {
-            await apis.retrieveRobot.deleteRobotItem(robotId, itemId)
+            await apis.retrieveRobot.retryRobotItem(robotId, itemId)
         } catch (error) {
-            errorMessage(error?.data?.errorMessage ?? 'Delete Failed')
+            errorMessage(error?.data?.errorMessage ?? 'Retry Failed')
         }
     }
 
     const deleteQueryHandler = async (itemId) => {
         try {
-            await apis.retrieveRobot.retryRobotItem(robotId, itemId)
+            await apis.retrieveRobot.deleteRobotItem(robotId, itemId)
         } catch (error) {
-            errorMessage(error?.data?.errorMessage ?? 'Retry Failed')
+            errorMessage(error?.data?.errorMessage ?? 'Delete Failed')
         }
     }
 
@@ -117,30 +107,43 @@ export default () => {
     return (
         <Container fluid>
             <Row>
-                <h1 className="col"> Robot for user {creator}, project : {projectName} </h1>
-                <div className="col-md-2 text-right">
-                    <CircularProgressbarWithChildren
-                        value={totalPercentageProgress}
-                        text={`Progress : ${totalPercentageProgress}%`}
-                        styles={buildStyles({
-                            textSize: '10px'
-                        })}
-                    >
-                        {/* Foreground path */}
-                        <CircularProgressbar
-                            value={percentageFailure}
+                <Col className='d-flex align-items-center justify-content-center'>
+                    <ListGroup variant="flush">
+                        <ListGroup.Item>Robot for user {creator}</ListGroup.Item>
+                        <ListGroup.Item>Project : {projectName}</ListGroup.Item>
+                        <ListGroup.Item>Valid : {valid.toString()}</ListGroup.Item>
+                        <ListGroup.Item>Approved : {approved.toString()}</ListGroup.Item>
+                    </ListGroup>
+                </Col>
+                <Col className='d-flex justify-content-center'>
+                    <div style={{ maxWidth: "200px" }}>
+                        <CircularProgressbarWithChildren
+                            value={totalPercentageProgress}
+                            text={`Progress : ${totalPercentageProgress}%`}
                             styles={buildStyles({
-                                trailColor: "transparent",
-                                pathColor: "#f00"
+                                textSize: '10px',
                             })}
-                        />
-                    </CircularProgressbarWithChildren>
-                </div>
+                        >
+                            {/* Foreground path */}
+                            <CircularProgressbar
+                                value={percentageFailure}
+                                styles={buildStyles({
+                                    trailColor: "transparent",
+                                    pathColor: "#f00"
+                                })}
+                            />
+                        </CircularProgressbarWithChildren>
+                    </div>
+                </Col>
             </Row>
             {
                 studiesRows.length > 0 ?
                     <Row className='mt-5'>
-                        <MyRobotTableStudies robotId={id} rows={studiesRows} />
+                        <MyRobotTableStudies
+                            onRetryItem={(id) => retryQueryHandler(id)}
+                            onDeleteItem={(id) => deleteQueryHandler(id)}
+                            rows={studiesRows}
+                        />
                     </Row>
                     :
                     null
@@ -148,7 +151,11 @@ export default () => {
             {
                 seriesRows.length > 0 ?
                     <Row className='mt-5'>
-                        <MyRobotTableSeries robotId={id} rows={seriesRows} />
+                        <MyRobotTableSeries
+                            onRetryItem={(id) => retryQueryHandler(id)}
+                            onDeleteItem={(id) => deleteQueryHandler(id)}
+                            rows={seriesRows}
+                        />
                     </Row>
                     :
                     null

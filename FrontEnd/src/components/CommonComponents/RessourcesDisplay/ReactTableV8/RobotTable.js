@@ -21,7 +21,7 @@ export default ({
         },
         {
             id: 'name',
-            accessorKey: 'details.projectName',
+            accessorKey: 'name',
             header: 'Name'
         }, {
             id: 'username',

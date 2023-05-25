@@ -12,6 +12,7 @@ const keys = {
     USERS_KEY: 'users',
     BURNER_KEY: 'burner',
     ROBOTS_KEY: 'robots',
+    AUTOQUERY_KEY : 'autoQuery',
     ENDPOINTS_KEY: 'endpoints',
     EXPORT_TRANSCODING: 'export_transcoding',
     SSH_KEY: 'ssh',
