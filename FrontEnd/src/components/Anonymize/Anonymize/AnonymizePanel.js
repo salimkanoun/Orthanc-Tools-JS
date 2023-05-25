@@ -74,7 +74,6 @@ export default () => {
             try {
                 let answer = await apis.anon.createAnonRobot(listToAnonymize, store.username) //wait for the robot's answer to know what do to next
                 successMessage('Anonymization started')
-                console.log(answer)
             } catch (error) {
                 errorMessage(error.statusText)
             }

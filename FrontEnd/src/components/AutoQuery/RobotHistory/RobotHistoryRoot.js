@@ -52,7 +52,6 @@ export default () => {
                     })
                 });
             }).catch(error => {
-                console.log(error)
                 if (error.status !== 404) errorMessage(error.statusText + ' ' + error.message)
             }).finally(() => {
                 setRows(rows)

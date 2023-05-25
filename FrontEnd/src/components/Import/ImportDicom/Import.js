@@ -5,7 +5,9 @@ import { Modal, Row, Col, ProgressBar } from 'react-bootstrap'
 
 import MyDropzone from '../../CommonComponents/MyDropzone'
 import TableImportError from './TableImportError'
+
 import TablePatientWithNestedStudiesAndSeries from '../../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudiesAndSeries'
+import ExportDeleteSendButton from '../../CommonComponents/RessourcesDisplay/ExportDeleteSendButton'
 
 import { addStudiesToExportList } from '../../../actions/ExportList'
 import { addStudiesToDeleteList } from '../../../actions/DeleteList'
@@ -13,8 +15,6 @@ import { addStudiesToAnonList } from '../../../actions/AnonList'
 import apis from '../../../services/apis'
 import Study from '../../../model/Study'
 import Series from '../../../model/Series'
-import ExportDeleteSendButton from '../../CommonComponents/RessourcesDisplay/ExportDeleteSendButton'
-
 
 export default () => {
 

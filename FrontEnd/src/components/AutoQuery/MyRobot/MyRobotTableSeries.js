@@ -57,35 +57,28 @@ export default ({ rows = [], onSelectRow, onRetryItem, onDeleteItem }) => {
     },
     {
         accessorKey: 'Status',
-        header: 'Status',
-        cell: ({ row, getValue }) => {
-            const value = getValue()
-            return (
-                <div className={'d-flex'}>
-                    <p>{value}</p>
-                    {value === 'failed' ?
-                        <Button type={"button"}
-                            onClick={() => onRetryItem(row.original.AnswerId)}>
-                            <RepeatSVG />
-                        </Button>
-                        :
-                        null}
-                </div>
-            )
-        }
+        header: 'Status'
     },
     {
-        accessorKey: 'Remove',
-        header: 'Remove Query',
+        accessorKey: 'Actions',
+        header: 'Actions',
         cell: ({ row }) => {
-            return row.original.approved === false ?
-                (
-                    <Button className='otjs-button otjs-button-red'
-                        onClick={() => onDeleteItem(row.original.AnswerId)} >
+            const status = row.original.Status
+            return (
+                <>
+                    <Button
+                        disabled={status !== 'failed'}
+                        onClick={() => onRetryItem(row.original.id)}>
+                        <RepeatSVG />
+                    </Button>
+                    <Button
+                        className='otjs-button otjs-button-red'
+                        disabled={status !== 'waiting'}
+                        onClick={() => onDeleteItem(row.original.id)} >
                         Remove
                     </Button>
-                )
-                : null
+                </>
+            )
         }
     },
     {

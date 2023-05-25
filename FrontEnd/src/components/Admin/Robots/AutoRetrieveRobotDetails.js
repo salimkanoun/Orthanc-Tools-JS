@@ -20,6 +20,7 @@ export default ({ robotId }) => {
         }))
     )
 
+
     if (isLoading) return <Spinner />
 
     return (

@@ -110,6 +110,7 @@ export default ({
         enableSorting: canSort,
         enableSortingRemoval: true,
         enableMultiSort: true,
+        autoResetPageIndex : false,
         maxMultiSortColCount: 3,
         isMultiSortEvent: () => true,
         meta: {
