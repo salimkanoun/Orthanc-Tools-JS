@@ -270,9 +270,10 @@ class RetrieveTask {
         let validateJobs = await RetrieveTask._getValidationJobs(taskId);
         let answerId = itemId.split(':')[1];
         let answerNumber = itemId.split(':')[0];
-        let job = validateJobs.filter(job => job.data.item.AnswerNumber == answerNumber && job.data.item.AnswerId == answerId)[0];
+        let job = validateJobs.find(job => job.data.item.AnswerNumber == answerNumber && job.data.item.AnswerId == answerId);
         if (!job) throw new OTJSNotFoundException("Item not found");
-        if (await job.getState() !== "failed") throw new OTJSBadRequestException("Can't retry a job that isn't failed");
+        const state = await job.getState()
+        if (state !== "failed") throw new OTJSBadRequestException("Can't retry a job that isn't failed");
         await job.retry();
     }
 

@@ -147,7 +147,6 @@ const getTasksOfType = async (req, res) => {
  * @param {*} res request result
  */
 const deleteTaskOfUser = async (req, res) => {
-
     await Task.deleteTaskOfUser(req.params.username, req.params.type);
     res.sendStatus(200);
 }
@@ -158,7 +157,6 @@ const deleteTaskOfUser = async (req, res) => {
  * @param {*} res request result
  */
 const deleteTask = async (req, res) => {
-
     await Task.deleteTask(req.params.id);
     res.sendStatus(200);
 }

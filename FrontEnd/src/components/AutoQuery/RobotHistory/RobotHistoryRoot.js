@@ -24,7 +24,7 @@ export default () => {
         }
     }, [])
 
-    const deleteJobHandler = async (id, refreshHandler) => {
+    const deleteJobHandler = async (id) => {
         try {
             await apis.retrieveRobot.deleteRobot(id)
             refreshHandler()
