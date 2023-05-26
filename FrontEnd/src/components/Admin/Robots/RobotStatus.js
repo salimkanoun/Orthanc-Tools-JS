@@ -7,6 +7,7 @@ import Spinner from '../../CommonComponents/Spinner';
 import RobotTable from '../../CommonComponents/RessourcesDisplay/ReactTableV8/RobotTable';
 import { Button, Modal } from 'react-bootstrap';
 import AutoRetrieveRobotDetails from './AutoRetrieveRobotDetails';
+import { errorMessage } from '../../../tools/toastify';
 
 
 export default () => {
@@ -16,7 +17,6 @@ export default () => {
     const { data: rows, isLoading } = useCustomQuery(
         [keys.ROBOTS_KEY],
         () => apis.retrieveRobot.getAllRobotsDetails(),
-        undefined,
         undefined,
         (answerData) => {
             return answerData.map((robotJob) => {
@@ -44,7 +44,9 @@ export default () => {
 
     const deleteJobHandler = useCustomMutation(
         ({ id }) => apis.retrieveRobot.deleteRobot(id),
-        [[keys.ROBOTS_KEY]]
+        [[keys.ROBOTS_KEY]],
+        undefined,
+        (error) => errorMessage(error?.data?.errorMessage ?? 'Cannot delete robot')
     )
 
     const validateJobHandler = useCustomMutation(
@@ -70,12 +72,12 @@ export default () => {
 
     return (
         <>
-            <Modal size='xl' show={showDetailsRobotId != null} onHide={() => setShowDetailsRobotId(null)}>
+            <Modal fullscreen show={showDetailsRobotId != null} onHide={() => setShowDetailsRobotId(null)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Retrieve Robot Details</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <AutoRetrieveRobotDetails robotId = {showDetailsRobotId}/>
+                    <AutoRetrieveRobotDetails robotId={showDetailsRobotId} />
                 </Modal.Body>
             </Modal>
             <h2 className="card-title mt-4">Retrieve Robots : </h2>
