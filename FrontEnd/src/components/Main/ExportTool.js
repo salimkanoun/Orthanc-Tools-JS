@@ -62,7 +62,7 @@ export default ({ target, show, onHide }) => {
     return (
         <Overlay target={target} show={show} placement='bottom' onHide={onHide}
             rootClose style={{ width: '33%' }}>
-            <Popover id='popover-export' style={{ maxWidth: '100%' }}>
+            <Popover style={{ maxWidth: '100%' }}>
                 <Popover.Header as='h3'>Export List</Popover.Header>
                 <Popover.Body>
                     <div className="row mb-3">
