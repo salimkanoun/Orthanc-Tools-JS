@@ -37,7 +37,7 @@ const MainRoot = ({ onLogout, username, roles }) => {
                         <Row>
                             <ToolsPanel roles={roles} />
                         </Row>
-                        <Row className='overflow-auto ms-3 mt-3' style={{ maxheight: '90vh', width: '90vw' }}>
+                        <Row className='overflow-auto ms-3 mt-3' style={{ maxHeight: '90vh', maxWidth: '90vw' }}>
                             <SwitchTransition>
                                 <CSSTransition key={location.pathname} timeout={300} classNames={"otjsTransition"}>
                                     <div className='main'>
@@ -59,7 +59,7 @@ const MainRoot = ({ onLogout, username, roles }) => {
                                 </CSSTransition>
                             </SwitchTransition>
                         </Row>
-                        <Row style={{ paddingLeft: 0, paddingRight: 0 }}>
+                        <Row>
                             <Footer />
                         </Row>
                     </Row>
