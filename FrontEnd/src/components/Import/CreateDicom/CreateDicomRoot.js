@@ -113,7 +113,7 @@ export default ({ parentStudy = null, onCreatedDicom = ()=>{} }) => {
             <TagTable data={tags} onDataUpdate={handleDataChange} onDeleteTag={(tagName) => handleDeleteTag(tagName)} />
             <div>
                 New Tag :
-                <Select options={tagOptions} onChange={(option) => handleNewTag(option.value)} />
+                <Select menuShouldScrollIntoView options={tagOptions} onChange={(option) => handleNewTag(option.value)} />
             </div>
             <div className='d-flex justify-content-end'>
                 <Button type="submit" onClick={createDicom}
