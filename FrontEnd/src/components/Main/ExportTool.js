@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Popover, Col, Row, Overlay, Button } from 'react-bootstrap'
 
@@ -62,7 +62,7 @@ export default ({ target, show, onHide }) => {
     return (
         <Overlay target={target} show={show} placement='bottom' onHide={onHide}
             rootClose style={{ width: '33%' }}>
-            <Popover id='popover-export' style={{ maxWidth: '100%' }}>
+            <Popover style={{ maxWidth: '100%' }}>
                 <Popover.Header as='h3'>Export List</Popover.Header>
                 <Popover.Body>
                     <div className="row mb-3">

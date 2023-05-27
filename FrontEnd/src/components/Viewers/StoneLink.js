@@ -12,6 +12,6 @@ export default ({ StudyInstanceUID, className }) => {
     StudyInstanceUID === undefined ?
       null
       :
-      <Link className={className} to={'/viewer-stone/index.html?study=' + StudyInstanceUID + '&token=' + token} target='_blank'>View in Stone</Link>
+      <Link className={className} to={'viewer-stone/index.html?study=' + StudyInstanceUID + '&token=' + token} target='_blank'>View in Stone</Link>
   )
 } 

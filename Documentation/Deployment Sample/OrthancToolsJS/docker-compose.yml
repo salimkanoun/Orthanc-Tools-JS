@@ -23,8 +23,8 @@ services:
             ORTHANC_PORT: "8042"
             ORTHANC_USERNAME: "salim"
             ORTHANC_PASSWORD: "salim"
-            DOMAIN_PROTOCOL: "https"
-            DOMAIN_ADDRESS: "0e44be91-4285-440b-a132-c6580851eed7.pub.instances.scw.cloud"
+            DOMAIN_PROTOCOL: "http"
+            DOMAIN_ADDRESS: "localhost"
             REDIS_HOST: "redis"
             REDIS_PORT: "6379"
             REDIS_PASSWORD: ""
@@ -70,6 +70,7 @@ services:
         networks:
           - internal
         environment:
+            NEURO_PLUGIN_ENABLED : "true"
             ORTHANC__NAME: "OrthancToolsJS"
             ORTHANC__DICOM_SERVER_ENABLED: "true"
             ORTHANC__DICOM_MODALITIES_IN_DATABASE: "true"
@@ -89,6 +90,7 @@ services:
             ORTHANC__DICOM_WEB__SSL: "true"
             ORTHANC__DICOM_WEB__STUDIESMETADATA: "MainDicomTags"
             ORTHANC__DICOM_WEB__SERIESMETADATA: "Full"
+            ORTHANC__BUILTIN__DECODER__TRANSCODER__ORDER: "Before"
 
     orthanctoolsjspacs:
         image: osimis/orthanc:23.4.0

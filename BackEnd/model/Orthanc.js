@@ -2,8 +2,8 @@ const fs = require('fs')
 const QueryStudyAnswer = require('./OrthancData/queries-answer/QueryStudyAnswer')
 const QuerySerieAnswer = require('./OrthancData/queries-answer/QuerySeriesAnswer')
 const TagAnon = require('./OrthancData/TagAnon')
-const ReverseProxy = require('./ReverseProxy')
 const OrthancQueryAnswer = require("./OrthancData/queries-answer/OrthancQueryAnswer");
+const OrthancReverseProxyService = require('./OrthancReverseProxyService');
 
 /**
  * Orthanc object to communications with orthanc server
@@ -14,19 +14,8 @@ class Orthanc {
      * Return AET Name of the Orthanc Server
      */
     async getOrthancAetName() {
-        const systemAnswer = await ReverseProxy.getAnswer('/system', 'GET', undefined)
+        const systemAnswer = await OrthancReverseProxyService.reverseProxyGetAnswer('/system', 'get', undefined)
         return systemAnswer.DicomAet
-    }
-
-    /**
-     * Export an orthanc ressource to Export folder in hierachical ZIP
-     * @param {Array} orthancIds
-     * @param {string} filename without extension
-     */
-    exportArchiveDicom(orthancIds, filename) {
-        const destination = this.getArchiveDicomPath(filename)
-        const streamWriter = fs.createWriteStream(destination)
-        ReverseProxy.streamToFile('/tools/create-archive', 'POST', orthancIds, streamWriter)
     }
 
     getArchiveDicom(orthancIds, transcoding = null) {
@@ -50,7 +39,7 @@ class Orthanc {
 
                 const destination = this.getArchiveDicomPath(Math.random().toString(36).substr(2, 5))
                 const streamWriter = fs.createWriteStream(destination)
-                ReverseProxy.streamToFileWithCallBack('/tools/create-archive', 'POST', payload, streamWriter, () => {
+                OrthancReverseProxyService.streamToFileWithCallBack('/tools/create-archive', 'POST', payload, streamWriter, () => {
                     resolve(destination)
                 })
 
@@ -82,7 +71,7 @@ class Orthanc {
             try {
                 const destination = this.getArchiveDicomPath(Math.random().toString(36).substr(2, 5))
                 const streamWriter = fs.createWriteStream(destination)
-                ReverseProxy.streamToFileWithCallBack('/tools/create-media-extended', 'POST', payload, streamWriter, () => {
+                OrthancReverseProxyService.streamToFileWithCallBack('/tools/create-media-extended', 'POST', payload, streamWriter, () => {
                     resolve(destination)
                 })
 
@@ -164,7 +153,7 @@ class Orthanc {
      * @param {String} aet
      */
     async makeDicomQuery(aet) {
-        const answer = await ReverseProxy.getAnswer('/modalities/' + aet + '/query', 'POST', this.preparedQuery)
+        const answer = await OrthancReverseProxyService.reverseProxyGetAnswer('/modalities/' + aet + '/query', 'post', this.preparedQuery)
 
         if (this.preparedQuery.Level === 'Study') {
             return this.getStudyAnswerDetails(answer.ID, aet)
@@ -174,15 +163,15 @@ class Orthanc {
     }
 
     _getAnswerLevel(answerId) {
-        return ReverseProxy.getAnswerPlainText('/queries/' + answerId + '/level', 'GET', undefined)
+        return OrthancReverseProxyService.reverseProxyGetAnswer('/queries/' + answerId + '/level', 'get', undefined)
     }
 
     _getAnswerOriginAET(answerId) {
-        return ReverseProxy.getAnswerPlainText('/queries/' + answerId + '/modality', 'GET', undefined)
+        return OrthancReverseProxyService.reverseProxyGetAnswer('/queries/' + answerId + '/modality', 'get', undefined)
     }
 
     _getAnswerDetails(answerId) {
-        return ReverseProxy.getAnswer('/queries/' + answerId + '/answers?expand', 'GET', undefined)
+        return OrthancReverseProxyService.reverseProxyGetAnswer('/queries/' + answerId + '/answers?expand', 'get', undefined)
     }
 
     async getSeriesAnswerDetails(answerId, aet) {
@@ -307,12 +296,12 @@ class Orthanc {
             TargetAet: aet
         }
 
-        const answer = await ReverseProxy.getAnswer('/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', 'POST', postData)
+        const answer = await OrthancReverseProxyService.reverseProxyGetAnswer('/queries/' + queryID + '/answers/' + answerNumber + '/retrieve', 'post', postData)
 
         return answer
     }
 
-    async findInOrthanc(level = 'Study', patientName = '', patientID = '', accessionNb = '', date = '', studyDescription = '', modality = '', studyInstanceUID = '') {
+    async findInOrthanc(level = 'Study', patientName = '', patientID = '', accessionNb = '', date = '', studyDescription = '', modality = '', studyInstanceUID = '', labels = []) {
 
         const queryParameter = {
             Level: level,
@@ -327,10 +316,11 @@ class Orthanc {
                 AccessionNumber: accessionNb,
                 StudyInstanceUID: studyInstanceUID
 
-            }
+            },
+            Labels: labels
         }
 
-        const answer = await ReverseProxy.getAnswer('/tools/find', 'POST', queryParameter)
+        const answer = await OrthancReverseProxyService.reverseProxyGetAnswer('/tools/find', 'post', queryParameter)
 
         return answer
     }
@@ -350,17 +340,17 @@ class Orthanc {
      * @param {string} orthancID
      */
     async getOrthancDetails(level, orthancID) {
-        const answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID, 'GET', undefined)
+        const answer = await OrthancReverseProxyService.reverseProxyGetAnswer('/' + level + '/' + orthancID, 'get', undefined)
         return answer
     }
 
     async getStudiesDetailsOfPatient(orthancID) {
-        const answer = await ReverseProxy.getAnswer('/patients/' + orthancID + '/studies?expand', 'GET', undefined)
+        const answer = await OrthancReverseProxyService.reverseProxyGetAnswer('/patients/' + orthancID + '/studies?expand', 'get', undefined)
         return answer
     }
 
     async getSeriesDetailsOfStudy(orthancID) {
-        const answer = await ReverseProxy.getAnswer('/studies/' + orthancID + '/series?expand', 'GET', undefined)
+        const answer = await OrthancReverseProxyService.reverseProxyGetAnswer('/studies/' + orthancID + '/series?expand', 'get', null)
         return answer
     }
 
@@ -370,7 +360,7 @@ class Orthanc {
      * @param {string} orthancID
      */
     async deleteFromOrthanc(level, orthancID) {
-        const answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID, 'DELETE', undefined)
+        const answer = await OrthancReverseProxyService.reverseProxyGetAnswer('/' + level + '/' + orthancID, 'delete', null)
         return answer
     }
 
@@ -473,33 +463,33 @@ class Orthanc {
 
     async makeAnon(level, orthancID, profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription, synchronous) {
         let postData = this.buildAnonQuery(profile, newAccessionNumber, newPatientID, newPatientName, newStudyDescription, synchronous)
-        const answer = await ReverseProxy.getAnswer('/' + level + '/' + orthancID + '/anonymize', 'POST', postData)
+        const answer = await OrthancReverseProxyService.reverseProxyGetAnswer('/' + level + '/' + orthancID + '/anonymize', 'post', postData)
         return answer
     }
 
     async getChanges(last) {
         //let outPutStream = this.getOrthancAetName() + "/changes?since=" + last
         let outPutStream = "/changes?since=" + last
-        let changes = await ReverseProxy.getAnswer(outPutStream, "GET", undefined)
+        let changes = await OrthancReverseProxyService.reverseProxyGetAnswer(outPutStream, 'get', null)
         return changes
     }
 
     async getChangesLast() {
         //let outPutStream = this.getOrthancAetName() + "/changes?last"
         let outPutStream = "/changes?last"
-        let changes = await ReverseProxy.getAnswer(outPutStream, "GET", undefined)
+        let changes = await OrthancReverseProxyService.reverseProxyGetAnswer(outPutStream, 'get', null)
         return changes
     }
 
     async getSopClassUID(instanceID) {
-        let changes = await ReverseProxy.getAnswerPlainText('/instances/' + instanceID + "/metadata/SopClassUid", "GET", undefined)
+        let changes = await OrthancReverseProxyService.reverseProxyGetAnswer('/instances/' + instanceID + "/metadata/SopClassUid", 'get', null)
         return changes
     }
 
     monitorJob(jobPath, updateCallback, updateInterval) {
         return new Promise((resolve, reject) => {
             let interval = setInterval(() => {
-                ReverseProxy.getAnswer(jobPath, 'GET', null).then((response) => {
+                OrthancReverseProxyService.reverseProxyGetAnswer(jobPath, 'get', null).then((response) => {
                     updateCallback(response)
                     if (response.State === "Success") {
                         clearInterval(interval)
@@ -518,12 +508,12 @@ class Orthanc {
      * @param {String} aet name of the target AET
      * @param {Array.<String>} orthancIds array of orthanc IDS
      */
-    async sendToAET(aet,orthancIds){
+    async sendToAET(aet, orthancIds) {
         const payload = {
-            "Asynchronous":true,
-            "Ressources":orthancIds
+            "Asynchronous": true,
+            "Ressources": orthancIds
         }
-        const answer = await ReverseProxy.getAnswer('/modalities/' + aet + '/store', 'POST', payload)
+        const answer = await OrthancReverseProxyService.reverseProxyGetAnswer('/modalities/' + aet + '/store', 'POST', payload)
         return answer
     }
 }

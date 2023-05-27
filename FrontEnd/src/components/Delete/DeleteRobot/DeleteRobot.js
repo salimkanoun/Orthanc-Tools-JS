@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import apis from '../../../services/apis'
 import { errorMessage } from '../../../tools/toastify'
 import { Col, Container, Row } from 'react-bootstrap'
-import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
 
 export default () => {
 
@@ -27,7 +27,6 @@ export default () => {
 
     const refreshInfo = async () => {
         let retrieveIds = await apis.task.getTaskOfUser(store.username, 'delete')
-        console.log(retrieveIds)
         if (retrieveIds.length > 0) {
             try {
                 let response = await apis.task.getTask(retrieveIds[0]);

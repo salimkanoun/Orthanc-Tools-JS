@@ -7,8 +7,6 @@ var express = require('express')
 var morgan = require('morgan')
 var path = require('path')
 var cors = require('cors')
-var cookieParser = require('cookie-parser')
-const compression = require('compression')
 
 var apisRouter = require('./routes/index')
 var adminRouter = require('./routes/admin')
@@ -31,8 +29,7 @@ app.use(function (req, res, next) {
   res.header("Cross-Origin-Opener-Policy", "same-origin");
   next();
 });
-app.use(cookieParser())
-app.use(compression())
+
 
 var unless = function (path, middleware) {
   return function (req, res, next) {
@@ -69,7 +66,6 @@ app.use('/viewer-ohif/*', function (req, res) {
 })
 
 app.use('/viewer-stone/', express.static(path.join(__dirname, 'build', 'viewer-stone')));
-app.use('/streamSaver/', express.static(path.join(__dirname, 'build', 'streamSaver')));
 
 app.use('/api/authentication', authenticationRouter)
 app.use('/api/users', usersRouter)

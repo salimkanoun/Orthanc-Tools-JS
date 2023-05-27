@@ -4,18 +4,7 @@ const DeleteTask = require("../model/tasks/DeleteTask");
 const RetrieveTask = require("../model/tasks/RetrieveTask");
 const ExportTask = require("../model/tasks/ExportTask");
 const Options = require("../model/Options");
-const Queue = require("../adapter/bullAdapter");
 const { OTJSBadRequestException } = require("../Exceptions/OTJSErrors");
-
-
-/*
-const checkForOrthancQueueReady = async (req, res, next) => {
-    Queue.isAllReady().then(() => next()).catch((error) => {
-        console.error(error)
-        res.status(500).send("Cant connect to redis");
-    })
-}
-*/
 
 /**
  * Creating anonymisation task based on the request
@@ -158,7 +147,6 @@ const getTasksOfType = async (req, res) => {
  * @param {*} res request result
  */
 const deleteTaskOfUser = async (req, res) => {
-
     await Task.deleteTaskOfUser(req.params.username, req.params.type);
     res.sendStatus(200);
 }
@@ -169,7 +157,6 @@ const deleteTaskOfUser = async (req, res) => {
  * @param {*} res request result
  */
 const deleteTask = async (req, res) => {
-
     await Task.deleteTask(req.params.id);
     res.sendStatus(200);
 }

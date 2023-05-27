@@ -2,16 +2,15 @@ import React, { Fragment } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { Button } from 'react-bootstrap'
 
-import apis from '../../../services/apis'
 import OhifLink from '../../Viewers/OhifLink'
 import StoneLink from '../../Viewers/StoneLink'
 
 export default ({
-    orthancID,
     StudyInstanceUID,
     onDelete,
-    openLabelModal,
-    onShowModify
+    onShowLabels,
+    onShowModify,
+    onShowCreate,
 }) => {
 
     const handleClick = (e) => {
@@ -33,19 +32,15 @@ export default ({
                     <Button className='dropdown-item bg-orange' onClick={() => onShowModify()}>
                         Modify
                     </Button>
+                    <Button className='dropdown-item bg-blue' onClick={() => onShowLabels()}>
+                        Labels
+                    </Button>
+                    <Button className='dropdown-item bg-blue' onClick={() => onShowCreate()}>
+                        Create Series
+                    </Button>
                     <Button className='dropdown-item bg-red'
                         onClick={() => onDelete()}>Delete
                     </Button>
-                    {(!!openLabelModal ?
-                        //TODO a réinstancier
-                        <Button className='dropdown-item bg-blue'
-                            onClick={() => {
-                                apis.content.getStudiesDetails(orthancID).then((study) => {
-                                    openLabelModal(study)
-                                })
-                            }}>Labels
-                        </Button> : null)}
-
                 </Dropdown.Menu>
             </Dropdown>
         </Fragment>

@@ -22,7 +22,7 @@ export function addStudiesToExportList(studiesArray) {
     return async function (dispatch) {
         for (const studyObject of studiesArray) {
             try {
-                let seriesInfo = await apis.content.getSeriesDetailsOfStudy(studyObject['StudyOrthancID'])
+                let seriesInfo = await apis.content.getSeriesDetailsOfStudy(studyObject.StudyOrthancID)
                 let series = seriesInfo.map(series => {
                     let seriesObject = new Series()
                     seriesObject.fillFromOrthanc(series.ID, series.MainDicomTags, series.Instances, series.ParentStudy)

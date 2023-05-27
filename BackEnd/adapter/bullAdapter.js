@@ -19,7 +19,8 @@ class Queue extends event.EventEmitter {
     constructor(queueName, fn, attempts = 1, backoff = 2000, workerCount = 1) {
         super();
         this._queue = new BullQueue(queueName, {
-            redis: REDIS_OPTIONS, defaultJobOptions: {
+            redis: REDIS_OPTIONS,
+            defaultJobOptions: {
                 attempts,
                 backoff,
             }
@@ -56,7 +57,7 @@ class Queue extends event.EventEmitter {
             }
             this._invalidated = true;
             //this.emit('error', err);
-            
+
         });
         this._queue.on('failed', (job, err) => {
             console.log(err);
@@ -154,51 +155,36 @@ class Queue extends event.EventEmitter {
 
 class Job {
     constructor(bullJob) {
-        this._bullJob = bullJob;
-        this._bullJob._cachedState = null
+        this.bullJob = bullJob;
         this.data = bullJob.data;
-        this._bullJob._cacheRes = null;
-        this._bullJob._cachedProgress = null;
     }
 
     async progress() {
-        if (this._bullJob._cachedProgress !== null) return this._bullJob._cachedProgress;
-        this._bullJob._cachedProgress = await this._bullJob.progress();
-        return this._bullJob._cachedProgress;
+        return await this.bullJob.progress();
     }
 
     async getState() {
-        if (this._bullJob._cachedState !== null) {
-            return this._bullJob._cachedState;
-        }
-        return await this._bullJob.getState().then(state => {
-            this._bullJob._cachedState = state;
-            return state;
-        });
+        return await this.bullJob.getState();
     }
 
     async finished() {
-        if (this._bullJob._cacheRes !== null) return this._bullJob._cacheRes;
-        return await this._bullJob.finished().then(res => {
-            this._bullJob._cacheRes = res;
-            return res;
-        });
+        return await this.bullJob.finished()
     }
 
     update(data) {
-        return this._bullJob.update(data);
+        return this.bullJob.update(data);
     }
 
     remove() {
-        return this._bullJob.remove()
+        return this.bullJob.remove()
     }
 
     moveToFailed(error) {
-        return this._bullJob.moveToFailed(error, true);
+        return this.bullJob.moveToFailed(error, true);
     }
 
     retry() {
-        return this._bullJob.retry();
+        return this.bullJob.retry();
     }
 }
 

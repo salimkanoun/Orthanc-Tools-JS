@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import {
     useReactTable,
     getCoreRowModel,
@@ -28,13 +28,13 @@ export default ({
     canExpand = false,
     paginated = false,
     selectedRowsIds = undefined,
-    customRowProps = (row) => { },
+    customRowProps = () => { },
     sortBy = [],
-    renderSubComponent = (row) => { },
+    renderSubComponent = () => { },
     onRowClick = () => { },
     rowStyle = () => { },
-    onSelectRow = (state) => { },
-    onCellEdit = (rowIndex, columnId, value) => { },
+    onSelectRow = () => { },
+    onCellEdit = () => { },
 }) => {
 
     const [sorting, setSorting] = useState(sortBy);
@@ -110,6 +110,7 @@ export default ({
         enableSorting: canSort,
         enableSortingRemoval: true,
         enableMultiSort: true,
+        autoResetPageIndex: false,
         maxMultiSortColCount: 3,
         isMultiSortEvent: () => true,
         meta: {
@@ -168,8 +169,8 @@ export default ({
                 <tbody>
                     {table.getRowModel().rows.map(row => {
                         return (
-                            <>
-                                <tr key={row.id} {...customRowProps(row)} onClick={() => {
+                            <Fragment key={row.id} >
+                                <tr {...customRowProps(row)} onClick={() => {
                                     row.toggleExpanded();
                                     onRowClick(row.id)
                                 }} style={rowStyle(row.id)
@@ -191,7 +192,7 @@ export default ({
                                         </td>
                                     </tr>
                                 )}
-                            </>
+                            </Fragment>
                         )
                     })}
                 </tbody>

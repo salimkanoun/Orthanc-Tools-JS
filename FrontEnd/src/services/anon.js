@@ -15,7 +15,7 @@ const anonymize =  {
 
     flush(){
         
-        return axios.delete('/api/tasks/type/anonymize/flush').then(answer =>  true
+        return axios.delete('/api/tasks/type/anonymize/flush').then(() =>  true
         ).catch(error => {
             throw error
         })

@@ -12,6 +12,7 @@ const keys = {
     USERS_KEY: 'users',
     BURNER_KEY: 'burner',
     ROBOTS_KEY: 'robots',
+    AUTOQUERY_KEY : 'autoQuery',
     ENDPOINTS_KEY: 'endpoints',
     EXPORT_TRANSCODING: 'export_transcoding',
     SSH_KEY: 'ssh',
@@ -25,7 +26,9 @@ const keys = {
     EXPAND: 'expand',
     EXPORT_OPTION_KEYS : 'exportOptions',
     PROGRESSION_KEYS : 'progression',
-    ANONYMIZE_KEYS : 'anonymize'
+    ANONYMIZE_KEYS : 'anonymize',
+    LABELS_KEY : 'labels',
+    STUDY_KEY : 'studies'
 }
 
 const filter = {
@@ -38,6 +41,7 @@ const filter = {
 }
 
 const send_type = {
+    LABEL: "label",
     ANON: "anon",
     DELETE: "delete",
     EXPORT: "export"

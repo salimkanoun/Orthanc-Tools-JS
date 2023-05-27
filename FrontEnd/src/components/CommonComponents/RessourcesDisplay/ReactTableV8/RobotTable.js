@@ -1,5 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
 import CommonTableV8 from "./CommonTableV8";
 import { Button } from "react-bootstrap";
@@ -9,7 +8,8 @@ export default ({
     validationRobotHandler,
     deleteJobHandler,
     hideValidationButton,
-    additionalColumns = []
+    additionalColumns = [],
+    onShowDetails = () => { }
 }) => {
 
     const columns = [
@@ -21,48 +21,51 @@ export default ({
         },
         {
             id: 'name',
-            accessorKey: 'details.projectName',
+            accessorKey: 'name',
             header: 'Name'
-        }, {
+        },
+        {
             id: 'username',
             accessorKey: 'username',
             header: 'Username'
-        }, {
+        },
+        {
             id: 'quesriesNb',
-            accessorFn: ( row ) => {
-                return row.details?.items.length
-            },
+            accessorKey: 'queriesNb',
             header: 'Number of Queries'
-        }, {
+        },
+        {
             id: 'validation',
-            accessorFn: ( row ) => {
-                return row?.progress?.validation
-            },
+            accessorKey: 'validation',
             header: 'Progress Validation'
-        }, {
+        },
+        {
             id: 'retrieve',
-            accessorFn: ( row ) => {
-                return row?.progress?.retrieve
-            },
+            accessorKey: 'retrieve',
             header: 'Progress Retrieve'
-        }, {
+        },
+        {
             id: 'state',
             accessorKey: 'state',
-            Header: 'State'
-        }, {
+            header: 'State'
+        },
+        {
             id: 'details',
             header: 'Show Details',
             cell: ({ row }) => {
-                return <Link className='nav-link otjs-button otjs-button-blue'
-                    to={'/robot/' + row.original.id}> Details </Link>
+                return <Button
+                    className='nav-link otjs-button otjs-button-blue'
+                    onClick={() => onShowDetails(row.original.id)}
+                > Details </Button>
             }
-        }, {
+        },
+        {
             id: 'approved',
+            header: 'Approved',
             accessorKey: "approved",
-            accessorFn: ( row ) => {
-                return row?.details?.approved
-            }
-        }, {
+            cell: ({ getValue }) => getValue()?.toString()
+        },
+        {
             id: 'valid',
             accessorKey: 'valid',
             header: 'Validation Status',
@@ -70,12 +73,7 @@ export default ({
             cell: ({ row }) => {
                 if (row.original.valid) {
                     if (!row.original.approved) {
-                        return (
-                            <Button className='otjs-button otjs-button-green w-7'
-                                onClick={() => validationRobotHandler(row.original.id)}>
-                                Robots
-                            </Button>
-                        )
+                        return (<p> Awaiting validation </p>)
                     } else {
                         return (<p> Validated & approved </p>)
                     }

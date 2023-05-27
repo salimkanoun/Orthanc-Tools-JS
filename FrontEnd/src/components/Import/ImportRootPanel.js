@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Row, Col, Button } from 'react-bootstrap'
+import { Row, Col, Button, Container } from 'react-bootstrap'
 
 import Import from './ImportDicom/Import'
 import CreateDicomRoot from './CreateDicom/CreateDicomRoot'
@@ -21,14 +21,13 @@ export default () => {
   }
 
   return (
-    <div >
-      <div className='mb-5'>
-        <Row className="pb-3">
-          <Col className="d-flex justify-content-start align-items-center">
-            <i className="fas fa-file-import ico me-3"></i><h2 className="card-title">Import Dicom Files</h2>
-          </Col>
-        </Row>
-
+    <Container fluid>
+      <Row>
+        <Col className="d-flex justify-content-start align-items-center">
+          <i className="fas fa-file-import ico me-3"></i><h2 className="card-title">Import Dicom Files</h2>
+        </Col>
+      </Row>
+      <Row>
         <nav className='otjs-navmenu container-fluid'>
           <div className="otjs-navmenu-nav">
             <li className='col-6 text-center'>
@@ -45,10 +44,10 @@ export default () => {
             </li>
           </div>
         </nav>
-      </div>
-      <div>
+      </Row>
+      <Row>
         {getComponentToDisplay()}
-      </div>
-    </div>
+      </Row>
+    </Container>
   )
 }

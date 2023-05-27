@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux'
 import OrthancTools from './OrthancTools'
-import ManualQuery from './ManualQuery'
 import AutoRetrieveQueryList from './AutoRetrieveQueryList'
 import AutoRetrieveResultList from './AutoRetrieveResultList'
 import DeleteList from './DeleteList'
@@ -9,7 +8,6 @@ import AnonList from './AnonList'
 
 const appReducer = combineReducers({
   OrthancTools,
-  ManualQuery,
   AutoRetrieveQueryList,
   AutoRetrieveResultList,
   DeleteList,

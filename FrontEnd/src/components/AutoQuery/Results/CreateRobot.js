@@ -23,7 +23,7 @@ export default ({ onRobotCreated }) => {
         //If series details have been loaded robot will be defined at series level
         if (Object.keys(store.resultsSeries).length > 0) {
             let seriesUIDArray = Object.keys(store.resultsSeries)
-            
+
             for (let seriesUID of seriesUIDArray) {
                 let seriesObject = store.resultsSeries[seriesUID]
                 retrieveArray.push({
@@ -31,10 +31,10 @@ export default ({ onRobotCreated }) => {
                     ...seriesObject
                 })
             }
-        //Else only use the study results
+            //Else only use the study results
         } else {
 
-            let studiesUIDArray =  Object.keys(store.results)
+            let studiesUIDArray = Object.keys(store.results)
 
             for (let studyInstanceUID of studiesUIDArray) {
                 retrieveArray.push({ ...store.results[studyInstanceUID] })
@@ -52,20 +52,14 @@ export default ({ onRobotCreated }) => {
         //Send the retrieve array to back end
         try {
             let id = await apis.retrieveRobot.createRobot(store.username, name, buildArrayRetrieve())
-            //setTaskId(id);
-            onRobotCreated()
+            onRobotCreated(id)
             successMessage('sent to robot')
         } catch (error) {
-            console.log(error)
             errorMessage(error?.data?.errorMessage)
         }
 
     }
 
-    /**
-     * Fill Robot Name in current state
-     * @param {*} event
-     */
     const handleNameChange = (event) => {
         const value = event.target.value
         setName(value)

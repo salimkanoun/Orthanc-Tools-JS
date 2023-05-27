@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from "react-redux"
-import { Prompt } from 'react-router-dom'
+import { unstable_usePrompt as Prompt } from 'react-router-dom'
 import { Modal, Row, Col, ProgressBar } from 'react-bootstrap'
 
 import MyDropzone from '../../CommonComponents/MyDropzone'
 import TableImportError from './TableImportError'
+
 import TablePatientWithNestedStudiesAndSeries from '../../CommonComponents/RessourcesDisplay/ReactTableV8/TablePatientWithNestedStudiesAndSeries'
+import ExportDeleteSendButton from '../../CommonComponents/RessourcesDisplay/ExportDeleteSendButton'
 
 import { addStudiesToExportList } from '../../../actions/ExportList'
 import { addStudiesToDeleteList } from '../../../actions/DeleteList'
@@ -13,8 +15,6 @@ import { addStudiesToAnonList } from '../../../actions/AnonList'
 import apis from '../../../services/apis'
 import Study from '../../../model/Study'
 import Series from '../../../model/Series'
-import ExportDeleteSendButton from '../../CommonComponents/RessourcesDisplay/ExportDeleteSendButton'
-
 
 export default () => {
 
@@ -228,11 +228,11 @@ export default () => {
             </Modal>
             <Row className="mt-5">
                 <Col>
-                    <MyDropzone 
+                    <MyDropzone
                         disabled={inProgress}
                         onDrop={acceptedFiles => addFile(acceptedFiles)}
                         message={inProgress ? "Uploading" : "Drop Dicom Folder or ZIP"}
-                        />
+                    />
                     <ProgressBar
                         variant='info'
                         now={processedFiles}

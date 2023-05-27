@@ -12,7 +12,7 @@ const endpoints = {
 
   deleteEndpoints(id) {
     return axios.delete('api/endpoints/', { id: id })
-      .then((answer) => true
+      .then(() => true
       ).catch((error) => {
         throw error
       })
@@ -21,7 +21,7 @@ const endpoints = {
   createEndpoint(postData) {
 
     return axios.post('api/endpoints/', postData)
-      .then((answer) => true
+      .then(() => true
       ).catch((error) => {
         throw error
       })

@@ -2,10 +2,10 @@ import React from "react";
 import { Button } from "react-bootstrap";
 
 import { filter } from '../../../../model/Constant';
-import ConstantLevel from "../../../Modify/ConstantLevel";
-import ActionBouton from "../ActionBouton";
 import RetrieveButton from "../../../Query/RetrieveButton";
 import { errorMessage } from "../../../../tools/toastify";
+import moment from "moment";
+import { isWithinDateRange } from "./Tools/FilterFns";
 
 const commonColumns = {
     RAW: {
@@ -52,22 +52,6 @@ const patientColumns = {
         header: 'Patient ID',
         filterType: filter.STRING_FILTER
     },
-    ACTION: (onDelete, onModify, refresh) => ({
-        id: 'Action',
-        accessorKey: 'Action',
-        header: 'Action',
-        cell: (({ row }) => {
-            return <ActionBouton
-                level={ConstantLevel.PATIENTS}
-                orthancID={row.original.PatientOrthancID}
-                onDelete={onDelete}
-                onModify={onModify}
-                dataDetails={row.original}
-                refresh={refresh}
-                hiddenModify={false}
-                hiddenMetadata={true} />
-        })
-    }),
     REMOVE: (onRemovePatient) => ({
         id: 'Remove',
         accessorKey: 'Remove',
@@ -109,7 +93,7 @@ const studyColumns = {
         id: 'StudyDate',
         accessorKey: 'StudyDate',
         header: 'Acquisition Date',
-        //filterType: filter.DATE_FILTER
+        filterType: filter.DATE_FILTER
     },
     DESCRIPTION: {
         id: 'StudyDescription',
@@ -146,22 +130,6 @@ const studyColumns = {
             return row.original.AnonymizedFrom ? 'Yes' : 'No'
         })
     },
-    ACTION: (onDelete, refresh, openLabelModal) => ({
-        id: 'Action',
-        accessorKey: 'Action',
-        header: 'Action',
-        cell: (({ row }) => {
-            return <ActionBouton level={ConstantLevel.STUDIES}
-                orthancID={row.original.StudyOrthancID}
-                StudyInstanceUID={row.original.StudyInstanceUID}
-                onDelete={onDelete}
-                dataDetails={row.original}
-                refresh={refresh}
-                openLabelModal={openLabelModal}
-                hiddenModify={false}
-                hiddenMetadata={true} />
-        })
-    }),
     REMOVE: (onRemoveStudy) => ({
         id: 'Remove',
         accessorKey: 'Remove',
@@ -219,24 +187,6 @@ const seriesColumns = {
         header: 'Instances',
         filterType: filter.NUMBER_FILTER
     },
-    ACTION: (onDelete, refresh) => ({
-        id: 'Action',
-        accessorKey: 'Action',
-        header: 'Action',
-        cell: ({ row }) => {
-            return (
-                <ActionBouton
-                    level={ConstantLevel.SERIES}
-                    orthancID={row.original.SeriesOrthancID}
-                    parentID={row.original.StudyOrthancID}
-                    onDelete={onDelete}
-                    dataDetails={row.original}
-                    refresh={refresh}
-                    hiddenMetadata={false}
-                    hiddenCreateDicom={true}
-                    hiddenModify={false} />)
-        }
-    }),
     REMOVE: (onRemove) => ({
         id: 'Remove',
         accessorKey: 'Remove',
@@ -299,9 +249,21 @@ const studyQueryColumns = {
         enableHiding: true
     },
     STUDY_DATE: {
-        accessorKey: 'StudyDate',
+        accessorFn: (row) => {
+            if (row.StudyDate != null && row.StudyDate != ""){
+                return moment(row.StudyDate, 'YYYYMMDD', true).toDate()
+            }else{
+                return null
+            }         
+        },
         header: 'Acquisition Date',
-        //filterType: filter.DATE_FILTER
+        cell: ({ getValue }) => {
+            let value = getValue()
+            if (value) value = moment(value).format('YYYYMMDD')
+            return value
+        },
+        filterType: filter.DATE_FILTER,
+        filterFn: isWithinDateRange
     },
     STUDY_DESCRIPTION: {
         accessorKey: 'StudyDescription',

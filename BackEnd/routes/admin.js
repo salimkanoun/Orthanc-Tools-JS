@@ -19,7 +19,6 @@ const {
     reverseProxyGet,
     reverseProxyPost,
     reverseProxyPut,
-    reverseProxyPutPlainText,
     reverseProxyDelete
 } = require('../controllers/reverseProxy')
 const {getRoles, createRole, modifyRole, deleteRole, getRole} = require('../controllers/role')
@@ -40,14 +39,6 @@ const {getLabels, createLabel, modifyLabel, deleteLabel} = require('../controlle
 const {
     createRoleLabel, deleteRoleLabel, getAllRolesLabels, getLabelRoles, getRoleLabels
 } = require('../controllers/roleLabel')
-const {
-    getStudiesLabels,
-    createStudyLabel,
-    deleteStudyLabel,
-    getStudiesLabel,
-    getStudyLabels,
-    getStudyLabelsByStudyOrthancID
-} = require('../controllers/studyLabel')
 
 const{
     createAutorouter,
@@ -96,7 +87,7 @@ adminRouter.post('/tools/shutdown', [userAuthMidelware, userAdminMidelware], rev
 
 //Orthanc get and set Verbosity
 adminRouter.get('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
-adminRouter.put('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseProxyPutPlainText)
+adminRouter.put('/tools/log-level', [userAuthMidelware, userAdminMidelware], reverseProxyPut)
 
 //Orthanc Get plugins
 adminRouter.get('/plugins', [userAuthMidelware, userAdminMidelware], reverseProxyGet)
@@ -170,14 +161,6 @@ adminRouter.get('/labels/:label/roles', [userAuthMidelware,userAdminMidelware], 
 adminRouter.get('/roles/:name/labels', [userAuthMidelware], getRoleLabels)
 adminRouter.post('/labels/:name/roles', [userAuthMidelware, userAdminMidelware], createRoleLabel)
 adminRouter.delete('/labels/:name/roles', [userAuthMidelware, userAdminMidelware], deleteRoleLabel)
-
-//StudyLabel
-adminRouter.get('/studies/labels', [userAuthMidelware,userAdminMidelware], getStudiesLabels)
-adminRouter.get('/studies/labels/:name', [userAuthMidelware,roleAccessLabelMidelware], getStudiesLabel)
-adminRouter.get('/studies/orthanc/:id/labels',[userAuthMidelware,userAdminMidelware], getStudyLabelsByStudyOrthancID)
-adminRouter.get('/studies/:uid/labels/', [userAuthMidelware,userAdminMidelware], getStudyLabels)
-adminRouter.post('/patient/:id/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], createStudyLabel)
-adminRouter.delete('/studies/:uid/labels/:name', [userAuthMidelware, userAdminMidelware], deleteStudyLabel)
 
 /*
 **AUTO ROUTING

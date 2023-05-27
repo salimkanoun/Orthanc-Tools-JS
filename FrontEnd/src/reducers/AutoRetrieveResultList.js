@@ -4,10 +4,7 @@ import {
   AQ_ADD_SERIES_DETAILS,
   AQ_REMOVE_STUDY_RESULT,
   AQ_REMOVE_SERIES_RESULT,
-  AQ_EMPTY_RESULTS,
-  AQ_ADD_STUDY_RESULT_FILTERED,
-  AQ_ADD_SERIES_RESULT_FILTERED,
-  AQ_SAVE_FILTERS
+  AQ_EMPTY_RESULTS_STUDY_SERIES
 } from '../actions/actions-types'
 
 
@@ -35,14 +32,6 @@ export default function retrieveListReducer(state = initialState, action) {
         results: newResultObject
       }
 
-    case AQ_ADD_STUDY_RESULT_FILTERED:
-      const studyInstanceUIDFiltered = action.payload
-
-      return {
-        ...state,
-        resultsStudiesFiltered: studyInstanceUIDFiltered
-      }
-
     case AQ_REMOVE_STUDY_RESULT:
       let resultsCopy = { ...state.results }
       //Remove selected studies from studies object
@@ -66,7 +55,7 @@ export default function retrieveListReducer(state = initialState, action) {
         results: resultsCopy
       }
 
-    case AQ_EMPTY_RESULTS:
+    case AQ_EMPTY_RESULTS_STUDY_SERIES:
       return {
         ...state,
         results: [],
@@ -86,13 +75,6 @@ export default function retrieveListReducer(state = initialState, action) {
       return {
         ...state,
         resultsSeries: resultSeriesCopy
-      }
-
-    case AQ_ADD_SERIES_RESULT_FILTERED:
-      const seriesDetailsFiltered = action.payload
-      return {
-        ...state,
-        resultsSeriesFiltered: seriesDetailsFiltered
       }
 
     case AQ_REMOVE_SERIES_RESULT:
@@ -124,15 +106,6 @@ export default function retrieveListReducer(state = initialState, action) {
         resultsSeries: resultSeriesCopy2
       }
 
-    case AQ_SAVE_FILTERS:
-      const { ID, array } = action.payload
-      return {
-        ...state,
-        filters: {
-          ...state.filters,
-          [ID]: array
-        }
-      }
     default:
       return state
   }

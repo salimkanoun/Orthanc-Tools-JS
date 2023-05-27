@@ -3,13 +3,11 @@ const express = require('express')
 const app = express()
 const route = require('../../routes/users')
 const bodyParser = require('body-parser')
-var cookieParser = require('cookie-parser')
 const User = require('../../model/Users')
 
 
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
-app.use(cookieParser())
 app.use('/api/users',route)
 
 describe('Test Users routes',()=>{

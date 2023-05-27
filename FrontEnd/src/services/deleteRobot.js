@@ -13,7 +13,7 @@ const deleteRobot = {
 
     flush() {
 
-        return axios.delete('/api/tasks/type/delete/flush').then(answer => true
+        return axios.delete('/api/tasks/type/delete/flush').then(() => true
         ).catch(error => {
             throw error
         })

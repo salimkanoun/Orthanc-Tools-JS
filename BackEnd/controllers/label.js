@@ -1,5 +1,5 @@
-const LabelEntity = require('../model/Entities/LabelEntity')
-var Labels = require('../model/Labels')
+const Labels = require('../model/Labels')
+const Orthanc = require('../model/Orthanc')
 /**
  * Create a Label
  * @param {*} req express request
@@ -17,7 +17,7 @@ const createLabel = async function (req, res) {
  */
 const getLabels = async function (req, res) {
   let labels = await Labels.getAllLabels()
-  answer = labels.map(label => LabelEntity.createRolefromDB(label))
+  answer = labels.map(label => label.label_name)
   res.json(answer)
 }
 
@@ -42,4 +42,11 @@ const deleteLabel = async function (req, res) {
   res.sendStatus(200)
 }
 
-module.exports = { createLabel, getLabels, modifyLabel, deleteLabel }
+const getStudiesWithLabel = async function (req, res) {
+  const labelName = req.params.name
+  const orthanc = new Orthanc()
+  const studies = await orthanc.findInOrthanc('Study', undefined, undefined, undefined, undefined, undefined, undefined, undefined, [labelName])
+  res.json(studies)
+}
+
+module.exports = { createLabel, getLabels, modifyLabel, deleteLabel, getStudiesWithLabel }

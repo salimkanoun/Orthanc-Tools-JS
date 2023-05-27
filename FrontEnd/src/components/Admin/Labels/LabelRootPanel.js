@@ -16,7 +16,9 @@ export default () => {
 
     const { data: labels, isLoading } = useCustomQuery(
         [keys.LABELS_KEY],
-        () => apis.label.getAllLabels()
+        () => apis.label.getAllLabels(),
+        undefined,
+        (labels) => labels.map(label => ({name : label}))
     )
 
     const handleManageRole = (label) => {
@@ -60,9 +62,9 @@ export default () => {
             <Form onSubmitCapture={handleCreateSubmit} className="mt-4">
                 <InputGroup>
                     <InputGroup.Text>New</InputGroup.Text>
-                    <FormControl placeholder={"label"} type={'text'} onChange={handleCreateInput}
+                    <FormControl placeholder="label" type="text" onChange={handleCreateInput}
                         value={createLabel} />
-                    <Button variant={"outline-primary"} type={"submit"}> + </Button>
+                    <Button variant="outline-primary" type="submit"> + </Button>
                 </InputGroup>
             </Form>
             <LabelsTable labels={labels} handlerManageRole={handleManageRole} />

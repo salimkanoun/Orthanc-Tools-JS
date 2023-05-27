@@ -3,12 +3,12 @@ var router = express.Router()
 // Handle controller errors
 require('express-async-errors')
 
-const {getParsedAnswer, postRetrieve} = require('../controllers/queryRetrieve')
+const { getParsedAnswer, postRetrieve } = require('../controllers/queryRetrieve')
 const {
     reverseProxyGet,
     reverseProxyPost,
-    reverseProxyPostUploadDicom,
-    reverseProxyDelete
+    reverseProxyDelete,
+    reverseProxyPut
 } = require('../controllers/reverseProxy')
 const {
     startBurner,
@@ -54,8 +54,9 @@ const {
     addExportTask, retryRetrieveItem
 } = require('../controllers/task')
 
-const {allEndpoints} = require('../controllers/endpoints')
-const {getExportTranscoding} = require('../controllers/options')
+const { allEndpoints } = require('../controllers/endpoints')
+const { getExportTranscoding } = require('../controllers/options')
+const { getStudiesWithLabel } = require('../controllers/label')
 
 router.get('/modalities', userAuthMidelware, reverseProxyGet)
 router.post('/modalities/*/store', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
@@ -69,7 +70,7 @@ router.post('/retrieve', [userAuthMidelware, queryMidelware], postRetrieve)
 router.get('/queries/:orthancIdQuery/parsedAnswers', [userAuthMidelware, queryMidelware], getParsedAnswer)
 
 // Orthanc Dicom Import Route
-router.post('/instances', [userAuthMidelware, importMidelware], reverseProxyPostUploadDicom)
+router.post('/instances', [userAuthMidelware, importMidelware], reverseProxyPost)
 
 //Orthanc export routes
 router.post('/tools/create-archive', [userAuthMidelware, exportLocalMidelware], reverseProxyPost)
@@ -94,14 +95,21 @@ router.post('/series/*/modify', [userAuthMidelware, modifyMidelware], reversePro
 //Tools Find API for Orthanc Content Role
 router.post('/tools/find', [userAuthMidelware, contentMidelware], reverseProxyPost)
 
+//SK Voir role pour la modification des labels
+router.put('/studies/*/labels/*', [userAuthMidelware], reverseProxyPut)
+router.delete('/studies/*/labels/*', [userAuthMidelware], reverseProxyDelete)
+
+//Get dicoms studyes according to labels
+router.get('/labels/:name/studies', [userAuthMidelware], getStudiesWithLabel)
+
 //Reverse Proxy Routes for orthanc content => Warning non RBAC Protected
 //SK A VERIFIER QUE LES RACINES SONT BIEN VEROUILLEES
 router.get('/patients/*', [userAuthMidelware], reverseProxyGet)
 router.get('/studies/*', [userAuthMidelware], reverseProxyGet)
 router.get('/series/*', [userAuthMidelware], reverseProxyGet)
 router.get('/instances/*', [userAuthMidelware], reverseProxyGet)
-router.get('/dicom-web/*', [/*userAuthMidelware*/], reverseProxyGet)
-router.get('/wado/*', [/*userAuthMidelware*/], reverseProxyGet)
+router.get('/dicom-web/*', [userAuthMidelware], reverseProxyGet)
+router.get('/wado/*', [userAuthMidelware], reverseProxyGet)
 
 //Delete Orthanc ressource API
 router.delete('/patients/*', [userAuthMidelware, deleteMidelware], reverseProxyDelete)

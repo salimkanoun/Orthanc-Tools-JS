@@ -78,6 +78,33 @@ const exportDicom = {
     return parts?.[0]
   },
 
+  exportToNifti(seriesOrthancId, compressed) {
+
+    let abortController = new AbortController()
+    return fetch('/api/series/' + seriesOrthancId + '/nifti' + (compressed ? '?compress' : ''), {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + getToken()
+      },
+      signal: abortController.signal
+    }).then((answer) => {
+      if (!answer.ok) throw answer
+      let contentType = this.getContentType(answer.headers)
+      const readableStream = answer.body
+      let filename = this.getContentDispositionFilename(answer.headers) ?? crypto.randomUUID() + (compressed ? ".nii.gz" : ".nii")
+      exportFileThroughFilesystemAPI(
+        readableStream,
+        contentType,
+        filename,
+        true,
+        abortController
+      )
+    }).catch((error) => {
+      throw error
+    })
+
+  },
+
   exportHirachicalDicoms(OrthancIDsArray, TS) {
 
     let payload = {
@@ -101,7 +128,7 @@ const exportDicom = {
       if (!answer.ok) throw answer
       let contentType = this.getContentType(answer.headers)
       const readableStream = answer.body
-      let filename = this.getContentDispositionFilename(answer.headers) ?? crypto.randomUUID()+".zip"
+      let filename = this.getContentDispositionFilename(answer.headers) ?? crypto.randomUUID() + ".zip"
       exportFileThroughFilesystemAPI(
         readableStream,
         contentType,
@@ -136,7 +163,7 @@ const exportDicom = {
       if (!answer.ok) throw answer
       let contentType = this.getContentType(answer.headers)
       const readableStream = answer.body
-      let filename = this.getContentDispositionFilename(answer.headers) ?? crypto.randomUUID()+".zip"
+      let filename = this.getContentDispositionFilename(answer.headers) ?? crypto.randomUUID() + ".zip"
       exportFileThroughFilesystemAPI(
         readableStream,
         contentType,
@@ -163,7 +190,7 @@ const exportDicom = {
 
   flushExternalExport() {
 
-    return axios.delete('/api/tasks/type/export/flush').then(answer => {
+    return axios.delete('/api/tasks/type/export/flush').then(() => {
       return true
     }).catch(error => {
       throw error

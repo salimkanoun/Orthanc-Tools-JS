@@ -1,20 +1,36 @@
-import React, { useEffect, useMemo } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8"
-import { seriesQueryColumns, studyQueryColumns } from "../../CommonComponents/RessourcesDisplay/ReactTableV8/ColomnFactories"
-import apis from "../../../services/apis"
+
 import { errorMessage, infoMessage, updateToast } from "../../../tools/toastify"
-import { addSeriesDetails } from "../../../actions/TableResult"
+import { addSeriesDetails, emptyResultsTable, removeSeriesResult } from "../../../actions/TableResult"
+import ResultsSeriesTable from "./ResultsSeriesTable"
+
+import apis from "../../../services/apis"
+import { Button, Container, Row } from "react-bootstrap"
 
 export default () => {
 
     const dispatch = useDispatch()
+
     const store = useSelector(state => {
         return {
             results: state.AutoRetrieveResultList.results,
             resultsSeries: state.AutoRetrieveResultList.resultsSeries
         }
     })
+
+    const data = useMemo(() => {
+        let seriesLines = []
+        for (let seriesUID of Object.keys(store.resultsSeries)) {
+            seriesLines.push({
+                ...store.results[store.resultsSeries[seriesUID]['StudyInstanceUID']],
+                ...store.resultsSeries[seriesUID],
+            })
+        }
+        return seriesLines
+    }, [store.results, store.resultsSeries])
+
+    const [selectedRowIds, setSelectedRowIds] = useState([])
 
     const queryAndAddSeriesDetails = async (studyUID, aet) => {
         let queryData = {
@@ -36,9 +52,7 @@ export default () => {
         } catch (error) {
             errorMessage(error?.data?.errorMessage ?? 'Query Failure StudyInstanceUID' + studyUID)
         }
-
     }
-
 
     useEffect(() => {
         const startFetchingSeriesDetails = async () => {
@@ -63,32 +77,33 @@ export default () => {
         startFetchingSeriesDetails()
     }, [])
 
-    const columns = [
-        studyQueryColumns.PATIENT_NAME,
-        studyQueryColumns.PATIENT_ID,
-        studyQueryColumns.ACCESSION_NUMBER,
-        studyQueryColumns.STUDY_DATE,
-        studyQueryColumns.STUDY_DESCRIPTION,
-        studyQueryColumns.REQUESTED_PROCEDURE,
-        seriesQueryColumns.SERIES_INSTANCE_UID,
-        seriesQueryColumns.SERIES_DESCRIPTION,
-        seriesQueryColumns.MODALITY,
-        seriesQueryColumns.NB_SERIES_INSTANCES,
-        seriesQueryColumns.AET
-    ]
+    const selectRowHandle = (rowIds) => {
+        setSelectedRowIds(rowIds)
+    }
 
-    const data = useMemo(() => {
-        let seriesLines = []
-        for (let seriesUID of Object.keys(store.resultsSeries)) {
-            seriesLines.push({
-                ...store.results[store.resultsSeries[seriesUID]['StudyInstanceUID']],
-                ...store.resultsSeries[seriesUID],
-            })
-        }
-        return seriesLines
-    }, [store.results, store.resultsSeries])
+    const deleteRowsHandle = () => {
+        dispatch(removeSeriesResult(selectedRowIds))
+    }
+    
+    const emptyRowsHandle = () => {
+        dispatch(emptyResultsTable(selectedRowIds))
+    }
 
     return (
-        <CommonTableV8 canSort data={data} columns={columns} paginated canFilter />
+        <Container>
+            <Row className='d-flex justify-content-around mb-3'>
+                <Button className="otjs-button otjs-button-orange w-10"
+                    onClick={deleteRowsHandle} >
+                    Delete Selected
+                </Button>
+                <Button className="otjs-button otjs-button-red w-10"
+                    onClick={emptyRowsHandle} >
+                    Empty Table
+                </Button>
+            </Row>
+            <Row>
+                <ResultsSeriesTable selectedRowIds={selectedRowIds} data={data} onSelectRow={selectRowHandle} />
+            </Row>
+        </Container>
     )
 }

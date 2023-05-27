@@ -21,7 +21,7 @@ const jobs = {
 
   cancelJob(jobId) {
 
-    return axios.post('/api/jobs/' + jobId + '/cancel', {}).then((answer) => true )
+    return axios.post('/api/jobs/' + jobId + '/cancel', {}).then(() => true )
     .catch(error => {
       throw error
   })
@@ -30,7 +30,7 @@ const jobs = {
 
   pauseJob(jobId) {
 
-    return axios.post('/api/jobs/' + jobId + '/pause', {}).then((answer) => true )
+    return axios.post('/api/jobs/' + jobId + '/pause', {}).then(() => true )
     .catch(error => {
       throw error
   })
@@ -38,7 +38,7 @@ const jobs = {
 
   resumbitJob(jobId) {
 
-    return axios.post('/api/jobs/' + jobId + '/resubmit', {}).then((answer) => true )
+    return axios.post('/api/jobs/' + jobId + '/resubmit', {}).then(() => true )
     .catch(error => {
       throw error
   })
@@ -46,7 +46,7 @@ const jobs = {
 
   resumeJob(jobId) {
 
-    return axios.post('/api/jobs/' + jobId + '/resume', {}).then((answer) => true ) 
+    return axios.post('/api/jobs/' + jobId + '/resume', {}).then(() => true ) 
     .catch(error => {
       throw error
   })

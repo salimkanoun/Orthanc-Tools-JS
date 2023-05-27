@@ -1,5 +1,5 @@
 const RoleEntity = require('../model/Entities/RoleEntity')
-var Roles = require('../model/Roles')
+const Roles = require('../model/Roles')
 
 const createRole = async function (req, res) {
     const body = req.body

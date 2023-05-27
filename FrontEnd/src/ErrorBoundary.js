@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, Container, Row } from 'react-bootstrap';
-import { withRouter } from 'react-router-dom';
 
 class ErrorBoundary extends React.Component {
     state = { hasError: false }
@@ -11,8 +10,8 @@ class ErrorBoundary extends React.Component {
     }
 
     handleClick = () => {
-        this.props.history.push('/')
         this.setState({ hasError: false })
+        this.props.onClickGoMainPage()
     }
 
     render() {
@@ -34,4 +33,4 @@ class ErrorBoundary extends React.Component {
     }
 }
 
-export default withRouter(ErrorBoundary)
+export default ErrorBoundary

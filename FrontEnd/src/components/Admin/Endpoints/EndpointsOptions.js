@@ -6,6 +6,7 @@ import Select from "react-select"
 import { keys } from "../../../model/Constant"
 import apis from "../../../services/apis"
 import { useCustomMutation, useCustomQuery } from "../../../services/ReactQuery/hooks"
+import Spinner from "../../CommonComponents/Spinner"
 
 
 const TRANSCODING_OPTIONS = [
@@ -31,7 +32,7 @@ export default () => {
 
     const [export_transcoding, setExport_transcoding] = useState('')
 
-    const {isLoading} = useCustomQuery(
+    const { isLoading } = useCustomQuery(
         [keys.EXPORT_TRANSCODING],
         () => apis.options.getOptions(),
         undefined,
@@ -57,6 +58,8 @@ export default () => {
         [[keys.EXPORT_TRANSCODING]]
     )
 
+    if (isLoading) return <Spinner />
+    
     return (
         <Form>
             <h2 className="card-title mt-5">Export Transcoding </h2>
@@ -69,7 +72,7 @@ export default () => {
             </Row>
             <Row >
                 <Col>
-                    <Button className="otjs-button otjs-button-blue mt-3"  onClick={() => sendForm.mutate({export_transcoding})}> Send </Button>
+                    <Button className="otjs-button otjs-button-blue mt-3" onClick={() => sendForm.mutate({ export_transcoding })}> Send </Button>
                 </Col>
             </Row>
 

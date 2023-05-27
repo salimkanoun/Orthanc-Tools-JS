@@ -1,6 +1,6 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
-import { Row, Col } from "react-bootstrap"
+import { Row, Col, Modal } from "react-bootstrap"
 import { useDispatch } from "react-redux"
 
 import { addStudiesToAnonList } from "../../actions/AnonList"
@@ -15,16 +15,23 @@ import apis from "../../services/apis"
 import { useCustomMutation, useCustomQuery } from "../../services/ReactQuery/hooks"
 import { errorMessage } from "../../tools/toastify"
 import { send_type } from "../../model/Constant"
+import LabelManagementRoot from "./LabelManagement/LabelManagementRoot"
 
 export default ({
     patients,
     refreshSearch
 }) => {
 
+    const [showLabelAssignement, setShowLabelAssignement] = useState(false)
     const [selectedStudies, setSelectedStudies] = useState([])
     const [currentStudy, setCurrentStudy] = useState(null)
 
     const dispatch = useDispatch()
+
+    useEffect(() => {
+        //Empty series list if a new patients list has come
+        setCurrentStudy(null)
+    }, [patients])
 
     const { data: series, refetch } = useCustomQuery(
         ['orthanc', 'series', currentStudy],
@@ -53,6 +60,7 @@ export default ({
         if (type === send_type.ANON) dispatch(addStudiesToAnonList(filteredSelectedStudies))
         else if (type === send_type.EXPORT) dispatch(addStudiesToExportList(filteredSelectedStudies))
         else if (type === send_type.DELETE) dispatch(addStudiesToDeleteList(filteredSelectedStudies))
+        else if (type === send_type.LABEL) setShowLabelAssignement(true)
     }
 
     const rowStyle = (StudyOrthancID) => {
@@ -74,7 +82,7 @@ export default ({
     )
 
     const deleteSerieMutation = useCustomMutation(
-        ({serieOrthancID}) => apis.content.deleteSeries(serieOrthancID),
+        ({ serieOrthancID }) => apis.content.deleteSeries(serieOrthancID),
         [],
         () => refetch(),
         (error) => errorMessage(error?.data?.errorMessage ?? 'Failed')
@@ -83,6 +91,14 @@ export default ({
     return (
 
         <Row>
+            <Modal show={showLabelAssignement} onHide={() => setShowLabelAssignement(false)} size='xl'>
+                <Modal.Header closeButton>
+                    <Modal.Title>Labels Management</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <LabelManagementRoot selectedOrthancStudyIds={selectedStudies} />
+                </Modal.Body>
+            </Modal>
             <Col sm>
                 <SendToAnonExportDeleteDropdown onSendTo={onSendTo} />
 
@@ -93,10 +109,11 @@ export default ({
                     onSelectStudies={(studiesSelected) => setSelectedStudies(studiesSelected)}
                     onDeletePatient={(patientOrthancID) => deletePatientMutation.mutate({ patientOrthancID })}
                     onDeleteStudy={(studyOrthancID) => deleteStudyMutation.mutate({ studyOrthancID })}
+                    onCreatedSeries={() => refetch()}
                 />
             </Col>
             <Col sm>
-                <ContentTableSeries series={series} onDelete={(serieOrthancID) => deleteSerieMutation.mutate({serieOrthancID})} />
+                <ContentTableSeries series={series} onDelete={(serieOrthancID) => deleteSerieMutation.mutate({ serieOrthancID })} />
             </Col>
 
         </Row>
