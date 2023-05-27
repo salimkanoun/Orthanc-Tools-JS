@@ -32,11 +32,11 @@ const MainRoot = ({ onLogout, username, roles }) => {
                     </Row>
                 </Col>
                 <Col>
-                    <Row className='overflow-auto' style={{ height: '100vh' }}>
+                    <Row>
                         <Row>
                             <ToolsPanel roles={roles} apercu />
                         </Row>
-                        <Row className='ms-3 mt-5'>
+                        <Row className='overflow-auto ms-3 mt-3' style={{ maxheight: '90vh', width:'90vw' }}>
                             <div className='main'>
                                 <AnimatedSwitch />
                             </div>

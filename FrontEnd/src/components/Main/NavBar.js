@@ -31,11 +31,10 @@ export default ({ onLogout, roles }) => {
         <Navbar variant='dark' >
             <Container>
                 <Row>
-
-                <Navbar.Brand href="../#home">
-                    <Image className="navbar-image"
-                        src={image} />
-                </Navbar.Brand>
+                    <Navbar.Brand href="../#home">
+                        <Image className="navbar-image"
+                            src={image} />
+                    </Navbar.Brand>
                 </Row>
                 <Row>
                     <Nav>
