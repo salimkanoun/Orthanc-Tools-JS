@@ -24,6 +24,8 @@ export default ({ robotId }) => {
     if (isLoading) return <Spinner />
 
     return (
-        <MyRobotTableStudies robotId={robotId} rows={data} />
+        <div style={{ overflowX: 'auto' }}>
+            <MyRobotTableStudies robotId={robotId} rows={data} />
+        </div>
     )
 }

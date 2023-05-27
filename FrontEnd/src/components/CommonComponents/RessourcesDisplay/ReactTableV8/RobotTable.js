@@ -23,49 +23,49 @@ export default ({
             id: 'name',
             accessorKey: 'name',
             header: 'Name'
-        }, {
+        },
+        {
             id: 'username',
             accessorKey: 'username',
             header: 'Username'
-        }, {
+        },
+        {
             id: 'quesriesNb',
-            accessorFn: (row) => {
-                return row.details?.items.length
-            },
+            accessorKey: 'queriesNb',
             header: 'Number of Queries'
-        }, {
+        },
+        {
             id: 'validation',
-            accessorFn: (row) => {
-                return row?.progress?.validation
-            },
+            accessorKey: 'validation',
             header: 'Progress Validation'
-        }, {
+        },
+        {
             id: 'retrieve',
-            accessorFn: (row) => {
-                return row?.progress?.retrieve
-            },
+            accessorKey: 'retrieve',
             header: 'Progress Retrieve'
-        }, {
+        },
+        {
             id: 'state',
             accessorKey: 'state',
             header: 'State'
-        }, {
+        },
+        {
             id: 'details',
             header: 'Show Details',
-            cell: ({row}) => {
+            cell: ({ row }) => {
                 return <Button
                     className='nav-link otjs-button otjs-button-blue'
                     onClick={() => onShowDetails(row.original.id)}
                 > Details </Button>
             }
-        }, {
+        },
+        {
             id: 'approved',
             header: 'Approved',
             accessorKey: "approved",
-            accessorFn: (row) => {
-                return row?.details?.approved
-            }
-        }, {
+            cell: ({ getValue }) => getValue()?.toString()
+        },
+        {
             id: 'valid',
             accessorKey: 'valid',
             header: 'Validation Status',
@@ -73,12 +73,7 @@ export default ({
             cell: ({ row }) => {
                 if (row.original.valid) {
                     if (!row.original.approved) {
-                        return (
-                            <Button className='otjs-button otjs-button-green w-7'
-                                onClick={() => validationRobotHandler(row.original.id)}>
-                                Robots
-                            </Button>
-                        )
+                        return (<p> Awaiting validation </p>)
                     } else {
                         return (<p> Validated & approved </p>)
                     }

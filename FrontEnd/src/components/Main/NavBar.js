@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Container, Image, Nav, Navbar, Row } from 'react-bootstrap'
 
@@ -31,11 +31,10 @@ export default ({ onLogout, roles }) => {
         <Navbar variant='dark' >
             <Container>
                 <Row>
-
-                <Navbar.Brand href="../#home">
-                    <Image className="navbar-image"
-                        src={image} />
-                </Navbar.Brand>
+                    <Navbar.Brand href="../#home">
+                        <Image className="navbar-image"
+                            src={image} />
+                    </Navbar.Brand>
                 </Row>
                 <Row>
                     <Nav>

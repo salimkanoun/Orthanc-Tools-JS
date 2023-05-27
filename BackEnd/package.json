@@ -76,7 +76,7 @@
     "supertest": "^6.3.3",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
-    "webpack": "^5.83.1",
+    "webpack": "^5.84.1",
     "webpack-cli": "^5.1.1"
   }
 }

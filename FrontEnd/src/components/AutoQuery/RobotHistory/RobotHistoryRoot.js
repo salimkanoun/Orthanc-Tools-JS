@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 
-import { Container, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col, Modal } from 'react-bootstrap'
 
 import RobotTable from '../../CommonComponents/RessourcesDisplay/ReactTableV8/RobotTable'
 import { errorMessage } from '../../../tools/toastify'
 import apis from '../../../services/apis'
+import AutoRetrieveRobotDetails from '../../Admin/Robots/AutoRetrieveRobotDetails'
 
 export default () => {
+
+    const [showDetailsRobotId, setShowDetailsRobotId] = useState(null)
 
     const store = useSelector(state => {
         return {
@@ -24,7 +27,7 @@ export default () => {
         }
     }, [])
 
-    const deleteJobHandler = async (id, refreshHandler) => {
+    const deleteJobHandler = async (id) => {
         try {
             await apis.retrieveRobot.deleteRobot(id)
             refreshHandler()
@@ -48,7 +51,8 @@ export default () => {
                         validation: robotJob.progress.validation,
                         retrieve: robotJob.progress.retrieve,
                         state: robotJob.state,
-                        queriesNb: robotJob.details.items.length
+                        queriesNb: robotJob.details.items.length,
+                        approved: robotJob.details.approved
                     })
                 });
             }).catch(error => {
@@ -59,22 +63,33 @@ export default () => {
     }
 
     return (
-        <Container fluid>
-            <Row className="mt-5">
-                <Col>
-                    <h2 className="card-title">Robots History : </h2>
-                </Col>
-            </Row>
-            <Row className="mt-5">
-                <Col>
-                    <RobotTable
-                        robots={rows}
-                        deleteJobHandler={deleteJobHandler}
-                        refreshHandler={refreshHandler}
-                        hideValidationButton={true}
-                    />
-                </Col>
-            </Row>
-        </Container>
+        <>
+            <Modal fullscreen show={showDetailsRobotId != null} onHide={() => setShowDetailsRobotId(null)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Retrieve Robot Details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <AutoRetrieveRobotDetails robotId={showDetailsRobotId} />
+                </Modal.Body>
+            </Modal>
+            <Container fluid>
+                <Row className="mt-5">
+                    <Col>
+                        <h2 className="card-title">Robots History : </h2>
+                    </Col>
+                </Row>
+                <Row className="mt-5">
+                    <Col>
+                        <RobotTable
+                            robots={rows}
+                            deleteJobHandler={deleteJobHandler}
+                            refreshHandler={refreshHandler}
+                            hideValidationButton={true}
+                            onShowDetails={(id) => setShowDetailsRobotId(id)}
+                        />
+                    </Col>
+                </Row>
+            </Container>
+        </>
     )
 }

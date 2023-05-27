@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Row, Container, Col } from 'react-bootstrap';
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { SwitchTransition, CSSTransition } from "react-transition-group";
 import { Route, Routes, useLocation } from 'react-router-dom'
 
 import AdminRootPanel from '../Admin/AdminRootPanel'
@@ -22,24 +22,46 @@ import CDBurnerRoot from '../CDBurner/CDBurnerRoot';
 import MyDicomRoot from '../MyDicom/MyDicomRoot';
 
 const MainRoot = ({ onLogout, username, roles }) => {
+    const location = useLocation()
 
     return (
-        <Container className='min-vh-100' fluid>
+        <Container className='min-vh-100 max-vh-100' fluid>
             <Row>
-                <Col xs={1} md={1} lg={1} className='bg-navbar min-vh-100 d-flex align-items-center'>
-                    <NavBar onLogout={onLogout} username={username} roles={roles} />
+                <Col xs={1} md={1} lg={1} className='bg-navbar'>
+                    <Row style={{ height: '100vh' }}>
+                        <NavBar onLogout={onLogout} username={username} roles={roles} />
+                    </Row>
                 </Col>
                 <Col>
                     <Row>
-                        <ToolsPanel roles={roles} apercu />
-                    </Row>
-                    <Row className='m-5'>
-                        <div className='main'>
-                            <AnimatedSwitch />
-                        </div>
-                    </Row>
-                    <Row style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <Footer />
+                        <Row>
+                            <ToolsPanel roles={roles} />
+                        </Row>
+                        <Row className='overflow-auto ms-3 mt-3' style={{ maxheight: '90vh', width: '90vw' }}>
+                            <SwitchTransition>
+                                <CSSTransition key={location.pathname} timeout={300} classNames={"otjsTransition"}>
+                                    <div className='main'>
+                                        <Routes location={location}>
+                                            <Route path='/import' element={<ImportRootPanel />} />
+                                            <Route path='/query' element={<Query />} />
+                                            <Route path='/auto-query' element={<AutoQueryRoot />} />
+                                            <Route path='/administration' element={<AdminRootPanel />} />
+                                            <Route path='/orthanc-content' element={<ContentRootPanel />} />
+                                            <Route path='/export' element={<ExportRoot />} />
+                                            <Route path='/anonymize' element={<AnonRoot />} />
+                                            <Route path='/cd-burner' element={<CDBurnerRoot />} />
+                                            <Route path='/mydicom' element={<MyDicomRoot />} />
+                                            <Route path='/delete' element={<DeleteRoot />} />
+                                            <Route path='/dicom-router' element={<DicomRouterPanel />} />
+                                            <Route path='/' element={<Welcome />} />
+                                        </Routes>
+                                    </div>
+                                </CSSTransition>
+                            </SwitchTransition>
+                        </Row>
+                        <Row style={{ paddingLeft: 0, paddingRight: 0 }}>
+                            <Footer />
+                        </Row>
                     </Row>
                 </Col>
             </Row>
@@ -47,30 +69,5 @@ const MainRoot = ({ onLogout, username, roles }) => {
     )
 
 }
-
-const AnimatedSwitch = () => {
-    const location = useLocation()
-    return (
-        <TransitionGroup>
-            <CSSTransition key={location.pathname} unmountOnExit classNames={"main"}>
-                <Routes location={location}>
-                    <Route path='/import' element={<ImportRootPanel />} />
-                    <Route path='/query' element={<Query />} />
-                    <Route path='/auto-query' element={<AutoQueryRoot />} />
-                    <Route path='/administration' element={<AdminRootPanel />} />
-                    <Route path='/orthanc-content' element={<ContentRootPanel />} />
-                    <Route path='/export' element={<ExportRoot />} />
-                    <Route path='/anonymize' element={<AnonRoot />} />
-                    <Route path='/cd-burner' element={<CDBurnerRoot />} />
-                    <Route path='/mydicom' element={<MyDicomRoot />} />
-                    <Route path='/delete' element={<DeleteRoot />} />
-                    <Route path='/dicom-router' element={<DicomRouterPanel />} />
-                    <Route path='/' element={<Welcome />} />
-                </Routes>
-            </CSSTransition>
-        </TransitionGroup>
-    )
-}
-
 
 export default MainRoot
