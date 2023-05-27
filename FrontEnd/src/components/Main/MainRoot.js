@@ -24,25 +24,26 @@ import MyDicomRoot from '../MyDicom/MyDicomRoot';
 const MainRoot = ({ onLogout, username, roles }) => {
 
     return (
-        <Container fluid>
-            <Row className='min-vh-100'>
-                <Col xs={1} md={1} lg={1} className='h-100 bg-navbar'>
+        <Container className='min-vh-100 max-vh-100' fluid>
+            <Row>
+                <Col xs={1} md={1} lg={1} className='bg-navbar'>
                     <Row style={{ height: '100vh' }}>
                         <NavBar onLogout={onLogout} username={username} roles={roles} />
-
                     </Row>
                 </Col>
                 <Col>
-                    <Row>
-                        <ToolsPanel roles={roles} apercu />
-                    </Row>
-                    <Row className='m-5'>
-                        <div className='main'>
-                            <AnimatedSwitch />
-                        </div>
-                    </Row>
-                    <Row style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <Footer />
+                    <Row className='overflow-auto' style={{ height: '100vh' }}>
+                        <Row>
+                            <ToolsPanel roles={roles} apercu />
+                        </Row>
+                        <Row className='ms-3 mt-5'>
+                            <div className='main'>
+                                <AnimatedSwitch />
+                            </div>
+                        </Row>
+                        <Row style={{ paddingLeft: 0, paddingRight: 0 }}>
+                            <Footer />
+                        </Row>
                     </Row>
                 </Col>
             </Row>
