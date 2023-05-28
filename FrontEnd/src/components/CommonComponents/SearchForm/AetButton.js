@@ -5,7 +5,7 @@ export default ({ aetName, onClick }) => {
   return (
     <Button
       variant='info'
-      className='mt-3 mr-3'
+      className='m-2'
       onClick={onClick}
     >
       {aetName}

@@ -1,7 +1,7 @@
 import React from "react"
 import Calendar from "react-calendar"
 
-export default ({ value, onChange, maxDate, required = false }) => {
+export default ({ value, onChange, maxDate = new Date(), required = false }) => {
 
     /*
     const handleDateChange = (date) => {
