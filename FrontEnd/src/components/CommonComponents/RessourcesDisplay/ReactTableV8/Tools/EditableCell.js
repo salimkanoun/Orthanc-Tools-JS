@@ -71,7 +71,6 @@ export default ({ getValue, row: { index, id: idRow }, column: { columnDef: { id
                             table.options.meta?.updateData(rowId, columnId, date)
                         }}
                         required
-                        maxDate={new Date()}
                         value={value}
                     />
                 </Popover.Body>

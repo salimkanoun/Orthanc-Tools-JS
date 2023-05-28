@@ -27,7 +27,7 @@ export default ({ queries = [], aets = [], onRowClick, currentRow, onSelectRowsC
         if (queryKey === currentRow) return { background: 'peachPuff' }
     }
 
-    const columns = useMemo(() => [{
+    const columns = [{
         id: 'key',
         accessorKey: 'key',
         enableHiding: true
@@ -90,7 +90,7 @@ export default ({ queries = [], aets = [], onRowClick, currentRow, onSelectRowsC
             type: 'SELECT',
             options: aets.map(aet => ({ value: aet, label: aet }))
         }
-    }], []);
+    }]
 
     return (
         <CommonTableV8

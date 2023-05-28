@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { Button, Container, Row } from 'react-bootstrap'
+import { Button, Container, Modal, Row } from 'react-bootstrap'
 import moment from 'moment'
 
 import Spinner from '../../CommonComponents/Spinner'
@@ -15,10 +15,11 @@ import { keys } from '../../../model/Constant'
 import { exportCsv } from '../../../tools/CSVExport'
 import { dissmissToast, errorMessage, infoMessage, successMessage, updateToast } from '../../../tools/toastify'
 import { addStudyResult } from '../../../actions/TableResult'
+import EditQueries from './EditQueries'
 
 export default ({ onQueryFinished }) => {
 
-
+    const [openEditModal, setOpenEditModal] = useState(false)
     const [currentRow, setCurrentRow] = useState(null)
     const [selectedRowsIds, setSelectedRowsIds] = useState([])
 
@@ -148,37 +149,58 @@ export default ({ onQueryFinished }) => {
     if (isLoading) return <Spinner />
 
     return (
-        <Container fluid>
-            <Row>
-                <CsvLoader />
-            </Row>
-            <Row className="m-3 d-flex justify-content-around">
-                <input type="button" className="otjs-button otjs-button-blue w-10" value="Add Query"
-                    onClick={() => dispatch(addRow())} />
-                <Button onClick={onCSVDownload} className="otjs-button otjs-button-blue w-10">Export CSV</Button>
-                <input type="button" className="otjs-button otjs-button-orange w-10" value="Delete Selected"
-                    onClick={removeRows} />
-                <input type="button" className="otjs-button otjs-button-red w-10" value="Empty Table"
-                    onClick={emptyTable} />
-            </Row>
-            <Row>
-                <QueryTable
-                    queries={store.queries}
-                    aets={aets}
-                    currentRow={currentRow}
-                    onRowClick={onRowClick}
-                    onSelectRowsChange={onSelectRowsChange}
-                    selectedRowIds={selectedRowsIds}
-                />
-            </Row>
-            <Row className="d-flex justify-content-center mt-5">
-                <Button
-                    className="otjs-button otjs-button-blue"
-                    onClick={onQueryHandle}
-                >
-                    Query
-                </Button>
-            </Row>
-        </Container>
+        <>
+            <Modal size='xl' show={openEditModal} onHide={()=>setOpenEditModal(false)}>
+                <Modal.Header closeButton/>
+                <Modal.Title>Edit Queries</Modal.Title>
+                <Modal.Body>
+                    <EditQueries aets={aets} selectedRowsIds={selectedRowsIds}/>
+                </Modal.Body>
+            </Modal>
+            <Container fluid>
+                <Row>
+                    <CsvLoader />
+                </Row>
+                <Row className="m-3 d-flex justify-content-around">
+                    <Button className="otjs-button otjs-button-blue w-10"
+                        onClick={() => dispatch(addRow())}>
+                        Add Query
+                    </Button>
+                    <Button onClick={onCSVDownload} className="otjs-button otjs-button-blue w-10">
+                        Export CSV
+                    </Button>
+                    <Button className="otjs-button otjs-button-orange w-10"
+                        onClick={() => setOpenEditModal(true)} >
+                        Edit Selected
+                    </Button>
+                    <Button className="otjs-button otjs-button-orange w-10"
+                        onClick={removeRows} >
+                        Delete Selected
+                    </Button>
+                    <Button className="otjs-button otjs-button-red w-10"
+                        onClick={emptyTable} >
+                        Empty Table
+                    </Button>
+                </Row>
+                <Row>
+                    <QueryTable
+                        queries={store.queries}
+                        aets={aets}
+                        currentRow={currentRow}
+                        onRowClick={onRowClick}
+                        onSelectRowsChange={onSelectRowsChange}
+                        selectedRowIds={selectedRowsIds}
+                    />
+                </Row>
+                <Row className="d-flex justify-content-center mt-5">
+                    <Button
+                        className="otjs-button otjs-button-blue"
+                        onClick={onQueryHandle}
+                    >
+                        Query
+                    </Button>
+                </Row>
+            </Container>
+        </>
     )
 }
