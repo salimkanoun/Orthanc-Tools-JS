@@ -20,10 +20,11 @@ export function addQueryToList(query) {
     }
 }
 
-export function editColumnQuery(columnName, text) {
+export function editColumnQuery(updatingIds, columnName, text) {
     return {
         type: AQ_EDIT_COLUMN_QUERY,
         payload: {
+            updatingIds : updatingIds,
             columnName: columnName,
             text: text
         }

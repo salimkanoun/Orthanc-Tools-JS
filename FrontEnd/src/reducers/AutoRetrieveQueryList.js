@@ -63,9 +63,11 @@ export default function queryListReducer(state = initialState, action) {
         case AQ_EDIT_COLUMN_QUERY:
             // Edit all column value
             // Need to change key to force update
+            const keyToUpdate = action.payload.updatingIds
             const newState = state.queries.map((query) => {
-                query.key = Math.random().toString()
-                query[action.payload.columnName] = action.payload.text
+                if(keyToUpdate.includes(query.key)){
+                    query[action.payload.columnName] = action.payload.text
+                }
                 return query
             })
 
