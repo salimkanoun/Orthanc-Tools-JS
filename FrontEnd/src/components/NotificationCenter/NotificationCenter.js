@@ -1,10 +1,9 @@
 import { useRef, useState } from "react";
 
 import { useNotificationCenter } from "react-toastify/addons/use-notification-center";
-import { Badge, Button, Card, Overlay } from "react-bootstrap";
+import { Badge, Card, Overlay } from "react-bootstrap";
 
 import MailIcon from "@mui/icons-material/Mail";
-import { IconButton } from "@mui/material";
 
 import JobsRoot from "./Jobs/JobsRoot";
 
