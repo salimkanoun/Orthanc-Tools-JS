@@ -1,13 +1,51 @@
 import React from "react"
+import { useDispatch } from 'react-redux'
 
 import { Button, Dropdown, DropdownButton, OverlayTrigger, Tooltip } from "react-bootstrap"
 
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8"
+import apis from "../../../services/apis"
+import { addSeriesToExportList, addStudiesToExportList } from "../../../actions/ExportList"
+import Study from "../../../model/Study"
+import Series from "../../../model/Series"
 
 export default ({ jobs }) => {
 
-    const handleExportClick = (level) => {
+    const dispatch = useDispatch()
 
+    const handleExportClick = async (level, studyInstanceUID, seriesInstanceUID) => {
+
+        if (level === 'Series') {
+
+            const seriesOrthancID = await apis.content.getOrthancFind({
+                Level: level,
+                Query: {
+                    '0020,000E': seriesInstanceUID
+                }
+            })
+            const seriesInfo = await apis.content.getSeriesDetails(seriesOrthancID[0])
+            let series = new Series()
+            series.fillFromOrthanc(seriesInfo.ID, seriesInfo.MainDicomTags, seriesInfo.Instances, seriesInfo.ParentStudy)
+            const seriesObject = series.serialize()
+            dispatch(addSeriesToExportList([seriesObject]))
+
+        } else if (level === 'Study') {
+
+            const studyOrthancID = await apis.content.getOrthancFind({
+                Level: level,
+                Query: {
+                    '0020,000D': studyInstanceUID
+                }
+            })
+            const studyDetails = await apis.content.getStudiesDetails(studyOrthancID[0])
+
+            let study = new Study()
+            study.fillFromOrthanc(studyDetails.ID, studyDetails.MainDicomTags, studyDetails.Series)
+            study.fillParentPatient(studyDetails.ParentPatient, studyDetails.PatientMainDicomTags)
+            const studyObject = study.serialize()
+            dispatch(addStudiesToExportList([studyObject]))
+            
+        }
     }
 
     const columns = [
@@ -50,11 +88,15 @@ export default ({ jobs }) => {
         {
             header: 'Actions',
             cell: ({ row }) => {
-                const state = row.original.data.state
+                const state = row.original.data.State
                 const level = row.original.data.level
+                const studyInstanceUID = row.original.data.studyInstanceUID
+                const seriesInstanceUID = row.original.data.seriesInstanceUID
+                const type = row.original.content
+
                 return (
                     <DropdownButton>
-                        <Dropdown.Item onClick={()=> handleExportClick(level)} disabled={state != 'Success'} >To Export</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleExportClick(level, studyInstanceUID, seriesInstanceUID)} disabled={type !== 'Retrieve' || state !== 'Success'} >To Export</Dropdown.Item>
                     </DropdownButton>
                 )
             }

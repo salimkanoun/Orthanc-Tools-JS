@@ -2,6 +2,7 @@ import { ADD_EXPORT_CONTENT, EMPTY_EXPORT_LIST, REMOVE_SERIES_EXPORT_LIST, REMOV
 import apis from '../services/apis'
 import Series from '../model/Series'
 import { errorMessage } from '../tools/toastify'
+import Study from '../model/Study'
 
 export function addToExportList(seriesArray, studiesArray) {
     return {
@@ -9,6 +10,33 @@ export function addToExportList(seriesArray, studiesArray) {
         payload: {
             series: seriesArray,
             studies: studiesArray
+        }
+    }
+}
+
+export function addSeriesToExportList(seriesArray) {
+    return async function (dispatch) {
+        for (const seriesObject of seriesArray) {
+            try {
+                let studyDetails = await apis.content.getStudiesDetails(seriesObject.StudyOrthancID)
+                let study = new Study()
+                study.fillFromOrthanc(studyDetails.ID, studyDetails.MainDicomTags, studyDetails.Series)
+                study.fillParentPatient(studyDetails.ParentPatient, studyDetails.PatientMainDicomTags)
+                const studyObject = study.serialize()
+
+                dispatch(
+                    {
+                        type: ADD_EXPORT_CONTENT,
+                        payload: {
+                            series: seriesArray,
+                            studies: [studyObject]
+                        }
+                    }
+                )
+            } catch (error) {
+                errorMessage(error?.data?.errorMessage ?? "Series Details Fetching Failed")
+            }
+
         }
     }
 }
