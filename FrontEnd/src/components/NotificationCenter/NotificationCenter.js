@@ -22,14 +22,12 @@ export default () => {
 
     return (
         <div>
-            <Button onClick={() => setIsOpen((opened) => !opened)} ref={target}>
-                <Badge>
-                    <MailIcon color="action" />
-                    <span className='button-count'>
-                        {jobNotifications.length}
-                    </span>
-                </Badge>
-            </Button>
+            <Badge bg="info" onClick={() => setIsOpen((opened) => !opened)} ref={target}>
+                <MailIcon color="action" />
+                <span className='button-count'>
+                    {jobNotifications.length}
+                </span>
+            </Badge>
 
             <Overlay
                 target={target.current}
