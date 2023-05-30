@@ -57,6 +57,7 @@ export default ({ studiesData }) => {
             <RetrieveButton
                 queryAet={row.original.OriginAET}
                 studyInstanceUID={row.original.StudyInstanceUID}
+                seriesInstanceUID={row.original.SeriesInstanceUID}
                 level={LEVEL_SERIES}
             />
     }

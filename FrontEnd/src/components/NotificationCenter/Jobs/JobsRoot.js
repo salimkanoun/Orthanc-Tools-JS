@@ -7,7 +7,7 @@ import apis from "../../../services/apis";
 
 export default ({ jobNotifications, remove }) => {
 
-    const monitorJobs = useCallback(async () => {
+    const monitorJobs = async () => {
         let jobsNotifications = jobNotifications.filter((notification) => notification.data?.State !== 'Success' && notification.data?.State !== 'Failure')
         for (let i = 0; i < Math.min(6, jobsNotifications.length); i++) {
             let updatedData = JSON.parse(JSON.stringify(jobsNotifications[i].data))
@@ -16,7 +16,7 @@ export default ({ jobNotifications, remove }) => {
             updatedData.State = jobData.State
             toast.update(jobsNotifications[i].id, { data: updatedData })
         }
-    }, [JSON.stringify(jobNotifications)])
+    }
 
     useEffect(() => {
         monitorJobs()

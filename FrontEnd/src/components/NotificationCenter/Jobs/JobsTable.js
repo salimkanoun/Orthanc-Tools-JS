@@ -1,10 +1,14 @@
 import React from "react"
 
-import { Button, OverlayTrigger, Tooltip } from "react-bootstrap"
+import { Button, Dropdown, DropdownButton, OverlayTrigger, Tooltip } from "react-bootstrap"
 
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8"
 
 export default ({ jobs }) => {
+
+    const handleExportClick = (level) => {
+
+    }
 
     const columns = [
         {
@@ -40,6 +44,18 @@ export default ({ jobs }) => {
                     >
                         <Button variant="info"> Show Details </Button>
                     </OverlayTrigger>
+                )
+            }
+        },
+        {
+            header: 'Actions',
+            cell: ({ row }) => {
+                const state = row.original.data.state
+                const level = row.original.data.level
+                return (
+                    <DropdownButton>
+                        <Dropdown.Item onClick={()=> handleExportClick(level)} disabled={state != 'Success'} >To Export</Dropdown.Item>
+                    </DropdownButton>
                 )
             }
         }
