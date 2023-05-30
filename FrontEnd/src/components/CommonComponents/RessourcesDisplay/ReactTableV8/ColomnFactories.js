@@ -207,17 +207,6 @@ const seriesColumns = {
         accessorKey: 'NumberOfSeriesRelatedInstances',
         header: 'Number of instances',
         filterType: filter.NUMBER_FILTER
-    },
-    RETRIEVE: {
-        id: 'Retrieve',
-        accessorKey: 'Retrieve',
-        header: 'Retrieve',
-        cell: ({ row }) => {
-            return (<RetrieveButton queryAet={row.original.raw.OriginAET}
-                studyInstanceUID={row.original.raw.StudyInstanceUID}
-                seriesInstanceUID={row.original.raw.SeriesInstanceUID}
-                level={RetrieveButton.Series} />)
-        }
     }
 }
 

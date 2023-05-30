@@ -61,7 +61,6 @@ export default function anonListReducer(state = initialState, action) {
     case SAVE_NEW_VALUES:
       let { id, column, newValue } = action.payload
       let newList = [...state.anonList]
-      console.log('id : ', id, 'column : ', column, 'newValue : ', newValue)
       if (column === 'newStudyDescription' || column === 'newAccessionNumber') {
         newList.forEach(element => {
           if (element.StudyOrthancID === id) {
@@ -98,7 +97,6 @@ export default function anonListReducer(state = initialState, action) {
         if (!Object.keys(tab).includes(PatientOrthancID)) {
           tab[PatientOrthancID] = prefix + number
           ++number
-          console.log(number)
         }
       })
 
