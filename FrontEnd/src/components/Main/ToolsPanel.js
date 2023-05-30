@@ -30,7 +30,7 @@ export default ({ roles }) => {
         <div className='d-flex justify-content-end align-items-center'>
             <div className="ms-1" hidden={!roles.anon}>
                 <Link id='anon' ref={refAnon} type="button" className="btn otjs-btn-tools otjs-btn-tools-blue w-12"
-                    onMouseOver={() => setShow('anon')} to='anonymize'>
+                    onMouseOver={() => setShow('anon')} to='/anonymize'>
                     <i className="fas fa-user-secret me-2"></i> Anonymize
                     <span className="ms-2 badge bg-light text-dark"
                         onMouseOver={() => setShow('anon')}>{store.anonList.length}</span>
@@ -40,7 +40,7 @@ export default ({ roles }) => {
             </div>
             <div className="ms-1" hidden={!roles.exportRemote || !roles.exportLocal}>
                 <Link id='export' ref={refExport} type="button" className="btn otjs-btn-tools otjs-btn-tools-orange w-12"
-                    onMouseOver={() => setShow('export')} to='export'>
+                    onMouseOver={() => setShow('export')} to='/export'>
                     <i className="fas fa-file-export me-2"></i> Export
                     <span className="ms-2 badge bg-light text-dark"
                         onMouseOver={() => setShow('export')}>{store.studyArray.length}</span>
@@ -49,7 +49,7 @@ export default ({ roles }) => {
                     onHide={closePopovers} />
             </div>
             <div className='ms-1'>
-                <Link id='delete' ref={refDelete} type='button' className='btn otjs-btn-tools otjs-btn-tools-red' to='delete'>
+                <Link id='delete' ref={refDelete} type='button' className='btn otjs-btn-tools otjs-btn-tools-red' to='/delete'>
                     Delete <span className="badge bg-light text-dark">{store.deleteList.length}</span>
                 </Link>
             </div>
