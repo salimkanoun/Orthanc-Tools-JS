@@ -23,11 +23,15 @@ export default ({ jobs }) => {
                     '0020,000E': seriesInstanceUID
                 }
             })
-            const seriesInfo = await apis.content.getSeriesDetails(seriesOrthancID[0])
-            let series = new Series()
-            series.fillFromOrthanc(seriesInfo.ID, seriesInfo.MainDicomTags, seriesInfo.Instances, seriesInfo.ParentStudy)
-            const seriesObject = series.serialize()
-            dispatch(addSeriesToExportList([seriesObject]))
+            
+            if (seriesOrthancID.length === 1) {
+                const seriesInfo = await apis.content.getSeriesDetails(seriesOrthancID[0])
+                let series = new Series()
+                series.fillFromOrthanc(seriesInfo.ID, seriesInfo.MainDicomTags, seriesInfo.Instances, seriesInfo.ParentStudy)
+                const seriesObject = series.serialize()
+                dispatch(addSeriesToExportList([seriesObject]))
+            }
+
 
         } else if (level === 'Study') {
 
@@ -37,14 +41,17 @@ export default ({ jobs }) => {
                     '0020,000D': studyInstanceUID
                 }
             })
-            const studyDetails = await apis.content.getStudiesDetails(studyOrthancID[0])
 
-            let study = new Study()
-            study.fillFromOrthanc(studyDetails.ID, studyDetails.MainDicomTags, studyDetails.Series)
-            study.fillParentPatient(studyDetails.ParentPatient, studyDetails.PatientMainDicomTags)
-            const studyObject = study.serialize()
-            dispatch(addStudiesToExportList([studyObject]))
-            
+            if (studyOrthancID.length === 1) {
+                const studyDetails = await apis.content.getStudiesDetails(studyOrthancID[0])
+                let study = new Study()
+                study.fillFromOrthanc(studyDetails.ID, studyDetails.MainDicomTags, studyDetails.Series)
+                study.fillParentPatient(studyDetails.ParentPatient, studyDetails.PatientMainDicomTags)
+                const studyObject = study.serialize()
+                dispatch(addStudiesToExportList([studyObject]))
+            }
+
+
         }
     }
 
@@ -96,7 +103,7 @@ export default ({ jobs }) => {
 
                 return (
                     <DropdownButton>
-                        <Dropdown.Item onClick={() => handleExportClick(level, studyInstanceUID, seriesInstanceUID)} disabled={type !== 'Retrieve' || state !== 'Success'} >To Export</Dropdown.Item>
+                        <Dropdown.Item title="To Export" onClick={() => handleExportClick(level, studyInstanceUID, seriesInstanceUID)} disabled={type !== 'Retrieve' || state !== 'Success'} >To Export</Dropdown.Item>
                     </DropdownButton>
                 )
             }

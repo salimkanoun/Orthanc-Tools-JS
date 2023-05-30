@@ -5,9 +5,9 @@ import { toast } from 'react-toastify'
 import CardJobs from "../CardJobs"
 import apis from "../../../services/apis";
 
-export default ({ jobNotifications, remove }) => {
+export default ({ jobNotifications = [], remove }) => {
 
-    const monitorJobs = async () => {
+    const monitorJobs = async (jobNotifications) => {
         let jobsNotifications = jobNotifications.filter((notification) => notification.data?.State !== 'Success' && notification.data?.State !== 'Failure')
         for (let i = 0; i < Math.min(6, jobsNotifications.length); i++) {
             let updatedData = JSON.parse(JSON.stringify(jobsNotifications[i].data))
@@ -21,7 +21,7 @@ export default ({ jobNotifications, remove }) => {
     useEffect(() => {
         monitorJobs()
         const intervalID = setInterval(() => {
-            monitorJobs()
+            monitorJobs(jobNotifications)
         }, 2000)
         return () => {
             clearInterval(intervalID)
@@ -35,6 +35,6 @@ export default ({ jobNotifications, remove }) => {
     }
 
     return (
-        <CardJobs title={"Orthanc Jobs"} jobs={jobNotifications} clear={clearJobs} />
+        <CardJobs title="Orthanc Jobs" jobs={jobNotifications} clear={clearJobs} />
     )
 }
