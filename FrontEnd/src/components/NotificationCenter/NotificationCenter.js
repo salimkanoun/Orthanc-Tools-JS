@@ -1,10 +1,9 @@
 import { useRef, useState } from "react";
 
 import { useNotificationCenter } from "react-toastify/addons/use-notification-center";
-import { Badge, Button, Card, Overlay } from "react-bootstrap";
+import { Badge, Card, Overlay } from "react-bootstrap";
 
 import MailIcon from "@mui/icons-material/Mail";
-import { IconButton } from "@mui/material";
 
 import JobsRoot from "./Jobs/JobsRoot";
 
@@ -22,14 +21,12 @@ export default () => {
 
     return (
         <div>
-            <Button onClick={() => setIsOpen((opened) => !opened)} ref={target}>
-                <Badge>
-                    <MailIcon color="action" />
-                    <span className='button-count'>
-                        {jobNotifications.length}
-                    </span>
-                </Badge>
-            </Button>
+            <Badge bg="info" onClick={() => setIsOpen((opened) => !opened)} ref={target}>
+                <MailIcon color="action" />
+                <span className='button-count'>
+                    {jobNotifications.length}
+                </span>
+            </Badge>
 
             <Overlay
                 target={target.current}
