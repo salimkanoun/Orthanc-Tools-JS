@@ -57,41 +57,42 @@ export default () => {
 
     useEffect(() => {
 
-        const getActivated = async () => { await apis.options.getMode() }
-        const getOptions = async () => { await apis.ldap.getLdapSettings() }
+        const fetchData = async () => {
+            let activated, options
 
-        let activated, options
+            try {
+                //Mode
+                activated = await apis.options.getMode()
+                //Ldap
+                options = await apis.ldap.getLdapSettings()
+            } catch (error) {
+                errorMessage(error.statusText)
+                return
+            }
 
-        try {
-            //Mode
-            activated = getActivated()
-            //Ldap
-            options = getOptions()
-        } catch (error) {
-            errorMessage(error.statusText)
-            return
+
+            let typeGroup
+            if (options.TypeGroup === 'ad') {
+                typeGroup = { value: 'ad', label: 'Active Directory' }
+            } else if (options.TypeGroup === 'ldap') {
+                typeGroup = { value: 'ldap', label: 'LDAP' }
+            } else {
+                typeGroup = { value: '', label: '' }
+            }
+
+            setActivated(activated)
+            setAddress(options.address)
+            setProtocol(options.protocol)
+            setChangeType(typeGroup)
+            setPort(options.port)
+            setDN(options.DN)
+            setPassword(options.password)
+            setGroup(options.group)
+            setUser(options.user)
+            setBase(options.base)
         }
 
-
-        let typeGroup
-        if (options.TypeGroup === 'ad') {
-            typeGroup = { value: 'ad', label: 'Active Directory' }
-        } else if (options.TypeGroup === 'ldap') {
-            typeGroup = { value: 'ldap', label: 'LDAP' }
-        } else {
-            typeGroup = { value: '', label: '' }
-        }
-
-        setActivated(activated)
-        setAddress(options.address)
-        setProtocol(options.protocol)
-        setChangeType(typeGroup)
-        setPort(options.port)
-        setDN(options.DN)
-        setPassword(options.password)
-        setGroup(options.group)
-        setUser(options.user)
-        setBase(options.base)
+        fetchData()
     }, [])
 
 
