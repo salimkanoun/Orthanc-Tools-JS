@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
 
 import apis from '../../services/apis'
-import { errorMessage, jobMessageToNotificationCenter } from '../../tools/toastify'
+import { errorMessage, jobMessageToNotificationCenter, successMessage } from '../../tools/toastify'
 
 export default ({ level, studyInstanceUID, queryAet, seriesInstanceUID }) => {
 
@@ -25,6 +25,7 @@ export default ({ level, studyInstanceUID, queryAet, seriesInstanceUID }) => {
         jobID = await apis.retrieve.retrieveByUID(queryAet, studyInstanceUID, seriesInstanceUID)
       }
       setDisabled(true)
+      successMessage('Retrieve started, follow progressing in notifications')
       jobMessageToNotificationCenter('Retrieve', { ID: jobID, level: level, studyInstanceUID: studyInstanceUID, seriesInstanceUID: seriesInstanceUID })
     } catch (error) {
       errorMessage(error?.data?.errorMessage ?? "Can't initiate retrieve")
