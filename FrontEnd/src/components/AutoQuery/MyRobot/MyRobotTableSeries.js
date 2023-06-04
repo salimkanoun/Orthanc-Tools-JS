@@ -14,8 +14,10 @@ import ExportDeleteSendButton from "../../CommonComponents/RessourcesDisplay/Exp
 import apis from "../../../services/apis";
 import Series from "../../../model/Series";
 import { addSeriesToExportList } from "../../../actions/ExportList";
+import { useDispatch } from "react-redux";
 
 export default ({ rows = [], onRetryItem, onDeleteItem }) => {
+  const dispatch = useDispatch();
   const [selectedRowsIds, setSelectedRowsIds] = useState([]);
 
   const columns = [

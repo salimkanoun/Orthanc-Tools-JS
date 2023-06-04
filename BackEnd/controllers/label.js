@@ -45,7 +45,7 @@ const deleteLabel = async function (req, res) {
 const getStudiesWithLabel = async function (req, res) {
   const labelName = req.params.name
   const orthanc = new Orthanc()
-  const studies = await orthanc.findInOrthanc('Study', undefined, undefined, undefined, undefined, undefined, undefined, undefined, [labelName])
+  const studies = await orthanc.findInOrthanc('Study', undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [labelName])
   res.json(studies)
 }
 
