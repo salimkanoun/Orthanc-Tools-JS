@@ -1,9 +1,6 @@
-import React, { useCallback, useEffect } from "react";
-
-import { toast } from "react-toastify";
+import React from "react";
 
 import CardJobs from "../CardJobs";
-import apis from "../../../services/apis";
 
 export default ({ jobNotifications = [], remove }) => {
 
