@@ -15,6 +15,7 @@ import apis from "../../../services/apis";
 import Series from "../../../model/Series";
 import { addSeriesToExportList } from "../../../actions/ExportList";
 import { useDispatch } from "react-redux";
+import { addStudiesToDeleteList } from "../../../actions/DeleteList";
 
 export default ({ rows = [], onRetryItem, onDeleteItem }) => {
   const dispatch = useDispatch();
@@ -165,6 +166,11 @@ export default ({ rows = [], onRetryItem, onDeleteItem }) => {
     dispatch(addSeriesToExportList(series));
   };
 
+  const onDeleteClick = async() => {
+    let series = await getSelectedItemsSeriesDetails();
+    dispatch(addStudiesToDeleteList(series))
+  }
+
   const getSelectedItemsSeriesDetails = async () => {
     let seriesDataRetrieved = [];
     //Loop each item to retrieve study level
@@ -203,9 +209,7 @@ export default ({ rows = [], onRetryItem, onDeleteItem }) => {
       />
       <div>
         <ExportDeleteSendButton
-          onAnonClick={() => {}}
           onExportClick={onExportClick}
-          onDeleteClick={() => {}}
         />
       </div>
     </>
