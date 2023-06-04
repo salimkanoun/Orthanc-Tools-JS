@@ -68,10 +68,9 @@ export default ({ jobs }) => {
             style: { whiteSpace: 'normal', wordWrap: 'break-word' }
         },
         {
-            accessorKey: 'data.State',
             header: "Job Status",
             style: { whiteSpace: 'normal', wordWrap: 'break-word' },
-            cell: ({ getValue }) => getValue() ?? 'Unknown'
+            cell: ({ row }) => row.original?.data?.State ?? 'Unknown'
         },
         {
             header: 'Details',
@@ -102,7 +101,7 @@ export default ({ jobs }) => {
                 const type = row.original.content
 
                 return (
-                    <DropdownButton>
+                    <DropdownButton title="Actions">
                         <Dropdown.Item title="To Export" onClick={() => handleExportClick(level, studyInstanceUID, seriesInstanceUID)} disabled={type !== 'Retrieve' || state !== 'Success'} >To Export</Dropdown.Item>
                     </DropdownButton>
                 )
