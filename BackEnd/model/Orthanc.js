@@ -301,7 +301,7 @@ class Orthanc {
         return answer
     }
 
-    async findInOrthanc(level = 'Study', patientName = '', patientID = '', accessionNb = '', date = '', studyDescription = '', modality = '', studyInstanceUID = '', labels = []) {
+    async findInOrthanc(level = 'Study', patientName = '', patientID = '', accessionNb = '', date = '', studyDescription = '', modality = '', studyInstanceUID = '', seriesInstanceUID='', labels = []) {
 
         const queryParameter = {
             Level: level,
@@ -314,7 +314,8 @@ class Orthanc {
                 PatientName: patientName,
                 PatientID: patientID,
                 AccessionNumber: accessionNb,
-                StudyInstanceUID: studyInstanceUID
+                StudyInstanceUID: studyInstanceUID,
+                SeriesInstanceUID : seriesInstanceUID
 
             },
             Labels: labels
@@ -331,6 +332,11 @@ class Orthanc {
      */
     async findInOrthancByUid(studyUID) {
         const answer = await this.findInOrthanc('Study', '', '', '', '', '', '', studyUID)
+        return answer
+    }
+    
+    async findInOrthancBySeriesInstanceUID(seriesInstanceUID){
+        const answer = await this.findInOrthanc('Series', '', '', '', '', '', '', '', seriesInstanceUID)
         return answer
     }
 
