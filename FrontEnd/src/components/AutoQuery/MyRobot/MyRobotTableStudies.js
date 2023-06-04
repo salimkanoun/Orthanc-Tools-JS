@@ -12,6 +12,11 @@ import { ReactComponent as PendingSVG } from '../../../assets/images/pending.svg
 import { ReactComponent as RepeatSVG } from '../../../assets/images/arrow-repeat.svg'
 import { ITEM_SUCCESS } from './MyRobotRoot';
 import ExportDeleteSendButton from '../../CommonComponents/RessourcesDisplay/ExportDeleteSendButton';
+import apis from '../../../services/apis';
+import Study from '../../../model/Study';
+import { addStudiesToExportList } from '../../../actions/ExportList';
+import { addStudiesToDeleteList } from '../../../actions/DeleteList';
+import { addStudiesToAnonList } from '../../../actions/AnonList';
 
 export default ({ rows = [], onRetryItem, onDeleteItem }) => {
 
