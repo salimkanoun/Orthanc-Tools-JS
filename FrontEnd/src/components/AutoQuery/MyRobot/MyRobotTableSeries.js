@@ -167,8 +167,9 @@ export default ({ rows = [], onRetryItem, onDeleteItem }) => {
   };
 
   const onDeleteClick = async() => {
-    let series = await getSelectedItemsSeriesDetails();
-    dispatch(addStudiesToDeleteList(series))
+    TODO SK
+    //let series = await getSelectedItemsSeriesDetails();
+    //dispatch(addStudiesToDeleteList(series))
   }
 
   const getSelectedItemsSeriesDetails = async () => {
@@ -210,6 +211,7 @@ export default ({ rows = [], onRetryItem, onDeleteItem }) => {
       <div>
         <ExportDeleteSendButton
           onExportClick={onExportClick}
+          onDeleteClick={onDeleteClick}
         />
       </div>
     </>
