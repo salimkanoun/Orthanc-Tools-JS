@@ -56,7 +56,7 @@ class Task {
                 task = await AnonTask.getUserTask(username);
                 break;
             case TaskType.DELETE:
-                task = [await DeleteTask.getUserTask(username)];
+                task = await DeleteTask.getUserTask(username);
                 break;
             default:
                 throw new OTJSBadRequestException('Unknown task type');

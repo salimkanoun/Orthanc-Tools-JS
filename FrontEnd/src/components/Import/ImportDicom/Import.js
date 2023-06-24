@@ -204,15 +204,18 @@ export default () => {
     }
 
     const sendImportedToExport = () => {
-        dispatch(addStudiesToExportList(studiesObjects))
+        let studies = Object.values(studiesObjects)
+        dispatch(addStudiesToExportList(studies))
     }
 
     const sendImportedToAnon = () => {
-        dispatch(addStudiesToAnonList(studiesObjects))
+        let studies = Object.values(studiesObjects)
+        dispatch(addStudiesToAnonList(studies))
     }
 
     const sendImportedToDelete = () => {
-        dispatch(addStudiesToDeleteList(studiesObjects))
+        let studies = Object.values(studiesObjects)
+        dispatch(addStudiesToDeleteList(studies))
     }
 
     return (
