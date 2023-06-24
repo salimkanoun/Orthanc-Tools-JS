@@ -27,6 +27,7 @@ export default ({
     canSelect = false,
     canExpand = false,
     paginated = false,
+    pageSize = 10,
     selectedRowsIds = undefined,
     customRowProps = () => { },
     sortBy = [],
@@ -74,7 +75,7 @@ export default ({
 
     const table = useReactTable({
         data,
-        getRowId: (originalRow, index, parent) => originalRow?.[id] ?? index,
+        getRowId: (originalRow, index) => originalRow?.[id] ?? index,
         columns: getColumns(),
         defaultColumn: {
             cell: EditableCell
@@ -83,10 +84,14 @@ export default ({
         state: {
             rowSelection: selectedRowsIds ? selectedStateFromProps : rowSelection,
             columnFilters,
-            sorting
+            sorting,
+            
         },
         initialState: {
-            columnVisibility: hiddenStateFromProps
+            columnVisibility: hiddenStateFromProps,
+            pagination : {
+                pageSize : pageSize 
+            }
         },
         onColumnFiltersChange: setColumnFilters,
         onSortingChange: setSorting,
