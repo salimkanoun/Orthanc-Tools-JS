@@ -30,24 +30,11 @@ export default () => {
       dateString = dateFrom + '-'
     }
 
-    let patientName = ''
-
-    let inputLastName = formData.lastName
-    let inputFirstName = formData.firstName
-
-    if (inputLastName === '' && inputFirstName !== '') {
-      patientName = '^' + inputFirstName
-    } else if (inputLastName !== '' && inputFirstName === '') {
-      patientName = inputLastName
-    } else if (inputLastName !== '' && inputFirstName !== '') {
-      patientName = inputLastName + '^' + inputFirstName
-    }
-
     //Prepare POST payload for query (follow Orthanc APIs)
     let queryPost = {
       Level: 'Study',
       Query: {
-        PatientName: patientName,
+        PatientName: formData.patientName,
         PatientID: formData.patientID,
         StudyDate: dateString,
         ModalitiesInStudy: formData.modalities,

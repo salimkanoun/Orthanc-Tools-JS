@@ -110,7 +110,7 @@ export default ({ jobs }) => {
     ]
 
     return (
-        <CommonTableV8 columns={columns} data={jobs} />
+        <CommonTableV8 paginated pageSize={5} columns={columns} data={jobs} />
     )
 
 }

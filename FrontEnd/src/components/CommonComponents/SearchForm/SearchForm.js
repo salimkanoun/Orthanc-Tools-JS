@@ -9,8 +9,7 @@ import AetButton from './AetButton'
 export default ({ icon, title, buttonsName, onFormValidate }) => {
 
     const [state, setState] = useState({
-        firstName: '',
-        lastName: '',
+        patientName: '',
         patientID: '',
         accessionNumber: '',
         studyDescription: '',
@@ -116,12 +115,8 @@ export default ({ icon, title, buttonsName, onFormValidate }) => {
                 </Row>
                 <Row className='mt-5'>
                     <Col sm>
-                        <label htmlFor='lastName' className="form-label">Last Name</label>
-                        <input type='text' name='lastName' className='form-control' placeholder='Last name' onChange={handleChange} value={state.lastName} />
-                    </Col>
-                    <Col sm>
-                        <label htmlFor='firstName' className="form-label">First Name</label>
-                        <input type='text' name='firstName' className='form-control' placeholder='First name' onChange={handleChange} value={state.firstName} />
+                        <label htmlFor='patientName' className="form-label">Patient Name</label>
+                        <input type='text' name='patientName' className='form-control' placeholder='Patient name (* for wildcard)' onChange={handleChange} value={state.lastName} />
                     </Col>
                     <Col sm>
                         <label htmlFor='patientID' className="form-label">Patient ID</label>

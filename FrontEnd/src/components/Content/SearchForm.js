@@ -9,21 +9,12 @@ export default ({ onSubmit }) => {
         let date = ""
         if (formData.dateFrom !== "" || formData.dateTo !== "") //if dateFrom or dateTo isn't empty 
             date = formData.dateFrom.replace('-', '').replace('-', '') + '-' + formData.dateTo.replace('-', '').replace('-', '')
-        //patient name
-        let patientName = ""
-        if (formData.lastName !== '' && formData.firstName === '')
-            patientName = formData.lastName
-        else if (formData.lastName === '' && formData.firstName !== '')
-            patientName = '^' + formData.firstName
-        else if (formData.lastName !== '' && formData.firstName !== '')
-            patientName = formData.lastName + '^' + formData.firstName
-
         let contentSearch = {
             Level: 'Study',
             CaseSensitive: false,
             Expand: true,
             Query: {
-                PatientName: patientName,
+                PatientName: formData.patientName,
                 PatientID: formData.patientID,
                 AccessionNumber: formData.accessionNumber,
                 StudyDate: date,
