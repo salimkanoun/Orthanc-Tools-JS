@@ -12,8 +12,8 @@ export default ({ tags }) => {
         if (Array.isArray(array)) {
             array.forEach(nodes => {
                 rows.push(
-                    <TreeItem key={nodes.name} nodeId={nodes.name} label={nodes.name}>
-                        {Array.isArray(nodes.value) ? nodes.value.map((node) => renderTree(node)) : nodes.value}
+                    <TreeItem key={nodes.name} nodeId={nodes.name} label={nodes.dicomTag + " "+ nodes.name}>
+                        {Array.isArray(nodes.value) ? nodes.value.map((node) => renderTree(node)) :  nodes.value}
                     </TreeItem>
                 )
             })
