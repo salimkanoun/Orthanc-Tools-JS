@@ -166,12 +166,6 @@ export default ({ rows = [], onRetryItem, onDeleteItem }) => {
     dispatch(addSeriesToExportList(series));
   };
 
-  const onDeleteClick = async() => {
-    TODO SK
-    //let series = await getSelectedItemsSeriesDetails();
-    //dispatch(addStudiesToDeleteList(series))
-  }
-
   const getSelectedItemsSeriesDetails = async () => {
     let seriesDataRetrieved = [];
     //Loop each item to retrieve study level
@@ -211,7 +205,6 @@ export default ({ rows = [], onRetryItem, onDeleteItem }) => {
       <div>
         <ExportDeleteSendButton
           onExportClick={onExportClick}
-          onDeleteClick={onDeleteClick}
         />
       </div>
     </>
