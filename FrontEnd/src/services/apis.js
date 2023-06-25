@@ -24,6 +24,7 @@ import studylabel from './studylabel'
 import rolelabel from './rolelabel'
 import autorouting from './autorouting'
 import autorouter from './autorouter'
+import gaelo from './gaelo'
 
 const apis = {
   importDicom,
@@ -51,7 +52,8 @@ const apis = {
   studylabel,
   rolelabel,
   autorouting,
-  autorouter
+  autorouter,
+  gaelo
 }
 
 export default apis
