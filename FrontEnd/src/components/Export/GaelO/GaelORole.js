@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import Select from "react-select";
 import apis from "../../../services/apis";
 import { errorMessage } from "../../../tools/toastify";
-import GaelOContext from "../Context/GaelOContext";
+import GaelOContext from "./Context/GaelOContext";
 
 export default ({ onTreeChange }) => {
   const gaelOContext = useContext(GaelOContext);

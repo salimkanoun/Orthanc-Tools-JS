@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Row, Col, Button, Container, Modal } from "react-bootstrap";
 import TableSeries from "../CommonComponents/RessourcesDisplay/ReactTableV8/TableSeries";
-import TableStudies from "../CommonComponents/RessourcesDisplay/ReactTableV8/TableStudies";
 
 import {
   emptyExportList,
@@ -108,7 +107,7 @@ export default () => {
   };
 
   const sendToGaelOHandler = () => {
-    setOpenGaelO(true)
+    setOpenGaelO(true);
   };
 
   const getCSV = () => {
@@ -147,6 +146,12 @@ export default () => {
       ),
     [currentStudy, store.exportList.seriesArray]
   );
+  const selectedStudy = useMemo(() => {
+    if(currentStudy == null) return {}
+    return store.exportList.studyArray.find(
+      (study) => study.StudyOrthancID === currentStudy
+    );
+  }, [currentStudy]);
 
   if (
     isEnpointsLoading ||
@@ -159,12 +164,12 @@ export default () => {
 
   return (
     <>
-    <Modal onHide={() => setOpenGaelO(null)} show={openGaelO}>
+      <Modal onHide={() => setOpenGaelO(null)} show={openGaelO}>
         <Modal.Header closeButton>Send To GaelO</Modal.Header>
         <Modal.Body>
-            <GaelORoot/>
+          <GaelORoot study={selectedStudy} series={series} />
         </Modal.Body>
-    </Modal>
+      </Modal>
       <Container fluid>
         <Row className="border-bottom border-2 pb-3">
           <Col className="d-flex justify-content-start align-items-center">

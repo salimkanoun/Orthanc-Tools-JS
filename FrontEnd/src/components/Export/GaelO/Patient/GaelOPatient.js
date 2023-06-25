@@ -1,13 +1,17 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { Button, Form, Row } from "react-bootstrap";
+import { Form, Row } from "react-bootstrap";
 import Select from "react-select";
 import apis from "../../../../services/apis";
-import GaelOContext from "../../Context/GaelOContext";
+import GaelOContext from "../Context/GaelOContext";
 import PatientTable from "./PatientTable";
 
-export default ({ investigatorTree }) => {
+export default ({
+  study,
+  investigatorTree,
+  selectedPatient,
+  onChangePatient,
+}) => {
   const gaeloContext = useContext(GaelOContext);
-  const [selectedPatient, setSelectedPatient] = useState(null);
   const [patientDetails, setPatientDetails] = useState({});
 
   const patientOptions = useMemo(() => {
@@ -25,10 +29,9 @@ export default ({ investigatorTree }) => {
       let details = await apis.gaelo.getPatient(
         gaeloContext.token,
         gaeloContext.studyName,
-        selectedPatient.value,
+        selectedPatient,
         "Investigator"
       );
-      console.log(details);
       setPatientDetails(details);
     };
     getPatientDetails();
@@ -45,21 +48,16 @@ export default ({ investigatorTree }) => {
         gender: patientDetails.gender,
       });
     }
+
+    data.push({
+      source: "Dicom",
+      firstname: study.ParentPatient?.PatientName?.split("^")?.[1] ?? "",
+      lastname: study.ParentPatient?.PatientName?.split("^")?.[0] ?? "",
+      gender: study.ParentPatient?.PatientSex ?? "",
+    });
+
     return data;
   }, [patientDetails]);
-
-  const goToHandle = () => {
-    let url =
-      "https://36c8f2f1-066c-4fd8-a405-ece21ef33e99.pub.instances.scw.cloud/study/" +
-      gaeloContext.studyName +
-      "/role/Investigator/patient/" +
-      selectedPatient.value +
-      "?userId=" +
-      gaeloContext.userId +
-      "&token=" +
-      gaeloContext.token;
-    window.open(url, "_blank").focus();
-  };
 
   return (
     <>
@@ -67,16 +65,17 @@ export default ({ investigatorTree }) => {
         <Form.Label>Select Patient</Form.Label>
         <Select
           options={patientOptions}
-          value={selectedPatient}
-          onChange={(option) => setSelectedPatient(option)}
+          value={patientOptions.find(
+            (option) => option.value === selectedPatient
+          )}
+          onChange={(option) => onChangePatient(option.value)}
         />
       </Row>
-      <Row>
-        <PatientTable data={patientRows} />
-      </Row>
-      <Row className="d-flex justify-content-center">
-        <Button onClick={goToHandle}>Ready, Go to GaelO</Button>
-      </Row>
+      {selectedPatient ? (
+        <Row>
+          <PatientTable data={patientRows} />
+        </Row>
+      ) : null}
     </>
   );
 };
