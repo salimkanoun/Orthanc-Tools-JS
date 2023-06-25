@@ -1,47 +1,51 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Container, Row } from "react-bootstrap";
 import GaelOLogin from "./GaelOLogin";
-import apis from "../../../services/apis";
+import GaelOPatient from "./Patient/GaelOPatient";
+import GaelOContextProvider from "../Context/GaelOContextProvider";
+import GaelORole from "./GaelORole";
 
 export default () => {
   const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [studies, setStudies] = useState([]);
+  const [currentStudy, setCurrentStudy] = useState(null);
+  const [investigatorTree, setInvestigatorTree] = useState({});
 
-  useEffect(() => {
-    const getStudies = async () => {
-      const studies = await apis.gaelo.getStudiesFromUser(token, userId);
-      console.log(studies);
-      apis.gaelo.getRoles(token, userId);
-    };
-
-    //SK declange un logout si fail
-    if (token && userId) getStudies();
-  }, [token]);
-
-  useEffect(() => {
-    const getRoles = async () => {
-      const roles = await apis.gaelo.getRoles(token, userId);
-      console.log(roles);
-    };
-    //SK declange un logout si fail
-    if (token && userId) getRoles();
-  }, [studies.length]);
+  const onTreeHandler = (studyName, tree) => {
+    setCurrentStudy(studyName);
+    setInvestigatorTree(tree);
+  };
 
   return (
     <div>
-      <Container fluid>
-        {!token ? (
-          <Row>
-            <GaelOLogin
-              onAccessToken={(id, newToken) => {
-                setToken(newToken);
-                setUserId(id);
-              }}
-            />
-          </Row>
-        ) : null}
-      </Container>
+      <GaelOContextProvider
+        studyName={currentStudy}
+        userId={userId}
+        token={token}
+      >
+        <Container fluid>
+          {!token ? (
+            <Row>
+              <GaelOLogin
+                onAccessToken={(id, newToken) => {
+                  setToken(newToken);
+                  setUserId(id);
+                }}
+              />
+            </Row>
+          ) : null}
+          {token ? (
+            <Row>
+              <GaelORole onTreeChange={onTreeHandler} />
+            </Row>
+          ) : null}
+          {Object.keys(investigatorTree).length > 0 ? (
+            <Row>
+              <GaelOPatient investigatorTree={investigatorTree} />
+            </Row>
+          ) : null}
+        </Container>
+      </GaelOContextProvider>
     </div>
   );
 };
