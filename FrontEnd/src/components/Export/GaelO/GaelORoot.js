@@ -21,14 +21,16 @@ export default ({ study, series }) => {
   };
 
   const goToHandle = () => {
-    try{
-      let seriesOrthancIds = selectedSeries.map(series => series.SeriesOrthancID)
-      apis.exportDicom.exportHirachicalDicoms(seriesOrthancIds)
-    }catch(error){
-      console.log("Error Preparing DICOM archive")
+    try {
+      let seriesOrthancIds = selectedSeries.map(
+        (series) => series.SeriesOrthancID
+      );
+      apis.exportDicom.exportHirachicalDicoms(seriesOrthancIds);
+    } catch (error) {
+      console.log("Error Preparing DICOM archive");
     }
     let url =
-      "https://36c8f2f1-066c-4fd8-a405-ece21ef33e99.pub.instances.scw.cloud/study/" +
+      "https://platform.gaelo.fr/study/" +
       currentStudy +
       "/role/Investigator/patient/" +
       selectedPatient.value +
@@ -37,6 +39,13 @@ export default ({ study, series }) => {
       "&token=" +
       token;
     window.open(url, "_blank").focus();
+  };
+
+  const removeSeriesHandle = (seriesOrthancID) => {
+    let filteredSeries = selectedSeries.filter(
+      (series) => series.SeriesOrthancID !== seriesOrthancID
+    );
+    setSelectedSeries(filteredSeries);
   };
 
   return (
@@ -64,19 +73,27 @@ export default ({ study, series }) => {
           ) : null}
           {Object.keys(investigatorTree).length > 0 ? (
             <>
+              <GaelOPatient
+                study={study}
+                selectedPatient={selectedPatient}
+                onChangePatient={(patientId) => setSelectedPatient(patientId)}
+                investigatorTree={investigatorTree}
+              />
               <Row>
-                <GaelOPatient
-                  study={study}
-                  selectedPatient={selectedPatient}
-                  onChangePatient={(patientId) => setSelectedPatient(patientId)}
-                  investigatorTree={investigatorTree}
+                <SeriesTable
+                  series={selectedSeries}
+                  onRemoveSeries={removeSeriesHandle}
                 />
               </Row>
-              <Row>
-                <SeriesTable series={selectedSeries} />
-              </Row>
               <Row className="d-flex justify-content-center">
-                <Button onClick={goToHandle}>Download dicom and open GaelO</Button>
+                <Button
+                  disabled={
+                    selectedSeries.length == 0 || selectedPatient == null
+                  }
+                  onClick={goToHandle}
+                >
+                  Download dicom and open GaelO
+                </Button>
               </Row>
             </>
           ) : null}

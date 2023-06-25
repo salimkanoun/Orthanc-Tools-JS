@@ -3,7 +3,7 @@ import axios from "axios";
 const axiosInstance = axios.create();
 
 const gaelo = {
-  url: "https://36c8f2f1-066c-4fd8-a405-ece21ef33e99.pub.instances.scw.cloud",
+  url: "https://platform.gaelo.fr",
 
   getHeader(token) {
     return {
