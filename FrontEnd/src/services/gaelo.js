@@ -83,7 +83,7 @@ const gaelo = {
     let header = gaelo.getHeader(token);
     return axiosInstance
       .get(
-        "/api/patients/" +
+        gaelo.url + "/api/patients/" +
           patientId +
           "?role=" +
           role +
