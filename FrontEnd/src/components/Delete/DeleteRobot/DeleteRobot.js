@@ -29,7 +29,7 @@ export default () => {
         let retrieveIds = await apis.task.getTaskOfUser(store.username, 'delete')
         if (retrieveIds.length > 0) {
             try {
-                let response = await apis.task.getTask(retrieveIds[0]);
+                let response = await apis.task.getTask(retrieveIds);
                 refreshHandler(response)
             } catch (error) {
                 errorMessage(error?.data?.errorMessage ?? 'Cant fetch robot status')
