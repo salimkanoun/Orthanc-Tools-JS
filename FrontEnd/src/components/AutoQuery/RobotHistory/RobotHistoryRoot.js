@@ -12,11 +12,7 @@ export default () => {
 
     const [showDetailsRobotId, setShowDetailsRobotId] = useState(null)
 
-    const store = useSelector(state => {
-        return {
-            username: state.OrthancTools.username,
-        }
-    })
+    const username = useSelector(state => state.OrthancTools.username)
     const [rows, setRows] = useState([])
 
     useEffect(() => {
@@ -40,7 +36,7 @@ export default () => {
 
         let rows = []
 
-        apis.task.getTaskOfUser(store.username, 'retrieve')
+        apis.task.getTaskOfUser(username, 'retrieve')
             .then(async taksIds => await Promise.all(taksIds.map(id => (!!id ? apis.task.getTask(id) : null))))
             .then((answerData) => {
                 answerData.forEach(robotJob => {

@@ -21,8 +21,8 @@ export default function anonListReducer(state = initialState, action) {
     case ADD_ANON_LIST:
       let anonArray = action.payload
       //Add only id that are not already in the anon list
-      let knownOrthancStudyID = state.anonList.map(study => study.ID)
-      let newStudies = anonArray.filter(studyObject => !knownOrthancStudyID.includes(studyObject.ID)).map(study => ({
+      let knownOrthancStudyID = state.anonList.map(study => study.StudyOrthancID)
+      let newStudies = anonArray.filter(studyObject => !knownOrthancStudyID.includes(studyObject.StudyOrthancID)).map(study => ({
         ...study,
         ParentPatient: {
           ...study.ParentPatient,

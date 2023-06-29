@@ -11,13 +11,9 @@ export default ({ roles }) => {
 
     const [show, setShow] = useState('')
 
-    const store = useSelector(state => {
-        return {
-            deleteList: state.DeleteList.deleteList,
-            studyArray: state.ExportList.studyArray,
-            anonList: state.AnonList.anonList
-        }
-    })
+    const deleteList = useSelector(state =>state.DeleteList.deleteList)
+    const studyArray = useSelector(state =>state.ExportList.studyArray)
+    const anonList = useSelector(state =>state.AnonList.anonList)
 
     const closePopovers = () => {
         setShow('')
@@ -33,7 +29,7 @@ export default ({ roles }) => {
                     onMouseOver={() => setShow('anon')} to='/anonymize'>
                     <i className="fas fa-user-secret me-2"></i> Anonymize
                     <span className="ms-2 badge bg-light text-dark"
-                        onMouseOver={() => setShow('anon')}>{store.anonList.length}</span>
+                        onMouseOver={() => setShow('anon')}>{anonList.length}</span>
                 </Link>
                 <AnonTool target={refAnon} show={show === 'anon' ? true : false}
                     onHide={closePopovers} />
@@ -43,14 +39,14 @@ export default ({ roles }) => {
                     onMouseOver={() => setShow('export')} to='/export'>
                     <i className="fas fa-file-export me-2"></i> Export
                     <span className="ms-2 badge bg-light text-dark"
-                        onMouseOver={() => setShow('export')}>{store.studyArray.length}</span>
+                        onMouseOver={() => setShow('export')}>{studyArray.length}</span>
                 </Link>
                 <ExportTool target={refExport} show={show === 'export' ? true : false}
                     onHide={closePopovers} />
             </div>
             <div className='ms-1'>
                 <Link id='delete' ref={refDelete} type='button' className='btn otjs-btn-tools otjs-btn-tools-red' to='/delete'>
-                    Delete <span className="badge bg-light text-dark">{store.deleteList.length}</span>
+                    Delete <span className="badge bg-light text-dark">{deleteList.length}</span>
                 </Link>
             </div>
             <div className='ms-1'>

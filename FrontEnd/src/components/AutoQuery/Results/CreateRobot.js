@@ -8,36 +8,32 @@ export default ({ onRobotCreated }) => {
 
     const [name, setName] = useState('')
 
-    const store = useSelector(state => {
-        return {
-            username: state.OrthancTools.username,
-            results: state.AutoRetrieveResultList.results,
-            resultsSeries: state.AutoRetrieveResultList.resultsSeries
-        }
-    })
+    const username = useSelector(state => state.OrthancTools.username)
+    const results = useSelector(state => state.AutoRetrieveResultList.results)
+    const resultsSeries = useSelector(state => state.AutoRetrieveResultList.resultsSeries)
 
     const buildArrayRetrieve = () => {
 
         let retrieveArray = []
 
         //If series details have been loaded robot will be defined at series level
-        if (Object.keys(store.resultsSeries).length > 0) {
-            let seriesUIDArray = Object.keys(store.resultsSeries)
+        if (Object.keys(resultsSeries).length > 0) {
+            let seriesUIDArray = Object.keys(resultsSeries)
 
             for (let seriesUID of seriesUIDArray) {
-                let seriesObject = store.resultsSeries[seriesUID]
+                let seriesObject = resultsSeries[seriesUID]
                 retrieveArray.push({
-                    ...store.results[seriesObject['StudyInstanceUID']],
+                    ...results[seriesObject['StudyInstanceUID']],
                     ...seriesObject
                 })
             }
             //Else only use the study results
         } else {
 
-            let studiesUIDArray = Object.keys(store.results)
+            let studiesUIDArray = Object.keys(results)
 
             for (let studyInstanceUID of studiesUIDArray) {
-                retrieveArray.push({ ...store.results[studyInstanceUID] })
+                retrieveArray.push({ ...results[studyInstanceUID] })
             }
         }
 
@@ -51,7 +47,7 @@ export default ({ onRobotCreated }) => {
     const createRobot = async () => {
         //Send the retrieve array to back end
         try {
-            let id = await apis.retrieveRobot.createRobot(store.username, name, buildArrayRetrieve())
+            let id = await apis.retrieveRobot.createRobot(username, name, buildArrayRetrieve())
             onRobotCreated(id)
             successMessage('sent to robot')
         } catch (error) {

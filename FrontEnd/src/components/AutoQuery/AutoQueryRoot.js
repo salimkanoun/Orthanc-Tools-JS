@@ -14,15 +14,11 @@ import { keys } from '../../model/Constant'
 
 const MyRobotWrapper = () => {
 
-    const store = useSelector(state => {
-        return {
-            username: state.OrthancTools.username,
-        }
-    })
+    const username = useSelector(state => state.OrthancTools.username)
 
     const { isLoading, data : retrieveId } = useCustomQuery(
-        [keys.ROBOTS_KEY, store.username, keys.AUTOQUERY_KEY],
-        () => apis.task.getTaskOfUser(store.username, 'retrieve'),
+        [keys.ROBOTS_KEY, username, keys.AUTOQUERY_KEY],
+        () => apis.task.getTaskOfUser(username, 'retrieve'),
         () => errorMessage('Failed to retrieve robot list'),
         (retrieveIds) => {
             if (retrieveIds.length > 0) {

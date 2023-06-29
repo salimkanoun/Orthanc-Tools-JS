@@ -13,11 +13,7 @@ import { keys } from '../../../model/Constant'
 
 export default () => {
 
-    const store = useSelector(state => {
-        return {
-            username: state.OrthancTools.username
-        }
-    })
+    const username = useSelector(state => state.OrthancTools.username)
 
     const [currentTaskId, setCurrentTaskId] = useState(null)
     const [successCount, setSuccesCount] = useState(0)
@@ -26,7 +22,7 @@ export default () => {
     const [items, setItems] = useState([])
 
     useEffect(() => {
-        apis.task.getTaskOfUser(store.username, 'anonymize').then(tasks => {
+        apis.task.getTaskOfUser(username, 'anonymize').then(tasks => {
             if (Array.isArray(tasks) && tasks.length > 0) {
                 setCurrentTaskId(tasks[0])
             }

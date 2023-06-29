@@ -10,12 +10,7 @@ export default () => {
     const [status, setStatus] = useState('')
     const [progress, setProgress] = useState('')
 
-
-    const store = useSelector(state => {
-        return {
-            username: state.OrthancTools.username,
-        }
-    })
+    const username = useSelector(state => state.OrthancTools.username)
 
     useEffect(() => {
         refreshInfo()
@@ -26,7 +21,7 @@ export default () => {
     }, [])
 
     const refreshInfo = async () => {
-        let retrieveIds = await apis.task.getTaskOfUser(store.username, 'delete')
+        let retrieveIds = await apis.task.getTaskOfUser(username, 'delete')
         if (retrieveIds.length > 0) {
             try {
                 let response = await apis.task.getTask(retrieveIds);

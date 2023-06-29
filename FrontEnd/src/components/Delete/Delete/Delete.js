@@ -13,23 +13,20 @@ import apis from '../../../services/apis'
 export default () => {
 
     const dispatch = useDispatch()
-    const store = useSelector(state => {
-        return {
-            deleteList: state.DeleteList.deleteList,
-            username: state.OrthancTools.username
-        }
-    })
+
+    const deleteList = useSelector(state =>state.DeleteList.deleteList)
+    const username = useSelector(state =>state.OrthancTools.username)
 
     const handleClickDelete = async () => {
         const validation = await confirm({ title: 'Delete', message: 'Do you want to delete these ressources ?' })
         if (validation) {
             let deletedSeriesIdArray = []
-            store.deleteList.forEach(study => {
+            deleteList.forEach(study => {
                 deletedSeriesIdArray.push(...study.SeriesOrthancIDs)
             })
 
             try {
-                await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, store.username)
+                await apis.deleteRobot.createDeleteRobot(deletedSeriesIdArray, username)
                 successMessage('Delete started')
                 handleClickEmpty()
             } catch (error) {
@@ -54,7 +51,7 @@ export default () => {
                     </Button>
                 </Row>
                 <Row className="mt-5">
-                    <TableDelete patientRows={studyArrayToPatientArray(store.deleteList)} />
+                    <TableDelete patientRows={studyArrayToPatientArray(deleteList)} />
                 </Row>
                 <Row className="d-flex justify-content-center">
                     <Button className="otjs-button otjs-button-red w-7"

@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
 
 import { CircularProgressbar, CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar'
 import { Col, Container, ListGroup, Row } from 'react-bootstrap'
