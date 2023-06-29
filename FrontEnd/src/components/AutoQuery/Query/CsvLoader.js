@@ -29,8 +29,8 @@ export default () => {
                 PatientName: query['Patient Name'],
                 PatientID: query['Patient ID'],
                 AccessionNumber: query['Accession Number'],
-                DateFrom: query.dateFrom,
-                DateTo: query.dateTo,
+                DateFrom: query['Date From'],
+                DateTo: query['Date To'],
                 StudyDescription: query['Study Description'],
                 ModalitiesInStudy: query['Modalities'],
                 Aet: query['AET']
