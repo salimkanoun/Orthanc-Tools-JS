@@ -12,23 +12,19 @@ export default () => {
 
     const dispatch = useDispatch()
 
-    const store = useSelector(state => {
-        return {
-            results: state.AutoRetrieveResultList.results,
-            resultsSeries: state.AutoRetrieveResultList.resultsSeries
-        }
-    })
+    const results = useSelector(state => state.AutoRetrieveResultList.results)
+    const resultsSeries = useSelector(state => state.AutoRetrieveResultList.resultsSeries)
 
     const data = useMemo(() => {
         let seriesLines = []
-        for (let seriesUID of Object.keys(store.resultsSeries)) {
+        for (let seriesUID of Object.keys(resultsSeries)) {
             seriesLines.push({
-                ...store.results[store.resultsSeries[seriesUID]['StudyInstanceUID']],
-                ...store.resultsSeries[seriesUID],
+                ...results[resultsSeries[seriesUID]['StudyInstanceUID']],
+                ...resultsSeries[seriesUID],
             })
         }
         return seriesLines
-    }, [store.results, store.resultsSeries])
+    }, [Object.values(results), Object.values(resultsSeries)])
 
     const [selectedRowIds, setSelectedRowIds] = useState([])
 
@@ -58,8 +54,8 @@ export default () => {
         const startFetchingSeriesDetails = async () => {
             //List studies for each series details are missing
             let emptyResultArray = []
-            let knownStudies = Object.values(store.results)
-            let availableStudyUID = Object.values(store.resultsSeries).map((series) => {
+            let knownStudies = Object.values(results)
+            let availableStudyUID = Object.values(resultsSeries).map((series) => {
                 return series['StudyInstanceUID']
             })
 

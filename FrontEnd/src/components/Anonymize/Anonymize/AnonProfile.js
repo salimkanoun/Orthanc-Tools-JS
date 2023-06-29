@@ -6,11 +6,7 @@ import { saveProfile } from '../../../actions/AnonList'
 
 export default () => {
 
-    const store = useSelector(state => {
-        return {
-            profile: state.AnonList.profile
-        }
-    })
+    const profile = useSelector(state => state.AnonList.profile)
 
     const dispatch = useDispatch()
 
@@ -22,7 +18,7 @@ export default () => {
     const getProfileSelected = () => {
         let index = -1
         option.forEach(element => {
-            if (element.value === store.profile) {
+            if (element.value === profile) {
                 index = option.indexOf(element)
             }
         })

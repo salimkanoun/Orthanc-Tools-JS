@@ -29,12 +29,9 @@ export default () => {
   const [openGaelO, setOpenGaelO] = useState(false);
 
   const dispatch = useDispatch();
-  const store = useSelector((state) => {
-    return {
-      exportList: state.ExportList,
-      username: state.OrthancTools.username,
-    };
-  });
+
+  const exportList = useSelector((state) => state.ExportList);
+  const username = useSelector((state) => state.OrthancTools.username);
 
   const { data: aets, isLoading: isLoadingAET } = useCustomQuery(
     [keys.AETS_KEY],
@@ -72,8 +69,8 @@ export default () => {
   };
 
   const exportIdArray = useMemo(() => {
-    return store.exportList.seriesArray.map((series) => series.SeriesOrthancID);
-  }, [store.exportList.seriesArray.length]);
+    return exportList.seriesArray.map((series) => series.SeriesOrthancID);
+  }, [exportList.seriesArray.length]);
 
   const additionalColumnsSeries = [
     {
@@ -111,13 +108,13 @@ export default () => {
   };
 
   const getCSV = () => {
-    if (store.exportList.seriesArray.length === 0) {
+    if (exportList.seriesArray.length === 0) {
       errorMessage("Empty List");
       return;
     }
 
-    let csvData = store.exportList.seriesArray.map((series) => {
-      let studydata = store.exportList.studyArray.find((study) => {
+    let csvData = exportList.seriesArray.map((series) => {
+      let studydata = exportList.studyArray.find((study) => {
         return study.StudyOrthancID === series.StudyOrthancID;
       });
 
@@ -141,14 +138,14 @@ export default () => {
 
   const series = useMemo(
     () =>
-      store.exportList.seriesArray.filter(
+      exportList.seriesArray.filter(
         (serie) => serie.StudyOrthancID === currentStudy
       ),
-    [currentStudy, store.exportList.seriesArray]
+    [currentStudy, exportList.seriesArray]
   );
   const selectedStudy = useMemo(() => {
-    if(currentStudy == null) return {}
-    return store.exportList.studyArray.find(
+    if (currentStudy == null) return {};
+    return exportList.studyArray.find(
       (study) => study.StudyOrthancID === currentStudy
     );
   }, [currentStudy]);
@@ -180,7 +177,7 @@ export default () => {
         <Row className="mt-3">
           <Col>
             <TableExport
-              studies={store.exportList.studyArray}
+              studies={exportList.studyArray}
               currentStudy={currentStudy}
               onRowClick={onClickStudyHandler}
             />
@@ -224,7 +221,7 @@ export default () => {
             <SendExternalDropdown
               endpoints={endpoints}
               exportIds={exportIdArray}
-              username={store.username}
+              username={username}
             />
 
             <Button

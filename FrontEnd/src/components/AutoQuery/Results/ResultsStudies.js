@@ -10,17 +10,13 @@ export default () => {
 
     const dispatch = useDispatch()
 
-    const store = useSelector(state => {
-        return {
-            results: state.AutoRetrieveResultList.results,
-        }
-    })
+    const results = useSelector(state => state.AutoRetrieveResultList.results)
 
     const [selectedRowIds, setSelectedRowIds] = useState([])
 
     const onCSVDownload = () => {
 
-        let data = Object.values(store.results).map(row => {
+        let data = Object.values(results).map(row => {
             return {
                 'Patient Name': row.PatientName,
                 'Patient ID': row.PatientID,
@@ -61,7 +57,7 @@ export default () => {
                 </Button>
             </Row>
             <Row className='mb-3'>
-                <ResultsStudiesTable onSelectRow={selectRowHandle} studies={Object.values(store.results)} selectedRowIds={selectedRowIds} />
+                <ResultsStudiesTable onSelectRow={selectRowHandle} studies={Object.values(results)} selectedRowIds={selectedRowIds} />
             </Row>
         </Container>
     )

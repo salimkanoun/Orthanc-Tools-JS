@@ -30,11 +30,7 @@ export default ({ onQueryFinished }) => {
         () => apis.aets.getAets(),
         undefined
     )
-    const store = useSelector(state => {
-        return {
-            queries: state.AutoRetrieveQueryList.queries
-        }
-    })
+    const queries = useSelector(state => state.AutoRetrieveQueryList.queries)
 
     const onRowClick = (rowId) => {
         setCurrentRow(rowId)
@@ -53,7 +49,7 @@ export default ({ onQueryFinished }) => {
     }
 
     const onCSVDownload = () => {
-        let data = store.queries.map(row => {
+        let data = queries.map(row => {
             let formattedDateFrom = typeof row.DateFrom === 'string' ? moment(new Date(row.DateFrom)).format('YYYYMMDD') : ''
             let formattedDateTo = typeof row.DateTo === 'string' ? moment(new Date(row.DateTo)).format('YYYYMMDD') : ''
             return {
@@ -118,7 +114,7 @@ export default ({ onQueryFinished }) => {
 
     const onQueryHandle = async () => {
 
-        const data = store.queries;
+        const data = queries;
 
         if (!areAllRowsAetDefined(data)) return
 
@@ -184,7 +180,7 @@ export default ({ onQueryFinished }) => {
                 </Row>
                 <Row>
                     <QueryTable
-                        queries={store.queries}
+                        queries={queries}
                         aets={aets}
                         currentRow={currentRow}
                         onRowClick={onRowClick}

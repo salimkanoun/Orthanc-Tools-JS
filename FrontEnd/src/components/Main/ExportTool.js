@@ -14,12 +14,8 @@ import { keys } from '../../model/Constant'
 
 export default ({ target, show, onHide }) => {
 
-    const store = useSelector(state => {
-        return {
-            seriesArray: state.ExportList.seriesArray,
-            studyArray: state.ExportList.studyArray
-        }
-    })
+    const seriesArray = useSelector(state => state.ExportList.seriesArray)
+    const studyArray = useSelector(state => state.ExportList.studyArray)
 
     const dispatch = useDispatch()
 
@@ -51,7 +47,7 @@ export default ({ target, show, onHide }) => {
 
     const getExportIDArray = () => {
         let ids = []
-        store.seriesArray.forEach(serie => {
+        seriesArray.forEach(serie => {
             ids.push(serie.SeriesOrthancID)
         })
         return ids
@@ -73,8 +69,8 @@ export default ({ target, show, onHide }) => {
                         </div>
                     </div>
                     <TableStudiesWithNestedSeries
-                        studies={store.studyArray}
-                        series={store.seriesArray}
+                        studies={studyArray}
+                        series={seriesArray}
                         withPatientColums
                         additionalColumnsStudies={additionalColumnsStudies}
                         additionalColumnsSeries={additionalColumnsSeries}

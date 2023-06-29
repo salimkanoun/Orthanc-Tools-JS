@@ -15,13 +15,9 @@ export default ({ target, show, onHide }) => {
 
     const dispatch = useDispatch();
 
-    const store = useSelector(state => {
-        return {
-            anonList: state.AnonList.anonList
-        }
-    })
+    const anonList = useSelector(state => state.AnonList.anonList)
 
-    const patientsRows = useMemo(() => studyArrayToPatientArray(store.anonList), [store.anonList])
+    const patientsRows = useMemo(() => studyArrayToPatientArray(anonList), [anonList.length])
 
     const onRemovePatient = (patientOrthancID) => {
         dispatch(removePatientFromAnonList(patientOrthancID))

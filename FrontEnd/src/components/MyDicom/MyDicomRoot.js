@@ -22,12 +22,7 @@ export default () => {
     const [studies, setStudies] = useState([])
     const [series, setSeries] = useState([])
 
-    const store = useSelector(state => {
-        return {
-            username: state.OrthancTools.username,
-            roleName: state.OrthancTools.name
-        }
-    })
+    const roleName = useSelector(state =>state.OrthancTools.roleName)
 
     const dispatch = useDispatch()
 
@@ -39,8 +34,8 @@ export default () => {
     }
 
     const { data: labels, isLoading } = useCustomQuery(
-        [keys.ROLES_KEY, store.roleName, keys.LABELS_KEY],
-        () => apis.rolelabel.getRoleLabels(store.roleName)
+        [keys.ROLES_KEY, roleName, keys.LABELS_KEY],
+        () => apis.rolelabel.getRoleLabels(roleName)
     )
 
     const getStudies = async () => {
