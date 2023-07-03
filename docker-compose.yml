@@ -42,8 +42,8 @@ services:
             ORTHANC__DICOM_WEB__ENABLEWADO: "true"
             ORTHANC__DICOM_WEB__WADOROOT: "/wado"
             ORTHANC__DICOM_WEB__SSL: "true"
-            ORTHANC__DICOM_WEB__STUDIESMETADATA: "MainDicomTags"
-            ORTHANC__DICOM_WEB__SERIESMETADATA: "Full"
+            ORTHANC__DICOM_WEB__STUDIES_METADATA: "MainDicomTags"
+            ORTHANC__DICOM_WEB__SERIES_METADATA: "Full"
 
 volumes:
         orthanc:
