@@ -21,11 +21,15 @@ export default () => {
                 'Patient Name': row.PatientName,
                 'Patient ID': row.PatientID,
                 'Accession Number': row.AccessionNumber,
-                'DateFrom': row.StudyDate,
-                'DateTo': row.StudyDate,
+                'Date From': row.StudyDate,
+                'Date To': row.StudyDate,
                 'Study Description': row.StudyDescription,
                 'Modalities': row.ModalitiesInStudy,
-                'AET': row.OriginAET
+                'AET': row.OriginAET,
+                'StudyInstanceUID' : row.StudyInstanceUID,
+                'Requested Procedure Description' : row.RequestedProcedureDescription,
+                'Number Of Related Series' : row.NumberOfStudyRelatedSeries,
+                'Number Of Related Instances' : row.NumberOfStudyRelatedInstances
             }
         })
         exportCsv(data, 'csv', 'queries.csv')

@@ -12,9 +12,10 @@ export const errorMessage = (message) => {
     toast.error(message, { containerId: 'message' })
 }
 
-export const updateToast = (toastId, message) => {
+export const updateToastMessage = (toastId, message) => {
     toast.update(toastId, {
-        render: message
+        render: message,
+        containerId : 'message'
     });
 }
 
