@@ -28,6 +28,26 @@ export default () => {
 
     const [selectedRowIds, setSelectedRowIds] = useState([])
 
+    const onCSVDownload = () => {
+
+        let result = Object.values(data).map(row => {
+            return {
+                'Patient Name': row.PatientName,
+                'Patient ID': row.PatientID,
+                'Accession Number': row.AccessionNumber,
+                'Study Date': row.StudyDate,
+                'Study Description': row.StudyDescription ,
+                'Requested Procedure': row.RequestedProcedureDescription,
+                'Series Instance UID': row.SerieInstanceUID,
+                'Series Description': row.SeriesDescription,
+                'Modalities': row.ModalitiesInSerie,
+                'Number of Instances': row.NumberOfSeriesRelatedInstances,
+                'AET': row.OriginAET
+            }
+        })
+        exportCsv(result, 'csv', 'queries.csv')
+    }
+
     const queryAndAddSeriesDetails = async (studyUID, aet) => {
         let queryData = {
             Level: 'Series',
@@ -88,6 +108,7 @@ export default () => {
     return (
         <Container>
             <Row className='d-flex justify-content-around mb-3'>
+            <Button onClick={onCSVDownload} className="otjs-button otjs-button-blue w-10">Export CSV</Button>
                 <Button className="otjs-button otjs-button-orange w-10"
                     onClick={deleteRowsHandle} >
                     Delete Selected
