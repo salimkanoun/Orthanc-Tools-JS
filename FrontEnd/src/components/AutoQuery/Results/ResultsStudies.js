@@ -25,7 +25,11 @@ export default () => {
                 'DateTo': row.StudyDate,
                 'Study Description': row.StudyDescription,
                 'Modalities': row.ModalitiesInStudy,
-                'AET': row.OriginAET
+                'AET': row.OriginAET,
+                'StudyInstanceUID' : row.StudyInstanceUID,
+                'Requested Procedure Description' : row.RequestedProcedureDescription,
+                'Number Of Related Series' : row.NumberOfStudyRelatedSeries,
+                'Number Of Related Instances' : row.NumberOfStudyRelatedInstances
             }
         })
         exportCsv(data, 'csv', 'queries.csv')
