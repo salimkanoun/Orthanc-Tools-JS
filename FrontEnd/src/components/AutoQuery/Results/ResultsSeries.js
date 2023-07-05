@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
-import { errorMessage, infoMessage, updateToast } from "../../../tools/toastify"
+import { errorMessage, infoMessage, updateToastMessage } from "../../../tools/toastify"
 import { addSeriesDetails, emptyResultsTable, removeSeriesResult } from "../../../actions/TableResult"
 import ResultsSeriesTable from "./ResultsSeriesTable"
 
@@ -84,9 +84,9 @@ export default () => {
                 const toastId = infoMessage('Starting Series Fetching');
                 for (let i = 0; i < missingSeriesDetails.length; i++) {
                     await queryAndAddSeriesDetails(missingSeriesDetails[i].StudyInstanceUID, missingSeriesDetails[i].OriginAET)
-                    updateToast(toastId, 'Queried series ' + (i + 1) + '/' + emptyResultArray.length);
+                    updateToastMessage(toastId, 'Queried series ' + (i + 1) + '/' + missingSeriesDetails.length);
                 }
-                updateToast(toastId, 'Queried series Finihsed');
+                updateToastMessage(toastId, 'Queried series Finihsed');
             }
 
         }

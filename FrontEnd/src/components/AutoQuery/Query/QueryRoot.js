@@ -13,7 +13,7 @@ import { useCustomQuery } from '../../../services/ReactQuery/hooks'
 import apis from '../../../services/apis'
 import { keys } from '../../../model/Constant'
 import { exportCsv } from '../../../tools/CSVExport'
-import { dissmissToast, errorMessage, infoMessage, successMessage, updateToast } from '../../../tools/toastify'
+import { dissmissToast, errorMessage, infoMessage, successMessage, updateToastMessage } from '../../../tools/toastify'
 import { addStudyResult } from '../../../actions/TableResult'
 import EditQueries from './EditQueries'
 
@@ -120,10 +120,10 @@ export default ({ onQueryFinished }) => {
 
         const toastId = infoMessage('Starting Studies Queries')
 
-        let i = 0
+        let i = 1
         for (const query of data) {
-            i++
-            updateToast(toastId, 'Query study ' + i + '/' + data.length)
+            i = i++
+            updateToastMessage(toastId, 'Query study ' + i + '/' + data.length)
             //For each line make dicom query and return results
             try {
                 let answeredResults = await makeDicomQuery(query)
