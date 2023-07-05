@@ -17,7 +17,7 @@ const login = async function (req, res) {
     let infosUser = await userObject.getUserRight()
     let payload = {
       username: body.username,
-      name: infosUser.name,
+      roleName: infosUser.name,
       roles: {
         admin: infosUser.admin,
         import: infosUser.import,
