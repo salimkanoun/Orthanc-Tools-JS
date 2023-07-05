@@ -7,6 +7,7 @@ import ResultsSeriesTable from "./ResultsSeriesTable"
 
 import apis from "../../../services/apis"
 import { Button, Container, Row } from "react-bootstrap"
+import { exportCsv } from "../../../tools/CSVExport"
 
 export default () => {
 
@@ -38,9 +39,9 @@ export default () => {
                 'Study Date': row.StudyDate,
                 'Study Description': row.StudyDescription ,
                 'Requested Procedure': row.RequestedProcedureDescription,
-                'Series Instance UID': row.SerieInstanceUID,
+                'Series Instance UID': row.SeriesInstanceUID,
                 'Series Description': row.SeriesDescription,
-                'Modalities': row.ModalitiesInSerie,
+                'Modalities': row.Modality,
                 'Number of Instances': row.NumberOfSeriesRelatedInstances,
                 'AET': row.OriginAET
             }

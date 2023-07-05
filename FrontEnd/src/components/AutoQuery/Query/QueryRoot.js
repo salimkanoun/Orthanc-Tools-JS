@@ -56,8 +56,8 @@ export default ({ onQueryFinished }) => {
                 'Patient Name': row.PatientName,
                 'Patient ID': row.PatientID,
                 'Accession Number': row.AccessionNumber,
-                'DateFrom': formattedDateFrom,
-                'DateTo': formattedDateTo,
+                'Date From': formattedDateFrom,
+                'Date To': formattedDateTo,
                 'Study Description': row.StudyDescription,
                 'Modalities': row.ModalitiesInStudy,
                 'AET': row.Aet
