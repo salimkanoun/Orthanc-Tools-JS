@@ -199,6 +199,7 @@ class Users {
                 if (role.modify === false) role.modify = currentRole.modify
                 if (role.cd_burner === false) role.cd_burner = currentRole.cd_burner
                 if (role.admin === false) role.admin = currentRole.admin
+                role.name = currentRole
 
             }
 

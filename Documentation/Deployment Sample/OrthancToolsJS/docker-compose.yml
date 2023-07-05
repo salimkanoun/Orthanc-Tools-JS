@@ -106,8 +106,6 @@ services:
             ORTHANC__REGISTERED_USERS: |
                     {"salim": "salim"}
 
-
-
 volumes:
         orthanc:
         orthancpacs:

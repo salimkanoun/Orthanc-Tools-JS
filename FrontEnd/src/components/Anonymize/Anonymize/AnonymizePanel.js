@@ -42,7 +42,7 @@ export default () => {
             ? study.newAccessionNumber
             : "OrthancToolsJS",
         })),
-    [anonList.length, currentPatient]
+    [JSON.stringify(anonList), currentPatient]
   );
 
   const testAllId = () => {
