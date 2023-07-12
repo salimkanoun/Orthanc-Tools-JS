@@ -39,6 +39,7 @@ export default () => {
                 'Study Date': row.StudyDate,
                 'Study Description': row.StudyDescription ,
                 'Requested Procedure': row.RequestedProcedureDescription,
+                'Study Instance UID' : row.StudyInstanceUID,
                 'Series Instance UID': row.SeriesInstanceUID,
                 'Series Description': row.SeriesDescription,
                 'Modalities': row.Modality,
