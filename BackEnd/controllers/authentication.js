@@ -35,7 +35,7 @@ const login = async function (req, res) {
 
     }
     if (process.env.NODE_ENV != 'test') {
-      var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '1h' });
+      var TOKEN = jwt.sign(payload, process.env.TOKEN_SECRET, { expiresIn: '6h' });
     }
     res.send(TOKEN)
 
