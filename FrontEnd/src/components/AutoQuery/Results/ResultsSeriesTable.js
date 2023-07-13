@@ -11,6 +11,7 @@ export default ({ data, selectedRowIds, onSelectRow }) => {
         studyQueryColumns.STUDY_DATE,
         studyQueryColumns.STUDY_DESCRIPTION,
         studyQueryColumns.REQUESTED_PROCEDURE,
+        studyQueryColumns.STUDY_INSTANCE_UID,
         seriesQueryColumns.SERIES_INSTANCE_UID,
         seriesQueryColumns.SERIES_DESCRIPTION,
         seriesQueryColumns.MODALITY,
