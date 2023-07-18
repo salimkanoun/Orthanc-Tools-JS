@@ -1,3 +1,4 @@
+import React from 'react'
 import * as  ReactDOMClient from 'react-dom/client'
 import App from './App'
 
@@ -23,7 +24,6 @@ const router = createBrowserRouter([
 
 root.render(
   <RouterProvider router={router} >
-
   </RouterProvider>
 )
 

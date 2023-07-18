@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import apis from "../../../services/apis";
 import { errorMessage } from "../../../tools/toastify";
-import Buffer from 'buffer-browserify'
 
 export default ({ orthancInstanceID }) => {
   const [imageData, setImageData] = useState(null);
