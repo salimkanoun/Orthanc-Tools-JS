@@ -40,6 +40,14 @@ const orthancContent = {
         })
     },
 
+    getSeriesInstances(seriesID) {
+
+        return axios.get('/api/series/' + seriesID + '/instances').then((response) => response.data
+        ).catch((error) => {
+            throw error
+        })
+    },
+
     /**
      * Retrieve series details of a study
      * @param {string} studyID 

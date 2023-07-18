@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import apis from "../../../services/apis";
 import { errorMessage } from "../../../tools/toastify";
-import { Buffer } from 'buffer/';
+import { Buffer } from "buffer/";
+import Spinner from "../../CommonComponents/Spinner";
 
 export default ({ orthancInstanceID }) => {
   const [imageData, setImageData] = useState(null);
@@ -10,12 +11,16 @@ export default ({ orthancInstanceID }) => {
     apis.instances
       .getPreview(orthancInstanceID)
       .then((data) => {
-        let srcValue =  URL.createObjectURL(data)
-        console.log(srcValue)
-        setImageData(data);
+        let srcValue = URL.createObjectURL(data);
+        setImageData(srcValue);
       })
-      .catch((error) => {console.log(error) ;errorMessage("Preview loading failed")});
+      .catch(() => {
+        errorMessage("Preview loading failed");
+      });
   }, [orthancInstanceID]);
 
-  return <img src={imageData}></img>;
+  if (!imageData) return <Spinner />;
+  return (
+    <img style={{ maxWidth: "100%", maxHeight: "100%" }} src={imageData}></img>
+  );
 };
