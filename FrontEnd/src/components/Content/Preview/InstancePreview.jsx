@@ -10,10 +10,9 @@ export default ({ orthancInstanceID }) => {
     apis.instances
       .getPreview(orthancInstanceID)
       .then((data) => {
-        let base64ImageString = Buffer.from(data, "binary").toString("base64");
-        let srcValue = "data:image/png;base64," + base64ImageString;
+        let srcValue =  URL.createObjectURL(data)
         console.log(srcValue)
-        setImageData(srcValue);
+        setImageData(data);
       })
       .catch((error) => {console.log(error) ;errorMessage("Preview loading failed")});
   }, [orthancInstanceID]);
