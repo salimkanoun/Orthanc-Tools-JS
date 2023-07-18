@@ -11,6 +11,7 @@ export default ({
     onShowLabels,
     onShowModify,
     onShowCreate,
+    onShowPreview
 }) => {
 
     const handleClick = (e) => {
@@ -27,6 +28,9 @@ export default ({
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className="mt-2 border border-dark border-2">
+                    <Button className='dropdown-item bg-blue' onClick={() => onShowPreview()} >
+                        Preview Study
+                    </Button>
                     <OhifLink className='dropdown-item bg-green' StudyInstanceUID={StudyInstanceUID} />
                     <StoneLink className='dropdown-item bg-green' StudyInstanceUID={StudyInstanceUID} />
                     <Button className='dropdown-item bg-orange' onClick={() => onShowModify()}>
