@@ -11,6 +11,7 @@
     "@tanstack/react-query": "^4.29.17",
     "@tanstack/react-query-devtools": "^4.29.17",
     "@tanstack/react-table": "^8.9.3",
+    "Buffer": "^0.0.0",
     "axios": "^1.4.0",
     "bootstrap": "^5.3.0",
     "jwt-decode": "^3.1.2",
@@ -62,6 +63,7 @@
     "sass": "^1.63.6",
     "vite": "^4.4.4",
     "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-node-polyfills": "^0.9.0",
     "vite-plugin-svgr": "^3.2.0"
   }
 }
