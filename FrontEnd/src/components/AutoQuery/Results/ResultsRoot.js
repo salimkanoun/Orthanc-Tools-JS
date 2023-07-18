@@ -5,12 +5,12 @@ import ResultsSeries from './ResultsSeries'
 import ResultsStudies from './ResultsStudies'
 import CreateRobot from './CreateRobot'
 
-export default ({onRobotCreated}) => {
+export default ({onRobotCreated, currentComponentRoot}) => {
 
     const RESULTS_STUDIES = 'studies'
     const RESULTS_SERIES = 'series'
 
-    const [currentComponent, setCurrentComponent] = useState(RESULTS_STUDIES)
+    const [currentComponent, setCurrentComponent] = useState(currentComponentRoot)
 
     const getComponentToDisplay = () => {
         switch (currentComponent) {
