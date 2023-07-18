@@ -17,7 +17,7 @@ import { dissmissToast, errorMessage, infoMessage, successMessage, updateToastMe
 import { addStudyResult } from '../../../actions/TableResult'
 import EditQueries from './EditQueries'
 
-export default ({ onQueryFinished }) => {
+export default ({ onQueryStudiesFinished }) => {
 
     const [openEditModal, setOpenEditModal] = useState(false)
     const [currentRow, setCurrentRow] = useState(null)
@@ -63,7 +63,7 @@ export default ({ onQueryFinished }) => {
                 'AET': row.Aet
             }
         })
-        exportCsv(data, 'csv', 'queries.csv')
+        exportCsv(data, 'csv', 'queriesStudies.csv')
     }
 
     const makeDicomQuery = async (queryParams) => {
@@ -139,7 +139,7 @@ export default ({ onQueryFinished }) => {
 
         dissmissToast(toastId)
         successMessage('Queries completed')
-        onQueryFinished()
+        onQueryStudiesFinished()
     }
 
     if (isLoading) return <Spinner />

@@ -8,6 +8,7 @@ import ActionButtonPatients from "./ActionButtons/ActionButtonPatients";
 import ActionButtonStudies from "./ActionButtons/ActionButtonStudies";
 import Labels from "../Labels/Labels";
 import CreateDicomRoot from "../Import/CreateDicom/CreateDicomRoot";
+import StudyPreview from "./Preview/StudyPreview";
 
 export default ({
     patients = [],
@@ -21,6 +22,7 @@ export default ({
 
     const [modifyOrthancID, setModifyOrthancID] = useState({ orthancID: null, level: null })
     const [createOrthancID, setCreateOrthancID] = useState({ orthancID: null, level: null })
+    const [showStudyPreview, setShowStudyPreview] = useState(null)
     const [labelStudyOrthancID, setLabelStudyOrthancId] = useState(null)
 
     const additionalColumnsPatients = [
@@ -53,6 +55,7 @@ export default ({
                     dataDetails={row.original}
                     onShowModify={() => setModifyOrthancID({ orthancID: row.original.StudyOrthancID, level: ConstantLevel.STUDIES })}
                     onShowCreate={() => setCreateOrthancID({ orthancID: row.original.StudyOrthancID, level: ConstantLevel.STUDIES })}
+                    onShowPreview={()=> setShowStudyPreview(row.original.StudyOrthancID)}
 
                 />
             }
@@ -85,6 +88,15 @@ export default ({
                 </Modal.Header>
                 <Modal.Body>
                     {createOrthancID ? <CreateDicomRoot parentStudy={createOrthancID.orthancID} onCreatedDicom={() => { setCreateOrthancID({ orthancID: null, level: null }); onCreatedSeries() }} /> : null}
+                </Modal.Body>
+            </Modal>
+
+            <Modal show={showStudyPreview != null} onHide={() => setShowStudyPreview(null)} onClick={(e) => e.stopPropagation()} size='xl'>
+                <Modal.Header closeButton>
+                    <Modal.Title>Study Preview</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {showStudyPreview ? <StudyPreview studyOrthancID={showStudyPreview} /> : null}
                 </Modal.Body>
             </Modal>
 

@@ -22,7 +22,7 @@ RUN unzip wasm-binaries.zip -d /stone
 FROM node:18.16
 WORKDIR /OrthancToolsJs
 RUN mkdir build
-COPY --from=react /app/build ./build/
+COPY --from=react /app/dist ./build/
 COPY --from=ohif /ohif/Viewers/platform/viewer/dist ./build/viewer-ohif/
 COPY --from=stone /stone/wasm-binaries/StoneWebViewer ./build/viewer-stone/
 COPY --from=react /app/build/viewer-ohif/app-config.js ./build/viewer-ohif/

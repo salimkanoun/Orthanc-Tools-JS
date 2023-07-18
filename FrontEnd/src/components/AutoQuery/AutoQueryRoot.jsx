@@ -45,13 +45,20 @@ export default () => {
     const TAB_ROBOT_HISTORY = 'history'
 
     const [currentComponent, setCurrentComponent] = useState(TAB_QUERIES)
+    const [currentComponentLevel, setCurrentComponentLevel] = useState('studies')
 
     const getComponentToDisplay = () => {
         switch (currentComponent) {
             case TAB_QUERIES:
-                return <QueryRoot onQueryFinished={() => setCurrentComponent(TAB_RESULTS)} />
+                return <QueryRoot onQueryFinished={(level) => {
+                    console.log('onQueryFinished')
+                    console.log(level)
+                    setCurrentComponent(TAB_RESULTS)
+                    setCurrentComponentLevel(level)
+                }}
+                />
             case TAB_RESULTS:
-                return <ResultsRoot onRobotCreated={() => setCurrentComponent(TAB_MYROBOT)} />
+                return <ResultsRoot onRobotCreated={() => setCurrentComponent(TAB_MYROBOT)} currentComponentRoot={currentComponentLevel}/>
             case TAB_MYROBOT:
                 return <MyRobotWrapper />
             case TAB_ROBOT_HISTORY:
