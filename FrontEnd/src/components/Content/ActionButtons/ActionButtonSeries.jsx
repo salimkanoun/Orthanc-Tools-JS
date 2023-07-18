@@ -5,7 +5,8 @@ export default ({
     onDelete,
     onShowMetadata,
     onShowModify,
-    onDownloadNifti
+    onDownloadNifti,
+    onShowPreview
 }) => {
 
 
@@ -16,6 +17,9 @@ export default ({
             </Dropdown.Toggle>
 
             <Dropdown.Menu className="mt-2 border border-dark border-2">
+                <Button className='dropdown-item bg-green' onClick={() => onShowPreview()}>
+                    Preview Series
+                </Button>
                 <Button className='dropdown-item bg-green' onClick={() => onShowMetadata()}>
                     View Metadata
                 </Button>

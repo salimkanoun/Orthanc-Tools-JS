@@ -54,7 +54,7 @@ export default () => {
    */
   const refreshServiceState = async () => {
     let service = await apis.autorouter.getAutorouter()
-    setState((state) = ({
+    setState((state) => ({
       ...state,
       ['service_running']: service.AutorouterService
     }))
