@@ -19,7 +19,6 @@ export default ({ queries = [], aets = [], onRowClick, currentRow, onSelectRowsC
     }
 
     const cellEditHandler = (rowIndex, columnId, value) => {
-        if(value instanceof Date) value = moment(value).format('YYYYMMDD')
         dispatch(editCellQuery(rowIndex, columnId, value));
     }
 
@@ -32,56 +31,13 @@ export default ({ queries = [], aets = [], onRowClick, currentRow, onSelectRowsC
         accessorKey: 'key',
         enableHiding: true
     }, {
-        accessorKey: 'PatientName',
-        header: 'Patient Name',
+        accessorKey: 'StudyInstanceUID',
+        header: 'StudyInstanceUID',
         isEditable: true
     }, {
-        accessorKey: 'PatientID',
-        header: 'Patient ID',
+        accessorKey: 'SeriesInstanceUID',
+        header: 'SeriesInstanceUID',
         isEditable: true
-    }, {
-        accessorKey: 'AccessionNumber',
-        header: 'Accession Number',
-        isEditable: true
-    }, {
-        accessorFn : (row) => {
-            if(row.DateFrom == "" || row.DateFrom ==null) return null
-            return moment(row.DateFrom, 'YYYYMMDD', true)?.toDate()
-        },
-        id: 'DateFrom',
-        header: 'Date From',
-        isEditable: true,
-        editionProperties: {
-            type: 'CALENDAR'
-        },
-        filterType: filter.DATE_FILTER,
-        filterFn: isWithinDateRange
-    }, {
-        accessorFn : (row) => {
-            if(row.DateTo == "" || row.DateTo ==null) return null
-            return moment(row.DateTo, 'YYYYMMDD', true)?.toDate()
-        },
-        id: 'DateTo',
-        header: 'Date To',
-        isEditable: true,
-        editionProperties: {
-            type: 'CALENDAR'
-        },
-        filterType: filter.DATE_FILTER,
-        filterFn: isWithinDateRange
-    }, {
-        accessorKey: 'StudyDescription',
-        header: 'Study Description',
-        isEditable: true
-    }, {
-        accessorKey: 'ModalitiesInStudy',
-        header: 'Modalities',
-        cell: ({ row, getValue }) => {
-            return <SelectModalities
-                previousModalities={getValue()}
-                onChange={(value) => cellEditHandler(row.original.key, 'ModalitiesInStudy', value)}
-            />
-        }
     }, {
         accessorKey: 'Aet',
         header: 'AET',
