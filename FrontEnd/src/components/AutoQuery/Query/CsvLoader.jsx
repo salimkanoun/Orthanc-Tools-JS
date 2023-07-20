@@ -33,7 +33,9 @@ export default () => {
                 DateTo: query['Date To'],
                 StudyDescription: query['Study Description'],
                 ModalitiesInStudy: query['Modalities'],
-                Aet: query['AET']
+                Aet: query['AET'], 
+                StudyInstanceUID : query['Study Instance UID'],
+                SeriesInstanceUID : query['Series Instance UID']
             }
 
             dispatch(addQueryToList(queryForList))
