@@ -1,6 +1,22 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
+import { Button, Container, Modal, Row } from 'react-bootstrap'
+import moment from 'moment'
+
+import Spinner from '../../CommonComponents/Spinner'
+import CsvLoader from './CsvLoader'
+import QueryTable from './QueryTable'
+
+import { addRow, emptyQueryTable, removeQuery } from '../../../actions/TableQuery'
+import { useCustomQuery } from '../../../services/ReactQuery/hooks'
+import apis from '../../../services/apis'
+import { keys } from '../../../model/Constant'
+import { exportCsv } from '../../../tools/CSVExport'
+import { dissmissToast, errorMessage, infoMessage, successMessage, updateToastMessage } from '../../../tools/toastify'
+import { addStudyResult } from '../../../actions/TableResult'
+import EditQueries from './EditQueries'
+import QueryTableSeries from './QueryTableSeries'
 
 export default ((onQuerySeriesFinished)=> {
 
@@ -16,6 +32,8 @@ export default ((onQuerySeriesFinished)=> {
         undefined
     )
     const queries = useSelector(state => state.AutoRetrieveQueryList.queries)
+
+    console.log("queries : ", queries)
 
     const onRowClick = (rowId) => {
         setCurrentRow(rowId)
@@ -34,19 +52,23 @@ export default ((onQuerySeriesFinished)=> {
     }
 
     const onCSVDownload = () => {
-        let data = queries.map(row => {
+        let result = Object.values(data).map(row => {
             return {
-                /*'Patient Name': row.PatientName,
+                'Patient Name': row.PatientName,
                 'Patient ID': row.PatientID,
                 'Accession Number': row.AccessionNumber,
-                'Date From': formattedDateFrom,
-                'Date To': formattedDateTo,
-                'Study Description': row.StudyDescription,
-                'Modalities': row.ModalitiesInStudy,
-                'AET': row.Aet*/
+                'Study Date': row.StudyDate,
+                'Study Description': row.StudyDescription ,
+                'Requested Procedure': row.RequestedProcedureDescription,
+                'Study Instance UID' : row.StudyInstanceUID,
+                'Series Instance UID': row.SeriesInstanceUID,
+                'Series Description': row.SeriesDescription,
+                'Modalities': row.Modality,
+                'Number of Instances': row.NumberOfSeriesRelatedInstances,
+                'AET': row.OriginAET
             }
         })
-        exportCsv(data, 'csv', 'queriesSeries.csv')
+        exportCsv(result, 'csv', 'queriesSeries.csv')
     }
 
     const makeDicomQuery = async (queryParams) => {
@@ -108,7 +130,7 @@ export default ((onQuerySeriesFinished)=> {
             i = i++
             updateToastMessage(toastId, 'Query series ' + i + '/' + data.length)
             //For each line make dicom query and return results
-            try {
+            /*try {
                 let answeredResults = await makeDicomQuery(query)
                 //For each results, fill the result table through Redux
                 answeredResults.forEach((answer) => {
@@ -116,7 +138,7 @@ export default ((onQuerySeriesFinished)=> {
                 })
             } catch (err) {
                 console.error(err)
-            }
+            }*/
 
         }
 
@@ -162,7 +184,7 @@ export default ((onQuerySeriesFinished)=> {
                     </Button>
                 </Row>
                 <Row>
-                    <QueryTable
+                    <QueryTableSeries
                         queries={queries}
                         aets={aets}
                         currentRow={currentRow}
