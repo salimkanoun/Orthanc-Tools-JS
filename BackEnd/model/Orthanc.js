@@ -450,6 +450,7 @@ class Orthanc {
             KeepPrivateTags: false,
             Force: true,
             Synchronous: synchronous,
+            DicomVersion : "2021b",
             Keep: [],
             Replace: {}
         }
