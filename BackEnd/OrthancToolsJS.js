@@ -58,7 +58,7 @@ app.use(
 
 // static routes
 app.use('/sounds', express.static(path.join(__dirname, 'build', 'sounds')));
-app.use('/static', express.static(path.join(__dirname, 'build', 'static')));
+app.use('/assets', express.static(path.join(__dirname, 'build', 'assets')));
 
 app.use('/viewer-ohif/', express.static(path.join(__dirname, 'build', 'viewer-ohif')));
 app.use('/viewer-ohif/*', function (req, res) {

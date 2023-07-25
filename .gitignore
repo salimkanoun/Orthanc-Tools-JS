@@ -20,3 +20,4 @@ BackEnd/data/private_key/*
 
 FrontEnd/.eslintcache
 BackEnd/.env
+FrontEnd/dist/*
