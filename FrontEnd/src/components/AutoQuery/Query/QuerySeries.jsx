@@ -2,11 +2,9 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Button, Container, Modal, Row } from 'react-bootstrap'
-import moment from 'moment'
 
 import Spinner from '../../CommonComponents/Spinner'
 import CsvLoader from './CsvLoader'
-import QueryTable from './QueryTable'
 
 import { addRow, emptyQueryTable, removeQuery } from '../../../actions/TableQuery'
 import { useCustomQuery } from '../../../services/ReactQuery/hooks'
@@ -70,7 +68,6 @@ export default ((onQuerySeriesFinished)=> {
     }
 
     const makeDicomQuery = async (queryParams) => {
-
         //Prepare POST payload for query (follow Orthanc APIs)
         let queryPost = {
             Level: 'Series',
@@ -97,7 +94,6 @@ export default ((onQuerySeriesFinished)=> {
     }
 
     const onQueryHandle = async () => {
-    
         const data = queries;
 
         if (!areAllRowsAetDefined(data)) return
@@ -118,9 +114,7 @@ export default ((onQuerySeriesFinished)=> {
             } catch (err) {
                 console.error(err)
             }
-
         }
-
         dissmissToast(toastId)
         successMessage('Queries completed')
         onQuerySeriesFinished()
@@ -165,7 +159,6 @@ export default ((onQuerySeriesFinished)=> {
                 <Row>
                     <QueryTableSeries
                         queries={queries}
-                        aets={aets}
                         currentRow={currentRow}
                         onRowClick={onRowClick}
                         onSelectRowsChange={onSelectRowsChange}
