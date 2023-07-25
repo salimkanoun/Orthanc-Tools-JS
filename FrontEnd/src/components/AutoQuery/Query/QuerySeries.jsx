@@ -2,11 +2,9 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { Button, Container, Modal, Row } from 'react-bootstrap'
-import moment from 'moment'
 
 import Spinner from '../../CommonComponents/Spinner'
 import CsvLoader from './CsvLoader'
-import QueryTable from './QueryTable'
 
 import { addRow, emptyQueryTable, removeQuery } from '../../../actions/TableQuery'
 import { useCustomQuery } from '../../../services/ReactQuery/hooks'
@@ -32,8 +30,6 @@ export default ((onQuerySeriesFinished)=> {
         undefined
     )
     const queries = useSelector(state => state.AutoRetrieveQueryList.queries)
-
-    console.log("queries : ", queries)
 
     const onRowClick = (rowId) => {
         setCurrentRow(rowId)
@@ -72,34 +68,14 @@ export default ((onQuerySeriesFinished)=> {
     }
 
     const makeDicomQuery = async (queryParams) => {
-
-       /* let DateFrom = queryParams.DateFrom ? queryParams.DateFrom : null
-        let DateTo = queryParams.DateTo ? queryParams.DateTo : null
-
-        //Prepare Date string for post data
-        let DateString = '';
-        if (DateFrom !== null && DateTo !== null) {
-            DateString = DateFrom + '-' + DateTo
-        } else if (DateFrom === null && DateTo !== null) {
-            DateString = '-' + DateTo
-        } else if (DateFrom !== null && DateTo === null) {
-            DateString = DateFrom + '-'
-        }
-
         //Prepare POST payload for query (follow Orthanc APIs)
         let queryPost = {
-            Level: 'Study',
+            Level: 'Series',
             Query: {
-                PatientName: queryParams.PatientName,
-                PatientID: queryParams.PatientID,
-                StudyDate: DateString,
-                ModalitiesInStudy: queryParams.ModalitiesInStudy,
-                StudyDescription: queryParams.StudyDescription,
-                AccessionNumber: queryParams.AccessionNumber,
-                NumberOfStudyRelatedInstances: '',
-                NumberOfStudyRelatedSeries: ''
+                SeriesInstanceUID: queryParams.SeriesInstanceUID,
+                StudyInstanceUID: queryParams.StudyInstanceUID,
             }
-        }*/
+        }
 
         //Call Orthanc API to make Query
         let createQueryRessource = await apis.query.dicomQuery(queryParams.Aet, queryPost)
@@ -108,17 +84,16 @@ export default ((onQuerySeriesFinished)=> {
     }
 
     const areAllRowsAetDefined = (data) => {
-        /*for (let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             if (data[i].Aet == null || data[i].Aet == "") {
                 errorMessage('Missing AET in row ' + i + ' fill it before querying')
                 return false
             }
         }
-        return true*/
+        return true
     }
 
     const onQueryHandle = async () => {
-
         const data = queries;
 
         if (!areAllRowsAetDefined(data)) return
@@ -130,7 +105,7 @@ export default ((onQuerySeriesFinished)=> {
             i = i++
             updateToastMessage(toastId, 'Query series ' + i + '/' + data.length)
             //For each line make dicom query and return results
-            /*try {
+            try {
                 let answeredResults = await makeDicomQuery(query)
                 //For each results, fill the result table through Redux
                 answeredResults.forEach((answer) => {
@@ -138,10 +113,8 @@ export default ((onQuerySeriesFinished)=> {
                 })
             } catch (err) {
                 console.error(err)
-            }*/
-
+            }
         }
-
         dissmissToast(toastId)
         successMessage('Queries completed')
         onQuerySeriesFinished()
@@ -186,7 +159,6 @@ export default ((onQuerySeriesFinished)=> {
                 <Row>
                     <QueryTableSeries
                         queries={queries}
-                        aets={aets}
                         currentRow={currentRow}
                         onRowClick={onRowClick}
                         onSelectRowsChange={onSelectRowsChange}

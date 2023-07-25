@@ -7,10 +7,7 @@ import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8"
 import { editCellQuery } from '../../../actions/TableQuery'
 
-import { filter } from '../../../model/Constant'
-import { isWithinDateRange } from '../../CommonComponents/RessourcesDisplay/ReactTableV8/Tools/FilterFns'
-
-export default ({ queries = [], aets = [], onRowClick, currentRow, onSelectRowsChange, selectedRowIds }) => {
+export default ({ queries = [], onRowClick, currentRow, onSelectRowsChange, selectedRowIds }) => {
 
     const dispatch = useDispatch()
 
@@ -38,14 +35,6 @@ export default ({ queries = [], aets = [], onRowClick, currentRow, onSelectRowsC
         accessorKey: 'SeriesInstanceUID',
         header: 'SeriesInstanceUID',
         isEditable: true
-    }, {
-        accessorKey: 'Aet',
-        header: 'AET',
-        isEditable: true,
-        editionProperties: {
-            type: 'SELECT',
-            options: aets.map(aet => ({ value: aet, label: aet }))
-        }
     }]
 
     return (
