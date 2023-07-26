@@ -12,9 +12,9 @@ import apis from '../../../services/apis'
 import { keys } from '../../../model/Constant'
 import { exportCsv } from '../../../tools/CSVExport'
 import { dissmissToast, errorMessage, infoMessage, successMessage, updateToastMessage } from '../../../tools/toastify'
-import { addStudyResult } from '../../../actions/TableResult'
 import EditQueries from './EditQueries'
 import QueryTableSeries from './QueryTableSeries'
+import { addSeriesDetails } from '../../../actions/TableResult'
 
 export default ((onQuerySeriesFinished)=> {
 
@@ -30,6 +30,7 @@ export default ((onQuerySeriesFinished)=> {
         undefined
     )
     const queries = useSelector(state => state.AutoRetrieveQueryList.queries)
+    console.log("queries :", queries)
 
     const onRowClick = (rowId) => {
         setCurrentRow(rowId)
@@ -68,6 +69,7 @@ export default ((onQuerySeriesFinished)=> {
     }
 
     const makeDicomQuery = async (queryParams) => {
+        console.log("queryParams :", queryParams)
         //Prepare POST payload for query (follow Orthanc APIs)
         let queryPost = {
             Level: 'Series',
@@ -102,6 +104,7 @@ export default ((onQuerySeriesFinished)=> {
 
         let i = 1
         for (const query of data) {
+            console.log("query :", query)
             i = i++
             updateToastMessage(toastId, 'Query series ' + i + '/' + data.length)
             //For each line make dicom query and return results
@@ -109,7 +112,8 @@ export default ((onQuerySeriesFinished)=> {
                 let answeredResults = await makeDicomQuery(query)
                 //For each results, fill the result table through Redux
                 answeredResults.forEach((answer) => {
-                    dispatch(addStudyResult(answer))
+                    console.log("answer:", answer)
+                    dispatch(addSeriesDetails(answer, answer.StudyInstanceUID))
                 })
             } catch (err) {
                 console.error(err)
