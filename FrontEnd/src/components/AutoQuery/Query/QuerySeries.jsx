@@ -16,7 +16,7 @@ import EditQueries from './EditQueries'
 import QueryTableSeries from './QueryTableSeries'
 import { addSeriesDetails } from '../../../actions/TableResult'
 
-export default ((onQuerySeriesFinished)=> {
+export default ({onQuerySeriesFinished}) => {
 
     const [openEditModal, setOpenEditModal] = useState(false)
     const [currentRow, setCurrentRow] = useState(null)
@@ -46,26 +46,6 @@ export default ((onQuerySeriesFinished)=> {
 
     const onSelectRowsChange = (rowIds) => {
         setSelectedRowsIds(rowIds)
-    }
-
-    const onCSVDownload = () => {
-        let result = Object.values(data).map(row => {
-            return {
-                'Patient Name': row.PatientName,
-                'Patient ID': row.PatientID,
-                'Accession Number': row.AccessionNumber,
-                'Study Date': row.StudyDate,
-                'Study Description': row.StudyDescription ,
-                'Requested Procedure': row.RequestedProcedureDescription,
-                'Study Instance UID' : row.StudyInstanceUID,
-                'Series Instance UID': row.SeriesInstanceUID,
-                'Series Description': row.SeriesDescription,
-                'Modalities': row.Modality,
-                'Number of Instances': row.NumberOfSeriesRelatedInstances,
-                'AET': row.OriginAET
-            }
-        })
-        exportCsv(result, 'csv', 'queriesSeries.csv')
     }
 
     const makeDicomQuery = async (queryParams) => {
@@ -144,9 +124,6 @@ export default ((onQuerySeriesFinished)=> {
                         onClick={() => dispatch(addRow())}>
                         Add Query
                     </Button>
-                    <Button onClick={onCSVDownload} className="otjs-button otjs-button-blue w-10">
-                        Export CSV
-                    </Button>
                     <Button className="otjs-button otjs-button-orange w-10"
                         onClick={() => setOpenEditModal(true)} >
                         Edit Selected
@@ -174,10 +151,10 @@ export default ((onQuerySeriesFinished)=> {
                         className="otjs-button otjs-button-blue"
                         onClick={onQueryHandle}
                     >
-                        Query
+                        Search
                     </Button>
                 </Row>
             </Container>
         </>
     )
-})
+}

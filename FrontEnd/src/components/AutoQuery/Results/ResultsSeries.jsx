@@ -6,8 +6,9 @@ import { addSeriesDetails, emptyResultsTable, removeSeriesResult } from "../../.
 import ResultsSeriesTable from "./ResultsSeriesTable"
 
 import apis from "../../../services/apis"
-import { Button, Container, Row } from "react-bootstrap"
+import { Button, Container, Modal, Row } from "react-bootstrap"
 import { exportCsv } from "../../../tools/CSVExport"
+import QuerySeries from "../Query/QuerySeries"
 
 export default () => {
 
@@ -28,6 +29,7 @@ export default () => {
     }, [Object.values(results), Object.values(resultsSeries)])
 
     const [selectedRowIds, setSelectedRowIds] = useState([])
+    const [openCsvModal, setOpenCsvModal] = useState(false)
 
     const onCSVDownload = () => {
 
@@ -109,7 +111,18 @@ export default () => {
 
     return (
         <Container>
+            <Modal size='xl' show={openCsvModal} onHide={()=>setOpenCsvModal(false)}>
+                <Modal.Header closeButton/>
+                <Modal.Title>Load CSV</Modal.Title>
+                <Modal.Body>
+                    <QuerySeries onQuerySeriesFinished={()=> setOpenCsvModal(false)}/>
+                </Modal.Body>
+            </Modal>
             <Row className='d-flex justify-content-around mb-3'>
+            <Button className="otjs-button otjs-button-green w-10"
+                        onClick={() => setOpenCsvModal(true)} >
+                        Load CSV
+                    </Button>
             <Button onClick={onCSVDownload} className="otjs-button otjs-button-blue w-10">Export CSV</Button>
                 <Button className="otjs-button otjs-button-orange w-10"
                     onClick={deleteRowsHandle} >

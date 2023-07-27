@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { Button } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
+
 import QueryRoot from './Query/QueryRoot'
 import ResultsRoot from './Results/ResultsRoot'
 import MyRobotRoot from './MyRobot/MyRobotRoot'
 import RobotHistoryRoot from './RobotHistory/RobotHistoryRoot'
-import { useSelector } from 'react-redux'
 import apis from '../../services/apis'
 import Spinner from '../CommonComponents/Spinner'
 import { useCustomQuery } from '../../services/ReactQuery/hooks'
@@ -45,20 +46,13 @@ export default () => {
     const TAB_ROBOT_HISTORY = 'history'
 
     const [currentComponent, setCurrentComponent] = useState(TAB_QUERIES)
-    const [currentComponentLevel, setCurrentComponentLevel] = useState('studies')
 
     const getComponentToDisplay = () => {
         switch (currentComponent) {
             case TAB_QUERIES:
-                return <QueryRoot onQueryFinished={(level) => {
-                    console.log('onQueryFinished')
-                    console.log(level)
-                    setCurrentComponent(TAB_RESULTS)
-                    setCurrentComponentLevel(level)
-                }}
-                />
+                return <QueryRoot onQueryFinished={() => setCurrentComponent(TAB_RESULTS)} />
             case TAB_RESULTS:
-                return <ResultsRoot onRobotCreated={() => setCurrentComponent(TAB_MYROBOT)} currentComponentRoot={currentComponentLevel}/>
+                return <ResultsRoot onRobotCreated={() => setCurrentComponent(TAB_MYROBOT)} />
             case TAB_MYROBOT:
                 return <MyRobotWrapper />
             case TAB_ROBOT_HISTORY:

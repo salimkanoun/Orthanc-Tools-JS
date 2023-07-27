@@ -1,13 +1,10 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 
-import moment from 'moment'
-
-import SelectModalities from "../../CommonComponents/SearchForm/SelectModalities"
 import CommonTableV8 from "../../CommonComponents/RessourcesDisplay/ReactTableV8/CommonTableV8"
 import { editCellQuery } from '../../../actions/TableQuery'
 
-export default ({ queries = [], onRowClick, currentRow, onSelectRowsChange, selectedRowIds }) => {
+export default ({ queries = [], aets = [], onRowClick, currentRow, onSelectRowsChange, selectedRowIds }) => {
 
     const dispatch = useDispatch()
 
@@ -35,6 +32,14 @@ export default ({ queries = [], onRowClick, currentRow, onSelectRowsChange, sele
         accessorKey: 'SeriesInstanceUID',
         header: 'SeriesInstanceUID',
         isEditable: true
+    }, {
+        accessorKey: 'Aet',
+        header: 'AET',
+        isEditable: true,
+        editionProperties: {
+            type: 'SELECT',
+            options: aets.map(aet => ({ value: aet, label: aet }))
+        }
     }]
 
     return (
