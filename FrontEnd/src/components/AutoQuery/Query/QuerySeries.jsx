@@ -12,11 +12,11 @@ import apis from '../../../services/apis'
 import { keys } from '../../../model/Constant'
 import { exportCsv } from '../../../tools/CSVExport'
 import { dissmissToast, errorMessage, infoMessage, successMessage, updateToastMessage } from '../../../tools/toastify'
-import { addStudyResult } from '../../../actions/TableResult'
 import EditQueries from './EditQueries'
 import QueryTableSeries from './QueryTableSeries'
+import { addSeriesDetails } from '../../../actions/TableResult'
 
-export default ((onQuerySeriesFinished)=> {
+export default ({onQuerySeriesFinished}) => {
 
     const [openEditModal, setOpenEditModal] = useState(false)
     const [currentRow, setCurrentRow] = useState(null)
@@ -30,6 +30,7 @@ export default ((onQuerySeriesFinished)=> {
         undefined
     )
     const queries = useSelector(state => state.AutoRetrieveQueryList.queries)
+    console.log("queries :", queries)
 
     const onRowClick = (rowId) => {
         setCurrentRow(rowId)
@@ -47,27 +48,8 @@ export default ((onQuerySeriesFinished)=> {
         setSelectedRowsIds(rowIds)
     }
 
-    const onCSVDownload = () => {
-        let result = Object.values(data).map(row => {
-            return {
-                'Patient Name': row.PatientName,
-                'Patient ID': row.PatientID,
-                'Accession Number': row.AccessionNumber,
-                'Study Date': row.StudyDate,
-                'Study Description': row.StudyDescription ,
-                'Requested Procedure': row.RequestedProcedureDescription,
-                'Study Instance UID' : row.StudyInstanceUID,
-                'Series Instance UID': row.SeriesInstanceUID,
-                'Series Description': row.SeriesDescription,
-                'Modalities': row.Modality,
-                'Number of Instances': row.NumberOfSeriesRelatedInstances,
-                'AET': row.OriginAET
-            }
-        })
-        exportCsv(result, 'csv', 'queriesSeries.csv')
-    }
-
     const makeDicomQuery = async (queryParams) => {
+        console.log("queryParams :", queryParams)
         //Prepare POST payload for query (follow Orthanc APIs)
         let queryPost = {
             Level: 'Series',
@@ -102,6 +84,7 @@ export default ((onQuerySeriesFinished)=> {
 
         let i = 1
         for (const query of data) {
+            console.log("query :", query)
             i = i++
             updateToastMessage(toastId, 'Query series ' + i + '/' + data.length)
             //For each line make dicom query and return results
@@ -109,7 +92,8 @@ export default ((onQuerySeriesFinished)=> {
                 let answeredResults = await makeDicomQuery(query)
                 //For each results, fill the result table through Redux
                 answeredResults.forEach((answer) => {
-                    dispatch(addStudyResult(answer))
+                    console.log("answer:", answer)
+                    dispatch(addSeriesDetails(answer, answer.StudyInstanceUID))
                 })
             } catch (err) {
                 console.error(err)
@@ -140,9 +124,6 @@ export default ((onQuerySeriesFinished)=> {
                         onClick={() => dispatch(addRow())}>
                         Add Query
                     </Button>
-                    <Button onClick={onCSVDownload} className="otjs-button otjs-button-blue w-10">
-                        Export CSV
-                    </Button>
                     <Button className="otjs-button otjs-button-orange w-10"
                         onClick={() => setOpenEditModal(true)} >
                         Edit Selected
@@ -170,10 +151,10 @@ export default ((onQuerySeriesFinished)=> {
                         className="otjs-button otjs-button-blue"
                         onClick={onQueryHandle}
                     >
-                        Query
+                        Search
                     </Button>
                 </Row>
             </Container>
         </>
     )
-})
+}
