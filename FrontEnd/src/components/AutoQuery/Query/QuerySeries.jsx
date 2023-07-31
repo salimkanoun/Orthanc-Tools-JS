@@ -10,13 +10,12 @@ import { addRow, emptyQueryTable, removeQuery } from '../../../actions/TableQuer
 import { useCustomQuery } from '../../../services/ReactQuery/hooks'
 import apis from '../../../services/apis'
 import { keys } from '../../../model/Constant'
-import { exportCsv } from '../../../tools/CSVExport'
 import { dissmissToast, errorMessage, infoMessage, successMessage, updateToastMessage } from '../../../tools/toastify'
-import EditQueries from './EditQueries'
 import QueryTableSeries from './QueryTableSeries'
 import { addSeriesDetails } from '../../../actions/TableResult'
+import EditQueriesSeries from './EditQueriesSeries'
 
-export default ({onQuerySeriesFinished}) => {
+export default ({ onQuerySeriesFinished }) => {
 
     const [openEditModal, setOpenEditModal] = useState(false)
     const [currentRow, setCurrentRow] = useState(null)
@@ -29,6 +28,7 @@ export default ({onQuerySeriesFinished}) => {
         () => apis.aets.getAets(),
         undefined
     )
+
     const queries = useSelector(state => state.AutoRetrieveQueryList.queries)
     console.log("queries :", queries)
 
@@ -48,23 +48,6 @@ export default ({onQuerySeriesFinished}) => {
         setSelectedRowsIds(rowIds)
     }
 
-    const makeDicomQuery = async (queryParams) => {
-        console.log("queryParams :", queryParams)
-        //Prepare POST payload for query (follow Orthanc APIs)
-        let queryPost = {
-            Level: 'Series',
-            Query: {
-                SeriesInstanceUID: queryParams.SeriesInstanceUID,
-                StudyInstanceUID: queryParams.StudyInstanceUID,
-            }
-        }
-
-        //Call Orthanc API to make Query
-        let createQueryRessource = await apis.query.dicomQuery(queryParams.Aet, queryPost)
-        //Call OrthancToolsJS API to get a parsed answer of the results
-        return await apis.query.retrieveAnswer(createQueryRessource.ID)
-    }
-
     const areAllRowsAetDefined = (data) => {
         for (let i = 0; i < data.length; i++) {
             if (data[i].Aet == null || data[i].Aet == "") {
@@ -75,44 +58,102 @@ export default ({onQuerySeriesFinished}) => {
         return true
     }
 
-    const onQueryHandle = async () => {
+    /* const makeDicomQuery = async (queryParams) => {
+         console.log("queryParams :", queryParams)
+         //Prepare POST payload for query (follow Orthanc APIs)
+         let queryPost = {
+             Level: 'Series',
+             Query: {
+                 SeriesInstanceUID: queryParams.SeriesInstanceUID,
+                 StudyInstanceUID: queryParams.StudyInstanceUID,
+             }
+         }
+ 
+         //Call Orthanc API to make Query
+         let createQueryRessource = await apis.query.dicomQuery(queryParams.Aet, queryPost)
+         //Call OrthancToolsJS API to get a parsed answer of the results
+         return await apis.query.retrieveAnswer(createQueryRessource.ID)
+     }
+ 
+     const onQueryHandle = async () => {
+         const data = queries;
+ 
+         if (!areAllRowsAetDefined(data)) return
+ 
+         const toastId = infoMessage('Starting Series Queries')
+ 
+         let i = 1
+         for (const query of data) {
+             console.log("query :", query)
+             i = i++
+             updateToastMessage(toastId, 'Query series ' + i + '/' + data.length)
+             //For each line make dicom query and return results
+             try {
+                 let answeredResults = await makeDicomQuery(query)
+                 //For each results, fill the result table through Redux
+                 answeredResults.forEach((answer) => {
+                     console.log("answer:", answer)
+                     dispatch(addSeriesDetails(answer, answer.StudyInstanceUID))
+                 })
+             } catch (err) {
+                 console.error(err)
+             }
+         }
+         dissmissToast(toastId)
+         successMessage('Queries completed')
+         onQuerySeriesFinished()
+     }*/
+
+    const queryAndAddSeriesDetails = async (studyUID, seriesUID, aet) => {
+        let queryData = {
+            Level: 'Series',
+            Query: {
+                Modality: '',
+                ProtocolName: '',
+                SeriesDescription: '',
+                SeriesInstanceUID: seriesUID,
+                StudyInstanceUID: studyUID,
+                SeriesNumber: '',
+                NumberOfSeriesRelatedInstances: ''
+            }
+        }
+        try {
+            let queryAnswers = await apis.query.dicomQuery(aet, queryData);
+            let seriesAnswers = await apis.query.retrieveAnswer(queryAnswers['ID'])
+            dispatch(addSeriesDetails(seriesAnswers, studyUID))
+        } catch (error) {
+            errorMessage(error?.data?.errorMessage ?? 'Query Failure StudyInstanceUID' + studyUID)
+        }
+    }
+
+    const startFetchingSeriesDetails = async () => {
+
         const data = queries;
 
         if (!areAllRowsAetDefined(data)) return
 
-        const toastId = infoMessage('Starting Series Queries')
-
-        let i = 1
-        for (const query of data) {
-            console.log("query :", query)
-            i = i++
-            updateToastMessage(toastId, 'Query series ' + i + '/' + data.length)
-            //For each line make dicom query and return results
-            try {
-                let answeredResults = await makeDicomQuery(query)
-                //For each results, fill the result table through Redux
-                answeredResults.forEach((answer) => {
-                    console.log("answer:", answer)
-                    dispatch(addSeriesDetails(answer, answer.StudyInstanceUID))
-                })
-            } catch (err) {
-                console.error(err)
+        if (data.length > 0) {
+            const toastId = infoMessage('Starting Series Fetching');
+            for (let i = 0; i < data.length; i++) {
+                await queryAndAddSeriesDetails(data[i].StudyInstanceUID, data[i].SeriesInstanceUID, data[i].Aet)
+                updateToastMessage(toastId, 'Queried series ' + (i + 1) + '/' + data.length);
             }
+            dissmissToast(toastId)
+            successMessage('Queries completed')
+            onQuerySeriesFinished()
         }
-        dissmissToast(toastId)
-        successMessage('Queries completed')
-        onQuerySeriesFinished()
+
     }
 
     if (isLoading) return <Spinner />
 
     return (
         <>
-            <Modal size='xl' show={openEditModal} onHide={()=>setOpenEditModal(false)}>
-                <Modal.Header closeButton/>
+            <Modal size='xl' show={openEditModal} onHide={() => setOpenEditModal(false)}>
+                <Modal.Header closeButton />
                 <Modal.Title>Edit Queries</Modal.Title>
                 <Modal.Body>
-                    <EditQueries aets={aets} selectedRowsIds={selectedRowsIds}/>
+                    <EditQueriesSeries aets={aets} selectedRowsIds={selectedRowsIds} />
                 </Modal.Body>
             </Modal>
             <Container fluid>
@@ -149,7 +190,7 @@ export default ({onQuerySeriesFinished}) => {
                 <Row className="d-flex justify-content-center mt-5">
                     <Button
                         className="otjs-button otjs-button-blue"
-                        onClick={onQueryHandle}
+                        onClick={startFetchingSeriesDetails}
                     >
                         Search
                     </Button>
