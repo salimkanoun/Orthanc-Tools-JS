@@ -17,23 +17,12 @@ export default () => {
     const results = useSelector(state => state.AutoRetrieveResultList.results)
     const resultsSeries = useSelector(state => state.AutoRetrieveResultList.resultsSeries)
 
-    const data = useMemo(() => {
-        let seriesLines = []
-        for (let seriesUID of Object.keys(resultsSeries)) {
-            seriesLines.push({
-                ...results[resultsSeries[seriesUID]['StudyInstanceUID']],
-                ...resultsSeries[seriesUID],
-            })
-        }
-        return seriesLines
-    }, [Object.values(results), Object.values(resultsSeries)])
-
     const [selectedRowIds, setSelectedRowIds] = useState([])
     const [openCsvModal, setOpenCsvModal] = useState(false)
 
     const onCSVDownload = () => {
 
-        let result = Object.values(data).map(row => {
+        let result = Object.values(resultsSeries).map(row => {
             return {
                 'Patient Name': row.PatientName,
                 'Patient ID': row.PatientID,
@@ -56,6 +45,11 @@ export default () => {
         let queryData = {
             Level: 'Series',
             Query: {
+                PatientName: '',
+                PatientID: '',
+                StudyDate: '',
+                StudyDescription: '',
+                AccessionNumber: '',
                 Modality: '',
                 ProtocolName: '',
                 SeriesDescription: '',
@@ -77,7 +71,6 @@ export default () => {
     useEffect(() => {
         const startFetchingSeriesDetails = async () => {
             //List studies for each series details are missing
-            let emptyResultArray = []
             let knownStudies = Object.values(results)
             let availableStudyUID = Object.values(resultsSeries).map((series) => {
                 return series['StudyInstanceUID']
@@ -134,7 +127,7 @@ export default () => {
                 </Button>
             </Row>
             <Row>
-                <ResultsSeriesTable selectedRowIds={selectedRowIds} data={data} onSelectRow={selectRowHandle} />
+                <ResultsSeriesTable selectedRowIds={selectedRowIds} data={Object.values(resultsSeries)} onSelectRow={selectRowHandle} />
             </Row>
         </Container>
     )
