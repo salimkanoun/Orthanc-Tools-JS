@@ -184,6 +184,36 @@ class Orthanc {
 
             const queryLevel = element['0008,0052'].Value
 
+            let accessionNb = null
+            if (element.hasOwnProperty('0008,0050')) {
+                accessionNb = element['0008,0050'].Value
+            }
+
+            let studyDate = null
+            if (element.hasOwnProperty('0008,0020')) {
+                studyDate = element['0008,0020'].Value
+            }
+
+            let studyDescription = null
+            if (element.hasOwnProperty('0008,1030')) {
+                studyDescription = element['0008,1030'].Value
+            }
+
+            let patientName = null
+            if (element.hasOwnProperty('0010,0010')) {
+                patientName = element['0010,0010'].Value
+            }
+
+            let patientID = null
+            if (element.hasOwnProperty('0010,0020')) {
+                patientID = element['0010,0020'].Value
+            }
+
+            let requestedProcedureDescription = null
+            if (element.hasOwnProperty('0032,1060')) {
+                requestedProcedureDescription = element['0032,1060'].Value
+            }
+
             let Modality = null
             if (element.hasOwnProperty('0008,0060')) {
                 Modality = element['0008,0060'].Value
@@ -215,7 +245,7 @@ class Orthanc {
             }
 
             const originAET = aet
-            const queryAnswserObject = new QuerySerieAnswer(answerId, i, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET, numberOfSeriesRelatedInstances)
+            const queryAnswserObject = new QuerySerieAnswer(answerId, i, patientName, patientID, studyDescription, studyDate, accessionNb, requestedProcedureDescription, StudyInstanceUID, SeriesInstanceUID, Modality, SeriesDescription, SeriesNumber, originAET, numberOfSeriesRelatedInstances)
             answersObjects.push(queryAnswserObject)
         }
 

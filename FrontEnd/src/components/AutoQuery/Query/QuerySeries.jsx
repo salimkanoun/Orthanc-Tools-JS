@@ -62,7 +62,12 @@ export default ({ onQuerySeriesFinished }) => {
                 SeriesInstanceUID: seriesUID,
                 StudyInstanceUID: studyUID,
                 SeriesNumber: '',
-                NumberOfSeriesRelatedInstances: ''
+                NumberOfSeriesRelatedInstances: '',
+                PatientName: '',
+                PatientID: '',
+                StudyDate: '',
+                StudyDescription: '',
+                AccessionNumber: ''
             }
         }
         try {
