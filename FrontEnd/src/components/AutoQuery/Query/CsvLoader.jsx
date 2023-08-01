@@ -1,14 +1,10 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
 
 import Papa from 'papaparse'
 
 import MyDropzone from '../../CommonComponents/MyDropzone'
-import { addQueryToList } from '../../../actions/TableQuery'
 
-export default () => {
-
-    const dispatch = useDispatch()
+export default ({onLoad}) => {
 
     const readCsv = (files) => {
         if (files.length === 1) {
@@ -24,8 +20,8 @@ export default () => {
     const completeFn = (result) => {
         let csvData = result.data;
 
-        csvData.forEach((query) => {           
-            let queryForList = {
+        let data = csvData.map((query) => {           
+            return {
                 PatientName: query['Patient Name'],
                 PatientID: query['Patient ID'],
                 AccessionNumber: query['Accession Number'],
@@ -37,10 +33,9 @@ export default () => {
                 StudyInstanceUID : query['Study Instance UID'],
                 SeriesInstanceUID : query['Series Instance UID']
             }
-
-            dispatch(addQueryToList(queryForList))
-
+            
         })
+        onLoad(data)
 
     }
 

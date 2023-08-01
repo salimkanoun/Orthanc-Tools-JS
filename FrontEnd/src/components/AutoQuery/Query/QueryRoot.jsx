@@ -8,7 +8,7 @@ import Spinner from '../../CommonComponents/Spinner'
 import CsvLoader from './CsvLoader'
 import QueryTable from './QueryTable'
 
-import { addRow, emptyQueryTable, removeQuery } from '../../../actions/TableQuery'
+import { addQueryToList, addRow, emptyQueryTable, removeQuery } from '../../../actions/TableQuery'
 import { useCustomQuery } from '../../../services/ReactQuery/hooks'
 import apis from '../../../services/apis'
 import { keys } from '../../../model/Constant'
@@ -155,7 +155,7 @@ export default ({ onQueryFinished }) => {
             </Modal>
             <Container fluid>
                 <Row>
-                    <CsvLoader />
+                    <CsvLoader onLoad={(queries) => queries.forEach(query => dispatch(addQueryToList(query))) } />
                 </Row>
                 <Row className="m-3 d-flex justify-content-around">
                     <Button className="otjs-button otjs-button-blue w-10"

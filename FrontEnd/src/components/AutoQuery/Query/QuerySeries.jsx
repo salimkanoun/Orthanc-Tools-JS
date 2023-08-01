@@ -17,11 +17,11 @@ import EditQueriesSeries from './EditQueriesSeries'
 
 export default ({ onQuerySeriesFinished }) => {
 
-    const [openEditModal, setOpenEditModal] = useState(false)
+    const dispatch = useDispatch()
+
+    const [queries, setQueries] = useState([])
     const [currentRow, setCurrentRow] = useState(null)
     const [selectedRowsIds, setSelectedRowsIds] = useState([])
-
-    const dispatch = useDispatch()
 
     const { data: aets, isLoading } = useCustomQuery(
         [keys.AETS_KEY],
@@ -29,18 +29,13 @@ export default ({ onQuerySeriesFinished }) => {
         undefined
     )
 
-    const queries = useSelector(state => state.AutoRetrieveQueryList.queries)
-
     const onRowClick = (rowId) => {
         setCurrentRow(rowId)
     }
 
     const removeRows = () => {
-        dispatch(removeQuery(selectedRowsIds));
-    }
-
-    const emptyTable = () => {
-        dispatch(emptyQueryTable())
+        let remainingRows = queries.filter(query => !selectedRowsIds.includes(query.SeriesInstanceUID) )
+        setQueries(remainingRows)
     }
 
     const onSelectRowsChange = (rowIds) => {
@@ -50,7 +45,6 @@ export default ({ onQuerySeriesFinished }) => {
     const areAllRowsAetDefined = (data) => {
         for (let i = 0; i < data.length; i++) {
             if (data[i].Aet == null || data[i].Aet == "") {
-                errorMessage('Missing AET in row ' + i + ' fill it before querying')
                 return false
             }
         }
@@ -84,7 +78,10 @@ export default ({ onQuerySeriesFinished }) => {
 
         const data = queries;
 
-        if (!areAllRowsAetDefined(data)) return
+        if (!areAllRowsAetDefined(data)) {
+            errorMessage('Missing AETs sources in some rows, fill it before querying')
+            return
+        } 
 
         if (data.length > 0) {
             const toastId = infoMessage('Starting Series Fetching');
@@ -103,33 +100,14 @@ export default ({ onQuerySeriesFinished }) => {
 
     return (
         <>
-            <Modal size='xl' show={openEditModal} onHide={() => setOpenEditModal(false)}>
-                <Modal.Header closeButton />
-                <Modal.Title>Edit Queries</Modal.Title>
-                <Modal.Body>
-                    <EditQueriesSeries aets={aets} selectedRowsIds={selectedRowsIds} />
-                </Modal.Body>
-            </Modal>
             <Container fluid>
                 <Row>
-                    <CsvLoader />
+                    <CsvLoader onLoad={(queries) => {setQueries(queries)}} />
                 </Row>
                 <Row className="m-3 d-flex justify-content-around">
-                    <Button className="otjs-button otjs-button-blue w-10"
-                        onClick={() => dispatch(addRow())}>
-                        Add Query
-                    </Button>
-                    <Button className="otjs-button otjs-button-orange w-10"
-                        onClick={() => setOpenEditModal(true)} >
-                        Edit Selected
-                    </Button>
                     <Button className="otjs-button otjs-button-orange w-10"
                         onClick={removeRows} >
                         Delete Selected
-                    </Button>
-                    <Button className="otjs-button otjs-button-red w-10"
-                        onClick={emptyTable} >
-                        Empty Table
                     </Button>
                 </Row>
                 <Row>
