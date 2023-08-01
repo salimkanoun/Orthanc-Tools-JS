@@ -30,7 +30,6 @@ export default ({ onQuerySeriesFinished }) => {
     )
 
     const queries = useSelector(state => state.AutoRetrieveQueryList.queries)
-    console.log("queries :", queries)
 
     const onRowClick = (rowId) => {
         setCurrentRow(rowId)
@@ -58,51 +57,6 @@ export default ({ onQuerySeriesFinished }) => {
         return true
     }
 
-    /* const makeDicomQuery = async (queryParams) => {
-         console.log("queryParams :", queryParams)
-         //Prepare POST payload for query (follow Orthanc APIs)
-         let queryPost = {
-             Level: 'Series',
-             Query: {
-                 SeriesInstanceUID: queryParams.SeriesInstanceUID,
-                 StudyInstanceUID: queryParams.StudyInstanceUID,
-             }
-         }
- 
-         //Call Orthanc API to make Query
-         let createQueryRessource = await apis.query.dicomQuery(queryParams.Aet, queryPost)
-         //Call OrthancToolsJS API to get a parsed answer of the results
-         return await apis.query.retrieveAnswer(createQueryRessource.ID)
-     }
- 
-     const onQueryHandle = async () => {
-         const data = queries;
- 
-         if (!areAllRowsAetDefined(data)) return
- 
-         const toastId = infoMessage('Starting Series Queries')
- 
-         let i = 1
-         for (const query of data) {
-             console.log("query :", query)
-             i = i++
-             updateToastMessage(toastId, 'Query series ' + i + '/' + data.length)
-             //For each line make dicom query and return results
-             try {
-                 let answeredResults = await makeDicomQuery(query)
-                 //For each results, fill the result table through Redux
-                 answeredResults.forEach((answer) => {
-                     console.log("answer:", answer)
-                     dispatch(addSeriesDetails(answer, answer.StudyInstanceUID))
-                 })
-             } catch (err) {
-                 console.error(err)
-             }
-         }
-         dissmissToast(toastId)
-         successMessage('Queries completed')
-         onQuerySeriesFinished()
-     }*/
 
     const queryAndAddSeriesDetails = async (studyUID, seriesUID, aet) => {
         let queryData = {
@@ -181,6 +135,7 @@ export default ({ onQuerySeriesFinished }) => {
                 <Row>
                     <QueryTableSeries
                         queries={queries}
+                        aets={aets}
                         currentRow={currentRow}
                         onRowClick={onRowClick}
                         onSelectRowsChange={onSelectRowsChange}
