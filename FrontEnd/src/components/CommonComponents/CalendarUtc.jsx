@@ -1,5 +1,5 @@
 import React from "react"
-import Calendar from "react-calendar"
+import Calendar from 'react-calendar'
 
 export default ({ value, onChange, maxDate = new Date(), required = false }) => {
 
@@ -14,7 +14,7 @@ export default ({ value, onChange, maxDate = new Date(), required = false }) => 
         <div>
             <Calendar
                 required={required}
-                calendarType="ISO 8601"
+                calendarType='iso8601'
                 onChange={onChange}
                 value={value}
                 maxDate={maxDate}
